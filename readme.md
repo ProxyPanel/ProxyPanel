@@ -54,3 +54,19 @@ location / {
 把apiconfig.py里的 API_INTERFACE 设置为 glzjinmod
 该怎么配置还怎么配置
 ````
+## 说明
+````
+1.纯账号管理后台
+2.需要配合SSR后端使用
+3.没有用户端
+4.支持SS多用户json文件一键转换成SSR多用户json文件
+5.支持SSR多用户json文件一键导入数据库
+````
+
+![Markdown](http://i1.ciimg.com/1949/9a144d614a97e76c.png)
+![Markdown](http://i1.ciimg.com/1949/16a7397810f8819d.png)
+![Markdown](http://i1.ciimg.com/1949/6741b88c5a02d550.png)
+![Markdown](http://i1.ciimg.com/1949/a12612d57fdaa001.png)
+![Markdown](http://i1.ciimg.com/1949/c5c80818393d585e.png)
+![Markdown](http://i1.ciimg.com/1949/c52861d84ed70039.png)
+![Markdown](http://i1.ciimg.com/1949/83354a1cd7fbd041.png)
