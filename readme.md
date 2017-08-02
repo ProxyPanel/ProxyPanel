@@ -15,6 +15,8 @@ MYSQL 5.7
 KVM
 
 使用 LNMP1.4 部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
+
+telegram：https://t.me/ssrpanel
 ````
 
 #### 1.拉取代码
