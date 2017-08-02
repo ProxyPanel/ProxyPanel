@@ -17,7 +17,12 @@ KVM
 使用 LNMP1.4 部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
 ````
 
-#### 1.配置
+#### 1.拉取代码
+````
+git clone https://github.com/ssrpanel/ssrpanel.git
+````
+
+#### 2.配置
 ````
 非大陆VPS请删除composer.json中如下部分：
 
@@ -27,24 +32,7 @@ KVM
         "url": "https://packagist.phpcomposer.com"
     }
 }
-````
-#### 1.1 拉取代码
-````
-git clone https://github.com/ssrpanel/ssrpanel.git
-````
 
-#### 2.安装
-````
-composer install
-````
-
-#### 3.生成key
-````
-php artisan key:generate
-````
-
-#### 4.配置
-````
 mysql 创建一个数据库，然后自行导入sql\db.sql
 config\app.php debug开始或者关闭调试模式
 config\database.php mysql选项自行配置数据库
@@ -53,32 +41,28 @@ config\database.php mysql选项自行配置数据库
 chmod -R 777 /home/www/ssrpanel/storage
 ````
 
-#### 5.登录
+#### 3.安装
 ````
-用户名：admin
-密码：123456
-````
-
-#### 6.NGINX配置
-````
-root /home/www/ssrpanel/public;
-
-location / {
-    try_files $uri $uri/ /index.php$is_args$args;
-}
+composer install
 ````
 
-###### NGINX配置例子
+#### 4.生成key
+````
+php artisan key:generate
+````
+
+#### 5.NGINX配置例子
 ````
 server {
     listen       80;
     server_name  xxx.com ;
-    root   "/home/wwwroot/xxx.com/public";
+    root         "/home/wwwroot/xxx.com/public";
+    
     location / {
         index  start.html index.html index.htm index.php;
-        #autoindex  on;
         try_files $uri $uri/ /index.php$is_args$args;
     }
+    
     location ~ \.php(.*)$ {
         fastcgi_pass   127.0.0.1:9000;
         fastcgi_index  index.php;
@@ -89,6 +73,12 @@ server {
         include        fastcgi_params;
     }
 }
+````
+
+#### 6.登录
+````
+用户名：admin
+密码：123456
 ````
 
 ## 代码解释
@@ -106,7 +96,7 @@ server {
 ## SSR服务端
 ````
 把apiconfig.py里的 API_INTERFACE 设置为 glzjinmod
-该怎么配置还怎么配置
+该怎么配置还怎么配置，别问我，我不懂
 ````
 ## 说明
 ````
