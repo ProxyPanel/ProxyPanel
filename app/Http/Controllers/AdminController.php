@@ -1,0 +1,740 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Models\SsConfig;
+use App\Http\Models\SsNode;
+use App\Http\Models\SsNodeInfo;
+use App\Http\Models\SsNodeOnlineLog;
+use App\Http\Models\User;
+use App\Http\Models\UserTrafficLog;
+use Illuminate\Http\Request;
+use Redirect;
+use Response;
+
+class AdminController extends BaseController
+{
+    public function index(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $now = time();
+        $past = strtotime(date('Y-m-d H:i:s', strtotime("-3 days")));
+        $online = time() - 600;
+
+        $view['userCount'] = User::count();
+        $view['activeUserCount'] = User::whereBetween('t', [$past, $now])->count();
+        $view['onlineUserCount'] = User::where('t', '>=', $online)->count();
+        $view['nodeCount'] = SsNode::count();
+        $flowCount = UserTrafficLog::sum('u') + UserTrafficLog::sum('d');
+        $flowCount = $this->flowAutoShow($flowCount);
+        $view['flowCount'] = $flowCount;
+
+        return Response::view('admin/index', $view);
+    }
+
+    // 用户列表
+    public function userList(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $username = $request->get('username');
+        $wechat = $request->get('wechat');
+        $qq = $request->get('qq');
+        $port = $request->get('port');
+        $pay_way = $request->get('pay_way');
+        $enable = $request->get('enable');
+
+        $query = User::query();
+        if (!empty($username)) {
+            $query->where('username', 'like', '%' . $username . '%');
+        }
+
+        if (!empty($wechat)) {
+            $query->where('wechat', 'like', '%' . $wechat . '%');
+        }
+
+        if (!empty($qq)) {
+            $query->where('qq', 'like', '%' . $qq . '%');
+        }
+
+        if (!empty($port)) {
+            $query->where('port', intval($port));
+        }
+
+        if (!empty($pay_way)) {
+            $query->where('pay_way', intval($pay_way));
+        }
+
+        if ($enable != '') {
+            $query->where('enable', intval($enable));
+        }
+
+        $userList = $query->orderBy('id', 'desc')->paginate(10);
+        foreach ($userList as &$user) {
+            $user->transfer_enable = $this->flowAutoShow($user->transfer_enable);
+            $user->used_flow = $this->flowAutoShow($user->u + $user->d);
+        }
+
+        $view['userList'] = $userList;
+
+        return Response::view('admin/userList', $view);
+    }
+
+    // 添加账号
+    public function addUser(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+            $username = $request->get('username');
+            $password = $request->get('password');
+            $port = $request->get('port');
+            $passwd = $request->get('passwd');
+            $transfer_enable = $request->get('transfer_enable');
+            $enable = $request->get('enable');
+            $method = $request->get('method');
+            $custom_method = $request->get('custom_method');
+            $protocol = $request->get('protocol');
+            $protocol_param = $request->get('protocol_param');
+            $obfs = $request->get('obfs');
+            $obfs_param = $request->get('obfs_param');
+            $wechat = $request->get('wechat');
+            $qq = $request->get('qq');
+            $usage = $request->get('usage');
+            $pay_way = $request->get('pay_way');
+            $balance = $request->get('balance');
+            $enable_time = $request->get('enable_time');
+            $expire_time = $request->get('expire_time');
+            $remark = $request->get('remark');
+            $is_admin = $request->get('is_admin');
+
+            // 密码为空时生成默认密码
+            if (empty($password)) {
+                $str = $this->makeRandStr();
+                $password = md5($str);
+            } else {
+                $password = md5($password);
+            }
+
+            $ret = User::create([
+                'username' => $username,
+                'password' => $password,
+                'port' => $port,
+                'passwd' => empty($passwd) ? $this->makeRandStr() : $passwd, // SS密码为空时生成默认密码
+                'transfer_enable' => $transfer_enable,
+                'enable' => $enable,
+                'method' => $method,
+                'custom_method' => $custom_method,
+                'protocol' => $protocol,
+                'protocol_param' => $protocol_param,
+                'obfs' => $obfs,
+                'obfs_param' => $obfs_param,
+                'wechat' => $wechat,
+                'qq' => $qq,
+                'usage' => $usage,
+                'pay_way' => $pay_way,
+                'balance' => $balance,
+                'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                'expire_time' => empty($expire_time) ? '2099-1-1' : $expire_time,
+                'remark' => $remark,
+                'is_admin' => $is_admin,
+                'reg_ip' => $request->getClientIp()
+            ]);
+
+            if ($ret) {
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
+            }
+        } else {
+            // 最后一个可用端口
+            $last_user = User::orderBy('id', 'desc')->first();
+            $view['last_port'] = $last_user->port + 1;
+
+            // 加密方式、协议、混淆
+            $view['method_list'] =  $this->methodList();
+            $view['protocol_list'] =  $this->protocolList();
+            $view['obfs_list'] =  $this->obfsList();
+
+            return Response::view('admin/addUser', $view);
+        }
+    }
+
+    // 编辑账号
+    public function editUser(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        if ($request->method() == 'POST') {
+            $username = $request->get('username');
+            $password = $request->get('password');
+            $port = $request->get('port');
+            $passwd = $request->get('passwd');
+            $transfer_enable = $request->get('transfer_enable');
+            $enable = $request->get('enable');
+            $method = $request->get('method');
+            $custom_method = $request->get('custom_method');
+            $protocol = $request->get('protocol');
+            $protocol_param = $request->get('protocol_param');
+            $obfs = $request->get('obfs');
+            $obfs_param = $request->get('obfs_param');
+            $wechat = $request->get('wechat');
+            $qq = $request->get('qq');
+            $usage = $request->get('usage');
+            $pay_way = $request->get('pay_way');
+            $balance = $request->get('balance');
+            $enable_time = $request->get('enable_time');
+            $expire_time = $request->get('expire_time');
+            $remark = $request->get('remark');
+            $is_admin = $request->get('is_admin');
+
+            $data = [
+                'username' => $username,
+                'port' => $port,
+                'passwd' => $passwd,
+                'transfer_enable' => $this->toGB($transfer_enable),
+                'enable' => $enable,
+                'method' => $method,
+                'custom_method' => $custom_method,
+                'protocol' => $protocol,
+                'protocol_param' => $protocol_param,
+                'obfs' => $obfs,
+                'obfs_param' => $obfs_param,
+                'wechat' => $wechat,
+                'qq' => $qq,
+                'usage' => $usage,
+                'pay_way' => $pay_way,
+                'balance' => $balance,
+                'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                'expire_time' => empty($expire_time) ? '2099-1-1' : $expire_time,
+                'remark' => $remark,
+                'is_admin' => $is_admin
+            ];
+
+            if (!empty($password)) {
+                $data['password'] = md5($password);
+            }
+
+            $ret = User::where('id', $id)->update($data);
+            if ($ret) {
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+            }
+        } else {
+            $user = User::where('id', $id)->first();
+            if (!empty($user)) {
+                $user->transfer_enable = $this->flowToGB($user->transfer_enable);
+            }
+
+            $view['user'] = $user;
+
+            // 加密方式、协议、混淆
+            $view['method_list'] =  $this->methodList();
+            $view['protocol_list'] =  $this->protocolList();
+            $view['obfs_list'] =  $this->obfsList();
+
+            return Response::view('admin/editUser', $view);
+        }
+    }
+
+    // 删除用户
+    public function delUser(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        $user = User::where('id', $id)->delete();
+        if ($user) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        }
+    }
+
+    // 节点列表
+    public function nodeList(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $nodeList = SsNode::paginate(10);
+        foreach ($nodeList as &$node) {
+            // 在线人数
+            $online_log = SsNodeOnlineLog::where('node_id', $node->id)->orderBy('id', 'desc')->first();
+            $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
+
+            // 已产生流量
+            $u = UserTrafficLog::where('node_id', $node->id)->sum('u');
+            $d = UserTrafficLog::where('node_id', $node->id)->sum('d');
+            $node->transfer = $this->flowAutoShow($u + $d);
+
+            // 负载
+            $node_info = SsNodeInfo::where('node_id', $node->id)->orderBy('id', 'desc')->first();
+            $node->load = empty($node_info->load) ? 0 : $node_info->load;
+        }
+
+        $view['nodeList'] = $nodeList;
+
+        return Response::view('admin/nodeList', $view);
+    }
+
+    // 添加节点
+    public function addNode(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+            $name = $request->get('name');
+            $server = $request->get('server');
+            $method = $request->get('method');
+            $custom_method = $request->get('custom_method');
+            $protocol = $request->get('protocol');
+            $protocol_param = $request->get('protocol_param');
+            $obfs = $request->get('obfs');
+            $obfs_param = $request->get('obfs_param');
+            $traffic_rate = $request->get('traffic_rate');
+            $bandwidth = $request->get('bandwidth');
+            $traffic = $request->get('traffic');
+            $monitor_url = $request->get('monitor_url');
+            $sort = $request->get('sort');
+            $status = $request->get('status');
+
+            SsNode::create([
+                'name' => $name,
+                'server' => $server,
+                'method' => $method,
+                'custom_method' => $custom_method,
+                'protocol' => $protocol,
+                'protocol_param' => $protocol_param,
+                'obfs' => $obfs,
+                'obfs_param' => $obfs_param,
+                'traffic_rate' => $traffic_rate,
+                'bandwidth' => $bandwidth,
+                'traffic' => $traffic,
+                'monitor_url' => $monitor_url,
+                'sort' => $sort,
+                'status' => $status,
+            ]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+        } else {
+            // 加密方式、协议、混淆
+            $view['method_list'] =  $this->methodList();
+            $view['protocol_list'] =  $this->protocolList();
+            $view['obfs_list'] =  $this->obfsList();
+
+            return Response::view('admin/addNode', $view);
+        }
+    }
+
+    // 编辑节点
+    public function editNode(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        if ($request->method() == 'POST') {
+            $name = $request->get('name');
+            $server = $request->get('server');
+            $method = $request->get('method');
+            $custom_method = $request->get('custom_method');
+            $protocol = $request->get('protocol');
+            $protocol_param = $request->get('protocol_param');
+            $obfs = $request->get('obfs');
+            $obfs_param = $request->get('obfs_param');
+            $traffic_rate = $request->get('traffic_rate');
+            $bandwidth = $request->get('bandwidth');
+            $traffic = $request->get('traffic');
+            $monitor_url = $request->get('monitor_url');
+            $sort = $request->get('sort');
+            $status = $request->get('status');
+
+            $data = [
+                'name' => $name,
+                'server' => $server,
+                'method' => $method,
+                'custom_method' => $custom_method,
+                'protocol' => $protocol,
+                'protocol_param' => $protocol_param,
+                'obfs' => $obfs,
+                'obfs_param' => $obfs_param,
+                'traffic_rate' => $traffic_rate,
+                'bandwidth' => $bandwidth,
+                'traffic' => $traffic,
+                'monitor_url' => $monitor_url,
+                'sort' => $sort,
+                'status' => $status
+            ];
+
+            $ret = SsNode::where('id', $id)->update($data);
+            if ($ret) {
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+            }
+        } else {
+            $view['node'] = SsNode::where('id', $id)->first();
+
+            // 加密方式、协议、混淆
+            $view['method_list'] =  $this->methodList();
+            $view['protocol_list'] =  $this->protocolList();
+            $view['obfs_list'] =  $this->obfsList();
+
+            return Response::view('admin/editNode', $view);
+        }
+    }
+
+    // 删除节点
+    public function delNode(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        $user = SsNode::where('id', $id)->delete();
+        if ($user) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        }
+    }
+
+    // 流量日志
+    public function trafficLog(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $trafficLogList = UserTrafficLog::with(['User', 'SsNode'])->paginate(20);
+        foreach ($trafficLogList as &$trafficLog) {
+            $trafficLog->u = $this->flowAutoShow($trafficLog->u);
+            $trafficLog->d = $this->flowAutoShow($trafficLog->d);
+            $trafficLog->traffic = $this->flowAutoShow($trafficLog->traffic);
+            $trafficLog->log_time = date('Y-m-d H:i:s', $trafficLog->log_time);
+        }
+
+        $view['trafficLogList'] = $trafficLogList;
+
+        return Response::view('admin/trafficLog', $view);
+    }
+
+    // 格式转换(SS转SSR)
+    public function convert(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+            $method = $request->get('method');
+            $transfer_enable = $request->get('transfer_enable');
+            $protocol = $request->get('protocol');
+            $protocol_param = $request->get('protocol_param');
+            $obfs = $request->get('obfs');
+            $obfs_param = $request->get('obfs_param');
+            $content = $request->get('content');
+
+            if (empty($content)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '请在左侧填入要转换的内容']);
+            }
+
+            // 校验格式
+            $content = json_decode($content);
+            if (empty($content->port_password)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '转换失败：配置信息里缺少【port_password】字段，或者该字段为空']);
+            }
+
+            // 转换成SSR格式JSON
+            $data = [];
+            foreach ($content->port_password as $port => $passwd) {
+                $data[] = [
+                    'd' => 0,
+                    'enable' => 1,
+                    'method' => $method,
+                    'obfs' => $obfs,
+                    'obfs_param' => empty($obfs_param) ? "" : $obfs_param,
+                    'passwd' => $passwd,
+                    'port' => $port,
+                    'protocol' => $protocol,
+                    'protocol_param' => empty($protocol_param) ? "" : $protocol_param,
+                    'transfer_enable' => $this->toGB($transfer_enable),
+                    'u' => 0,
+                    'user' => date('Ymd') . '_IMPORT_' . $port,
+                ];
+            }
+
+            $json = json_encode($data);
+
+            // 生成转换好的JSON文件
+            file_put_contents(public_path('downloads/convert.json'), $json);
+
+            return Response::json(['status' => 'success', 'data' => $json, 'message' => '转换成功']);
+        } else {
+            // 加密方式、协议、混淆
+            $view['method_list'] =  $this->methodList();
+            $view['protocol_list'] =  $this->protocolList();
+            $view['obfs_list'] =  $this->obfsList();
+
+            return Response::view('admin/convert', $view);
+        }
+    }
+
+    // 下载转换好的JSON文件
+    public function download(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!file_exists(public_path('downloads/convert.json'))) {
+            exit('文件不存在');
+        }
+
+        return Response::download(public_path('downloads/convert.json'));
+    }
+
+    // 数据导入
+    public function import(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+
+            if (!$request->hasFile('uploadFile')) {
+                $request->session()->flash('errorMsg', '请选择要上传的文件');
+                return Redirect::back();
+            }
+
+            $file = $request->file('uploadFile');
+
+            // 只能上传JSON文件
+            if ($file->getClientMimeType() != 'application/json' || $file->getClientOriginalExtension() != 'json') {
+                $request->session()->flash('errorMsg', '只允许上传JSON文件');
+                return Redirect::back();
+            }
+
+            if (!$file->isValid()) {
+                $request->session()->flash('errorMsg', '产生未知错误，请重新上传');
+                return Redirect::back();
+            }
+
+            $save_path = realpath(storage_path('uploads'));
+            $new_name = md5($file->getClientOriginalExtension()).'json';
+            $file->move($save_path, $new_name);
+
+            // 读取文件内容
+            $data = file_get_contents($save_path.'/'.$new_name);
+            $data = json_decode($data);
+            if (!$data) {
+                $request->session()->flash('errorMsg', '内容格式解析异常，请上传符合SSR配置规范的JSON文件');
+                return Redirect::back();
+            }
+
+            \DB::beginTransaction();
+            try {
+                foreach ($data as $user) {
+                    $obj = new User();
+                    $obj->username = $user->user;
+                    $obj->password = md5('123456');
+                    $obj->port = $user->port;
+                    $obj->passwd = $user->passwd;
+                    $obj->transfer_enable = $user->transfer_enable;
+                    $obj->u = 0;
+                    $obj->d = 0;
+                    $obj->t = 0;
+                    $obj->enable = 1;
+                    $obj->method = $user->method;
+                    $obj->custom_method = $user->method;
+                    $obj->protocol = $user->protocol;
+                    $obj->protocol_param = $user->protocol_param;
+                    $obj->obfs = $user->obfs;
+                    $obj->obfs_param = $user->obfs_param;
+                    $obj->speed_limit_per_con = 204800;
+                    $obj->speed_limit_per_user = 204800;
+                    $obj->wechat = '';
+                    $obj->qq = '';
+                    $obj->usage = 1;
+                    $obj->pay_way = 3;
+                    $obj->balance = 0;
+                    $obj->enable_time = date('Y-m-d');
+                    $obj->expire_time = '2099-01-01';
+                    $obj->remark = '';
+                    $obj->is_admin = 0;
+                    $obj->reg_ip = $request->getClientIp();
+                    $obj->created_at = date('Y-m-d H:i:s');
+                    $obj->updated_at = date('Y-m-d H:i:s');
+                    $obj->save();
+                }
+
+                \DB::commit();
+            } catch (\Exception $e) {
+                \DB::rollBack();
+
+                $request->session()->flash('errorMsg', '出错了，可能是导入的配置中有端口已经存在了');
+                return Redirect::back();
+            }
+
+
+            $request->session()->flash('successMsg', '导入成功');
+            return Redirect::back();
+        } else {
+            return Response::view('admin/import');
+        }
+    }
+
+    // 导出配置信息
+    public function export(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        if (empty($id)) {
+            return Redirect::to('admin/userList');
+        }
+
+        $user = User::where('id', $id)->first();
+        if (empty($user)) {
+            return Redirect::to('admin/userList');
+        }
+
+        $nodeList = SsNode::paginate(10);
+        foreach ($nodeList as &$node) {
+            // 生成scheme
+            $str = '';
+            $str .= $node->server . ':' . $user->port;
+            $str .= ':' . $user->protocol . ':' . $user->method;
+            $str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
+            $str .= '/?obfsparam=' . $user->obfs_param;
+            $str .= '&=protoparam' . $user->protocol_param;
+            $str .= '&remarks=' . base64_encode('VPN');
+            $str = $this->base64url_encode($str);
+            $scheme = 'ssr://' . $str;
+
+            // 生成json配置信息
+            $config = <<<CONFIG
+{
+    "remarks" : "{$node->name}",
+    "server" : "{$node->server}",
+    "server_port" : {$user->port},
+    "server_udp_port" : 0,
+    "password" : "{$user->passwd}",
+    "method" : "{$user->method}",
+    "protocol" : "{$user->protocol}",
+    "protocolparam" : "{$user->protocol_param}",
+    "obfs" : "{$user->obfs}",
+    "obfsparam" : "{$user->obfs_param}",
+    "remarks_base64" : "",
+    "group" : "VPN",
+    "enable" : true,
+    "udp_over_tcp" : false
+}
+CONFIG;
+
+            // 生成文本配置信息
+            $txt = <<<TXT
+服务器：{$node->server}
+端口：{$user->port}
+密码：{$user->passwd}
+加密方式：{$user->method}
+协议：{$user->protocol}
+协议参数：{$user->protocol_param}
+混淆：{$user->obfs}
+混淆参数：{$user->obfs_param}
+TXT;
+
+            $node->txt = $txt;
+            $node->json = $config;
+            $node->scheme = $scheme;
+        }
+
+        $view['nodeList'] = $nodeList;
+
+        return Response::view('admin/export', $view);
+    }
+
+    // 生成SS密码
+    public function makePasswd(Request $request)
+    {
+        exit($this->makeRandStr());
+    }
+
+    // 加密方式、混淆、协议列表
+    public function config(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+            $name = $request->get('name');
+            $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）
+            $is_default = $request->get('is_default', 0);
+            $sort = $request->get('sort', 0);
+
+            if (empty($name)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置名称不能为空']);
+            }
+
+            // 校验是否已存在
+            $config = SsConfig::where('name', $name)->where('type', $type)->first();
+            if ($config) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置已经存在，请勿重复添加']);
+            }
+
+            SsConfig::create([
+                'name' => $name,
+                'type' => $type,
+                'is_default' => $is_default,
+                'sort' => $sort
+            ]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+        } else {
+            $view['method_list'] = SsConfig::where('type', 1)->get();
+            $view['protocol_list'] = SsConfig::where('type', 2)->get();
+            $view['obfs_list'] = SsConfig::where('type', 3)->get();
+
+            return Response::view('admin/config', $view);
+        }
+    }
+
+    // 删除配置
+    public function delConfig(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        $config = SsConfig::where('id', $id)->delete();
+        if ($config) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        }
+    }
+}

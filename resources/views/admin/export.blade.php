@@ -1,0 +1,142 @@
+@extends('admin.layouts')
+
+@section('css')
+    <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+@endsection
+@section('title', '控制面板')
+@section('content')
+    <!-- BEGIN CONTENT BODY -->
+    <div class="page-content">
+        <!-- BEGIN PAGE BREADCRUMB -->
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <a href="{{url('admin')}}">管理中心</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <a href="{{url('admin/export')}}">导出配置信息</a>
+            </li>
+        </ul>
+        <!-- END PAGE BREADCRUMB -->
+        <!-- BEGIN PAGE BASE CONTENT -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN PORTLET-->
+                <div class="portlet light bordered">
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>节点</th>
+                                        <th>配置信息</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($nodeList as $node)
+                                    <tr>
+                                        <td> {{$node->name}} <small> {{$node->server}} </small> </td>
+                                        <td>
+                                            <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
+                                            <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>
+                                            <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-5">
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$nodeList->total()}} 个节点</div>
+                            </div>
+                            <div class="col-md-7 col-sm-7">
+                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                    {{ $nodeList->links() }}
+                                </div>
+                            </div>
+                        </div>
+
+                        @foreach ($nodeList as $node)
+                            <div class="modal fade draggable-modal" id="txt_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">配置信息</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea class="form-control" rows="10" onclick="this.focus();this.select()" readonly="readonly"> {{$node->txt}} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade draggable-modal" id="json_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">请复制以下信息，添加至gui-config.json</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea class="form-control" rows="16" onclick="this.focus();this.select()" readonly="readonly"> {{$node->json}} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade bs-modal-sm" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">请使用客户端扫描本二维码</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="qrcode_img_{{$node->id}}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <!-- END PORTLET-->
+            </div>
+        </div>
+        <!-- END PAGE BASE CONTENT -->
+    </div>
+    <!-- END CONTENT BODY -->
+@endsection
+@section('script')
+    <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var UIModals = function () {
+            var n = function () {
+                @foreach($nodeList as $node)
+                    $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#json_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
+                @endforeach
+            };
+
+            return {
+                init: function () {
+                    n()
+                }
+            }
+        }();
+
+        jQuery(document).ready(function () {
+            UIModals.init()
+        });
+
+        // 循环输出节点scheme用于生成二维码
+        @foreach ($nodeList as $node)
+            $('#qrcode_img_{{$node->id}}').qrcode("{{$node->scheme}}");
+        @endforeach
+    </script>
+@endsection
