@@ -48,3 +48,9 @@ location / {
 \vendor 组件
 \routes 路由
 ````
+
+## SSR服务端
+````
+把apiconfig.py里的 API_INTERFACE 设置为 glzjinmod
+该怎么配置还怎么配置
+````
