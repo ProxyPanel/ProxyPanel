@@ -22,38 +22,20 @@ telegram：https://t.me/ssrpanel
 #### 1.拉取代码
 ````
 git clone https://github.com/ssrpanel/ssrpanel.git
+cd ssrpanel/
+chmod -R 777 storage/
+php composer.phar install
+php artisan key:generate
 ````
 
 #### 2.配置
 ````
-非大陆VPS请删除composer.json中如下部分：
-
-"repositories": {
-    "packagist": {
-        "type": "composer",
-        "url": "https://packagist.phpcomposer.com"
-    }
-}
-
 mysql 创建一个数据库，然后自行导入sql\db.sql
 config\app.php debug开始或者关闭调试模式
 config\database.php mysql选项自行配置数据库
-
-给ssrpanel\storage目录777权限
-chmod -R 777 /home/www/ssrpanel/storage
 ````
 
-#### 3.安装
-````
-composer install
-````
-
-#### 4.生成key
-````
-php artisan key:generate
-````
-
-#### 5.NGINX配置例子
+#### 3.NGINX配置例子
 ````
 server {
     listen       80;
@@ -77,7 +59,7 @@ server {
 }
 ````
 
-#### 6.登录
+#### 登录
 ````
 用户名：admin
 密码：123456
