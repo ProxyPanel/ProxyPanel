@@ -1,7 +1,36 @@
 ## 安装步骤
-#### 1.配置composer中文镜像
+#### 0.环境要求
 ````
-composer config repo.packagist composer https://packagist.phpcomposer.com
+PHP 5.6+
+MYSQL 5.5+
+内存 1G+
+磁盘空间 10G+
+KVM、OVZ都可以
+
+建议：
+PHP 7.1
+MYSQL 5.7
+内存 2G+
+磁盘空间 20G+
+KVM
+
+使用 LNMP1.4 部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
+````
+
+#### 1.配置
+````
+非大陆VPS请删除composer.json中如下部分：
+
+"repositories": {
+    "packagist": {
+        "type": "composer",
+        "url": "https://packagist.phpcomposer.com"
+    }
+}
+````
+#### 1.1 拉取代码
+````
+git clone https://github.com/ssrpanel/ssrpanel.git
 ````
 
 #### 2.安装
@@ -19,6 +48,9 @@ php artisan key:generate
 mysql 创建一个数据库，然后自行导入sql\db.sql
 config\app.php debug开始或者关闭调试模式
 config\database.php mysql选项自行配置数据库
+
+给ssrpanel\storage目录777权限
+chmod -R 777 /home/www/ssrpanel/storage
 ````
 
 #### 5.登录
@@ -27,13 +59,35 @@ config\database.php mysql选项自行配置数据库
 密码：123456
 ````
 
-#### 6.nginx
+#### 6.NGINX配置
 ````
-chmod -R 777 /home/www/ssrpanel/storage
 root /home/www/ssrpanel/public;
 
 location / {
     try_files $uri $uri/ /index.php$is_args$args;
+}
+````
+
+###### NGINX配置例子
+````
+server {
+    listen       80;
+    server_name  xxx.com ;
+    root   "/home/wwwroot/xxx.com/public";
+    location / {
+        index  start.html index.html index.htm index.php;
+        #autoindex  on;
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+    location ~ \.php(.*)$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_split_path_info  ^((?U).+\.php)(/?.+)$;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param  PATH_INFO  $fastcgi_path_info;
+        fastcgi_param  PATH_TRANSLATED  $document_root$fastcgi_path_info;
+        include        fastcgi_params;
+    }
 }
 ````
 
