@@ -37,7 +37,7 @@
 <body class=" login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    <a href="javascript:;"> <img src="/assets/pages/img/logo-big-white.png" style="height: 17px;" alt="" /> </a>
+    <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
 </div>
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->

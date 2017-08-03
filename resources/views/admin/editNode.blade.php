@@ -127,6 +127,16 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="compatible" class="col-md-4 control-label">兼容SS</label>
+                                <div class="col-md-4">
+                                    <select class="form-control" name="compatible" id="compatible">
+                                        <option value="0" {{!$node->compatible ? 'selected' : ''}}>否</option>
+                                        <option value="1" {{$node->compatible ? 'selected' : ''}}>是</option>
+                                    </select>
+                                    <span class="help-block"> 请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="sort" class="col-md-4 control-label">排序</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="sort" value="{{$node->sort}}" id="sort" placeholder="">
@@ -180,6 +190,7 @@
             var bandwidth = $('#bandwidth').val();
             var traffic = $('#traffic').val();
             var monitor_url = $('#monitor_url').val();
+            var compatible = $('#compatible').val();
             var sort = $('#sort').val();
             var status = $('#status').val();
 
@@ -187,7 +198,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, server:server, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, server:server, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {

@@ -1,25 +1,174 @@
 ## 安装步骤
 #### 0.环境要求
 ````
-PHP 7.0
-MYSQL 5.6
-内存 1G+
-磁盘空间 10G+
-KVM、OVZ都可以(OVZ假内存，安装PHP7时会失败)
-
-建议：
 PHP 7.1
 MYSQL 5.7
-内存 2G+
-磁盘空间 20G+
+内存 1G+
+磁盘空间 10G+
 KVM
 
 使用 LNMP1.4 部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
 
 telegram：https://t.me/ssrpanel
+
+默认管理账号
+用户名：admin 密码：123456
 ````
 
-#### 1.拉取代码
+#### PHP7环境配置
+````
+建议小白用LNMP先傻瓜安装出php5.6 + mysql(5.5以上)
+然后再编译安装PHP7.1，搭建版本环境
+下面是我的安装编译历史命令
+
+yum -y install libevent-devel
+yum -y install gcc g++ gcc+ gcc-c++
+yum -y install git autoconf
+yum -y install pcre-devel
+yum -y install openssl openssl-devel
+yum -y install pcre-devel openssl openssl-devel
+yum -y install vim pv rsync
+yum -y install  libxml2 libxml2-devel
+yum -y install libxml2-devel openssl-devel libcurl-devel libjpeg-devel libpng-devel libicu-devel openldap-devel
+yum -y install curl gd2 gd libevent-devel
+yum -y install freetype-devel
+yum -y install libmcrypt
+yum -y install libXpm-devel
+yum -y install libc-client-devel
+yum -y install unixODBC-devel
+yum -y install aspell-devel
+yum -y install readline-devel
+yum -y install net-snmp-devel
+yum -y install libxslt-devel
+yum -y install enchant-devel
+yum -y install bzip2 bzip2-devel
+yum -y install gmp-devel
+yum -y install readline-devel
+yum -y install net-snmp-devel
+yum -y install libxslt-devel
+
+wget http://am1.php.net/get/php-7.1.7.tar.gz/from/this/mirror
+mv mirror.1 php-7.1.7.tar.gz
+tar zxvf php-7.1.7.tar.gz
+cd php-7.1.7
+
+./configure \
+--prefix=/usr/local/php7 \
+--enable-fpm \
+--with-fpm-user=apache  \
+--with-fpm-group=apache \
+--enable-inline-optimization \
+--disable-debug \
+--disable-rpath \
+--enable-shared  \
+--enable-soap \
+--with-libxml-dir \
+--with-xmlrpc \
+--with-openssl \
+--with-mcrypt \
+--with-mhash \
+--enable-pcntl \
+--with-pcre-regex \
+--with-sqlite3 \
+--with-zlib \
+--enable-bcmath \
+--with-iconv \
+--with-bz2 \
+--enable-calendar \
+--with-curl \
+--with-cdb \
+--enable-dom \
+--enable-exif \
+--enable-fileinfo \
+--enable-filter \
+--with-pcre-dir \
+--enable-ftp \
+--with-gd \
+--with-openssl-dir \
+--with-jpeg-dir \
+--with-png-dir \
+--with-zlib-dir  \
+--with-freetype-dir \
+--enable-gd-native-ttf \
+--enable-gd-jis-conv \
+--with-gettext \
+--with-gmp \
+--with-mhash \
+--enable-json \
+--enable-mbstring \
+--enable-mbregex \
+--enable-mbregex-backtrack \
+--with-libmbfl \
+--with-onig \
+--enable-pdo \
+--with-mysqli=mysqlnd \
+--with-pdo-mysql=mysqlnd \
+--with-zlib-dir \
+--with-pdo-sqlite \
+--with-readline \
+--enable-session \
+--enable-shmop \
+--enable-simplexml \
+--enable-sockets  \
+--enable-sysvmsg \
+--enable-sysvsem \
+--enable-sysvshm \
+--enable-wddx \
+--with-libxml-dir \
+--enable-xml \
+--with-xsl \
+--enable-zip \
+--with-snmp \
+--enable-mysqlnd-compression-support \
+--with-pear \
+--enable-opcache
+
+make && make install
+
+touch /usr/local/php7/etc/php-fpm.conf
+vim /usr/local/php7/etc/php-fpm.conf
+
+黏贴如下内容并保存
+[global]
+pid = /usr/local/php7/var/run/php-fpm.pid
+error_log = /usr/local/php7/var/log/php-fpm.log
+log_level = notice
+
+[www]
+listen = /tmp/php7-cgi.sock
+listen.backlog = -1
+listen.allowed_clients = 127.0.0.1
+listen.owner = www
+listen.group = www
+listen.mode = 0666
+user = www
+group = www
+pm = dynamic
+pm.max_children = 10
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 6
+request_terminate_timeout = 100
+request_slowlog_timeout = 0
+slowlog = var/log/slow.log
+
+vim /usr/local/nginx/conf/vhost/xxx.com.conf
+将 fastcgi_pass  unix:/tmp/php-cgi.sock; 改为 fastcgi_pass  unix:/tmp/php7-cgi.sock;
+
+加入 
+location / {
+    try_files $uri $uri/ /index.php$is_args$args;
+}
+
+
+确保 storage/framework 下有 cache sessions views 三个目录，并且这个storage 777权限
+chown -R www:www storage/
+chmod -R 777 storage/
+
+service nginx reload
+````
+
+#### 拉取代码
 ````
 git clone https://github.com/ssrpanel/ssrpanel.git
 cd ssrpanel/
@@ -28,14 +177,14 @@ php composer.phar install
 php artisan key:generate
 ````
 
-#### 2.配置
+#### 配置
 ````
 mysql 创建一个数据库，然后自行导入sql\db.sql
 config\app.php debug开始或者关闭调试模式
 config\database.php mysql选项自行配置数据库
 ````
 
-#### 3.NGINX配置例子
+#### NGINX配置例子
 ````
 server {
     listen       80;
@@ -61,8 +210,7 @@ server {
 
 #### 登录
 ````
-用户名：admin
-密码：123456
+
 ````
 
 ## 代码解释

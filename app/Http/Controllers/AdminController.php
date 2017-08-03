@@ -20,12 +20,11 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
-        $now = time();
-        $past = strtotime(date('Y-m-d H:i:s', strtotime("-3 days")));
+        $past = strtotime(date('Y-m-d', strtotime("-3 days")));
         $online = time() - 600;
 
         $view['userCount'] = User::count();
-        $view['activeUserCount'] = User::whereBetween('t', [$past, $now])->count();
+        $view['activeUserCount'] = User::where('t', '>=', $past)->count();
         $view['onlineUserCount'] = User::where('t', '>=', $online)->count();
         $view['nodeCount'] = SsNode::count();
         $flowCount = UserTrafficLog::sum('u') + UserTrafficLog::sum('d');
@@ -312,6 +311,7 @@ class AdminController extends BaseController
             $bandwidth = $request->get('bandwidth');
             $traffic = $request->get('traffic');
             $monitor_url = $request->get('monitor_url');
+            $compatible = $request->get('compatible');
             $sort = $request->get('sort');
             $status = $request->get('status');
 
@@ -328,6 +328,7 @@ class AdminController extends BaseController
                 'bandwidth' => $bandwidth,
                 'traffic' => $traffic,
                 'monitor_url' => $monitor_url,
+                'compatible' => $compatible,
                 'sort' => $sort,
                 'status' => $status,
             ]);
@@ -364,6 +365,7 @@ class AdminController extends BaseController
             $bandwidth = $request->get('bandwidth');
             $traffic = $request->get('traffic');
             $monitor_url = $request->get('monitor_url');
+            $compatible = $request->get('compatible');
             $sort = $request->get('sort');
             $status = $request->get('status');
 
@@ -380,6 +382,7 @@ class AdminController extends BaseController
                 'bandwidth' => $bandwidth,
                 'traffic' => $traffic,
                 'monitor_url' => $monitor_url,
+                'compatible' => $compatible,
                 'sort' => $sort,
                 'status' => $status
             ];
@@ -429,7 +432,6 @@ class AdminController extends BaseController
         foreach ($trafficLogList as &$trafficLog) {
             $trafficLog->u = $this->flowAutoShow($trafficLog->u);
             $trafficLog->d = $this->flowAutoShow($trafficLog->d);
-            $trafficLog->traffic = $this->flowAutoShow($trafficLog->traffic);
             $trafficLog->log_time = date('Y-m-d H:i:s', $trafficLog->log_time);
         }
 

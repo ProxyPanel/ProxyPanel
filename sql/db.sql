@@ -37,6 +37,7 @@ CREATE TABLE `ss_node` (
   `bandwidth` int(11) NOT NULL DEFAULT '100' COMMENT '出口带宽，单位M',
   `traffic` bigint(20) NOT NULL DEFAULT '1000' COMMENT '每月可用流量，单位G',
   `monitor_url` varchar(255) DEFAULT NULL COMMENT '监控地址',
+  `compatible` tinyint(4) DEFAULT '0' COMMENT '兼容SS',
   `sort` int(3) NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
   `created_at` datetime NOT NULL,
