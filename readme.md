@@ -28,7 +28,6 @@ telegram：https://t.me/ssrpanel
 cd /home/wwwroot/
 git clone https://github.com/ssrpanel/ssrpanel.git
 cd ssrpanel/
-chmod -R 777 storage/
 php composer.phar install
 php artisan key:generate
 chown -R www:www storage/
