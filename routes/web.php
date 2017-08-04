@@ -21,5 +21,7 @@ Route::any('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
 Route::any('admin/export', 'AdminController@export'); // 导出配置信息
 Route::any('admin/convert', 'AdminController@convert'); // 格式转换
 Route::any('admin/import', 'AdminController@import'); // 数据导入
+Route::any('admin/monitor', 'AdminController@monitor'); // 流量监控
+Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置

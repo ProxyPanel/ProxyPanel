@@ -18,8 +18,8 @@ class LoginController extends Controller
     public function index(Request $request)
     {
         if ($request->method() == 'POST') {
-            $username = $request->get('username');
-            $password = $request->get('password');
+            $username = trim($request->get('username'));
+            $password = trim($request->get('password'));
 
             if (empty($username) || empty($password)) {
                 $request->session()->flash('error_msg', '请输入用户名和密码');

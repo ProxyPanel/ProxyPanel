@@ -428,7 +428,7 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
-        $trafficLogList = UserTrafficLog::with(['User', 'SsNode'])->paginate(20);
+        $trafficLogList = UserTrafficLog::with(['User', 'SsNode'])->orderBy('id', 'desc')->paginate(20);
         foreach ($trafficLogList as &$trafficLog) {
             $trafficLog->u = $this->flowAutoShow($trafficLog->u);
             $trafficLog->d = $this->flowAutoShow($trafficLog->d);
@@ -676,6 +676,66 @@ TXT;
         $view['nodeList'] = $nodeList;
 
         return Response::view('admin/export', $view);
+    }
+
+    // 修改个人资料
+    public function profile(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $user = $request->session()->get('user');
+
+        if ($request->method() == 'POST') {
+            $old_password = $request->get('old_password');
+            $new_password = $request->get('new_password');
+
+            $old_password = md5(trim($old_password));
+            $new_password = md5(trim($new_password));
+
+            $user = User::where('id', $user['id'])->first();
+            if ($user->password != $old_password) {
+                $request->session()->flash('errorMsg', '旧密码错误，请重新输入');
+                return Redirect::back();
+            } else if ($user->password == $new_password) {
+                $request->session()->flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
+                return Redirect::back();
+            }
+
+            $ret = User::where('id', $user['id'])->update(['password' => $new_password]);
+            if (!$ret) {
+                $request->session()->flash('errorMsg', '修改失败');
+                return Redirect::back();
+            } else {
+                $request->session()->flash('successMsg', '修改成功');
+                return Redirect::back();
+            }
+        } else {
+            return Response::view('admin/profile');
+        }
+    }
+
+    // 流量监控
+    public function monitor(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        if (empty($id)) {
+            return Redirect::to('admin/userList');
+        }
+
+        $user = User::where('id', $id)->first();
+        if (empty($user)) {
+            return Redirect::to('admin/userList');
+        }
+
+        $view['traffic'] = '';
+
+        return Response::view('admin/monitor', $view);
     }
 
     // 生成SS密码

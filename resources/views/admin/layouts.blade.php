@@ -65,7 +65,7 @@
                             <img alt="" class="img-circle" src="/assets/images/avatar.jpg" /> </a>
                         <ul class="dropdown-menu dropdown-menu-default">
                             <li>
-                                <a href="JavaScript:;"> <i class="icon-user"></i> 个人资料 </a>
+                                <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人资料 </a>
                             </li>
                             <li>
                                 <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
