@@ -20,7 +20,7 @@ telegram：https://t.me/ssrpanel
 建议小白用LNMP先傻瓜安装出php5.6 + mysql(5.5以上)
 然后再编译安装PHP7.1，搭建版本环境
 
-(编译安装PHP7.1.7环境（CentOS）)[https://github.com/ssrpanel/ssrpanel/wiki/%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85PHP7.1.7%E7%8E%AF%E5%A2%83%EF%BC%88CentOS%EF%BC%89]
+[编译安装PHP7.1.7环境（CentOS）](https://github.com/ssrpanel/ssrpanel/wiki/%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85PHP7.1.7%E7%8E%AF%E5%A2%83%EF%BC%88CentOS%EF%BC%89)
 ````
 
 #### 拉取代码
