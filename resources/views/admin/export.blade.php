@@ -36,7 +36,7 @@
                                 <tbody>
                                     @foreach ($nodeList as $node)
                                     <tr>
-                                        <td> {{$node->name}} <small> {{$node->server}} </small> </td>
+                                        <td> {{$node->name}} </td>
                                         <td>
                                             <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
                                             <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>

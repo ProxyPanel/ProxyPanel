@@ -20,7 +20,7 @@ telegram：https://t.me/ssrpanel
 建议小白用LNMP先傻瓜安装出php5.6 + mysql(5.5以上)
 然后再编译安装PHP7.1，搭建版本环境
 
-[编译安装PHP7.1.7环境（CentOS）](https://github.com/ssrpanel/ssrpanel/wiki/%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85PHP7.1.7%E7%8E%AF%E5%A2%83%EF%BC%88CentOS%EF%BC%89)
+请看WIKI [编译安装PHP7.1.7环境（CentOS）]
 ````
 
 #### 拉取代码
@@ -39,7 +39,7 @@ chmod -R 777 storage/
 mysql 创建一个数据库，然后自行导入sql\db.sql
 config\app.php debug开始或者关闭调试模式
 config\database.php mysql选项自行配置数据库
-确保 storage/framework 下有 cache sessions views 三个目录，并且这个storage 777权限
+确保 storage/framework 下有 cache sessions views 三个目录，且 storage 有777权限
 ````
 
 #### NGINX配置文件加入
@@ -79,7 +79,7 @@ service nginx reload
 4.支持SS多用户json文件一键转换成SSR多用户json文件
 5.支持SSR多用户json文件一键导入数据库
 6.3天内使用过的都算活跃账号
-7.10分钟内使用过的都算在账号
+7.60分钟内使用过的都算在账号
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)

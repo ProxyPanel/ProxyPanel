@@ -21,7 +21,7 @@ class AdminController extends BaseController
         }
 
         $past = strtotime(date('Y-m-d', strtotime("-3 days")));
-        $online = time() - 600;
+        $online = time() - 3600;
 
         $view['userCount'] = User::count();
         $view['activeUserCount'] = User::where('t', '>=', $past)->count();
@@ -733,7 +733,19 @@ TXT;
             return Redirect::to('admin/userList');
         }
 
-        $view['traffic'] = '';
+        // 30天内的流量
+        $traffic = [];
+        $node_list = SsNode::get();
+        foreach ($node_list as $node) {
+            $trafficList = \DB::select("SELECT date(from_unixtime(log_time)) AS dd, SUM(u) AS u, SUM(d) AS d FROM `user_traffic_log` WHERE `user_id` = {$id} AND `node_id` = {$node->id} GROUP BY `dd`");
+            foreach ($trafficList as $key => &$val) {
+                $val->total = ($val->u + $val->d) / (1024 * 1024); // 以M为单位
+            }
+
+            $traffic[$node->id] = $trafficList;
+        }
+
+        $view['traffic'] = $traffic;
 
         return Response::view('admin/monitor', $view);
     }

@@ -15,7 +15,7 @@
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="dashboard-stat2 bordered">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList');">
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green-soft">
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="dashboard-stat2 bordered">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList');">
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green-sharp">
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="dashboard-stat2 bordered">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList');">
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green-sharp">
@@ -62,7 +62,7 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="dashboard-stat2 bordered">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/nodeList');">
                     <div class="display">
                         <div class="number">
                             <h3 class="font-blue-sharp">
@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="dashboard-stat2 bordered">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/trafficLog');">
                     <div class="display">
                         <div class="number">
                             <h3 class="font-blue-sharp"> {{$flowCount}} </h3>
@@ -97,4 +97,9 @@
 @section('script')
     <script src="/assets/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function skip(url) {
+            window.location.href = url;
+        }
+    </script>
 @endsection
