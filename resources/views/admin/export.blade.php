@@ -85,15 +85,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal fade bs-modal-sm" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog modal-sm">
+                            <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">请使用客户端扫描本二维码</h4>
+                                            <h4 class="modal-title">请使用客户端扫描二维码</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <div id="qrcode_img_{{$node->id}}"></div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                                    <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @if ($node->compatible)
+                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
+                                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +147,8 @@
 
         // 循环输出节点scheme用于生成二维码
         @foreach ($nodeList as $node)
-            $('#qrcode_img_{{$node->id}}').qrcode("{{$node->scheme}}");
+            $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
+            $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
         @endforeach
     </script>
 @endsection

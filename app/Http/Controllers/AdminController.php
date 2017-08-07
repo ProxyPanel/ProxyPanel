@@ -187,6 +187,8 @@ class AdminController extends BaseController
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
             $obfs_param = $request->get('obfs_param');
+            $speed_limit_per_con = $request->get('speed_limit_per_con');
+            $speed_limit_per_user = $request->get('speed_limit_per_user');
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
             $usage = $request->get('usage');
@@ -209,6 +211,8 @@ class AdminController extends BaseController
                 'protocol_param' => $protocol_param,
                 'obfs' => $obfs,
                 'obfs_param' => $obfs_param,
+                'speed_limit_per_con' => $speed_limit_per_con,
+                'speed_limit_per_user' => $speed_limit_per_user,
                 'wechat' => $wechat,
                 'qq' => $qq,
                 'usage' => $usage,
@@ -625,16 +629,23 @@ class AdminController extends BaseController
 
         $nodeList = SsNode::paginate(10);
         foreach ($nodeList as &$node) {
-            // 生成scheme
-            $str = '';
-            $str .= $node->server . ':' . $user->port;
-            $str .= ':' . $user->protocol . ':' . $user->method;
-            $str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
-            $str .= '/?obfsparam=' . $user->obfs_param;
-            $str .= '&=protoparam' . $user->protocol_param;
-            $str .= '&remarks=' . base64_encode('VPN');
-            $str = $this->base64url_encode($str);
-            $scheme = 'ssr://' . $str;
+            // 生成ssr scheme
+            $ssr_str = '';
+            $ssr_str .= $node->server . ':' . $user->port;
+            $ssr_str .= ':' . $user->protocol . ':' . $user->method;
+            $ssr_str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
+            $ssr_str .= '/?obfsparam=' . $user->obfs_param;
+            $ssr_str .= '&=protoparam' . $user->protocol_param;
+            $ssr_str .= '&remarks=' . base64_encode('VPN');
+            $ssr_str = $this->base64url_encode($ssr_str);
+            $ssr_scheme = 'ssr://' . $ssr_str;
+
+            // 生成ss scheme
+            $ss_str = '';
+            $ss_str .= $user->method . ':' . $user->passwd . '@';
+            $ss_str .= $node->server . ':' . $user->port;
+            $ss_str .= $this->base64url_encode($ss_str);
+            $ss_scheme = 'ss://' . $ss_str;
 
             // 生成json配置信息
             $config = <<<CONFIG
@@ -670,7 +681,8 @@ TXT;
 
             $node->txt = $txt;
             $node->json = $config;
-            $node->scheme = $scheme;
+            $node->ssr_scheme = $ssr_scheme;
+            $node->ss_scheme = $ss_scheme;
         }
 
         $view['nodeList'] = $nodeList;

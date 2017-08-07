@@ -152,7 +152,7 @@
                                             <div class="form-group">
                                                 <label for="remark" class="col-md-3 control-label">备注</label>
                                                 <div class="col-md-8">
-                                                    <textarea class="form-control" rows="3" name="remark" value="{{$user->remark}}" id="remark"></textarea>
+                                                    <textarea class="form-control" rows="3" name="remark" id="remark">{{$user->remark}}</textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -262,7 +262,7 @@
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="{{$user->speed_limit_per_con}}" id="speed_limit_per_con" placeholder="" required>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -271,7 +271,7 @@
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">单用户限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="{{$user->speed_limit_per_user}}" id="speed_limit_per_user" placeholder="" required>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
