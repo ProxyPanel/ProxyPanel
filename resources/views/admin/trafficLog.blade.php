@@ -11,11 +11,8 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
                 <a href="{{url('admin/trafficLog')}}">流量日志</a>
+                <i class="fa fa-circle"></i>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->

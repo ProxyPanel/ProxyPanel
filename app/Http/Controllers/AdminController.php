@@ -20,8 +20,8 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
-        $past = strtotime(date('Y-m-d', strtotime("-3 days")));
-        $online = time() - 3600;
+        $past = strtotime(date('Y-m-d', strtotime("-7 days")));
+        $online = time() - 1800;
 
         $view['userCount'] = User::count();
         $view['activeUserCount'] = User::where('t', '>=', $past)->count();
@@ -259,6 +259,10 @@ class AdminController extends BaseController
         }
 
         $id = $request->get('id');
+        if ($id == 1) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统管理员不可删除']);
+        }
+
         $user = User::where('id', $id)->delete();
         if ($user) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
@@ -823,4 +827,32 @@ TXT;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
         }
     }
+
+    // 设置默认配置
+    public function setDefaultConfig(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        if (empty($id)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
+        }
+
+        $config = SsConfig::where('id', $id)->first();
+        if (empty($config)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置不存在']);
+        }
+
+        // 去除该配置所属类型的默认值
+        SsConfig::where('type', $config->type)->update(['is_default' => 0]);
+
+        // 将该ID对应记录值置为默认值
+        SsConfig::where('id', $id)->update(['is_default' => 1]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    
 }

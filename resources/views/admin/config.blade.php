@@ -11,11 +11,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="javascript:;">系统设置</a>
+                <a href="javascript:;">设置</a>
                 <i class="fa fa-circle"></i>
             </li>
             <li>
@@ -31,7 +27,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-info font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 配置列表</span>
+                            <span class="caption-subject bold uppercase"> 通用配置 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
@@ -59,7 +55,6 @@
                                         <tr>
                                             <th> ID </th>
                                             <th> 名称 </th>
-                                            <th> 排序 </th>
                                             <th> 操作 </th>
                                         </tr>
                                         </thead>
@@ -72,10 +67,12 @@
                                             @foreach($method_list as $method)
                                                 <tr class="odd gradeX">
                                                     <td> {{$method->id}} </td>
-                                                    <td> {{$method->name}} @if($method->is_default) <small><span class='label label-danger label-sm'>默认</span></small> @endif </td>
-                                                    <td> {{$method->sort}} </td>
+                                                    <td> {{$method->name}} @if($method->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">删除</button>
+                                                        @if(!$method->is_default)
+                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('{{$method->id}}')">默认</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">删除</button>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -91,7 +88,6 @@
                                         <tr>
                                             <th> ID </th>
                                             <th> 名称 </th>
-                                            <th> 排序 </th>
                                             <th> 操作 </th>
                                         </tr>
                                         </thead>
@@ -104,10 +100,12 @@
                                             @foreach($protocol_list as $protocol)
                                                 <tr class="odd gradeX">
                                                     <td> {{$protocol->id}} </td>
-                                                    <td> {{$protocol->name}} @if($protocol->is_default) <small><span class='label label-danger label-sm'>默认</span></small> @endif </td>
-                                                    <td> {{$protocol->sort}} </td>
+                                                    <td> {{$protocol->name}} @if($protocol->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">删除</button>
+                                                        @if(!$protocol->is_default)
+                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('{{$protocol->id}}')">默认</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">删除</button>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -123,7 +121,6 @@
                                         <tr>
                                             <th> ID </th>
                                             <th> 名称 </th>
-                                            <th> 排序 </th>
                                             <th> 操作 </th>
                                         </tr>
                                         </thead>
@@ -136,10 +133,12 @@
                                             @foreach($obfs_list as $obfs)
                                                 <tr class="odd gradeX">
                                                     <td> {{$obfs->id}} </td>
-                                                    <td> {{$obfs->name}} @if($obfs->is_default) <small><span class='label label-danger label-sm'>默认</span></small> @endif </td>
-                                                    <td> {{$obfs->sort}} </td>
+                                                    <td> {{$obfs->name}} @if($obfs->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">删除</button>
+                                                        @if(!$obfs->is_default)
+                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('{{$obfs->id}}')">默认</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">删除</button>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -163,12 +162,6 @@
                                         <form action="#" method="post" class="form-horizontal">
                                             <div class="form-body">
                                                 <div class="form-group">
-                                                    <label for="name" class="col-md-4 control-label"> 名称 </label>
-                                                    <div class="col-md-6">
-                                                        <input type="text" class="form-control" name="name" id="name" placeholder="">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
                                                     <label for="type" class="col-md-4 control-label">类型</label>
                                                     <div class="col-md-6">
                                                         <select class="form-control" name="type" id="type">
@@ -179,19 +172,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="is_default" class="col-md-4 control-label"> 是否默认 </label>
+                                                    <label for="name" class="col-md-4 control-label"> 名称 </label>
                                                     <div class="col-md-6">
-                                                        <select class="form-control" name="is_default" id="is_default">
-                                                            <option value="0" selected>否</option>
-                                                            <option value="1">是</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="sort" class="col-md-4 control-label">排序</label>
-                                                    <div class="col-md-6">
-                                                        <input type="text" class="form-control" name="sort" value="0" id="sort" placeholder="">
-                                                        <span class="help-block"> 值越大排越前 </span>
+                                                        <input type="text" class="form-control" name="name" id="name" placeholder="">
                                                     </div>
                                                 </div>
                                             </div>
@@ -228,8 +211,6 @@
             var _token = '{{csrf_token()}}';
             var name = $("#name").val();
             var type = $("#type").val();
-            var is_default = $("#is_default").val();
-            var sort = $("#sort").val();
 
             if (name == '') {
                 $("#msg").show().html("名称不能为空");
@@ -240,7 +221,7 @@
             $.ajax({
                 url:'{{url('admin/config')}}',
                 type:"POST",
-                data:{_token:_token, name:name, type:type, is_default:is_default, sort:sort},
+                data:{_token:_token, name:name, type:type},
                 beforeSend:function(){
                     $("#msg").show().html("正在添加");
                 },
@@ -286,6 +267,28 @@
                                 bootbox.alert(ret.message);
                             }
                         });
+                    }
+                }
+            });
+        }
+
+        // 置为默认
+        function setDefault(id) {
+            var _token = '{{csrf_token()}}';
+
+            $.ajax({
+                type: "POST",
+                url: "{{url('admin/setDefaultConfig')}}",
+                async: false,
+                data: {_token:_token, id: id},
+                dataType: 'json',
+                success: function (ret) {
+                    if (ret.status == 'success') {
+                        bootbox.alert(ret.message, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        bootbox.alert(ret.message);
                     }
                 }
             });

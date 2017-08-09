@@ -78,8 +78,8 @@ service nginx reload
 3.没有用户端
 4.支持SS多用户json文件一键转换成SSR多用户json文件
 5.支持SSR多用户json文件一键导入数据库
-6.3天内使用过的都算活跃账号
-7.60分钟内使用过的都算在账号
+6.7天内使用过的都算活跃账号
+7.30分钟内使用过的都算在账号
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)

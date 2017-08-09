@@ -59,7 +59,7 @@ CREATE TABLE `ss_node_info` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
 
 
 
@@ -74,7 +74,7 @@ CREATE TABLE `ss_node_online_log` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
 
 
 
@@ -141,7 +141,7 @@ CREATE TABLE `user_traffic_log` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 -- ----------------------------
@@ -197,6 +197,17 @@ INSERT INTO `ss_config` VALUES ('32', 'tls1.2_ticket_auth', '3', '1', '0', '2017
 INSERT INTO `ss_config` VALUES ('33', 'tls1.2_ticket_fastauth', '3', '0', '0', '2017-08-01 14:02:19', '2017-08-01 14:02:19');
 
 
+-- ----------------------------
+-- Table structure for `config`
+-- ----------------------------
+CREATE TABLE `config` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '配置名',
+  `value` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

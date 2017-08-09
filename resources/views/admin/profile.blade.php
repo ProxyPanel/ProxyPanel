@@ -10,11 +10,8 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
+                <a href="{{url('admin/profile')}}">个人资料</a>
                 <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/monitor')}}">流量监控</a>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->
@@ -82,7 +79,7 @@
                                             <form action="{{url('admin/profile')}}" method="post" enctype="multipart/form-data" class="form-bordered">
                                                 <div class="form-group">
                                                     <label class="control-label"> 旧密码 </label>
-                                                    <input type="password" class="form-control" name="old_password" id="old_password" required />
+                                                    <input type="password" class="form-control" name="old_password" id="old_password" autofocus required />
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                                 </div>
                                                 <div class="form-group">

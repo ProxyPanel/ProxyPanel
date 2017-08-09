@@ -11,11 +11,8 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
                 <a href="{{url('admin/userList')}}">账号管理</a>
+                <i class="fa fa-circle"></i>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->
@@ -112,7 +109,7 @@
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">编辑</button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button>
+                                                @if ($user->id != 1) <button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button> @endif
                                                 <button type="button" class="btn btn-sm green btn-outline" onclick="do_export('{{$user->id}}')">配置信息</button>
                                                 <button type="button" class="btn btn-sm purple btn-outline" onclick="do_monitor('{{$user->id}}')">流量监控</button>
                                             </td>

@@ -10,7 +10,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
+                <a href="{{url('admin/userList')}}">账号管理</a>
                 <i class="fa fa-circle"></i>
             </li>
             <li>

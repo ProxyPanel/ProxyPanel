@@ -11,7 +11,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
+                <a href="{{url('admin/userList')}}">账号管理</a>
                 <i class="fa fa-circle"></i>
             </li>
             <li>
@@ -35,14 +35,14 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($nodeList as $node)
-                                    <tr>
-                                        <td> {{$node->name}} </td>
-                                        <td>
-                                            <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
-                                            <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>
-                                            <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td> {{$node->name}} </td>
+                                            <td>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -86,7 +86,7 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog @if(!$node->compatible) modal-sm @endif">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -94,16 +94,21 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                                    <div id="qrcode_ssr_img_{{$node->id}}"></div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    @if ($node->compatible)
+                                                @if ($node->compatible)
+                                                    <div class="col-md-6">
+                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                    </div>
+                                                    <div class="col-md-6">
                                                         <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
                                                         <div id="qrcode_ss_img_{{$node->id}}"></div>
-                                                    @endif
-                                                </div>
+                                                    </div>
+                                                @else
+                                                    <div class="col-md-12">
+                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

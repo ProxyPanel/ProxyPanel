@@ -10,10 +10,6 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
                 <a href="{{url('admin/userList')}}">账号管理</a>
                 <i class="fa fa-circle"></i>
             </li>
@@ -42,7 +38,7 @@
                                             <div class="form-group">
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="username" value="{{$user->username}}" id="username" placeholder="不填则不变" required>
+                                                    <input type="text" class="form-control" name="username" value="{{$user->username}}" id="username" placeholder="不填则不变" autofocus required>
                                                     <input type="hidden" name="id" value="{{$user->id}}">
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                                 </div>

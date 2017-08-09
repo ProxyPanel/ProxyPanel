@@ -10,10 +10,6 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin')}}">管理中心</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
                 <a href="{{url('admin/nodeList')}}">节点管理</a>
                 <i class="fa fa-circle"></i>
             </li>
@@ -32,7 +28,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-md-4 control-label"> 节点名称 </label>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="" required>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="" autofocus required>
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 </div>
                             </div>
@@ -104,7 +100,7 @@
                                 <label for="bandwidth" class="col-md-4 control-label">出口带宽</label>
                                 <div class="col-md-4">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="bandwidth" id="bandwidth" placeholder="">
+                                        <input type="text" class="form-control" name="bandwidth" id="bandwidth" placeholder="" required>
                                         <span class="input-group-addon">M</span>
                                     </div>
                                 </div>
@@ -113,7 +109,7 @@
                                 <label for="traffic" class="col-md-4 control-label">每月可用流量</label>
                                 <div class="col-md-4">
                                     <div class="input-group">
-                                        <input type="text" class="form-control right" name="traffic" id="traffic" placeholder="">
+                                        <input type="text" class="form-control right" name="traffic" id="traffic" placeholder="" required>
                                         <span class="input-group-addon">G</span>
                                     </div>
                                 </div>
