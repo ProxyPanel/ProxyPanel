@@ -69,13 +69,12 @@ service nginx reload
 ## SSR服务端
 ````
 把userapiconfig.py里的 API_INTERFACE 设置为 glzjinmod
-把user-config.json里的 
+把user-config.json里的 connect_verbose_info 设置为 1
 ````
 
 ## 日志分析
 ````
 找到SSR服务端所在的ssserver.log文件
-修改SSR服务端的user-config.json文件，将 connect_verbose_info 值置为 1
 进入ssrpanel所在目录，建立一个软连接，并授权
 cd /home/wwwroot/ssrpanel/public/storage/app/public
 ln -S ssserver.log /root/shadowsocksr/ssserver.log
