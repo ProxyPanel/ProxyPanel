@@ -126,7 +126,7 @@
                         <span class="title">流量日志</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' ? 'active open' : ''}}">
+                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-layers"></i>
                         <span class="title">工具箱</span>
@@ -153,7 +153,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/config' || Request::getRequestUri() == '/admin/addConfig' ? 'active open' : ''}}">
+                <li class="nav-item {{Request::getRequestUri() == '/admin/config' || Request::getRequestUri() == '/admin/addConfig' || Request::getRequestUri() == '/admin/system' ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-settings"></i>
                         <span class="title">设置</span>
