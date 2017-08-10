@@ -69,6 +69,16 @@ service nginx reload
 ## SSR服务端
 ````
 把userapiconfig.py里的 API_INTERFACE 设置为 glzjinmod
+把user-config.json里的 
+````
+
+## 日志分析
+````
+找到SSR服务端所在的ssserver.log文件
+进入ssrpanel所在目录，建立一个软连接，并授权
+cd /home/wwwroot/ssrpanel/public/storage/app/public
+ln -S ssserver.log /root/shadowsocksr/ssserver.log
+chown www:www ssserver.log
 ````
 
 ## 说明
@@ -80,6 +90,7 @@ service nginx reload
 5.支持SSR多用户json文件一键导入数据库
 6.7天内使用过的都算活跃账号
 7.30分钟内使用过的都算在账号
+8.账号访问日志分析
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)
@@ -91,3 +102,4 @@ service nginx reload
 ![Markdown](http://i1.ciimg.com/1949/c5c80818393d585e.png)
 ![Markdown](http://i1.ciimg.com/1949/c52861d84ed70039.png)
 ![Markdown](http://i1.ciimg.com/1949/83354a1cd7fbd041.png)
+![Markdown](http://i1.bvimg.com/1949/13b6e4713a6d29c2.png)

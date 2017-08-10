@@ -204,10 +204,15 @@ CREATE TABLE `config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '配置名',
   `value` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
-  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of onfig
+-- ----------------------------
+INSERT INTO `config` VALUES ('1', 'is_rand_port', 0);
+
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

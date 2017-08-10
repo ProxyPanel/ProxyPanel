@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Models\Config;
 use App\Http\Models\SsConfig;
+use App\Http\Models\User;
 
 /**
  * 基础控制器
@@ -86,5 +88,54 @@ class BaseController extends Controller
     public function obfsList()
     {
         return SsConfig::where('type', 3)->get();
+    }
+
+    // 系统配置
+    public function systemConfig()
+    {
+        $config = Config::get();
+        $data = [];
+        foreach ($config as $vo) {
+            $data[$vo->name] = $vo->value;
+        }
+
+        return $data;
+    }
+
+    // 获取一个随机端口
+    public function getRandPort()
+    {
+        $port = mt_rand(10000,30000);
+        $exists_port = User::query()->pluck('port')->toArray();
+        if (in_array($port, $exists_port)) {
+            $this->getRandPort();
+        }
+
+        return $port;
+    }
+
+    // 类似Linux中的tail命令
+    public function tail($file, $n, $base = 5)
+    {
+        $fp = fopen($file, "r+");
+        assert($n > 0);
+        $pos = $n + 1;
+        $lines = array();
+        while (count($lines) <= $n)
+        {
+            try  {
+                fseek($fp, -$pos, SEEK_END);
+            }  catch (Exception $e)  {
+                fseek(0);
+                break;
+            }
+
+            $pos *= $base;
+            while (!feof($fp)) {
+                array_unshift($lines, fgets($fp));
+            }
+        }
+
+        return array_slice($lines, 0, $n);
     }
 }

@@ -24,6 +24,8 @@ Route::any('admin/convert', 'AdminController@convert'); // 格式转换
 Route::any('admin/import', 'AdminController@import'); // 数据导入
 Route::any('admin/monitor', 'AdminController@monitor'); // 流量监控
 Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
+Route::any('admin/analysis', 'AdminController@analysis'); // 日志分析
 Route::any('admin/system', 'AdminController@system'); // 系统设置
+Route::post('admin/enableRandPort', 'AdminController@enableRandPort'); // 启用、禁用随机端口
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置

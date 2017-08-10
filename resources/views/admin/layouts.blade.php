@@ -145,6 +145,12 @@
                                 <span class="title">数据导入</span>
                             </a>
                         </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
+                            <a href="{{url('admin/analysis')}}" class="nav-link ">
+                                <i class="icon-plus"></i>
+                                <span class="title">日志分析</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/config' || Request::getRequestUri() == '/admin/addConfig' ? 'active open' : ''}}">
@@ -158,6 +164,12 @@
                             <a href="{{url('admin/config')}}" class="nav-link ">
                                 <i class="icon-info"></i>
                                 <span class="title">通用配置</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/system' ? 'active open' : ''}}">
+                            <a href="{{url('admin/system')}}" class="nav-link ">
+                                <i class="icon-settings"></i>
+                                <span class="title">系统配置</span>
                             </a>
                         </li>
                     </ul>

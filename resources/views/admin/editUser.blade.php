@@ -281,9 +281,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="row">
-                                    <div class="col-md-offset-5 col-md-4">
+                                    <div class="col-md-offset-6 col-md-4">
                                         <button type="submit" class="btn green">提 交</button>
-                                        <button type="button" class="btn default">取 消</button>
                                     </div>
                                 </div>
                             </div>

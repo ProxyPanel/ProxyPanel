@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Config;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
@@ -21,7 +22,7 @@ class AdminController extends BaseController
         }
 
         $past = strtotime(date('Y-m-d', strtotime("-7 days")));
-        $online = time() - 1800;
+        $online = time() - 3600;
 
         $view['userCount'] = User::count();
         $view['activeUserCount'] = User::where('t', '>=', $past)->count();
@@ -153,9 +154,11 @@ class AdminController extends BaseController
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
             }
         } else {
+            $config = $this->systemConfig();
+
             // 最后一个可用端口
             $last_user = User::orderBy('id', 'desc')->first();
-            $view['last_port'] = $last_user->port + 1;
+            $view['last_port'] = $config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
             // 加密方式、协议、混淆
             $view['method_list'] =  $this->methodList();
@@ -854,5 +857,56 @@ TXT;
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
-    
+    // 日志分析
+    public function analysis(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $file = storage_path('app/public/ssserver.log');
+        $logs = $this->tail($file, 10000);
+        $url = [];
+        foreach ($logs as $log) {
+            if (strpos($log, 'TCP connecting')) {
+                continue;
+            }
+
+            preg_match('/TCP request (\w+\.){2}\w+/', $log, $tcp_matches);
+            if (!empty($tcp_matches)) {
+                $url[] = str_replace('TCP request ', '[TCP] ', $tcp_matches[0]);
+            } else {
+                preg_match('/UDP data to (25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/', $log, $udp_matches);
+                if (!empty($udp_matches)) {
+                    $url[] = str_replace('UDP data to ', '[UDP] ', $udp_matches[0]);
+                }
+            }
+        }
+
+        $view['urlList'] = array_unique($url);
+
+        return Response::view('admin/analysis', $view);
+    }
+
+    // 系统设置
+    public function system(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $view = $this->systemConfig();
+
+        return Response::view('admin/system', $view);
+    }
+
+    // 启用、禁用随机端口
+    public function enableRandPort(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('id', 1)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
 }
