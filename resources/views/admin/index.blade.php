@@ -36,7 +36,7 @@
                             <h3 class="font-green-sharp">
                                 <span data-counter="counterup" data-value="{{$activeUserCount}}">0</span>
                             </h3>
-                            <small>活跃账号(3天内)</small>
+                            <small>活跃账号(7天内)</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
