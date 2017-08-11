@@ -29,6 +29,7 @@ cd /home/wwwroot/
 git clone https://github.com/ssrpanel/ssrpanel.git
 cd ssrpanel/
 php composer.phar install
+cp .env.example .env
 php artisan key:generate
 chown -R www:www storage/
 chmod -R 777 storage/
