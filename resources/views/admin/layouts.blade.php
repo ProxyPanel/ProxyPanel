@@ -147,7 +147,7 @@
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
                             <a href="{{url('admin/analysis')}}" class="nav-link ">
-                                <i class="icon-plus"></i>
+                                <i class="icon-bar-chart"></i>
                                 <span class="title">日志分析</span>
                             </a>
                         </li>
@@ -168,7 +168,7 @@
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/system' ? 'active open' : ''}}">
                             <a href="{{url('admin/system')}}" class="nav-link ">
-                                <i class="icon-settings"></i>
+                                <i class="icon-grid"></i>
                                 <span class="title">系统配置</span>
                             </a>
                         </li>

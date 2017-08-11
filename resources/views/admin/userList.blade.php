@@ -78,7 +78,7 @@
                                     <th> 用户名（昵称） </th>
                                     <th> 端口 </th>
                                     <th> 加密方式 </th>
-                                    <th> 可用流量/已消耗 </th>
+                                    <th> 已消耗 </th>
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
                                     <th> 状态 </th>
@@ -97,9 +97,15 @@
                                             <td> {{$user->username}} </td>
                                             <td> <span class="label label-danger"> {{$user->port}} </span> </td>
                                             <td> <span class="label label-default"> {{$user->method}} </span> </td>
-                                            <td class="center"> {{$user->transfer_enable}}/{{$user->used_flow}} </td>
+                                            <td class="center"> {{$user->used_flow}} </td>
                                             <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
-                                            <td class="center"> {{$user->expire_time}} </td>
+                                            <td class="center">
+                                                @if ($user->expireWarning)
+                                                    <span class="label label-warning"> {{$user->expire_time}} </span>
+                                                @else
+                                                    {{$user->expire_time}}
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($user->enable)
                                                     <span class="label label-info">启用</span>

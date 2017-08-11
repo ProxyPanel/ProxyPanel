@@ -31,6 +31,11 @@ class AdminController extends BaseController
         $flowCount = UserTrafficLog::sum('u') + UserTrafficLog::sum('d');
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
+        $view['totalBalance'] = User::sum('balance');
+        $view['expireWarningUserCount'] = User::where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->count();
+
+        // 到期账号禁用
+        User::where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->update(['enable' => 0]);
 
         return Response::view('admin/index', $view);
     }
@@ -48,6 +53,7 @@ class AdminController extends BaseController
         $port = $request->get('port');
         $pay_way = $request->get('pay_way');
         $enable = $request->get('enable');
+        $expireWarning = $request->get('expireWarning');
 
         $query = User::query();
         if (!empty($username)) {
@@ -74,10 +80,16 @@ class AdminController extends BaseController
             $query->where('enable', intval($enable));
         }
 
+        // 临近过期提醒
+        if ($expireWarning) {
+            $query->where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")));
+        }
+
         $userList = $query->orderBy('id', 'desc')->paginate(10);
         foreach ($userList as &$user) {
             $user->transfer_enable = $this->flowAutoShow($user->transfer_enable);
             $user->used_flow = $this->flowAutoShow($user->u + $user->d);
+            $user->expireWarning = $user->expire_time <= date('Y-m-d', strtotime("+ 30 days")) ? 1 : 0;
         }
 
         $view['userList'] = $userList;

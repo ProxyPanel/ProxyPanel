@@ -36,7 +36,7 @@
                             <h3 class="font-green-sharp">
                                 <span data-counter="counterup" data-value="{{$activeUserCount}}">0</span>
                             </h3>
-                            <small>活跃账号(7天内)</small>
+                            <small>活跃账号</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
@@ -55,6 +55,21 @@
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?expireWarning=1');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-red">
+                                <span data-counter="counterup" data-value="{{$expireWarningUserCount}}">0</span>
+                            </h3>
+                            <small>临近到期</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-user-unfollow"></i>
                         </div>
                     </div>
                 </div>
@@ -85,6 +100,21 @@
                         </div>
                         <div class="icon">
                             <i class="icon-speedometer"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-red">
+                                ￥<span data-counter="counterup" data-value="{{$totalBalance}}"></span>
+                            </h3>
+                            <small>盈利</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-diamond"></i>
                         </div>
                     </div>
                 </div>
