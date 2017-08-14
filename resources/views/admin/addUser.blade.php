@@ -97,29 +97,14 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="enable_time" class="col-md-3 control-label">开通时间</label>
+                                                <label class="col-md-3 control-label">有效期</label>
                                                 <div class="col-md-8">
-                                                    <div class="input-group input-medium date date-picker" data-date-format="yyyy-mm-dd">
-                                                        <input type="text" class="form-control" name="enable_time" value="" id="enable_time" readonly>
-                                                        <span class="input-group-btn">
-                                                            <button class="btn default" type="button">
-                                                                <i class="fa fa-calendar"></i>
-                                                            </button>
-                                                        </span>
+                                                    <div class="input-group input-large date-picker input-daterange" data-date="2017-10-10" data-date-format="yyyy-mm-dd">
+                                                        <input type="text" class="form-control" name="enable_time" id="enable_time">
+                                                        <span class="input-group-addon"> 至 </span>
+                                                        <input type="text" class="form-control" name="expire_time" id="expire_time">
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="expire_time" class="col-md-3 control-label">过期时间</label>
-                                                <div class="col-md-8">
-                                                    <div class="input-group input-medium date date-picker" data-date-format="yyyy-mm-dd" data-date-start-date="+0d">
-                                                        <input type="text" class="form-control" name="expire_time" value="" id="expire_time" readonly>
-                                                        <span class="input-group-btn">
-                                                            <button class="btn default" type="button">
-                                                                <i class="fa fa-calendar"></i>
-                                                            </button>
-                                                        </span>
-                                                    </div>
+                                                    <span class="help-block"> 留空默认为一年 </span>
                                                 </div>
                                             </div>
                                             <hr>

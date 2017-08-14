@@ -31,7 +31,12 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <table class="table table-striped table-bordered table-hover order-column" id="sample_1">
+                        @if (Session::has('analysisErrorMsg'))
+                            <div class="alert alert-danger">
+                                {{Session::get('analysisErrorMsg')}}
+                            </div>
+                        @else
+                            <table class="table table-striped table-bordered table-hover order-column" id="analysis">
                                 <thead>
                                     <tr>
                                         <th> 近期请求地址 </th>
@@ -51,6 +56,7 @@
                                     @endif
                                 </tbody>
                             </table>
+                        @endif
                     </div>
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
@@ -62,14 +68,13 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/assets/global/scripts/datatable.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        var TableDatatablesScroller=function(){var e=function(){
-            var e=$("#sample_1");
+        var TableDatatablesScroller = function(){var e=function(){
+            var e = $("#analysis");
             e.dataTable({
                 language:{aria:{
                     sortAscending:": activate to sort column ascending",
@@ -95,7 +100,7 @@
                 pageLength:20,
                 dom:"<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>"
         })};
-        return{init:function(){jQuery().dataTable&&(e(),t(),n(),o())}}}();
+        return{init:function(){jQuery().dataTable&&(e())}}}();
             jQuery(document).ready(function(){TableDatatablesScroller.init()});
 
         $('#is_rand_port').on({

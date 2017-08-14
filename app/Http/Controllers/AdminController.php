@@ -21,6 +21,10 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $past = strtotime(date('Y-m-d', strtotime("-7 days")));
         $online = time() - 3600;
 
@@ -44,6 +48,10 @@ class AdminController extends BaseController
     public function userList(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -104,6 +112,10 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         if ($request->method() == 'POST') {
             $username = $request->get('username');
             $password = $request->get('password');
@@ -140,7 +152,7 @@ class AdminController extends BaseController
                 'password' => $password,
                 'port' => $port,
                 'passwd' => empty($passwd) ? $this->makeRandStr() : $passwd, // SS密码为空时生成默认密码
-                'transfer_enable' => $transfer_enable,
+                'transfer_enable' => $this->toGB($transfer_enable),
                 'enable' => $enable,
                 'method' => $method,
                 'custom_method' => $custom_method,
@@ -154,7 +166,7 @@ class AdminController extends BaseController
                 'pay_way' => $pay_way,
                 'balance' => $balance,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                'expire_time' => empty($expire_time) ? '2099-1-1' : $expire_time,
+                'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
                 'is_admin' => $is_admin,
                 'reg_ip' => $request->getClientIp()
@@ -185,6 +197,10 @@ class AdminController extends BaseController
     public function editUser(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -234,7 +250,7 @@ class AdminController extends BaseController
                 'pay_way' => $pay_way,
                 'balance' => $balance,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                'expire_time' => empty($expire_time) ? '2099-1-1' : $expire_time,
+                'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
                 'is_admin' => $is_admin
             ];
@@ -273,6 +289,10 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $id = $request->get('id');
         if ($id == 1) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统管理员不可删除']);
@@ -290,6 +310,10 @@ class AdminController extends BaseController
     public function nodeList(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -318,6 +342,10 @@ class AdminController extends BaseController
     public function addNode(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -371,6 +399,10 @@ class AdminController extends BaseController
     public function editNode(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -435,6 +467,10 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $id = $request->get('id');
         $user = SsNode::where('id', $id)->delete();
         if ($user) {
@@ -448,6 +484,10 @@ class AdminController extends BaseController
     public function trafficLog(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -467,6 +507,10 @@ class AdminController extends BaseController
     public function convert(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -531,6 +575,10 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         if (!file_exists(public_path('downloads/convert.json'))) {
             exit('文件不存在');
         }
@@ -542,6 +590,10 @@ class AdminController extends BaseController
     public function import(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -636,6 +688,10 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $id = $request->get('id');
         if (empty($id)) {
             return Redirect::to('admin/userList');
@@ -663,7 +719,7 @@ class AdminController extends BaseController
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str .= $this->base64url_encode($ss_str);
+            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成json配置信息
@@ -716,6 +772,10 @@ TXT;
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
@@ -751,6 +811,10 @@ TXT;
     public function monitor(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -794,6 +858,10 @@ TXT;
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）
@@ -834,6 +902,10 @@ TXT;
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $id = $request->get('id');
         $config = SsConfig::where('id', $id)->delete();
         if ($config) {
@@ -847,6 +919,10 @@ TXT;
     public function setDefaultConfig(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 
@@ -876,7 +952,17 @@ TXT;
             return Redirect::to('login');
         }
 
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $file = storage_path('app/public/ssserver.log');
+        if (!file_exists($file)) {
+            $request->session()->flash('analysisErrorMsg', $file . ' 不存在，请先创建文件');
+
+            return Response::view('admin/analysis');
+        }
+
         $logs = $this->tail($file, 10000);
         $url = [];
         foreach ($logs as $log) {
@@ -904,6 +990,10 @@ TXT;
     public function system(Request $request)
     {
         if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
             return Redirect::to('login');
         }
 

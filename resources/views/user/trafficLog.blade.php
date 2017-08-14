@@ -1,4 +1,4 @@
-@extends('admin.layouts')
+@extends('user.layouts')
 
 @section('css')
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin/trafficLog')}}">流量日志</a>
+                <a href="{{url('user/trafficLog')}}">流量日志</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -33,7 +33,6 @@
                                 <thead>
                                 <tr>
                                     <th> ID </th>
-                                    <th> 用户 </th>
                                     <th> 节点 </th>
                                     <th> 流量比例 </th>
                                     <th> 上传流量 </th>
@@ -51,7 +50,6 @@
                                         @foreach($trafficLogList as $trafficLog)
                                             <tr class="odd gradeX">
                                                 <td> {{$trafficLog->id}} </td>
-                                                <td> <a href="{{url('admin/userList?port=') . $trafficLog->user->port}}" target="_blank"> <span class="label label-info"> {{$trafficLog->user->username}} </span> </a> </td>
                                                 <td> {{$trafficLog->ssnode->name}} </td>
                                                 <td> {{$trafficLog->rate}} </td>
                                                 <td> {{$trafficLog->u}} </td>
@@ -84,5 +82,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
 @endsection
