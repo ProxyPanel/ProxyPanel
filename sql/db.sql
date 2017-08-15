@@ -208,9 +208,25 @@ CREATE TABLE `config` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of onfig
+-- Records of config
 -- ----------------------------
 INSERT INTO `config` VALUES ('1', 'is_rand_port', 0);
+INSERT INTO `config` VALUES ('2', 'is_user_rand_port', 0);
+
+
+-- ----------------------------
+-- Table structure for `article`
+-- ----------------------------
+CREATE TABLE `article` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '文章标题',
+  `content` text COMMENT '文章内容',
+  `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
 

@@ -69,7 +69,6 @@
                                         [{{$key + 1}}, {{$vo->total}}],
                                     @endforeach
                                 ];
-
                             @endforeach
                         @endif
 

@@ -65,7 +65,8 @@
                                             <td> <span class="label label-info"> {{$node->protocol}} </span> </td>
                                             <td> <span class="label label-info"> {{$node->obfs}} </span> </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="">查看配置</button>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 查看配置 </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -83,6 +84,51 @@
                                 </div>
                             </div>
                         </div>
+
+                        @foreach ($nodeList as $node)
+                            <div class="modal fade draggable-modal" id="txt_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">配置信息</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea class="form-control" rows="10" onclick="this.focus();this.select()" readonly="readonly"> {{$node->txt}} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog @if(!$node->compatible) modal-sm @endif">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">请使用客户端扫描二维码</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                @if ($node->compatible)
+                                                    <div class="col-md-6">
+                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
+                                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                                    </div>
+                                                @else
+                                                    <div class="col-md-12">
+                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
@@ -93,6 +139,34 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
+    <script type="text/javascript">
+        var UIModals = function () {
+            var n = function () {
+                @foreach($nodeList as $node)
+                    $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
+                @endforeach
+            };
+
+            return {
+                init: function () {
+                    n()
+                }
+            }
+        }();
+
+        jQuery(document).ready(function () {
+            UIModals.init()
+        });
+
+        // 循环输出节点scheme用于生成二维码
+        @foreach ($nodeList as $node)
+            $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
+            $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+        @endforeach
+    </script>
 @endsection

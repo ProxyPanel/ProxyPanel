@@ -36,7 +36,7 @@
                                 <tbody>
                                     @foreach ($nodeList as $node)
                                         <tr>
-                                            <td> {{$node->name}} </td>
+                                            <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容SS </span> @endif </td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>

@@ -1011,4 +1011,14 @@ TXT;
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
+
+    // 启用、禁用自定义端口
+    public function enableUserRandPort(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('id', 2)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
 }

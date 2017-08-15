@@ -28,76 +28,24 @@
                             <div class="tab-pane active">
                                 <div class="scroller" style="height: 170px;" data-always-visible="1" data-rail-visible1="0" data-handle-color="#D7DCE2">
                                     <ul class="feeds">
-                                        <li>
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col1">
-                                                        <div class="label label-sm label-success">
-                                                            <i class="fa fa-bell-o"></i>
+                                        @if (!$articleList->isEmpty())
+                                            @foreach($articleList as $article)
+                                                <li>
+                                                    <div class="col1">
+                                                        <div class="cont">
+                                                            <div class="cont-col1">
+                                                                <div class="label label-sm label-success">
+                                                                    <i class="fa fa-bell-o"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="cont-col2">
+                                                                <div class="desc"> <a href="{{url('user/article?id=') . $article->id}}" target="_blank">{{$article->title}}</a> </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="cont-col2">
-                                                        <div class="desc"> 节点全部切换为SSR，请注意更改客户端配置信息 </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col1">
-                                                        <div class="label label-sm label-default">
-                                                            <i class="fa fa-bullhorn"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="cont-col2">
-                                                        <div class="desc"> 促销：200G流量包，原价50元现在只要35元，有效期180天 </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col1">
-                                                        <div class="label label-sm label-info">
-                                                            <i class="fa fa-bullhorn"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="cont-col2">
-                                                        <div class="desc"> 新节点：新上架新加坡节点，白银以上会员可见  </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col1">
-                                                        <div class="label label-sm label-default">
-                                                            <i class="fa fa-bullhorn"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="cont-col2">
-                                                        <div class="desc"> 新节点：新上架白俄罗斯节点，白银以上会员可见 </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col1">
-                                                        <div class="label label-sm label-info">
-                                                            <i class="fa fa-bullhorn"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="cont-col2">
-                                                        <div class="desc"> 新节点：新上架新西兰节点，白银以上会员可见  </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
+                                                </li>
+                                            @endforeach
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -123,32 +71,31 @@
                                         等级：普通会员
                                     </li>
                                     <li class="list-group-item">
-                                        端口：10222
-                                        <span class="badge badge-warning"><a href="#">修改</a></span>
+                                        端口：{{$info['port']}}
                                     </li>
                                     <li class="list-group-item">
-                                        加密方式：aes-192-ctr
-                                        <span class="badge badge-warning"><a href="#">修改</a></span>
+                                        加密方式：{{$info['method']}}
+                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
-                                        连接密码：@123
-                                        <span class="badge badge-warning"><a href="#">修改</a></span>
+                                        连接密码：{{$info['passwd']}}
+                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
-                                        协议：orgin
-                                        <span class="badge badge-warning"><a href="#">修改</a></span>
+                                        协议：{{$info['protocol']}}
+                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
-                                        混淆：plain
-                                        <span class="badge badge-warning"><a href="#">修改</a></span>
+                                        混淆：{{$info['obfs']}}
+                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
                                     </li>
-                                    <li class="list-group-item"> 最后使用：2017-2-2 12:12:12
+                                    <li class="list-group-item"> 最后使用：{{empty($info['t']) ? '未使用' : date('Y-m-d H:i:s', $info['t'])}}
                                     </li>
                                 </ul>
                             </div>
                             <div class="col-md-5" style="text-align: center;">
                                 <h3> 流量 </h3>
-                                <input class="knob" value="35" title="可用流量：1000G">
+                                <input class="knob" value="35" title="可用流量：{{$info['transfer_enable']}}">
                             </div>
                         </div>
                     </div>
@@ -159,8 +106,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-knob/js/jquery.knob.js" type="text/javascript"></script>
 
     <script>

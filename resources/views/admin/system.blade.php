@@ -34,9 +34,17 @@
                         <form action="#" method="post" class="form-horizontal" onsubmit="return do_submit();">
                             <div class="portlet-body">
                                 <div class="form-group">
-                                    <label for="username" class="col-md-2 control-label">随机端口</label>
+                                    <label for="is_rand_port" class="col-md-2 control-label">随机端口</label>
                                     <div class="col-md-6">
                                         <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                        <span class="help-block"> 添加账号时随机生成端口 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="is_user_rand_port" class="col-md-2 control-label">自定义端口</label>
+                                    <div class="col-md-6">
+                                        <input type="checkbox" class="make-switch" @if($is_user_rand_port) checked @endif id="is_user_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                        <span class="help-block"> 用户可以自定义一个端口 </span>
                                     </div>
                                 </div>
                             </div>
@@ -55,15 +63,31 @@
     <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
                 var is_rand_port = 0;
 
                 if (state) {
-                    var is_rand_port = 1;
+                    is_rand_port = 1;
                 }
 
                 $.post("{{url('admin/enableRandPort')}}", {_token:'{{csrf_token()}}', value:is_rand_port}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 启用、禁用自定义端口
+        $('#is_user_rand_port').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_user_rand_port = 0;
+
+                if (state) {
+                    is_user_rand_port = 1;
+                }
+
+                $.post("{{url('admin/enableUserRandPort')}}", {_token:'{{csrf_token()}}', value:is_user_rand_port}, function (ret) {
                     console.log(ret);
                 });
             }
