@@ -85,13 +85,10 @@ chown www:www ssserver.log
 ## 说明
 ````
 1.纯账号管理后台
-2.需要配合SSR后端使用
-3.没有用户端
+2.需要配合SSR后端使用，[请作者吃巨无霸，获取SSR后端最新版](https://github.com/ssrpanel/ssrpanel/wiki/%E8%AF%B7%E6%88%91%E5%90%83%E5%B7%A8%E6%97%A0%E9%9C%B8%F0%9F%8D%94)
+3.用户端开发中
 4.支持SS多用户json文件一键转换成SSR多用户json文件
 5.支持SSR多用户json文件一键导入数据库
-6.7天内使用过的都算活跃账号
-7.30分钟内使用过的都算在账号
-8.账号访问日志分析
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)
