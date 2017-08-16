@@ -120,6 +120,12 @@
                         <span class="title">节点管理</span>
                     </a>
                 </li>
+                <li class="nav-item {{Request::getRequestUri() == '/admin/articleList' ? 'active open' : ''}}">
+                    <a href="{{url('admin/articleList')}}" class="nav-link nav-toggle">
+                        <i class="icon-docs"></i>
+                        <span class="title">文章管理</span>
+                    </a>
+                </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/trafficLog' ? 'active open' : ''}}">
                     <a href="{{url('admin/trafficLog')}}" class="nav-link nav-toggle">
                         <i class="icon-speedometer"></i>

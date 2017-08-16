@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsNode;
@@ -460,7 +461,110 @@ class AdminController extends BaseController
         }
     }
 
-    // 删除节点
+    // 文章列表
+    public function articleList(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $articleList = Article::paginate(10);
+
+        $view['articleList'] = $articleList;
+
+        return Response::view('admin/articleList', $view);
+    }
+
+    // 添加文章
+    public function addArticle(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+            $title = $request->get('title');
+            $content = $request->get('content');
+            $sort = $request->get('sort');
+
+            Article::create([
+                'title' => $title,
+                'content' => $content,
+                'is_del' => 0,
+                'sort' => $sort
+            ]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+        } else {
+            return Response::view('admin/addArticle');
+        }
+    }
+
+    // 编辑节点
+    public function editArticle(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        if ($request->method() == 'POST') {
+            $title = $request->get('title');
+            $sort = $request->get('sort');
+            $content = $request->get('content');
+
+            $data = [
+                'title' => $title,
+                'content' => $content,
+                'sort' => $sort
+            ];
+
+            $ret = Article::where('id', $id)->update($data);
+            if ($ret) {
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+            }
+        } else {
+            $view['article'] = Article::where('id', $id)->first();
+
+            return Response::view('admin/editArticle', $view);
+        }
+    }
+
+    // 删除文章
+    public function delArticle(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        $user = Article::where('id', $id)->update(['is_del' => 1]);
+        if ($user) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        }
+    }
+
+    // 删除文章
     public function delNode(Request $request)
     {
         if (!$request->session()->has('user')) {

@@ -14,6 +14,10 @@ Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表
 Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
 Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
 Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
+Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
+Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
+Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
+Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章
 Route::any('admin/config', 'AdminController@config'); // 配置列表
 Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
 Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置

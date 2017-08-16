@@ -33,6 +33,7 @@
                     <div class="portlet-body">
                         @if (Session::has('analysisErrorMsg'))
                             <div class="alert alert-danger">
+                                <button class="close" data-close="alert"></button>
                                 {{Session::get('analysisErrorMsg')}}
                             </div>
                         @else

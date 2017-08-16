@@ -28,7 +28,7 @@
                     <div class="portlet-body">
                         <!--BEGIN TABS-->
                         <div class="tab-content">
-                            {{$info->content}}
+                            {!! $info->content !!}
                         </div>
                         <!--END TABS-->
                     </div>
