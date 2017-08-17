@@ -120,6 +120,12 @@
                         <span class="title">节点管理</span>
                     </a>
                 </li>
+                <li class="nav-item {{Request::getRequestUri() == '/admin/inviteList' ? 'active open' : ''}}">
+                    <a href="{{url('admin/inviteList')}}" class="nav-link nav-toggle">
+                        <i class="icon-puzzle"></i>
+                        <span class="title">邀请码管理</span>
+                    </a>
+                </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/articleList' ? 'active open' : ''}}">
                     <a href="{{url('admin/articleList')}}" class="nav-link nav-toggle">
                         <i class="icon-docs"></i>
@@ -174,7 +180,7 @@
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/system' ? 'active open' : ''}}">
                             <a href="{{url('admin/system')}}" class="nav-link ">
-                                <i class="icon-grid"></i>
+                                <i class="icon-wrench"></i>
                                 <span class="title">系统配置</span>
                             </a>
                         </li>

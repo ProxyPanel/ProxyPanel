@@ -212,6 +212,7 @@ CREATE TABLE `config` (
 -- ----------------------------
 INSERT INTO `config` VALUES ('1', 'is_rand_port', 0);
 INSERT INTO `config` VALUES ('2', 'is_user_rand_port', 0);
+INSERT INTO `config` VALUES ('3', 'invite_num', 3);
 
 
 -- ----------------------------
@@ -226,7 +227,24 @@ CREATE TABLE `article` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='文章表';
+
+
+-- ----------------------------
+-- Table structure for `invite`
+-- ----------------------------
+CREATE TABLE `invite` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人ID',
+  `fuid` int(11) NOT NULL DEFAULT '0' COMMENT '受邀人ID',
+  `code` char(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邀请码',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '邀请码状态：0-未使用、1-已使用、2-已过期',
+  `dateline` datetime DEFAULT NULL COMMENT '有效期至',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邀请码表';
+
 
 
 

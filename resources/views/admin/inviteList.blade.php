@@ -1,4 +1,4 @@
-@extends('user.layouts')
+@extends('admin.layouts')
 
 @section('css')
 @endsection
@@ -9,7 +9,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('user/invite')}}">邀请码</a>
+                <a href="{{url('admin/inviteList')}}">邀请码管理</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -26,7 +26,7 @@
                         </div>
                         <div class="portlet-body">
                             <div class="alert alert-info">
-                                共计可以生成 <strong> {{$num}} </strong> 个邀请码
+                                注意：每次仅生成 <strong> 10 </strong> 个邀请码
                             </div>
                             <button type="submit" class="btn blue" onclick="makeInvite()"> 生 成 </button>
                         </div>
@@ -38,7 +38,7 @@
                     <div class="portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption">
-                                <span class="caption-subject font-dark bold uppercase">我的邀请码</span>
+                                <span class="caption-subject font-dark bold uppercase">邀请码列表</span>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -49,6 +49,7 @@
                                             <th> # </th>
                                             <th> 邀请码 </th>
                                             <th> 有效期 </th>
+                                            <th> 生成者 </th>
                                             <th> 使用者 </th>
                                             <th> 状态 </th>
                                         </tr>
@@ -56,14 +57,15 @@
                                     <tbody>
                                         @if($inviteList->isEmpty())
                                             <tr>
-                                                <td colspan="5" style="text-align: center;">暂无数据</td>
+                                                <td colspan="6" style="text-align: center;">暂无数据</td>
                                             </tr>
                                         @else
-                                            @foreach($inviteList as $key => $invite)
+                                            @foreach($inviteList as $invite)
                                                 <tr>
-                                                    <td> {{$key + 1}} </td>
+                                                    <td> {{$invite->id}} </td>
                                                     <td> {{$invite->code}} </td>
                                                     <td> {{$invite->dateline}} </td>
+                                                    <td> {{$invite->generator->username}} </td>
                                                     <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                     <td>
                                                         @if($invite->status == '0')
@@ -109,15 +111,15 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('user/makeInvite')}}",
+                url: "{{url('admin/makeInvite')}}",
                 async: false,
                 data: {_token:_token},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {
-                        //bootbox.alert(ret.message, function () {
+                        bootbox.alert(ret.message, function () {
                             window.location.reload();
-                        //});
+                        });
                     } else {
                         bootbox.alert(ret.message);
                     }

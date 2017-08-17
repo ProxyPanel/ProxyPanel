@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
+use App\Http\Models\Config;
+use App\Http\Models\Invite;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
@@ -97,10 +99,10 @@ class UserController extends BaseController
 
             $data = [
                 //'port' => $port,
-                'passwd' => $passwd,
-                'method' => $method,
+                'passwd'   => $passwd,
+                'method'   => $method,
                 'protocol' => $protocol,
-                'obfs' => $obfs
+                'obfs'     => $obfs
             ];
 
             $ret = User::where('id', $user['id'])->update($data);
@@ -120,9 +122,9 @@ class UserController extends BaseController
             }
         } else {
             // 加密方式、协议、混淆
-            $view['method_list'] =  $this->methodList();
-            $view['protocol_list'] =  $this->protocolList();
-            $view['obfs_list'] =  $this->obfsList();
+            $view['method_list'] = $this->methodList();
+            $view['protocol_list'] = $this->protocolList();
+            $view['obfs_list'] = $this->obfsList();
             $view['info'] = User::where('id', $user['id'])->first();
 
             return Response::view('user/profile', $view);
@@ -166,7 +168,7 @@ class UserController extends BaseController
 
             // 生成ss scheme
             $ss_str = '';
-            $ss_str .= $user['method']. ':' . $user['passwd'] . '@';
+            $ss_str .= $user['method'] . ':' . $user['passwd'] . '@';
             $ss_str .= $node->server . ':' . $user['port'];
             $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
@@ -222,11 +224,41 @@ TXT;
 
         $user = $request->session()->get('user');
 
+        // 已生成的邀请码数量
+        $num = Invite::where('uid', $user['id'])->count();
+        $inviteNum = Config::where('id', 3)->pluck('value');
 
-
-        $view = [];
+        $view['num'] = $inviteNum[0] - $num; // 还可以生成的邀请码数量
+        $view['inviteList'] = Invite::where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
         return Response::view('user/invite', $view);
+    }
+
+    // 生成邀请码
+    public function makeInvite(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $user = $request->session()->get('user');
+
+        // 已生成的邀请码数量
+        $num = Invite::where('uid', $user['id'])->count();
+        $inviteNum = Config::where('id', 3)->pluck('value');
+        if ($num >= $inviteNum[0]) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . $inviteNum[0] . '个邀请码']);
+        }
+
+        $obj = new Invite();
+        $obj->uid = $user['id'];
+        $obj->fuid = 0;
+        $obj->code = strtoupper(md5(microtime() . $this->makeRandStr(6)));
+        $obj->status = 0;
+        $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
+        $obj->save();
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
     }
 
 }

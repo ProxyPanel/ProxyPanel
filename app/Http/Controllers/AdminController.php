@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
 use App\Http\Models\Config;
+use App\Http\Models\Invite;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
@@ -140,6 +141,12 @@ class AdminController extends BaseController
             $remark = $request->get('remark');
             $is_admin = $request->get('is_admin');
 
+            // 校验username是否已存在
+            $exists = User::where('username', $username)->first();
+            if ($exists) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
+            }
+
             // 密码为空时生成默认密码
             if (empty($password)) {
                 $str = $this->makeRandStr();
@@ -179,9 +186,8 @@ class AdminController extends BaseController
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
             }
         } else {
-            $config = $this->systemConfig();
-
             // 最后一个可用端口
+            $config = $this->systemConfig();
             $last_user = User::orderBy('id', 'desc')->first();
             $view['last_port'] = $config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
@@ -230,6 +236,12 @@ class AdminController extends BaseController
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
             $is_admin = $request->get('is_admin');
+
+            // 校验username是否已存在
+            $exists = User::where('username', $username)->first();
+            if ($exists) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
+            }
 
             $data = [
                 'username' => $username,
@@ -1124,5 +1136,47 @@ TXT;
         Config::where('id', 2)->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    // 邀请码列表
+    public function inviteList(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $view['inviteList'] = Invite::with(['generator', 'user'])->paginate(10);
+
+        return Response::view('admin/inviteList', $view);
+    }
+
+    // 生成邀请码
+    public function makeInvite(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $user = $request->session()->get('user');
+
+        for ($i = 0; $i < 10; $i++) {
+            $obj = new Invite();
+            $obj->uid = $user['id'];
+            $obj->fuid = 0;
+            $obj->code = strtoupper(md5(microtime() . $this->makeRandStr(6)));
+            $obj->status = 0;
+            $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
+            $obj->save();
+        }
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
     }
 }

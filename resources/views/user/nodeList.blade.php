@@ -46,7 +46,7 @@
                                 </thead>
                                 <tbody>
                                 <div class="alert alert-danger">
-                                    <strong>流量比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推。目的是在于限制优质节点频繁使用，请大家珍惜自己的流量，选择适合自己的节点。
+                                    <strong>流量比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推，越是优质节点则比例越高。
                                 </div>
                                 @if($nodeList->isEmpty())
                                     <tr>

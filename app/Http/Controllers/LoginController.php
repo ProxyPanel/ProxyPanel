@@ -22,19 +22,24 @@ class LoginController extends Controller
             $password = trim($request->get('password'));
 
             if (empty($username) || empty($password)) {
-                $request->session()->flash('error_msg', '请输入用户名和密码');
+                $request->session()->flash('errorMsg', '请输入用户名和密码');
                 return Redirect::to('login');
             }
 
-            $user = User::where('username', $username)->where('password', md5($password))->where('is_admin', 1)->first();
+            $user = User::where('username', $username)->where('password', md5($password))->first();
             if (!$user) {
-                $request->session()->flash('error_msg', '用户名或密码错误');
+                $request->session()->flash('errorMsg', '用户名或密码错误');
                 return Redirect::to('login');
             }
 
             $request->session()->put('user', $user->toArray());
 
-            return Redirect::to('admin');
+            // 根据权限跳转
+            if ($user['is_admin']) {
+                return Redirect::to('admin');
+            }
+
+            return Redirect::to('user');
         } else {
             return Response::view('login');
         }

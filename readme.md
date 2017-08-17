@@ -15,12 +15,21 @@ telegram：https://t.me/ssrpanel
 用户名：admin 密码：123456
 ````
 
+#### 请我吃巨无霸
+````
+哈哈，如果你觉得这套代码好用，可以请我吃一个🍔，我最喜欢吃麦当劳的巨无霸。
+
+微信扫一扫，请我吃巨无霸🍔，功能排期请看开发计划
+
+![请我吃巨无霸](https://raw.githubusercontent.com/ssrpanel/ssrpanel/723d6f9d35d10db7c57dab962c972035099a733f/public/assets/images/donate.jpeg)
+
+````
+
 #### PHP7环境配置
 ````
-建议小白用LNMP先傻瓜安装出php5.6 + mysql(5.5以上)
-然后再编译安装PHP7.1，搭建版本环境
-
-请看WIKI [编译安装PHP7.1.7环境（CentOS）]
+Laravel 5 + Metronic 4.7.1 + PHP 7.1 + Mysql 5.6
+建议小白LNMP傻瓜安装出php7.1 + mysql(5.5以上)
+手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
 ````
 
 #### 拉取代码
@@ -55,18 +64,6 @@ location / {
 service nginx reload
 ````
 
-## 代码解释
-````
-\app\Http\Controllers 控制器文件
-\app\Http\Models 模型文件
-\config 配置信息
-\public 公共文件
-\resources\views 视图文件
-\storage 临时文件（页面缓存、日志），文件夹一个都不能少，少了必报错
-\vendor 组件
-\routes 路由
-````
-
 ## SSR服务端
 ````
 把userapiconfig.py里的 API_INTERFACE 设置为 glzjinmod
@@ -84,12 +81,11 @@ chown www:www ssserver.log
 
 ## 说明
 ````
-1.纯账号管理后台
-2.需要配合SSR后端使用，[请作者吃巨无霸，获取SSR后端最新版，详情请看WIKI]
-3.用户端开发中
-4.支持SS多用户json文件一键转换成SSR多用户json文件
-5.支持SSR多用户json文件一键导入数据库
-6.基础文章系统
+1.账号管理面板
+2.需配合SSR后端使用
+3.强大的管理后台
+4.美观的界面
+5.支持手机自适应，方便管理账号
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)

@@ -157,31 +157,13 @@ var Login = function() {
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-
-                fullname: {
-                    required: true
-                },
-                email: {
-                    required: true,
-                    email: true
-                },
-                address: {
-                    required: true
-                },
-                city: {
-                    required: true
-                },
-                country: {
-                    required: true
-                },
-
                 username: {
                     required: true
                 },
                 password: {
                     required: true
                 },
-                rpassword: {
+                repassword: {
                     equalTo: "#register_password"
                 },
 
@@ -192,7 +174,7 @@ var Login = function() {
 
             messages: { // custom messages for radio buttons and checkboxes
                 tnc: {
-                    required: "同意“服务条款”和“隐私权相关政策”"
+                    required: "请同意"
                 }
             },
 

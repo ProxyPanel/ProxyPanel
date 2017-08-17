@@ -44,7 +44,7 @@
                                         <div class="form-group">
                                             <label for="content" class="col-md-3 control-label">内容</label>
                                             <div class="col-md-8">
-                                                <script id="editor" type="text/plain" style="width:680px;height:400px;">
+                                                <script id="editor" type="text/plain" style="width:800px;height:400px;">
                                                     {!! $article->content !!}
                                                 </script>
                                             </div>
@@ -82,7 +82,7 @@
             elementPathEnabled : false,    //是否启用元素路径
             maximumWords:300,              //允许的最大字符数
             initialContent:'',             //初始化编辑器的内容
-            initialFrameWidth:960,         //初始化宽度
+            initialFrameWidth:800,         //初始化宽度
             autoClearinitialContent:false, //是否自动清除编辑器初始内容
         });
 
