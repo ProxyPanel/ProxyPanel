@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>注册</title>
+    <title>设置新密码</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -38,48 +38,41 @@
 <!-- BEGIN LOGIN -->
 <div class="content">
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="{{url('register')}}" method="post" style="display: block;">
-        @if($is_register)
-            @if(Session::get('errorMsg'))
-                <div class="alert alert-danger">
-                    <button class="close" data-close="alert"></button>
-                    <span> {{Session::get('errorMsg')}} </span>
-                </div>
-            @endif
-            <div class="form-group">
-                <label class="control-label visible-ie8 visible-ie9">用户名</label>
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" required />
-                <input type="hidden" name="_token" value="{{csrf_token()}}" />
+    <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
+        @if(Session::get('errorMsg'))
+            <div class="alert alert-danger">
+                <button class="close" data-close="alert"></button>
+                <span> {{Session::get('errorMsg')}} </span>
+            </div>
+        @endif
+        @if(Session::get('successMsg'))
+            <div class="alert alert-success">
+                <button class="close" data-close="alert"></button>
+                <span> {{Session::get('errorMsg')}} </span>
+            </div>
+        @endif
+        @if ($verify->status)
+            <div class="alert alert-danger">
+                <button class="close" data-close="alert"></button>
+                <span> 该链接已失效 </span>
+            </div>
+        @else
+            <div class="form-title">
+                <span class="form-title">设置新密码</span>
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">密码</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="{{Request::old('password')}}" required />
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="" required />
+                <input type="hidden" name="_token" value="{{csrf_token()}}" />
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">重复密码</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="重复密码" name="repassword" value="{{Request::old('repassword')}}" required />
-            </div>
-            @if($is_invite_register)
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">邀请码</label>
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="邀请码" name="code" value="{{Request::old('code')}}" required />
-                </div>
-            @endif
-            <div class="form-group margin-top-20 margin-bottom-20">
-                <label class="mt-checkbox mt-checkbox-outline">
-                    <input type="checkbox" name="tnc" checked disabled /> 我已阅读并同意遵守
-                    <a href="javascript:;"> 服务条款 </a>
-                    <span></span>
-                </label>
-            </div>
-        @else
-            <div class="alert alert-danger">
-                <span> 系统维护暂停注册，如需账号请联系管理员 </span>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="重复密码" name="repassword" value="" required />
             </div>
         @endif
         <div class="form-actions">
             <button type="button" class="btn btn-default" onclick="login()">返 回</button>
-            @if($is_register)
+            @if ($verify->status == 0)
                 <button type="submit" class="btn red uppercase pull-right">提 交</button>
             @endif
         </div>

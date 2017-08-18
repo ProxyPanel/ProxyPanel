@@ -26,7 +26,7 @@
                         </div>
                         <div class="portlet-body">
                             <div class="alert alert-info">
-                                注意：每次仅生成 <strong> 10 </strong> 个邀请码
+                                注意：每次仅生成 <strong> 5 </strong> 个邀请码
                             </div>
                             <button type="submit" class="btn blue" onclick="makeInvite()"> 生 成 </button>
                         </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="tab-pane active" id="tab_0">
+                <div class="tab-pane active">
                     <div class="portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption">

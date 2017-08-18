@@ -15,19 +15,16 @@ telegram：https://t.me/ssrpanel
 用户名：admin 密码：123456
 ````
 
-#### 请作者吃巨无霸
+#### 打赏作者一个巨无霸汉堡
 ````
-哈哈，如果你觉得这套代码好用，可以请我吃一个🍔，我最喜欢吃麦当劳的巨无霸。
-
-微信扫一扫，请我吃巨无霸🍔，功能排期请看开发计划
-
-请看WIFI，捐赠作者一个巨无霸汉堡
-
+哈哈，如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
+将持续开发，喜欢请star一下
 ````
+![打赏作者一个巨无霸汉堡](https://raw.githubusercontent.com/ssrpanel/ssrpanel/723d6f9d35d10db7c57dab962c972035099a733f/public/assets/images/donate.jpeg)
 
 #### PHP7环境配置
 ````
-Laravel 5 + Metronic 4.7.1 + PHP 7.1 + Mysql 5.6
+Laravel 5.4 + Metronic 4.7
 建议小白LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
 ````
@@ -70,7 +67,7 @@ service nginx reload
 把user-config.json里的 connect_verbose_info 设置为 1
 ````
 
-## 日志分析
+## 日志分析（目前仅支持单节点）
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权

@@ -34,6 +34,9 @@ Route::any('admin/analysis', 'AdminController@analysis'); // 日志分析
 Route::any('admin/system', 'AdminController@system'); // 系统设置
 Route::post('admin/enableRandPort', 'AdminController@enableRandPort'); // 启用、禁用随机端口
 Route::post('admin/enableUserRandPort', 'AdminController@enableUserRandPort'); // 启用、禁用自定义端口
+Route::post('admin/enableRegister', 'AdminController@enableRegister'); // 启用、禁用注册
+Route::post('admin/enableInviteRegister', 'AdminController@enableInviteRegister'); // 启用、禁用邀请注册
+Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成邀请码数
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置
 
@@ -44,3 +47,6 @@ Route::any('user/profile', 'UserController@profile'); // 修改个人信息
 Route::any('user/trafficLog', 'UserController@trafficLog'); // 流量日志
 Route::any('user/invite', 'UserController@invite'); // 邀请码
 Route::any('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
+Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
+Route::any('reset/{token}', 'UserController@reset'); // 重设密码
+

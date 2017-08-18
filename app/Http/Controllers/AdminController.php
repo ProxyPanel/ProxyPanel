@@ -38,7 +38,7 @@ class AdminController extends BaseController
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::sum('balance');
-        $view['expireWarningUserCount'] = User::where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->count();
+        $view['expireWarningUserCount'] = User::where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->where('enable', 1)->count();
 
         // 到期账号禁用
         User::where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->update(['enable' => 0]);
@@ -861,13 +861,15 @@ CONFIG;
             // 生成文本配置信息
             $txt = <<<TXT
 服务器：{$node->server}
-端口：{$user->port}
+远程端口：{$user->port}
+本地端口：1080
 密码：{$user->passwd}
-加密方式：{$user->method}
+加密方法：{$user->method}
 协议：{$user->protocol}
 协议参数：{$user->protocol_param}
-混淆：{$user->obfs}
+混淆方式：{$user->obfs}
 混淆参数：{$user->obfs_param}
+路由：绕过局域网及中国大陆地址
 TXT;
 
             $node->txt = $txt;
@@ -1138,6 +1140,36 @@ TXT;
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
+    // 启用、禁用注册
+    public function enableRegister(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('id', 4)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    // 启用、禁用邀请注册
+    public function enableInviteRegister(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('id', 5)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    // 设置可生成邀请码数
+    public function setInviteNum(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('id', 3)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
     // 邀请码列表
     public function inviteList(Request $request)
     {
@@ -1167,11 +1199,11 @@ TXT;
 
         $user = $request->session()->get('user');
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $obj = new Invite();
             $obj->uid = $user['id'];
             $obj->fuid = 0;
-            $obj->code = strtoupper(md5(microtime() . $this->makeRandStr(6)));
+            $obj->code = strtoupper(substr(md5(microtime() . $this->makeRandStr(6)), 8, 16));
             $obj->status = 0;
             $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
             $obj->save();

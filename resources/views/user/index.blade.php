@@ -28,7 +28,7 @@
                             <div class="tab-pane active">
                                 <div class="scroller" style="height: 170px;" data-always-visible="1" data-rail-visible1="0" data-handle-color="#D7DCE2">
                                     <ul class="feeds">
-                                        @if (!$articleList->isEmpty())
+                                        @if(!$articleList->isEmpty())
                                             @foreach($articleList as $article)
                                                 <li>
                                                     <div class="col1">
@@ -39,7 +39,9 @@
                                                                 </div>
                                                             </div>
                                                             <div class="cont-col2">
-                                                                <div class="desc"> <a href="{{url('user/article?id=') . $article->id}}" target="_blank">{{$article->title}}</a> </div>
+                                                                <div class="desc">
+                                                                    <a href="{{url('user/article?id=') . $article->id}}" target="_blank">{{$article->title}}</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -47,6 +49,14 @@
                                             @endforeach
                                         @endif
                                     </ul>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5"></div>
+                                    <div class="col-md-7 col-sm-7">
+                                        <div class="pull-right">
+                                            {{ $articleList->links() }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

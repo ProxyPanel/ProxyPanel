@@ -10,9 +10,13 @@ use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficLog;
+use App\Http\Models\Verify;
+use App\Mail\resetPassword;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
+use Cache;
+use Mail;
 
 class UserController extends BaseController
 {
@@ -22,7 +26,7 @@ class UserController extends BaseController
             return Redirect::to('login');
         }
 
-        $view['articleList'] = Article::orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(5)->get();
+        $view['articleList'] = Article::orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['info'] = $request->session()->get('user');
 
         return Response::view('user/index', $view);
@@ -176,13 +180,15 @@ class UserController extends BaseController
             // 生成文本配置信息
             $txt = <<<TXT
 服务器：{$node->server}
-端口：{$user['port']}
+远程端口：{$user['port']}
+本地端口：1080
 密码：{$user['passwd']}
-加密方式：{$user['method']}
+加密方法：{$user['method']}
 协议：{$user['protocol']}
 协议参数：{$user['protocol_param']}
-混淆：{$user['obfs']}
+混淆方式：{$user['obfs']}
 混淆参数：{$user['obfs_param']}
+路由：绕过局域网及中国大陆地址
 TXT;
 
             $node->txt = $txt;
@@ -226,9 +232,9 @@ TXT;
 
         // 已生成的邀请码数量
         $num = Invite::where('uid', $user['id'])->count();
-        $inviteNum = Config::where('id', 3)->pluck('value');
+        $config = $this->systemConfig();
 
-        $view['num'] = $inviteNum[0] - $num; // 还可以生成的邀请码数量
+        $view['num'] = $config['invite_num'] - $num <= 0 ? 0 : $config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
         return Response::view('user/invite', $view);
@@ -245,20 +251,145 @@ TXT;
 
         // 已生成的邀请码数量
         $num = Invite::where('uid', $user['id'])->count();
-        $inviteNum = Config::where('id', 3)->pluck('value');
-        if ($num >= $inviteNum[0]) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . $inviteNum[0] . '个邀请码']);
+        $config = $this->systemConfig();
+        if ($num >= $config['invite_num']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . $config['invite_num'] . '个邀请码']);
         }
 
         $obj = new Invite();
         $obj->uid = $user['id'];
         $obj->fuid = 0;
-        $obj->code = strtoupper(md5(microtime() . $this->makeRandStr(6)));
+        $obj->code = strtoupper(mb_substr(md5(microtime() . $this->makeRandStr(6)), 8, 16));
         $obj->status = 0;
-        $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
+        $obj->dateline = date('Y-m-d H:i:s', strtotime("+7 days"));
         $obj->save();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
     }
 
+    // 重设密码
+    public function resetPassword(Request $request)
+    {
+        $config = $this->systemConfig();
+
+        if ($request->method() == 'POST') {
+            $username = trim($request->get('username'));
+
+            // 是否开启重设密码
+            if (!$config['is_reset_password']) {
+                $request->session()->flash('errorMsg', '系统未开启重置密码功能，请联系管理员');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 查找账号
+            $user = User::where('username', $username)->first();
+            if (!$user) {
+                $request->session()->flash('errorMsg', '账号不存在，请重试');
+
+                return Redirect::back();
+            }
+
+            // 24小时内重设密码次数限制
+            $resetTimes = 0;
+            if (Cache::has('resetPassword_' . md5($username))) {
+                $resetTimes = Cache::get('resetPassword_' . md5($username));
+                if ($resetTimes >= $config['reset_password_times']) {
+                    $request->session()->flash('errorMsg', '同一个账号24小时内只能重设密码' . $config['reset_password_times'] . '次，请勿频繁操作');
+
+                    return Redirect::back();
+                }
+            }
+
+            // 生成取回密码的地址
+            $token = md5($config['website_name'] . $username . microtime());
+            $verify = new Verify();
+            $verify->user_id = $user->id;
+            $verify->username = $username;
+            $verify->token = $token;
+            $verify->status = 0;
+            $verify->save();
+
+            // 发送邮件
+            $resetPasswordUrl = $config['website_url'] . '/reset/' . $token;
+            Mail::to($user->username)->send(new resetPassword($config['website_name'], $resetPasswordUrl));
+
+            Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
+            $request->session()->flash('successMsg', '重置成功，请查看邮箱');
+
+            return Redirect::back();
+        } else {
+            $view['is_reset_password'] = $config['is_reset_password'];
+
+            return Response::view('user/resetPassword', $view);
+        }
+    }
+
+    // 重设密码
+    public function reset(Request $request, $token)
+    {
+        if ($request->method() == 'POST') {
+            $password = trim($request->get('password'));
+            $repassword = trim($request->get('repassword'));
+
+            if (empty($token)) {
+                return Redirect::to('login');
+            } else if (empty($password) || empty($repassword)) {
+                $request->session()->flash('errorMsg', '密码不能为空');
+
+                return Redirect::back();
+            } else if (md5($password) != md5($repassword)) {
+                $request->session()->flash('errorMsg', '两次输入密码不一致，请重新输入');
+
+                return Redirect::back();
+            }
+
+            // 校验账号
+            $verify = Verify::where('token', $token)->with('User')->first();
+            if (empty($verify)) {
+                return Redirect::to('login');
+            } else if ($verify->status == 1) {
+                $request->session()->flash('errorMsg', '该链接已失效');
+
+                return Redirect::back();
+            } else if (!$verify->user->enable) {
+                $request->session()->flash('errorMsg', '账号已被禁用');
+
+                return Redirect::back();
+            } else if (md5($password) == $verify->user->password) {
+                $request->session()->flash('errorMsg', '新旧密码一样，请重新输入');
+
+                return Redirect::back();
+            }
+
+            // 更新密码
+            $ret = User::where('id', $verify->user_id)->update(['password' => md5($password)]);
+            if (!$ret) {
+                $request->session()->flash('errorMsg', '重设密码失败');
+
+                return Redirect::back();
+            }
+
+            // 更新verify
+            $verify->status = 1;
+            $verify->save();
+
+            $request->session()->flash('successMsg', '新密码设置成功，请自行登录');
+
+            return Redirect::back();
+        } else {
+            if (empty($token)) {
+                return Redirect::to('login');
+            }
+
+            $verify = Verify::where('token', $token)->with('user')->first();
+            if (empty($verify)) {
+                return Redirect::to('login');
+            }
+
+            $view['verify'] = $verify;
+
+            return Response::view('user/reset', $view);
+        }
+    }
 }

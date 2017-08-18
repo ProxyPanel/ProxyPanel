@@ -37,14 +37,40 @@
                                     <label for="is_rand_port" class="col-md-2 control-label">随机端口</label>
                                     <div class="col-md-6">
                                         <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                        <span class="help-block"> 添加账号时随机生成端口 </span>
+                                        <span class="help-block"> 随机生成端口 </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="is_user_rand_port" class="col-md-2 control-label">自定义端口</label>
                                     <div class="col-md-6">
                                         <input type="checkbox" class="make-switch" @if($is_user_rand_port) checked @endif id="is_user_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                        <span class="help-block"> 用户可以自定义一个端口 </span>
+                                        <span class="help-block"> 用户可以自定义端口 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="is_register" class="col-md-2 control-label">用户注册</label>
+                                    <div class="col-md-6">
+                                        <input type="checkbox" class="make-switch" @if($is_register) checked @endif id="is_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                        <span class="help-block"> 关闭后无法注册 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="is_invite_register" class="col-md-2 control-label">邀请注册</label>
+                                    <div class="col-md-6">
+                                        <input type="checkbox" class="make-switch" @if($is_invite_register) checked @endif id="is_invite_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                        <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="passwd" class="col-md-2 control-label">可生成邀请码数</label>
+                                    <div class="col-md-2">
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num" />
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-success" type="button" onclick="setInviteNum()">修改</button>
+                                            </span>
+                                        </div>
+                                        <span class="help-block"> 用户可以生成的邀请码数 </span>
                                     </div>
                                 </div>
                             </div>
@@ -92,5 +118,48 @@
                 });
             }
         });
+
+        // 启用、禁用注册
+        $('#is_register').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_register = 0;
+
+                if (state) {
+                    is_register = 1;
+                }
+
+                $.post("{{url('admin/enableRegister')}}", {_token:'{{csrf_token()}}', value:is_register}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 启用、禁用邀请注册
+        $('#is_invite_register').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_invite_register = 0;
+
+                if (state) {
+                    is_invite_register = 1;
+                }
+
+                $.post("{{url('admin/enableInviteRegister')}}", {_token:'{{csrf_token()}}', value:is_invite_register}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 设置可生成邀请码数量
+        function setInviteNum() {
+            var invite_num = $("#invite_num").val();
+
+            $.post("{{url('admin/setInviteNum')}}", {_token:'{{csrf_token()}}', value:invite_num}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
     </script>
 @endsection

@@ -36,22 +36,36 @@ class RegisterController extends BaseController
                 $request->session()->flash('errorMsg', '请重新输入密码');
 
                 return Redirect::back()->withInput();
-            } else if (empty($code)) {
-                $request->session()->flash('errorMsg', '请输入邀请码');
-
-                return Redirect::back()->withInput();
             } else if (md5($password) != md5($repassword)) {
                 $request->session()->flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back()->withInput($request->except(['password', 'repassword']));
             }
 
-            // 校验邀请码合法性
-            $code = Invite::where('code', $code)->where('status', 0)->first();
-            if (empty($code)) {
-                $request->session()->flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
+            $config = $this->systemConfig();
 
-                return Redirect::back()->withInput($request->except(['code']));
+            // 是否开启注册
+            if (!$config['is_register']) {
+                $request->session()->flash('errorMsg', '系统维护暂停注册，如需账号请联系管理员');
+
+                return Redirect::back();
+            }
+
+            // 如果需要邀请注册
+            if ($config['is_invite_register']) {
+                if (empty($code)) {
+                    $request->session()->flash('errorMsg', '请输入邀请码');
+
+                    return Redirect::back()->withInput();
+                }
+
+                // 校验邀请码合法性
+                $code = Invite::where('code', $code)->where('status', 0)->first();
+                if (empty($code)) {
+                    $request->session()->flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
+
+                    return Redirect::back()->withInput($request->except(['code']));
+                }
             }
 
             // 校验用户名是否已存在
@@ -80,13 +94,17 @@ class RegisterController extends BaseController
             $obj->save();
 
             // 更新邀请码
-            if ($obj->id) {
-                Invite::where('id', $code->id)->update(['status' => 1]);
+            if ($config['is_invite_register'] && $obj->id) {
+                Invite::where('id', $code->id)->update(['fuid' => $obj->id,'status' => 1]);
             }
 
             return Redirect::to('login');
         } else {
-            return Response::view('register');
+            $config = $this->systemConfig();
+            $view['is_register'] = $config['is_register'];
+            $view['is_invite_register'] = $config['is_invite_register'];
+
+            return Response::view('register', $view);
         }
     }
 

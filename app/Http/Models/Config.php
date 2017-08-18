@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * 系统配置
- * Class Node
+ * Class Config
  * @package App\Http\Models
  */
 class Config extends Model

@@ -49,7 +49,7 @@
                                 <tbody>
                                 @if($articleList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="5">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($articleList as $article)
