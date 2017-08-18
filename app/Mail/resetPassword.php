@@ -22,7 +22,7 @@ class resetPassword extends Mailable
 
     public function build()
     {
-        return $this->view('emails.resetPassword')->subject('重置密码')->cc('362357482@qq.com')->with([
+        return $this->view('emails.resetPassword')->subject('重置密码')->with([
             'websiteName'      => $this->websiteName,
             'resetPasswordUrl' => $this->resetPasswordUrl
         ]);
