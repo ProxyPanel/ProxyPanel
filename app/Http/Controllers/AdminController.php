@@ -17,6 +17,13 @@ use Response;
 
 class AdminController extends BaseController
 {
+    protected static $config;
+
+    function __construct()
+    {
+        self::$config = $this->systemConfig();
+    }
+
     public function index(Request $request)
     {
         if (!$request->session()->has('user')) {
@@ -187,9 +194,8 @@ class AdminController extends BaseController
             }
         } else {
             // 最后一个可用端口
-            $config = $this->systemConfig();
             $last_user = User::orderBy('id', 'desc')->first();
-            $view['last_port'] = $config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
+            $view['last_port'] = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
             // 加密方式、协议、混淆
             $view['method_list'] =  $this->methodList();
@@ -484,7 +490,7 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
-        $articleList = Article::paginate(10);
+        $articleList = Article::orderBy('sort', 'desc')->paginate(10);
 
         $view['articleList'] = $articleList;
 
@@ -959,6 +965,7 @@ TXT;
         }
 
         $view['traffic'] = $traffic;
+        $view['nodeList'] = $node_list;
 
         return Response::view('admin/monitor', $view);
     }
@@ -1120,42 +1127,38 @@ TXT;
         return Response::view('admin/system', $view);
     }
 
-    // 启用、禁用随机端口
-    public function enableRandPort(Request $request)
+    // 设置某个配置项
+    public function setConfig(Request $request)
     {
-        $value = intval($request->get('value'));
+        $name = trim($request->get('name'));
+        $value = trim($request->get('value'));
 
-        Config::where('id', 1)->update(['value' => $value]);
+        if ($name == '' || $value == '') {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：请求参数异常']);
+        }
 
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-    }
+        // 屏蔽异常配置
+        if (!array_key_exists($name, self::$config)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：配置不存在']);
+        }
 
-    // 启用、禁用自定义端口
-    public function enableUserRandPort(Request $request)
-    {
-        $value = intval($request->get('value'));
+        // 如果开启用户邮件重置密码，则先设置网站名称和网址
+        if ($name == 'is_reset_password' && $value == '1') {
+            $config = Config::where('name', 'website_name')->first();
+            if ($config->value == '') {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：开启重置密码需要先设置【网站名称】']);
+            }
 
-        Config::where('id', 2)->update(['value' => $value]);
+            $config = Config::where('name', 'website_url')->first();
+            if ($config->value == '') {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：开启重置密码需要先设置【网站地址】']);
+            }
+        }
 
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-    }
-
-    // 启用、禁用注册
-    public function enableRegister(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('id', 4)->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-    }
-
-    // 启用、禁用邀请注册
-    public function enableInviteRegister(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('id', 5)->update(['value' => $value]);
+        $ret = Config::where('name', $name)->update(['value' => $value]);
+        if (!$ret) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败']);
+        }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
@@ -1167,7 +1170,37 @@ TXT;
 
         Config::where('id', 3)->update(['value' => $value]);
 
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置网站名称
+    public function setWebsiteName(Request $request)
+    {
+        $value = trim($request->get('value'));
+
+        Config::where('id', 6)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置网站地址
+    public function setWebsiteUrl(Request $request)
+    {
+        $value = trim($request->get('value'));
+
+        Config::where('id', 9)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置重置密码次数
+    public function setResetPasswordTimes(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('id', 8)->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
 
     // 邀请码列表

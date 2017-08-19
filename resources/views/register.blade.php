@@ -74,7 +74,7 @@
             </div>
         @else
             <div class="alert alert-danger">
-                <span> 系统维护暂停注册，如需账号请联系管理员 </span>
+                <span> 系统维护中，如需账号请联系管理员 </span>
             </div>
         @endif
         <div class="form-actions">

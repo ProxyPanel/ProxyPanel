@@ -117,9 +117,7 @@
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
-                            window.location.reload();
-                        });
+                        window.location.reload();
                     } else {
                         bootbox.alert(ret.message);
                     }

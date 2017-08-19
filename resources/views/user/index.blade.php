@@ -40,7 +40,7 @@
                                                             </div>
                                                             <div class="cont-col2">
                                                                 <div class="desc">
-                                                                    <a href="{{url('user/article?id=') . $article->id}}" target="_blank">{{$article->title}}</a>
+                                                                    <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{$article->title}} </a>
                                                                 </div>
                                                             </div>
                                                         </div>

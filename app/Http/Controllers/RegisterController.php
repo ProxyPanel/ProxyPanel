@@ -15,6 +15,13 @@ use Redirect;
  */
 class RegisterController extends BaseController
 {
+    protected static $config;
+
+    function __construct()
+    {
+        self::$config = $this->systemConfig();
+    }
+
     // 注册页
     public function index(Request $request)
     {
@@ -42,17 +49,15 @@ class RegisterController extends BaseController
                 return Redirect::back()->withInput($request->except(['password', 'repassword']));
             }
 
-            $config = $this->systemConfig();
-
             // 是否开启注册
-            if (!$config['is_register']) {
+            if (!self::$config['is_register']) {
                 $request->session()->flash('errorMsg', '系统维护暂停注册，如需账号请联系管理员');
 
                 return Redirect::back();
             }
 
             // 如果需要邀请注册
-            if ($config['is_invite_register']) {
+            if (self::$config['is_invite_register']) {
                 if (empty($code)) {
                     $request->session()->flash('errorMsg', '请输入邀请码');
 
@@ -77,9 +82,8 @@ class RegisterController extends BaseController
             }
 
             // 最后一个可用端口
-            $config = $this->systemConfig();
             $last_user = User::orderBy('id', 'desc')->first();
-            $port = $config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
+            $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
             // 创建新用户
             $obj = new User();
@@ -94,15 +98,14 @@ class RegisterController extends BaseController
             $obj->save();
 
             // 更新邀请码
-            if ($config['is_invite_register'] && $obj->id) {
+            if (self::$config['is_invite_register'] && $obj->id) {
                 Invite::where('id', $code->id)->update(['fuid' => $obj->id,'status' => 1]);
             }
 
             return Redirect::to('login');
         } else {
-            $config = $this->systemConfig();
-            $view['is_register'] = $config['is_register'];
-            $view['is_invite_register'] = $config['is_invite_register'];
+            $view['is_register'] = self::$config['is_register'];
+            $view['is_invite_register'] = self::$config['is_invite_register'];
 
             return Response::view('register', $view);
         }

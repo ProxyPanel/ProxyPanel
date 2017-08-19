@@ -42,6 +42,7 @@
                                     <th> ID </th>
                                     <th> 标题 </th>
                                     <th> 排序 </th>
+                                    <th> 发布日期 </th>
                                     <th> 状态 </th>
                                     <th> 操作 </th>
                                 </tr>
@@ -49,7 +50,7 @@
                                 <tbody>
                                 @if($articleList->isEmpty())
                                     <tr>
-                                        <td colspan="5">暂无数据</td>
+                                        <td colspan="6">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($articleList as $article)
@@ -57,6 +58,7 @@
                                             <td> {{$article->id}} </td>
                                             <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{$article->title}} </a> </td>
                                             <td> {{$article->sort}} </td>
+                                            <td> {{$article->created_at}} </td>
                                             <td> <span class="label label-danger"> {{$article->is_del ? '已删除' : '未删除'}} </span> </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$article->id}}')">编辑</button>

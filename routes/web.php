@@ -32,11 +32,11 @@ Route::get('admin/monitor', 'AdminController@monitor'); // 流量监控
 Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
 Route::any('admin/analysis', 'AdminController@analysis'); // 日志分析
 Route::any('admin/system', 'AdminController@system'); // 系统设置
-Route::post('admin/enableRandPort', 'AdminController@enableRandPort'); // 启用、禁用随机端口
-Route::post('admin/enableUserRandPort', 'AdminController@enableUserRandPort'); // 启用、禁用自定义端口
-Route::post('admin/enableRegister', 'AdminController@enableRegister'); // 启用、禁用注册
-Route::post('admin/enableInviteRegister', 'AdminController@enableInviteRegister'); // 启用、禁用邀请注册
+Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
 Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成邀请码数
+Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置网站名称
+Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
+Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置
 

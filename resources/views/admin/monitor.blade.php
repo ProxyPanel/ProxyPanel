@@ -73,9 +73,9 @@
                         @endif
 
                         var plot = $.plot($("#chart"), [
-                            @if (!empty($traffic))
-                                @foreach($traffic as $node_id => $node_traffic_list)
-                                    {data: {{'node_' . $node_id}}, label: "节点{{$node_id}}", lines: {lineWidth: 1}, shadowSize: 0},
+                            @if (!empty($nodeList))
+                                @foreach($nodeList as $node)
+                                    {data: {{'node_' . $node->id}}, label: "{{$node->name}}", lines: {lineWidth: 1}, shadowSize: 0},
                                 @endforeach
                             @endif
                             ], {

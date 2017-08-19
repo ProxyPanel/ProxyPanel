@@ -49,6 +49,11 @@ config\database.php mysql选项自行配置数据库
 确保 storage/framework 下有 cache sessions views 三个目录，且 storage 有777权限
 ````
 
+#### 发送邮件配置
+````
+config\mail.php 修改其中的配置
+````
+
 #### NGINX配置文件加入
 ````
 location / {

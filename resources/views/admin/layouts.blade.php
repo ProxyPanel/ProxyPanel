@@ -181,7 +181,7 @@
                         <li class="nav-item {{Request::getRequestUri() == '/admin/system' ? 'active open' : ''}}">
                             <a href="{{url('admin/system')}}" class="nav-link ">
                                 <i class="icon-wrench"></i>
-                                <span class="title">系统配置</span>
+                                <span class="title">系统设置</span>
                             </a>
                         </li>
                     </ul>

@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>找回密码</title>
+    <title>重置密码</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -53,7 +53,7 @@
     <form class="forget-form" action="{{url('resetPassword')}}" method="post" style="display: block;">
         @if($is_reset_password)
             <div class="form-title">
-                <span class="form-title">忘记密码</span>
+                <span class="form-title">重置密码</span>
             </div>
             <div class="form-group">
                 <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入用户名" name="username" value="{{Request::old('username')}}" required />

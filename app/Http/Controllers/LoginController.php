@@ -23,13 +23,19 @@ class LoginController extends Controller
 
             if (empty($username) || empty($password)) {
                 $request->session()->flash('errorMsg', '请输入用户名和密码');
-                return Redirect::to('login');
+
+                return Redirect::back();
             }
 
             $user = User::where('username', $username)->where('password', md5($password))->first();
             if (!$user) {
                 $request->session()->flash('errorMsg', '用户名或密码错误');
-                return Redirect::to('login');
+
+                return Redirect::back()->withInput();
+            } else if (!$user->enable) {
+                $request->session()->flash('errorMsg', '账号已禁用');
+
+                return Redirect::back();
             }
 
             $request->session()->put('user', $user->toArray());

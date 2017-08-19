@@ -57,7 +57,7 @@ return [
 
     'from' => [
         'address' => 'xxx@qq.com',
-        'name' => 'ÖØÖÃÃÜÂë',
+        'name' => 'é‡ç½®å¯†ç ',
     ],
 
     /*

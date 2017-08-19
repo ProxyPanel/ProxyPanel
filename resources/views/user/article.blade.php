@@ -22,7 +22,10 @@
                     <div class="portlet-title tabbable-line">
                         <div class="caption caption-md">
                             <i class="icon-globe theme-font hide"></i>
-                            <span class="caption-subject font-blue-madison bold uppercase">系统公告</span>
+                            <span class="caption-subject font-blue-madison bold uppercase">{{$info->title}}</span>
+                        </div>
+                        <div class="tools">
+                            <small>发布于：{{$info->created_at}}</small>
                         </div>
                     </div>
                     <div class="portlet-body">

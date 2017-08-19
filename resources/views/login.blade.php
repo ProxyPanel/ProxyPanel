@@ -52,10 +52,10 @@
         <div class="form-group">
             <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
             <label class="control-label visible-ie8 visible-ie9">E-mail</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" /> </div>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" /> </div>
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">密码</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" />
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="{{Request::old('password')}}" />
             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
         </div>
         <div class="form-actions">
@@ -66,7 +66,7 @@
                 </label>
             </div>
             <div class="pull-right forget-password-block">
-                <a href="{{url('resetPassword')}}" class="forget-password">找回密码</a>
+                <a href="{{url('resetPassword')}}" class="forget-password">忘记密码</a>
             </div>
         </div>
         <div class="form-actions">

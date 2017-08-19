@@ -20,6 +20,13 @@ use Mail;
 
 class UserController extends BaseController
 {
+    protected static $config;
+
+    function __construct()
+    {
+        self::$config = $this->systemConfig();
+    }
+
     public function index(Request $request)
     {
         if (!$request->session()->has('user')) {
@@ -232,9 +239,8 @@ TXT;
 
         // 已生成的邀请码数量
         $num = Invite::where('uid', $user['id'])->count();
-        $config = $this->systemConfig();
 
-        $view['num'] = $config['invite_num'] - $num <= 0 ? 0 : $config['invite_num'] - $num; // 还可以生成的邀请码数量
+        $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
         return Response::view('user/invite', $view);
@@ -251,9 +257,8 @@ TXT;
 
         // 已生成的邀请码数量
         $num = Invite::where('uid', $user['id'])->count();
-        $config = $this->systemConfig();
-        if ($num >= $config['invite_num']) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . $config['invite_num'] . '个邀请码']);
+        if ($num >= self::$config['invite_num']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . self::$config['invite_num'] . '个邀请码']);
         }
 
         $obj = new Invite();
@@ -270,13 +275,11 @@ TXT;
     // 重设密码
     public function resetPassword(Request $request)
     {
-        $config = $this->systemConfig();
-
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
 
             // 是否开启重设密码
-            if (!$config['is_reset_password']) {
+            if (!self::$config['is_reset_password']) {
                 $request->session()->flash('errorMsg', '系统未开启重置密码功能，请联系管理员');
 
                 return Redirect::back()->withInput();
@@ -294,15 +297,15 @@ TXT;
             $resetTimes = 0;
             if (Cache::has('resetPassword_' . md5($username))) {
                 $resetTimes = Cache::get('resetPassword_' . md5($username));
-                if ($resetTimes >= $config['reset_password_times']) {
-                    $request->session()->flash('errorMsg', '同一个账号24小时内只能重设密码' . $config['reset_password_times'] . '次，请勿频繁操作');
+                if ($resetTimes >= self::$config['reset_password_times']) {
+                    $request->session()->flash('errorMsg', '同一个账号24小时内只能重设密码' . self::$config['reset_password_times'] . '次，请勿频繁操作');
 
                     return Redirect::back();
                 }
             }
 
             // 生成取回密码的地址
-            $token = md5($config['website_name'] . $username . microtime());
+            $token = md5(self::$config['website_name'] . $username . microtime());
             $verify = new Verify();
             $verify->user_id = $user->id;
             $verify->username = $username;
@@ -311,15 +314,15 @@ TXT;
             $verify->save();
 
             // 发送邮件
-            $resetPasswordUrl = $config['website_url'] . '/reset/' . $token;
-            Mail::to($user->username)->send(new resetPassword($config['website_name'], $resetPasswordUrl));
+            $resetPasswordUrl = self::$config['website_url'] . '/reset/' . $token;
+            Mail::to($user->username)->send(new resetPassword(self::$config['website_name'], $resetPasswordUrl));
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
             $request->session()->flash('successMsg', '重置成功，请查看邮箱');
 
             return Redirect::back();
         } else {
-            $view['is_reset_password'] = $config['is_reset_password'];
+            $view['is_reset_password'] = self::$config['is_reset_password'];
 
             return Response::view('user/resetPassword', $view);
         }
