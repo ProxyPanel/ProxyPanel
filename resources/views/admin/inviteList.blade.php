@@ -26,7 +26,8 @@
                         </div>
                         <div class="portlet-body">
                             <div class="alert alert-info">
-                                注意：每次仅生成 <strong> 5 </strong> 个邀请码
+                                <i class="fa fa-warning"></i>
+                                每次仅生成 <strong> 5 </strong> 个邀请码
                             </div>
                             <button type="submit" class="btn blue" onclick="makeInvite()"> 生 成 </button>
                         </div>

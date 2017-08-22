@@ -14,6 +14,7 @@ class Verify extends Model
     protected $table = 'verify';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'user_id',
         'username',
         'token',
         'status'

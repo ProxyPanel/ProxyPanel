@@ -91,7 +91,7 @@ CREATE TABLE `user` (
   `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
   `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
   `t` int(11) NOT NULL DEFAULT '0' COMMENT '最后使用时间',
-  `enable` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态',
+  `enable` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'SS状态',
   `method` varchar(30) NOT NULL DEFAULT 'aes-192-ctr' COMMENT '加密方式',
   `custom_method` varchar(30) DEFAULT 'aes-192-ctr' COMMENT '自定义加密方式',
   `protocol` varchar(30) NOT NULL DEFAULT 'auth_chain_a' COMMENT '协议',
@@ -110,6 +110,7 @@ CREATE TABLE `user` (
   `remark` text COMMENT '备注',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
+  `status` tinyint(11) DEFAULT '0' COMMENT '状态：-1-禁止登陆、0-未激活、1-正常',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -219,6 +220,8 @@ INSERT INTO `config` VALUES ('6', 'website_name', 'SSRPanel');
 INSERT INTO `config` VALUES ('7', 'is_reset_password', 1);
 INSERT INTO `config` VALUES ('8', 'reset_password_times', 3);
 INSERT INTO `config` VALUES ('9', 'website_url', 'http://baidu.com');
+INSERT INTO `config` VALUES ('10', 'is_active_register', 1);
+INSERT INTO `config` VALUES ('11', 'active_times', 3);
 
 
 -- ----------------------------
@@ -266,6 +269,29 @@ CREATE TABLE `verify` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+-- ----------------------------
+-- Table structure for `ss_group`
+-- ----------------------------
+CREATE TABLE `ss_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分组名称',
+  `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '分组级别',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- ----------------------------
+-- Table structure for `ss_group_node`
+-- ----------------------------
+CREATE TABLE `ss_group_node` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL DEFAULT '0' COMMENT '分组ID',
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='分组节点关系表';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

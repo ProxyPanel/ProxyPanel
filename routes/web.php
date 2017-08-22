@@ -18,6 +18,10 @@ Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
 Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
 Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
 Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章
+Route::get('admin/groupList', 'AdminController@groupList'); // 文章列表
+Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加文章
+Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑文章
+Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除文章
 Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
 Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
 Route::any('admin/config', 'AdminController@config'); // 配置列表
@@ -37,6 +41,7 @@ Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成�
 Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置网站名称
 Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
 Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
+Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置
 
@@ -49,4 +54,6 @@ Route::any('user/invite', 'UserController@invite'); // 邀请码
 Route::any('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
 Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
 Route::any('reset/{token}', 'UserController@reset'); // 重设密码
+Route::any('activeUser', 'UserController@activeUser'); // 激活账号
+Route::any('active/{token}', 'UserController@active'); // 激活账号
 

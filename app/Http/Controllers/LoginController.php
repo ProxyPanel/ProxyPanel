@@ -12,8 +12,15 @@ use Redirect;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class LoginController extends Controller
+class LoginController extends BaseController
 {
+    protected static $config;
+
+    function __construct()
+    {
+        self::$config = $this->systemConfig();
+    }
+
     // 登录页
     public function index(Request $request)
     {
@@ -32,10 +39,14 @@ class LoginController extends Controller
                 $request->session()->flash('errorMsg', '用户名或密码错误');
 
                 return Redirect::back()->withInput();
-            } else if (!$user->enable) {
+            } else if ($user->status < 0) {
                 $request->session()->flash('errorMsg', '账号已禁用');
 
                 return Redirect::back();
+            } else if ($user->status == 0 && self::$config['is_active_register'] && $user->is_admin == 0) {
+                $request->session()->flash('errorMsg', '账号未激活，请先<a href="/activeUser?username=' . $user->username . '" target="_blank">【激活账号】</a>');
+
+                return Redirect::back()->withInput();
             }
 
             $request->session()->put('user', $user->toArray());

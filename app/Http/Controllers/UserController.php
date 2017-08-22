@@ -11,6 +11,7 @@ use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\Verify;
+use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use Illuminate\Http\Request;
 use Redirect;
@@ -272,7 +273,116 @@ TXT;
         return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
     }
 
-    // 重设密码
+    // 激活账号页
+    public function activeUser(Request $request)
+    {
+        if ($request->method() == 'POST') {
+            $username = trim($request->get('username'));
+
+            // 是否开启账号激活
+            if (!self::$config['is_active_register']) {
+                $request->session()->flash('errorMsg', '系统未开启账号激活功能，请联系管理员');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 查找账号
+            $user = User::where('username', $username)->first();
+            if (!$user) {
+                $request->session()->flash('errorMsg', '账号不存在，请重试');
+
+                return Redirect::back();
+            } else if ($user->status < 0) {
+                $request->session()->flash('errorMsg', '账号已禁止登陆，无需激活');
+
+                return Redirect::back();
+            } else if ($user->status > 0) {
+                $request->session()->flash('errorMsg', '账号无需激活');
+
+                return Redirect::back();
+            }
+
+            // 24小时内激活次数限制
+            $activeTimes = 0;
+            if (Cache::has('activeUser_' . md5($username))) {
+                $activeTimes = Cache::get('activeUser_' . md5($username));
+                if ($activeTimes >= self::$config['active_times']) {
+                    $request->session()->flash('errorMsg', '同一个账号24小时内只能请求激活' . self::$config['active_times'] . '次，请勿频繁操作');
+
+                    return Redirect::back();
+                }
+            }
+
+            // 生成激活账号的地址
+            $token = md5(self::$config['website_name'] . $username . microtime());
+            $verify = new Verify();
+            $verify->user_id = $user->id;
+            $verify->username = $username;
+            $verify->token = $token;
+            $verify->status = 0;
+            $verify->save();
+
+            // 发送邮件
+            $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
+            Mail::to($user->username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+
+            Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
+            $request->session()->flash('successMsg', '邮件已发送，请查看邮箱');
+
+            return Redirect::back();
+        } else {
+            $view['is_active_register'] = self::$config['is_active_register'];
+
+            return Response::view('user/activeUser', $view);
+        }
+    }
+
+    // 激活账号
+    public function active(Request $request, $token)
+    {
+        if (empty($token)) {
+            return Redirect::to('login');
+        }
+
+        $verify = Verify::where('token', $token)->with('user')->first();
+        if (empty($verify)) {
+            return Redirect::to('login');
+        } else if ($verify->status == 1) {
+            $request->session()->flash('errorMsg', '该链接已失效');
+
+            return Response::view('user/active');
+        } else if ($verify->user->status != 0) {
+            $request->session()->flash('errorMsg', '该账号无需激活.');
+
+            return Response::view('user/active');
+        } else if (time() - strtotime($verify->created_at) >= 1800) {
+            $request->session()->flash('errorMsg', '该链接已过期');
+
+            // 置为已失效
+            $verify->status = 2;
+            $verify->save();
+
+            return Response::view('user/active');
+        }
+
+        // 更新账号状态
+        $ret = User::where('id', $verify->user_id)->update(['status' => 1]);
+        if (!$ret) {
+            $request->session()->flash('errorMsg', '账号激活失败');
+
+            return Redirect::back();
+        }
+
+        // 置为已使用
+        $verify->status = 1;
+        $verify->save();
+
+        $request->session()->flash('successMsg', '账号激活成功');
+
+        return Response::view('user/active');
+    }
+
+    // 重设密码页
     public function resetPassword(Request $request)
     {
         if ($request->method() == 'POST') {
@@ -355,7 +465,7 @@ TXT;
                 $request->session()->flash('errorMsg', '该链接已失效');
 
                 return Redirect::back();
-            } else if (!$verify->user->enable) {
+            } else if ($verify->user->status < 0) {
                 $request->session()->flash('errorMsg', '账号已被禁用');
 
                 return Redirect::back();
@@ -373,7 +483,7 @@ TXT;
                 return Redirect::back();
             }
 
-            // 更新verify
+            // 置为已使用
             $verify->status = 1;
             $verify->save();
 
@@ -388,6 +498,14 @@ TXT;
             $verify = Verify::where('token', $token)->with('user')->first();
             if (empty($verify)) {
                 return Redirect::to('login');
+            } else if (time() - strtotime($verify->created_at) >= 1800) {
+                $request->session()->flash('errorMsg', '该链接已过期');
+
+                // 置为已失效
+                $verify->status = 2;
+                $verify->save();
+
+                return Response::view('user/reset');
             }
 
             $view['verify'] = $verify;

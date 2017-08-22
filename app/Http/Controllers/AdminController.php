@@ -6,6 +6,7 @@ use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
 use App\Http\Models\SsConfig;
+use App\Http\Models\SsGroup;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
@@ -479,6 +480,26 @@ class AdminController extends BaseController
         }
     }
 
+    // 删除节点
+    public function delNode(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        $user = SsNode::where('id', $id)->delete();
+        if ($user) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        }
+    }
+
     // 文章列表
     public function articleList(Request $request)
     {
@@ -582,8 +603,52 @@ class AdminController extends BaseController
         }
     }
 
-    // 删除文章
-    public function delNode(Request $request)
+    // 节点分组列表
+    public function groupList(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $view['groupList'] = SsGroup::paginate(10);
+
+        return Response::view('admin/groupList', $view);
+    }
+
+    // 添加节点分组
+    public function addGroup(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        if ($request->method() == 'POST') {
+            $name = $request->get('name');
+            $server = $request->get('server');
+            $method = $request->get('method');
+
+            SsNode::create([
+                'name' => $name,
+                'server' => $server,
+                'method' => $method
+            ]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+        } else {
+            return Response::view('admin/addGroup');
+        }
+    }
+
+    // 编辑节点分组
+    public function editGroup(Request $request)
     {
         if (!$request->session()->has('user')) {
             return Redirect::to('login');
@@ -594,7 +659,43 @@ class AdminController extends BaseController
         }
 
         $id = $request->get('id');
-        $user = SsNode::where('id', $id)->delete();
+        if ($request->method() == 'POST') {
+            $name = $request->get('name');
+            $server = $request->get('server');
+            $method = $request->get('method');
+
+            $data = [
+                'name' => $name,
+                'server' => $server,
+                'method' => $method
+            ];
+
+            $ret = SsNode::where('id', $id)->update($data);
+            if ($ret) {
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+            }
+        } else {
+            $view['group'] = SsNode::where('id', $id)->first();
+
+            return Response::view('admin/editNode', $view);
+        }
+    }
+
+    // 删除节点分组
+    public function delGroup(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $id = $request->get('id');
+        $user = SsGroup::where('id', $id)->delete();
         if ($user) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } else {
@@ -1130,6 +1231,14 @@ TXT;
     // 设置某个配置项
     public function setConfig(Request $request)
     {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $name = trim($request->get('name'));
         $value = trim($request->get('value'));
 
@@ -1143,7 +1252,7 @@ TXT;
         }
 
         // 如果开启用户邮件重置密码，则先设置网站名称和网址
-        if ($name == 'is_reset_password' && $value == '1') {
+        if (($name == 'is_reset_password' || $name == 'is_active_register') && $value == '1') {
             $config = Config::where('name', 'website_name')->first();
             if ($config->value == '') {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：开启重置密码需要先设置【网站名称】']);
@@ -1166,9 +1275,17 @@ TXT;
     // 设置可生成邀请码数
     public function setInviteNum(Request $request)
     {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $value = intval($request->get('value'));
 
-        Config::where('id', 3)->update(['value' => $value]);
+        Config::where('name', 'invite_num')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
@@ -1176,9 +1293,17 @@ TXT;
     // 设置网站名称
     public function setWebsiteName(Request $request)
     {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $value = trim($request->get('value'));
 
-        Config::where('id', 6)->update(['value' => $value]);
+        Config::where('name', 'website_name')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
@@ -1186,9 +1311,17 @@ TXT;
     // 设置网站地址
     public function setWebsiteUrl(Request $request)
     {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $value = trim($request->get('value'));
 
-        Config::where('id', 9)->update(['value' => $value]);
+        Config::where('name', 'website_url')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
@@ -1196,9 +1329,35 @@ TXT;
     // 设置重置密码次数
     public function setResetPasswordTimes(Request $request)
     {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
         $value = intval($request->get('value'));
 
-        Config::where('id', 8)->update(['value' => $value]);
+        Config::where('name', 'reset_password_times')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置激活账号次数
+    public function setActiveTimes(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $value = intval($request->get('value'));
+
+        Config::where('name', 'active_times')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
@@ -1244,4 +1403,5 @@ TXT;
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
     }
+
 }

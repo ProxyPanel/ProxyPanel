@@ -48,8 +48,8 @@
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="website_name" value="{{$website_name}}" id="website_name" />
                                                                 <span class="input-group-btn">
-                                                        <button class="btn btn-success" type="button" onclick="setWebsiteName()">修改</button>
-                                                    </span>
+                                                                    <button class="btn btn-success" type="button" onclick="setWebsiteName()">修改</button>
+                                                                </span>
                                                             </div>
                                                             <span class="help-block"> 发邮件时展示 </span>
                                                         </div>
@@ -60,8 +60,8 @@
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="website_url" value="{{$website_url}}" id="website_url" />
                                                                 <span class="input-group-btn">
-                                                        <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
-                                                    </span>
+                                                                    <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
+                                                                </span>
                                                             </div>
                                                             <span class="help-block"> 生成重置密码必备，示例：https://github.com </span>
                                                         </div>
@@ -74,22 +74,24 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                <label for="is_invite_register" class="col-md-2 control-label">邀请注册</label>
-                                                <div class="col-md-6">
-                                                    <input type="checkbox" class="make-switch" @if($is_invite_register) checked @endif id="is_invite_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                    <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
-                                                </div>
-                                            </div>
+                                                        <label for="is_invite_register" class="col-md-2 control-label">邀请注册</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($is_invite_register) checked @endif id="is_invite_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
+                                                        </div>
+                                                    </div>
                                                     <div class="form-group">
-                                                        <label for="invite_num" class="col-md-2 control-label">可生成邀请码数</label>
-                                                        <div class="col-md-2">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num" />
-                                                                <span class="input-group-btn">
-                                                        <button class="btn btn-success" type="button" onclick="setInviteNum()">修改</button>
-                                                    </span>
-                                                            </div>
-                                                            <span class="help-block"> 用户可以生成的邀请码数 </span>
+                                                        <label for="is_active_register" class="col-md-2 control-label">激活账号</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($is_active_register) checked @endif id="is_active_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 开启后用户需要通过邮件来激活账号 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="is_reset_password" class="col-md-2 control-label">重置密码</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($is_reset_password) checked @endif id="is_reset_password" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 开启后不允许用户通过邮件重置密码 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -113,10 +115,15 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="is_reset_password" class="col-md-2 control-label">重置密码</label>
-                                                        <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_reset_password) checked @endif id="is_reset_password" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 开启后不允许用户重置密码 </span>
+                                                        <label for="invite_num" class="col-md-2 control-label">可生成邀请码数</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num" />
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setInviteNum()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 用户可以生成的邀请码数 </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -125,10 +132,22 @@
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="reset_password_times" value="{{$reset_password_times}}" id="reset_password_times" />
                                                                 <span class="input-group-btn">
-                                                        <button class="btn btn-success" type="button" onclick="setResetPasswordTimes()">修改</button>
-                                                    </span>
+                                                                    <button class="btn btn-success" type="button" onclick="setResetPasswordTimes()">修改</button>
+                                                                </span>
                                                             </div>
-                                                            <span class="help-block"> 用户可以重置密码次数 </span>
+                                                            <span class="help-block"> 24小时内可以通过邮件重置密码次数 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="active_times" class="col-md-2 control-label">激活账号次数</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="active_times" value="{{$active_times}}" id="active_times" />
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setActiveTimes()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -155,11 +174,7 @@
         // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var is_rand_port = 0;
-
-                if (state) {
-                    is_rand_port = 1;
-                }
+                var is_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_rand_port', value:is_rand_port}, function (ret) {
                     console.log(ret);
@@ -170,11 +185,7 @@
         // 启用、禁用自定义端口
         $('#is_user_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var is_user_rand_port = 0;
-
-                if (state) {
-                    is_user_rand_port = 1;
-                }
+                var is_user_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_user_rand_port', value:is_user_rand_port}, function (ret) {
                     console.log(ret);
@@ -185,11 +196,7 @@
         // 启用、禁用注册
         $('#is_register').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var is_register = 0;
-
-                if (state) {
-                    is_register = 1;
-                }
+                var is_register = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_register', value:is_register}, function (ret) {
                     console.log(ret);
@@ -200,11 +207,7 @@
         // 启用、禁用邀请注册
         $('#is_invite_register').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var is_invite_register = 0;
-
-                if (state) {
-                    is_invite_register = 1;
-                }
+                var is_invite_register = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_invite_register', value:is_invite_register}, function (ret) {
                     console.log(ret);
@@ -215,13 +218,24 @@
         // 启用、禁用用户重置密码
         $('#is_reset_password').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var is_reset_password = 0;
-
-                if (state) {
-                    is_reset_password = 1;
-                }
+                var is_reset_password = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_reset_password', value:is_reset_password}, function (ret) {
+                    if (ret.status == 'fail') {
+                        bootbox.alert(ret.message, function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        });
+
+        // 启用、禁用用户激活账号
+        $('#is_active_register').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_active_register = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_active_register', value:is_active_register}, function (ret) {
                     if (ret.status == 'fail') {
                         bootbox.alert(ret.message, function() {
                             window.location.reload();
@@ -249,6 +263,19 @@
             var reset_password_times = $("#reset_password_times").val();
 
             $.post("{{url('admin/setResetPasswordTimes')}}", {_token:'{{csrf_token()}}', value:reset_password_times}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置激活账号次数
+        function setActiveTimes() {
+            var active_times = $("#active_times").val();
+
+            $.post("{{url('admin/setActiveTimes')}}", {_token:'{{csrf_token()}}', value:active_times}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();

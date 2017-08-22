@@ -114,12 +114,6 @@
                         <span class="title">账号管理</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/nodeList' ? 'active open' : ''}}">
-                    <a href="{{url('admin/nodeList')}}" class="nav-link nav-toggle">
-                        <i class="icon-list"></i>
-                        <span class="title">节点管理</span>
-                    </a>
-                </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/inviteList' ? 'active open' : ''}}">
                     <a href="{{url('admin/inviteList')}}" class="nav-link nav-toggle">
                         <i class="icon-puzzle"></i>
@@ -138,9 +132,30 @@
                         <span class="title">流量日志</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/nodeList', '/admin/addNode', '/admin/editNode', '/admin/groupList', '/admin/addGroup', '/admin/editGroup']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-layers"></i>
+                        <span class="title">节点管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/nodeList' ? 'active open' : ''}}">
+                            <a href="{{url('admin/nodeList')}}" class="nav-link ">
+                                <i class="icon-list"></i>
+                                <span class="title">节点列表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/groupList' ? 'active open' : ''}}">
+                            <a href="{{url('admin/groupList')}}" class="nav-link ">
+                                <i class="icon-grid"></i>
+                                <span class="title">节点分组列表</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
                         <span class="arrow"></span>
                     </a>
@@ -180,7 +195,7 @@
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/system' ? 'active open' : ''}}">
                             <a href="{{url('admin/system')}}" class="nav-link ">
-                                <i class="icon-wrench"></i>
+                                <i class="icon-settings"></i>
                                 <span class="title">系统设置</span>
                             </a>
                         </li>

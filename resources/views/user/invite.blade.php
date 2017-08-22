@@ -26,7 +26,8 @@
                         </div>
                         <div class="portlet-body">
                             <div class="alert alert-info">
-                                共计可以生成 <strong> {{$num}} </strong> 个邀请码
+                                <i class="fa fa-warning"></i>
+                                可生成 <strong> {{$num}} </strong> 个邀请码
                             </div>
                             <button type="submit" class="btn blue" onclick="makeInvite()" @if(!$num) disabled @endif> 生 成 </button>
                         </div>

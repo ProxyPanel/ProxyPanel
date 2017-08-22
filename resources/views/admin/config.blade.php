@@ -70,7 +70,7 @@
                                                     <td> {{$method->name}} @if($method->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$method->is_default)
-                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('{{$method->id}}')">默认</button>
+                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('1', '{{$method->id}}')">默认</button>
                                                             <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">删除</button>
                                                         @endif
                                                     </td>
@@ -103,7 +103,7 @@
                                                     <td> {{$protocol->name}} @if($protocol->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$protocol->is_default)
-                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('{{$protocol->id}}')">默认</button>
+                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('2', '{{$protocol->id}}')">默认</button>
                                                             <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">删除</button>
                                                         @endif
                                                     </td>
@@ -136,7 +136,7 @@
                                                     <td> {{$obfs->name}} @if($obfs->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$obfs->is_default)
-                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('{{$obfs->id}}')">默认</button>
+                                                            <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('3', '{{$obfs->id}}')">默认</button>
                                                             <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">删除</button>
                                                         @endif
                                                     </td>
@@ -273,7 +273,7 @@
         }
 
         // 置为默认
-        function setDefault(id) {
+        function setDefault(tabId, id) {
             var _token = '{{csrf_token()}}';
 
             $.ajax({
@@ -284,9 +284,7 @@
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
-                            window.location.reload();
-                        });
+                        window.location.href = '{{url('admin/config?tab=')}}' + tabId;
                     } else {
                         bootbox.alert(ret.message);
                     }
