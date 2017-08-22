@@ -244,12 +244,6 @@ class AdminController extends BaseController
             $remark = $request->get('remark');
             $is_admin = $request->get('is_admin');
 
-            // 校验username是否已存在
-            $exists = User::where('username', $username)->first();
-            if ($exists) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
-            }
-
             $data = [
                 'username' => $username,
                 'port' => $port,
