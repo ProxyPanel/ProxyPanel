@@ -48,7 +48,7 @@
             @endif
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">用户名</label>
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" required />
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入邮箱" name="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
             </div>
             <div class="form-group">
@@ -98,9 +98,6 @@
 <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <script type="text/javascript">
     // 登录

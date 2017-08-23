@@ -100,7 +100,7 @@
                                             <div class="form-group">
                                                 <label class="col-md-3 control-label">有效期</label>
                                                 <div class="col-md-8">
-                                                    <div class="input-group input-large date-picker input-daterange" data-date="2017-10-10" data-date-format="yyyy-mm-dd">
+                                                    <div class="input-group input-large input-daterange">
                                                         <input type="text" class="form-control" name="enable_time" value="{{$user->enable_time}}" id="enable_time">
                                                         <span class="input-group-addon"> 至 </span>
                                                         <input type="text" class="form-control" name="expire_time" value="{{$user->expire_time}}" id="expire_time">
@@ -287,11 +287,14 @@
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 过期时间
-        $(".date-picker").datepicker({
-            language: 'zh-CN',
-            autoclose: true,
-            todayHighlight: true
+        // 有效期
+        $('.input-daterange input').each(function() {
+            $(this).datepicker({
+                language: 'zh-CN',
+                autoclose: true,
+                todayHighlight: true,
+                format: 'yyyy-mm-dd'
+            });
         });
 
         // ajax同步提交
