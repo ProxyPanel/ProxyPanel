@@ -1,0 +1,35 @@
+{
+    "name": "easyticker",
+    "title": "jQuery Easy Ticker",
+    "description": "jQuery easy ticker is a news ticker like plugin, which scrolls the list infinitely. It is highly customizable, flexible with lot of features and works in all browsers. Tags: slider, vertical, animation, effect, ticker, news, rss, feed, easing, horizontal",
+    "keywords": [
+		"slider",
+        "jquery",
+        "animation",
+		"effect",
+		"ticker",
+		"news",
+		"rss",
+		"feed",
+		"vertical",
+		"easing"
+    ],
+    "version": "2.0.0",
+    "author": {
+        "name": "Aakash Chakravarthy",
+        "url": "http://www.aakashweb.com/"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/mit-license.php"
+        }
+    ],
+    "bugs": "http://www.aakashweb.com/jquery-plugins/easy-ticker/",
+    "homepage": "http://www.aakashweb.com/jquery-plugins/easy-ticker/",
+    "docs": "http://www.aakashweb.com/jquery-plugins/easy-ticker/#docs",
+    "demo": "http://www.aakashweb.com/demos/jquery-easy-ticker/",
+    "dependencies": {
+        "jquery": ">=1.7"
+    }
+}

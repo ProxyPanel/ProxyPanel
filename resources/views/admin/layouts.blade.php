@@ -126,6 +126,24 @@
                         <span class="title">文章管理</span>
                     </a>
                 </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/shop/goodsList', '/shop/addGoods', '/shop/editGoods']) ? 'active open' : ''}}">
+                    <a href="{{url('shop/goodsList')}}" class="nav-link nav-toggle">
+                        <i class="icon-basket"></i>
+                        <span class="title">商品管理</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/coupon/couponList', '/coupon/addCoupon']) ? 'active open' : ''}}">
+                    <a href="{{url('coupon/couponList')}}" class="nav-link nav-toggle">
+                        <i class="icon-wallet"></i>
+                        <span class="title">优惠券管理</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/ticket/ticketList', '/ticket/replyTicket']) ? 'active open' : ''}}">
+                    <a href="{{url('ticket/ticketList')}}" class="nav-link nav-toggle">
+                        <i class="icon-question"></i>
+                        <span class="title">工单管理</span>
+                    </a>
+                </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/trafficLog' ? 'active open' : ''}}">
                     <a href="{{url('admin/trafficLog')}}" class="nav-link nav-toggle">
                         <i class="icon-speedometer"></i>

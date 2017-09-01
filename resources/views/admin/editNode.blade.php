@@ -132,6 +132,7 @@
                                                         <label for="traffic_rate" class="col-md-3 control-label"> 流量比例 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="traffic_rate" value="{{$node->traffic_rate}}" value="1.0" id="traffic_rate" placeholder="" required>
+                                                            <span class="help-block"> 举例：0.1用100M结算10M，5用100M结算500M </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">

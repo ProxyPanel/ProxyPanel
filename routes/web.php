@@ -22,6 +22,9 @@ Route::get('admin/groupList', 'AdminController@groupList'); // 文章列表
 Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加文章
 Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑文章
 Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除文章
+Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
+Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
+Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
 Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
 Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
 Route::any('admin/config', 'AdminController@config'); // 配置列表
@@ -48,8 +51,13 @@ Route::get('download', 'AdminController@download'); // 下载转换过的JSON配
 Route::any('user', 'UserController@index'); // 用户首页
 Route::any('user/article', 'UserController@article'); // 文章详情
 Route::any('user/nodeList', 'UserController@nodeList'); // 节点列表
+Route::any('user/goodsList', 'UserController@goodsList'); // 商品列表
 Route::any('user/profile', 'UserController@profile'); // 修改个人信息
 Route::any('user/trafficLog', 'UserController@trafficLog'); // 流量日志
+Route::get('user/ticketList', 'UserController@ticketList'); // 工单
+Route::post('user/addTicket', 'UserController@addTicket'); // 快速添加工单
+Route::any('user/replyTicket', 'UserController@replyTicket'); // 回复工单
+Route::post('user/closeTicket', 'UserController@closeTicket'); // 关闭工单
 Route::any('user/invite', 'UserController@invite'); // 邀请码
 Route::any('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
 Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
@@ -57,3 +65,13 @@ Route::any('reset/{token}', 'UserController@reset'); // 重设密码
 Route::any('activeUser', 'UserController@activeUser'); // 激活账号
 Route::any('active/{token}', 'UserController@active'); // 激活账号
 
+Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
+Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
+Route::any('shop/editGoods', 'ShopController@editGoods'); // 编辑商品
+Route::post('shop/delGoods', 'ShopController@delGoods'); // 删除商品
+
+Route::any('coupon/couponList', 'CouponController@couponList'); // 优惠券列表
+Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
+Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
+
+Route::any('user/takeAward', 'UserController@takeAward'); // 抽奖

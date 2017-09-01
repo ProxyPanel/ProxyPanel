@@ -1,8 +1,13 @@
 @extends('admin.layouts')
 
 @section('css')
-    <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <style>
+        .fancybox > img {
+            width: 75px;
+            height: 75px;
+        }
+    </style>
 @endsection
 @section('title', '控制面板')
 @section('content')
@@ -11,7 +16,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('admin/articleList')}}">文章管理</a>
+                <a href="{{url('coupon/couponList')}}">优惠券管理</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -23,12 +28,12 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-docs font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 文章管理</span>
+                            <i class="icon-list font-dark"></i>
+                            <span class="caption-subject bold uppercase"> 优惠券列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addArticle()"> 新增
+                                <button class="btn sbold blue" onclick="addCoupon()"> 新增
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -36,31 +41,42 @@
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
                                     <th> ID </th>
-                                    <th> 标题 </th>
-                                    <th> 排序 </th>
-                                    <th> 发布日期 </th>
+                                    <th> 名称 </th>
+                                    <th> LOGO </th>
+                                    <th> 券码 </th>
+                                    <th> 类型 </th>
+                                    <th> 用途 </th>
+                                    <th> 金额 </th>
+                                    <th> 折扣 </th>
+                                    <th> 有效期 </th>
+                                    <th> 状态 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if($articleList->isEmpty())
+                                @if($couponList->isEmpty())
                                     <tr>
-                                        <td colspan="5">暂无数据</td>
+                                        <td colspan="11">暂无数据</td>
                                     </tr>
                                 @else
-                                    @foreach($articleList as $article)
+                                    @foreach($couponList as $coupon)
                                         <tr class="odd gradeX">
-                                            <td> {{$article->id}} </td>
-                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{$article->title}} </a> </td>
-                                            <td> {{$article->sort}} </td>
-                                            <td> {{$article->created_at}} </td>
+                                            <td> {{$coupon->id}} </td>
+                                            <td> {{$coupon->name}} </td>
+                                            <td> @if($coupon->logo) <a href="{{$coupon->logo}}" class="fancybox"><img src="{{$coupon->logo}}"/></a> @endif </td>
+                                            <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
+                                            <td> <span class="label label-danger">{{$coupon->type == '1' ? '现金优惠' : '折扣优惠'}}</span> </td>
+                                            <td> <span class="label label-danger">{{$coupon->usage == '1' ? '仅限一次性使用' : '可重复使用'}}</span> </td>
+                                            <td> <span class="label label-danger">{{$coupon->amount}}元</span> </td>
+                                            <td> <span class="label label-danger">{{$coupon->discount * 10}}折</span> </td>
+                                            <td> {{date('Y-m-d', strtotime($coupon->available_start))}} ~ {{date('Y-m-d', strtotime($coupon->available_end))}} </td>
+                                            <td> {{$coupon->status}} </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$article->id}}')">编辑</button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$article->id}}')">删除</button>
+                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')">删除</button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -70,11 +86,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$articleList->total()}} 篇文章</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$couponList->total()}} 张优惠券</div>
                             </div>
                             <div class="col-md-7 col-sm-7">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $articleList->links() }}
+                                    {{ $couponList->links() }}
                                 </div>
                             </div>
                         </div>
@@ -89,24 +105,17 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/fancybox/source/jquery.fancybox.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 添加文章
-        function addArticle() {
-            window.location.href = '{{url('admin/addArticle')}}';
+        function addCoupon() {
+            window.location.href = '{{url('coupon/addCoupon')}}';
         }
 
-        // 编辑文章
-        function editArticle(id) {
-            window.location.href = '{{url('admin/editArticle?id=')}}' + id + '&page=' + '{{Request::get('page', 1)}}';
-        }
-
-        // 删除文章
-        function delArticle(id) {
-            var _token = '{{csrf_token()}}';
-
+        // 删除商品
+        function delCoupon(id) {
             bootbox.confirm({
-                message: "确定删除文章？",
+                message: "确定删除该优惠券？",
                 buttons: {
                     confirm: {
                         label: '确定',
@@ -119,7 +128,7 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('admin/delArticle')}}", {id:id, _token:_token}, function(ret){
+                        $.post("{{url('coupon/delCoupon')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret){
                             if (ret.status == 'success') {
                                 bootbox.alert(ret.message, function(){
                                     window.location.reload();
@@ -132,5 +141,13 @@
                 }
             });
         }
+
+        // 查看商品图片
+        $(document).ready(function () {
+            $('.fancybox').fancybox({
+                openEffect: 'elastic',
+                closeEffect: 'elastic'
+            })
+        })
     </script>
 @endsection

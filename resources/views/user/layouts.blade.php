@@ -40,7 +40,7 @@
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
         <div class="page-logo">
-            <a href="{{url('/')}}">
+            <a href="{{url('/user')}}">
                 <img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
             <div class="menu-toggler sidebar-toggler">
                 <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
@@ -104,7 +104,7 @@
                 <li class="nav-item start {{Request::getRequestUri() == '/user' ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
-                        <span class="title">用户中心</span>
+                        <span class="title">首页</span>
                         <span class="selected"></span>
                     </a>
                 </li>
@@ -124,6 +124,18 @@
                     <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
                         <i class="icon-user-follow"></i>
                         <span class="title">邀请码</span>
+                    </a>
+                </li>
+                <li class="nav-item {{Request::getRequestUri() == '/user/goodsList' ? 'active open' : ''}}">
+                    <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
+                        <i class="icon-basket"></i>
+                        <span class="title">流量包</span>
+                    </a>
+                </li>
+                <li class="nav-item {{Request::getRequestUri() == '/user/ticketList' ? 'active open' : ''}}">
+                    <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
+                        <i class="icon-question"></i>
+                        <span class="title">工单</span>
                     </a>
                 </li>
             </ul>

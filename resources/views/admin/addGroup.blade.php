@@ -24,39 +24,51 @@
         <!-- END PAGE BREADCRUMB -->
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
-            <div class="col-md-6">
-                <div class="tab-pane active">
-                    <div class="portlet light bordered">
-                        <div class="portlet-body form">
-                            <!-- BEGIN FORM-->
-                            <form action="{{url('admin/addGroup')}}" method="post" class="form-horizontal" onsubmit="return do_submit();">
-                                <div class="form-body">
-                                    <div class="form-group">
-                                        <label for="name" class="col-md-3 control-label"> 分组名称 </label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="name" id="name" placeholder="" autofocus required>
-                                            <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="server" class="col-md-3 control-label"> 级别 </label>
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control" name="level" id="level" placeholder="" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-offset-6 col-md-4">
-                                            <button type="submit" class="btn green"> 提 交 </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                            <!-- END FORM-->
+            <div class="col-md-12">
+                <!-- BEGIN PORTLET-->
+                <div class="portlet light form-fit bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="caption-subject font-green sbold uppercase">添加节点分组</span>
                         </div>
+                        <div class="actions"></div>
+                    </div>
+                    <div class="portlet-body form">
+                        @if (Session::has('errorMsg'))
+                            <div class="alert alert-danger">
+                                <button class="close" data-close="alert"></button>
+                                <strong>错误：</strong> {{Session::get('errorMsg')}}
+                            </div>
+                        @endif
+                        <!-- BEGIN FORM-->
+                        <form action="{{url('admin/addGroup')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">分组名称</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="name" value="" id="name" placeholder="" autofocus required>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">级别</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="level" value="" id="level" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- END FORM-->
                     </div>
                 </div>
+                <!-- END PORTLET-->
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->

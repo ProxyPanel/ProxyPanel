@@ -19,50 +19,58 @@
         </ul>
         <!-- END PAGE BREADCRUMB -->
         <!-- BEGIN PAGE BASE CONTENT -->
-        <div class="tab-pane">
-            <div class="portlet light bordered">
-                <div class="portlet-body form">
-                    <!-- BEGIN FORM-->
-                    <form action="{{url('admin/editArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return do_submit();">
-                        <div class="form-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="portlet-body">
-                                        <div class="form-group">
-                                            <label for="title" class="col-md-3 control-label">标题</label>
-                                            <div class="col-md-8">
-                                                <input type="text" class="form-control" name="title" value="{{$article->title}}" id="title" placeholder="" autofocus required>
-                                                <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="sort" class="col-md-3 control-label">排序</label>
-                                            <div class="col-md-8">
-                                                <input type="text" class="form-control" name="sort" value="{{$article->sort}}" id="sort" value="0" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="content" class="col-md-3 control-label">内容</label>
-                                            <div class="col-md-8">
-                                                <script id="editor" type="text/plain" style="width:800px;height:400px;">
-                                                    {!! $article->content !!}
-                                                </script>
-                                            </div>
-                                        </div>
+        <div class="row">
+            <div class="col-md-12">
+                @if (Session::has('errorMsg'))
+                    <div class="alert alert-danger">
+                        <button class="close" data-close="alert"></button>
+                        <strong>错误：</strong> {{Session::get('errorMsg')}}
+                    </div>
+                @endif
+                <!-- BEGIN PORTLET-->
+                <div class="portlet light form-fit bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="caption-subject font-green sbold uppercase">添加文章</span>
+                        </div>
+                        <div class="actions"></div>
+                    </div>
+                    <div class="portlet-body form">
+                        <!-- BEGIN FORM-->
+                        <form action="{{url('admin/editArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">标题</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="title" value="{{$article->title}}" id="title" placeholder="" autofocus required>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">排序</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="sort" value="{{$article->sort}}" id="sort" value="0" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">内容</label>
+                                    <div class="col-md-9">
+                                        <script id="editor" type="text/plain" style="height:400px;">{!! $article->content !!}</script>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-offset-5 col-md-4">
-                                    <button type="submit" class="btn green">提 交</button>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                    <!-- END FORM-->
+                        </form>
+                        <!-- END FORM-->
+                    </div>
                 </div>
+                <!-- END PORTLET-->
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
@@ -77,12 +85,12 @@
     <script type="text/javascript">
         // 百度富文本编辑器
         var ue = UE.getEditor('editor', {
-            toolbars:[['source','undo','redo','bold','italic','underline','insertimage','insertvideo','map','lineheight','fontfamily','fontsize','justifyleft','justifycenter','justifyright','justifyjustify','forecolor','backcolor','link','unlink','date','time','fullscreen']],
+            toolbars:[['source','undo','redo','bold','italic','underline','insertimage','insertvideo','lineheight','fontfamily','fontsize','justifyleft','justifycenter','justifyright','justifyjustify','forecolor','backcolor','link','unlink']],
             wordCount:true,                //关闭字数统计
             elementPathEnabled : false,    //是否启用元素路径
             maximumWords:300,              //允许的最大字符数
             initialContent:'',             //初始化编辑器的内容
-            initialFrameWidth:800,         //初始化宽度
+            initialFrameWidth:null,        //初始化宽度
             autoClearinitialContent:false, //是否自动清除编辑器初始内容
         });
 

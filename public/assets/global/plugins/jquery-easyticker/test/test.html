@@ -1,0 +1,79 @@
+<script src="jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="jquery.easing.min.js"></script>
+<script type="text/javascript" src="../jquery.easy-ticker.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var dd = $('.vticker').easyTicker({
+		direction: 'up',
+		easing: 'easeInOutBack',
+		speed: 'slow',
+		interval: 2000,
+		height: 'auto',
+		visible: 1,
+		mousePause: 0,
+		controls: {
+			up: '.up',
+			down: '.down',
+			toggle: '.toggle',
+			stopText: 'Stop !!!'
+		}
+	}).data('easyTicker');
+	
+	cc = 1;
+	$('.aa').click(function(){
+		$('.vticker ul').append('<li>' + cc + ' Triangles can be made easily using CSS also without any images. This trick requires only div tags and some</li>');
+		cc++;
+	});
+	
+	$('.vis').click(function(){
+		dd.options['visible'] = 3;
+		
+	});
+	
+	$('.visall').click(function(){
+		dd.stop();
+		dd.options['visible'] = 0 ;
+		dd.start();
+	});
+	
+});
+</script>
+
+<style>
+.vticker{
+	border: 1px solid red;
+	width: 400px;
+}
+.vticker ul{
+	padding: 0;
+}
+.vticker li{
+	list-style: none;
+	border-bottom: 1px solid green;
+	padding: 10px;
+}
+.et-run{
+	background: red;
+}
+</style>
+
+<button class="aa">ADD</button>
+<button class="vis">SET VISIBLE 3</button>
+<button class="visall">SET VISIBLE ALL</button>
+
+<button class="up">UP</button>
+<button class="down">DOWN</button>
+<button class="toggle">TOGGLE</button>
+
+<div class="vticker">
+	<ul>
+		<li>Triangles can be made easily using CSS also without any images. This trick requires only div tags and some CSS works. To get this trick, just use the code below.</li>
+		<li>List 2</li>
+		<li>List 3</li>
+		<li>List 4</li>
+		<li>List 5 </li>
+		<li class="ww">Hey... Triangles can be made easily using CSS also without any images. This trick requires only div tags and some CSS works. To get this trick, just use the code below.</li>
+	</ul>
+</div>

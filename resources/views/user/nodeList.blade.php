@@ -28,6 +28,9 @@
                         </div>
                     </div>
                     <div class="portlet-body">
+                        <div class="alert alert-danger">
+                            <strong>流量比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推，越是优质节点则比例越高。
+                        </div>
                         <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                 <thead>
@@ -37,7 +40,6 @@
                                     <th> 出口带宽 </th>
                                     <th> 负载 </th>
                                     <th> 在线人数 </th>
-                                    <th> 产生流量 </th>
                                     <th> 流量比例 </th>
                                     <th> 协议 </th>
                                     <th> 混淆 </th>
@@ -45,9 +47,6 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <div class="alert alert-danger">
-                                    <strong>流量比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推，越是优质节点则比例越高。
-                                </div>
                                 @if($nodeList->isEmpty())
                                     <tr>
                                         <td colspan="10">暂无数据</td>
@@ -60,7 +59,6 @@
                                             <td> {{$node->bandwidth}}M </td>
                                             <td> <span class="label label-danger"> {{$node->load}} </span> </td>
                                             <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
-                                            <td> {{$node->transfer}} </td>
                                             <td> {{$node->traffic_rate}} </td>
                                             <td> <span class="label label-info"> {{$node->protocol}} </span> </td>
                                             <td> <span class="label label-info"> {{$node->obfs}} </span> </td>

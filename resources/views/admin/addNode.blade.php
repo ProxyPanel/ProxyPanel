@@ -48,7 +48,7 @@
                                                     <div class="form-group">
                                                         <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="server" id="server" placeholder="" required>
+                                                            <input type="text" class="form-control" name="server" id="server" placeholder="域名或IP地址" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -75,7 +75,7 @@
                                                         <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
                                                         <div class="col-md-8">
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control" name="bandwidth" id="bandwidth" placeholder="" required>
+                                                                <input type="text" class="form-control" name="bandwidth" value="1000" id="bandwidth" placeholder="" required>
                                                                 <span class="input-group-addon">M</span>
                                                             </div>
                                                         </div>
@@ -84,7 +84,7 @@
                                                         <label for="traffic" class="col-md-3 control-label">每月可用流量</label>
                                                         <div class="col-md-8">
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control right" name="traffic" id="traffic" placeholder="" required>
+                                                                <input type="text" class="form-control right" name="traffic" value="1000" id="traffic" placeholder="" required>
                                                                 <span class="input-group-addon">G</span>
                                                             </div>
                                                         </div>
@@ -125,13 +125,14 @@
                                                                 <option value="0" selected>否</option>
                                                                 <option value="1">是</option>
                                                             </select>
-                                                            <span class="help-block"> 请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
+                                                            <span class="help-block"> 如果兼容请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="traffic_rate" class="col-md-3 control-label"> 流量比例 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="traffic_rate" value="1.0" id="traffic_rate" placeholder="" required>
+                                                            <span class="help-block"> 举例：0.1用100M结算10M，5用100M结算500M </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">

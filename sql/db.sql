@@ -105,11 +105,13 @@ CREATE TABLE `user` (
   `usage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
   `pay_way` tinyint(4) NOT NULL DEFAULT '3' COMMENT '付费方式：1-月付、2-半年付、3-年付',
   `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
+  `score` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
   `enable_time` date DEFAULT NULL COMMENT '开通日期',
   `expire_time` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
   `remark` text COMMENT '备注',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
+  `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
   `status` tinyint(11) DEFAULT '0' COMMENT '状态：-1-禁止登陆、0-未激活、1-正常',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -127,9 +129,9 @@ VALUES (1,'admin','e10adc3949ba59abbe56e057f20f883e',10000,'@123',1073741824000,
 UNLOCK TABLES;
 
 
-# Dump of table user_traffic_log
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `user_traffic_log`
+-- ----------------------------
 CREATE TABLE `user_traffic_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
@@ -139,8 +141,6 @@ CREATE TABLE `user_traffic_log` (
   `rate` float NOT NULL COMMENT '流量比例',
   `traffic` varchar(32) NOT NULL COMMENT '产生流量',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -206,7 +206,7 @@ CREATE TABLE `config` (
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '配置名',
   `value` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统配置';
 
 -- ----------------------------
 -- Records of config
@@ -222,6 +222,9 @@ INSERT INTO `config` VALUES ('8', 'reset_password_times', 3);
 INSERT INTO `config` VALUES ('9', 'website_url', 'http://baidu.com');
 INSERT INTO `config` VALUES ('10', 'is_active_register', 1);
 INSERT INTO `config` VALUES ('11', 'active_times', 3);
+INSERT INTO `config` VALUES ('12', 'login_add_score', 1);
+INSERT INTO `config` VALUES ('13', 'min_rand_score', 1);
+INSERT INTO `config` VALUES ('14', 'max_rand_score', 100);
 
 
 -- ----------------------------
@@ -292,6 +295,112 @@ CREATE TABLE `ss_group_node` (
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='分组节点关系表';
+
+
+-- ----------------------------
+-- Table structure for `goods`
+-- ----------------------------
+CREATE TABLE `goods` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称',
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品图片地址',
+  `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量',
+  `score` int(11) NOT NULL DEFAULT '0' COMMENT '商品价值多少积分',
+  `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
+  `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-否、1-是',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品信息表';
+
+
+-- ----------------------------
+-- Table structure for `coupon`
+-- ----------------------------
+CREATE TABLE `coupon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '优惠券名称',
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '优惠券LOGO',
+  `sn` char(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '优惠券码',
+  `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '类型：1-现金优惠、2-折扣优惠',
+  `usage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '用途：1-仅限一次性使用、2-可重复使用',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
+  `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '折扣',
+  `available_start` datetime NOT NULL COMMENT '有效期开始',
+  `available_end` datetime NOT NULL COMMENT '有效期结束',
+  `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-未删除、1-已删除',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-未使用、1-已使用、2-已失效',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券';
+
+
+-- ----------------------------
+-- Table structure for `coupon_log`
+-- ----------------------------
+CREATE TABLE `coupon_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券ID',
+  `goods_id` int(11) NOT NULL COMMENT '商品ID',
+  `order_id` int(11) NOT NULL COMMENT '订单ID',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券使用日志';
+
+
+-- ----------------------------
+-- Table structure for `order`
+-- ----------------------------
+CREATE TABLE `order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
+
+
+-- ----------------------------
+-- Table structure for `ticket`
+-- ----------------------------
+CREATE TABLE `ticket` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `content` text NOT NULL COMMENT '内容',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `ticket_reply`
+-- ----------------------------
+CREATE TABLE `ticket_reply` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ticket_id` int(11) NOT NULL DEFAULT '0' COMMENT '工单ID',
+  `user_id` int(11) NOT NULL COMMENT '回复人ID',
+  `content` text NOT NULL COMMENT '回复内容',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `user_score_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `before` int(11) NOT NULL DEFAULT '0',
+  `after` int(11) NOT NULL DEFAULT '0',
+  `score` int(11) NOT NULL DEFAULT '0',
+  `desc` varchar(50) NOT NULL DEFAULT '',
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

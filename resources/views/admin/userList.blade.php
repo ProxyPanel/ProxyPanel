@@ -75,24 +75,25 @@
                                 <thead>
                                 <tr>
                                     <th> ID </th>
-                                    <th> 用户名（昵称） </th>
+                                    <th> 用户名 </th>
                                     <th> 端口 </th>
                                     <th> 加密方式 </th>
                                     <th> 已消耗 </th>
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
                                     <th> 状态 </th>
+                                    <th> SS </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     @if ($userList->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="10">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach ($userList as $user)
-                                            <tr class="odd gradeX">
+                                            <tr class="odd gradeX {{$user->trafficWarning ? 'danger' : ''}}">
                                             <td> {{$user->id}} </td>
                                             <td> {{$user->username}} </td>
                                             <td> <span class="label label-danger"> {{$user->port}} </span> </td>
@@ -104,6 +105,15 @@
                                                     <span class="label label-warning"> {{$user->expire_time}} </span>
                                                 @else
                                                     {{$user->expire_time}}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($user->status == '1')
+                                                    <span class="label label-info">正常</span>
+                                                @elseif ($user->status == '0')
+                                                    <span class="label label-default">未激活</span>
+                                                @else
+                                                    <span class="label label-danger">禁用</span>
                                                 @endif
                                             </td>
                                             <td>

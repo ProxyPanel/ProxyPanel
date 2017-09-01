@@ -13,6 +13,7 @@ class UserTrafficLog extends Model
 {
     protected $table = 'user_traffic_log';
     protected $primaryKey = 'id';
+    public $timestamps = false;
     protected $fillable = [
         'user_id',
         'u',

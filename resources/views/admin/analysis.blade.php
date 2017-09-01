@@ -34,6 +34,7 @@
                         @if (Session::has('analysisErrorMsg'))
                             <div class="alert alert-danger">
                                 <button class="close" data-close="alert"></button>
+                                <i class="fa fa-warning"></i>
                                 {{Session::get('analysisErrorMsg')}}
                             </div>
                         @else

@@ -107,7 +107,15 @@ class AdminController extends BaseController
         foreach ($userList as &$user) {
             $user->transfer_enable = $this->flowAutoShow($user->transfer_enable);
             $user->used_flow = $this->flowAutoShow($user->u + $user->d);
-            $user->expireWarning = $user->expire_time <= date('Y-m-d', strtotime("+ 30 days")) ? 1 : 0;
+            $user->expireWarning = $user->expire_time <= date('Y-m-d', strtotime("+ 30 days")) ? 1 : 0; // 临近过期提醒
+
+            // 流量异常警告
+            $time = time() - 24 * 60 * 60;
+            $u = UserTrafficLog::where('user_id', $user->id)->where('log_time', '>=', $time)->where('log_time', '<=', time())->sum('u');
+            $d = UserTrafficLog::where('user_id', $user->id)->where('log_time', '>=', $time)->where('log_time', '<=', time())->sum('d');
+
+            // 超过24小时内5G流量则认为是异常使用
+            $user->trafficWarning = ($u + $d) > 5368709120 ? 1 : 0;
         }
 
         $view['userList'] = $userList;
@@ -239,6 +247,7 @@ class AdminController extends BaseController
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
             $balance = $request->get('balance');
+            $status = $request->get('status');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
@@ -263,6 +272,7 @@ class AdminController extends BaseController
                 'usage' => $usage,
                 'pay_way' => $pay_way,
                 'balance' => $balance,
+                'status' => $status,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
@@ -505,7 +515,7 @@ class AdminController extends BaseController
             return Redirect::to('login');
         }
 
-        $articleList = Article::orderBy('sort', 'desc')->paginate(10);
+        $articleList = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10);
 
         $view['articleList'] = $articleList;
 

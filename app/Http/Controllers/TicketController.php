@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Models\Ticket;
+use App\Http\Models\TicketReply;
+use Illuminate\Http\Request;
+use Response;
+use Redirect;
+
+/**
+ * 工单控制器
+ * Class TicketController
+ * @package App\Http\Controllers
+ */
+class TicketController extends BaseController
+{
+    protected static $config;
+
+    function __construct()
+    {
+        self::$config = $this->systemConfig();
+    }
+
+    // 工单列表
+    public function ticketList(Request $request)
+    {
+        $view['ticketList'] = Ticket::paginate(10);
+
+        return Response::view('ticket/ticketList', $view);
+    }
+
+    // 回复工单
+    public function replyTicket(Request $request)
+    {
+        $id = $request->get('id');
+
+        $user = $request->session()->get('user');
+
+        if ($request->method() == 'POST') {
+            $content = $request->get('content');
+
+            $obj = new TicketReply();
+            $obj->ticket_id = $id;
+            $obj->user_id = $user['id'];
+            $obj->content = $content;
+            $obj->created_at = date('Y-m-d H:i:s');
+            $obj->save();
+
+            if ($obj->id) {
+                // 将工单置为已回复
+                Ticket::where('id', $id)->update(['status' => 1]);
+
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
+            }
+        } else {
+            $view['ticket'] = Ticket::where('id', $id)->with('user')->first();
+            $view['replyList'] = TicketReply::where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
+
+            return Response::view('ticket/replyTicket', $view);
+        }
+    }
+
+    // 关闭工单
+    public function closeTicket(Request $request)
+    {
+        $id = $request->get('id');
+
+        $ret = Ticket::where('id', $id)->update(['status' => 2]);
+        if ($ret) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
+        }
+    }
+
+}

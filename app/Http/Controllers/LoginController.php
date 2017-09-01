@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\User;
+use App\Http\Models\UserScoreLog;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
+use Cache;
 
 /**
  * 登录控制器
@@ -48,6 +50,33 @@ class LoginController extends BaseController
 
                 return Redirect::back()->withInput();
             }
+
+            // 更新登录信息
+            User::where('id', $user['id'])->update(['last_login' => time()]);
+
+            // 登录送积分
+            if (static::$config['login_add_score']) {
+                if (!Cache::has('loginAddScore_' . md5($username))) {
+                    $score = mt_rand(static::$config['min_rand_score'], static::$config['max_rand_score']);
+                    $ret = User::where('id', $user['id'])->increment('score', $score);
+                    if ($ret) {
+                        $obj = new UserScoreLog();
+                        $obj->user_id = $user['id'];
+                        $obj->before = $user['score'];
+                        $obj->after = $user['score'] + $score;
+                        $obj->score = $score;
+                        $obj->desc = '登录送积分';
+                        $obj->created_at = date('Y-m-d H:i:s');
+                        $obj->save();
+
+                        Cache::put('loginAddScore_' . md5($username), '1', 1440);
+                        $request->session()->flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量包');
+                    }
+                }
+            }
+
+            // 重新取出用户信息
+            $user = User::where('id', $user['id'])->first();
 
             $request->session()->put('user', $user->toArray());
 

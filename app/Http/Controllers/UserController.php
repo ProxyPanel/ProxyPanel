@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
-use App\Http\Models\Config;
+use App\Http\Models\Goods;
 use App\Http\Models\Invite;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
+use App\Http\Models\Ticket;
+use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\Verify;
@@ -18,6 +20,7 @@ use Redirect;
 use Response;
 use Cache;
 use Mail;
+use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
 
 class UserController extends BaseController
 {
@@ -34,7 +37,7 @@ class UserController extends BaseController
             return Redirect::to('login');
         }
 
-        $view['articleList'] = Article::orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
+        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['info'] = $request->session()->get('user');
 
         return Response::view('user/index', $view);
@@ -45,7 +48,10 @@ class UserController extends BaseController
     {
         $id = $request->get('id');
 
-        $view['info'] = Article::where('id', $id)->first();
+        $view['info'] = Article::where('is_del', 0)->where('id', $id)->first();
+        if (empty($view['info'])) {
+            return Redirect::to('user');
+        }
 
         return Response::view('user/article', $view);
     }
@@ -227,6 +233,96 @@ TXT;
         $view['trafficList'] = $trafficList;
 
         return Response::view('user/trafficLog', $view);
+    }
+
+    // 商品列表
+    public function goodsList(Request $request)
+    {
+        $view['goodsList'] = Goods::where('is_del', 0)->paginate(10);
+
+        return Response::view('user/goodsList', $view);
+    }
+
+    // 工单
+    public function ticketList(Request $request)
+    {
+        $user = $request->session()->get('user');
+
+        $view['ticketList'] = Ticket::where('user_id', $user['id'])->paginate(10);
+
+        return Response::view('user/ticketList', $view);
+    }
+
+    // 添加工单
+    public function addTicket(Request $request)
+    {
+        $title = $request->get('title');
+        $content = $request->get('content');
+
+        $user = $request->session()->get('user');
+
+        $obj = new Ticket();
+        $obj->user_id = $user['id'];
+        $obj->title = $title;
+        $obj->content = $content;
+        $obj->status = 0;
+        $obj->created_at = date('Y-m-d H:i:s');
+        $obj->save();
+
+        if ($obj->id) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '提交失败']);
+        }
+    }
+
+    // 回复工单
+    public function replyTicket(Request $request)
+    {
+        $id = $request->get('id');
+
+        $user = $request->session()->get('user');
+
+        if ($request->method() == 'POST') {
+            $content = $request->get('content');
+
+            $obj = new TicketReply();
+            $obj->ticket_id = $id;
+            $obj->user_id = $user['id'];
+            $obj->content = $content;
+            $obj->created_at = date('Y-m-d H:i:s');
+            $obj->save();
+
+            if ($obj->id) {
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
+            } else {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
+            }
+        } else {
+            $ticket = Ticket::where('id', $id)->with('user')->first();
+            if (empty($ticket) || $ticket->user_id != $user['id']) {
+                return Redirect::to('user/ticketList');
+            }
+
+            $view['ticket'] = $ticket;
+            $view['replyList'] = TicketReply::where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
+
+            return Response::view('user/replyTicket', $view);
+        }
+    }
+
+    // 关闭工单
+    public function closeTicket(Request $request)
+    {
+        $id = $request->get('id');
+        $user = $request->session()->get('user');
+
+        $ret = Ticket::where('id', $id)->where('user_id', $user['id'])->update(['status' => 2]);
+        if ($ret) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
+        }
     }
 
     // 邀请码
@@ -513,4 +609,5 @@ TXT;
             return Response::view('user/reset', $view);
         }
     }
+
 }

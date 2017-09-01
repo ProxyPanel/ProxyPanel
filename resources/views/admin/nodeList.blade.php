@@ -31,7 +31,7 @@
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button id="sample_editable_1_new" class="btn sbold blue" onclick="addNode()"> 新增
+                                <button class="btn sbold blue" onclick="addNode()"> 新增
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>

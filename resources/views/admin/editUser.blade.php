@@ -108,6 +108,16 @@
                                                     <span class="help-block"> 留空默认为一年 </span>
                                                 </div>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="status" class="col-md-3 control-label">状态</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="status" value="{{$user->status}}" id="status">
+                                                        <option value="1" @if($user->status == '1') selected @endif>正常</option>
+                                                        <option value="0" @if($user->status == '0') selected @endif>未激活</option>
+                                                        <option value="-1" @if($user->status == '-1') selected @endif>禁用</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <hr>
                                             <div class="form-group">
                                                 <label for="wechat" class="col-md-3 control-label">微信</label>
@@ -306,6 +316,7 @@
             var usage = $("input:radio[name='usage']:checked").val();
             var pay_way = $("input:radio[name='pay_way']:checked").val();
             var balance = $('#balance').val();
+            var status = $('#status').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
             var wechat = $('#wechat').val();
@@ -329,7 +340,7 @@
                 type: "POST",
                 url: "{{url('admin/editUser')}}",
                 async: false,
-                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, enable_time:enable_time, expire_time:expire_time, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, status:status, enable_time:enable_time, expire_time:expire_time, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {
