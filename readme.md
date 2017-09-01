@@ -20,7 +20,7 @@ telegram：https://t.me/ssrpanel
 哈哈，如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
 将持续开发，喜欢请star一下
 ````
-![打赏作者一个巨无霸汉堡](https://raw.githubusercontent.com/ssrpanel/ssrpanel/723d6f9d35d10db7c57dab962c972035099a733f/public/assets/images/donate.jpeg)
+![打赏作者一个巨无霸汉堡](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
 #### PHP7环境配置
 ````
