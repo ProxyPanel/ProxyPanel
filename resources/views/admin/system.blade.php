@@ -35,6 +35,9 @@
                                         <li>
                                             <a href="#tab_2" data-toggle="tab"> 拓展设置 </a>
                                         </li>
+                                        <li>
+                                            <a href="#tab_3" data-toggle="tab"> 积分设置 </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -153,6 +156,29 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="tab-pane" id="tab_3">
+                                            <form action="#" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <label for="login_add_score" class="col-md-2 control-label">登录加积分</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 登录时将根据积分范围得到积分（24小时内） </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 control-label">积分范围</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group input-large input-daterange">
+                                                                <input type="text" class="form-control" name="min_rand_score" value="{{$min_rand_score}}" id="min_rand_score">
+                                                                <span class="input-group-addon"> ~ </span>
+                                                                <input type="text" class="form-control" name="max_rand_score" value="{{$max_rand_score}}" id="max_rand_score">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -188,6 +214,17 @@
                 var is_user_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_user_rand_port', value:is_user_rand_port}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 启用、禁用登录加积分
+        $('#login_add_score').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var login_add_score = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score', value:login_add_score}, function (ret) {
                     console.log(ret);
                 });
             }
@@ -243,6 +280,32 @@
                     }
                 });
             }
+        });
+
+        // 设置最小积分
+        $("#min_rand_score").change(function () {
+            var min_rand_score = $(this).val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'min_rand_score', value:min_rand_score}, function (ret) {
+                if (ret.status == 'fail') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        });
+
+        // 设置最大积分
+        $("#max_rand_score").change(function () {
+            var max_rand_score = $(this).val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'max_rand_score', value:max_rand_score}, function (ret) {
+                if (ret.status == 'fail') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
         });
 
         // 设置可生成邀请码数量
