@@ -3,6 +3,7 @@
 @section('css')
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('title', '控制面板')
 @section('content')
@@ -37,6 +38,9 @@
                                         </li>
                                         <li>
                                             <a href="#tab_3" data-toggle="tab"> 积分设置 </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_4" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -179,6 +183,68 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="tab-pane" id="tab_4">
+                                            <form action="{{url('admin/setQrcode')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                <div class="form-body">
+                                                    <div class="portlet-body">
+                                                        <div class="form-group">
+                                                            <label class="col-md-2 control-label">微信</label>
+                                                            <div class="col-md-6">
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                                        @if ($wechat_qrcode)
+                                                                            <img src="{{$wechat_qrcode}}" alt="" />
+                                                                        @else
+                                                                            <img src="/assets/images/noimage.png" alt="" />
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file">
+                                                                            <span class="fileinput-new"> 选择 </span>
+                                                                            <span class="fileinput-exists"> 更换 </span>
+                                                                            <input type="file" name="wechat_qrcode" id="wechat_qrcode">
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-md-2 control-label">支付宝</label>
+                                                            <div class="col-md-6">
+                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                                        @if ($alipay_qrcode)
+                                                                            <img src="{{$alipay_qrcode}}" alt="" />
+                                                                        @else
+                                                                            <img src="/assets/images/noimage.png" alt="" />
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                                    <div>
+                                                                        <span class="btn default btn-file">
+                                                                            <span class="fileinput-new"> 选择 </span>
+                                                                            <span class="fileinput-exists"> 更换 </span>
+                                                                            <input type="file" name="alipay_qrcode" id="alipay_qrcode">
+                                                                        </span>
+                                                                        <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-actions">
+                                                    <div class="row">
+                                                        <div class="col-md-offset-6 col-md-6">
+                                                            <input type="hidden" name="_token" value="{{csrf_token()}}" />
+                                                            <button type="submit" class="btn green">提 交</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -195,6 +261,7 @@
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 启用、禁用随机端口

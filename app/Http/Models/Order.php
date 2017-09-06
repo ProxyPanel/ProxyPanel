@@ -12,10 +12,17 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $table = 'order';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'oid';
     protected $fillable = [
+        'orderId',
         'user_id',
-        'goods_id'
+        'coupon_id',
+        'totalOriginalPrice',
+        'totalPrice',
+        'status'
     ];
 
+    function goodsList() {
+        return $this->hasMany(OrderGoods::class, 'oid', 'oid');
+    }
 }

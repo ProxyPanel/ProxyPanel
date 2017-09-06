@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
+use App\Http\Models\Coupon;
+use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
 use App\Http\Models\Invite;
+use App\Http\Models\Order;
+use App\Http\Models\OrderGoods;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
@@ -20,7 +24,8 @@ use Redirect;
 use Response;
 use Cache;
 use Mail;
-use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
+use DB;
+use Log;
 
 class UserController extends BaseController
 {
@@ -38,7 +43,12 @@ class UserController extends BaseController
         }
 
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
-        $view['info'] = $request->session()->get('user');
+        $user = $request->session()->get('user');
+        $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
+        $user['usedTransfer'] = $this->flowAutoShow($user['u'] - $user['d']);
+        $view['info'] = $user;
+        $view['wechat_qrcode'] = static::$config['wechat_qrcode'];
+        $view['alipay_qrcode'] = static::$config['alipay_qrcode'];
 
         return Response::view('user/index', $view);
     }
@@ -180,7 +190,7 @@ class UserController extends BaseController
             $ssr_str .= ':' . $user['obfs'] . ':' . base64_encode($user['passwd']);
             $ssr_str .= '/?obfsparam=' . $user['obfs_param'];
             $ssr_str .= '&=protoparam' . $user['protocol_param'];
-            $ssr_str .= '&remarks=' . base64_encode('VPN');
+            $ssr_str .= '&remarks=' . base64_encode($node->name);
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
@@ -251,6 +261,24 @@ TXT;
         $view['ticketList'] = Ticket::where('user_id', $user['id'])->paginate(10);
 
         return Response::view('user/ticketList', $view);
+    }
+
+    // 订单
+    public function orderList(Request $request)
+    {
+        $user = $request->session()->get('user');
+
+        $orderList = Order::where('user_id', $user['id'])->orderBy('oid', 'desc')->with('goodsList')->paginate(10);
+        foreach ($orderList as &$order) {
+            foreach ($order->goodsList as &$goods) {
+                $g = Goods::where('id', $goods->goods_id)->first();
+                $goods->goods_name = $g->name;
+            }
+        }
+
+        $view['orderList'] = $orderList;
+
+        return Response::view('user/orderList', $view);
     }
 
     // 添加工单
@@ -607,6 +635,132 @@ TXT;
             $view['verify'] = $verify;
 
             return Response::view('user/reset', $view);
+        }
+    }
+
+    // 使用优惠券
+    public function redeemCoupon(Request $request)
+    {
+        $coupon_sn = $request->get('coupon_sn');
+
+        if (empty($coupon_sn)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不能为空']);
+        }
+
+        $coupon = Coupon::where('sn', $coupon_sn)->where('is_del', 0)->first();
+        if (empty($coupon)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券不存在']);
+        } else if ($coupon->status == 1) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已使用，请换一个试试']);
+        } else if ($coupon->status == 2) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已失效，请换一个试试']);
+        } else if ($coupon->available_start > time() || $coupon->available_end < time()) {
+            $coupon->status = 2;
+            $coupon->save();
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已失效，请换一个试试']);
+        }
+
+        $data = [
+            'type' => $coupon->type,
+            'amount' => $coupon->amount,
+            'discount' => $coupon->discount
+        ];
+
+        return Response::json(['status' => 'success', 'data' => $data, 'message' => '该优惠券有效']);
+    }
+
+    // 添加订单
+    public function addOrder(Request $request)
+    {
+        $goods_id = intval($request->get('goods_id'));
+        $coupon_sn = $request->get('coupon_sn');
+
+        $user = $request->session()->get('user');
+
+        if ($request->method() == 'POST') {
+            $goods = Goods::where('id', $goods_id)->first();
+            if (empty($goods)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不存在']);
+            }
+
+            // 使用优惠券
+            if (!empty($coupon_sn)) {
+                $coupon = Coupon::where('sn', $coupon_sn)->where('is_del', 0)->where('status', 0)->first();
+                if (empty($coupon)) {
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：优惠券不存在']);
+                }
+
+                // 计算实际应支付总价
+                $totalPrice = $coupon->type == 2 ? $goods->price * $coupon->discount : $goods->price - $coupon->amount;
+                $totalPrice = $totalPrice > 0 ? $totalPrice : 0;
+            } else {
+                $totalPrice = $goods->price;
+            }
+
+            // 扣减账号余额
+            $user = User::where('id', $user['id'])->first();
+            if ($user->balance < $totalPrice) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
+            } else {
+                User::where('id', $user['id'])->decrement('balance', $totalPrice);
+                // TODO:记录日志
+            }
+
+            // 订单长ID
+            $orderId = date('YmdHis') . mt_rand(100000, 999999);
+
+            DB::beginTransaction();
+            try {
+                $order = new Order();
+                $order->orderId = $orderId;
+                $order->user_id = $user['id'];
+                $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
+                $order->totalOriginalPrice = $goods->price;
+                $order->totalPrice = $totalPrice;
+                $order->status = 2;
+                $order->save();
+
+                if ($order->oid) {
+                    $orderGoods = new OrderGoods();
+                    $orderGoods->oid = $order->oid;
+                    $orderGoods->orderId = $orderId;
+                    $orderGoods->user_id = $user['id'];
+                    $orderGoods->goods_id = $goods_id;
+                    $orderGoods->num = 1;
+                    $orderGoods->original_price = $goods->price;
+                    $orderGoods->price = $totalPrice;
+                    $orderGoods->save();
+                }
+
+                // 优惠券置为已使用
+                if (!empty($coupon)) {
+                    if ($coupon->usage == 1) {
+                        $coupon->status = 1;
+                        $coupon->save();
+                    }
+
+                    // 写入日志
+                    $couponLogObj = new CouponLog();
+                    $couponLogObj->coupon_id = $coupon->id;
+                    $couponLogObj->order_id = $order->id;
+                    $couponLogObj->save();
+                }
+
+                DB::commit();
+
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
+            } catch (\Exception $e) {
+                DB::rollBack();
+
+                Log::error('支付订单失败：' . $e);
+
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败']);
+            }
+        } else {
+            $view['goods'] = Goods::where('id', $goods_id)->first();
+
+            return Response::view('user/addOrder', $view);
         }
     }
 

@@ -25,8 +25,6 @@
         #lottery table td.active{background-color:#ea0000;}
 
     </style>
-
-
 @endsection
 @section('title', '控制面板')
 @section('content')
@@ -74,11 +72,19 @@
                                     </li>
                                     <li class="list-group-item">
                                         余额：{{$info['balance']}}
-                                        <span class="badge badge-danger"><a href="{{url('user/charge')}}">充值</a></span>
+                                        <span class="badge badge-danger">
+                                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal">充值</a>
+                                        </span>
                                     </li>
                                     <li class="list-group-item">
                                         积分：{{$info['score']}}
                                         <span class="badge badge-default"><a href="{{url('user/goodsList')}}">兑换</a></span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        剩余流量：{{$info['totalTransfer']}}
+                                    </li>
+                                    <li class="list-group-item">
+                                        账号到期：{{$info['expire_time']}}
                                     </li>
                                     <li class="list-group-item">
                                         最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}}
@@ -122,7 +128,7 @@
                                         <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
-                                        最后使用：{{empty($info['t']) ? '未使用' : date('Y-m-d H:i:s', $info['t'])}}
+                                        最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}
                                     </li>
                                 </ul>
                             </div>
@@ -131,24 +137,37 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <!-- BEGIN PORTLET -->
-                <div class="portlet light bordered">
-                    <div class="portlet-title tabbable-line">
-                        <div class="caption caption-md">
-                            <i class="icon-globe theme-font hide"></i>
-                            <span class="caption-subject font-blue-madison bold uppercase"> 快速工单 </span>
+        <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"> 充值 </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <span>微信</span>
+                                <br />
+                                <img src="{{$wechat_qrcode}}" alt="" style="width:200px; height:200px;" />
+                            </div>
+                            <div class="col-md-6">
+                                <span>支付宝</span>
+                                <br />
+                                <img src="{{$alipay_qrcode}}" alt="" style="width:200px; height:200px;" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-offset-4">
+                                <span>付款时请备注您的账号，以便及时到账</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="portlet-body overflow-h">
-                        <input type="text" name="title" id="title" placeholder="标题" class="form-control margin-bottom-20">
-                        <textarea name="content" id="content" placeholder="内容" class="form-control margin-bottom-20" rows="4"></textarea>
-                        <button class="btn red-sunglo pull-right" type="button" onclick="addTicket()">提交</button>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6"></div>
         </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
@@ -189,49 +208,5 @@
                 }
             }).data('easyTicker');
         });
-
-        // 提交工单
-        function addTicket() {
-            var title = $("#title").val();
-            var content = $("#content").val();
-
-            if (title == '' || title == undefined) {
-                bootbox.alert('工单标题不能为空');
-                return false;
-            }
-
-            if (content == '' || content == undefined) {
-                bootbox.alert('工单内容不能为空');
-                return false;
-            }
-
-            bootbox.confirm({
-                message: "确定提交工单？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
-                                    window.location.reload();
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
-                        });
-                    }
-                }
-            });
-        }
-
     </script>
 @endsection

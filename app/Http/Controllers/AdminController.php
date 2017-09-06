@@ -938,7 +938,7 @@ class AdminController extends BaseController
             $ssr_str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
             $ssr_str .= '/?obfsparam=' . $user->obfs_param;
             $ssr_str .= '&=protoparam' . $user->protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode('VPN');
+            $ssr_str .= '&remarks=' . base64_encode($node->name);
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
@@ -1364,6 +1364,42 @@ TXT;
         Config::where('name', 'active_times')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置微信、支付宝二维码
+    public function setQrcode(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        // 微信二维码
+        if ($request->hasFile('wechat_qrcode')) {
+            $file = $request->file('wechat_qrcode');
+            $type = $file->getClientOriginalExtension();
+            $name = date('YmdHis') . mt_rand(1000, 2000) . '.' . $type;
+            $move = $file->move(base_path() . '/public/upload/image/qrcode/', $name);
+            $wechat_qrcode = $move ? '/upload/image/qrcode/' . $name : '';
+
+            Config::where('name', 'wechat_qrcode')->update(['value' => $wechat_qrcode]);
+        }
+
+        // 支付宝二维码
+        if ($request->hasFile('alipay_qrcode')) {
+            $file = $request->file('alipay_qrcode');
+            $type = $file->getClientOriginalExtension();
+            $name = date('YmdHis') . mt_rand(1000, 2000) . '.' . $type;
+            $move = $file->move(base_path() . '/public/upload/image/qrcode/', $name);
+            $alipay_qrcode = $move ? '/upload/image/qrcode/' . $name : '';
+
+            Config::where('name', 'alipay_qrcode')->update(['value' => $alipay_qrcode]);
+        }
+
+        return Redirect::back();
     }
 
     // 邀请码列表

@@ -225,6 +225,8 @@ INSERT INTO `config` VALUES ('11', 'active_times', 3);
 INSERT INTO `config` VALUES ('12', 'login_add_score', 1);
 INSERT INTO `config` VALUES ('13', 'min_rand_score', 1);
 INSERT INTO `config` VALUES ('14', 'max_rand_score', 100);
+INSERT INTO `config` VALUES ('15', 'wechat_qrcode', '');
+INSERT INTO `config` VALUES ('16', 'alipay_qrcode', '');
 
 
 -- ----------------------------
@@ -327,8 +329,8 @@ CREATE TABLE `coupon` (
   `usage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '用途：1-仅限一次性使用、2-可重复使用',
   `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
   `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '折扣',
-  `available_start` datetime NOT NULL COMMENT '有效期开始',
-  `available_end` datetime NOT NULL COMMENT '有效期结束',
+  `available_start` int(11) NOT NULL DEFAULT '0' COMMENT '有效期开始',
+  `available_end` int(11) NOT NULL DEFAULT '0' COMMENT '有效期结束',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-未删除、1-已删除',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -355,13 +357,35 @@ CREATE TABLE `coupon_log` (
 -- Table structure for `order`
 -- ----------------------------
 CREATE TABLE `order` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `oid` int(11) NOT NULL AUTO_INCREMENT,
+  `orderId` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人',
+  `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券ID',
+  `totalOriginalPrice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单原始总价',
+  `totalPrice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总价',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`oid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
+
+
+-- ----------------------------
+-- Table structure for `order_goods`
+-- ----------------------------
+CREATE TABLE `order_goods` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `oid` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `orderId` varchar(20) NOT NULL DEFAULT '' COMMENT '订单编号',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
+  `num` int(11) NOT NULL DEFAULT '0' COMMENT '商品数量',
+  `original_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品原价',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品实际价格',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------

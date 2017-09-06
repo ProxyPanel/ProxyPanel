@@ -61,7 +61,7 @@ class CouponController extends BaseController
                 $file = $request->file('logo');
                 $fileType = $file->getClientOriginalExtension();
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
-                $move = $file->move(base_path() . '/public/upload/coupon/goods/', $logoName);
+                $move = $file->move(base_path() . '/public/upload/image/coupon/', $logoName);
                 $logo = $move ? '/upload/image/coupon/' . $logoName : '';
             }
 
@@ -73,8 +73,8 @@ class CouponController extends BaseController
             $obj->usage = $usage;
             $obj->amount = $amount;
             $obj->discount = $discount / 10;
-            $obj->available_start = $available_start;
-            $obj->available_end = $available_end;
+            $obj->available_start = strtotime(date('Y-m-d 0:0:0', strtotime($available_start)));
+            $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($available_end)));
             $obj->status = 0;
             $obj->save();
 

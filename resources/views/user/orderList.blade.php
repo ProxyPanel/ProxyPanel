@@ -16,7 +16,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('user/goodsList')}}">流量包</a>
+                <a href="{{url('user/orderList')}}">订单</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -29,40 +29,43 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-basket font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 流量包列表 </span>
+                            <span class="caption-subject bold uppercase"> 订单列表 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                 <thead>
-                                <tr>
-                                    <th> ID </th>
-                                    <th> 名称 </th>
-                                    <th> 图片 </th>
-                                    <th> 内含流量 </th>
-                                    <th> 售价 </th>
-                                    <!--<th> 所需积分 </th>-->
-                                    <th> </th>
-                                </tr>
+                                    <tr>
+                                        <th> 订单编号 </th>
+                                        <th> 商品信息 </th>
+                                        <th> 状态 </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @if($goodsList->isEmpty())
+                                @if($orderList->isEmpty())
                                     <tr>
-                                        <td colspan="7">暂无数据</td>
+                                        <td colspan="3">暂无数据</td>
                                     </tr>
                                 @else
-                                    @foreach($goodsList as $key => $goods)
+                                    @foreach($orderList as $key => $order)
                                         <tr class="odd gradeX">
-                                            <td> {{$key + 1}} </td>
-                                            <td> {{$goods->name}} </td>
-                                            <td> @if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif </td>
-                                            <td> {{$goods->traffic}} </td>
-                                            <td> {{$goods->price}} </td>
-                                            <!--<td> {{$goods->score}} </td>-->
+                                            <td> {{$order->orderId}} </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="buy('{{$goods->id}}')">购买</button>
-                                                <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
+                                                @foreach($order->goodsList as $goods)
+                                                    商品名称：{{$goods->goods_name}}（￥{{$goods->price}}
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @if($order->status == -1)
+                                                    <span class="label label-default"> 已关闭 </span>
+                                                @elseif($order->status == 1)
+                                                    <span class="label label-danger"> 已支付待确认 </span>
+                                                @elseif($order->status == 2)
+                                                    <span class="label label-success"> 已完成 </span>
+                                                @else
+                                                    <span class="label label-info"> 待支付 </span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -72,11 +75,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$goodsList->total()}} 个流量包</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$orderList->total()}} 个记录</div>
                             </div>
                             <div class="col-md-7 col-sm-7">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $goodsList->links() }}
+                                    {{ $orderList->links() }}
                                 </div>
                             </div>
                         </div>

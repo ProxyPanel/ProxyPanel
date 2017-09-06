@@ -26,6 +26,11 @@
                             <i class="icon-question font-dark"></i>
                             <span class="caption-subject bold uppercase"> 工单列表 </span>
                         </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <button class="btn sbold blue" data-toggle="modal" data-target="#charge_modal"> 发起工单 </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
@@ -77,6 +82,24 @@
                 <!-- END EXAMPLE TABLE PORTLET-->
             </div>
         </div>
+        <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"> 发起工单 </h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" name="title" id="title" placeholder="工单标题" class="form-control margin-bottom-20">
+                        <textarea name="content" id="content" placeholder="请填写您的问题，如果图片请提交工单后在回复处上传图片" class="form-control margin-bottom-20" rows="4"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn red btn-outline">关闭</button>
+                        <button type="button" data-dismiss="modal" class="btn green btn-outline" onclick="addTicket()">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->
@@ -88,6 +111,49 @@
         // 回复工单
         function reply(id) {
             window.location.href =  + id;
+        }
+
+        // 发起工单
+        function addTicket() {
+            var title = $("#title").val();
+            var content = $("#content").val();
+
+            if (title == '' || title == undefined) {
+                bootbox.alert('工单标题不能为空');
+                return false;
+            }
+
+            if (content == '' || content == undefined) {
+                bootbox.alert('工单内容不能为空');
+                return false;
+            }
+
+            bootbox.confirm({
+                message: "确定提交工单？",
+                buttons: {
+                    confirm: {
+                        label: '确定',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: '取消',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret){
+                            if (ret.status == 'success') {
+                                bootbox.alert(ret.message, function(){
+                                    window.location.reload();
+                                });
+                            } else {
+                                bootbox.alert(ret.message);
+                            }
+                        });
+                    }
+                }
+            });
         }
     </script>
 @endsection

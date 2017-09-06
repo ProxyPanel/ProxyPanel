@@ -82,7 +82,7 @@
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
                                     <th> 状态 </th>
-                                    <th> SS </th>
+                                    <th> SS(R) </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>

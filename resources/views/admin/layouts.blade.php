@@ -234,7 +234,7 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> 2017 &copy; 胖虎 </div>
+    <div class="page-footer-inner"> 2017 &copy; <a href="https://github.com/ssrpanel/ssrpanel" target="_blank">SSRPanel</a> </div>
     <div class="scroll-to-top">
         <i class="icon-arrow-up"></i>
     </div>

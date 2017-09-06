@@ -126,10 +126,16 @@
                         <span class="title">邀请码</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/user/goodsList' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/goodsList', '/user/addOrder']) ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
                         <span class="title">流量包</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/orderList']) ? 'active open' : ''}}">
+                    <a href="{{url('user/orderList')}}" class="nav-link nav-toggle">
+                        <i class="icon-basket"></i>
+                        <span class="title">订单</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/ticketList' ? 'active open' : ''}}">
@@ -153,7 +159,7 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> 2017 &copy; 胖虎 </div>
+    <div class="page-footer-inner"> 2017 &copy; <a href="https://github.com/ssrpanel/ssrpanel" target="_blank">SSRPanel</a> </div>
     <div class="scroll-to-top">
         <i class="icon-arrow-up"></i>
     </div>

@@ -45,6 +45,7 @@ Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置
 Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
 Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
 Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
+Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置
 
@@ -55,9 +56,12 @@ Route::any('user/goodsList', 'UserController@goodsList'); // 商品列表
 Route::any('user/profile', 'UserController@profile'); // 修改个人信息
 Route::any('user/trafficLog', 'UserController@trafficLog'); // 流量日志
 Route::get('user/ticketList', 'UserController@ticketList'); // 工单
+Route::get('user/orderList', 'UserController@orderList'); // 订单
 Route::post('user/addTicket', 'UserController@addTicket'); // 快速添加工单
 Route::any('user/replyTicket', 'UserController@replyTicket'); // 回复工单
 Route::post('user/closeTicket', 'UserController@closeTicket'); // 关闭工单
+Route::post('user/redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
+Route::any('user/addOrder', 'UserController@addOrder'); // 添加订单
 Route::any('user/invite', 'UserController@invite'); // 邀请码
 Route::any('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
 Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码

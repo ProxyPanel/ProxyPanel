@@ -15,7 +15,6 @@ class CouponLog extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'coupon_id',
-        'goods_id',
         'order_id'
     ];
 

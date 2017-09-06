@@ -20,7 +20,11 @@ telegram：https://t.me/ssrpanel
 哈哈，如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
 将持续开发，喜欢请star一下
 ````
-![打赏作者一个巨无霸汉堡](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
+![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
+```
+谢谢以下的人请我吃汉堡：
+Law-杰 - ￥10
+```
 
 #### PHP7环境配置
 ````
