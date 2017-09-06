@@ -72,6 +72,7 @@ service nginx reload
 
 ## SSR服务端
 ````
+把 server目录下的 ssr-3.4.0.zip 拷贝到 /root/，解压缩，怎么运行自己上网搜
 把userapiconfig.py里的 API_INTERFACE 设置为 glzjinmod
 把user-config.json里的 connect_verbose_info 设置为 1
 ````
