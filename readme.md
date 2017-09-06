@@ -21,11 +21,15 @@ telegram：https://t.me/ssrpanel
 将持续开发，喜欢请star一下
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
-```
-谢谢以下的人请我吃麦当劳：
-Law-杰 - ￥10
-Err    - ￥51
-```
+
+### 谢谢以下的人请我吃麦当劳
+| 昵称      |    金额 |
+| :------- | --------:| 
+| Law-杰   | ￥10 | 
+| Err      | ￥51 | 
+| 緃噺開始 |  ￥5 | 
+
+
 
 #### PHP7环境配置
 ````
