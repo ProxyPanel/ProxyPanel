@@ -22,8 +22,9 @@ telegram：https://t.me/ssrpanel
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 ```
-谢谢以下的人请我吃汉堡：
+谢谢以下的人请我吃麦当劳：
 Law-杰 - ￥10
+Err    - ￥51
 ```
 
 #### PHP7环境配置
