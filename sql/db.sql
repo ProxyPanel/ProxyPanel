@@ -415,6 +415,9 @@ CREATE TABLE `ticket_reply` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+-- ----------------------------
+-- Table structure for `user_score_log`
+-- ----------------------------
 CREATE TABLE `user_score_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0',

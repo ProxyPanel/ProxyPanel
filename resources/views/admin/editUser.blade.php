@@ -92,9 +92,15 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="balance" class="col-md-3 control-label">金额</label>
+                                                <label for="balance" class="col-md-3 control-label">余额</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="balance" value="{{$user->balance}}" id="balance" placeholder="" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="score" class="col-md-3 control-label">积分</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" name="score" value="{{$user->score}}" id="score" placeholder="" required>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -181,16 +187,6 @@
                                                 <label for="method" class="col-md-3 control-label">加密方式</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="method" id="method">
-                                                        @foreach ($method_list as $method)
-                                                            <option value="{{$method->name}}" @if($method->name == $user->method) selected @endif>{{$method->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="custom_method" class="col-md-3 control-label">自定义加密方式</label>
-                                                <div class="col-md-8">
-                                                    <select class="form-control" name="custom_method" id="custom_method">
                                                         @foreach ($method_list as $method)
                                                             <option value="{{$method->name}}" @if($method->name == $user->method) selected @endif>{{$method->name}}</option>
                                                         @endforeach
@@ -316,6 +312,7 @@
             var usage = $("input:radio[name='usage']:checked").val();
             var pay_way = $("input:radio[name='pay_way']:checked").val();
             var balance = $('#balance').val();
+            var score = $('#score').val();
             var status = $('#status').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
@@ -340,7 +337,7 @@
                 type: "POST",
                 url: "{{url('admin/editUser')}}",
                 async: false,
-                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, status:status, enable_time:enable_time, expire_time:expire_time, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, status:status, enable_time:enable_time, expire_time:expire_time, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {

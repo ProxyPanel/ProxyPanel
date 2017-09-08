@@ -142,7 +142,7 @@ class AdminController extends BaseController
             $transfer_enable = $request->get('transfer_enable');
             $enable = $request->get('enable');
             $method = $request->get('method');
-            $custom_method = $request->get('custom_method');
+            //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
@@ -152,6 +152,7 @@ class AdminController extends BaseController
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
             $balance = $request->get('balance');
+            $score = $request->get('score');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
@@ -179,7 +180,7 @@ class AdminController extends BaseController
                 'transfer_enable' => $this->toGB($transfer_enable),
                 'enable' => $enable,
                 'method' => $method,
-                'custom_method' => $custom_method,
+                'custom_method' => $method,
                 'protocol' => $protocol,
                 'protocol_param' => $protocol_param,
                 'obfs' => $obfs,
@@ -189,6 +190,7 @@ class AdminController extends BaseController
                 'usage' => $usage,
                 'pay_way' => $pay_way,
                 'balance' => $balance,
+                'score' => $score,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
@@ -235,7 +237,7 @@ class AdminController extends BaseController
             $transfer_enable = $request->get('transfer_enable');
             $enable = $request->get('enable');
             $method = $request->get('method');
-            $custom_method = $request->get('custom_method');
+            //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
@@ -247,6 +249,7 @@ class AdminController extends BaseController
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
             $balance = $request->get('balance');
+            $score = $request->get('score');
             $status = $request->get('status');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
@@ -260,7 +263,7 @@ class AdminController extends BaseController
                 'transfer_enable' => $this->toGB($transfer_enable),
                 'enable' => $enable,
                 'method' => $method,
-                'custom_method' => $custom_method,
+                'custom_method' => $method,
                 'protocol' => $protocol,
                 'protocol_param' => $protocol_param,
                 'obfs' => $obfs,
@@ -272,6 +275,7 @@ class AdminController extends BaseController
                 'usage' => $usage,
                 'pay_way' => $pay_way,
                 'balance' => $balance,
+                'score' => $score,
                 'status' => $status,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
