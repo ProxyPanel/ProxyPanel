@@ -83,7 +83,12 @@
                                         </span>
                                     </li>
                                     <li class="list-group-item">
-                                        剩余流量：{{$info['totalTransfer']}}
+                                        可用流量：
+                                        <div class="progress" style="margin-bottom:0;" title="{{$info['usedTransfer']}} / {{$info['totalTransfer']}}">
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
+                                                <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
+                                            </div>
+                                        </div>
                                     </li>
                                     <li class="list-group-item">
                                         账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}}

@@ -47,6 +47,7 @@ class UserController extends BaseController
         $user = $request->session()->get('user');
         $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
         $user['usedTransfer'] = $this->flowAutoShow($user['u'] - $user['d']);
+        $user['usedPercent'] = round(($user['u'] + $user['d']) / $user['transfer_enable'], 2);
         $view['info'] = $user;
         $view['wechat_qrcode'] = static::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = static::$config['alipay_qrcode'];
