@@ -63,7 +63,7 @@
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
-                                                <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容SS </span> @endif </td>
+                                                <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容 </span> @endif </td>
                                                 <td> {{$node->bandwidth}}M </td>
                                                 <td> <span class="label label-danger"> {{$node->load}} </span> </td>
                                                 <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
@@ -82,10 +82,10 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-5 col-sm-5">
+                            <div class="col-md-4 col-sm-4">
                                 <div class="dataTables_info" role="status" aria-live="polite">共 {{$nodeList->total()}} 个节点</div>
                             </div>
-                            <div class="col-md-7 col-sm-7">
+                            <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $nodeList->links() }}
                                 </div>

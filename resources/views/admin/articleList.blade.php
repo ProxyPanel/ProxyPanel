@@ -69,10 +69,10 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-5 col-sm-5">
+                            <div class="col-md-4 col-sm-4">
                                 <div class="dataTables_info" role="status" aria-live="polite">共 {{$articleList->total()}} 篇文章</div>
                             </div>
-                            <div class="col-md-7 col-sm-7">
+                            <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $articleList->links() }}
                                 </div>

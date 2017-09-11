@@ -62,16 +62,6 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="custom_method" class="col-md-3 control-label">自定义加密方式</label>
-                                                        <div class="col-md-8">
-                                                            <select class="form-control" name="custom_method" id="custom_method">
-                                                                @foreach ($method_list as $method)
-                                                                    <option value="{{$method->name}}" @if($method->name == $node->method) selected @endif>{{$method->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
                                                         <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
                                                         <div class="col-md-8">
                                                             <div class="input-group">

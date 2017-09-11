@@ -70,6 +70,7 @@ class AdminController extends BaseController
         $qq = $request->get('qq');
         $port = $request->get('port');
         $pay_way = $request->get('pay_way');
+        $status = $request->get('status');
         $enable = $request->get('enable');
         $expireWarning = $request->get('expireWarning');
 
@@ -92,6 +93,10 @@ class AdminController extends BaseController
 
         if (!empty($pay_way)) {
             $query->where('pay_way', intval($pay_way));
+        }
+
+        if ($status != '') {
+            $query->where('status', intval($status));
         }
 
         if ($enable != '') {
@@ -381,7 +386,7 @@ class AdminController extends BaseController
             $name = $request->get('name');
             $server = $request->get('server');
             $method = $request->get('method');
-            $custom_method = $request->get('custom_method');
+            //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
@@ -398,7 +403,7 @@ class AdminController extends BaseController
                 'name' => $name,
                 'server' => $server,
                 'method' => $method,
-                'custom_method' => $custom_method,
+                'custom_method' => $method,
                 'protocol' => $protocol,
                 'protocol_param' => $protocol_param,
                 'obfs' => $obfs,
@@ -439,7 +444,7 @@ class AdminController extends BaseController
             $name = $request->get('name');
             $server = $request->get('server');
             $method = $request->get('method');
-            $custom_method = $request->get('custom_method');
+            //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
@@ -456,7 +461,7 @@ class AdminController extends BaseController
                 'name' => $name,
                 'server' => $server,
                 'method' => $method,
-                'custom_method' => $custom_method,
+                'custom_method' => $method,
                 'protocol' => $protocol,
                 'protocol_param' => $protocol_param,
                 'obfs' => $obfs,

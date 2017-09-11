@@ -16,7 +16,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('user/orderList')}}">订单</a>
+                <a href="{{url('user/orderList')}}">消费记录</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -28,8 +28,8 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-basket font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 订单列表 </span>
+                            <i class="icon-wallet font-dark"></i>
+                            <span class="caption-subject bold uppercase"> 消费记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -37,9 +37,10 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                 <thead>
                                     <tr>
+                                        <th> ID </th>
                                         <th> 订单编号 </th>
                                         <th> 商品信息 </th>
-                                        <th> 状态 </th>
+                                        <th> 创建时间 </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,23 +51,14 @@
                                 @else
                                     @foreach($orderList as $key => $order)
                                         <tr class="odd gradeX">
+                                            <td> {{$key + 1}} </td>
                                             <td> {{$order->orderId}} </td>
                                             <td>
                                                 @foreach($order->goodsList as $goods)
-                                                    商品名称：{{$goods->goods_name}}（￥{{$goods->price}}
+                                                    {{$goods->goods_name}}（￥{{$goods->price}}）
                                                 @endforeach
                                             </td>
-                                            <td>
-                                                @if($order->status == -1)
-                                                    <span class="label label-default"> 已关闭 </span>
-                                                @elseif($order->status == 1)
-                                                    <span class="label label-danger"> 已支付待确认 </span>
-                                                @elseif($order->status == 2)
-                                                    <span class="label label-success"> 已完成 </span>
-                                                @else
-                                                    <span class="label label-info"> 待支付 </span>
-                                                @endif
-                                            </td>
+                                            <td>{{$order->created_at}}</td>
                                         </tr>
                                     @endforeach
                                 @endif

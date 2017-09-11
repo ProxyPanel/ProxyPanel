@@ -31,7 +31,7 @@
                 <div class="portlet light form-fit bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">添加文章</span>
+                            <span class="caption-subject font-green sbold uppercase">编辑文章</span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -40,21 +40,22 @@
                         <form action="{{url('admin/editArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">标题</label>
+                                    <label class="control-label col-md-1">标题</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="title" value="{{$article->title}}" id="title" placeholder="" autofocus required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">排序</label>
+                                    <label class="control-label col-md-1">排序</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="sort" value="{{$article->sort}}" id="sort" value="0" required />
+                                        <span class="help-block"> 值越高显示时越靠前 </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">内容</label>
-                                    <div class="col-md-9">
+                                    <label class="control-label col-md-1">内容</label>
+                                    <div class="col-md-11">
                                         <script id="editor" type="text/plain" style="height:400px;">{!! $article->content !!}</script>
                                     </div>
                                 </div>

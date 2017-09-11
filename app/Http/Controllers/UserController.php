@@ -15,6 +15,7 @@ use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
+use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
@@ -761,6 +762,53 @@ TXT;
             $view['goods'] = Goods::where('id', $goods_id)->first();
 
             return Response::view('user/addOrder', $view);
+        }
+    }
+
+    // 积分兑换流量
+    public function exchange(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        $user = $request->session()->get('user');
+
+        // 积分满100才可以兑换
+        if ($user['score'] < 100) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：满100才可以兑换，请继续累计吧']);
+        }
+
+        DB::beginTransaction();
+        try {
+            // 写入积分操作日志
+            $userScoreLog = new UserScoreLog();
+            $userScoreLog->user_id = $user['id'];
+            $userScoreLog->before = $user['score'];
+            $userScoreLog->after = 0;
+            $userScoreLog->score = -1 * $user['score'];
+            $userScoreLog->desc = '积分兑换流量';
+            $userScoreLog->created_at = date('Y-m-d H:i:s');
+            $userScoreLog->save();
+
+            // 扣积分加流量
+            if ($userScoreLog->id) {
+                User::where('id', $user['id'])->update(['score' => 0]);
+                User::where('id', $user['id'])->increment('transfer_enable', $user['score'] * 1048576);
+            }
+
+            DB::commit();
+
+            // 更新session
+            $user = User::where('id', $user['id'])->first()->toArray();
+            $request->session()->remove('user');
+            $request->session()->put('user', $user);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '兑换成功']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：' . $e->getMessage()]);
         }
     }
 

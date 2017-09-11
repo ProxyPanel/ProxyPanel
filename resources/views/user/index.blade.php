@@ -31,22 +31,22 @@
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
         <!-- BEGIN PAGE BASE CONTENT -->
+        @if(!$articleList->isEmpty())
         <div class="row">
             <div class="col-md-12">
                 <div class="ticker">
-                    @if(!$articleList->isEmpty())
-                        <ul>
-                            @foreach($articleList as $k => $article)
-                                <li>
-                                    <i class="fa fa-bell-o"></i>
-                                    <a href="{{url('user/article?id=') . $article->id}}" class="alert-link" target="_blank"> {{$article->title}} </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
+                    <ul>
+                        @foreach($articleList as $k => $article)
+                            <li>
+                                <i class="fa fa-bell-o"></i>
+                                <a href="{{url('user/article?id=') . $article->id}}" class="alert-link" target="_blank"> {{$article->title}} </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
+        @endif
         @if (Session::has('successMsg'))
             <div class="alert alert-success">
                 <button class="close" data-close="alert"></button>
@@ -78,13 +78,15 @@
                                     </li>
                                     <li class="list-group-item">
                                         积分：{{$info['score']}}
-                                        <span class="badge badge-default"><a href="{{url('user/goodsList')}}">兑换</a></span>
+                                        <span class="badge badge-default">
+                                            <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal">兑换流量</a>
+                                        </span>
                                     </li>
                                     <li class="list-group-item">
                                         剩余流量：{{$info['totalTransfer']}}
                                     </li>
                                     <li class="list-group-item">
-                                        账号到期：{{$info['expire_time']}}
+                                        账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}}
                                     </li>
                                     <li class="list-group-item">
                                         最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}}
@@ -169,6 +171,23 @@
                 </div>
             </div>
         </div>
+        <div id="excharge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"> 兑换流量 </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info" id="msg">您有 {{$info['score']}} 积分，共计可兑换 {{$info['score']}}M 流量。</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">取消</button>
+                        <button type="button" class="btn red btn-outline" onclick="return exchange();">立即兑换</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->
@@ -208,5 +227,27 @@
                 }
             }).data('easyTicker');
         });
+
+        // 积分兑换流量
+        function exchange() {
+            $.ajax({
+                type: "POST",
+                url: "{{url('user/exchange')}}",
+                async: false,
+                data: {_token:'{{csrf_token()}}'},
+                dataType: 'json',
+                success: function (ret) {
+                    if (ret.status == 'success') {
+                        bootbox.alert(ret.message, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        bootbox.alert(ret.message);
+                    }
+                }
+            });
+
+            return false;
+        }
     </script>
 @endsection

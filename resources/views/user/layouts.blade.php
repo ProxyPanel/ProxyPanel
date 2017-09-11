@@ -134,8 +134,8 @@
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/orderList']) ? 'active open' : ''}}">
                     <a href="{{url('user/orderList')}}" class="nav-link nav-toggle">
-                        <i class="icon-basket"></i>
-                        <span class="title">订单</span>
+                        <i class="icon-wallet"></i>
+                        <span class="title">消费记录</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/ticketList' ? 'active open' : ''}}">

@@ -59,8 +59,16 @@
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="status" id="status" onChange="do_search()">
+                                    <option value="" @if(empty(Request::get('status'))) selected @endif>状态</option>
+                                    <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
+                                    <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
+                                    <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="enable" id="enable" onChange="do_search()">
-                                    <option value="" @if(empty(Request::get('enable'))) selected @endif>状态</option>
+                                    <option value="" @if(empty(Request::get('enable'))) selected @endif>SS(R)状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>
@@ -136,10 +144,10 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$userList->total()}} 个用户</div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$userList->total()}} 个账号</div>
                             </div>
-                            <div class="col-md-7 col-sm-7">
+                            <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $userList->links() }}
                                 </div>
@@ -207,9 +215,10 @@
             var qq = $("#qq").val();
             var port = $("#port").val();
             var pay_way = $("#pay_way option:checked").val();
+            var status = $("#status option:checked").val();
             var enable = $("#enable option:checked").val();
 
-            window.location.href = '{{url('admin/userList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&enable=' + enable;
+            window.location.href = '{{url('admin/userList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&status=' + status + '&enable=' + enable;
         }
 
         // 重置

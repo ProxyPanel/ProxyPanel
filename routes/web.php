@@ -68,6 +68,7 @@ Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
 Route::any('reset/{token}', 'UserController@reset'); // 重设密码
 Route::any('activeUser', 'UserController@activeUser'); // 激活账号
 Route::any('active/{token}', 'UserController@active'); // 激活账号
+Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
 
 Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
 Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
