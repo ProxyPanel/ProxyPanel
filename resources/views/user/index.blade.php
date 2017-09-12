@@ -73,13 +73,13 @@
                                     <li class="list-group-item">
                                         余额：{{$info['balance']}}
                                         <span class="badge badge-danger">
-                                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal">充值</a>
+                                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
                                         </span>
                                     </li>
                                     <li class="list-group-item">
                                         积分：{{$info['score']}}
-                                        <span class="badge badge-default">
-                                            <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal">兑换流量</a>
+                                        <span class="badge badge-info">
+                                            <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换流量</a>
                                         </span>
                                     </li>
                                     <li class="list-group-item">
@@ -120,19 +120,19 @@
                                     </li>
                                     <li class="list-group-item">
                                         加密方式：{{$info['method']}}
-                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
+                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
                                         连接密码：{{$info['passwd']}}
-                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
+                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
                                         协议：{{$info['protocol']}}
-                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
+                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
                                         混淆：{{$info['obfs']}}
-                                        <span class="badge badge-warning"><a href="{{url('user/profile#tab_2')}}">修改</a></span>
+                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
                                     </li>
                                     <li class="list-group-item">
                                         最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}

@@ -46,7 +46,7 @@ class UserController extends BaseController
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $user = $request->session()->get('user');
         $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
-        $user['usedTransfer'] = $this->flowAutoShow($user['u'] - $user['d']);
+        $user['usedTransfer'] = $this->flowAutoShow($user['u'] + $user['d']);
         $user['usedPercent'] = round(($user['u'] + $user['d']) / $user['transfer_enable'], 2);
         $view['info'] = $user;
         $view['wechat_qrcode'] = static::$config['wechat_qrcode'];
@@ -745,7 +745,8 @@ TXT;
                     // 写入日志
                     $couponLogObj = new CouponLog();
                     $couponLogObj->coupon_id = $coupon->id;
-                    $couponLogObj->order_id = $order->id;
+                    $couponLogObj->goods_id = $goods_id;
+                    $couponLogObj->order_id = $order->oid;
                     $couponLogObj->save();
                 }
 
@@ -755,9 +756,9 @@ TXT;
             } catch (\Exception $e) {
                 DB::rollBack();
 
-                Log::error('支付订单失败：' . $e);
+                Log::error('支付订单失败：' . $e->getMessage());
 
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：' . $e->getMessage()]);
             }
         } else {
             $view['goods'] = Goods::where('id', $goods_id)->first();

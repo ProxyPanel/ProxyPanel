@@ -46,7 +46,7 @@
                                 <tbody>
                                 @if($orderList->isEmpty())
                                     <tr>
-                                        <td colspan="3">暂无数据</td>
+                                        <td colspan="4">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($orderList as $key => $order)
