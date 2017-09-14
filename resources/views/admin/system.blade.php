@@ -167,7 +167,19 @@
                                                         <label for="login_add_score" class="col-md-2 control-label">登录加积分</label>
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 登录时将根据积分范围得到积分（24小时内） </span>
+                                                            <span class="help-block"> 登录时将根据积分范围得到积分 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="login_add_score_range" class="col-md-2 control-label">时间间隔</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="login_add_score_range" value="{{$login_add_score_range}}" id="login_add_score_range" />
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setLoginAddScoreRange()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 每隔多久登录才会加积分(单位分钟) </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -432,6 +444,19 @@
             var website_url = $("#website_url").val();
 
             $.post("{{url('admin/setWebsiteUrl')}}", {_token:'{{csrf_token()}}', value:website_url}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 登录加积分的时间间隔
+        function setLoginAddScoreRange() {
+            var login_add_score_range = $("#login_add_score_range").val();
+
+            $.post("{{url('admin/setAddScoreRange')}}", {_token:'{{csrf_token()}}', value:login_add_score_range}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();

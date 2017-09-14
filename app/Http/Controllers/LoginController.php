@@ -69,7 +69,8 @@ class LoginController extends BaseController
                         $obj->created_at = date('Y-m-d H:i:s');
                         $obj->save();
 
-                        Cache::put('loginAddScore_' . md5($username), '1', 1440);
+                        $ttl = !empty(static::$config['login_add_score_range']) ? static::$config['login_add_score_range'] : 1440;
+                        Cache::put('loginAddScore_' . md5($username), '1', $ttl);
                         $request->session()->flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量包');
                     }
                 }

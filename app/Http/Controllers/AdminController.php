@@ -7,6 +7,7 @@ use App\Http\Models\Config;
 use App\Http\Models\Invite;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsGroup;
+use App\Http\Models\SsGroupNode;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
@@ -161,6 +162,7 @@ class AdminController extends BaseController
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
+            $level = $request->get('level');
             $is_admin = $request->get('is_admin');
 
             // 校验username是否已存在
@@ -199,6 +201,7 @@ class AdminController extends BaseController
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
+                'level' => $level,
                 'is_admin' => $is_admin,
                 'reg_ip' => $request->getClientIp()
             ]);
@@ -259,6 +262,7 @@ class AdminController extends BaseController
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
+            $level = $request->get('level');
             $is_admin = $request->get('is_admin');
 
             $data = [
@@ -285,6 +289,7 @@ class AdminController extends BaseController
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
+                'level' => $level,
                 'is_admin' => $is_admin
             ];
 
@@ -384,6 +389,7 @@ class AdminController extends BaseController
 
         if ($request->method() == 'POST') {
             $name = $request->get('name');
+            $group_id = $request->get('group_id');
             $server = $request->get('server');
             $method = $request->get('method');
             //$custom_method = $request->get('custom_method');
@@ -399,8 +405,9 @@ class AdminController extends BaseController
             $sort = $request->get('sort');
             $status = $request->get('status');
 
-            SsNode::create([
+            $node = SsNode::create([
                 'name' => $name,
+                'group_id' => $group_id,
                 'server' => $server,
                 'method' => $method,
                 'custom_method' => $method,
@@ -417,12 +424,21 @@ class AdminController extends BaseController
                 'status' => $status,
             ]);
 
+            // 建立分组关联
+            if ($group_id) {
+                SsGroupNode::create([
+                    'group_id' => $group_id,
+                    'node_id' => $node->id
+                ]);
+            }
+
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
         } else {
             // 加密方式、协议、混淆
             $view['method_list'] =  $this->methodList();
             $view['protocol_list'] =  $this->protocolList();
             $view['obfs_list'] =  $this->obfsList();
+            $view['group_list'] =  SsGroup::get();
 
             return Response::view('admin/addNode', $view);
         }
@@ -442,6 +458,7 @@ class AdminController extends BaseController
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $name = $request->get('name');
+            $group_id = $request->get('group_id');
             $server = $request->get('server');
             $method = $request->get('method');
             //$custom_method = $request->get('custom_method');
@@ -459,6 +476,7 @@ class AdminController extends BaseController
 
             $data = [
                 'name' => $name,
+                'group_id' => $group_id,
                 'server' => $server,
                 'method' => $method,
                 'custom_method' => $method,
@@ -477,6 +495,17 @@ class AdminController extends BaseController
 
             $ret = SsNode::where('id', $id)->update($data);
             if ($ret) {
+                // 建立分组关联
+                if ($group_id) {
+                    // 先删除该节点所有关联
+                    SsGroupNode::where('node_id', $id)->delete();
+
+                    SsGroupNode::create([
+                        'group_id' => $group_id,
+                        'node_id' => $id
+                    ]);
+                }
+
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
             } else {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
@@ -488,6 +517,7 @@ class AdminController extends BaseController
             $view['method_list'] =  $this->methodList();
             $view['protocol_list'] =  $this->protocolList();
             $view['obfs_list'] =  $this->obfsList();
+            $view['group_list'] =  SsGroup::get();
 
             return Response::view('admin/editNode', $view);
         }
@@ -645,13 +675,11 @@ class AdminController extends BaseController
 
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $server = $request->get('server');
-            $method = $request->get('method');
+            $level = $request->get('level');
 
-            SsNode::create([
+            SsGroup::create([
                 'name' => $name,
-                'server' => $server,
-                'method' => $method
+                'level' => $level
             ]);
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
@@ -674,25 +702,23 @@ class AdminController extends BaseController
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $server = $request->get('server');
-            $method = $request->get('method');
+            $level = $request->get('level');
 
             $data = [
                 'name' => $name,
-                'server' => $server,
-                'method' => $method
+                'level' => $level
             ];
 
-            $ret = SsNode::where('id', $id)->update($data);
+            $ret = SsGroup::where('id', $id)->update($data);
             if ($ret) {
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
             } else {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
             }
         } else {
-            $view['group'] = SsNode::where('id', $id)->first();
+            $view['group'] = SsGroup::where('id', $id)->first();
 
-            return Response::view('admin/editNode', $view);
+            return Response::view('admin/editGroup', $view);
         }
     }
 
@@ -708,6 +734,13 @@ class AdminController extends BaseController
         }
 
         $id = $request->get('id');
+
+        // 检查是否该分组下是否有节点
+        $group_node = SsGroupNode::where('group_id', $id)->get();
+        if (!$group_node->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：该分组下有节点关联，请先解除关联']);
+        }
+
         $user = SsGroup::where('id', $id)->delete();
         if ($user) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
@@ -1371,6 +1404,24 @@ TXT;
         $value = intval($request->get('value'));
 
         Config::where('name', 'active_times')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置激活账号次数
+    public function setAddScoreRange(Request $request)
+    {
+        if (!$request->session()->has('user')) {
+            return Redirect::to('login');
+        }
+
+        if (!$request->session()->get('user')['is_admin']) {
+            return Redirect::to('login');
+        }
+
+        $value = intval($request->get('value'));
+
+        Config::where('name', 'login_add_score_range')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }

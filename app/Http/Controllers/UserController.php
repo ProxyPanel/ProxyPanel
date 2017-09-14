@@ -43,14 +43,16 @@ class UserController extends BaseController
             return Redirect::to('login');
         }
 
-        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $user = $request->session()->get('user');
+
+        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
+        $view['wechat_qrcode'] = static::$config['wechat_qrcode'];
+        $view['alipay_qrcode'] = static::$config['alipay_qrcode'];
+
         $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
         $user['usedTransfer'] = $this->flowAutoShow($user['u'] + $user['d']);
         $user['usedPercent'] = round(($user['u'] + $user['d']) / $user['transfer_enable'], 2);
         $view['info'] = $user;
-        $view['wechat_qrcode'] = static::$config['wechat_qrcode'];
-        $view['alipay_qrcode'] = static::$config['alipay_qrcode'];
 
         return Response::view('user/index', $view);
     }
@@ -170,7 +172,12 @@ class UserController extends BaseController
 
         $user = $request->session()->get('user');
 
-        $nodeList = SsNode::paginate(10);
+        $nodeList = DB::table('ss_group_node')
+            ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
+            ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
+            ->where('ss_group.level', '<=', $user['level'])
+            ->paginate(10);
+
         foreach ($nodeList as &$node) {
             // 在线人数
             $online_log = SsNodeOnlineLog::where('node_id', $node->id)->orderBy('id', 'desc')->first();

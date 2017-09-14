@@ -46,6 +46,20 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label for="group_id" class="col-md-3 control-label"> 所属分组 </label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="group_id" id="group_id">
+                                                                <option value="0">请选择</option>
+                                                                @if(!$group_list->isEmpty())
+                                                                    @foreach($group_list as $group)
+                                                                        <option value="{{$group->id}}">{{$group->name}}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                            <span class="help-block">没有关联任何分组时则节点不可见</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="server" id="server" placeholder="域名或IP地址" required>
@@ -201,6 +215,7 @@
         function do_submit() {
             var _token = '{{csrf_token()}}';
             var name = $('#name').val();
+            var group_id = $("#group_id option:selected").val();
             var server = $('#server').val();
             var method = $('#method').val();
             var custom_method = $('#custom_method').val();
@@ -220,7 +235,7 @@
                 type: "POST",
                 url: "{{url('admin/addNode')}}",
                 async: false,
-                data: {_token:_token, name: name, server:server, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, sort:sort, status:status},
+                data: {_token:_token, name: name, group_id:group_id, server:server, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {

@@ -26,6 +26,7 @@
 CREATE TABLE `ss_node` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '名称',
+  `group_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属分组',
   `server` varchar(128) NOT NULL DEFAULT '' COMMENT '服务器地址',
   `method` varchar(32) NOT NULL DEFAULT 'aes-192-ctr' COMMENT '加密方式',
   `custom_method` varchar(30) NOT NULL DEFAULT 'aes-192-ctr' COMMENT '自定义加密方式',
@@ -102,13 +103,14 @@ CREATE TABLE `user` (
   `speed_limit_per_user` int(255) NOT NULL DEFAULT '204800' COMMENT '单用户限速，默认200M，单位KB',
   `wechat` varchar(30) DEFAULT '' COMMENT '微信',
   `qq` varchar(20) DEFAULT '' COMMENT 'QQ',
-  `usage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
-  `pay_way` tinyint(4) NOT NULL DEFAULT '3' COMMENT '付费方式：1-月付、2-半年付、3-年付',
+  `usage` tinyint(4) NOT NULL DEFAULT '4' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
+  `pay_way` tinyint(4) NOT NULL DEFAULT '0' COMMENT '付费方式：0-免费、1-月付、2-半年付、3-年付',
   `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
   `enable_time` date DEFAULT NULL COMMENT '开通日期',
   `expire_time` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
   `remark` text COMMENT '备注',
+  `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '等级：1-倔强青铜、2-秩序白银、3-荣耀黄金、4-尊贵铂金、5-永恒钻石、6-至尊黑曜、7-最强王者',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
   `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
@@ -227,6 +229,7 @@ INSERT INTO `config` VALUES ('13', 'min_rand_score', 1);
 INSERT INTO `config` VALUES ('14', 'max_rand_score', 100);
 INSERT INTO `config` VALUES ('15', 'wechat_qrcode', '');
 INSERT INTO `config` VALUES ('16', 'alipay_qrcode', '');
+INSERT INTO `config` VALUES ('17', 'login_add_score_range', 1440);
 
 
 -- ----------------------------
@@ -281,7 +284,7 @@ CREATE TABLE `verify` (
 CREATE TABLE `ss_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分组名称',
-  `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '分组级别',
+  `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '分组级别，对应账号级别',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

@@ -45,6 +45,7 @@ Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置
 Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
 Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
 Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
+Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
 Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
 Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
 Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置

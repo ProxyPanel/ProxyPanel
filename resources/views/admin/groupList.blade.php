@@ -44,7 +44,7 @@
                                 <tr>
                                     <th> ID </th>
                                     <th> 分组名称 </th>
-                                    <th> 限制 </th>
+                                    <th> 可见级别 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
@@ -58,10 +58,26 @@
                                             <tr class="odd gradeX">
                                                 <td> {{$group->id}} </td>
                                                 <td> {{$group->name}} </td>
-                                                <td> {{$node->level}} </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">编辑</button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">删除</button>
+                                                    @if($group->level == 1)
+                                                        <span class="label label-default">倔强青铜</span>
+                                                    @elseif ($group->level == 2)
+                                                        <span class="label label-primary">秩序白银</span>
+                                                    @elseif ($group->level == 3)
+                                                        <span class="label label-info">荣耀黄金</span>
+                                                    @elseif ($group->level == 4)
+                                                        <span class="label label-success">尊贵铂金</span>
+                                                    @elseif ($group->level == 5)
+                                                        <span class="label label-warning">永恒钻石</span>
+                                                    @elseif ($group->level == 6)
+                                                        <span class="label label-danger">至尊黑曜</span>
+                                                    @else
+                                                        <span class="label label-danger">最强王者</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">编辑</button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delGroup('{{$group->id}}')">删除</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -104,8 +120,6 @@
 
         // 删除节点分组
         function delGroup(id) {
-            var _token = '{{csrf_token()}}';
-
             bootbox.confirm({
                 message: "确定删除节点？",
                 buttons: {
@@ -120,7 +134,7 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('admin/delGroup')}}", {id:id, _token:_token}, function(ret){
+                        $.post("{{url('admin/delGroup')}}", {_token:'{{csrf_token()}}', id:id}, function(ret){
                             if (ret.status == 'success') {
                                 bootbox.alert(ret.message, function(){
                                     window.location.reload();
