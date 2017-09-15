@@ -28,14 +28,6 @@ class AdminController extends BaseController
 
     public function index(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $past = strtotime(date('Y-m-d', strtotime("-7 days")));
         $online = time() - 3600;
 
@@ -58,14 +50,6 @@ class AdminController extends BaseController
     // 用户列表
     public function userList(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $username = $request->get('username');
         $wechat = $request->get('wechat');
         $qq = $request->get('qq');
@@ -132,14 +116,6 @@ class AdminController extends BaseController
     // 添加账号
     public function addUser(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $username = $request->get('username');
             $password = $request->get('password');
@@ -228,14 +204,6 @@ class AdminController extends BaseController
     // 编辑账号
     public function editUser(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $username = $request->get('username');
@@ -323,14 +291,6 @@ class AdminController extends BaseController
     // 删除用户
     public function delUser(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if ($id == 1) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统管理员不可删除']);
@@ -347,14 +307,6 @@ class AdminController extends BaseController
     // 节点列表
     public function nodeList(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $nodeList = SsNode::paginate(10);
         foreach ($nodeList as &$node) {
             // 在线人数
@@ -379,14 +331,6 @@ class AdminController extends BaseController
     // 添加节点
     public function addNode(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $group_id = $request->get('group_id');
@@ -447,14 +391,6 @@ class AdminController extends BaseController
     // 编辑节点
     public function editNode(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $name = $request->get('name');
@@ -526,14 +462,6 @@ class AdminController extends BaseController
     // 删除节点
     public function delNode(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         $user = SsNode::where('id', $id)->delete();
         if ($user) {
@@ -546,17 +474,7 @@ class AdminController extends BaseController
     // 文章列表
     public function articleList(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
-        $articleList = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10);
-
-        $view['articleList'] = $articleList;
+        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10);
 
         return Response::view('admin/articleList', $view);
     }
@@ -564,14 +482,6 @@ class AdminController extends BaseController
     // 添加文章
     public function addArticle(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $title = $request->get('title');
             $content = $request->get('content');
@@ -593,14 +503,6 @@ class AdminController extends BaseController
     // 编辑节点
     public function editArticle(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $title = $request->get('title');
@@ -629,14 +531,6 @@ class AdminController extends BaseController
     // 删除文章
     public function delArticle(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         $user = Article::where('id', $id)->update(['is_del' => 1]);
         if ($user) {
@@ -649,14 +543,6 @@ class AdminController extends BaseController
     // 节点分组列表
     public function groupList(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $view['groupList'] = SsGroup::paginate(10);
 
         return Response::view('admin/groupList', $view);
@@ -665,14 +551,6 @@ class AdminController extends BaseController
     // 添加节点分组
     public function addGroup(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $level = $request->get('level');
@@ -691,14 +569,6 @@ class AdminController extends BaseController
     // 编辑节点分组
     public function editGroup(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $name = $request->get('name');
@@ -725,14 +595,6 @@ class AdminController extends BaseController
     // 删除节点分组
     public function delGroup(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
 
         // 检查是否该分组下是否有节点
@@ -752,14 +614,6 @@ class AdminController extends BaseController
     // 流量日志
     public function trafficLog(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $trafficLogList = UserTrafficLog::with(['User', 'SsNode'])->orderBy('id', 'desc')->paginate(20);
         foreach ($trafficLogList as &$trafficLog) {
             $trafficLog->u = $this->flowAutoShow($trafficLog->u);
@@ -775,14 +629,6 @@ class AdminController extends BaseController
     // 格式转换(SS转SSR)
     public function convert(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $method = $request->get('method');
             $transfer_enable = $request->get('transfer_enable');
@@ -840,14 +686,6 @@ class AdminController extends BaseController
     // 下载转换好的JSON文件
     public function download(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if (!file_exists(public_path('downloads/convert.json'))) {
             exit('文件不存在');
         }
@@ -858,14 +696,6 @@ class AdminController extends BaseController
     // 数据导入
     public function import(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
 
             if (!$request->hasFile('uploadFile')) {
@@ -953,14 +783,6 @@ class AdminController extends BaseController
     // 导出配置信息
     public function export(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if (empty($id)) {
             return Redirect::to('admin/userList');
@@ -1039,14 +861,6 @@ TXT;
     // 修改个人资料
     public function profile(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
@@ -1081,14 +895,6 @@ TXT;
     // 流量监控
     public function monitor(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if (empty($id)) {
             return Redirect::to('admin/userList');
@@ -1126,14 +932,6 @@ TXT;
     // 加密方式、混淆、协议列表
     public function config(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）
@@ -1170,14 +968,6 @@ TXT;
     // 删除配置
     public function delConfig(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         $config = SsConfig::where('id', $id)->delete();
         if ($config) {
@@ -1190,14 +980,6 @@ TXT;
     // 设置默认配置
     public function setDefaultConfig(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
         if (empty($id)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
@@ -1220,14 +1002,6 @@ TXT;
     // 日志分析
     public function analysis(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $file = storage_path('app/public/ssserver.log');
         if (!file_exists($file)) {
             $request->session()->flash('analysisErrorMsg', $file . ' 不存在，请先创建文件');
@@ -1261,14 +1035,6 @@ TXT;
     // 系统设置
     public function system(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $view = $this->systemConfig();
 
         return Response::view('admin/system', $view);
@@ -1277,14 +1043,6 @@ TXT;
     // 设置某个配置项
     public function setConfig(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $name = trim($request->get('name'));
         $value = trim($request->get('value'));
 
@@ -1321,14 +1079,6 @@ TXT;
     // 设置可生成邀请码数
     public function setInviteNum(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $value = intval($request->get('value'));
 
         Config::where('name', 'invite_num')->update(['value' => $value]);
@@ -1339,14 +1089,6 @@ TXT;
     // 设置网站名称
     public function setWebsiteName(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $value = trim($request->get('value'));
 
         Config::where('name', 'website_name')->update(['value' => $value]);
@@ -1357,14 +1099,6 @@ TXT;
     // 设置网站地址
     public function setWebsiteUrl(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $value = trim($request->get('value'));
 
         Config::where('name', 'website_url')->update(['value' => $value]);
@@ -1375,14 +1109,6 @@ TXT;
     // 设置重置密码次数
     public function setResetPasswordTimes(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $value = intval($request->get('value'));
 
         Config::where('name', 'reset_password_times')->update(['value' => $value]);
@@ -1393,14 +1119,6 @@ TXT;
     // 设置激活账号次数
     public function setActiveTimes(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $value = intval($request->get('value'));
 
         Config::where('name', 'active_times')->update(['value' => $value]);
@@ -1411,14 +1129,6 @@ TXT;
     // 设置激活账号次数
     public function setAddScoreRange(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $value = intval($request->get('value'));
 
         Config::where('name', 'login_add_score_range')->update(['value' => $value]);
@@ -1429,14 +1139,6 @@ TXT;
     // 设置微信、支付宝二维码
     public function setQrcode(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         // 微信二维码
         if ($request->hasFile('wechat_qrcode')) {
             $file = $request->file('wechat_qrcode');
@@ -1465,14 +1167,6 @@ TXT;
     // 邀请码列表
     public function inviteList(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $view['inviteList'] = Invite::with(['generator', 'user'])->paginate(10);
 
         return Response::view('admin/inviteList', $view);
@@ -1481,14 +1175,6 @@ TXT;
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         for ($i = 0; $i < 5; $i++) {

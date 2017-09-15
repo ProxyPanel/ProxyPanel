@@ -32,14 +32,6 @@ class CouponController extends BaseController
     // 添加商品
     public function addCoupon(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $type = $request->get('type');
@@ -93,14 +85,6 @@ class CouponController extends BaseController
     // 删除优惠券
     public function delCoupon(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
 
         Coupon::where('id', $id)->update(['is_del' => 1]);

@@ -364,7 +364,7 @@
 
         // 生成随机密码
         function makePasswd() {
-            $.get("{{url('makePasswd')}}",  function(ret) {
+            $.get("{{url('admin/makePasswd')}}",  function(ret) {
                 $("#passwd").val(ret);
             });
         }

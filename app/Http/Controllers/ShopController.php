@@ -32,14 +32,6 @@ class ShopController extends BaseController
     // 添加商品
     public function addGoods(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $traffic = $request->get('traffic');
@@ -87,14 +79,6 @@ class ShopController extends BaseController
     // 编辑商品
     public function editGoods(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
 
         if ($request->method() == 'POST') {
@@ -146,14 +130,6 @@ class ShopController extends BaseController
     // 删除商品
     public function delGoods(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
-        }
-
         $id = $request->get('id');
 
         Goods::where('id', $id)->update(['is_del' => 1]);

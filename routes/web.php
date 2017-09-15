@@ -2,82 +2,82 @@
 
 Route::any('/', 'AdminController@index'); // 首页
 Route::any('login', 'LoginController@index'); // 登录
-Route::any('logout', 'LoginController@logout'); // 退出
+Route::get('logout', 'LoginController@logout'); // 退出
 Route::any('register', 'RegisterController@index'); // 注册
-
-Route::get('admin', 'AdminController@index'); // 后台首页
-Route::any('admin/userList', 'AdminController@userList'); // 账号列表
-Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
-Route::any('admin/editUser', 'AdminController@editUser'); // 编辑账号
-Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
-Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表
-Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
-Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
-Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
-Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
-Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
-Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
-Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章
-Route::get('admin/groupList', 'AdminController@groupList'); // 文章列表
-Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加文章
-Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑文章
-Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除文章
-Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
-Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
-Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
-Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
-Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
-Route::any('admin/config', 'AdminController@config'); // 配置列表
-Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
-Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
-Route::post('admin/setDefaultConfig', 'AdminController@setDefaultConfig'); // 设置默认配置
-Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
-Route::any('admin/export', 'AdminController@export'); // 导出配置信息
-Route::any('admin/convert', 'AdminController@convert'); // 格式转换
-Route::any('admin/import', 'AdminController@import'); // 数据导入
-Route::get('admin/monitor', 'AdminController@monitor'); // 流量监控
-Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
-Route::any('admin/analysis', 'AdminController@analysis'); // 日志分析
-Route::any('admin/system', 'AdminController@system'); // 系统设置
-Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
-Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成邀请码数
-Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置网站名称
-Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
-Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
-Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
-Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
-Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
-Route::get('makePasswd', 'AdminController@makePasswd'); // 获取随机密码
-Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置
-
-Route::any('user', 'UserController@index'); // 用户首页
-Route::any('user/article', 'UserController@article'); // 文章详情
-Route::any('user/nodeList', 'UserController@nodeList'); // 节点列表
-Route::any('user/goodsList', 'UserController@goodsList'); // 商品列表
-Route::any('user/profile', 'UserController@profile'); // 修改个人信息
-Route::any('user/trafficLog', 'UserController@trafficLog'); // 流量日志
-Route::get('user/ticketList', 'UserController@ticketList'); // 工单
-Route::get('user/orderList', 'UserController@orderList'); // 订单
-Route::post('user/addTicket', 'UserController@addTicket'); // 快速添加工单
-Route::any('user/replyTicket', 'UserController@replyTicket'); // 回复工单
-Route::post('user/closeTicket', 'UserController@closeTicket'); // 关闭工单
-Route::post('user/redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
-Route::any('user/addOrder', 'UserController@addOrder'); // 添加订单
-Route::any('user/invite', 'UserController@invite'); // 邀请码
-Route::any('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
 Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
 Route::any('reset/{token}', 'UserController@reset'); // 重设密码
 Route::any('activeUser', 'UserController@activeUser'); // 激活账号
-Route::any('active/{token}', 'UserController@active'); // 激活账号
-Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
+Route::get('active/{token}', 'UserController@active'); // 激活账号
 
-Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
-Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
-Route::any('shop/editGoods', 'ShopController@editGoods'); // 编辑商品
-Route::post('shop/delGoods', 'ShopController@delGoods'); // 删除商品
+Route::group(['middleware' => ['user', 'admin']], function() {
+    Route::get('admin', 'AdminController@index'); // 后台首页
+    Route::get('admin/userList', 'AdminController@userList'); // 账号列表
+    Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
+    Route::any('admin/editUser', 'AdminController@editUser'); // 编辑账号
+    Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
+    Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表
+    Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
+    Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
+    Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
+    Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
+    Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
+    Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
+    Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章
+    Route::get('admin/groupList', 'AdminController@groupList'); // 文章列表
+    Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加文章
+    Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑文章
+    Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除文章
+    Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
+    Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
+    Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
+    Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
+    Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
+    Route::any('admin/config', 'AdminController@config'); // 配置列表
+    Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
+    Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
+    Route::post('admin/setDefaultConfig', 'AdminController@setDefaultConfig'); // 设置默认配置
+    Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
+    Route::any('admin/export', 'AdminController@export'); // 导出配置信息
+    Route::any('admin/convert', 'AdminController@convert'); // 格式转换
+    Route::any('admin/import', 'AdminController@import'); // 数据导入
+    Route::get('admin/monitor', 'AdminController@monitor'); // 流量监控
+    Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
+    Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
+    Route::get('admin/system', 'AdminController@system'); // 系统设置
+    Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
+    Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成邀请码数
+    Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置网站名称
+    Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
+    Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
+    Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
+    Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
+    Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
+    Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 获取随机密码
+    Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
+    Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
+    Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
+    Route::any('shop/editGoods', 'ShopController@editGoods'); // 编辑商品
+    Route::post('shop/delGoods', 'ShopController@delGoods'); // 删除商品
+    Route::any('coupon/couponList', 'CouponController@couponList'); // 优惠券列表
+    Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
+    Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
+});
 
-Route::any('coupon/couponList', 'CouponController@couponList'); // 优惠券列表
-Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
-Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
-
-Route::any('user/takeAward', 'UserController@takeAward'); // 抽奖
+Route::group(['middleware' => ['user']], function(){
+    Route::any('user', 'UserController@index'); // 用户首页
+    Route::any('user/article', 'UserController@article'); // 文章详情
+    Route::get('user/nodeList', 'UserController@nodeList'); // 节点列表
+    Route::get('user/goodsList', 'UserController@goodsList'); // 商品列表
+    Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志
+    Route::get('user/ticketList', 'UserController@ticketList'); // 工单
+    Route::post('user/addTicket', 'UserController@addTicket'); // 快速添加工单
+    Route::any('user/replyTicket', 'UserController@replyTicket'); // 回复工单
+    Route::post('user/closeTicket', 'UserController@closeTicket'); // 关闭工单
+    Route::get('user/orderList', 'UserController@orderList'); // 订单
+    Route::any('user/addOrder', 'UserController@addOrder'); // 添加订单
+    Route::post('user/redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
+    Route::get('user/invite', 'UserController@invite'); // 邀请码
+    Route::post('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
+    Route::any('user/profile', 'UserController@profile'); // 修改个人信息
+    Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
+});

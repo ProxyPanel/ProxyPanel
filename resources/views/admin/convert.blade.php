@@ -159,7 +159,7 @@
 
         // 下载
         function do_download() {
-            window.location.href = '{{url('download')}}';
+            window.location.href = '{{url('admin/download')}}';
         }
     </script>
 @endsection

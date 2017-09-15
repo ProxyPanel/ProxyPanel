@@ -39,10 +39,6 @@ class UserController extends BaseController
 
     public function index(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
@@ -73,10 +69,6 @@ class UserController extends BaseController
     // 修改个人资料
     public function profile(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
@@ -166,10 +158,6 @@ class UserController extends BaseController
     // 节点列表
     public function nodeList(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         $nodeList = DB::table('ss_group_node')
@@ -237,10 +225,6 @@ TXT;
     // 流量日志
     public function trafficLog(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         // 30天内的流量
@@ -365,10 +349,6 @@ TXT;
     // 邀请码
     public function invite(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         // 已生成的邀请码数量
@@ -383,10 +363,6 @@ TXT;
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         // 已生成的邀请码数量
@@ -777,10 +753,6 @@ TXT;
     // 积分兑换流量
     public function exchange(Request $request)
     {
-        if (!$request->session()->has('user')) {
-            return Redirect::to('login');
-        }
-
         $user = $request->session()->get('user');
 
         // 积分满100才可以兑换
