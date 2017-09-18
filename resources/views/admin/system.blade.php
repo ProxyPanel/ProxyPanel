@@ -40,14 +40,17 @@
                                             <a href="#tab_3" data-toggle="tab"> 积分设置 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_4" data-toggle="tab"> 充值二维码设置 </a>
+                                            <a href="#tab_4" data-toggle="tab"> 推广返利设置 </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_5" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_1">
-                                            <form action="#" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                                            <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <label for="website_name" class="col-md-2 control-label">网站名称</label>
@@ -105,7 +108,7 @@
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_2">
-                                            <form action="#" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                                            <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <label for="is_rand_port" class="col-md-2 control-label">随机端口</label>
@@ -161,7 +164,7 @@
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_3">
-                                            <form action="#" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                                            <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <label for="login_add_score" class="col-md-2 control-label">登录加积分</label>
@@ -196,6 +199,51 @@
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_4">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <label for="referral_traffic" class="col-md-2 control-label">注册送流量</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="referral_gift_traffic" value="{{$referral_traffic}}" id="referral_traffic" />
+                                                                <span class="input-group-addon">MiB</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setReferralTraffic()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 根据推广链接注册则送多少流量 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="referral_percent" class="col-md-2 control-label">返利比例</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="referral_percent" value="{{$referral_percent * 100}}" id="referral_percent" />
+                                                                <span class="input-group-addon">%</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setReferralPercent()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 根据推广链接注册的账号每笔消费推广人可以分成的比例 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="referral_money" class="col-md-2 control-label">提现限制</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="referral_money" value="{{$referral_money}}" id="referral_money" />
+                                                                <span class="input-group-addon">元</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setReferralMoney()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 满多少元才可以申请提现 </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab_5">
                                             <form action="{{url('admin/setQrcode')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                                 <div class="form-body">
                                                     <div class="portlet-body">
@@ -457,6 +505,45 @@
             var login_add_score_range = $("#login_add_score_range").val();
 
             $.post("{{url('admin/setAddScoreRange')}}", {_token:'{{csrf_token()}}', value:login_add_score_range}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置根据推广链接注册送流量
+        function setReferralTraffic() {
+            var referral_traffic = $("#referral_traffic").val();
+
+            $.post("{{url('admin/setReferralTraffic')}}", {_token:'{{csrf_token()}}', value:referral_traffic}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置根据推广链接注册人每产生一笔消费，则推广人可以获得的返利比例
+        function setReferralPercent() {
+            var referral_percent = $("#referral_percent").val();
+
+            $.post("{{url('admin/setReferralPercent')}}", {_token:'{{csrf_token()}}', value:referral_percent}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置返利满多少元才可以提现
+        function setReferralMoney() {
+            var referral_money = $("#referral_money").val();
+
+            $.post("{{url('admin/setReferralMoney')}}", {_token:'{{csrf_token()}}', value:referral_money}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();

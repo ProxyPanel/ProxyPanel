@@ -230,6 +230,9 @@ INSERT INTO `config` VALUES ('14', 'max_rand_score', 100);
 INSERT INTO `config` VALUES ('15', 'wechat_qrcode', '');
 INSERT INTO `config` VALUES ('16', 'alipay_qrcode', '');
 INSERT INTO `config` VALUES ('17', 'login_add_score_range', 1440);
+INSERT INTO `config` VALUES ('18', 'referral_traffic', 1024);
+INSERT INTO `config` VALUES ('19', 'referral_percent', 0.2);
+INSERT INTO `config` VALUES ('20', 'referral_money', 100);
 
 
 -- ----------------------------
@@ -423,12 +426,28 @@ CREATE TABLE `ticket_reply` (
 -- ----------------------------
 CREATE TABLE `user_score_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `before` int(11) NOT NULL DEFAULT '0',
-  `after` int(11) NOT NULL DEFAULT '0',
-  `score` int(11) NOT NULL DEFAULT '0',
-  `desc` varchar(50) NOT NULL DEFAULT '',
-  `created_at` datetime DEFAULT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '账号ID',
+  `before` int(11) NOT NULL DEFAULT '0' COMMENT '发生前积分',
+  `after` int(11) NOT NULL DEFAULT '0' COMMENT '发生后积分',
+  `score` int(11) NOT NULL DEFAULT '0' COMMENT '发生积分',
+  `desc` varchar(50) DEFAULT '' COMMENT '描述',
+  `created_at` datetime DEFAULT NULL COMMENT '创建日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `user_balance_log`
+-- ----------------------------
+CREATE TABLE `user_balance_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '账号ID',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `before` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '发生前余额',
+  `after` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '发生后余额',
+  `balance` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '发生金额',
+  `desc` varchar(255) DEFAULT '' COMMENT '描述',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

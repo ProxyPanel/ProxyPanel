@@ -16,7 +16,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('coupon/couponList')}}">优惠券管理</a>
+                <a href="{{url('coupon/couponList')}}">卡券管理</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -29,11 +29,11 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-list font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 优惠券列表 </span>
+                            <span class="caption-subject bold uppercase"> 卡券列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addCoupon()"> 新增
+                                <button class="btn sbold blue" onclick="addCoupon()"> 生成
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>

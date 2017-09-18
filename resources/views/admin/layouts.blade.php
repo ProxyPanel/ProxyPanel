@@ -135,7 +135,7 @@
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/coupon/couponList', '/coupon/addCoupon']) ? 'active open' : ''}}">
                     <a href="{{url('coupon/couponList')}}" class="nav-link nav-toggle">
                         <i class="icon-wallet"></i>
-                        <span class="title">优惠券管理</span>
+                        <span class="title">卡券管理</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/ticket/ticketList', '/ticket/replyTicket']) ? 'active open' : ''}}">

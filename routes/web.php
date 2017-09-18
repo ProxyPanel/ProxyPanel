@@ -51,6 +51,9 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
     Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
     Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
+    Route::post('admin/setReferralTraffic', 'AdminController@setReferralTraffic'); // 设置注册送流量值
+    Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
+    Route::post('admin/setReferralMoney', 'AdminController@setReferralMoney'); // 设置返利满多少可提现
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 获取随机密码
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
@@ -80,4 +83,5 @@ Route::group(['middleware' => ['user']], function(){
     Route::post('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
     Route::any('user/profile', 'UserController@profile'); // 修改个人信息
     Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
+    Route::get('user/referral', 'UserController@referral'); // 推广返利
 });

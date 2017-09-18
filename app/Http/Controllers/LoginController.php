@@ -46,7 +46,7 @@ class LoginController extends BaseController
 
                 return Redirect::back();
             } else if ($user->status == 0 && self::$config['is_active_register'] && $user->is_admin == 0) {
-                $request->session()->flash('errorMsg', '账号未激活，请先<a href="/activeUser?username=' . $user->username . '" target="_blank">【激活账号】</a>');
+                $request->session()->flash('errorMsg', '账号未激活，请先<a href="/activeUser?username=' . $user->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
 
                 return Redirect::back()->withInput();
             }

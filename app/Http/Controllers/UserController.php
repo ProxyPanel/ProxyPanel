@@ -9,12 +9,14 @@ use App\Http\Models\Goods;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
+use App\Http\Models\ReferralLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
+use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\Verify;
@@ -683,13 +685,10 @@ TXT;
                 $totalPrice = $goods->price;
             }
 
-            // 扣减账号余额
+            // 验证账号余额是否充足
             $user = User::where('id', $user['id'])->first();
             if ($user->balance < $totalPrice) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
-            } else {
-                User::where('id', $user['id'])->decrement('balance', $totalPrice);
-                // TODO:记录日志
             }
 
             // 订单长ID
@@ -697,6 +696,7 @@ TXT;
 
             DB::beginTransaction();
             try {
+                // 生成订单
                 $order = new Order();
                 $order->orderId = $orderId;
                 $order->user_id = $user['id'];
@@ -706,17 +706,34 @@ TXT;
                 $order->status = 2;
                 $order->save();
 
-                if ($order->oid) {
-                    $orderGoods = new OrderGoods();
-                    $orderGoods->oid = $order->oid;
-                    $orderGoods->orderId = $orderId;
-                    $orderGoods->user_id = $user['id'];
-                    $orderGoods->goods_id = $goods_id;
-                    $orderGoods->num = 1;
-                    $orderGoods->original_price = $goods->price;
-                    $orderGoods->price = $totalPrice;
-                    $orderGoods->save();
+                if (!$order->oid) {
+                    throw new \Exception('错误：生成订单失败');
                 }
+
+                $orderGoods = new OrderGoods();
+                $orderGoods->oid = $order->oid;
+                $orderGoods->orderId = $orderId;
+                $orderGoods->user_id = $user['id'];
+                $orderGoods->goods_id = $goods_id;
+                $orderGoods->num = 1;
+                $orderGoods->original_price = $goods->price;
+                $orderGoods->price = $totalPrice;
+                $orderGoods->save();
+
+                // 扣余额
+                User::where('id', $user['id'])->decrement('balance', $totalPrice);
+
+                // 记录余额操作日志
+                $userBalanceLogObj = new UserBalanceLog();
+                $userBalanceLogObj->user_id = $user['id'];
+                $userBalanceLogObj->order_id = $order->id;
+                $userBalanceLogObj->before = $user->balance;
+                $userBalanceLogObj->after = $user->balance - $totalPrice;
+                $userBalanceLogObj->balance = $totalPrice;
+                $userBalanceLogObj->desc = '购买流量包';
+                $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
+                $userBalanceLogObj->save();
+
 
                 // 优惠券置为已使用
                 if (!empty($coupon)) {
@@ -732,6 +749,9 @@ TXT;
                     $couponLogObj->order_id = $order->oid;
                     $couponLogObj->save();
                 }
+
+                // 把流量包内的流量加到账号上
+                User::where('id', $user['id'])->increment('transfer_enable', $goods->traffic);
 
                 DB::commit();
 
@@ -793,4 +813,18 @@ TXT;
         }
     }
 
+    // 推广返利
+    public function referral(Request $request)
+    {
+        // 生成个人推广链接
+        $user = $request->session()->get('user');
+        $view['referral_traffic'] = static::$config['referral_traffic'];
+        $view['referral_percent'] = static::$config['referral_percent'];
+        $view['referral_money'] = static::$config['referral_money'];
+        $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->paginate();
+        $view['totalAmount'] = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        $view['link'] = static::$config['website_url'] . '/?ref=' . $user['id'];
+
+        return Response::view('user/referral', $view);
+    }
 }

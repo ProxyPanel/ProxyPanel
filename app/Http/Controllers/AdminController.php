@@ -1136,6 +1136,37 @@ TXT;
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
 
+    // 设置注册送流量值
+    public function setReferralTraffic(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('name', 'referral_traffic')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置返利比例
+    public function setReferralPercent(Request $request)
+    {
+        $value = intval($request->get('value'));
+        $value = $value / 100;
+
+        Config::where('name', 'referral_percent')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置返利满多少可提现
+    public function setReferralMoney(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('name', 'referral_money')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
     // 设置微信、支付宝二维码
     public function setQrcode(Request $request)
     {
