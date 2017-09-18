@@ -9,7 +9,8 @@ KVM
 
 使用 LNMP1.4 部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
 
-telegram：https://t.me/ssrpanel
+telegram频道：https://t.me/ssrpanel
+telegram群组：https://t.me/chatssrpanel
 
 默认管理账号
 用户名：admin 密码：123456
@@ -28,6 +29,8 @@ telegram：https://t.me/ssrpanel
 | Law-杰   | ￥10 | 
 | Err      | ￥51 | 
 | 緃噺開始 |  ￥5 | 
+|良心***| ￥67 |
+|、无奈|￥5|
 
 
 
