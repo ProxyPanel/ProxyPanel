@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Invite;
 use App\Http\Models\User;
+use App\Http\Models\Verify;
 use Illuminate\Http\Request;
+use App\Mail\activeUser;
 use Response;
 use Redirect;
+use Mail;
 
 /**
  * 注册控制器
@@ -90,20 +93,35 @@ class RegisterController extends BaseController
             $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
             // 创建新用户
-            $obj = new User();
-            $obj->username = $username;
-            $obj->password = md5($password);
-            $obj->port = $port;
-            $obj->passwd = $this->makeRandStr();
-            $obj->transfer_enable = $this->toGB(1);
-            $obj->enable_time = date('Y-m-d H:i:s');
-            $obj->expire_time = date('Y-m-d H:i:s', strtotime("+30 days"));
-            $obj->reg_ip = $request->getClientIp();
-            $obj->save();
+            $user = new User();
+            $user->username = $username;
+            $user->password = md5($password);
+            $user->port = $port;
+            $user->passwd = $this->makeRandStr();
+            $user->transfer_enable = $this->toGB(1);
+            $user->enable_time = date('Y-m-d H:i:s');
+            $user->expire_time = date('Y-m-d H:i:s', strtotime("+30 days"));
+            $user->reg_ip = $request->getClientIp();
+            $user->save();
 
             // 更新邀请码
-            if (self::$config['is_invite_register'] && $obj->id) {
-                Invite::where('id', $code->id)->update(['fuid' => $obj->id,'status' => 1]);
+            if (self::$config['is_invite_register'] && $user->id) {
+                Invite::where('id', $code->id)->update(['fuid' => $user->id,'status' => 1]);
+
+                // 生成激活账号的地址
+                $token = md5(self::$config['website_name'] . $username . microtime());
+                $verify = new Verify();
+                $verify->user_id = $user->id;
+                $verify->username = $username;
+                $verify->token = $token;
+                $verify->status = 0;
+                $verify->save();
+
+                // 发送邮件
+                $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
+                Mail::to($username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+
+                $request->session()->flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
             }
 
             return Redirect::to('login');

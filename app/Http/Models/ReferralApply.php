@@ -18,6 +18,7 @@ class ReferralApply extends Model
         'before',
         'after',
         'amount',
+        'link_logs',
         'status',
         'created_at'
     ];

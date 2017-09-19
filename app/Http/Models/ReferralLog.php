@@ -23,4 +23,8 @@ class ReferralLog extends Model
         'created_at'
     ];
 
+    function user() {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
 }

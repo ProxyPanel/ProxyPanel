@@ -84,4 +84,5 @@ Route::group(['middleware' => ['user']], function(){
     Route::any('user/profile', 'UserController@profile'); // 修改个人信息
     Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
     Route::get('user/referral', 'UserController@referral'); // 推广返利
+    Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
 });

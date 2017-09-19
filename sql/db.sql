@@ -87,7 +87,7 @@ CREATE TABLE `user` (
   `username` varchar(128) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT 'SS端口',
-  `passwd` varchar(32) NOT NULL DEFAULT '' COMMENT 'SS密码',
+  `passwd` varchar(16) NOT NULL DEFAULT '' COMMENT 'SS密码',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '1073741824000' COMMENT '可用流量，单位字节，默认1TiB',
   `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
   `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
@@ -114,7 +114,8 @@ CREATE TABLE `user` (
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
   `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
-  `status` tinyint(11) DEFAULT '0' COMMENT '状态：-1-禁止登陆、0-未激活、1-正常',
+  `referral_uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-禁用、0-未激活、1-正常',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -315,6 +316,7 @@ CREATE TABLE `goods` (
   `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量',
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '商品价值多少积分',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
+  `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品描述',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-否、1-是',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -450,6 +452,41 @@ CREATE TABLE `user_balance_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `referral_apply`
+-- ----------------------------
+CREATE TABLE `referral_apply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `before` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '操作前可提现金额',
+  `after` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '操作后可提现金额',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '本次提现金额',
+  `link_logs` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联返利日志ID，例如：1,3,4',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='提现申请';
+
+
+-- ----------------------------
+-- Table structure for `referral_log`
+-- ----------------------------
+CREATE TABLE `referral_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `ref_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '推广人ID',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联订单ID',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '消费金额',
+  `ref_amount` int(11) NOT NULL DEFAULT '0' COMMENT '返利金额',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未提现、1-已提现',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='消费返利日志';
+
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

@@ -46,7 +46,7 @@
                         <form action="{{url('shop/addGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">商品名称</label>
+                                    <label class="control-label col-md-3">名称</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="name" value="" id="name" placeholder="" required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}" />
@@ -68,6 +68,12 @@
                                                 <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">描述</label>
+                                    <div class="col-md-6">
+                                        <textarea class="form-control" rows="3" name="desc" id="desc" placeholder="商品的简单描述"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">

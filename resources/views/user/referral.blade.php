@@ -24,8 +24,24 @@
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-success">
+                <div class="alert alert-danger">
                     通过您的推广链接注册的账号可以获得 <code>{{$referral_traffic}}MiB流量</code> 奖励。您可以获得他们每笔消费的<code>{{$referral_percent * 100}}%现金返利</code>。累计满 <code>{{$referral_money}}元</code>，就可以申请提现至微信或者支付宝。
+                </div>
+                <div class="portlet light form-fit bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-link font-blue"></i>
+                            <span class="caption-subject font-blue bold uppercase">我的推广链接</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="mt-clipboard-container">
+                            <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
+                            <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
+                                <i class="icon-note"></i> 复制链接
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
@@ -35,9 +51,7 @@
                             <span class="caption-subject bold uppercase"> 推广返利 </span>
                         </div>
                         <div class="actions">
-                            <div class="btn-group btn-group-devided" data-toggle="buttons" onclick="extractMoney()">
-                                <a href="javascript:;" class="btn btn-danger"><i class="fa fa-money"></i> 申请提现 </a>
-                            </div>
+                            <button type="submit" class="btn red" onclick="extractMoney()"><i class="fa fa-money"></i> 申请提现</button>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -49,7 +63,8 @@
                                     <th> 消费者 </th>
                                     <th> 消费金额 </th>
                                     <th> 返利金额 </th>
-                                    <th> 日期 </th>
+                                    <th> 状态 </th>
+                                    <th> 返利时间 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,9 +76,15 @@
                                     @foreach($referralLogList as $key => $referralLog)
                                         <tr class="odd gradeX">
                                             <td> {{$key + 1}} </td>
-                                            <td> {{$referralLog->user_id}} </td>
+                                            <td> {{$referralLog->user->username}} </td>
                                             <td> {{$referralLog->amount}} </td>
                                             <td> {{$referralLog->ref_amount}} </td>
+                                            <td>
+                                                @if ($referralLog->status)
+                                                    <span class="label label-sm label-default">已提现</span>
+                                                @else
+                                                    <span class="label label-sm label-info">未提现</span>
+                                                @endif
                                             <td> {{$referralLog->created_at}} </td>
                                         </tr>
                                     @endforeach
@@ -73,7 +94,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$referralLogList->total()}} 条记录，合计可提现金额 <code>{{$totalAmount}}元</code></div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$referralLogList->total()}} 条记录，合计返利<code>{{$canAmount}}元</code></div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
@@ -92,11 +113,15 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script src="/assets/pages/scripts/components-clipboard.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 申请提现
         function extractMoney() {
-            bootbox.alert('开发中');
+            $.post("{{url('user/extractMoney')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                bootbox.alert(ret.message);
+            });
         }
     </script>
 @endsection

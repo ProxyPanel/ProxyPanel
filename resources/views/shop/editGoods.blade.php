@@ -77,6 +77,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label col-md-3">描述</label>
+                                    <div class="col-md-6">
+                                        <textarea class="form-control" rows="3" name="desc" id="desc" placeholder="商品的简单描述">{{$goods->desc}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-3">内含流量</label>
                                     <div class="col-md-6">
                                         <div class="input-group">

@@ -29,7 +29,6 @@ telegram群组：https://t.me/chatssrpanel
 | Law-杰   | ￥10 | 
 | Err      | ￥51 | 
 | 緃噺開始 |  ￥5 | 
-|良心***| ￥67 |
 |、无奈|￥5|
 |Sunny Woon| ￥10|
 

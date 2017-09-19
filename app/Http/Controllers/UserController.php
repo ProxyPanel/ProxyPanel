@@ -9,6 +9,7 @@ use App\Http\Models\Goods;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
+use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
@@ -734,7 +735,6 @@ TXT;
                 $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
                 $userBalanceLogObj->save();
 
-
                 // 优惠券置为已使用
                 if (!empty($coupon)) {
                     if ($coupon->usage == 1) {
@@ -752,6 +752,16 @@ TXT;
 
                 // 把流量包内的流量加到账号上
                 User::where('id', $user['id'])->increment('transfer_enable', $goods->traffic);
+
+                // 写入返利日志
+                $referralLog = new ReferralLog();
+                $referralLog->user_id = $user['id'];
+                $referralLog->ref_user_id = $user['referral_uid'];
+                $referralLog->order_id = $order->oid;
+                $referralLog->amount = $totalPrice;
+                $referralLog->ref_amount = $totalPrice * static::$config['referral_percent'];
+                $referralLog->status = 0;
+                $referralLog->save();
 
                 DB::commit();
 
@@ -818,13 +828,53 @@ TXT;
     {
         // 生成个人推广链接
         $user = $request->session()->get('user');
+
         $view['referral_traffic'] = static::$config['referral_traffic'];
         $view['referral_percent'] = static::$config['referral_percent'];
         $view['referral_money'] = static::$config['referral_money'];
-        $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->paginate();
-        $view['totalAmount'] = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        $view['link'] = static::$config['website_url'] . '/?ref=' . $user['id'];
+        $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->with('user')->paginate();
+        $view['totalAmount'] = ReferralLog::where('ref_user_id', $user['id'])->sum('ref_amount');
+        $view['canAmount'] = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        $view['link'] = static::$config['website_url'] . '/?aff=' . $user['id'];
 
         return Response::view('user/referral', $view);
+    }
+
+    // 申请提现
+    public function extractMoney(Request $request)
+    {
+        $user = $request->session()->get('user');
+
+        // 校验可以提现金额是否超过系统设置的阀值
+        $ref_amount = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        if ($ref_amount < static::$config['referral_money']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . static::$config['referral_money'] . '元才可以提现，继续努力吧']);
+        }
+
+        // 判断是否已存在申请
+        $referralApply = ReferralApply::where('user_id', $user['id'])->where('status', 0)->first();
+        if ($referralApply) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
+        }
+
+        // 取出本次申请关联返利日志ID
+        $link_logs = '';
+        $referralLog = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->get();
+        foreach ($referralLog as $log) {
+            $link_logs .= $log->id . ',';
+        }
+        $link_logs = rtrim($link_logs, ',');
+
+        $obj = new ReferralApply();
+        $obj->user_id = $user['id'];
+        $obj->before = $ref_amount;
+        $obj->after = 0;
+        $obj->amount = $ref_amount;
+        $obj->link_logs = $link_logs;
+        $obj->status = 0;
+        $obj->created_at = date('Y-m-d H:i:s');
+        $obj->save();
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
     }
 }

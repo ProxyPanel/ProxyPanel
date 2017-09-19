@@ -34,6 +34,7 @@ class ShopController extends BaseController
     {
         if ($request->method() == 'POST') {
             $name = $request->get('name');
+            $desc = $request->get('desc');
             $traffic = $request->get('traffic');
             $price = $request->get('price');
             $score = $request->get('score');
@@ -57,6 +58,7 @@ class ShopController extends BaseController
 
             $obj = new Goods();
             $obj->name = $name;
+            $obj->desc = $desc;
             $obj->logo = $logo;
             $obj->traffic = $traffic;
             $obj->price = $price;
@@ -83,6 +85,7 @@ class ShopController extends BaseController
 
         if ($request->method() == 'POST') {
             $name = $request->get('name');
+            $desc = $request->get('desc');
             $traffic = $request->get('traffic');
             $price = $request->get('price');
             $score = $request->get('score');
@@ -106,11 +109,12 @@ class ShopController extends BaseController
 
             $data = [
                 'name'    => $name,
+                'desc'    => $desc,
                 'logo'    => $logo,
                 'traffic' => $traffic,
                 'price'   => $price,
                 'score'   => $score,
-                'status'  => $status,
+                'status'  => $status
             ];
             $ret = Goods::where('id', $id)->update($data);
             if ($ret) {
