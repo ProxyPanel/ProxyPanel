@@ -64,9 +64,15 @@
                             <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
                             <img alt="" class="img-circle" src="/assets/images/avatar.jpg" /> </a>
                         <ul class="dropdown-menu dropdown-menu-default">
+                            @if(Session::get('user')['is_admin'])
+                                <li>
+                                    <a href="{{url('/admin')}}"> <i class="icon-settings"></i> 管理中心 </a>
+                                </li>
+                            @endif
                             <li>
                                 <a href="{{url('user/profile')}}"> <i class="icon-user"></i> 个人资料 </a>
                             </li>
+                            <li class="divider"> </li>
                             <li>
                                 <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
                             </li>

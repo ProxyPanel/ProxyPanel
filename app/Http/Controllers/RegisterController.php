@@ -33,6 +33,7 @@ class RegisterController extends BaseController
             $password = trim($request->get('password'));
             $repassword = trim($request->get('repassword'));
             $code = trim($request->get('code'));
+            $aff = intval($request->get('aff', 0));
 
             if (empty($username)) {
                 $request->session()->flash('errorMsg', '请输入用户名');
@@ -88,6 +89,18 @@ class RegisterController extends BaseController
                 return Redirect::back()->withInput();
             }
 
+            // 校验aff对应账号是否存在
+            if ($aff) {
+                $affUser = User::where('id', $aff)->first();
+                if ($affUser) {
+                    $referral_uid = $aff;
+                } else {
+                    $referral_uid = 0;
+                }
+            } else {
+                $referral_uid = 0;
+            }
+
             // 最后一个可用端口
             $last_user = User::orderBy('id', 'desc')->first();
             $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
@@ -102,11 +115,12 @@ class RegisterController extends BaseController
             $user->enable_time = date('Y-m-d H:i:s');
             $user->expire_time = date('Y-m-d H:i:s', strtotime("+30 days"));
             $user->reg_ip = $request->getClientIp();
+            $user->referral_uid = $referral_uid;
             $user->save();
 
             // 更新邀请码
             if (self::$config['is_invite_register'] && $user->id) {
-                Invite::where('id', $code->id)->update(['fuid' => $user->id,'status' => 1]);
+                Invite::where('id', $code->id)->update(['fuid' => $user->id, 'status' => 1]);
 
                 // 生成激活账号的地址
                 $token = md5(self::$config['website_name'] . $username . microtime());

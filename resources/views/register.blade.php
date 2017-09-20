@@ -50,6 +50,7 @@
                 <label class="control-label visible-ie8 visible-ie9">用户名</label>
                 <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入邮箱" name="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
+                <input type="hidden" name="aff" value="{{Request::get('aff')}}" />
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">密码</label>

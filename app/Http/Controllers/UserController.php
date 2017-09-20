@@ -835,7 +835,7 @@ TXT;
         $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->with('user')->paginate();
         $view['totalAmount'] = ReferralLog::where('ref_user_id', $user['id'])->sum('ref_amount');
         $view['canAmount'] = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        $view['link'] = static::$config['website_url'] . '/?aff=' . $user['id'];
+        $view['link'] = static::$config['website_url'] . '/register?aff=' . $user['id'];
 
         return Response::view('user/referral', $view);
     }

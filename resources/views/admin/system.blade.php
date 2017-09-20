@@ -203,7 +203,7 @@
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <label for="referral_traffic" class="col-md-2 control-label">注册送流量</label>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="referral_gift_traffic" value="{{$referral_traffic}}" id="referral_traffic" />
                                                                 <span class="input-group-addon">MiB</span>
@@ -216,7 +216,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="referral_percent" class="col-md-2 control-label">返利比例</label>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="referral_percent" value="{{$referral_percent * 100}}" id="referral_percent" />
                                                                 <span class="input-group-addon">%</span>
@@ -229,7 +229,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="referral_money" class="col-md-2 control-label">提现限制</label>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="referral_money" value="{{$referral_money}}" id="referral_money" />
                                                                 <span class="input-group-addon">元</span>

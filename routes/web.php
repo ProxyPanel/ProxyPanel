@@ -1,6 +1,5 @@
 <?php
 
-Route::any('/', 'AdminController@index'); // 首页
 Route::any('login', 'LoginController@index'); // 登录
 Route::get('logout', 'LoginController@logout'); // 退出
 Route::any('register', 'RegisterController@index'); // 注册
@@ -67,6 +66,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
 });
 
 Route::group(['middleware' => ['user']], function(){
+    Route::any('/', 'UserController@index'); // 用户首页
     Route::any('user', 'UserController@index'); // 用户首页
     Route::any('user/article', 'UserController@article'); // 文章详情
     Route::get('user/nodeList', 'UserController@nodeList'); // 节点列表
