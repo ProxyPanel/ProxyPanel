@@ -11,7 +11,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('user/ticketList')}}">工单</a>
+                <a href="{{url('user/ticketList')}}">我的工单</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
                                     <th> ID </th>

@@ -70,7 +70,7 @@
                                 <tbody>
                                 @if($referralLogList->isEmpty())
                                     <tr>
-                                        <td colspan="5">暂无数据</td>
+                                        <td colspan="6">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($referralLogList as $key => $referralLog)

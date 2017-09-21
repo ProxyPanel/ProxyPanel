@@ -28,8 +28,23 @@
                         </div>
                     </div>
                     <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-2">
+                                <input type="text" class="col-md-4 form-control input-sm" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){do_search();}">
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <input type="text" class="col-md-4 form-control input-sm" name="user_id" value="{{Request::get('user_id')}}" id="user_id" placeholder="用户ID" onkeydown="if(event.keyCode==13){do_search();}">
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
+                            </div>
+                        </div>
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
                                     <th> ID </th>
@@ -45,7 +60,7 @@
                                 <tbody>
                                     @if($trafficLogList->isEmpty())
                                         <tr>
-                                            <td colspan="9">暂无数据</td>
+                                            <td colspan="8">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($trafficLogList as $trafficLog)
@@ -66,7 +81,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$trafficLogList->total()}} 条记录</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$trafficLogList->total()}} 条记录，合计 {{$totalTraffic}}</div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
@@ -84,5 +99,19 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script type="text/javascript">
+        // 搜索
+        function do_search() {
+            var port = $("#port").val();
+            var user_id = $("#user_id").val();
+            var username = $("#username").val();
 
+            window.location.href = '{{url('admin/trafficLog')}}' + '?port=' + port + '&user_id=' + user_id + '&username=' + username;
+        }
+
+        // 重置
+        function do_reset() {
+            window.location.href = '{{url('admin/trafficLog')}}';
+        }
+    </script>
 @endsection

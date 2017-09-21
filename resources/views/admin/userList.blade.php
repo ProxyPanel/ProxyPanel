@@ -24,7 +24,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-users font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 账号管理</span>
+                            <span class="caption-subject bold uppercase"> 账号列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
                                     <th> ID </th>

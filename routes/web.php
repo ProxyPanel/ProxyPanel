@@ -31,6 +31,8 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
     Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
+    Route::get('admin/applyList', 'AdminController@applyList'); // 提现申请管理
+    Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
     Route::any('admin/config', 'AdminController@config'); // 配置列表
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
     Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置

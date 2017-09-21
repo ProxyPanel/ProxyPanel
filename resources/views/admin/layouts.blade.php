@@ -123,6 +123,12 @@
                         <span class="title">邀请码管理</span>
                     </a>
                 </li>
+                <li class="nav-item {{Request::getRequestUri() == '/admin/applyList' ? 'active open' : ''}}">
+                    <a href="{{url('admin/applyList')}}" class="nav-link nav-toggle">
+                        <i class="icon-credit-card"></i>
+                        <span class="title">提现管理</span>
+                    </a>
+                </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/articleList' ? 'active open' : ''}}">
                     <a href="{{url('admin/articleList')}}" class="nav-link nav-toggle">
                         <i class="icon-docs"></i>

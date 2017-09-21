@@ -32,7 +32,7 @@
                             <strong>流量比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推，越是优质节点则比例越高。
                         </div>
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
                                     <th> ID </th>

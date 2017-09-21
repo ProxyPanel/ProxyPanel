@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
+use App\Http\Models\ReferralApply;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsGroupNode;
@@ -614,7 +615,29 @@ class AdminController extends BaseController
     // 流量日志
     public function trafficLog(Request $request)
     {
-        $trafficLogList = UserTrafficLog::with(['User', 'SsNode'])->orderBy('id', 'desc')->paginate(20);
+        $port = $request->get('port');
+        $user_id = $request->get('user_id');
+        $username = $request->get('username');
+
+        $query = UserTrafficLog::with(['User', 'SsNode']);
+
+        if (!empty($port)) {
+            $query->whereHas('user', function($q) use($port) {
+                $q->where('port', $port);
+            });
+        }
+
+        if (!empty($user_id)) {
+            $query->where('user_id', $user_id);
+        }
+
+        if (!empty($username)) {
+            $query->whereHas('user', function($q) use($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        $trafficLogList = $query->orderBy('id', 'desc')->paginate(20);
         foreach ($trafficLogList as &$trafficLog) {
             $trafficLog->u = $this->flowAutoShow($trafficLog->u);
             $trafficLog->d = $this->flowAutoShow($trafficLog->d);
@@ -622,6 +645,9 @@ class AdminController extends BaseController
         }
 
         $view['trafficLogList'] = $trafficLogList;
+
+        // 已使用流量
+        $view['totalTraffic'] = $this->flowAutoShow($query->sum('u') + $query->sum('d'));
 
         return Response::view('admin/trafficLog', $view);
     }
@@ -1219,6 +1245,14 @@ TXT;
         }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
+    }
+
+    // 提现申请列表
+    public function applyList(Request $request)
+    {
+        $view['applyList'] = ReferralApply::with('user')->paginate(10);
+
+        return Response::view('admin/applyList', $view);
     }
 
 }

@@ -147,7 +147,7 @@
                 <li class="nav-item {{Request::getRequestUri() == '/user/ticketList' ? 'active open' : ''}}">
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
-                        <span class="title">工单</span>
+                        <span class="title">我的工单</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">

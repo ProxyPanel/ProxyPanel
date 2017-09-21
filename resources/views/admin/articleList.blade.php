@@ -24,7 +24,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-docs font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 文章管理</span>
+                            <span class="caption-subject bold uppercase"> 文章列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
