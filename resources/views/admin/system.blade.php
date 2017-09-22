@@ -125,8 +125,21 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label for="default_traffic" class="col-md-2 control-label">注册初始流量</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="default_traffic" value="{{$default_traffic}}" id="default_traffic" />
+                                                                <span class="input-group-addon">Byte</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setDefaultTraffic()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 用户注册时默认可用流量 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="invite_num" class="col-md-2 control-label">可生成邀请码数</label>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num" />
                                                                 <span class="input-group-btn">
@@ -138,7 +151,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="reset_password_times" class="col-md-2 control-label">重置密码次数</label>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="reset_password_times" value="{{$reset_password_times}}" id="reset_password_times" />
                                                                 <span class="input-group-btn">
@@ -150,7 +163,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="active_times" class="col-md-2 control-label">激活账号次数</label>
-                                                        <div class="col-md-2">
+                                                        <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="active_times" value="{{$active_times}}" id="active_times" />
                                                                 <span class="input-group-btn">
@@ -202,16 +215,23 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
+                                                        <label for="referral_status" class="col-md-2 control-label">本功能</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($referral_status) checked @endif id="referral_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 关闭后用户不可见 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="referral_traffic" class="col-md-2 control-label">注册送流量</label>
                                                         <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="referral_gift_traffic" value="{{$referral_traffic}}" id="referral_traffic" />
-                                                                <span class="input-group-addon">MiB</span>
+                                                                <span class="input-group-addon">Byte</span>
                                                                 <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setReferralTraffic()">修改</button>
                                                                 </span>
                                                             </div>
-                                                            <span class="help-block"> 根据推广链接注册则送多少流量 </span>
+                                                            <span class="help-block"> 根据推广链接注册则送多少流量（叠加在默认流量上） </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -409,6 +429,21 @@
             }
         });
 
+        // 启用、禁用退关返利用户可见与否
+        $('#referral_status').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var referral_status = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_status', value:referral_status}, function (ret) {
+                    if (ret.status == 'fail') {
+                        bootbox.alert(ret.message, function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        });
+
         // 设置最小积分
         $("#min_rand_score").change(function () {
             var min_rand_score = $(this).val();
@@ -434,6 +469,19 @@
                 }
             });
         });
+
+        // 设置注册时默认流量
+        function setDefaultTraffic() {
+            var default_traffic = $("#default_traffic").val();
+
+            $.post("{{url('admin/setDefaultTraffic')}}", {_token:'{{csrf_token()}}', value:default_traffic}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
 
         // 设置可生成邀请码数量
         function setInviteNum() {

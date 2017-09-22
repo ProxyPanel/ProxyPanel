@@ -33,6 +33,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
     Route::get('admin/applyList', 'AdminController@applyList'); // 提现申请管理
     Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
+    Route::post('admin/setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
     Route::any('admin/config', 'AdminController@config'); // 配置列表
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
     Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
@@ -46,6 +47,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
     Route::get('admin/system', 'AdminController@system'); // 系统设置
     Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
+    Route::post('admin/setDefaultTraffic', 'AdminController@setDefaultTraffic'); // 设置注册时默认可用流量
     Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成邀请码数
     Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置网站名称
     Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址

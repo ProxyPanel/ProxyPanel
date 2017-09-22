@@ -45,12 +45,13 @@ class UserController extends BaseController
         $user = $request->session()->get('user');
 
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
-        $view['wechat_qrcode'] = static::$config['wechat_qrcode'];
-        $view['alipay_qrcode'] = static::$config['alipay_qrcode'];
+        $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
+        $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
+        $view['referral_status'] = self::$config['referral_status'];
 
         $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
         $user['usedTransfer'] = $this->flowAutoShow($user['u'] + $user['d']);
-        $user['usedPercent'] = round(($user['u'] + $user['d']) / $user['transfer_enable'], 2);
+        $user['usedPercent'] = $user['transfer_enable'] > 0 ? round(($user['u'] + $user['d']) / $user['transfer_enable'], 2) : 1;
         $view['info'] = $user;
 
         return Response::view('user/index', $view);
@@ -700,7 +701,7 @@ TXT;
                 // 生成订单
                 $order = new Order();
                 $order->orderId = $orderId;
-                $order->user_id = $user['id'];
+                $order->user_id = $user->id;
                 $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
                 $order->totalOriginalPrice = $goods->price;
                 $order->totalPrice = $totalPrice;
@@ -714,7 +715,7 @@ TXT;
                 $orderGoods = new OrderGoods();
                 $orderGoods->oid = $order->oid;
                 $orderGoods->orderId = $orderId;
-                $orderGoods->user_id = $user['id'];
+                $orderGoods->user_id = $user->id;
                 $orderGoods->goods_id = $goods_id;
                 $orderGoods->num = 1;
                 $orderGoods->original_price = $goods->price;
@@ -726,8 +727,8 @@ TXT;
 
                 // 记录余额操作日志
                 $userBalanceLogObj = new UserBalanceLog();
-                $userBalanceLogObj->user_id = $user['id'];
-                $userBalanceLogObj->order_id = $order->id;
+                $userBalanceLogObj->user_id = $user->id;
+                $userBalanceLogObj->order_id = $order->oid;
                 $userBalanceLogObj->before = $user->balance;
                 $userBalanceLogObj->after = $user->balance - $totalPrice;
                 $userBalanceLogObj->balance = $totalPrice;
@@ -755,11 +756,11 @@ TXT;
 
                 // 写入返利日志
                 $referralLog = new ReferralLog();
-                $referralLog->user_id = $user['id'];
-                $referralLog->ref_user_id = $user['referral_uid'];
+                $referralLog->user_id = $user->id;
+                $referralLog->ref_user_id = $user->referral_uid;
                 $referralLog->order_id = $order->oid;
                 $referralLog->amount = $totalPrice;
-                $referralLog->ref_amount = $totalPrice * static::$config['referral_percent'];
+                $referralLog->ref_amount = $totalPrice * self::$config['referral_percent'];
                 $referralLog->status = 0;
                 $referralLog->save();
 
@@ -829,13 +830,13 @@ TXT;
         // 生成个人推广链接
         $user = $request->session()->get('user');
 
-        $view['referral_traffic'] = static::$config['referral_traffic'];
-        $view['referral_percent'] = static::$config['referral_percent'];
-        $view['referral_money'] = static::$config['referral_money'];
+        $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic']);
+        $view['referral_percent'] = self::$config['referral_percent'];
+        $view['referral_money'] = self::$config['referral_money'];
         $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->with('user')->paginate();
         $view['totalAmount'] = ReferralLog::where('ref_user_id', $user['id'])->sum('ref_amount');
         $view['canAmount'] = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        $view['link'] = static::$config['website_url'] . '/register?aff=' . $user['id'];
+        $view['link'] = self::$config['website_url'] . '/register?aff=' . $user['id'];
 
         return Response::view('user/referral', $view);
     }
@@ -847,8 +848,8 @@ TXT;
 
         // 校验可以提现金额是否超过系统设置的阀值
         $ref_amount = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        if ($ref_amount < static::$config['referral_money']) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . static::$config['referral_money'] . '元才可以提现，继续努力吧']);
+        if ($ref_amount < self::$config['referral_money']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$config['referral_money'] . '元才可以提现，继续努力吧']);
         }
 
         // 判断是否已存在申请

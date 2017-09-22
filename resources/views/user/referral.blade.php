@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-danger">
-                    通过您的推广链接注册的账号可以获得 <code>{{$referral_traffic}}MiB流量</code> 奖励。您可以获得他们每笔消费的<code>{{$referral_percent * 100}}%现金返利</code>。累计满 <code>{{$referral_money}}元</code>，就可以申请提现至微信或者支付宝。
+                    通过您的推广链接注册的账号可以获得 <code>{{$referral_traffic}}流量</code> 奖励。您可以获得他们每笔消费的<code>{{$referral_percent * 100}}%现金返利</code>。累计满 <code>{{$referral_money}}元</code>，就可以申请提现至微信或者支付宝。
                 </div>
                 <div class="portlet light form-fit bordered">
                     <div class="portlet-title">

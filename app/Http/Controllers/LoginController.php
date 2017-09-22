@@ -55,9 +55,9 @@ class LoginController extends BaseController
             User::where('id', $user['id'])->update(['last_login' => time()]);
 
             // 登录送积分
-            if (static::$config['login_add_score']) {
+            if (self::$config['login_add_score']) {
                 if (!Cache::has('loginAddScore_' . md5($username))) {
-                    $score = mt_rand(static::$config['min_rand_score'], static::$config['max_rand_score']);
+                    $score = mt_rand(self::$config['min_rand_score'], self::$config['max_rand_score']);
                     $ret = User::where('id', $user['id'])->increment('score', $score);
                     if ($ret) {
                         $obj = new UserScoreLog();
@@ -69,7 +69,7 @@ class LoginController extends BaseController
                         $obj->created_at = date('Y-m-d H:i:s');
                         $obj->save();
 
-                        $ttl = !empty(static::$config['login_add_score_range']) ? static::$config['login_add_score_range'] : 1440;
+                        $ttl = !empty(self::$config['login_add_score_range']) ? self::$config['login_add_score_range'] : 1440;
                         Cache::put('loginAddScore_' . md5($username), '1', $ttl);
                         $request->session()->flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量包');
                     }

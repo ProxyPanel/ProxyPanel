@@ -234,6 +234,7 @@ INSERT INTO `config` VALUES ('17', 'login_add_score_range', 1440);
 INSERT INTO `config` VALUES ('18', 'referral_traffic', 1024);
 INSERT INTO `config` VALUES ('19', 'referral_percent', 0.2);
 INSERT INTO `config` VALUES ('20', 'referral_money', 100);
+INSERT INTO `config` VALUES ('21', 'referral_status', 1);
 
 
 -- ----------------------------

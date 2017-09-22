@@ -6,6 +6,7 @@ use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
 use App\Http\Models\ReferralApply;
+use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsGroupNode;
@@ -1102,6 +1103,16 @@ TXT;
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
+    // 设置注册时默认可用流量
+    public function setDefaultTraffic(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('name', 'default_traffic')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
     // 设置可生成邀请码数
     public function setInviteNum(Request $request)
     {
@@ -1255,4 +1266,33 @@ TXT;
         return Response::view('admin/applyList', $view);
     }
 
+    // 提现申请详情
+    public function applyDetail(Request $request)
+    {
+        $id = $request->get('id');
+
+
+        $list = [];
+        $apply = ReferralApply::where('id', $id)->with('user')->first();
+        if (!empty($apply) && !empty($apply->link_logs)) {
+            $link_logs = explode(',', $apply->link_logs);
+            $list = ReferralLog::whereIn('id', $link_logs)->with('user')->paginate(10);
+        }
+
+        $view['info'] = $apply;
+        $view['list'] = $list;
+
+        return Response::view('admin/applyDetail', $view);
+    }
+
+    // 设置提现申请状态
+    public function setApplyStatus(Request $request)
+    {
+        $id = $request->get('id');
+        $status = $request->get('status');
+
+        ReferralApply::where('id', $id)->update(['status' => $status]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
 }

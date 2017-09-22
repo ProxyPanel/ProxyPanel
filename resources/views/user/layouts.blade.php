@@ -150,12 +150,14 @@
                         <span class="title">我的工单</span>
                     </a>
                 </li>
+                @if($referral_status)
                 <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">
                     <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
                         <i class="icon-diamond"></i>
                         <span class="title">推广返利</span>
                     </a>
                 </li>
+                @endif
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>

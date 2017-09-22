@@ -106,7 +106,7 @@
                                             <td> {{$user->username}} </td>
                                             <td> <span class="label label-danger"> {{$user->port}} </span> </td>
                                             <td> <span class="label label-default"> {{$user->method}} </span> </td>
-                                            <td class="center"> {{$user->used_flow}} </td>
+                                            <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
                                             <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
                                             <td class="center">
                                                 @if ($user->expireWarning)

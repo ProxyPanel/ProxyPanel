@@ -55,7 +55,7 @@
                                                         <span class="label label-sm label-danger"> 驳回 </span>
                                                     @elseif($apply->status == 0)
                                                         <span class="label label-sm label-info"> 审核通过待打款 </span>
-                                                    @elseif($apply->status == 1)
+                                                    @elseif($apply->status == 2)
                                                         <span class="label label-sm label-success"> 已打款 </span>
                                                     @else
                                                         <span class="label label-sm label-default"> 待审核 </span>

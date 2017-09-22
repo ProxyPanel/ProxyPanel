@@ -92,11 +92,7 @@ class RegisterController extends BaseController
             // 校验aff对应账号是否存在
             if ($aff) {
                 $affUser = User::where('id', $aff)->first();
-                if ($affUser) {
-                    $referral_uid = $aff;
-                } else {
-                    $referral_uid = 0;
-                }
+                $referral_uid = $affUser ? $aff : 0;
             } else {
                 $referral_uid = 0;
             }
@@ -106,12 +102,13 @@ class RegisterController extends BaseController
             $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
             // 创建新用户
+            $transfer_enable = $referral_uid ? (self::$config['default_traffic'] + self::$config['referral_traffic']) : self::$config['default_traffic'];
             $user = new User();
             $user->username = $username;
             $user->password = md5($password);
             $user->port = $port;
             $user->passwd = $this->makeRandStr();
-            $user->transfer_enable = $this->toGB(1);
+            $user->transfer_enable = $transfer_enable;
             $user->enable_time = date('Y-m-d H:i:s');
             $user->expire_time = date('Y-m-d H:i:s', strtotime("+30 days"));
             $user->reg_ip = $request->getClientIp();
