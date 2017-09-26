@@ -39,6 +39,7 @@
                                             <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容SS </span> @endif </td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#scheme_{{$node->id}}"> SCHEME </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
                                             </td>
@@ -68,6 +69,24 @@
                                         </div>
                                         <div class="modal-body">
                                             <textarea class="form-control" rows="10" onclick="this.focus();this.select()" readonly="readonly"> {{$node->txt}} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade draggable-modal" id="scheme_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Url Scheme</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea class="form-control" rows="7" onclick="this.focus();this.select()" readonly="readonly">
+                                                {{$node->ssr_scheme}}
+                                                @if ($node->compatible)
+                                                    {{$node->ss_scheme}}
+                                                @endif
+                                            </textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -134,6 +153,7 @@
             var n = function () {
                 @foreach($nodeList as $node)
                     $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#scheme_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#json_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
                 @endforeach

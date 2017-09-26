@@ -38,6 +38,8 @@ class ShopController extends BaseController
             $traffic = $request->get('traffic');
             $price = $request->get('price');
             $score = $request->get('score');
+            $start_time = $request->get('start_time');
+            $end_time = $request->get('end_time');
             $status = $request->get('status');
 
             if (empty($name) || empty($traffic) || $price == '') {
@@ -63,6 +65,8 @@ class ShopController extends BaseController
             $obj->traffic = $traffic;
             $obj->price = $price;
             $obj->score = $score;
+            $obj->start_time = date('Y-m-d 00:00:00', strtotime($start_time));
+            $obj->end_time = date('Y-m-d 23:59:59', strtotime($end_time));
             $obj->status = $status;
             $obj->save();
 
@@ -89,6 +93,8 @@ class ShopController extends BaseController
             $traffic = $request->get('traffic');
             $price = $request->get('price');
             $score = $request->get('score');
+            $start_time = $request->get('start_time');
+            $end_time = $request->get('end_time');
             $status = $request->get('status');
 
             if (empty($name) || empty($traffic) || $price == '') {
@@ -114,6 +120,8 @@ class ShopController extends BaseController
                 'traffic' => $traffic,
                 'price'   => $price,
                 'score'   => $score,
+                'start_time' => date('Y-m-d 00:00:00', strtotime($start_time)),
+                'end_time' => date('Y-m-d 23:59:59', strtotime($end_time)),
                 'status'  => $status
             ];
             $ret = Goods::where('id', $id)->update($data);

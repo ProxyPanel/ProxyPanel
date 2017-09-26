@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
 use App\Http\Models\CouponLog;
+use App\Http\Models\EmailLog;
 use App\Http\Models\Goods;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
@@ -47,12 +48,16 @@ class UserController extends BaseController
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
-        $view['referral_status'] = self::$config['referral_status'];
 
         $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
         $user['usedTransfer'] = $this->flowAutoShow($user['u'] + $user['d']);
         $user['usedPercent'] = $user['transfer_enable'] > 0 ? round(($user['u'] + $user['d']) / $user['transfer_enable'], 2) : 1;
         $view['info'] = $user;
+
+        // 推广返利是否可见
+        if (!$request->session()->has('referral_status')) {
+            $request->session()->put('referral_status', self::$config['referral_status']);
+        }
 
         return Response::view('user/index', $view);
     }
@@ -437,7 +442,16 @@ TXT;
 
             // 发送邮件
             $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
-            Mail::to($user->username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+            $ret = Mail::to($user->username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+
+            // 写入邮件发送日志
+            $emailLogObj = new EmailLog();
+            $emailLogObj->user_id = $user->id;
+            $emailLogObj->title = '重新激活账号';
+            $emailLogObj->content = '请求地址：' . $activeUserUrl;
+            $emailLogObj->status = $ret ? 1 : 0;
+            $emailLogObj->created_at = date('Y-m-d H:i:s');
+            $emailLogObj->save();
 
             Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
             $request->session()->flash('successMsg', '邮件已发送，请查看邮箱');
@@ -460,6 +474,10 @@ TXT;
         $verify = Verify::where('token', $token)->with('user')->first();
         if (empty($verify)) {
             return Redirect::to('login');
+        } else if (empty($verify->user)) {
+            $request->session()->flash('errorMsg', '该链接已失效');
+
+            return Response::view('user/active');
         } else if ($verify->status == 1) {
             $request->session()->flash('errorMsg', '该链接已失效');
 
@@ -538,7 +556,16 @@ TXT;
 
             // 发送邮件
             $resetPasswordUrl = self::$config['website_url'] . '/reset/' . $token;
-            Mail::to($user->username)->send(new resetPassword(self::$config['website_name'], $resetPasswordUrl));
+            $ret = Mail::to($user->username)->send(new resetPassword(self::$config['website_name'], $resetPasswordUrl));
+
+            // 写入邮件发送日志
+            $emailLogObj = new EmailLog();
+            $emailLogObj->user_id = $user->id;
+            $emailLogObj->title = '重置账号密码';
+            $emailLogObj->content = '请求地址：' . $resetPasswordUrl;
+            $emailLogObj->status = $ret ? 1 : 0;
+            $emailLogObj->created_at = date('Y-m-d H:i:s');
+            $emailLogObj->save();
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
             $request->session()->flash('successMsg', '重置成功，请查看邮箱');
@@ -752,17 +779,19 @@ TXT;
                 }
 
                 // 把流量包内的流量加到账号上
-                User::where('id', $user['id'])->increment('transfer_enable', $goods->traffic);
+                User::where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
 
                 // 写入返利日志
-                $referralLog = new ReferralLog();
-                $referralLog->user_id = $user->id;
-                $referralLog->ref_user_id = $user->referral_uid;
-                $referralLog->order_id = $order->oid;
-                $referralLog->amount = $totalPrice;
-                $referralLog->ref_amount = $totalPrice * self::$config['referral_percent'];
-                $referralLog->status = 0;
-                $referralLog->save();
+                if ($user->referral_uid) {
+                    $referralLog = new ReferralLog();
+                    $referralLog->user_id = $user->id;
+                    $referralLog->ref_user_id = $user->referral_uid;
+                    $referralLog->order_id = $order->oid;
+                    $referralLog->amount = $totalPrice;
+                    $referralLog->ref_amount = $totalPrice * self::$config['referral_percent'];
+                    $referralLog->status = 0;
+                    $referralLog->save();
+                }
 
                 DB::commit();
 
@@ -830,7 +859,7 @@ TXT;
         // 生成个人推广链接
         $user = $request->session()->get('user');
 
-        $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic']);
+        $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$config['referral_percent'];
         $view['referral_money'] = self::$config['referral_money'];
         $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->with('user')->paginate();

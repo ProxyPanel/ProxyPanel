@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\EmailLog;
 use App\Http\Models\Invite;
 use App\Http\Models\User;
 use App\Http\Models\Verify;
@@ -102,7 +103,7 @@ class RegisterController extends BaseController
             $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
             // 创建新用户
-            $transfer_enable = $referral_uid ? (self::$config['default_traffic'] + self::$config['referral_traffic']) : self::$config['default_traffic'];
+            $transfer_enable = $referral_uid ? (self::$config['default_traffic'] + self::$config['referral_traffic']) * 1048576 : self::$config['default_traffic'] * 1048576;
             $user = new User();
             $user->username = $username;
             $user->password = md5($password);
@@ -118,22 +119,31 @@ class RegisterController extends BaseController
             // 更新邀请码
             if (self::$config['is_invite_register'] && $user->id) {
                 Invite::where('id', $code->id)->update(['fuid' => $user->id, 'status' => 1]);
-
-                // 生成激活账号的地址
-                $token = md5(self::$config['website_name'] . $username . microtime());
-                $verify = new Verify();
-                $verify->user_id = $user->id;
-                $verify->username = $username;
-                $verify->token = $token;
-                $verify->status = 0;
-                $verify->save();
-
-                // 发送邮件
-                $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
-                Mail::to($username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
-
-                $request->session()->flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
             }
+
+            // 生成激活账号的地址
+            $token = md5(self::$config['website_name'] . $username . microtime());
+            $verify = new Verify();
+            $verify->user_id = $user->id;
+            $verify->username = $username;
+            $verify->token = $token;
+            $verify->status = 0;
+            $verify->save();
+
+            // 发送邮件
+            $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
+            $ret = Mail::to($username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+
+            // 写入邮件发送日志
+            $emailLogObj = new EmailLog();
+            $emailLogObj->user_id = $user->id;
+            $emailLogObj->title = '注册激活账号';
+            $emailLogObj->content = '请求地址：' . $activeUserUrl;
+            $emailLogObj->status = $ret ? 1 : 0;
+            $emailLogObj->created_at = date('Y-m-d H:i:s');
+            $emailLogObj->save();
+
+            $request->session()->flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
 
             return Redirect::to('login');
         } else {

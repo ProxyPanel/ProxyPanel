@@ -2,6 +2,7 @@
 
 @section('css')
     <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('title', '控制面板')
 @section('content')
@@ -80,22 +81,36 @@
                                     <label class="control-label col-md-3">内含流量</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="traffic" value="10" id="traffic" placeholder="" required="">
-                                            <span class="input-group-addon">GiB</span>
+                                            <input type="text" class="form-control" name="traffic" value="1024" id="traffic" placeholder="" required="">
+                                            <span class="input-group-addon">MiB</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">售价</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" name="price" value="" id="price" placeholder="" required>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="price" value="" id="price" placeholder="" required>
+                                            <span class="input-group-addon">元</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">所需积分</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" name="score" value="" id="score" placeholder="" required>
+                                        <input type="text" class="form-control" name="score" value="0" id="score" placeholder="" required>
                                         <span class="help-block">换购该商品需要的积分值</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">有效期</label>
+                                    <div class="col-md-9">
+                                        <div class="input-group input-large input-daterange">
+                                            <input type="text" class="form-control" name="start_time" value="{{date('Y-m-d')}}" id="start_time">
+                                            <span class="input-group-addon"> 至 </span>
+                                            <input type="text" class="form-control" name="end_time" value="{{date('Y-m-d', strtotime("+1 year"))}}" id="end_time">
+                                        </div>
+                                        <span class="help-block"> 有效期结束后，凡是购买该商品的账号都会被扣除该商品设置的流量值 </span>
                                     </div>
                                 </div>
                                 <div class="form-group last">
@@ -113,7 +128,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="form-actions">
                                 <div class="row">
@@ -135,5 +149,18 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        // 有效期
+        $('.input-daterange input').each(function() {
+            $(this).datepicker({
+                language: 'zh-CN',
+                autoclose: true,
+                todayHighlight: true,
+                format: 'yyyy-mm-dd'
+            });
+        });
+    </script>
 @endsection

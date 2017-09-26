@@ -235,6 +235,9 @@ INSERT INTO `config` VALUES ('18', 'referral_traffic', 1024);
 INSERT INTO `config` VALUES ('19', 'referral_percent', 0.2);
 INSERT INTO `config` VALUES ('20', 'referral_money', 100);
 INSERT INTO `config` VALUES ('21', 'referral_status', 1);
+INSERT INTO `config` VALUES ('22', 'default_traffic', 1024);
+INSERT INTO `config` VALUES ('23', 'traffic_warning', 0);
+INSERT INTO `config` VALUES ('24', 'traffic_warning_percent', 80);
 
 
 -- ----------------------------
@@ -314,10 +317,12 @@ CREATE TABLE `goods` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品图片地址',
-  `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量',
+  `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位MiB',
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '商品价值多少积分',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
-  `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品描述',
+  `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品描述',
+  `start_time` datetime DEFAULT NULL COMMENT '有效期开始',
+  `end_time` datetime DEFAULT NULL COMMENT '有效期结束',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-否、1-是',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -487,6 +492,20 @@ CREATE TABLE `referral_log` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='消费返利日志';
+
+
+-- ----------------------------
+-- Table structure for `email_log`
+-- ----------------------------
+CREATE TABLE `email_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '接收者ID',
+  `title` varchar(255) DEFAULT '' COMMENT '邮件标题',
+  `content` text COMMENT '邮件内容',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-发送成功、2-发送失败',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 

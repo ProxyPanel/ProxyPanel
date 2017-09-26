@@ -241,12 +241,6 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="protocol_param" value="{{$user->protocol_param}}" id="protocol_param" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
                                                 <label for="obfs" class="col-md-3 control-label">混淆</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="obfs" id="obfs">
@@ -254,6 +248,12 @@
                                                             <option value="{{$obfs->name}}" @if($obfs->name == $user->obfs) selected @endif>{{$obfs->name}}</option>
                                                         @endforeach
                                                     </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" name="protocol_param" value="{{$user->protocol_param}}" id="protocol_param" placeholder="">
                                                 </div>
                                             </div>
                                             <div class="form-group">

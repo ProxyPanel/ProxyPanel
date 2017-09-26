@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
 use App\Http\Models\Config;
+use App\Http\Models\EmailLog;
+use App\Http\Models\Goods;
 use App\Http\Models\Invite;
+use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
@@ -15,9 +18,11 @@ use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficLog;
+use App\Mail\userTrafficWarning;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
+use Mail;
 
 class AdminController extends BaseController
 {
@@ -43,8 +48,51 @@ class AdminController extends BaseController
         $view['totalBalance'] = User::sum('balance');
         $view['expireWarningUserCount'] = User::where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->where('enable', 1)->count();
 
-        // 到期账号禁用
+        // 到期账号禁用 TODO：加入定时任务
         User::where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->update(['enable' => 0]);
+
+        // 商品到期自动扣购买该商品的流量 TODO：加入定时任务
+        $goodsList = Goods::where('end_time', '<', date('Y-m-d H:i:s'))->get();
+        foreach ($goodsList as $goods) {
+            // 所有购买过该商品的用户
+            $orderGoods = OrderGoods::where('goods_id', $goods->id)->get();
+            foreach ($orderGoods as $og) {
+                $u = User::where('id', $og->user_id)->first();
+                if (empty($u)) {
+                    continue;
+                }
+
+                if ($u->transfer_enable - $goods->traffic * 1024 * 1024 < 0) {
+                    User::where('id', $og->user_id)->update(['transfer_enable' => 0]);
+                } else {
+                    User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1024 * 1024);
+                }
+            }
+        }
+
+        // 用户流量警告提醒发邮件 TODO：加入定时任务
+        if (self::$config['traffic_warning']) {
+            $userList = User::get();
+            foreach ($userList as $user) {
+                if (empty($user->transfer_enable)) {
+                    continue;
+                }
+
+                $usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
+                if ($usedPercent >= self::$config['traffic_warning_percent']) {
+                    $ret = Mail::to($user->username)->send(new userTrafficWarning(self::$config['website_name'], $usedPercent));
+
+                    // 写入邮件发送日志
+                    $emailLogObj = new EmailLog();
+                    $emailLogObj->user_id = $user->id;
+                    $emailLogObj->title = '用户流量警告';
+                    $emailLogObj->content = '流量已使用：' . $usedPercent . '%，超过流量阈值' . self::$config['traffic_warning_percent'];
+                    $emailLogObj->status = $ret ? 1 : 0;
+                    $emailLogObj->created_at = date('Y-m-d H:i:s');
+                    $emailLogObj->save();
+                }
+            }
+        }
 
         return Response::view('admin/index', $view);
     }
@@ -149,7 +197,7 @@ class AdminController extends BaseController
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
             }
 
-            // 密码为空时生成默认密码
+            // 密码为空时则生成随机密码
             if (empty($password)) {
                 $str = $this->makeRandStr();
                 $password = md5($str);
@@ -1159,6 +1207,16 @@ TXT;
         $value = intval($request->get('value'));
 
         Config::where('name', 'active_times')->update(['value' => $value]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
+    }
+
+    // 设置激活账号次数
+    public function setTrafficWarningPercent(Request $request)
+    {
+        $value = intval($request->get('value'));
+
+        Config::where('name', 'traffic_warning_percent')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }

@@ -150,7 +150,7 @@
                         <span class="title">我的工单</span>
                     </a>
                 </li>
-                @if($referral_status)
+                @if(Session::get('referral_status'))
                 <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">
                     <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
                         <i class="icon-diamond"></i>

@@ -129,7 +129,7 @@
                                                         <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="default_traffic" value="{{$default_traffic}}" id="default_traffic" />
-                                                                <span class="input-group-addon">Byte</span>
+                                                                <span class="input-group-addon">MiB</span>
                                                                 <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setDefaultTraffic()">修改</button>
                                                                 </span>
@@ -171,6 +171,26 @@
                                                                 </span>
                                                             </div>
                                                             <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="traffic_warning" class="col-md-2 control-label">流量警告</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 启用后用户的已使用流量超过警告阈值则自动发邮件提醒 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="traffic_warning_percent" class="col-md-2 control-label">流量警告阈值</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="traffic_warning_percent" value="{{$traffic_warning_percent}}" id="traffic_warning_percent" />
+                                                                <span class="input-group-addon">%</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setTrafficWarningPercent()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 建议设置在70%~90%，否则浪费邮件 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -226,7 +246,7 @@
                                                         <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="referral_gift_traffic" value="{{$referral_traffic}}" id="referral_traffic" />
-                                                                <span class="input-group-addon">Byte</span>
+                                                                <span class="input-group-addon">MiB</span>
                                                                 <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setReferralTraffic()">修改</button>
                                                                 </span>
@@ -444,6 +464,17 @@
             }
         });
 
+        // 启用、禁用随机端口
+        $('#traffic_warning').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var traffic_warning = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning', value:traffic_warning}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
         // 设置最小积分
         $("#min_rand_score").change(function () {
             var min_rand_score = $(this).val();
@@ -514,6 +545,19 @@
             var active_times = $("#active_times").val();
 
             $.post("{{url('admin/setActiveTimes')}}", {_token:'{{csrf_token()}}', value:active_times}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置流量警告阈值
+        function setTrafficWarningPercent() {
+            var traffic_warning_percent = $("#traffic_warning_percent").val();
+
+            $.post("{{url('admin/setTrafficWarningPercent')}}", {_token:'{{csrf_token()}}', value:traffic_warning_percent}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();

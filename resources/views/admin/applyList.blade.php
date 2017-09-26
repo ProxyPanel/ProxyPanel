@@ -32,7 +32,7 @@
                                         <th> 申请账号 </th>
                                         <th> 提现金额 </th>
                                         <th> 申请时间 </th>
-                                        <th> 审核时间 </th>
+                                        <th> 处理时间 </th>
                                         <th> 状态 </th>
                                         <th> 操作 </th>
                                     </tr>
@@ -62,7 +62,9 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    @if($apply->status < 2)
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')">审核</button>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

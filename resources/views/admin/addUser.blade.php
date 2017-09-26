@@ -35,7 +35,7 @@
                                             </div>
                                         </div>
                                         <div class="portlet-body">
-                                            <div class="form-group">
+                                            <div class="form-group has-error">
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
@@ -45,7 +45,7 @@
                                             <div class="form-group">
                                                 <label for="password" class="col-md-3 control-label">密码</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="password" value="123456" id="password" placeholder="">
+                                                    <input type="text" class="form-control" name="password" value="" id="password" placeholder="留空则自动生成随机密码">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -182,7 +182,7 @@
                                                 <label for="passwd" class="col-md-3 control-label">密码</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input class="form-control" type="text" name="passwd" id="passwd" placeholder="不填则自动生成" />
+                                                        <input class="form-control" type="text" name="passwd" id="passwd" placeholder="留空则自动生成随机密码" />
                                                         <span class="input-group-btn">
                                                             <button class="btn btn-success" type="button" onclick="makePasswd()">
                                                                 <i class="fa fa-arrow-left fa-fw" /></i> 生成 </button>
@@ -190,7 +190,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group has-error">
                                                 <label for="method" class="col-md-3 control-label">加密方式</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="method" id="method">
@@ -219,7 +219,7 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                            <div class="form-group">
+                                            <div class="form-group has-error">
                                                 <label for="protocol" class="col-md-3 control-label">协议</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="protocol" id="protocol">
@@ -229,13 +229,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="protocol_param" id="protocol_param" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
+                                            <div class="form-group has-error">
                                                 <label for="obfs" class="col-md-3 control-label">混淆</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="obfs" id="obfs">
@@ -243,6 +237,12 @@
                                                             <option value="{{$obfs->name}}" @if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
                                                         @endforeach
                                                     </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" name="protocol_param" id="protocol_param" placeholder="">
                                                 </div>
                                             </div>
                                             <div class="form-group">

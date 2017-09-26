@@ -104,6 +104,17 @@
                                         <span class="help-block">换购该商品需要的积分值</span>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">有效期</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group input-large input-daterange">
+                                            <input type="text" class="form-control" name="start_time" value="{{date('Y-m-d', strtotime($goods->start_time))}}" id="start_time">
+                                            <span class="input-group-addon"> 至 </span>
+                                            <input type="text" class="form-control" name="end_time" value="{{date('Y-m-d', strtotime($goods->end_time))}}" id="end_time">
+                                        </div>
+                                        <span class="help-block"> 有效期结束后，凡是购买该商品的账号都会被扣除该商品设置的流量值 </span>
+                                    </div>
+                                </div>
                                 <div class="form-group last">
                                     <label class="control-label col-md-3">状态</label>
                                     <div class="col-md-6">
@@ -141,9 +152,19 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        //
+        // 有效期
+        $('.input-daterange input').each(function() {
+            $(this).datepicker({
+                language: 'zh-CN',
+                autoclose: true,
+                todayHighlight: true,
+                format: 'yyyy-mm-dd'
+            });
+        });
     </script>
 @endsection

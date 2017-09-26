@@ -48,10 +48,10 @@
         @if(Session::get('successMsg'))
             <div class="alert alert-success">
                 <button class="close" data-close="alert"></button>
-                <span> {{Session::get('errorMsg')}} </span>
+                <span> {{Session::get('successMsg')}} </span>
             </div>
         @endif
-        @if ($verify->status)
+        @if ($verify->status && empty(Session::get('errorMsg')) && empty(Session::get('successMsg')))
             <div class="alert alert-danger">
                 <button class="close" data-close="alert"></button>
                 <span> 该链接已失效 </span>

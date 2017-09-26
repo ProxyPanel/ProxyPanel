@@ -180,7 +180,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
+                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/analysis' || Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
@@ -203,6 +203,12 @@
                             <a href="{{url('admin/analysis')}}" class="nav-link ">
                                 <i class="icon-bar-chart"></i>
                                 <span class="title">日志分析</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
+                            <a href="{{url('emailLog/list')}}" class="nav-link ">
+                                <i class="icon-list"></i>
+                                <span class="title">邮件发送记录</span>
                             </a>
                         </li>
                     </ul>

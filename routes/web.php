@@ -53,6 +53,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
     Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
     Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
+    Route::post('admin/setTrafficWarningPercent', 'AdminController@setTrafficWarningPercent'); // 设置流量警告阈值
     Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
     Route::post('admin/setReferralTraffic', 'AdminController@setReferralTraffic'); // 设置注册送流量值
     Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
@@ -67,6 +68,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::any('coupon/couponList', 'CouponController@couponList'); // 优惠券列表
     Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
     Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
+    Route::get('emailLog/list', 'EmailLogController@list'); // 邮件发送日志
 });
 
 Route::group(['middleware' => ['user']], function(){
