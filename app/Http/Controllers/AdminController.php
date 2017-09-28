@@ -688,6 +688,9 @@ class AdminController extends BaseController
             });
         }
 
+        // 已使用流量
+        $view['totalTraffic'] = $this->flowAutoShow($query->sum('u') + $query->sum('d'));
+
         $trafficLogList = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
         foreach ($trafficLogList as &$trafficLog) {
             $trafficLog->u = $this->flowAutoShow($trafficLog->u);
@@ -696,9 +699,6 @@ class AdminController extends BaseController
         }
 
         $view['trafficLogList'] = $trafficLogList;
-
-        // 已使用流量
-        $view['totalTraffic'] = $this->flowAutoShow($query->sum('u') + $query->sum('d'));
 
         return Response::view('admin/trafficLog', $view);
     }
