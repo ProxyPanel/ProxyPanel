@@ -80,7 +80,9 @@
                                             <td> {{$referralLog->amount}} </td>
                                             <td> {{$referralLog->ref_amount}} </td>
                                             <td>
-                                                @if ($referralLog->status)
+                                                @if ($referralLog->status == 1)
+                                                    <span class="label label-sm label-danger">申请中</span>
+                                                @elseif($referralLog->status == 2)
                                                     <span class="label label-sm label-default">已提现</span>
                                                 @else
                                                     <span class="label label-sm label-info">未提现</span>

@@ -46,6 +46,8 @@ class AdminController extends BaseController
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::sum('balance');
+        $view['totalWaitRefAmount'] = ReferralLog::whereIn('status', [0,1])->sum('ref_amount');
+        $view['totalRefAmount'] = ReferralApply::where('status', 2)->sum('amount');
         $view['expireWarningUserCount'] = User::where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->where('enable', 1)->count();
 
         // 到期账号禁用 TODO：加入定时任务
@@ -143,7 +145,7 @@ class AdminController extends BaseController
             $query->where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")));
         }
 
-        $userList = $query->orderBy('id', 'desc')->paginate(10);
+        $userList = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
         foreach ($userList as &$user) {
             $user->transfer_enable = $this->flowAutoShow($user->transfer_enable);
             $user->used_flow = $this->flowAutoShow($user->u + $user->d);
@@ -357,7 +359,7 @@ class AdminController extends BaseController
     // 节点列表
     public function nodeList(Request $request)
     {
-        $nodeList = SsNode::paginate(10);
+        $nodeList = SsNode::paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 在线人数
             $online_log = SsNodeOnlineLog::where('node_id', $node->id)->orderBy('id', 'desc')->first();
@@ -524,7 +526,7 @@ class AdminController extends BaseController
     // 文章列表
     public function articleList(Request $request)
     {
-        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10);
+        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/articleList', $view);
     }
@@ -593,7 +595,7 @@ class AdminController extends BaseController
     // 节点分组列表
     public function groupList(Request $request)
     {
-        $view['groupList'] = SsGroup::paginate(10);
+        $view['groupList'] = SsGroup::paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/groupList', $view);
     }
@@ -686,7 +688,7 @@ class AdminController extends BaseController
             });
         }
 
-        $trafficLogList = $query->orderBy('id', 'desc')->paginate(20);
+        $trafficLogList = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
         foreach ($trafficLogList as &$trafficLog) {
             $trafficLog->u = $this->flowAutoShow($trafficLog->u);
             $trafficLog->d = $this->flowAutoShow($trafficLog->d);
@@ -868,7 +870,7 @@ class AdminController extends BaseController
             return Redirect::to('admin/userList');
         }
 
-        $nodeList = SsNode::paginate(10);
+        $nodeList = SsNode::paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 生成ssr scheme
             $ssr_str = '';
@@ -1293,7 +1295,7 @@ TXT;
     // 邀请码列表
     public function inviteList(Request $request)
     {
-        $view['inviteList'] = Invite::with(['generator', 'user'])->paginate(10);
+        $view['inviteList'] = Invite::with(['generator', 'user'])->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/inviteList', $view);
     }
@@ -1319,7 +1321,21 @@ TXT;
     // 提现申请列表
     public function applyList(Request $request)
     {
-        $view['applyList'] = ReferralApply::with('user')->paginate(10);
+        $username = $request->get('username');
+        $status = $request->get('status');
+
+        $query = ReferralApply::with('user');
+        if ($username) {
+            $query->whereHas('user', function($q) use($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $list = $query->paginate(10)->appends($request->except('page'));
+        $view['applyList'] = $list;
 
         return Response::view('admin/applyList', $view);
     }
@@ -1349,7 +1365,17 @@ TXT;
         $id = $request->get('id');
         $status = $request->get('status');
 
-        ReferralApply::where('id', $id)->update(['status' => $status]);
+        $ret = ReferralApply::where('id', $id)->update(['status' => $status]);
+        if ($ret) {
+            // 审核申请的时候将关联的
+            $referralApply = ReferralApply::where('id', $id)->first();
+            $log_ids = explode(',', $referralApply->link_logs);
+            if ($referralApply && $status == 1) {
+                ReferralLog::whereIn('id', $log_ids)->update(['status' => 1]);
+            } else if ($referralApply && $status == 2) {
+                ReferralLog::whereIn('id', $log_ids)->update(['status' => 2]);
+            }
+        }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }

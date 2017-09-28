@@ -16,8 +16,11 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="{{url('emailLog/list')}}">邮件发送记录</a>
+                <a href="{{url('admin')}}">工具箱</a>
                 <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <a href="{{url('emailLog/list')}}">邮件发送记录</a>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->

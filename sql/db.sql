@@ -144,7 +144,9 @@ CREATE TABLE `user_traffic_log` (
   `rate` float NOT NULL COMMENT '流量比例',
   `traffic` varchar(32) NOT NULL COMMENT '产生流量',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_node` (`node_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -440,8 +442,9 @@ CREATE TABLE `user_score_log` (
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '发生积分',
   `desc` varchar(50) DEFAULT '' COMMENT '描述',
   `created_at` datetime DEFAULT NULL COMMENT '创建日期',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`),
+  KEY `idx` (`user_id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------
@@ -487,7 +490,7 @@ CREATE TABLE `referral_log` (
   `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联订单ID',
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '消费金额',
   `ref_amount` int(11) NOT NULL DEFAULT '0' COMMENT '返利金额',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未提现、1-已提现',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未提现、1-审核中、2-已提现',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`id`)

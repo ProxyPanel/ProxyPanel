@@ -38,7 +38,6 @@
                                     <th> ID </th>
                                     <th> 节点名称 </th>
                                     <th> 出口带宽 </th>
-                                    <th> 负载 </th>
                                     <th> 在线人数 </th>
                                     <th> 流量比例 </th>
                                     <th> 协议 </th>
@@ -49,7 +48,7 @@
                                 <tbody>
                                 @if($nodeList->isEmpty())
                                     <tr>
-                                        <td colspan="10">暂无数据</td>
+                                        <td colspan="8">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($nodeList as $node)
@@ -57,7 +56,6 @@
                                             <td> {{$node->id}} </td>
                                             <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容SS </span> @endif </td>
                                             <td> {{$node->bandwidth}}M </td>
-                                            <td> <span class="label label-danger"> {{$node->load}} </span> </td>
                                             <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
                                             <td> {{$node->traffic_rate}} </td>
                                             <td> <span class="label label-info"> {{$node->protocol}} </span> </td>

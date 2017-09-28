@@ -173,7 +173,8 @@ class UserController extends BaseController
             ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
             ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
             ->where('ss_group.level', '<=', $user['level'])
-            ->paginate(10);
+            ->paginate(10)
+            ->appends($request->except('page'));
 
         foreach ($nodeList as &$node) {
             // 在线人数
@@ -250,7 +251,7 @@ TXT;
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::where('is_del', 0)->paginate(10);
+        $view['goodsList'] = Goods::where('is_del', 0)->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/goodsList', $view);
     }
@@ -260,7 +261,7 @@ TXT;
     {
         $user = $request->session()->get('user');
 
-        $view['ticketList'] = Ticket::where('user_id', $user['id'])->paginate(10);
+        $view['ticketList'] = Ticket::where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/ticketList', $view);
     }
@@ -270,11 +271,13 @@ TXT;
     {
         $user = $request->session()->get('user');
 
-        $orderList = Order::where('user_id', $user['id'])->orderBy('oid', 'desc')->with('goodsList')->paginate(10);
-        foreach ($orderList as &$order) {
-            foreach ($order->goodsList as &$goods) {
-                $g = Goods::where('id', $goods->goods_id)->first();
-                $goods->goods_name = $g->name;
+        $orderList = Order::where('user_id', $user['id'])->orderBy('oid', 'desc')->with('goodsList')->paginate(10)->appends($request->except('page'));
+        if (!$orderList->isEmpty()) {
+            foreach ($orderList as &$order) {
+                foreach ($order->goodsList as &$goods) {
+                    $g = Goods::where('id', $goods->goods_id)->first();
+                    $goods->goods_name = empty($g) ? '【该商品已删除】' : $g->name;
+                }
             }
         }
 
@@ -875,16 +878,16 @@ TXT;
     {
         $user = $request->session()->get('user');
 
+        // 判断是否已存在申请
+        $referralApply = ReferralApply::where('user_id', $user['id'])->whereIn('status', [0,1])->first();
+        if ($referralApply) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
+        }
+
         // 校验可以提现金额是否超过系统设置的阀值
         $ref_amount = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
         if ($ref_amount < self::$config['referral_money']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$config['referral_money'] . '元才可以提现，继续努力吧']);
-        }
-
-        // 判断是否已存在申请
-        $referralApply = ReferralApply::where('user_id', $user['id'])->where('status', 0)->first();
-        if ($referralApply) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
         }
 
         // 取出本次申请关联返利日志ID

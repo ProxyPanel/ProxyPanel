@@ -153,12 +153,6 @@
                         <span class="title">工单管理</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/trafficLog' ? 'active open' : ''}}">
-                    <a href="{{url('admin/trafficLog')}}" class="nav-link nav-toggle">
-                        <i class="icon-speedometer"></i>
-                        <span class="title">流量日志</span>
-                    </a>
-                </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/nodeList', '/admin/addNode', '/admin/editNode', '/admin/groupList', '/admin/addGroup', '/admin/editGroup']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-layers"></i>
@@ -180,7 +174,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/analysis' || Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
+                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/trafficLog' || Request::getRequestUri() == '/admin/analysis' || Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
@@ -197,6 +191,12 @@
                             <a href="{{url('admin/import')}}" class="nav-link ">
                                 <i class="icon-plus"></i>
                                 <span class="title">数据导入</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/trafficLog' ? 'active open' : ''}}">
+                            <a href="{{url('admin/trafficLog')}}" class="nav-link">
+                                <i class="icon-speedometer"></i>
+                                <span class="title">流量日志</span>
                             </a>
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">

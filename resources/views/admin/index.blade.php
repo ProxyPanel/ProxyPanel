@@ -120,6 +120,38 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green">
+                                ￥<span data-counter="counterup" data-value="{{$totalWaitRefAmount}}"></span>
+                            </h3>
+                            <small>待提现佣金</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-credit-card"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green">
+                                ￥<span data-counter="counterup" data-value="{{$totalRefAmount}}"></span>
+                            </h3>
+                            <small>已支出佣金</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-credit-card"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->

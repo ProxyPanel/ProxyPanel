@@ -24,6 +24,24 @@
                         </div>
                     </div>
                     <div class="portlet-body">
+                        <div class="row" style="padding-bottom:5px;">
+                            <div class="col-md-2 col-sm-2">
+                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="申请账号" onkeydown="if(event.keyCode==13){do_search();}">
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="status" id="status" onChange="do_search()">
+                                    <option value="0" @if(empty(Request::get('status'))) selected @endif>状态</option>
+                                    <option value="-1" @if(Request::get('status') == '-1') selected @endif>驳回</option>
+                                    <option value="0" @if(Request::get('status') == '0') selected @endif>待审核</option>
+                                    <option value="1" @if(Request::get('status') == '1') selected @endif>审核通过待打款</option>
+                                    <option value="2" @if(Request::get('status') == '2') selected @endif>已打款</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
+                            </div>
+                        </div>
                         <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
@@ -32,15 +50,15 @@
                                         <th> 申请账号 </th>
                                         <th> 提现金额 </th>
                                         <th> 申请时间 </th>
-                                        <th> 处理时间 </th>
                                         <th> 状态 </th>
+                                        <th> 处理时间 </th>
                                         <th> 操作 </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if($applyList->isEmpty())
                                         <tr>
-                                            <td colspan="9" style="text-align: center;">暂无数据</td>
+                                            <td colspan="7" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($applyList as $apply)
@@ -49,21 +67,23 @@
                                                 <td> <a href="{{url('admin/editUser?id=' . $apply->user_id)}}" target="_blank">{{$apply->user->username}}</a> </td>
                                                 <td> {{$apply->amount}} </td>
                                                 <td> {{$apply->created_at}} </td>
-                                                <td> {{$apply->created_at == $apply->updated_at ? '' : $apply->updated_at}} </td>
                                                 <td>
                                                     @if($apply->status == -1)
-                                                        <span class="label label-sm label-danger"> 驳回 </span>
+                                                        <span class="label label-default label-danger"> 驳回 </span>
                                                     @elseif($apply->status == 0)
-                                                        <span class="label label-sm label-info"> 审核通过待打款 </span>
+                                                        <span class="label label-default label-info"> 待审核 </span>
                                                     @elseif($apply->status == 2)
-                                                        <span class="label label-sm label-success"> 已打款 </span>
+                                                        <span class="label label-default label-success"> 已打款 </span>
                                                     @else
-                                                        <span class="label label-sm label-default"> 待审核 </span>
+                                                        <span class="label label-default label-default"> 审核通过待打款 </span>
                                                     @endif
                                                 </td>
+                                                <td> {{$apply->created_at == $apply->updated_at ? '' : $apply->updated_at}} </td>
                                                 <td>
-                                                    @if($apply->status < 2)
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')">审核</button>
+                                                    @if($apply->status > 0 && $apply->status < 2)
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="doAudit('{{$apply->id}}')"> 审核 </button>
+                                                    @else
+                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')"> 查看 </button>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -99,5 +119,17 @@
             window.open('{{url('admin/applyDetail?id=')}}' + id);
         }
 
+        // 搜索
+        function do_search() {
+            var username = $("#username").val();
+            var status = $("#status option:checked").val();
+
+            window.location.href = '{{url('admin/applyList')}}' + '?username=' + username + '&status=' + status;
+        }
+
+        // 重置
+        function do_reset() {
+            window.location.href = '{{url('admin/applyList')}}';
+        }
     </script>
 @endsection

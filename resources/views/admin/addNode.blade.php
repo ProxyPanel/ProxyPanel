@@ -23,11 +23,14 @@
             <div class="col-md-12">
                 <div class="tab-pane active">
                     <div class="portlet light bordered">
-
                         <div class="portlet-body form">
                             <!-- BEGIN FORM-->
                             <form action="{{url('admin/addNode')}}" method="post" class="form-horizontal" onsubmit="return do_submit();">
                                 <div class="form-body">
+                                    <div class="alert alert-danger alert-dismissable">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点后端部署SSR时<code>usermysql.json</code>的<code>node_id</code>的值
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <!-- BEGIN SAMPLE FORM PORTLET-->

@@ -11,7 +11,7 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
-                <a href="javascript:;">设置</a>
+                <a href="{{url('admin')}}">工具箱</a>
                 <i class="fa fa-circle"></i>
             </li>
             <li>

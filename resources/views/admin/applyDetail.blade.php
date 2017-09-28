@@ -23,26 +23,32 @@
                             <span class="caption-subject font-dark bold uppercase">提现申请详情</span>
                         </div>
                         <div class="actions">
-                            <div class="btn-group">
-                                <a class="btn btn-sm blue dropdown-toggle" href="javascript:;" data-toggle="dropdown"> 审核
-                                    <i class="fa fa-angle-down"></i>
-                                </a>
-                                <ul class="dropdown-menu pull-right">
-                                    @if($info->status == 0)
-                                    <li>
-                                        <a href="javascript:setStatus('1');"> <i class="fa fa-check"></i> 审核通过 </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:setStatus('-1');"> <i class="fa fa-remove"></i> 驳回 </a>
-                                    </li>
-                                    @endif
-                                    @if($info->status == 1)
-                                    <li>
-                                        <a href="javascript:setStatus('2');"> <i class="fa fa-circle-o"></i> 已打款 </a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
+                            @if($info->status == -1)
+                                <span class="label label-default label-danger"> 已驳回 </span>
+                            @elseif($info->status == 2)
+                                <span class="label label-default label-success"> 已打款 </span>
+                            @else
+                                <div class="btn-group">
+                                    <a class="btn btn-sm blue dropdown-toggle" href="javascript:;" data-toggle="dropdown"> 审核
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        @if($info->status == 0)
+                                        <li>
+                                            <a href="javascript:setStatus('1');"> <i class="fa fa-check"></i> 审核通过 </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:setStatus('-1');"> <i class="fa fa-remove"></i> 驳回 </a>
+                                        </li>
+                                        @endif
+                                        @if($info->status == 1)
+                                        <li>
+                                            <a href="javascript:setStatus('2');"> <i class="fa fa-circle-o"></i> 已打款 </a>
+                                        </li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -71,7 +77,7 @@
                                             <tr>
                                                 <td> {{$vo->id}} </td>
                                                 <td> {{$vo->user->username}} </td>
-                                                <td> {{$vo->order_id}} </td>
+                                                <td> {{$vo->order_id}} - </td>
                                                 <td> {{$vo->amount}} </td>
                                                 <td> {{$vo->ref_amount}} </td>
                                                 <td> {{$vo->created_at}} </td>
@@ -106,7 +112,9 @@
         // 更改状态
         function setStatus(status) {
             $.post("{{url('admin/setApplyStatus')}}", {_token:'{{csrf_token()}}', id:'{{$info->id}}', status:status}, function(ret){
-                bootbox.alert(ret.message);
+                bootbox.alert(ret.message, function () {
+                    window.location.reload();
+                });
             });
         }
     </script>
