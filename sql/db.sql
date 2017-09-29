@@ -213,6 +213,7 @@ CREATE TABLE `config` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统配置';
 
+
 -- ----------------------------
 -- Records of config
 -- ----------------------------
@@ -240,6 +241,8 @@ INSERT INTO `config` VALUES ('21', 'referral_status', 1);
 INSERT INTO `config` VALUES ('22', 'default_traffic', 1024);
 INSERT INTO `config` VALUES ('23', 'traffic_warning', 0);
 INSERT INTO `config` VALUES ('24', 'traffic_warning_percent', 80);
+INSERT INTO `config` VALUES ('25', 'expire_warning', 0);
+INSERT INTO `config` VALUES ('26', 'expire_days', 15);
 
 
 -- ----------------------------
@@ -506,10 +509,10 @@ CREATE TABLE `email_log` (
   `title` varchar(255) DEFAULT '' COMMENT '邮件标题',
   `content` text COMMENT '邮件内容',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-发送成功、2-发送失败',
+  `error` text COMMENT '发送失败抛出的异常信息',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件投递记录';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

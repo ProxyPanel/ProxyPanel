@@ -18,7 +18,12 @@ class EmailLog extends Model
         'user_id',
         'title',
         'content',
+        'status',
+        'error',
         'created_at'
     ];
 
+    function user() {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

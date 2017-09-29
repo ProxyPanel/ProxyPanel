@@ -54,6 +54,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
     Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
     Route::post('admin/setTrafficWarningPercent', 'AdminController@setTrafficWarningPercent'); // 设置流量警告阈值
+    Route::post('admin/setExpireDays', 'AdminController@setExpireDays'); // 设置账号过期提醒阈值
     Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
     Route::post('admin/setReferralTraffic', 'AdminController@setReferralTraffic'); // 设置注册送流量值
     Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例

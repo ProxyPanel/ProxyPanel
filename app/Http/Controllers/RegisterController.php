@@ -121,29 +121,32 @@ class RegisterController extends BaseController
                 Invite::where('id', $code->id)->update(['fuid' => $user->id, 'status' => 1]);
             }
 
-            // 生成激活账号的地址
-            $token = md5(self::$config['website_name'] . $username . microtime());
-            $verify = new Verify();
-            $verify->user_id = $user->id;
-            $verify->username = $username;
-            $verify->token = $token;
-            $verify->status = 0;
-            $verify->save();
-
             // 发送邮件
-            $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
-            $ret = Mail::to($username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+            if (self::$config['is_active_register']) {
+                // 生成激活账号的地址
+                $token = md5(self::$config['website_name'] . $username . microtime());
+                $verify = new Verify();
+                $verify->user_id = $user->id;
+                $verify->username = $username;
+                $verify->token = $token;
+                $verify->status = 0;
+                $verify->save();
 
-            // 写入邮件发送日志
-            $emailLogObj = new EmailLog();
-            $emailLogObj->user_id = $user->id;
-            $emailLogObj->title = '注册激活账号';
-            $emailLogObj->content = '请求地址：' . $activeUserUrl;
-            $emailLogObj->status = $ret ? 1 : 0;
-            $emailLogObj->created_at = date('Y-m-d H:i:s');
-            $emailLogObj->save();
+                $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
+                $title = '注册激活';
+                $content = '请求地址：' . $activeUserUrl;
 
-            $request->session()->flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
+                try {
+                    Mail::to($username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+                    $this->sendEmailLog($user->id, $title, $content);
+                } catch (\Exception $e) {
+                    $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                }
+
+                $request->session()->flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
+            } else {
+                $request->session()->flash('regSuccessMsg', '注册成功');
+            }
 
             return Redirect::to('login');
         } else {

@@ -208,7 +208,7 @@
                         <li class="nav-item {{Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
                             <a href="{{url('emailLog/list')}}" class="nav-link ">
                                 <i class="icon-list"></i>
-                                <span class="title">邮件发送记录</span>
+                                <span class="title">邮件投递记录</span>
                             </a>
                         </li>
                     </ul>

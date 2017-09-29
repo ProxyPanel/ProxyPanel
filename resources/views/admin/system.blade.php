@@ -43,7 +43,10 @@
                                             <a href="#tab_4" data-toggle="tab"> 推广返利设置 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_5" data-toggle="tab"> 充值二维码设置 </a>
+                                            <a href="#tab_5" data-toggle="tab"> 警告提醒设置 </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_6" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -173,26 +176,6 @@
                                                             <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="traffic_warning" class="col-md-2 control-label">流量警告</label>
-                                                        <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后用户的已使用流量超过警告阈值则自动发邮件提醒 </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="traffic_warning_percent" class="col-md-2 control-label">流量警告阈值</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="traffic_warning_percent" value="{{$traffic_warning_percent}}" id="traffic_warning_percent" />
-                                                                <span class="input-group-addon">%</span>
-                                                                <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setTrafficWarningPercent()">修改</button>
-                                                                </span>
-                                                            </div>
-                                                            <span class="help-block"> 建议设置在70%~90%，否则浪费邮件 </span>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -284,6 +267,52 @@
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_5">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <label for="expire_warning" class="col-md-2 control-label">过期警告</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($expire_warning) checked @endif id="expire_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="expire_days" class="col-md-2 control-label">过期警告阈值</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="expire_days" value="{{$expire_days}}" id="expire_days" />
+                                                                <span class="input-group-addon">天</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setExpireDays()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 账号距离过期还差多少天时发警告邮件 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="traffic_warning" class="col-md-2 control-label">流量警告</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="traffic_warning_percent" class="col-md-2 control-label">流量警告阈值</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="traffic_warning_percent" value="{{$traffic_warning_percent}}" id="traffic_warning_percent" />
+                                                                <span class="input-group-addon">%</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setTrafficWarningPercent()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 建议设置在70%~90% </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab_6">
                                             <form action="{{url('admin/setQrcode')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                                 <div class="form-body">
                                                     <div class="portlet-body">
@@ -449,6 +478,21 @@
             }
         });
 
+        // 启用、禁用账号到期自动邮件提醒
+        $('#expire_warning').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var expire_warning = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_warning', value:expire_warning}, function (ret) {
+                    if (ret.status == 'fail') {
+                        bootbox.alert(ret.message, function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        });
+
         // 启用、禁用退关返利用户可见与否
         $('#referral_status').on({
             'switchChange.bootstrapSwitch': function(event, state) {
@@ -558,6 +602,20 @@
             var traffic_warning_percent = $("#traffic_warning_percent").val();
 
             $.post("{{url('admin/setTrafficWarningPercent')}}", {_token:'{{csrf_token()}}', value:traffic_warning_percent}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+
+        // 设置账号过期提醒阈值
+        function setExpireDays() {
+            var expire_days = $("#expire_days").val();
+
+            $.post("{{url('admin/setExpireDays')}}", {_token:'{{csrf_token()}}', value:expire_days}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();

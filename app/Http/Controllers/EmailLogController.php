@@ -23,7 +23,7 @@ class EmailLogController extends BaseController
     // 邮件发送日志列表
     public function list(Request $request)
     {
-        $view['list'] = EmailLog::paginate(10);
+        $view['list'] = EmailLog::with('user')->paginate(10);
 
         return Response::view('emailLog/list', $view);
     }

@@ -445,16 +445,15 @@ TXT;
 
             // 发送邮件
             $activeUserUrl = self::$config['website_url'] . '/active/' . $token;
-            $ret = Mail::to($user->username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+            $title = '重新激活账号';
+            $content = '请求地址：' . $activeUserUrl;
 
-            // 写入邮件发送日志
-            $emailLogObj = new EmailLog();
-            $emailLogObj->user_id = $user->id;
-            $emailLogObj->title = '重新激活账号';
-            $emailLogObj->content = '请求地址：' . $activeUserUrl;
-            $emailLogObj->status = $ret ? 1 : 0;
-            $emailLogObj->created_at = date('Y-m-d H:i:s');
-            $emailLogObj->save();
+            try {
+                Mail::to($user->username)->send(new activeUser(self::$config['website_name'], $activeUserUrl));
+                $this->sendEmailLog($user->id, $title, $content);
+            } catch (\Exception $e) {
+                $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+            }
 
             Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
             $request->session()->flash('successMsg', '邮件已发送，请查看邮箱');
@@ -559,16 +558,15 @@ TXT;
 
             // 发送邮件
             $resetPasswordUrl = self::$config['website_url'] . '/reset/' . $token;
-            $ret = Mail::to($user->username)->send(new resetPassword(self::$config['website_name'], $resetPasswordUrl));
+            $title = '重置密码';
+            $content = '请求地址：' . $resetPasswordUrl;
 
-            // 写入邮件发送日志
-            $emailLogObj = new EmailLog();
-            $emailLogObj->user_id = $user->id;
-            $emailLogObj->title = '重置账号密码';
-            $emailLogObj->content = '请求地址：' . $resetPasswordUrl;
-            $emailLogObj->status = $ret ? 1 : 0;
-            $emailLogObj->created_at = date('Y-m-d H:i:s');
-            $emailLogObj->save();
+            try {
+                Mail::to($user->username)->send(new resetPassword(self::$config['website_name'], $resetPasswordUrl));
+                $this->sendEmailLog($user->id, $title, $content);
+            } catch (\Exception $e) {
+                $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+            }
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
             $request->session()->flash('successMsg', '重置成功，请查看邮箱');

@@ -22,7 +22,7 @@ class userTrafficWarning extends Mailable
 
     public function build()
     {
-        return $this->view('emails.activeUser')->subject('流量警告')->with([
+        return $this->view('emails.userTrafficWarning')->subject('流量警告')->with([
             'websiteName' => $this->websiteName,
             'usedPercent' => $this->usedPercent
         ]);

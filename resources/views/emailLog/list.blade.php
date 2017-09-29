@@ -42,10 +42,10 @@
                                 <tr>
                                     <th> ID </th>
                                     <th> 接收者 </th>
-                                    <th> 邮件标题 </th>
-                                    <th> 邮件内容 </th>
-                                    <th> 发送时间 </th>
-                                    <th> 状态 </th>
+                                    <th> 邮件类型 </th>
+                                    <th> 投递内容 </th>
+                                    <th> 投递时间 </th>
+                                    <th> 投递状态 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -57,11 +57,11 @@
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
-                                            <td> {{$vo->user_id}} </td>
+                                            <td> {{$vo->user->username}} </td>
                                             <td> {{$vo->title}} </td>
                                             <td> {{$vo->content}} </td>
                                             <td> {{$vo->created_at}} </td>
-                                            <td> {{$vo->status ? '发送成功' : '发送失败'}} </td>
+                                            <td> {{$vo->status ? '投递成功' : $vo->error}} </td>
                                         </tr>
                                     @endforeach
                                 @endif
