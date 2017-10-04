@@ -26,6 +26,11 @@
                             <i class="icon-list font-dark"></i>
                             <span class="caption-subject bold uppercase"> 节点列表 </span>
                         </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <button class="btn sbold blue" onclick="subscribe()"> 订阅 </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="portlet-body">
                         <div class="alert alert-danger">
@@ -183,5 +188,10 @@
             $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
             $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
         @endforeach
+
+        // 节点订阅
+        function subscribe() {
+            window.location.href = '{{url('/user/subscribe')}}';
+        }
     </script>
 @endsection

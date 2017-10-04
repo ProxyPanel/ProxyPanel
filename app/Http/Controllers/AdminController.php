@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
 use App\Http\Models\Config;
-use App\Http\Models\Goods;
 use App\Http\Models\Invite;
-use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
@@ -17,12 +15,9 @@ use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficLog;
-use App\Mail\userExpireWarning;
-use App\Mail\userTrafficWarning;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
-use Mail;
 
 class AdminController extends BaseController
 {
@@ -49,76 +44,6 @@ class AdminController extends BaseController
         $view['totalWaitRefAmount'] = ReferralLog::whereIn('status', [0, 1])->sum('ref_amount');
         $view['totalRefAmount'] = ReferralApply::where('status', 2)->sum('amount');
         $view['expireWarningUserCount'] = User::where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->where('enable', 1)->count();
-
-        // 到期账号禁用 TODO：加入定时任务
-        User::where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->update(['enable' => 0]);
-
-        // 商品到期自动扣购买该商品的流量 TODO：加入定时任务
-        $goodsList = Goods::where('end_time', '<', date('Y-m-d H:i:s'))->get();
-        foreach ($goodsList as $goods) {
-            // 所有购买过该商品的用户
-            $orderGoods = OrderGoods::where('goods_id', $goods->id)->get();
-            foreach ($orderGoods as $og) {
-                $u = User::where('id', $og->user_id)->first();
-                if (empty($u)) {
-                    continue;
-                }
-
-                if ($u->transfer_enable - $goods->traffic * 1024 * 1024 < 0) {
-                    User::where('id', $og->user_id)->update(['transfer_enable' => 0]);
-                } else {
-                    User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1024 * 1024);
-                }
-            }
-        }
-
-        // 用户流量警告提醒发邮件 TODO：加入定时任务
-        if (self::$config['traffic_warning']) {
-            $userList = User::where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
-            foreach ($userList as $user) {
-                // 用户名不是邮箱的跳过
-                if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {
-                    continue;
-                }
-
-                $usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
-                if ($usedPercent >= self::$config['traffic_warning_percent']) {
-                    $title = '流量警告';
-                    $content = '流量已使用：' . $usedPercent . '%，超过设置的流量阈值' . self::$config['traffic_warning_percent'] . '%';
-
-                    try {
-                        Mail::to($user->username)->send(new userTrafficWarning(self::$config['website_name'], $usedPercent));
-                        $this->sendEmailLog($user->id, $title, $content);
-                    } catch (\Exception $e) {
-                        $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
-                    }
-                }
-            }
-        }
-
-        // 用户到期提醒发邮件 TODO：加入定时任务
-        if (self::$config['expire_warning']) {
-            $userList = User::where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
-            foreach ($userList as $user) {
-                // 用户名不是邮箱的跳过
-                if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {
-                    continue;
-                }
-
-                $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
-                if ($lastCanUseDays > 0 && $lastCanUseDays <= self::$config['expire_days']) {
-                    $title = '账号过期提醒';
-                    $content = '账号还剩【' . $lastCanUseDays . '】天即将过期';
-
-                    try {
-                        Mail::to($user->username)->send(new userExpireWarning(self::$config['website_name'], $lastCanUseDays));
-                        $this->sendEmailLog($user->id, $title, $content);
-                    } catch (\Exception $e) {
-                        $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
-                    }
-                }
-            }
-        }
 
         return Response::view('admin/index', $view);
     }

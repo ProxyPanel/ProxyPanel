@@ -515,6 +515,31 @@ CREATE TABLE `email_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件投递记录';
 
 
+-- ----------------------------
+-- Table structure for `user_subscribe`
+-- ----------------------------
+CREATE TABLE `user_subscribe` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `code` varchar(255) DEFAULT '' COMMENT '订阅地址唯一识别码',
+  `times` int(11) NOT NULL DEFAULT '0' COMMENT '地址请求次数',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `user_subscribe_log`
+-- ----------------------------
+CREATE TABLE `user_subscribe_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `sid` int(11) DEFAULT NULL COMMENT '对应user_subscribe的id',
+  `request_ip` varchar(20) DEFAULT NULL COMMENT '请求IP',
+  `request_time` datetime DEFAULT NULL COMMENT '请求时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -66,7 +66,7 @@
                                                     <td> {{$invite->id}} </td>
                                                     <td> {{$invite->code}} </td>
                                                     <td> {{$invite->dateline}} </td>
-                                                    <td> {{$invite->generator->username}} </td>
+                                                    <td> {{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}} </td>
                                                     <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                     <td>
                                                         @if($invite->status == '0')

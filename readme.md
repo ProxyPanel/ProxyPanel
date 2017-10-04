@@ -1,8 +1,8 @@
 ## 安装步骤
-#### 0.环境要求
+#### 环境要求
 ````
-PHP 7.1
-MYSQL 5.7
+PHP 7.1 （必须）
+MYSQL 5.5 （推荐5.6+）
 内存 1G+
 磁盘空间 10G+
 KVM
@@ -16,25 +16,39 @@ telegram群组：https://t.me/chatssrpanel
 用户名：admin 密码：123456
 ````
 
-#### 打赏作者一个巨无霸汉堡
+#### VPS推荐
+````
+部署面板必须得用到VPS，也就是服务器
+强烈推荐使用1G以上内存的KVM架构的服务器
+
+https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90
+````
+![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
+
+
+#### 打赏作者
 ````
 哈哈，如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
 将持续开发，喜欢请star一下
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
-### 谢谢以下的人请我吃麦当劳
+### 捐赠名单
 | 昵称      |    金额 |
 | :------- | --------:| 
 | Law-杰   | ￥10 | 
 | Err      | ￥51 | 
 | 緃噺開始 |  ￥5 | 
-|【要求匿名】|￥67|
-|、无奈|￥5|
+|【要求匿名】|￥267|
+|、无奈 |￥5|
 |Sunny Woon| ￥10|
 |aazzpp678 | ￥26|
 |风云_1688|￥15|
-
+截止目前收到的捐赠：￥389
+这些捐赠的用途：
+1.买了1台VPS做开发测试用
+2.一个Beyond Compare 4的正版激活码（2017-10-01）
+3.谢谢大家及时反馈BUG，发现BUG请提到issue里
 
 
 #### PHP7环境配置
@@ -83,12 +97,12 @@ service nginx reload
 
 ## SSR服务端
 ````
-把 server目录下的 ssr-3.4.0.zip 拷贝到 /root/，解压缩，怎么运行自己上网搜
-把userapiconfig.py里的 API_INTERFACE 设置为 glzjinmod
-把user-config.json里的 connect_verbose_info 设置为 1
+把 server 目录下的 ssr-3.4.0.zip 拷贝到 /root/，解压缩，怎么运行自己上网搜
+把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
+把 user-config.json 里的 connect_verbose_info 设置为 1
 ````
 
-## 日志分析（目前仅支持单节点）
+## 日志分析（目前仅支持单机单节点）
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
@@ -97,21 +111,29 @@ ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
+## 定时任务（所有自动发邮件的地方都要用到，所以请务必配置）
+````
+编辑crontab
+crontab -e
+
+然后加入如下（请自行修改ssrpanel路径）
+* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
+````
+
 ## 说明
 ````
-1.账号管理面板
-2.需配合SSR3.4版本后端使用
-3.强大的管理后台
-4.美观的界面
-5.支持手机自适应，方便管理账号
-6.商品（流量包）
-7.优惠券（用于购买流量包时抵用、促销）
-8.抽奖（开发中）
-9.可以注册账号，邮件激活等等
-10.剩下的自己发掘
-11.如果OK请打赏一下，接下来可能会使用glzjin大牛的魔改SSR后端，等我研究下怎么用先
-12.注意：这只是个面板，glzjin大神的面板有点丑，但是它的后端很牛逼
-（因为我不会python，改不动大神的魔改后端，目前在自学Go中，可能以后会写个Go后端）
+1.多节点账号管理面板
+2.需配合SSR 3.4 Python版后端使用
+3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
+4.内含简单的购物、优惠券、流量兑换、邀请码、推广返利&提现、文章管理、工单等系统
+5.节点可以分组，不同级别的用户可以看到不同级别分组的节点
+6.SS配置转SSR配置，方便使用SS后端一键把账号转入到系统
+7.流量日志、单机单节点日志分析功能，知道用户最近都看了哪些网站
+7.定时任务、所有邮件投递都有记录
+8.后台一键添加加密方式、混淆、协议
+9.强大的后台配置功能
+10.更多功能自己发掘
+11.ssrpanel的定位：比sspanel强大，比sspanel mod弱鸡
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)

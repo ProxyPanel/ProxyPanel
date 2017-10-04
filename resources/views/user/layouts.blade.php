@@ -107,14 +107,14 @@
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu   " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{Request::getRequestUri() == '/user' ? 'active open' : ''}}">
+                <li class="nav-item start {{(Request::getRequestUri() == '/' || Request::getRequestUri() == '/user') ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
                         <span class="title">首页</span>
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/user/nodeList' ? 'active open' : ''}}">
+                <li class="nav-item {{Request::getRequestUri() == '/user/nodeList' || Request::getRequestUri() == '/user/subscribe' ? 'active open' : ''}}">
                     <a href="{{url('user/nodeList')}}" class="nav-link nav-toggle">
                         <i class="icon-list"></i>
                         <span class="title">节点列表</span>

@@ -20,6 +20,7 @@ use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
+use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
@@ -907,5 +908,30 @@ TXT;
         $obj->save();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
+    }
+
+    // 节点订阅
+    public function subscribe(Request $request)
+    {
+        $user = $request->session()->get('user');
+
+        // 如果没有唯一码则生成一个
+        $subscribe = UserSubscribe::where('user_id', $user['id'])->first();
+        if (empty($subscribe)) {
+            $code = mb_substr(md5($user['id'] . '-' . $user['username']), 8, 16);
+
+            $obj = new UserSubscribe();
+            $obj->user_id = $user['id'];
+            $obj->code = $code;
+            $obj->times = 0;
+            $obj->created_at = date('Y-m-d H:i:s');
+            $obj->save();
+        } else {
+            $code = $subscribe->code;
+        }
+
+        $view['link'] = self::$config['website_url'] . '/subscribe/' . $code;
+
+        return Response::view('/user/subscribe', $view);
     }
 }

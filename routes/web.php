@@ -7,6 +7,7 @@ Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
 Route::any('reset/{token}', 'UserController@reset'); // 重设密码
 Route::any('activeUser', 'UserController@activeUser'); // 激活账号
 Route::get('active/{token}', 'UserController@active'); // 激活账号
+Route::get('subscribe/{code}', 'SubscribeController@index'); // 节点订阅地址
 
 Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('admin', 'AdminController@index'); // 后台首页
@@ -77,6 +78,7 @@ Route::group(['middleware' => ['user']], function(){
     Route::any('user', 'UserController@index'); // 用户首页
     Route::any('user/article', 'UserController@article'); // 文章详情
     Route::get('user/nodeList', 'UserController@nodeList'); // 节点列表
+    Route::get('user/subscribe', 'UserController@subscribe'); // 节点订阅
     Route::get('user/goodsList', 'UserController@goodsList'); // 商品列表
     Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志
     Route::get('user/ticketList', 'UserController@ticketList'); // 工单
