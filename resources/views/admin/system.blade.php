@@ -270,6 +270,13 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
+                                                        <label for="reset_traffic" class="col-md-2 control-label">流量自动重置</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 每月1日自动重置账号可用流量 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="expire_warning" class="col-md-2 control-label">过期警告</label>
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($expire_warning) checked @endif id="expire_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -514,6 +521,17 @@
                 var traffic_warning = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning', value:traffic_warning}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 启用、禁用流量自动重置
+        $('#reset_traffic').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var reset_traffic = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_traffic', value:reset_traffic}, function (ret) {
                     console.log(ret);
                 });
             }

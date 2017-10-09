@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\User;
 use Illuminate\Console\Command;
+use App\Http\Models\User;
 use Log;
 
-class DisableExpireUserJob extends Command
+class autoDisableExpireUserJob extends Command
 {
-    protected $signature = 'command:disableExpireUserJob';
-    protected $description = '禁用到期账号';
+    protected $signature = 'command:autoDisableExpireUserJob';
+    protected $description = '到期账号自动禁用';
 
     public function __construct()
     {

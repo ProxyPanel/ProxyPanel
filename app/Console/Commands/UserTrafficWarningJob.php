@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Http\Models\Config;
 use App\Http\Models\User;
+use App\Http\Models\EmailLog;
 use App\Mail\userTrafficWarning;
 use Mail;
 use Log;
@@ -12,7 +13,7 @@ use Log;
 class UserTrafficWarningJob extends Command
 {
     protected $signature = 'command:userTrafficWarningJob';
-    protected $description = '用户流量警告提醒发邮件';
+    protected $description = '用户流量警告自动发邮件提醒';
 
     protected static $config;
 
@@ -55,5 +56,25 @@ class UserTrafficWarningJob extends Command
         }
 
         Log::info('定时任务：' . $this->description);
+    }
+
+    /**
+     * 写入邮件发送日志
+     * @param int $user_id 用户ID
+     * @param string $title 投递类型（投递标题）
+     * @param string $content 投递内容（简要概述）
+     * @param int $status 投递状态
+     * @param string $error 投递失败时记录的异常信息
+     */
+    private function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
+    {
+        $emailLogObj = new EmailLog();
+        $emailLogObj->user_id = $user_id;
+        $emailLogObj->title = $title;
+        $emailLogObj->content = $content;
+        $emailLogObj->status = $status;
+        $emailLogObj->error = $error;
+        $emailLogObj->created_at = date('Y-m-d H:i:s');
+        $emailLogObj->save();
     }
 }

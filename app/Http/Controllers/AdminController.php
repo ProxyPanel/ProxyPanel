@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
+use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
@@ -1314,12 +1315,15 @@ TXT;
     {
         $id = $request->get('id');
 
-
         $list = [];
         $apply = ReferralApply::where('id', $id)->with('user')->first();
-        if (!empty($apply) && !empty($apply->link_logs)) {
+        if ($apply && $apply->link_logs) {
             $link_logs = explode(',', $apply->link_logs);
             $list = ReferralLog::whereIn('id', $link_logs)->with('user')->paginate(10);
+        }
+
+        foreach ($list as &$vo) {
+            $vo->goods = OrderGoods::where('oid', $vo->order_id)->with('goods')->first();
         }
 
         $view['info'] = $apply;
@@ -1345,6 +1349,16 @@ TXT;
                 ReferralLog::whereIn('id', $log_ids)->update(['status' => 2]);
             }
         }
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    // 重置用户流量
+    public function resetUserTraffic(Request $request)
+    {
+        $id = $request->get('id');
+
+        User::where('id', $id)->update(['u' => 0, 'd' => 0]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }

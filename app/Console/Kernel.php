@@ -13,11 +13,13 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\DisableExpireUserJob::class,
         \App\Console\Commands\AutoDecGoodsTrafficJob::class,
-        \App\Console\Commands\UserTrafficWarningJob::class,
+        \App\Console\Commands\AutoDisableExpireUserJob::class,
+        \App\Console\Commands\AutoExpireInviteJob::class,
+        \App\Console\Commands\AutoExpireCouponJob::class,
+        \App\Console\Commands\autoResetUserTrafficJob::class,
         \App\Console\Commands\UserExpireWarningJob::class,
-        \App\Console\Commands\InviteExpire::class,
+        \App\Console\Commands\UserTrafficWarningJob::class,
     ];
 
     /**
@@ -28,11 +30,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:disableExpireUserJob')->everyMinute();
         $schedule->command('command:autoDecGoodsTrafficJob')->everyTenMinutes();
-        $schedule->command('command:userTrafficWarningJob')->daily();
+        $schedule->command('command:autoDisableExpireUserJob')->everyMinute();
+        $schedule->command('command:autoExpireCouponJob')->everyThirtyMinutes();
+        $schedule->command('command:autoExpireInviteJob')->everyThirtyMinutes();
+        $schedule->command('command:autoResetUserTrafficJob')->monthly();
         $schedule->command('command:userExpireWarningJob')->daily();
-        $schedule->command('command:inviteExpire')->everyThirtyMinutes();
+        $schedule->command('command:userTrafficWarningJob')->daily();
     }
 
     /**

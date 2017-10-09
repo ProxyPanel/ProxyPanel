@@ -111,7 +111,7 @@ class RegisterController extends BaseController
             $user->passwd = $this->makeRandStr();
             $user->transfer_enable = $transfer_enable;
             $user->enable_time = date('Y-m-d H:i:s');
-            $user->expire_time = date('Y-m-d H:i:s', strtotime("+30 days"));
+            $user->expire_time = date('Y-m-d H:i:s', strtotime("+1 days"));
             $user->reg_ip = $request->getClientIp();
             $user->referral_uid = $referral_uid;
             $user->save();

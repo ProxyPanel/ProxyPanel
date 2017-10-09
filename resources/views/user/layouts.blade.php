@@ -135,7 +135,7 @@
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/goodsList', '/user/addOrder']) ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
-                        <span class="title">流量包</span>
+                        <span class="title">流量套餐</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/orderList']) ? 'active open' : ''}}">

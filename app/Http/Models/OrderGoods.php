@@ -23,4 +23,7 @@ class OrderGoods extends Model
         'price'
     ];
 
+    function goods() {
+        return $this->hasOne(Goods::class, 'id', 'goods_id');
+    }
 }

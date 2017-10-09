@@ -37,9 +37,9 @@ class ShopController extends BaseController
             $desc = $request->get('desc');
             $traffic = $request->get('traffic');
             $price = $request->get('price');
-            $score = $request->get('score');
-            $start_time = $request->get('start_time');
-            $end_time = $request->get('end_time');
+            $score = $request->get('score', 0);
+            $type = $request->get('type', 1);
+            $days = $request->get('days', 30);
             $status = $request->get('status');
 
             if (empty($name) || empty($traffic) || $price == '') {
@@ -65,8 +65,8 @@ class ShopController extends BaseController
             $obj->traffic = $traffic;
             $obj->price = $price;
             $obj->score = $score;
-            $obj->start_time = date('Y-m-d 00:00:00', strtotime($start_time));
-            $obj->end_time = date('Y-m-d 23:59:59', strtotime($end_time));
+            $obj->type = $type;
+            $obj->days = $days;
             $obj->status = $status;
             $obj->save();
 
@@ -92,9 +92,9 @@ class ShopController extends BaseController
             $desc = $request->get('desc');
             $traffic = $request->get('traffic');
             $price = $request->get('price');
-            $score = $request->get('score');
-            $start_time = $request->get('start_time');
-            $end_time = $request->get('end_time');
+            $score = $request->get('score', 0);
+            $type = $request->get('type', 1);
+            $days = $request->get('days', 30);
             $status = $request->get('status');
 
             if (empty($name) || empty($traffic) || $price == '') {
@@ -120,8 +120,8 @@ class ShopController extends BaseController
                 'traffic' => $traffic,
                 'price'   => $price,
                 'score'   => $score,
-                'start_time' => date('Y-m-d 00:00:00', strtotime($start_time)),
-                'end_time' => date('Y-m-d 23:59:59', strtotime($end_time)),
+                'type'    => $type,
+                'days'    => $days,
                 'status'  => $status
             ];
             $ret = Goods::where('id', $id)->update($data);

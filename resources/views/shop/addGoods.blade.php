@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">内含流量</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="traffic" value="1024" id="traffic" placeholder="" required="">
                                             <span class="input-group-addon">MiB</span>
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">售价</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="price" value="" id="price" placeholder="" required>
                                             <span class="input-group-addon">元</span>
@@ -97,20 +97,35 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">所需积分</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" name="score" value="0" id="score" placeholder="" required>
                                         <span class="help-block">换购该商品需要的积分值</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">有效期</label>
-                                    <div class="col-md-9">
-                                        <div class="input-group input-large input-daterange">
-                                            <input type="text" class="form-control" name="start_time" value="{{date('Y-m-d')}}" id="start_time">
-                                            <span class="input-group-addon"> 至 </span>
-                                            <input type="text" class="form-control" name="end_time" value="{{date('Y-m-d', strtotime("+1 year"))}}" id="end_time">
+                                    <label for="type" class="col-md-3 control-label">类型</label>
+                                    <div class="col-md-6">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="1" checked> 流量包
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="2"> 套餐
+                                                <span></span>
+                                            </label>
                                         </div>
-                                        <span class="help-block"> 有效期结束后，凡是购买该商品的账号都会被扣除该商品设置的流量值 </span>
+                                        <span class="help-block"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">有效期</label>
+                                    <div class="col-md-3">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="days" value="30" id="days" placeholder="" required="">
+                                            <span class="input-group-addon">天</span>
+                                        </div>
+                                        <span class="help-block"> 到期后会自动扣除流量 </span>
                                     </div>
                                 </div>
                                 <div class="form-group last">
@@ -118,11 +133,11 @@
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
-                                                <input type="radio" name="status" value="0" checked> 上架
+                                                <input type="radio" name="status" value="1" checked> 上架
                                                 <span></span>
                                             </label>
                                             <label class="mt-radio">
-                                                <input type="radio" name="status" value="1"> 下架
+                                                <input type="radio" name="status" value="0"> 下架
                                                 <span></span>
                                             </label>
                                         </div>

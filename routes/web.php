@@ -61,6 +61,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
     Route::post('admin/setReferralMoney', 'AdminController@setReferralMoney'); // 设置返利满多少可提现
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
+    Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 获取随机密码
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
     Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表

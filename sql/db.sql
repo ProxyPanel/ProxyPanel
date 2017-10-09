@@ -324,6 +324,7 @@ CREATE TABLE `goods` (
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品图片地址',
   `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位MiB',
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '商品价值多少积分',
+  `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '商品类型：1-流量包、2-套餐',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品描述',
   `start_time` datetime DEFAULT NULL COMMENT '有效期开始',
@@ -401,6 +402,7 @@ CREATE TABLE `order_goods` (
   `num` int(11) NOT NULL DEFAULT '0' COMMENT '商品数量',
   `original_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品原价',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品实际价格',
+  `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`id`)

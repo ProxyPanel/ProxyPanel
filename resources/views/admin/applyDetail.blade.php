@@ -53,7 +53,7 @@
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                            <table class="table table-striped table-hover table-checkable">
                                 <thead>
                                     <tr class="uppercase">
                                         <th colspan="6">ID：{{$info->id}} | 申请人：{{$info->user->username}} | 提现金额：{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
@@ -77,7 +77,7 @@
                                             <tr>
                                                 <td> {{$vo->id}} </td>
                                                 <td> {{$vo->user->username}} </td>
-                                                <td> {{$vo->order_id}} - </td>
+                                                <td> {{$vo->goods->goods->name}}</td>
                                                 <td> {{$vo->amount}} </td>
                                                 <td> {{$vo->ref_amount}} </td>
                                                 <td> {{$vo->created_at}} </td>

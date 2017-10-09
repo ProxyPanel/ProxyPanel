@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\Invite;
 use Illuminate\Console\Command;
+use App\Http\Models\Invite;
 use Log;
 
-class InviteExpire extends Command
+class AutoExpireInviteJob extends Command
 {
-    protected $signature = 'command:inviteExpire';
-    protected $description = '邀请码过期废除';
+    protected $signature = 'command:autoExpireInviteJob';
+    protected $description = '邀请码过期自动置无效';
 
     public function __construct()
     {
@@ -19,7 +19,7 @@ class InviteExpire extends Command
     public function handle()
     {
         $inviteList = Invite::where('status', 0)->where('dateline', '<=', date('Y-m-d H:i:s'))->get();
-        if ($inviteList->isEmpty()) {
+        if (!$inviteList->isEmpty()) {
             foreach ($inviteList as $invite) {
                 Invite::where('id', $invite->id)->update(['status' => 2]);
             }

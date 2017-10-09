@@ -11,7 +11,7 @@ use Log;
 class AutoDecGoodsTrafficJob extends Command
 {
     protected $signature = 'command:autoDecGoodsTrafficJob';
-    protected $description = '商品到期自动扣购买该商品的账号流量';
+    protected $description = '自动扣除到期流量包的流量';
 
     public function __construct()
     {
@@ -20,21 +20,28 @@ class AutoDecGoodsTrafficJob extends Command
 
     public function handle()
     {
-        $goodsList = Goods::where('end_time', '<', date('Y-m-d H:i:s'))->get();
-        foreach ($goodsList as $goods) {
-            // 所有购买过该商品的用户
-            $orderGoods = OrderGoods::where('goods_id', $goods->id)->get();
-            foreach ($orderGoods as $og) {
+        $orderGoods = OrderGoods::where('is_expire', 0)->get();
+        foreach ($orderGoods as $og) {
+            $goods = Goods::where('id', $og->goods_id)->first();
+            if (empty($goods)) {
+                continue;
+            }
+
+            // 如果商品已过期，则需要扣流量
+            if (date("Y-m-d H:i:s", strtotime("-" . $goods->days . " days")) >= $og->created_at) {
                 $u = User::where('id', $og->user_id)->first();
                 if (empty($u)) {
                     continue;
                 }
 
-                if ($u->transfer_enable - $goods->traffic * 1024 * 1024 < 0) {
+                // 商品到期自动扣总流量
+                if ($u->transfer_enable - $goods->traffic * 1048576 <= 0) {
                     User::where('id', $og->user_id)->update(['transfer_enable' => 0]);
                 } else {
-                    User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1024 * 1024);
+                    User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1048576);
                 }
+
+                OrderGoods::where('id', $og->id)->update(['is_expire' => 1]);
             }
         }
 

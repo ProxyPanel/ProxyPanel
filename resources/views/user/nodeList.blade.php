@@ -42,29 +42,23 @@
                                 <tr>
                                     <th> ID </th>
                                     <th> 节点名称 </th>
-                                    <th> 出口带宽 </th>
                                     <th> 在线人数 </th>
                                     <th> 流量比例 </th>
-                                    <th> 协议 </th>
-                                    <th> 混淆 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($nodeList->isEmpty())
                                     <tr>
-                                        <td colspan="8">暂无数据</td>
+                                        <td colspan="5">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($nodeList as $node)
                                         <tr class="odd gradeX">
                                             <td> {{$node->id}} </td>
                                             <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容SS </span> @endif </td>
-                                            <td> {{$node->bandwidth}}M </td>
                                             <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
                                             <td> {{$node->traffic_rate}} </td>
-                                            <td> <span class="label label-info"> {{$node->protocol}} </span> </td>
-                                            <td> <span class="label label-info"> {{$node->obfs}} </span> </td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 查看配置 </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#scheme_{{$node->id}}"> SCHEME </a>

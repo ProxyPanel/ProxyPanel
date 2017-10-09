@@ -136,6 +136,7 @@
                                                 <!--<button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button>-->
                                                 <button type="button" class="btn btn-sm green btn-outline" onclick="do_export('{{$user->id}}')">配置信息</button>
                                                 <button type="button" class="btn btn-sm purple btn-outline" onclick="do_monitor('{{$user->id}}')">流量监控</button>
+                                                <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">重置流量</button>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -234,6 +235,15 @@
         // 流量监控
         function do_monitor(id) {
             window.location.href = '{{url('admin/monitor?id=')}}' + id;
+        }
+
+        // 重置流量
+        function resetTraffic(id) {
+            $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
+                bootbox.alert(ret.message, function () {
+                    window.location.reload();
+                });
+            });
         }
     </script>
 @endsection

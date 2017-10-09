@@ -10,6 +10,10 @@
         <!-- BEGIN PAGE BREADCRUMB -->
         <ul class="page-breadcrumb breadcrumb">
             <li>
+                <a href="{{url('user/goodsList')}}">流量包</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
                 <a href="{{url('user/addOrder')}}">购买</a>
                 <i class="fa fa-circle"></i>
             </li>
@@ -32,7 +36,7 @@
                         <tr>
                             <td style="padding: 20px;">
                                 <h3>{{$goods->name}}</h3>
-                                <p> <img src="{{$goods->logo}}" style="width:100px; height:100px;"> 内含流量 {{$goods->traffic}} ，有效30天  </p>
+                                <p> <img src="{{$goods->logo}}" style="width:100px; height:100px;"> 内含流量 {{$goods->traffic}} MiB，有效期 {{date('Y-m-d', strtotime($goods->start_time))}} ~ {{date('Y-m-d', strtotime($goods->end_time))}} </p>
                             </td>
                             <td class="text-center sbold"> ￥{{$goods->price}} </td>
                             <td class="text-center sbold"> x 1 </td>

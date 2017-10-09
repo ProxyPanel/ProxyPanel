@@ -45,15 +45,15 @@ class UserController extends BaseController
     public function index(Request $request)
     {
         $user = $request->session()->get('user');
+        $user = User::where('id', $user['id'])->first();
+        $user->totalTransfer = $this->flowAutoShow($user->transfer_enable - $user->u - $user->d);
+        $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
+        $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
 
+        $view['info'] = $user->toArray();
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
-
-        $user['totalTransfer'] = $this->flowAutoShow($user['transfer_enable'] - $user['u'] - $user['d']);
-        $user['usedTransfer'] = $this->flowAutoShow($user['u'] + $user['d']);
-        $user['usedPercent'] = $user['transfer_enable'] > 0 ? round(($user['u'] + $user['d']) / $user['transfer_enable'], 2) : 1;
-        $view['info'] = $user;
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -169,11 +169,12 @@ class UserController extends BaseController
     public function nodeList(Request $request)
     {
         $user = $request->session()->get('user');
+        $user = User::where('id', $user['id'])->first();
 
         $nodeList = DB::table('ss_group_node')
             ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
             ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
-            ->where('ss_group.level', '<=', $user['level'])
+            ->where('ss_group.level', '<=', $user->level)
             ->paginate(10)
             ->appends($request->except('page'));
 
@@ -192,34 +193,40 @@ class UserController extends BaseController
             $node->load = empty($node_info->load) ? 0 : $node_info->load;
 
             // 生成ssr scheme
+            $obfs_param = $user->obfs_param ? base64_encode($user->obfs_param) : '';
+            $protocol_param = $user->protocol_param ? base64_encode($user->protocol_param) : '';
+
             $ssr_str = '';
-            $ssr_str .= $node->server . ':' . $user['port'];
-            $ssr_str .= ':' . $user['protocol'] . ':' . $user['method'];
-            $ssr_str .= ':' . $user['obfs'] . ':' . base64_encode($user['passwd']);
-            $ssr_str .= '/?obfsparam=' . $user['obfs_param'];
-            $ssr_str .= '&=protoparam' . $user['protocol_param'];
+            $ssr_str .= $node->server . ':' . $user->port;
+            $ssr_str .= ':' . $user->protocol . ':' . $user->method;
+            $ssr_str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
+            $ssr_str .= '/?obfsparam=' . $obfs_param;
+            $ssr_str .= '&protoparam=' . $protocol_param;
             $ssr_str .= '&remarks=' . base64_encode($node->name);
+            $ssr_str .= '&group=' . base64_encode('节点');
+            //$ssr_str .= '&udpport=0';
+            //$ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
             // 生成ss scheme
             $ss_str = '';
-            $ss_str .= $user['method'] . ':' . $user['passwd'] . '@';
-            $ss_str .= $node->server . ':' . $user['port'];
+            $ss_str .= $user->method . ':' . $user->passwd . '@';
+            $ss_str .= $node->server . ':' . $user->port;
             $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
             $txt = <<<TXT
 服务器：{$node->server}
-远程端口：{$user['port']}
+远程端口：{$user->port}
 本地端口：1080
-密码：{$user['passwd']}
-加密方法：{$user['method']}
-协议：{$user['protocol']}
-协议参数：{$user['protocol_param']}
-混淆方式：{$user['obfs']}
-混淆参数：{$user['obfs_param']}
+密码：{$user->passwd}
+加密方法：{$user->method}
+协议：{$user->protocol}
+协议参数：{$user->protocol_param}
+混淆方式：{$user->obfs}
+混淆参数：{$user->obfs_param}
 路由：绕过局域网及中国大陆地址
 TXT;
 
@@ -252,7 +259,7 @@ TXT;
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        $view['goodsList'] = Goods::where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/goodsList', $view);
     }
@@ -697,7 +704,7 @@ TXT;
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $goods = Goods::where('id', $goods_id)->first();
+            $goods = Goods::where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不存在']);
             }
@@ -749,6 +756,7 @@ TXT;
                 $orderGoods->num = 1;
                 $orderGoods->original_price = $goods->price;
                 $orderGoods->price = $totalPrice;
+                $orderGoods->is_expire = 0;
                 $orderGoods->save();
 
                 // 扣余额
@@ -783,6 +791,10 @@ TXT;
                 // 把流量包内的流量加到账号上
                 User::where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
 
+                // 将商品的有效期加到账号上，如果账号过期时间小于
+                //if (date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")) ) {}
+                User::where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days"))]);
+
                 // 写入返利日志
                 if ($user->referral_uid) {
                     $referralLog = new ReferralLog();
@@ -806,7 +818,12 @@ TXT;
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：' . $e->getMessage()]);
             }
         } else {
-            $view['goods'] = Goods::where('id', $goods_id)->first();
+            $goods = Goods::where('id', $goods_id)->where('status', 1)->first();
+            if (empty($goods)) {
+                return Redirect::to('user/goodsList');
+            }
+
+            $view['goods'] = $goods;
 
             return Response::view('user/addOrder', $view);
         }

@@ -46,6 +46,7 @@
                                 <tr>
                                     <th> ID </th>
                                     <th> 名称 </th>
+                                    <th> 类型 </th>
                                     <th> 图片 </th>
                                     <th> 内含流量 </th>
                                     <th> 售价 </th>
@@ -57,18 +58,25 @@
                                 <tbody>
                                 @if($goodsList->isEmpty())
                                     <tr>
-                                        <td colspan="8">暂无数据</td>
+                                        <td colspan="9">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($goodsList as $goods)
                                         <tr class="odd gradeX">
                                             <td> {{$goods->id}} </td>
                                             <td> {{$goods->name}} </td>
+                                            <td> {{$goods->type == 1 ? '流量包' : '套餐'}} </td>
                                             <td> @if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif </td>
-                                            <td> {{$goods->traffic}} </td>
-                                            <td> <span class="label label-danger">{{$goods->price}}元</span> </td>
-                                            <td> <span class="label label-danger">{{$goods->score}}</span> </td>
-                                            <td> <span class="label label-danger">{{$goods->status ? '下架' : '上架'}}</span> </td>
+                                            <td> {{$goods->traffic}} MiB</td>
+                                            <td> ￥{{$goods->price}} </td>
+                                            <td> {{$goods->score}} </td>
+                                            <td>
+                                                @if($goods->status)
+                                                    <span class="label label-success">上架</span>
+                                                @else
+                                                    <span class="label label-default">下架</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editGoods('{{$goods->id}}')">编辑</button>
                                                 <button type="button" class="btn btn-sm red btn-outline" onclick="delGoods('{{$goods->id}}')">删除</button>
