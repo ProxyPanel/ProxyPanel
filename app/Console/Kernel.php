@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutoDisableExpireUserJob::class,
         \App\Console\Commands\AutoExpireInviteJob::class,
         \App\Console\Commands\AutoExpireCouponJob::class,
-        \App\Console\Commands\autoResetUserTrafficJob::class,
+        \App\Console\Commands\AutoResetUserTrafficJob::class,
         \App\Console\Commands\UserExpireWarningJob::class,
         \App\Console\Commands\UserTrafficWarningJob::class,
     ];
