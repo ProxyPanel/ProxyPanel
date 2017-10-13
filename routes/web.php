@@ -48,18 +48,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
     Route::get('admin/system', 'AdminController@system'); // 系统设置
     Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
-    Route::post('admin/setDefaultTraffic', 'AdminController@setDefaultTraffic'); // 设置注册时默认可用流量
-    Route::post('admin/setInviteNum', 'AdminController@setInviteNum'); // 可生成邀请码数
-    Route::post('admin/setWebsiteName', 'AdminController@setWebsiteName'); // 设置网站名称
-    Route::post('admin/setWebsiteUrl', 'AdminController@setWebsiteUrl'); // 设置网站地址
-    Route::post('admin/setResetPasswordTimes', 'AdminController@setResetPasswordTimes'); // 设置重置密码次数
-    Route::post('admin/setActiveTimes', 'AdminController@setActiveTimes'); // 设置激活账号次数
-    Route::post('admin/setTrafficWarningPercent', 'AdminController@setTrafficWarningPercent'); // 设置流量警告阈值
-    Route::post('admin/setExpireDays', 'AdminController@setExpireDays'); // 设置账号过期提醒阈值
-    Route::post('admin/setAddScoreRange', 'AdminController@setAddScoreRange'); // 设置登录加积分时间间隔
-    Route::post('admin/setReferralTraffic', 'AdminController@setReferralTraffic'); // 设置注册送流量值
     Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
-    Route::post('admin/setReferralMoney', 'AdminController@setReferralMoney'); // 设置返利满多少可提现
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 获取随机密码

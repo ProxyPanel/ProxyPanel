@@ -117,9 +117,10 @@
                                                         <label for="is_rand_port" class="col-md-2 control-label">随机端口</label>
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 随机生成端口 </span>
+                                                            <span class="help-block"> 添加账号时随机生成端口 </span>
                                                         </div>
                                                     </div>
+                                                    <!--
                                                     <div class="form-group">
                                                         <label for="is_user_rand_port" class="col-md-2 control-label">自定义端口</label>
                                                         <div class="col-md-6">
@@ -127,8 +128,22 @@
                                                             <span class="help-block"> 用户可以自定义端口 </span>
                                                         </div>
                                                     </div>
+                                                    -->
                                                     <div class="form-group">
-                                                        <label for="default_traffic" class="col-md-2 control-label">注册初始流量</label>
+                                                        <label for="default_days" class="col-md-2 control-label">初始有效期</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="default_days" value="{{$default_days}}" id="default_days" />
+                                                                <span class="input-group-addon">天</span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setDefaultDays()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 用户注册时默认SS(R)有效天数 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="default_traffic" class="col-md-2 control-label">初始流量</label>
                                                         <div class="col-md-3">
                                                             <div class="input-group">
                                                                 <input class="form-control" type="text" name="default_traffic" value="{{$default_traffic}}" id="default_traffic" />
@@ -563,11 +578,24 @@
             });
         });
 
+        // 设置注册时默认有效期
+        function setDefaultDays() {
+            var default_days = $("#default_days").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_days', value:default_days}, function (ret) {
+                if (ret.status == 'success') {
+                    bootbox.alert(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
         // 设置注册时默认流量
         function setDefaultTraffic() {
             var default_traffic = $("#default_traffic").val();
 
-            $.post("{{url('admin/setDefaultTraffic')}}", {_token:'{{csrf_token()}}', value:default_traffic}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_traffic', value:default_traffic}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -580,7 +608,7 @@
         function setInviteNum() {
             var invite_num = $("#invite_num").val();
 
-            $.post("{{url('admin/setInviteNum')}}", {_token:'{{csrf_token()}}', value:invite_num}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'invite_num', value:invite_num}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -593,7 +621,7 @@
         function setResetPasswordTimes() {
             var reset_password_times = $("#reset_password_times").val();
 
-            $.post("{{url('admin/setResetPasswordTimes')}}", {_token:'{{csrf_token()}}', value:reset_password_times}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_password_times', value:reset_password_times}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -606,7 +634,7 @@
         function setActiveTimes() {
             var active_times = $("#active_times").val();
 
-            $.post("{{url('admin/setActiveTimes')}}", {_token:'{{csrf_token()}}', value:active_times}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'active_times', value:active_times}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -619,7 +647,7 @@
         function setTrafficWarningPercent() {
             var traffic_warning_percent = $("#traffic_warning_percent").val();
 
-            $.post("{{url('admin/setTrafficWarningPercent')}}", {_token:'{{csrf_token()}}', value:traffic_warning_percent}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning_percent', value:traffic_warning_percent}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -633,7 +661,7 @@
         function setExpireDays() {
             var expire_days = $("#expire_days").val();
 
-            $.post("{{url('admin/setExpireDays')}}", {_token:'{{csrf_token()}}', value:expire_days}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_days', value:expire_days}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -646,7 +674,7 @@
         function setWebsiteName() {
             var website_name = $("#website_name").val();
 
-            $.post("{{url('admin/setWebsiteName')}}", {_token:'{{csrf_token()}}', value:website_name}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'website_name', value:website_name}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -659,7 +687,7 @@
         function setWebsiteUrl() {
             var website_url = $("#website_url").val();
 
-            $.post("{{url('admin/setWebsiteUrl')}}", {_token:'{{csrf_token()}}', value:website_url}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'website_url', value:website_url}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -672,7 +700,7 @@
         function setLoginAddScoreRange() {
             var login_add_score_range = $("#login_add_score_range").val();
 
-            $.post("{{url('admin/setAddScoreRange')}}", {_token:'{{csrf_token()}}', value:login_add_score_range}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score_range', value:login_add_score_range}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -685,7 +713,7 @@
         function setReferralTraffic() {
             var referral_traffic = $("#referral_traffic").val();
 
-            $.post("{{url('admin/setReferralTraffic')}}", {_token:'{{csrf_token()}}', value:referral_traffic}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_traffic', value:referral_traffic}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();
@@ -711,7 +739,7 @@
         function setReferralMoney() {
             var referral_money = $("#referral_money").val();
 
-            $.post("{{url('admin/setReferralMoney')}}", {_token:'{{csrf_token()}}', value:referral_money}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_money', value:referral_money}, function (ret) {
                 if (ret.status == 'success') {
                     bootbox.alert(ret.message, function() {
                         window.location.reload();

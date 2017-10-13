@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Models\Config;
 use App\Http\Models\EmailLog;
 use App\Http\Models\SsConfig;
@@ -112,10 +113,12 @@ class BaseController extends Controller
     // 获取一个随机端口
     public function getRandPort()
     {
-        $port = mt_rand(10000,30000);
+        $port = mt_rand(10000, 40000);
+        $deny_port = [17185, 28281];
+
         $exists_port = User::query()->pluck('port')->toArray();
-        if (in_array($port, $exists_port)) {
-            $this->getRandPort();
+        if (in_array($port, $exists_port) || in_array($port, $deny_port)) {
+            $port = $this->getRandPort();
         }
 
         return $port;

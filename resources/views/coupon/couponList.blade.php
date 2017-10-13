@@ -48,7 +48,6 @@
                                     <th> 名称 </th>
                                     <th> LOGO </th>
                                     <th> 券码 </th>
-                                    <th> 类型 </th>
                                     <th> 用途 </th>
                                     <th> 优惠 </th>
                                     <th> 有效期 </th>
@@ -59,7 +58,7 @@
                                 <tbody>
                                 @if($couponList->isEmpty())
                                     <tr>
-                                        <td colspan="11">暂无数据</td>
+                                        <td colspan="9">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($couponList as $coupon)
@@ -68,24 +67,23 @@
                                             <td> {{$coupon->name}} </td>
                                             <td> @if($coupon->logo) <a href="{{$coupon->logo}}" class="fancybox"><img src="{{$coupon->logo}}"/></a> @endif </td>
                                             <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
-                                            <td> <span class="label label-danger">{{$coupon->type == '1' ? '现金优惠' : '折扣优惠'}}</span> </td>
-                                            <td> <span class="label label-danger">{{$coupon->usage == '1' ? '仅限一次性使用' : '可重复使用'}}</span> </td>
+                                            <td> {{$coupon->usage == '1' ? '一次性' : '可重复'}} </td>
                                             <td>
                                                 @if($coupon->type == '1')
-                                                    <span class="label label-danger">{{$coupon->amount}}元</span>
+                                                    {{$coupon->amount}}元
                                                 @else
-                                                    <span class="label label-danger">{{$coupon->discount * 10}}折</span>
+                                                    {{$coupon->discount * 10}}折
                                                 @endif
                                             </td>
                                             <td> {{date('Y-m-d', $coupon->available_start)}} ~ {{date('Y-m-d', $coupon->available_end)}} </td>
                                             <td>
                                                 @if ($coupon->usage == 1)
                                                     @if($coupon->status == '1')
-                                                        已使用
+                                                        <span class="label label-default"> 已使用 </span>
                                                     @elseif ($coupon->status == '2')
-                                                        已失效
+                                                        <span class="label label-default"> 已失效 </span>
                                                     @else
-                                                        未使用
+                                                        <span class="label label-success"> 未使用 </span>
                                                     @endif
                                                 @endif
                                             </td>

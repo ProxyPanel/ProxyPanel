@@ -243,6 +243,8 @@ INSERT INTO `config` VALUES ('23', 'traffic_warning', 0);
 INSERT INTO `config` VALUES ('24', 'traffic_warning_percent', 80);
 INSERT INTO `config` VALUES ('25', 'expire_warning', 0);
 INSERT INTO `config` VALUES ('26', 'expire_days', 15);
+INSERT INTO `config` VALUES ('27', 'reset_traffic', 1);
+INSERT INTO `config` VALUES ('28', 'default_days', 7);
 
 
 -- ----------------------------

@@ -31,7 +31,7 @@ class AdminController extends BaseController
 
     public function index(Request $request)
     {
-        $past = strtotime(date('Y-m-d', strtotime("-7 days")));
+        $past = strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days")));
         $online = time() - 3600;
 
         $view['userCount'] = User::count();
@@ -190,7 +190,7 @@ class AdminController extends BaseController
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
             }
         } else {
-            // 最后一个可用端口
+            // 生成一个可用端口
             $last_user = User::orderBy('id', 'desc')->first();
             $view['last_port'] = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
@@ -1105,112 +1105,10 @@ TXT;
             }
         }
 
-        $ret = Config::where('name', $name)->update(['value' => $value]);
-        if (!$ret) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败']);
-        }
+        // 更新配置
+        Config::where('name', $name)->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-    }
-
-    // 设置注册时默认可用流量
-    public function setDefaultTraffic(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'default_traffic')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置可生成邀请码数
-    public function setInviteNum(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'invite_num')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置网站名称
-    public function setWebsiteName(Request $request)
-    {
-        $value = trim($request->get('value'));
-
-        Config::where('name', 'website_name')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置网站地址
-    public function setWebsiteUrl(Request $request)
-    {
-        $value = trim($request->get('value'));
-
-        Config::where('name', 'website_url')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置重置密码次数
-    public function setResetPasswordTimes(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'reset_password_times')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置激活账号次数
-    public function setActiveTimes(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'active_times')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置激活账号次数
-    public function setTrafficWarningPercent(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'traffic_warning_percent')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置账号过期提醒阈值
-    public function setExpireDays(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'expire_days')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置激活账号次数
-    public function setAddScoreRange(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'login_add_score_range')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置注册送流量值
-    public function setReferralTraffic(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'referral_traffic')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
 
     // 设置返利比例
@@ -1220,16 +1118,6 @@ TXT;
         $value = $value / 100;
 
         Config::where('name', 'referral_percent')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置返利满多少可提现
-    public function setReferralMoney(Request $request)
-    {
-        $value = intval($request->get('value'));
-
-        Config::where('name', 'referral_money')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
