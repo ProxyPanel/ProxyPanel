@@ -135,7 +135,7 @@
                                             <div class="form-group">
                                                 <label for="status" class="col-md-3 control-label">状态</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="status" value="{{$user->status}}" id="status">
+                                                    <select class="form-control" name="status" id="status">
                                                         <option value="1" @if($user->status == '1') selected @endif>正常</option>
                                                         <option value="0" @if($user->status == '0') selected @endif>未激活</option>
                                                         <option value="-1" @if($user->status == '-1') selected @endif>禁用</option>
@@ -143,6 +143,15 @@
                                                 </div>
                                             </div>
                                             <hr>
+                                            <div class="form-group">
+                                                <label for="gender" class="col-md-3 control-label">性别</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="gender" id="gender">
+                                                        <option value="1" @if($user->gender == '1') selected @endif>男</option>
+                                                        <option value="0" @if($user->gender == '0') selected @endif>女</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="form-group">
                                                 <label for="wechat" class="col-md-3 control-label">微信</label>
                                                 <div class="col-md-8">
@@ -334,6 +343,7 @@
             var status = $('#status').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
+            var gender = $('#gender').val();
             var wechat = $('#wechat').val();
             var qq = $('#qq').val();
             var is_admin = $('#is_admin').val();
@@ -356,7 +366,7 @@
                 type: "POST",
                 url: "{{url('admin/editUser')}}",
                 async: false,
-                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, status:status, enable_time:enable_time, expire_time:expire_time, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, status:status, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {

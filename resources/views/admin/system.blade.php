@@ -104,7 +104,7 @@
                                                         <label for="is_reset_password" class="col-md-2 control-label">重置密码</label>
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($is_reset_password) checked @endif id="is_reset_password" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后不允许用户通过邮件重置密码 </span>
+                                                            <span class="help-block"> 启用后用户可以通过邮件重置密码 </span>
                                                         </div>
                                                     </div>
                                                 </div>

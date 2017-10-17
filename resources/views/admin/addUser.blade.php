@@ -133,6 +133,15 @@
                                             </div>
                                             <hr>
                                             <div class="form-group">
+                                                <label for="gender" class="col-md-3 control-label">性别</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="gender" id="gender">
+                                                        <option value="1" selected>男</option>
+                                                        <option value="0">女</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="wechat" class="col-md-3 control-label">微信</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="wechat" id="wechat" placeholder="">
@@ -324,6 +333,7 @@
             var score = $('#score').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
+            var gender = $('#gender').val();
             var wechat = $('#wechat').val();
             var qq = $('#qq').val();
             var is_admin = $('#is_admin').val();
@@ -346,7 +356,7 @@
                 type: "POST",
                 url: "{{url('admin/addUser')}}",
                 async: false,
-                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, enable_time:enable_time, expire_time:expire_time, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {

@@ -131,6 +131,7 @@ class AdminController extends BaseController
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
             $obfs_param = $request->get('obfs_param');
+            $gender = $request->get('gender');
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
             $usage = $request->get('usage');
@@ -170,6 +171,7 @@ class AdminController extends BaseController
                 'protocol_param'  => $protocol_param,
                 'obfs'            => $obfs,
                 'obfs_param'      => $obfs_param,
+                'gender'          => $gender,
                 'wechat'          => $wechat,
                 'qq'              => $qq,
                 'usage'           => $usage,
@@ -222,6 +224,7 @@ class AdminController extends BaseController
             $obfs_param = $request->get('obfs_param');
             $speed_limit_per_con = $request->get('speed_limit_per_con');
             $speed_limit_per_user = $request->get('speed_limit_per_user');
+            $gender = $request->get('gender');
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
             $usage = $request->get('usage');
@@ -249,6 +252,7 @@ class AdminController extends BaseController
                 'obfs_param'           => $obfs_param,
                 'speed_limit_per_con'  => $speed_limit_per_con,
                 'speed_limit_per_user' => $speed_limit_per_user,
+                'gender'               => $gender,
                 'wechat'               => $wechat,
                 'qq'                   => $qq,
                 'usage'                => $usage,

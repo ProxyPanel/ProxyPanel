@@ -56,7 +56,7 @@
                                     @foreach($nodeList as $node)
                                         <tr class="odd gradeX">
                                             <td> {{$node->id}} </td>
-                                            <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容SS </span> @endif </td>
+                                            <td> {{$node->name}} </td>
                                             <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
                                             <td> {{$node->traffic_rate}} </td>
                                             <td>
@@ -90,7 +90,7 @@
                                             <h4 class="modal-title">配置信息</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <textarea class="form-control" rows="10" onclick="this.focus();this.select()" readonly="readonly"> {{$node->txt}} </textarea>
+                                            <textarea class="form-control" rows="10" readonly="readonly"> {{$node->txt}} </textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                                             <h4 class="modal-title">Url Scheme</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <textarea class="form-control" rows="7" onclick="this.focus();this.select()" readonly="readonly">
+                                            <textarea class="form-control" rows="7" readonly="readonly">
                                                 {{$node->ssr_scheme}}
                                                 @if ($node->compatible)
                                                     {{$node->ss_scheme}}

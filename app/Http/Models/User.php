@@ -29,6 +29,7 @@ class User extends Model
         'protocol_param',
         'obfs',
         'obfs_param',
+        'gender',
         'wechat',
         'qq',
         'usage',
