@@ -44,11 +44,14 @@ https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90
 |Sunny Woon| ￥10|
 |aazzpp678 | ￥26|
 |风云_1688|￥15|
-截止目前收到的捐赠：￥389
+|Royal|￥25|
+截止目前收到的捐赠：￥414
 这些捐赠的用途：
 1.买了1台VPS做开发测试用
 2.一个Beyond Compare 4的正版激活码（2017-10-01）
 3.谢谢大家及时反馈BUG，发现BUG请提到issue里
+4.感谢网友支持一个台Azure给我开发测试用 
+开发测试环境：http://13.76.162.123
 
 
 #### PHP7环境配置
@@ -62,25 +65,22 @@ Laravel 5.4 + Metronic 4.7
 ````
 cd /home/wwwroot/
 git clone https://github.com/ssrpanel/ssrpanel.git
-cd ssrpanel/
-php composer.phar install
-cp .env.example .env
-php artisan key:generate
-chown -R www:www storage/
-chmod -R 777 storage/
-````
+```
 
-#### 配置
+#### 配置数据库
 ````
 mysql 创建一个数据库，然后自行导入sql\db.sql
-config\app.php debug开始或者关闭调试模式
 config\database.php mysql选项自行配置数据库
 确保 storage/framework 下有 cache sessions views 三个目录，且 storage 有777权限
 ````
 
-#### 发送邮件配置
-````
-config\mail.php 修改其中的配置
+#### 配置一下
+```
+cd ssrpanel/
+php composer.phar install
+php artisan key:generate
+chown -R www:www storage/
+chmod -R 777 storage/
 ````
 
 #### NGINX配置文件加入
@@ -90,16 +90,31 @@ location / {
 }
 ````
 
-#### 重新加载NGINX
+#### 重启NGINX和PHP-FPM
 ````
-service nginx reload
+service nginx restart
+service php-fpm restart
 ````
 
-## SSR服务端
+#### 出现500错误
 ````
-把 server 目录下的 ssr-3.4.0.zip 拷贝到 /root/，解压缩，怎么运行自己上网搜
-把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
-把 user-config.json 里的 connect_verbose_info 设置为 1
+理论上操作到上面那些步骤完了应该是可以正常访问网站了，如果网站出现500错误，请看WIKI，很有可能是fastcgi的错误
+请看WIKI：https://github.com/ssrpanel/ssrpanel/wiki/%E5%87%BA%E7%8E%B0-open_basedir%E9%94%99%E8%AF%AF
+修改完记得重启NGINX和PHP-FPM
+````
+
+## 定时任务（所有自动发邮件的地方都要用到，所以请务必配置）
+````
+编辑crontab
+crontab -e
+
+然后加入如下（请自行修改ssrpanel路径）
+* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
+````
+
+#### 发送邮件配置
+````
+config\mail.php 修改其中的配置
 ````
 
 ## 日志分析（目前仅支持单机单节点）
@@ -111,13 +126,16 @@ ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
-## 定时任务（所有自动发邮件的地方都要用到，所以请务必配置）
+## SSR
 ````
-编辑crontab
-crontab -e
-
-然后加入如下（请自行修改ssrpanel路径）
-* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
+cp server/ssr-3.4.0.zip /root/
+cd /root
+unzip ssr-3.4.0.zip
+cd shadowsocksr
+sh initcfg.sh
+把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
+把 user-config.json 里的 connect_verbose_info 设置为 1
+配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID
 ````
 
 ## 说明
@@ -133,7 +151,6 @@ crontab -e
 8.后台一键添加加密方式、混淆、协议
 9.强大的后台配置功能
 10.更多功能自己发掘
-11.ssrpanel的定位：比sspanel强大，比sspanel mod弱鸡
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)
