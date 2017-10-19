@@ -3,14 +3,15 @@
 ````
 PHP 7.1 （必须）
 MYSQL 5.5 （推荐5.6+）
-内存 1G+
+内存 1G+ 
 磁盘空间 10G+
 KVM
 
-使用 LNMP1.4 部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
+使用LNMP部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
 
 telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
+开发测试演示：http://www.ssrpanel.com    (限速100K)
 
 默认管理账号
 用户名：admin 密码：123456
@@ -45,19 +46,24 @@ https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90
 |aazzpp678 | ￥26|
 |风云_1688|￥15|
 |Royal|￥25|
-截止目前收到的捐赠：￥414
+|bingo|￥8|
+|Eason|￥10|
+截止目前收到的捐赠：￥432
+实际到账：￥427.68 （提款手续费4.32）
+
 这些捐赠的用途：
-1.买了1台VPS做开发测试用
-2.一个Beyond Compare 4的正版激活码（2017-10-01）
-3.谢谢大家及时反馈BUG，发现BUG请提到issue里
-4.感谢网友支持一个台Azure给我开发测试用 
-开发测试环境：http://13.76.162.123
+1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
+2.30刀买了一个Beyond Compare 4 Standard的正版激活码
+3.自掏腰包9刀买了www.ssrpanel.com域名
+3.感谢Jyo提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
+
+开发测试环境：http://www.ssrpanel.com
 
 
 #### PHP7环境配置
 ````
 Laravel 5.4 + Metronic 4.7
-建议小白LNMP傻瓜安装出php7.1 + mysql(5.5以上)
+小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
 ````
 
@@ -67,11 +73,10 @@ cd /home/wwwroot/
 git clone https://github.com/ssrpanel/ssrpanel.git
 ```
 
-#### 配置数据库
+#### 先配置数据库
 ````
 mysql 创建一个数据库，然后自行导入sql\db.sql
-config\database.php mysql选项自行配置数据库
-确保 storage/framework 下有 cache sessions views 三个目录，且 storage 有777权限
+config\database.php 中的mysql选项自行配置数据库
 ````
 
 #### 配置一下
@@ -90,10 +95,13 @@ location / {
 }
 ````
 
-#### 重启NGINX和PHP-FPM
+#### 编辑php.ini
 ````
-service nginx restart
-service php-fpm restart
+找到php.ini
+vim /usr/local/php/etc/php.ini
+
+搜索disable_function
+删除proc_开头的所有函数
 ````
 
 #### 出现500错误
@@ -101,6 +109,12 @@ service php-fpm restart
 理论上操作到上面那些步骤完了应该是可以正常访问网站了，如果网站出现500错误，请看WIKI，很有可能是fastcgi的错误
 请看WIKI：https://github.com/ssrpanel/ssrpanel/wiki/%E5%87%BA%E7%8E%B0-open_basedir%E9%94%99%E8%AF%AF
 修改完记得重启NGINX和PHP-FPM
+````
+
+#### 重启NGINX和PHP-FPM
+````
+service nginx restart
+service php-fpm restart
 ````
 
 ## 定时任务（所有自动发邮件的地方都要用到，所以请务必配置）
@@ -126,7 +140,7 @@ ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
-## SSR
+## SSR部署
 ````
 cp server/ssr-3.4.0.zip /root/
 cd /root
@@ -135,7 +149,7 @@ cd shadowsocksr
 sh initcfg.sh
 把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
 把 user-config.json 里的 connect_verbose_info 设置为 1
-配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID
+配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后再进后台添加节点
 ````
 
 ## 说明

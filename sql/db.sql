@@ -226,7 +226,7 @@ INSERT INTO `config` VALUES ('5', 'is_invite_register', 1);
 INSERT INTO `config` VALUES ('6', 'website_name', 'SSRPanel');
 INSERT INTO `config` VALUES ('7', 'is_reset_password', 1);
 INSERT INTO `config` VALUES ('8', 'reset_password_times', 3);
-INSERT INTO `config` VALUES ('9', 'website_url', 'http://baidu.com');
+INSERT INTO `config` VALUES ('9', 'website_url', 'http://www.ssrpanel.com');
 INSERT INTO `config` VALUES ('10', 'is_active_register', 1);
 INSERT INTO `config` VALUES ('11', 'active_times', 3);
 INSERT INTO `config` VALUES ('12', 'login_add_score', 1);
