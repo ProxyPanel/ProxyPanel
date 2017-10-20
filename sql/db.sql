@@ -246,6 +246,7 @@ INSERT INTO `config` VALUES ('25', 'expire_warning', 0);
 INSERT INTO `config` VALUES ('26', 'expire_days', 15);
 INSERT INTO `config` VALUES ('27', 'reset_traffic', 1);
 INSERT INTO `config` VALUES ('28', 'default_days', 7);
+INSERT INTO `config` VALUES ('29', 'subscribe_max', 3);
 
 
 -- ----------------------------
@@ -529,6 +530,7 @@ CREATE TABLE `user_subscribe` (
   `code` varchar(255) DEFAULT '' COMMENT '订阅地址唯一识别码',
   `times` int(11) NOT NULL DEFAULT '0' COMMENT '地址请求次数',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

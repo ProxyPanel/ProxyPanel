@@ -191,6 +191,18 @@
                                                             <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label for="subscribe_max" class="col-md-2 control-label">订阅节点数</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input class="form-control" type="text" name="subscribe_max" value="{{$subscribe_max}}" id="subscribe_max" />
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setSubscribeMax()">修改</button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -636,6 +648,19 @@
             var active_times = $("#active_times").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'active_times', value:active_times}, function (ret) {
+                if (ret.status == 'success') {
+                    layer.msg(ret.message, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置节点订阅随机展示节点数
+        function setSubscribeMax() {
+            var subscribe_max = $("#subscribe_max").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_max', value:subscribe_max}, function (ret) {
                 if (ret.status == 'success') {
                     layer.msg(ret.message, function() {
                         window.location.reload();
