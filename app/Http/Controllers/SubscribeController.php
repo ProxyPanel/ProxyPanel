@@ -65,31 +65,27 @@ class SubscribeController extends BaseController
 
         $node_ids = SsGroupNode::whereIn('group_id', $group_ids)->select(['node_id'])->get();
         $nodeList = SsNode::whereIn('id', $node_ids)->get();
-        $scheme = [];
+        $scheme = '';
         foreach ($nodeList as $node) {
-            $obfs_param = $user->obfs_param ? base64_encode($user->obfs_param) : '';
-            $protocol_param = $user->protocol_param ? base64_encode($user->protocol_param) : '';
+            $obfs_param = $user->obfs_param ? $this->base64url_encode($user->obfs_param) : '';
+            //$protocol_param = $user->protocol_param ? $this->base64url_encode($user->protocol_param) : '';
 
             // 生成ssr scheme
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . $user->port;
             $ssr_str .= ':' . $user->protocol . ':' . $user->method;
-            $ssr_str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
+            $ssr_str .= ':' . $user->obfs . ':' . $this->base64url_encode($user->passwd);
             $ssr_str .= '/?obfsparam=' . $obfs_param;
-            $ssr_str .= '&protoparam=' . $protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode($node->name);
-            $ssr_str .= '&group=' . base64_encode('VPN');
+            //$ssr_str .= '&protoparam=' . $protocol_param;
+            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
+            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
             //$ssr_str .= '&udpport=0';
             //$ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
-            $scheme[] = 'ssr://' . $ssr_str;
+            $scheme .= 'ssr://' . $ssr_str . "\n";
         }
 
-        foreach ($scheme as $vo) {
-            echo $vo . "\n";
-        }
-
-        exit();
+        exit($scheme);
     }
 
 }

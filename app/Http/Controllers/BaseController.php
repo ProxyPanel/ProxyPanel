@@ -30,13 +30,13 @@ class BaseController extends Controller
     // base64加密（处理URL）
     function base64url_encode($data)
     {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+        return strtr(base64_encode($data), array('+' => '-', '/' => '_', '=' => ''));
     }
 
     // base64解密（处理URL）
     function base64url_decode($data)
     {
-        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+        return base64_decode(strtr($data, '-_', '+/'));
     }
 
     // 根据流量值自动转换单位输出
