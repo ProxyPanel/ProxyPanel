@@ -37,7 +37,7 @@
         <div class="number font-red"> 404 </div>
         <div class="details">
             <h3>页面不存在</h3>
-            <p> 如果发现BUG请上报胖虎，胖虎将送你一个静香.
+            <p> 如果发现BUG请提交到 <a href="https://github.com/ssrpanel/ssrpanel/issues" target="_blank">Issues</a>
                 <br/> </p>
             <p>
                 <a href="{{url('admin')}}" class="btn red btn-outline"> 返 回 </a>

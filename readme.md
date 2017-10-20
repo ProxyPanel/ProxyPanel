@@ -7,43 +7,42 @@ MYSQL 5.5 （推荐5.6+）
 磁盘空间 10G+
 KVM
 
+小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
+手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
 使用LNMP部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
 
 telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
-开发测试演示：http://www.ssrpanel.com    (限速100K)
-
-默认管理账号
+开发测试演示：http://www.ssrpanel.com
 用户名：admin 密码：123456
+(限速100K)
 ````
 
 #### VPS推荐
 ````
 部署面板必须得用到VPS，也就是服务器
 强烈推荐使用1G以上内存的KVM架构的服务器
-
-https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90
 ````
 ![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
 
 
 #### 打赏作者
 ````
-哈哈，如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
-将持续开发，喜欢请star一下
+如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
+持续开发，喜欢请star一下
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
-### 捐赠名单
-| 昵称      |    金额 |
-| :------- | --------:| 
-| Law-杰   | ￥10 | 
-| Err      | ￥51 | 
-| 緃噺開始 |  ￥5 | 
+### 打赏名单
+|昵称|金额|
+|:-------|--------:| 
+|Law-杰|￥10| 
+|Err| ￥51 | 
+|緃噺開始 |￥5| 
 |【要求匿名】|￥267|
-|、无奈 |￥5|
-|Sunny Woon| ￥10|
-|aazzpp678 | ￥26|
+|、无奈|￥5|
+|Sunny Woon|￥10|
+|aazzpp678|￥26|
 |风云_1688|￥15|
 |Royal|￥25|
 |bingo|￥8|
@@ -54,18 +53,8 @@ https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90
 这些捐赠的用途：
 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-3.自掏腰包9刀买了www.ssrpanel.com域名
 3.感谢Jyo提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
 
-开发测试环境：http://www.ssrpanel.com
-
-
-#### PHP7环境配置
-````
-Laravel 5.4 + Metronic 4.7
-小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
-手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
-````
 
 #### 拉取代码
 ````
@@ -161,10 +150,11 @@ sh initcfg.sh
 5.节点可以分组，不同级别的用户可以看到不同级别分组的节点
 6.SS配置转SSR配置，方便使用SS后端一键把账号转入到系统
 7.流量日志、单机单节点日志分析功能，知道用户最近都看了哪些网站
-7.定时任务、所有邮件投递都有记录
+7.定时任务、所有邮件投递都有记录，账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期账号
 8.后台一键添加加密方式、混淆、协议
 9.强大的后台配置功能
-10.更多功能自己发掘
+10.屏蔽常见爬虫
+11.更多功能和开发排期请看WIKI
 ````
 
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)

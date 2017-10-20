@@ -541,6 +541,7 @@ CREATE TABLE `user_subscribe_log` (
   `sid` int(11) DEFAULT NULL COMMENT '对应user_subscribe的id',
   `request_ip` varchar(20) DEFAULT NULL COMMENT '请求IP',
   `request_time` datetime DEFAULT NULL COMMENT '请求时间',
+  `request_header` text COMMENT '请求头部信息',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

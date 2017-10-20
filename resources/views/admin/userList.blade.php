@@ -165,6 +165,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 添加账号
@@ -195,14 +196,12 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('admin/delUser')}}", {id:id, _token:_token}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
+                        $.post("{{url('admin/delUser')}}", {id:id, _token:_token}, function(ret) {
+                            layer.msg(ret.message, function() {
+                                if (ret.status == 'success') {
                                     window.location.reload();
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
+                                }
+                            });
                         });
                     }
                 }
@@ -240,7 +239,7 @@
         // 重置流量
         function resetTraffic(id) {
             $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
-                bootbox.alert(ret.message, function () {
+                layer.msg(ret.message, function() {
                     window.location.reload();
                 });
             });

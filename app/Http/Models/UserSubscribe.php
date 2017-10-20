@@ -13,12 +13,10 @@ class UserSubscribe extends Model
 {
     protected $table = 'user_subscribe';
     protected $primaryKey = 'id';
-    public $timestamps = false;
     protected $fillable = [
         'user_id',
         'code',
-        'times',
-        'created_at'
+        'times'
     ];
 
     public function User()

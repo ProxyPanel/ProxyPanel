@@ -106,6 +106,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 回复工单
@@ -142,14 +143,12 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
+                        $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret) {
+                            layer.msg(ret.message, function() {
+                                if (ret.status == 'success') {
                                     window.location.reload();
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
+                                }
+                            });
                         });
                     }
                 }

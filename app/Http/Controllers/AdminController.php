@@ -15,6 +15,8 @@ use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\User;
+use App\Http\Models\UserSubscribe;
+use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficLog;
 use Illuminate\Http\Request;
 use Redirect;
@@ -655,6 +657,41 @@ class AdminController extends BaseController
         $view['trafficLogList'] = $trafficLogList;
 
         return Response::view('admin/trafficLog', $view);
+    }
+
+    // 订阅请求日志
+    public function subscribeLog(Request $request)
+    {
+        $user_id = $request->get('user_id');
+        $username = $request->get('username');
+
+        $query = UserSubscribe::with(['User']);
+
+        if (!empty($user_id)) {
+            $query->where('user_id', $user_id);
+        }
+
+        if (!empty($username)) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        $subscribeList = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+
+        // 是否存在地址泄露的可能
+        foreach ($subscribeList as &$subscribe) {
+            $ipCounts = UserSubscribeLog::where('sid', $subscribe->id)->where('request_time', '>=', date('Y-m-d H:i:s', strtotime("-3 days")))->distinct('request_ip')->count('request_ip');
+            if ($ipCounts >= 10) {
+                $subscribe->isWarning = 1;
+            } else {
+                $subscribe->isWarning = 0;
+            }
+        }
+
+        $view['subscribeList'] = $subscribeList;
+
+        return Response::view('admin/subscribeLog', $view);
     }
 
     // 格式转换(SS转SSR)

@@ -174,7 +174,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/convert' || Request::getRequestUri() == '/admin/import' || Request::getRequestUri() == '/admin/trafficLog' || Request::getRequestUri() == '/admin/analysis' || Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/convert', '/admin/import', '/admin/trafficLog', '/admin/analysis', '/admin/subscribeLog', '/emailLog/list']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
@@ -182,13 +182,13 @@
                     </a>
                     <ul class="sub-menu">
                         <li class="nav-item {{Request::getRequestUri() == '/admin/convert' ? 'active open' : ''}}">
-                            <a href="{{url('admin/convert')}}" class="nav-link ">
+                            <a href="{{url('admin/convert')}}" class="nav-link">
                                 <i class="icon-refresh"></i>
                                 <span class="title">格式转换</span>
                             </a>
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/import' ? 'active open' : ''}}">
-                            <a href="{{url('admin/import')}}" class="nav-link ">
+                            <a href="{{url('admin/import')}}" class="nav-link">
                                 <i class="icon-plus"></i>
                                 <span class="title">数据导入</span>
                             </a>
@@ -200,13 +200,19 @@
                             </a>
                         </li>
                         <li class="nav-item {{Request::getRequestUri() == '/admin/analysis' ? 'active open' : ''}}">
-                            <a href="{{url('admin/analysis')}}" class="nav-link ">
+                            <a href="{{url('admin/analysis')}}" class="nav-link">
                                 <i class="icon-bar-chart"></i>
                                 <span class="title">日志分析</span>
                             </a>
                         </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/subscribeLog' ? 'active open' : ''}}">
+                            <a href="{{url('admin/subscribeLog')}}" class="nav-link">
+                                <i class="icon-list"></i>
+                                <span class="title">订阅请求日志</span>
+                            </a>
+                        </li>
                         <li class="nav-item {{Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
-                            <a href="{{url('emailLog/list')}}" class="nav-link ">
+                            <a href="{{url('emailLog/list')}}" class="nav-link">
                                 <i class="icon-list"></i>
                                 <span class="title">邮件投递记录</span>
                             </a>

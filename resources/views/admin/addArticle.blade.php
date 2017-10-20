@@ -82,6 +82,7 @@
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/ueditor/ueditor.all.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 百度富文本编辑器
@@ -109,13 +110,11 @@
                 data: {_token:_token, title: title, sort:sort, content:content},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
                             window.location.href = '{{url('admin/articleList')}}';
-                        });
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                        }
+                    });
                 }
             });
 

@@ -202,6 +202,7 @@
     <script src="/assets/global/plugins/jquery-easyticker/test/jquery.easing.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-easyticker/jquery.easy-ticker.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script>
         // 流量饼图
@@ -242,13 +243,11 @@
                 data: {_token:'{{csrf_token()}}'},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
                             window.location.reload();
-                        });
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                        }
+                    });
                 }
             });
 

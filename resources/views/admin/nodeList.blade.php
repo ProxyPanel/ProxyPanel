@@ -102,6 +102,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 添加节点
@@ -133,13 +134,11 @@
                 callback: function (result) {
                     if (result) {
                         $.post("{{url('admin/delNode')}}", {id:id, _token:_token}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
+                            layer.msg(ret.message, function() {
+                                if (ret.status == 'success') {
                                     window.location.reload();
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
+                                }
+                            });
                         });
                     }
                 }

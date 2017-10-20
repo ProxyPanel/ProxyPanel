@@ -54,6 +54,7 @@ class SubscribeController extends BaseController
         $log->sid = $subscribe->id;
         $log->request_ip = $request->getClientIp();
         $log->request_time = date('Y-m-d H:i:s');
+        $log->request_header = $request->headers;
         $log->save();
 
         // 获取这个账号可用节点

@@ -32,7 +32,10 @@
                             <span class="caption-subject bold uppercase"> 卡券列表 </span>
                         </div>
                         <div class="actions">
-                            <div class="btn-group">
+                            <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                <button class="btn sbold blue" onclick="exportCoupon()"> 批量导出
+                                    <i class="fa fa-download"></i>
+                                </button>
                                 <button class="btn sbold blue" onclick="addCoupon()"> 生成
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -118,16 +121,23 @@
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/fancybox/source/jquery.fancybox.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 批量导出卡券
+        function exportCoupon() {
+            bootbox.alert('开发中');
+        }
+
+        // 添加卡券
         function addCoupon() {
             window.location.href = '{{url('coupon/addCoupon')}}';
         }
 
-        // 删除商品
+        // 删除卡券
         function delCoupon(id) {
             bootbox.confirm({
-                message: "确定删除该优惠券？",
+                message: "确定删除该卡券吗？",
                 buttons: {
                     confirm: {
                         label: '确定',
@@ -140,14 +150,12 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('coupon/delCoupon')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
+                        $.post("{{url('coupon/delCoupon')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                            layer.msg(ret.message, function() {
+                                if (ret.status == 'success') {
                                     window.location.reload();
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
+                                }
+                            });
                         });
                     }
                 }

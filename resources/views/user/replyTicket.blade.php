@@ -128,6 +128,7 @@
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/ueditor/ueditor.all.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         @if($ticket->status != 2)
@@ -152,11 +153,11 @@
                 data: {_token:'{{csrf_token()}}', id:'{{$ticket->id}}'},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        window.location.href = '{{url('user/ticketList')}}';
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('user/ticketList')}}';
+                        }
+                    });
                 }
             });
         }
@@ -172,11 +173,11 @@
                 data: {_token:'{{csrf_token()}}', id:'{{$ticket->id}}', content:content},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        window.location.reload();
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
                 }
             });
         }

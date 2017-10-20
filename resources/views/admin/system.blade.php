@@ -413,6 +413,7 @@
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 启用、禁用随机端口
@@ -477,7 +478,7 @@
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_reset_password', value:is_reset_password}, function (ret) {
                     if (ret.status == 'fail') {
-                        bootbox.alert(ret.message, function() {
+                        layer.msg(ret.message, function() {
                             window.location.reload();
                         });
                     }
@@ -492,7 +493,7 @@
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_active_register', value:is_active_register}, function (ret) {
                     if (ret.status == 'fail') {
-                        bootbox.alert(ret.message, function() {
+                        layer.msg(ret.message, function() {
                             window.location.reload();
                         });
                     }
@@ -507,7 +508,7 @@
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_warning', value:expire_warning}, function (ret) {
                     if (ret.status == 'fail') {
-                        bootbox.alert(ret.message, function() {
+                        layer.msg(ret.message, function() {
                             window.location.reload();
                         });
                     }
@@ -522,7 +523,7 @@
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_status', value:referral_status}, function (ret) {
                     if (ret.status == 'fail') {
-                        bootbox.alert(ret.message, function() {
+                        layer.msg(ret.message, function() {
                             window.location.reload();
                         });
                     }
@@ -558,7 +559,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'min_rand_score', value:min_rand_score}, function (ret) {
                 if (ret.status == 'fail') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -571,7 +572,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'max_rand_score', value:max_rand_score}, function (ret) {
                 if (ret.status == 'fail') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -584,7 +585,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_days', value:default_days}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -597,7 +598,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_traffic', value:default_traffic}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -610,7 +611,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'invite_num', value:invite_num}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -623,7 +624,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_password_times', value:reset_password_times}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -636,7 +637,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'active_times', value:active_times}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -649,7 +650,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning_percent', value:traffic_warning_percent}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -663,7 +664,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_days', value:expire_days}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -676,7 +677,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'website_name', value:website_name}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -689,7 +690,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'website_url', value:website_url}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -702,7 +703,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score_range', value:login_add_score_range}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -715,7 +716,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_traffic', value:referral_traffic}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -728,7 +729,7 @@
 
             $.post("{{url('admin/setReferralPercent')}}", {_token:'{{csrf_token()}}', value:referral_percent}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }
@@ -741,7 +742,7 @@
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_money', value:referral_money}, function (ret) {
                 if (ret.status == 'success') {
-                    bootbox.alert(ret.message, function() {
+                    layer.msg(ret.message, function() {
                         window.location.reload();
                     });
                 }

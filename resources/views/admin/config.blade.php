@@ -199,6 +199,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // modal关闭时刷新页面
@@ -258,14 +259,12 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('admin/delConfig')}}", {id:id, _token:_token}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
+                        $.post("{{url('admin/delConfig')}}", {id:id, _token:_token}, function(ret) {
+                            layer.msg(ret.message, function() {
+                                if (ret.status == 'success') {
                                     window.location.href = '{{url('admin/config?tab=')}}' + tabId;
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
+                                }
+                            });
                         });
                     }
                 }
@@ -283,11 +282,11 @@
                 data: {_token:_token, id: id},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        window.location.href = '{{url('admin/config?tab=')}}' + tabId;
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('admin/config?tab=')}}' + tabId;
+                        }
+                    });
                 }
             });
         }

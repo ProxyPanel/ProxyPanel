@@ -106,6 +106,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 添加节点分组
@@ -134,14 +135,12 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post("{{url('admin/delGroup')}}", {_token:'{{csrf_token()}}', id:id}, function(ret){
-                            if (ret.status == 'success') {
-                                bootbox.alert(ret.message, function(){
+                        $.post("{{url('admin/delGroup')}}", {_token:'{{csrf_token()}}', id:id}, function(ret) {
+                            layer.msg(ret.message, function() {
+                                if (ret.status == 'success') {
                                     window.location.reload();
-                                });
-                            } else {
-                                bootbox.alert(ret.message);
-                            }
+                                }
+                            });
                         });
                     }
                 }

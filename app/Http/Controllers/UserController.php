@@ -941,7 +941,6 @@ TXT;
             $obj->user_id = $user['id'];
             $obj->code = $code;
             $obj->times = 0;
-            $obj->created_at = date('Y-m-d H:i:s');
             $obj->save();
         } else {
             $code = $subscribe->code;

@@ -86,6 +86,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // ajax同步提交
@@ -101,13 +102,11 @@
                 data: {_token:_token, id:'{{$group->id}}', name:name, level:level},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
                             window.location.href = '{{url('admin/groupList')}}';
-                        });
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                        }
+                    });
                 }
             });
 

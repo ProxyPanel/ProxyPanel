@@ -57,12 +57,13 @@
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/pages/scripts/components-clipboard.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 申请提现
         function extractMoney() {
             $.post("{{url('user/extractMoney')}}", {_token:'{{csrf_token()}}'}, function (ret) {
-                bootbox.alert(ret.message);
+                layer.msg(ret.message);
             });
         }
     </script>

@@ -310,6 +310,7 @@
     <script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 有效期
@@ -359,13 +360,11 @@
                 data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
+                    layer.msg(ret.message, function() {
+                        if (ret.status == 'success') {
                             window.location.href = '{{url('admin/userList')}}';
-                        });
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                        }
+                    });
                 }
             });
 
