@@ -36,14 +36,14 @@ class SubscribeController extends BaseController
         }
 
         // 校验合法性
-        $subscribe = UserSubscribe::where('code', $code)->with('user')->first();
+        $subscribe = UserSubscribe::where('code', $code)->where('status', 1)->with('user')->first();
         if (empty($subscribe)) {
-            exit('非法请求');
+            exit('非法请求或者被禁用，请联系管理员');
         }
 
         $user = User::where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
         if (empty($user)) {
-            exit('非法请求');
+            exit('非法请求或者被禁用，请联系管理员');
         }
 
         // 更新访问次数

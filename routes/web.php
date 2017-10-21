@@ -41,6 +41,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setDefaultConfig', 'AdminController@setDefaultConfig'); // 设置默认配置
     Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
     Route::get('admin/subscribeLog', 'AdminController@subscribeLog'); // 订阅请求日志
+    Route::post('admin/setSubscribeStatus', 'AdminController@setSubscribeStatus'); // 启用禁用用户的订阅
     Route::any('admin/export', 'AdminController@export'); // 导出配置信息
     Route::any('admin/convert', 'AdminController@convert'); // 格式转换
     Route::any('admin/import', 'AdminController@import'); // 数据导入

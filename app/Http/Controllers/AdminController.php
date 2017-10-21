@@ -694,6 +694,20 @@ class AdminController extends BaseController
         return Response::view('admin/subscribeLog', $view);
     }
 
+    public function setSubscribeStatus(Request $request)
+    {
+        $id = $request->get('id');
+        $status = $request->get('status', 0);
+
+        if (empty($id)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
+        }
+
+        UserSubscribe::where('id', $id)->update(['status' => $status]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
     // 格式转换(SS转SSR)
     public function convert(Request $request)
     {

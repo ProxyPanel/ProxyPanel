@@ -53,12 +53,13 @@
                                     <th> 请求次数 </th>
                                     <th> 最后请求时间 </th>
                                     <th> 异常 </th>
+                                    <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     @if($subscribeList->isEmpty())
                                         <tr>
-                                            <td colspan="6">暂无数据</td>
+                                            <td colspan="7">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($subscribeList as $subscribe)
@@ -70,7 +71,15 @@
                                                 <td> {{$subscribe->updated_at}} </td>
                                                 <td>
                                                     @if($subscribe->isWarning)
-                                                        <div class="label label-danger">异常</div>
+                                                        <div class="label label-danger">可能公开</div>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($subscribe->status == 0)
+                                                        <button type="button" class="btn btn-sm green btn-outline" onclick="set_status('{{$subscribe->id}}', 1)">启用</button>
+                                                    @endif
+                                                    @if($subscribe->status == 1)
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="set_status('{{$subscribe->id}}', 0)">禁用</button>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -99,6 +108,8 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
+
     <script type="text/javascript">
         // 搜索
         function do_search() {
@@ -111,6 +122,15 @@
         // 重置
         function do_reset() {
             window.location.href = '{{url('admin/subscribeLog')}}';
+        }
+
+        // 启用禁用用户的订阅
+        function set_status(id, status) {
+            $.post("{{url('admin/setSubscribeStatus')}}", {_token:'{{csrf_token()}}', id:id, status:status}, function(ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    window.location.reload();
+                });
+            });
         }
     </script>
 @endsection

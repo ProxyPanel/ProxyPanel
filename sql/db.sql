@@ -529,6 +529,7 @@ CREATE TABLE `user_subscribe` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `code` varchar(255) DEFAULT '' COMMENT '订阅地址唯一识别码',
   `times` int(11) NOT NULL DEFAULT '0' COMMENT '地址请求次数',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁用、1-启用',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
