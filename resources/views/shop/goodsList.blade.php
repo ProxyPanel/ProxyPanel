@@ -138,7 +138,7 @@
                 callback: function (result) {
                     if (result) {
                         $.post("{{url('shop/delGoods')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
-                            layer.msg(ret.message, function() {
+                            layer.msg(ret.message, {time:1000}, function() {
                                 if (ret.status == 'success') {
                                     window.location.reload();
                                 }

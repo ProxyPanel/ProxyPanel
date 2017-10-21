@@ -30,7 +30,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="status" id="status" onChange="do_search()">
-                                    <option value="0" @if(empty(Request::get('status'))) selected @endif>状态</option>
+                                    <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>驳回</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>待审核</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>审核通过待打款</option>

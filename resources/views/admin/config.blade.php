@@ -260,7 +260,7 @@
                 callback: function (result) {
                     if (result) {
                         $.post("{{url('admin/delConfig')}}", {id:id, _token:_token}, function(ret) {
-                            layer.msg(ret.message, function() {
+                            layer.msg(ret.message, {time:1000}, function() {
                                 if (ret.status == 'success') {
                                     window.location.href = '{{url('admin/config?tab=')}}' + tabId;
                                 }
@@ -282,7 +282,7 @@
                 data: {_token:_token, id: id},
                 dataType: 'json',
                 success: function (ret) {
-                    layer.msg(ret.message, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
                             window.location.href = '{{url('admin/config?tab=')}}' + tabId;
                         }

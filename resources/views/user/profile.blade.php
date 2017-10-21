@@ -125,5 +125,7 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-
+    <script type="text/javascript">
+        //
+    </script>
 @endsection

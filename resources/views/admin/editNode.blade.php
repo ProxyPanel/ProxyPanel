@@ -240,7 +240,7 @@
                 data: {_token:_token, id:id, name: name, group_id:group_id, server:server, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
-                    layer.msg(ret.message, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
                             window.location.href = '{{url('admin/nodeList?page=') . Request::get('page')}}';
                         }

@@ -136,7 +136,7 @@
                 callback: function (result) {
                     if (result) {
                         $.post("{{url('admin/delGroup')}}", {_token:'{{csrf_token()}}', id:id}, function(ret) {
-                            layer.msg(ret.message, function() {
+                            layer.msg(ret.message, {time:1000}, function() {
                                 if (ret.status == 'success') {
                                     window.location.reload();
                                 }

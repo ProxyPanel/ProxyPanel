@@ -78,6 +78,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 校验优惠券是否可用
@@ -130,13 +131,11 @@
                 data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
                 dataType: 'json',
                 success: function (ret) {
-                    if (ret.status == 'success') {
-                        bootbox.alert(ret.message, function () {
+                    layer.msg(ret.message, {time:1300}, function() {
+                        if (ret.status == 'success') {
                             window.location.href = '{{url('user/orderList')}}';
-                        });
-                    } else {
-                        bootbox.alert(ret.message);
-                    }
+                        }
+                    });
                 }
             });
         }

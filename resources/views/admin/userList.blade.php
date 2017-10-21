@@ -197,7 +197,7 @@
                 callback: function (result) {
                     if (result) {
                         $.post("{{url('admin/delUser')}}", {id:id, _token:_token}, function(ret) {
-                            layer.msg(ret.message, function() {
+                            layer.msg(ret.message, {time:1000}, function() {
                                 if (ret.status == 'success') {
                                     window.location.reload();
                                 }
@@ -239,7 +239,7 @@
         // 重置流量
         function resetTraffic(id) {
             $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
-                layer.msg(ret.message, function() {
+                layer.msg(ret.message, {time:1000}, function() {
                     window.location.reload();
                 });
             });
