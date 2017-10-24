@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Coupon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Response;
 use Redirect;
 use DB;
@@ -108,5 +109,43 @@ class CouponController extends BaseController
         Coupon::where('id', $id)->update(['is_del' => 1]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+    }
+
+    // 导出优惠券
+    public function exportCoupon(Request $request)
+    {
+        $cashCouponList = Coupon::where('is_del', 0)->where('status', 0)->where('type', 1)->get();
+        $discountCouponList = Coupon::where('is_del', 0)->where('status', 0)->where('type', 2)->get();
+
+        $filename = '卡券' . date('Ymd');
+        Excel::create($filename, function($excel) use($cashCouponList, $discountCouponList) {
+            $excel->sheet('现金券', function($sheet) use($cashCouponList) {
+                $sheet->row(1, array(
+                    '名称', '用途', '有效期', '券码'
+                ));
+
+                if (!$cashCouponList->isEmpty()) {
+                    foreach ($cashCouponList as $k => $vo) {
+                        $sheet->row($k + 2, array(
+                            $vo->name, $vo->type == 1 ? '一次性' : '可重复', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn
+                        ));
+                    }
+                }
+            });
+
+            $excel->sheet('折扣券', function($sheet) use($discountCouponList) {
+                $sheet->row(1, array(
+                    '名称', '用途', '有效期', '券码'
+                ));
+
+                if (!$discountCouponList->isEmpty()) {
+                    foreach ($discountCouponList as $k => $vo) {
+                        $sheet->row($k + 2, array(
+                            $vo->name, $vo->type == 1 ? '一次性' : '可重复', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn
+                        ));
+                    }
+                }
+            });
+        })->export('xls');
     }
 }

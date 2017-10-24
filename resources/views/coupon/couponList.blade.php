@@ -126,7 +126,7 @@
     <script type="text/javascript">
         // 批量导出卡券
         function exportCoupon() {
-            bootbox.alert('开发中');
+            window.location.href = '{{url('coupon/exportCoupon')}}';
         }
 
         // 添加卡券

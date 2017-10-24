@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\EmailLog;
 use App\Http\Models\Invite;
+use App\Http\Models\SsConfig;
 use App\Http\Models\User;
 use App\Http\Models\Verify;
 use Illuminate\Http\Request;
@@ -102,6 +102,11 @@ class RegisterController extends BaseController
             $last_user = User::orderBy('id', 'desc')->first();
             $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
+            // 默认加密方式、协议、混淆
+            $method = SsConfig::where('type', 1)->where('is_default', 1)->first();
+            $protocol = SsConfig::where('type', 2)->where('is_default', 1)->first();
+            $obfs = SsConfig::where('type', 3)->where('is_default', 1)->first();
+
             // 创建新用户
             $transfer_enable = $referral_uid ? (self::$config['default_traffic'] + self::$config['referral_traffic']) * 1048576 : self::$config['default_traffic'] * 1048576;
             $user = new User();
@@ -110,6 +115,9 @@ class RegisterController extends BaseController
             $user->port = $port;
             $user->passwd = $this->makeRandStr();
             $user->transfer_enable = $transfer_enable;
+            $user->method = $method ? $method->name : 'aes-192-ctr';
+            $user->protocol = $protocol ? $protocol->name : 'auth_chain_a';
+            $user->obfs = $obfs ? $obfs->name : 'tls1.2_ticket_auth';
             $user->enable_time = date('Y-m-d H:i:s');
             $user->expire_time = date('Y-m-d H:i:s', strtotime("+" . self::$config['default_days'] . " days"));
             $user->reg_ip = $request->getClientIp();

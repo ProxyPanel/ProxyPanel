@@ -6,7 +6,6 @@ use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use Illuminate\Http\Request;
 use Response;
-use Redirect;
 
 /**
  * 工单控制器
