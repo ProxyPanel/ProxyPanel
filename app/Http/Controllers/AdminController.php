@@ -319,7 +319,7 @@ class AdminController extends BaseController
         $nodeList = SsNode::paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 在线人数
-            $last_log_time = time() - 3600; // 一小时之内
+            $last_log_time = time() - 600; // 10分钟内
             $online_log = SsNodeOnlineLog::where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
 
