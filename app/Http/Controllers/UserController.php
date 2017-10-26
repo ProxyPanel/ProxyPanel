@@ -34,10 +34,12 @@ use Log;
 class UserController extends BaseController
 {
     protected static $config;
+    protected static $userLevel;
 
     function __construct()
     {
         self::$config = $this->systemConfig();
+        self::$userLevel = $this->userLevelConfig();
     }
 
     public function index(Request $request)
@@ -52,6 +54,7 @@ class UserController extends BaseController
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
+        $view['user_level'] = self::$userLevel;
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
