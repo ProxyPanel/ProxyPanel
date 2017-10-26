@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
+use App\Http\Models\Level;
 use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
@@ -18,7 +19,9 @@ use App\Http\Models\User;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficLog;
+use function GuzzleHttp\Psr7\_parse_message;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 use Redirect;
 use Response;
 
@@ -202,7 +205,7 @@ class AdminController extends BaseController
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
-
+            $view['level_list'] = Level::get()->sortBy('level');
             return Response::view('admin/addUser', $view);
         }
     }
@@ -291,7 +294,7 @@ class AdminController extends BaseController
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
-
+            $view['level_list'] = Level::get()->sortBy('level');
             return Response::view('admin/editUser', $view);
         }
     }
@@ -553,7 +556,13 @@ class AdminController extends BaseController
     public function groupList(Request $request)
     {
         $view['groupList'] = SsGroup::paginate(10)->appends($request->except('page'));
+        $level_list = Level::get()->sortBy('level');
 
+        $level_dict=array();
+        foreach ($level_list as $ele){
+            $level_dict[$ele['level']]=$ele['level_name'];
+        }
+        $view['level_dict'] = $level_dict;
         return Response::view('admin/groupList', $view);
     }
 
@@ -571,7 +580,8 @@ class AdminController extends BaseController
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
         } else {
-            return Response::view('admin/addGroup');
+            $view['level_list'] = Level::get()->sortBy('level');
+            return Response::view('admin/addGroup',$view);
         }
     }
 
@@ -596,7 +606,7 @@ class AdminController extends BaseController
             }
         } else {
             $view['group'] = SsGroup::where('id', $id)->first();
-
+            $view['level_list'] = Level::get()->sortBy('level');
             return Response::view('admin/editGroup', $view);
         }
     }
@@ -1022,12 +1032,12 @@ TXT;
         exit($this->makeRandStr());
     }
 
-    // 加密方式、混淆、协议列表
+    // 加密方式、混淆、协议、用户等级列表
     public function config(Request $request)
     {
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）
+            $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）、4 用户列表
             $is_default = $request->get('is_default', 0);
             $sort = $request->get('sort', 0);
 
@@ -1053,6 +1063,7 @@ TXT;
             $view['method_list'] = SsConfig::where('type', 1)->get();
             $view['protocol_list'] = SsConfig::where('type', 2)->get();
             $view['obfs_list'] = SsConfig::where('type', 3)->get();
+            $view['level_list'] = Level::get()->sortBy('level');
 
             return Response::view('admin/config', $view);
         }
@@ -1123,6 +1134,75 @@ TXT;
         $view['urlList'] = array_unique($url);
 
         return Response::view('admin/analysis', $view);
+    }
+
+    //用户等级设置
+    public function updateLevel(Request $request){
+        $id = $request->get('id');
+        $level = $request->get('level');
+        $level_name = $request->get('level_name');
+
+        if (empty($id)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+        }
+        if (empty($level)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'level不能为空']);
+        }
+        if (empty($level_name)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'levelname不能为空']);
+        }
+        try{
+            Level::where('id',$id)->update(["level"=>$level,"level_name"=>$level_name]);
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+        }catch (\Exception $e){
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+        }
+
+    }
+    public function delLevel(Request $request){
+        $id = $request->get('id');
+        if (empty($id)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+        }
+        try{
+            Level::where('id',$id)->delete();
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+        }catch (\Exception $e){
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+        }
+
+    }
+    public function addLevel(Request $request){
+        $level = $request->get('level');
+        $level_name = $request->get('level_name');
+        if (empty($level)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'level不能为空']);
+        }
+        if (empty($level_name)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'levelname不能为空']);
+        }
+
+        try{
+
+            $level_re = Level::where('level',$level)->first();
+
+            if($level_re){
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级已经存在，请勿重复添加']);
+            }
+
+            Level::create([
+                'level'=>$level,
+                'level_name'=>$level_name,
+                'created_at'=>date('Y-m-d H:i:s'),
+                'updated_at'=>date('Y-m-d H:i:s')
+            ]);
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+        }catch (\Exception $e){
+            throw $e;
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+
+        }
+
     }
 
     // 系统设置

@@ -54,13 +54,10 @@
                                     <label class="control-label col-md-3">可见级别</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="level" id="level" required>
-                                            <option value="1" {{$group->level == 1 ? 'selected' : ''}}>倔强青铜</option>
-                                            <option value="2" {{$group->level == 2 ? 'selected' : ''}}>秩序白银</option>
-                                            <option value="3" {{$group->level == 3 ? 'selected' : ''}}>荣耀黄金</option>
-                                            <option value="4" {{$group->level == 4 ? 'selected' : ''}}>尊贵铂金</option>
-                                            <option value="5" {{$group->level == 5 ? 'selected' : ''}}>永恒钻石</option>
-                                            <option value="6" {{$group->level == 6 ? 'selected' : ''}}>至尊黑曜</option>
-                                            <option value="7" {{$group->level == 7 ? 'selected' : ''}}>最强王者</option>
+                                            @foreach($level_list as $ele)
+                                                <option value="{{$ele['level']}}" {{$group->level == $ele['level'] ? 'selected' : ''}}>{{$ele['level_name']}}</option>
+                                            @endforeach
+
                                         </select>
                                         <span class="help-block">对应账号级别可见该分组下的节点（向下兼容）</span>
                                     </div>

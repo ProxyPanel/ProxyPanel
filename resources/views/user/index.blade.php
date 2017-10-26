@@ -68,7 +68,7 @@
                             <div class="col-md-12">
                                 <ul class="list-group">
                                     <li class="list-group-item">
-                                        等级：普通会员
+                                        等级：{{$info['level_name']}}
                                     </li>
                                     <li class="list-group-item">
                                         余额：{{$info['balance']}}

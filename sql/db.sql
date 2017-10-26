@@ -111,7 +111,7 @@ CREATE TABLE `user` (
   `enable_time` date DEFAULT NULL COMMENT '开通日期',
   `expire_time` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
   `remark` text COMMENT '备注',
-  `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '等级：1-倔强青铜、2-秩序白银、3-荣耀黄金、4-尊贵铂金、5-永恒钻石、6-至尊黑曜、7-最强王者',
+  `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '等级：可定义名称',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
   `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
@@ -132,6 +132,29 @@ VALUES (1,'admin','e10adc3949ba59abbe56e057f20f883e',10000,'@123',1073741824000,
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
+-- ----------------------------
+-- Table structure for level
+-- ----------------------------
+DROP TABLE IF EXISTS `level`;
+CREATE TABLE `level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `level` varchar(10) NOT NULL,
+  `level_name` varchar(100) NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT '2017-10-26 12:37:51',
+  `created_at` datetime NOT NULL DEFAULT '2017-10-26 12:37:51',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;;
+
+-- ----------------------------
+-- Records of level
+-- ----------------------------
+INSERT INTO `level` VALUES (1, '2', '秩序白银', '2017-10-26 15:57:30', '2017-10-26 12:37:51');
+INSERT INTO `level` VALUES (4, '1', '倔强青铜', '2017-10-26 15:56:52', '2017-10-26 15:38:58');
+INSERT INTO `level` VALUES (5, '3', '荣耀黄金', '2017-10-26 15:41:31', '2017-10-26 15:41:31');
+INSERT INTO `level` VALUES (6, '4', '尊贵铂金', '2017-10-26 15:41:38', '2017-10-26 15:41:38');
+INSERT INTO `level` VALUES (7, '5', '永恒钻石', '2017-10-26 15:41:47', '2017-10-26 15:41:47');
+INSERT INTO `level` VALUES (8, '6', '至尊黑曜', '2017-10-26 15:41:56', '2017-10-26 15:41:56');
+INSERT INTO `level` VALUES (9, '7', '最强王者', '2017-10-26 15:42:02', '2017-10-26 15:42:02');
 
 -- ----------------------------
 -- Table structure for `user_traffic_log`

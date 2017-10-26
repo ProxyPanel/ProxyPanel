@@ -7,6 +7,7 @@ use App\Http\Models\Coupon;
 use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
 use App\Http\Models\Invite;
+use App\Http\Models\Level;
 use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
@@ -47,7 +48,7 @@ class UserController extends BaseController
         $user->totalTransfer = $this->flowAutoShow($user->transfer_enable - $user->u - $user->d);
         $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
-
+        $user->level_name=Level::where('level',$user['level'])->first()['level_name'];
         $view['info'] = $user->toArray();
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
