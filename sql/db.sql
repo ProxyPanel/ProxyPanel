@@ -265,6 +265,32 @@ CREATE TABLE `article` (
 
 
 -- ----------------------------
+-- Table structure for `article_log`
+-- ----------------------------
+CREATE TABLE `article_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aid` int(11) NOT NULL DEFAULT '0' COMMENT '文章ID',
+  `lat` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '纬度',
+  `lng` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '经度',
+  `ip` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'IP地址',
+  `headers` text COLLATE utf8mb4_unicode_ci COMMENT '浏览器头部信息',
+  `nation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '国家',
+  `province` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '省',
+  `city` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '市',
+  `district` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '区',
+  `street` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '街道',
+  `street_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '门牌',
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '地址',
+  `full` text COLLATE utf8mb4_unicode_ci COMMENT '地图完整请求数据',
+  `is_pull` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否获取拉取地址信息',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未查看、1-已查看',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- ----------------------------
 -- Table structure for `invite`
 -- ----------------------------
 CREATE TABLE `invite` (

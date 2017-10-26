@@ -8,6 +8,8 @@ Route::any('reset/{token}', 'UserController@reset'); // 重设密码
 Route::any('activeUser', 'UserController@activeUser'); // 激活账号
 Route::get('active/{token}', 'UserController@active'); // 激活账号
 Route::get('subscribe/{code}', 'SubscribeController@index'); // 节点订阅地址
+Route::get('article', 'ArticleController@index'); // 定位文章详情
+Route::post('locate', 'LocateController@locate'); // 上报文章打开时的定位
 
 Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('admin', 'AdminController@index'); // 后台首页
@@ -20,6 +22,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
     Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
     Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
+    Route::get('admin/articleLogList', 'AdminController@articleLogList'); // 文章访问日志列表
     Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
     Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
     Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章

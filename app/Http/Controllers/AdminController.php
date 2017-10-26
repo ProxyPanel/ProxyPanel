@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
+use App\Http\Models\ArticleLog;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
 use App\Http\Models\OrderGoods;
@@ -486,6 +487,14 @@ class AdminController extends BaseController
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/articleList', $view);
+    }
+
+    // 文章访问日志列表
+    public function articleLogList(Request $request)
+    {
+        $view['articleLogList'] = ArticleLog::paginate(10)->appends($request->except('page'));
+
+        return Response::view('admin/articleLogList', $view);
     }
 
     // 添加文章

@@ -167,6 +167,16 @@ class BaseController extends Controller
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
+    // 浏览器类型
+    public function browsers($tag)
+    {
+        $data = [
+            'MicroMessenger' => '微信',
+            'iPhone' => 'iPhone',
+            'Linux' => '安卓'
+        ];
+    }
+
     /**
      * 写入邮件发送日志
      * @param int $user_id 用户ID
