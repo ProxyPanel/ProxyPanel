@@ -163,7 +163,7 @@
                         <li class="nav-item {{Request::getRequestUri() == '/admin/articleLogList' ? 'active open' : ''}}">
                             <a href="{{url('admin/articleLogList')}}" class="nav-link ">
                                 <i class="icon-list"></i>
-                                <span class="title">文章日志列表</span>
+                                <span class="title">文章访问日志</span>
                             </a>
                         </li>
                     </ul>

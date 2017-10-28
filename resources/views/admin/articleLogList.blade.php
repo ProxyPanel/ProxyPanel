@@ -15,7 +15,7 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <a href="{{url('admin/articleLogList')}}">文章日志列表</a>
+                <a href="{{url('admin/articleLogList')}}">文章访问日志</a>
                 <i class="fa fa-circle"></i>
             </li>
         </ul>
@@ -28,7 +28,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-docs font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 文章日志列表 </span>
+                            <span class="caption-subject bold uppercase"> 文章访问日志 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">

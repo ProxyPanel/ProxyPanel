@@ -52,8 +52,8 @@ class ShopController extends BaseController
             $logo = '';
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
-                $type = $file->getClientOriginalExtension();
-                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $type;
+                $fileType = $file->getClientOriginalExtension();
+                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
                 $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';
             }
