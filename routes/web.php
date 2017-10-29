@@ -41,6 +41,9 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::any('admin/config', 'AdminController@config'); // 配置列表
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
     Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
+    Route::post('admin/updateLevel', 'AdminController@updateLevel'); // 更新等级
+    Route::post('admin/delLevel', 'AdminController@delLevel'); // 删除等级
+    Route::post('admin/addLevel', 'AdminController@addLevel'); // 增加等级
     Route::post('admin/setDefaultConfig', 'AdminController@setDefaultConfig'); // 设置默认配置
     Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
     Route::get('admin/subscribeLog', 'AdminController@subscribeLog'); // 订阅请求日志

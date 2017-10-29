@@ -6,3 +6,7 @@
 /.vagrant
 /.env
 /.env.example
+Homestead.json
+Homestead.yaml
+npm-debug.log
+.DS_Store

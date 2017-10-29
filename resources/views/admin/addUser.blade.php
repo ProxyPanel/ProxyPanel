@@ -98,13 +98,11 @@
                                                 <label for="balance" class="col-md-3 control-label">级别</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="level" id="level">
-                                                        <option value="1" selected>倔强青铜</option>
-                                                        <option value="2">秩序白银</option>
-                                                        <option value="3">荣耀黄金</option>
-                                                        <option value="4">尊贵铂金</option>
-                                                        <option value="5">永恒钻石</option>
-                                                        <option value="6">至尊黑曜</option>
-                                                        <option value="7">最强王者</option>
+
+                                                        @foreach($level_list as $ele)
+                                                            <option value="{{$ele['level']}}">{{$ele['level_name']}}</option>
+                                                        @endforeach
+
                                                     </select>
                                                 </div>
                                             </div>

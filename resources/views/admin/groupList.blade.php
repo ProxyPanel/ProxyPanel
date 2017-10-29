@@ -59,21 +59,8 @@
                                                 <td> {{$group->id}} </td>
                                                 <td> {{$group->name}} </td>
                                                 <td>
-                                                    @if($group->level == 1)
-                                                        <span class="label label-default">倔强青铜</span>
-                                                    @elseif ($group->level == 2)
-                                                        <span class="label label-primary">秩序白银</span>
-                                                    @elseif ($group->level == 3)
-                                                        <span class="label label-info">荣耀黄金</span>
-                                                    @elseif ($group->level == 4)
-                                                        <span class="label label-success">尊贵铂金</span>
-                                                    @elseif ($group->level == 5)
-                                                        <span class="label label-warning">永恒钻石</span>
-                                                    @elseif ($group->level == 6)
-                                                        <span class="label label-danger">至尊黑曜</span>
-                                                    @else
-                                                        <span class="label label-danger">最强王者</span>
-                                                    @endif
+                                                    <span class="label label-warning">{{$level_dict[$group->level]}}</span>
+
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">编辑</button>
