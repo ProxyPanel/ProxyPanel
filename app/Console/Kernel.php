@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutoExpireInviteJob::class,
         //\App\Console\Commands\AutoGetLocationInfoJob::class,
         \App\Console\Commands\AutoResetUserTrafficJob::class,
+        \App\Console\Commands\AutoStatisticsUserDailyTrafficJob::class,
+        \App\Console\Commands\AutoStatisticsUserHourlyTrafficJob::class,
         \App\Console\Commands\UserExpireWarningJob::class,
         \App\Console\Commands\UserTrafficWarningJob::class,
     ];
@@ -37,6 +39,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:autoExpireInviteJob')->everyThirtyMinutes();
         //$schedule->command('command:autoGetLocationInfoJob')->everyMinute();
         $schedule->command('command:autoResetUserTrafficJob')->monthly();
+        $schedule->command('command:autoStatisticsUserDailyTrafficJob')->dailyAt('04:00');
+        $schedule->command('command:autoStatisticsUserHourlyTrafficJob')->hourly();
         $schedule->command('command:userExpireWarningJob')->daily();
         $schedule->command('command:userTrafficWarningJob')->daily();
     }

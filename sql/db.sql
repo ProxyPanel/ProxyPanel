@@ -598,6 +598,41 @@ CREATE TABLE `user_subscribe_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+-- ----------------------------
+-- Table structure for `user_traffic_daily`
+-- ----------------------------
+CREATE TABLE `user_traffic_daily` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID，0表示统计全部节点',
+  `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '上传流量',
+  `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '下载流量',
+  `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
+  `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `user_traffic_hourly`
+-- ----------------------------
+CREATE TABLE `user_traffic_hourly` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID，0表示统计全部节点',
+  `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '上传流量',
+  `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '下载流量',
+  `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
+  `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
