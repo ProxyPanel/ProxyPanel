@@ -467,8 +467,20 @@
         // 置为默认
         function setDefault(tabId, id) {
             var _token = '{{csrf_token()}}';
-
-            c
+            $.ajax({
+                type: "POST",
+                url: "{{url('admin/setDefaultConfig')}}",
+                async: false,
+                data: {_token:_token, id: id},
+                dataType: 'json',
+                success: function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('admin/config?tab=')}}' + tabId;
+                        }
+                    });
+                }
+            });
         }
     </script>
 @endsection
