@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]> <html lang="{{app()->getLocale()}}" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="{{app()->getLocale()}}" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="{{app()->getLocale()}}">
 <!--<![endif]-->
@@ -129,12 +129,6 @@
                         <span class="title">提现管理</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/admin/articleList' ? 'active open' : ''}}">
-                    <a href="{{url('admin/articleList')}}" class="nav-link nav-toggle">
-                        <i class="icon-docs"></i>
-                        <span class="title">文章管理</span>
-                    </a>
-                </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/shop/goodsList', '/shop/addGoods', '/shop/editGoods']) ? 'active open' : ''}}">
                     <a href="{{url('shop/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
@@ -152,6 +146,27 @@
                         <i class="icon-question"></i>
                         <span class="title">工单管理</span>
                     </a>
+                </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/articleList', '/admin/addArticle', '/admin/editArticle', '/admin/articleLogList']) ? 'active open' : ''}}">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="icon-docs"></i>
+                        <span class="title">文章管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/articleList' ? 'active open' : ''}}">
+                            <a href="{{url('admin/articleList')}}" class="nav-link ">
+                                <i class="icon-list"></i>
+                                <span class="title">文章列表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/articleLogList' ? 'active open' : ''}}">
+                            <a href="{{url('admin/articleLogList')}}" class="nav-link ">
+                                <i class="icon-list"></i>
+                                <span class="title">文章访问日志</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/nodeList', '/admin/addNode', '/admin/editNode', '/admin/groupList', '/admin/addGroup', '/admin/editGroup']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">

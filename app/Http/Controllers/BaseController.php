@@ -110,6 +110,20 @@ class BaseController extends Controller
         return $data;
     }
 
+    // 账号等级对应名称
+    public function userLevelConfig()
+    {
+        return [
+            1 => '倔强青铜',
+            2 => '秩序白银',
+            3 => '荣耀黄金',
+            4 => '尊贵铂金',
+            5 => '永恒钻石',
+            6 => '至尊黑曜',
+            7 => '最强王者'
+        ];
+    }
+
     // 获取一个随机端口
     public function getRandPort()
     {
@@ -165,6 +179,16 @@ class BaseController extends Controller
         $bytes /= pow(1024, $pow);
 
         return round($bytes, $precision) . ' ' . $units[$pow];
+    }
+
+    // 浏览器类型
+    public function browsers($tag)
+    {
+        $data = [
+            'MicroMessenger' => '微信',
+            'iPhone' => 'iPhone',
+            'Linux' => '安卓'
+        ];
     }
 
     /**

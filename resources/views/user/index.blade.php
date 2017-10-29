@@ -69,6 +69,7 @@
                                 <ul class="list-group">
                                     <li class="list-group-item">
                                         等级：{{$info['level_name']}}
+                                        {{--等级：{{$user_level[$info['level']]}}--}}
                                     </li>
                                     <li class="list-group-item">
                                         余额：{{$info['balance']}}

@@ -77,7 +77,7 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="0" {{$user->pay_way == 0 ? 'checked' : ''}}> 月付
+                                                            <input type="radio" name="pay_way" value="0" {{$user->pay_way == 0 ? 'checked' : ''}}> 免费
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">

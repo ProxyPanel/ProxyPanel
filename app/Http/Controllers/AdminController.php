@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
+use App\Http\Models\ArticleLog;
 use App\Http\Models\Config;
 use App\Http\Models\Invite;
 use App\Http\Models\Level;
@@ -37,7 +38,7 @@ class AdminController extends BaseController
     public function index(Request $request)
     {
         $past = strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days")));
-        $online = time() - 3600;
+        $online = time() - 1800;
 
         $view['userCount'] = User::count();
         $view['activeUserCount'] = User::where('t', '>=', $past)->count();
@@ -321,7 +322,7 @@ class AdminController extends BaseController
         $nodeList = SsNode::paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 在线人数
-            $last_log_time = time() - 3600; // 一小时之内
+            $last_log_time = time() - 1800; // 10分钟内
             $online_log = SsNodeOnlineLog::where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
 
@@ -489,6 +490,14 @@ class AdminController extends BaseController
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/articleList', $view);
+    }
+
+    // 文章访问日志列表
+    public function articleLogList(Request $request)
+    {
+        $view['articleLogList'] = ArticleLog::paginate(10)->appends($request->except('page'));
+
+        return Response::view('admin/articleLogList', $view);
     }
 
     // 添加文章

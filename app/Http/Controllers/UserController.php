@@ -35,10 +35,12 @@ use Log;
 class UserController extends BaseController
 {
     protected static $config;
+    protected static $userLevel;
 
     function __construct()
     {
         self::$config = $this->systemConfig();
+        self::$userLevel = $this->userLevelConfig();
     }
 
     public function index(Request $request)
@@ -53,6 +55,7 @@ class UserController extends BaseController
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
+        $view['user_level'] = self::$userLevel;
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -179,7 +182,8 @@ class UserController extends BaseController
 
         foreach ($nodeList as &$node) {
             // 在线人数
-            $online_log = SsNodeOnlineLog::where('node_id', $node->id)->orderBy('id', 'desc')->first();
+            $last_log_time = time() - 1800; // 10分钟内
+            $online_log = SsNodeOnlineLog::where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
 
             // 已产生流量

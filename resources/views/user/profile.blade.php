@@ -41,7 +41,7 @@
                                             <a href="#tab_1" data-toggle="tab">登录密码</a>
                                         </li>
                                         <li>
-                                            <a href="#tab_2" data-toggle="tab">SS信息</a>
+                                            <a href="#tab_2" data-toggle="tab">SS(R)信息</a>
                                         </li>
                                     </ul>
                                 </div>
