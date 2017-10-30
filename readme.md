@@ -18,12 +18,11 @@ telegram群组：https://t.me/chatssrpanel
 (请大家勿改admin的密码，SSR被滥用，我已关闭)
 ````
 
-#### VPS推荐
+![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
 ````
 部署面板必须得用到VPS，也就是服务器
 强烈推荐使用1G以上内存的KVM架构的服务器
 ````
-![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
 
 
 #### 打赏作者
