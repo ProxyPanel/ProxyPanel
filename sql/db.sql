@@ -20,9 +20,9 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Dump of table ss_node
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `ss_node`
+-- ----------------------------
 CREATE TABLE `ss_node` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '名称',
@@ -47,10 +47,9 @@ CREATE TABLE `ss_node` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点信息表';
 
 
-
-# Dump of table ss_node_info
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `ss_node_info`
+-- ----------------------------
 CREATE TABLE `ss_node_info` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
@@ -63,10 +62,9 @@ CREATE TABLE `ss_node_info` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
 
 
-
-# Dump of table ss_node_online_log
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `ss_node_online_log`
+-- ----------------------------
 CREATE TABLE `ss_node_online_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL COMMENT '节点ID',
@@ -78,10 +76,9 @@ CREATE TABLE `ss_node_online_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
 
 
-
-# Dump of table user
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `user`
+-- ----------------------------
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(128) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '用户名',
@@ -132,29 +129,30 @@ VALUES (1,'admin','e10adc3949ba59abbe56e057f20f883e',10000,'@123',1073741824000,
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
--- ----------------------------
--- Table structure for level
--- ----------------------------
-DROP TABLE IF EXISTS `level`;
-CREATE TABLE `level` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `level` varchar(10) NOT NULL,
-  `level_name` varchar(100) NOT NULL,
-  `updated_at` datetime NOT NULL DEFAULT '2017-10-26 12:37:51',
-  `created_at` datetime NOT NULL DEFAULT '2017-10-26 12:37:51',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;;
 
 -- ----------------------------
--- Records of level
+-- Table structure for `level`
 -- ----------------------------
-INSERT INTO `level` VALUES (1, '2', '秩序白银', '2017-10-26 15:57:30', '2017-10-26 12:37:51');
-INSERT INTO `level` VALUES (4, '1', '倔强青铜', '2017-10-26 15:56:52', '2017-10-26 15:38:58');
-INSERT INTO `level` VALUES (5, '3', '荣耀黄金', '2017-10-26 15:41:31', '2017-10-26 15:41:31');
-INSERT INTO `level` VALUES (6, '4', '尊贵铂金', '2017-10-26 15:41:38', '2017-10-26 15:41:38');
-INSERT INTO `level` VALUES (7, '5', '永恒钻石', '2017-10-26 15:41:47', '2017-10-26 15:41:47');
-INSERT INTO `level` VALUES (8, '6', '至尊黑曜', '2017-10-26 15:41:56', '2017-10-26 15:41:56');
-INSERT INTO `level` VALUES (9, '7', '最强王者', '2017-10-26 15:42:02', '2017-10-26 15:42:02');
+CREATE TABLE `level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `level` int(11) NOT NULL DEFAULT '1' COMMENT '等级',
+  `level_name` varchar(100) NOT NULL DEFAULT '' COMMENT '等级名称',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Records of `level`
+-- ----------------------------
+INSERT INTO `level` VALUES (1, '1', '倔强青铜', '2017-10-26 15:56:52', '2017-10-26 15:38:58');
+INSERT INTO `level` VALUES (2, '2', '秩序白银', '2017-10-26 15:57:30', '2017-10-26 12:37:51');
+INSERT INTO `level` VALUES (3, '3', '荣耀黄金', '2017-10-26 15:41:31', '2017-10-26 15:41:31');
+INSERT INTO `level` VALUES (4, '4', '尊贵铂金', '2017-10-26 15:41:38', '2017-10-26 15:41:38');
+INSERT INTO `level` VALUES (5, '5', '永恒钻石', '2017-10-26 15:41:47', '2017-10-26 15:41:47');
+INSERT INTO `level` VALUES (6, '6', '至尊黑曜', '2017-10-26 15:41:56', '2017-10-26 15:41:56');
+INSERT INTO `level` VALUES (7, '7', '最强王者', '2017-10-26 15:42:02', '2017-10-26 15:42:02');
 
 -- ----------------------------
 -- Table structure for `user_traffic_log`

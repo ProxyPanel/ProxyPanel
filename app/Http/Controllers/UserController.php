@@ -40,7 +40,6 @@ class UserController extends BaseController
     function __construct()
     {
         self::$config = $this->systemConfig();
-        self::$userLevel = $this->userLevelConfig();
     }
 
     public function index(Request $request)
@@ -50,12 +49,11 @@ class UserController extends BaseController
         $user->totalTransfer = $this->flowAutoShow($user->transfer_enable - $user->u - $user->d);
         $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
-        $user->level_name=Level::where('level',$user['level'])->first()['level_name'];
+        $user->levelName = Level::where('level', $user['level'])->first()['level_name'];
         $view['info'] = $user->toArray();
         $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
-        $view['user_level'] = self::$userLevel;
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -690,8 +688,8 @@ TXT;
         }
 
         $data = [
-            'type' => $coupon->type,
-            'amount' => $coupon->amount,
+            'type'     => $coupon->type,
+            'amount'   => $coupon->amount,
             'discount' => $coupon->discount
         ];
 
@@ -898,7 +896,7 @@ TXT;
         $user = $request->session()->get('user');
 
         // 判断是否已存在申请
-        $referralApply = ReferralApply::where('user_id', $user['id'])->whereIn('status', [0,1])->first();
+        $referralApply = ReferralApply::where('user_id', $user['id'])->whereIn('status', [0, 1])->first();
         if ($referralApply) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
         }

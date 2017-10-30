@@ -43,7 +43,7 @@
                                 <a href="#tab3" data-toggle="tab"> 混淆 </a>
                             </li>
                             <li @if(Request::get('tab') == '4') class="active" @endif>
-                                <a href="#tab4" data-toggle="tab"> 用户等级 </a>
+                                <a href="#tab4" data-toggle="tab"> 账号等级 </a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -53,20 +53,19 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_config_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-
                                 <div class="table-scrollable">
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
-                                        <tr>
-                                            <th> ID </th>
-                                            <th> 名称 </th>
-                                            <th> 操作 </th>
-                                        </tr>
+                                            <tr>
+                                                <th> ID </th>
+                                                <th> 名称 </th>
+                                                <th> 操作 </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                         @if($method_list->isEmpty())
                                             <tr>
-                                                <td colspan="4">暂无数据</td>
+                                                <td colspan="3">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($method_list as $method)
@@ -95,16 +94,16 @@
                                 <div class="table-scrollable">
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
-                                        <tr>
-                                            <th> ID </th>
-                                            <th> 名称 </th>
-                                            <th> 操作 </th>
-                                        </tr>
+                                            <tr>
+                                                <th> ID </th>
+                                                <th> 名称 </th>
+                                                <th> 操作 </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                         @if($method_list->isEmpty())
                                             <tr>
-                                                <td colspan="4">暂无数据</td>
+                                                <td colspan="3">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($protocol_list as $protocol)
@@ -142,7 +141,7 @@
                                         <tbody>
                                         @if($obfs_list->isEmpty())
                                             <tr>
-                                                <td colspan="4">暂无数据</td>
+                                                <td colspan="3">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($obfs_list as $obfs)
@@ -168,31 +167,28 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_level_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-
                                 <div class="table-scrollable">
-
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
-                                        <tr>
-                                            <th> 等级 </th>
-                                            <th> 名称 </th>
-                                            <th> 操作 </th>
-                                        </tr>
+                                            <tr>
+                                                <th> 等级 </th>
+                                                <th> 名称 </th>
+                                                <th> 操作 </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-
                                         @if($level_list->isEmpty())
                                             <tr>
-                                                <td colspan="4">暂无数据</td>
+                                                <td colspan="3">暂无数据</td>
                                             </tr>
                                         @else
-                                            @foreach($level_list as $lelist)
+                                            @foreach($level_list as $level)
                                                 <tr class="odd gradeX" >
-                                                    <td> <input id="level_{{$lelist->id}}" name="level" value="{{$lelist->level}}" type="text" class="form-control"> </td>
-                                                    <td> <input id="level_name_{{$lelist->id}}" name="level_name" value="{{$lelist->level_name}}" type="text" class="form-control"></td>
+                                                    <td> <input id="level_{{$level->id}}" name="level" value="{{$level->level}}" type="text" class="form-control"> </td>
+                                                    <td> <input id="level_name_{{$level->id}}" name="level_name" value="{{$level->level_name}}" type="text" class="form-control"></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="updateLevel('4', '{{$lelist->id}}')">修改</button>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delLevel('4', '{{$lelist->id}}')">删除</button>
+                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="updateLevel('4', '{{$level->id}}')">修改</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delLevel('4', '{{$level->id}}')">删除</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -242,7 +238,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div id="add_level_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-backdrop="static" data-keyboard="false">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -278,7 +273,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
@@ -300,18 +294,17 @@
 
         // 添加等级
         function addLevel(tabId) {
-            var _token = '{{csrf_token()}}';
-
-            var level=$('#add_level').val()
-            var level_name=$('#add_level_name').val()
+            var level = $('#add_level').val();
+            var level_name = $('#add_level_name').val();
 
             if (level == '') {
-                $("#level_msg").show().html("level不能为空");
+                $("#level_msg").show().html("等级不能为空");
                 $("#level").focus();
                 return false;
             }
+
             if (level_name == '') {
-                $("#level_msg").show().html("名称不能为空");
+                $("#level_msg").show().html("等级名称不能为空");
                 $("#level_name").focus();
                 return false;
             }
@@ -319,7 +312,7 @@
             $.ajax({
                 url:'{{url('admin/addLevel')}}',
                 type:"POST",
-                data:{_token:_token, level:level, level_name:level_name},
+                data:{_token:'{{csrf_token()}}', level:level, level_name:level_name},
                 beforeSend:function(){
                     $("#level_msg").show().html("正在添加");
                 },
@@ -337,22 +330,18 @@
                 },
                 complete:function(){}
             });
-
         }
-
 
         // 更新等级
         function updateLevel(tabId, id) {
-            var _token = '{{csrf_token()}}';
-
-            var level=$('#level_'+id).val()
-            var level_name=$('#level_name_'+id).val()
+            var level = $('#level_' + id).val();
+            var level_name = $('#level_name_' + id).val();
 
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/updateLevel')}}",
                 async: false,
-                data: {_token:_token, id: id,level:level,level_name:level_name},
+                data: {_token:'{{csrf_token()}}', id: id, level:level, level_name:level_name},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
@@ -363,12 +352,11 @@
                 }
             });
         }
+
         // 删除等级
         function delLevel(tabId, id) {
-            var _token = '{{csrf_token()}}';
-
             bootbox.confirm({
-                message: "确定删除配置？",
+                message: "确定删除该等级吗？",
                 buttons: {
                     confirm: {
                         label: '确定',
@@ -385,7 +373,7 @@
                             type: "POST",
                             url: "{{url('admin/delLevel')}}",
                             async: false,
-                            data: {_token:_token, id: id},
+                            data: {_token:'{{csrf_token()}}', id: id},
                             dataType: 'json',
                             success: function (ret) {
                                 layer.msg(ret.message, {time:1000}, function() {

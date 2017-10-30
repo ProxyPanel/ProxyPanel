@@ -54,9 +54,11 @@
                                     <label class="control-label col-md-3">可见级别</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="level" id="level" required>
-                                            @foreach($level_list as $ele)
-                                                <option value="{{$ele['level']}}">{{$ele['level_name']}}</option>
-                                            @endforeach
+                                            @if(!$level_list->isEmpty())
+                                                @foreach($level_list as $level)
+                                                    <option value="{{$level['level']}}">{{$level['level_name']}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                         <span class="help-block">对应账号级别可见该分组下的节点（向下兼容）</span>
                                     </div>

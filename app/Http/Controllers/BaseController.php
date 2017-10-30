@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Config;
 use App\Http\Models\EmailLog;
+use App\Http\Models\Level;
 use App\Http\Models\SsConfig;
 use App\Http\Models\User;
 
@@ -98,6 +99,12 @@ class BaseController extends Controller
         return SsConfig::where('type', 3)->get();
     }
 
+    // 等级
+    public function levelList()
+    {
+        return Level::get()->sortBy('level');
+    }
+
     // 系统配置
     public function systemConfig()
     {
@@ -108,20 +115,6 @@ class BaseController extends Controller
         }
 
         return $data;
-    }
-
-    // 账号等级对应名称
-    public function userLevelConfig()
-    {
-        return [
-            1 => '倔强青铜',
-            2 => '秩序白银',
-            3 => '荣耀黄金',
-            4 => '尊贵铂金',
-            5 => '永恒钻石',
-            6 => '至尊黑曜',
-            7 => '最强王者'
-        ];
     }
 
     // 获取一个随机端口

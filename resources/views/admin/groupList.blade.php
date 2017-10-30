@@ -59,8 +59,7 @@
                                                 <td> {{$group->id}} </td>
                                                 <td> {{$group->name}} </td>
                                                 <td>
-                                                    <span class="label label-warning">{{$level_dict[$group->level]}}</span>
-
+                                                    <span class="label label-warning">{{empty($level_dict) ? '' : $level_dict[$group->level]}}</span>
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">编辑</button>
