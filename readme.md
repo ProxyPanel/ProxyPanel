@@ -24,7 +24,6 @@ telegram群组：https://t.me/chatssrpanel
 强烈推荐使用1G以上内存的KVM架构的服务器
 ````
 
-
 #### 打赏作者
 ````
 如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
@@ -51,10 +50,10 @@ telegram群组：https://t.me/chatssrpanel
 实际到账：￥427.68 （提款手续费4.32）
 
 这些捐赠的用途：
-1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
-2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-3.感谢`Jyo`提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
-4.感谢izhangxm提交了自定义等级的分支代码
+- 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
+- 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
+- 3.感谢`Jyo`提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
+- 4.感谢`izhangxm`提交了自定义等级的分支代码
 
 
 #### 拉取代码
@@ -140,6 +139,11 @@ sh initcfg.sh
 把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
 把 user-config.json 里的 connect_verbose_info 设置为 1
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后再进后台添加节点
+````
+
+## 更新代码
+````
+chmod a+x update.sh && sh update.sh
 ````
 
 ## 说明
