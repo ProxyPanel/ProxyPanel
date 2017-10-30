@@ -15,7 +15,7 @@ telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
 开发测试演示：http://www.ssrpanel.com
 用户名：admin 密码：123456
-(限速100K)
+(请大家勿改admin的密码，SSR被滥用，我已关闭)
 ````
 
 #### VPS推荐
@@ -47,20 +47,22 @@ telegram群组：https://t.me/chatssrpanel
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
+
 截止目前收到的捐赠：￥432
 实际到账：￥427.68 （提款手续费4.32）
 
 这些捐赠的用途：
 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-3.感谢Jyo提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
+3.感谢`Jyo`提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
+4.感谢izhangxm提交了自定义等级的分支代码
 
 
 #### 拉取代码
 ````
 cd /home/wwwroot/
 git clone https://github.com/ssrpanel/ssrpanel.git
-```
+````
 
 #### 先配置数据库
 ````
@@ -69,7 +71,7 @@ config\database.php 中的mysql选项自行配置数据库
 ````
 
 #### 配置一下
-```
+````
 cd ssrpanel/
 php composer.phar install
 php artisan key:generate
