@@ -120,8 +120,10 @@ class BaseController extends Controller
     // 获取一个随机端口
     public function getRandPort()
     {
-        $port = mt_rand(10000, 40000);
-        $deny_port = [17185, 28281];
+        $config = $this->systemConfig();
+
+        $port = mt_rand($config['min_port'], $config['max_port']);
+        $deny_port = [17185, 28281]; // 注意：生成的端口可能是服务器的SSH端口，需要编辑账号手动调整
 
         $exists_port = User::query()->pluck('port')->toArray();
         if (in_array($port, $exists_port) || in_array($port, $deny_port)) {

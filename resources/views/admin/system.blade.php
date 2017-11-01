@@ -80,6 +80,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label class="col-md-2 control-label">端口范围</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group input-large input-daterange">
+                                                                <input type="text" class="form-control" name="min_port" value="{{$min_port}}" id="min_port">
+                                                                <span class="input-group-addon"> ~ </span>
+                                                                <input type="text" class="form-control" name="max_port" value="{{$max_port}}" id="max_port">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="is_register" class="col-md-2 control-label">用户注册</label>
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($is_register) checked @endif id="is_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -570,11 +580,11 @@
             var min_rand_score = $(this).val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'min_rand_score', value:min_rand_score}, function (ret) {
-                if (ret.status == 'fail') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         });
 
@@ -583,11 +593,54 @@
             var max_rand_score = $(this).val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'max_rand_score', value:max_rand_score}, function (ret) {
-                if (ret.status == 'fail') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
+            });
+        });
+
+        // 设置最小端口
+        $("#min_port").change(function () {
+            var min_port = $(this).val();
+
+            if (parseInt(min_port) < 1000) {
+                layer.msg('最小端口不能小于1000', {time:1000});
+                return ;
+            }
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'min_port', value:min_port}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+
+        // 设置最大端口
+        $("#max_port").change(function () {
+            var min_port = $("#min_port").val();
+            var max_port = $(this).val();
+
+            // 最大端口必须大于最小端口
+            if (parseInt(max_port) <= parseInt(min_port)) {
+                layer.msg('必须大于最小端口', {time:1000});
+                return ;
+            }
+
+            if (parseInt(max_port) > 65535) {
+                layer.msg('最大端口不能大于65535', {time:1000});
+                return ;
+            }
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'max_port', value:max_port}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
             });
         });
 

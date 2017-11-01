@@ -21,7 +21,7 @@ class AutoStatisticsUserHourlyTrafficJob extends Command
 
     public function handle()
     {
-        $userList = User::get();
+        $userList = User::where('status', '>=', 0)->where('enable', 1)->get();
         foreach ($userList as $user) {
             // 统计一次所有节点的总和
             $this->statisticsByNode($user->id);

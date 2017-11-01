@@ -133,10 +133,10 @@
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">编辑</button>
+                                                <!--<button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button>-->
                                                 <button type="button" class="btn btn-sm green btn-outline" onclick="do_export('{{$user->id}}')">配置信息</button>
                                                 <button type="button" class="btn btn-sm purple btn-outline" onclick="do_monitor('{{$user->id}}')">流量监控</button>
                                                 <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">重置流量</button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button>
                                             </td>
                                         </tr>
                                         @endforeach
