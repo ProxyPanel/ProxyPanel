@@ -80,16 +80,6 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">端口范围</label>
-                                                        <div class="col-md-2">
-                                                            <div class="input-group input-large input-daterange">
-                                                                <input type="text" class="form-control" name="min_port" value="{{$min_port}}" id="min_port">
-                                                                <span class="input-group-addon"> ~ </span>
-                                                                <input type="text" class="form-control" name="max_port" value="{{$max_port}}" id="max_port">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
                                                         <label for="is_register" class="col-md-2 control-label">用户注册</label>
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($is_register) checked @endif id="is_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -128,6 +118,16 @@
                                                         <div class="col-md-6">
                                                             <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                             <span class="help-block"> 添加账号时随机生成端口 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 control-label">端口范围</label>
+                                                        <div class="col-md-2">
+                                                            <div class="input-group input-large input-daterange">
+                                                                <input type="text" class="form-control" name="min_port" value="{{$min_port}}" id="min_port">
+                                                                <span class="input-group-addon"> ~ </span>
+                                                                <input type="text" class="form-control" name="max_port" value="{{$max_port}}" id="max_port">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <!--

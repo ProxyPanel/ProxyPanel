@@ -31,7 +31,7 @@
     <link rel="shortcut icon" href="favicon.ico" /> </head>
 <!-- END HEAD -->
 
-<body class=" page-500-full-page">
+<body class="page-500-full-page">
 <div class="row">
     <div class="col-md-12 page-500">
         <div class="number font-red"> 404 </div>

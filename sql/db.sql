@@ -277,14 +277,15 @@ INSERT INTO `config` VALUES ('31', 'max_port', 40000);
 -- ----------------------------
 CREATE TABLE `article` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '文章标题',
-  `content` text COMMENT '文章内容',
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
+  `author` varchar(255) DEFAULT '' COMMENT '作者',
+  `content` text COMMENT '内容',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='文章表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------

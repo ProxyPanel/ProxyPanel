@@ -47,6 +47,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label col-md-1">作者</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="author" id="author" placeholder="" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-1">排序</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="sort" id="sort" value="0" required />
@@ -100,6 +106,7 @@
         function do_submit() {
             var _token = '{{csrf_token()}}';
             var title = $('#title').val();
+            var author = $('#author').val();
             var sort = $('#sort').val();
             var content = UE.getEditor('editor').getContent();
 
@@ -107,7 +114,7 @@
                 type: "POST",
                 url: "{{url('admin/addArticle')}}",
                 async: false,
-                data: {_token:_token, title: title, sort:sort, content:content},
+                data: {_token:_token, title: title, author:author, sort:sort, content:content},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

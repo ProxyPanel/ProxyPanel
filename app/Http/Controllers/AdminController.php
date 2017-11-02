@@ -508,11 +508,13 @@ class AdminController extends BaseController
     {
         if ($request->method() == 'POST') {
             $title = $request->get('title');
+            $author = $request->get('author');
             $content = $request->get('content');
             $sort = $request->get('sort');
 
             Article::create([
                 'title'   => $title,
+                'author'  => $author,
                 'content' => $content,
                 'is_del'  => 0,
                 'sort'    => $sort
@@ -530,11 +532,13 @@ class AdminController extends BaseController
         $id = $request->get('id');
         if ($request->method() == 'POST') {
             $title = $request->get('title');
+            $author = $request->get('author');
             $sort = $request->get('sort');
             $content = $request->get('content');
 
             $data = [
                 'title'   => $title,
+                'author'  => $author,
                 'content' => $content,
                 'sort'    => $sort
             ];
