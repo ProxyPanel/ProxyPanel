@@ -27,19 +27,20 @@ class AutoDecGoodsTrafficJob extends Command
                 continue;
             }
 
-            // 如果商品已过期，则需要扣流量
             if (date("Y-m-d H:i:s", strtotime("-" . $goods->days . " days")) >= $og->created_at) {
                 $u = User::where('id', $og->user_id)->first();
                 if (empty($u)) {
                     continue;
                 }
 
-                // 商品到期自动扣总流量
-                if ($u->transfer_enable - $goods->traffic * 1048576 <= 0) {
-                    User::where('id', $og->user_id)->update(['transfer_enable' => 0]);
-                } else {
-                    User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1048576);
-                }
+                // 流量包到期自动扣总流量
+                //if ($goods->type == 1) {
+                    if ($u->transfer_enable - $goods->traffic * 1048576 <= 0) {
+                        User::where('id', $og->user_id)->update(['transfer_enable' => 0]);
+                    } else {
+                        User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1048576);
+                    }
+                //}
 
                 OrderGoods::where('id', $og->id)->update(['is_expire' => 1]);
             }

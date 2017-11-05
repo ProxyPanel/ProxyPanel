@@ -19,8 +19,7 @@ class ReferralApply extends Model
         'after',
         'amount',
         'link_logs',
-        'status',
-        'created_at'
+        'status'
     ];
 
     public function User()

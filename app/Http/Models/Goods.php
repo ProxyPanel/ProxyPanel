@@ -15,9 +15,14 @@ class Goods extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'name',
+        'logo',
         'traffic',
         'score',
+        'type',
         'price',
+        'desc',
+        'days',
+        'is_del',
         'status'
     ];
 

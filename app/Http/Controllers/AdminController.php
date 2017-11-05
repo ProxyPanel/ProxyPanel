@@ -479,11 +479,20 @@ class AdminController extends BaseController
     public function delNode(Request $request)
     {
         $id = $request->get('id');
-        $user = SsNode::where('id', $id)->delete();
-        if ($user) {
+
+        $node = SsNode::query()->where('id', $id)->first();
+        if (empty($node)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '节点不存在，请重试']);
+        }
+
+        try {
+            // 删除分组关联
+            SsGroupNode::query()->where('node_id', $id)->delete();
+            SsNode::query()->where('id', $id)->delete();
+
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-        } else {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        } catch (\Exception $e) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：' . $e->getMessage()]);
         }
     }
 

@@ -48,5 +48,7 @@ class AutoGetLocationInfoJob extends Command
             // 暂停一秒，防止QPS超限导致返回错误
             sleep(1);
         }
+
+        Log::info('定时任务：' . $this->description);
     }
 }

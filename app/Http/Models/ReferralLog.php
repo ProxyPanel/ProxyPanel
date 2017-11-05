@@ -19,8 +19,7 @@ class ReferralLog extends Model
         'order_id',
         'amount',
         'ref_amount',
-        'status',
-        'created_at'
+        'status'
     ];
 
     function user() {

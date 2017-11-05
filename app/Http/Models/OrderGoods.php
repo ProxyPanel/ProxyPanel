@@ -20,7 +20,8 @@ class OrderGoods extends Model
         'goods_id',
         'num',
         'original_price',
-        'price'
+        'price',
+        'is_expire'
     ];
 
     function goods() {

@@ -922,7 +922,6 @@ TXT;
         $obj->amount = $ref_amount;
         $obj->link_logs = $link_logs;
         $obj->status = 0;
-        $obj->created_at = date('Y-m-d H:i:s');
         $obj->save();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
