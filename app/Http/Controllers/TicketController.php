@@ -24,7 +24,7 @@ class TicketController extends BaseController
     // 工单列表
     public function ticketList(Request $request)
     {
-        $view['ticketList'] = Ticket::paginate(10);
+        $view['ticketList'] = Ticket::query()->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('ticket/ticketList', $view);
     }
@@ -48,15 +48,15 @@ class TicketController extends BaseController
 
             if ($obj->id) {
                 // 将工单置为已回复
-                Ticket::where('id', $id)->update(['status' => 1]);
+                Ticket::query()->where('id', $id)->update(['status' => 1]);
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
             } else {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
             }
         } else {
-            $view['ticket'] = Ticket::where('id', $id)->with('user')->first();
-            $view['replyList'] = TicketReply::where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
+            $view['ticket'] = Ticket::query()->where('id', $id)->with('user')->first();
+            $view['replyList'] = TicketReply::query()->where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
 
             return Response::view('ticket/replyTicket', $view);
         }
@@ -67,7 +67,7 @@ class TicketController extends BaseController
     {
         $id = $request->get('id');
 
-        $ret = Ticket::where('id', $id)->update(['status' => 2]);
+        $ret = Ticket::query()->where('id', $id)->update(['status' => 2]);
         if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
         } else {

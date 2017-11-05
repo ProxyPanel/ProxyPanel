@@ -35,16 +35,16 @@
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">添加商品</span>
+                            <span class="caption-subject font-dark sbold uppercase">添加商品</span>
                         </div>
                         <div class="actions"></div>
                     </div>
                     <div class="portlet-body form">
                         <!-- BEGIN FORM-->
-                        <form action="{{url('shop/addGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered">
+                        <form action="{{url('shop/addGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <label class="control-label col-md-3">名称</label>

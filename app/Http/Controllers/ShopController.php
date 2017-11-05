@@ -24,7 +24,7 @@ class ShopController extends BaseController
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::where('is_del', 0)->paginate(10);
+        $view['goodsList'] = Goods::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('shop/goodsList', $view);
     }
@@ -124,7 +124,7 @@ class ShopController extends BaseController
                 'days'    => $days,
                 'status'  => $status
             ];
-            $ret = Goods::where('id', $id)->update($data);
+            $ret = Goods::query()->where('id', $id)->update($data);
             if ($ret) {
                 $request->session()->flash('successMsg', '编辑成功');
             } else {
@@ -133,7 +133,7 @@ class ShopController extends BaseController
 
             return Redirect::to('shop/editGoods?id=' . $id);
         } else {
-            $view['goods'] = Goods::where('id', $id)->first();
+            $view['goods'] = Goods::query()->where('id', $id)->first();
 
             return Response::view('shop/editGoods', $view);
         }
@@ -144,7 +144,7 @@ class ShopController extends BaseController
     {
         $id = $request->get('id');
 
-        Goods::where('id', $id)->update(['is_del' => 1]);
+        Goods::query()->where('id', $id)->update(['is_del' => 1]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
     }

@@ -38,13 +38,13 @@
                 <div class="portlet light form-fit bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">生成卡券</span>
+                            <span class="caption-subject font-dark sbold uppercase">生成卡券</span>
                         </div>
                         <div class="actions"></div>
                     </div>
                     <div class="portlet-body form">
                         <!-- BEGIN FORM-->
-                        <form action="{{url('coupon/addCoupon')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered">
+                        <form action="{{url('coupon/addCoupon')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <label class="control-label col-md-3">卡券名称</label>

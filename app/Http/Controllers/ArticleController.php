@@ -18,7 +18,7 @@ class ArticleController extends BaseController
     {
         $id = $request->get('id');
 
-        $view['info'] = Article::where('is_del', 0)->where('id', $id)->first();
+        $view['info'] = Article::query()->where('is_del', 0)->where('id', $id)->first();
         if (empty($view['info'])) {
             exit('文章已删除');
         }

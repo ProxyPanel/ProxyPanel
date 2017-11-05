@@ -34,7 +34,7 @@
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="caption-subject font-green sbold uppercase">编辑商品</span>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="portlet-body form">
                         <!-- BEGIN FORM-->
-                        <form action="{{url('shop/editGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered">
+                        <form action="{{url('shop/editGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <label class="control-label col-md-3">商品名称</label>

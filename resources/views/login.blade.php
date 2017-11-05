@@ -78,11 +78,13 @@
         <div class="form-actions">
             <button type="submit" class="btn red btn-block uppercase">登 录</button>
         </div>
-        <div class="create-account">
-            <p>
-                <a href="{{url('register')}}" class="btn-primary btn">注 册</a>
-            </p>
-        </div>
+        @if($is_register)
+            <div class="create-account">
+                <p>
+                    <a href="{{url('register')}}" class="btn-primary btn">注 册</a>
+                </p>
+            </div>
+        @endif
     </form>
     <!-- END LOGIN FORM -->
 </div>

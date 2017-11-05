@@ -36,7 +36,7 @@ class LoginController extends BaseController
                 return Redirect::back();
             }
 
-            $user = User::where('username', $username)->where('password', md5($password))->first();
+            $user = User::query()->where('username', $username)->where('password', md5($password))->first();
             if (!$user) {
                 $request->session()->flash('errorMsg', '用户名或密码错误');
 
@@ -52,13 +52,13 @@ class LoginController extends BaseController
             }
 
             // 更新登录信息
-            User::where('id', $user['id'])->update(['last_login' => time()]);
+            User::query()->where('id', $user['id'])->update(['last_login' => time()]);
 
             // 登录送积分
             if (self::$config['login_add_score']) {
                 if (!Cache::has('loginAddScore_' . md5($username))) {
                     $score = mt_rand(self::$config['min_rand_score'], self::$config['max_rand_score']);
-                    $ret = User::where('id', $user['id'])->increment('score', $score);
+                    $ret = User::query()->where('id', $user['id'])->increment('score', $score);
                     if ($ret) {
                         $obj = new UserScoreLog();
                         $obj->user_id = $user['id'];
@@ -77,7 +77,7 @@ class LoginController extends BaseController
             }
 
             // 重新取出用户信息
-            $user = User::where('id', $user['id'])->first();
+            $user = User::query()->where('id', $user['id'])->first();
 
             $request->session()->put('user', $user->toArray());
 
@@ -88,7 +88,9 @@ class LoginController extends BaseController
 
             return Redirect::to('user');
         } else {
-            return Response::view('login');
+            $view['is_register'] = self::$config['is_register'];
+
+            return Response::view('login', $view);
         }
     }
 

@@ -111,7 +111,7 @@
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item start {{Request::getRequestUri() == '/admin/userList' ? 'active open' : ''}}">
+                <li class="nav-item start {{in_array(Request::getRequestUri(), ['/admin/userList', '/admin/addUser']) ? 'active open' : ''}}">
                     <a href="{{url('admin/userList')}}" class="nav-link nav-toggle">
                         <i class="icon-users"></i>
                         <span class="title">账号管理</span>
@@ -189,7 +189,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/convert', '/admin/import', '/admin/trafficLog', '/admin/analysis', '/admin/subscribeLog', '/emailLog/list']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/convert', '/admin/import', '/admin/trafficLog', '/admin/analysis', '/admin/subscribeLog', '/emailLog/logList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
@@ -226,8 +226,8 @@
                                 <span class="title">订阅请求日志</span>
                             </a>
                         </li>
-                        <li class="nav-item {{Request::getRequestUri() == '/emailLog/list' ? 'active open' : ''}}">
-                            <a href="{{url('emailLog/list')}}" class="nav-link">
+                        <li class="nav-item {{Request::getRequestUri() == '/emailLog/logList' ? 'active open' : ''}}">
+                            <a href="{{url('emailLog/logList')}}" class="nav-link">
                                 <i class="icon-list"></i>
                                 <span class="title">邮件投递记录</span>
                             </a>

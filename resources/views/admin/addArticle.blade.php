@@ -31,13 +31,13 @@
                 <div class="portlet light form-fit bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">添加文章</span>
+                            <span class="caption-subject font-dark sbold uppercase">添加文章</span>
                         </div>
                         <div class="actions"></div>
                     </div>
                     <div class="portlet-body form">
                         <!-- BEGIN FORM-->
-                        <form action="{{url('admin/addArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
+                        <form action="{{url('admin/addArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
                                     <label class="control-label col-md-1">标题</label>
@@ -61,14 +61,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-1">内容</label>
-                                    <div class="col-md-11">
+                                    <div class="col-md-10">
                                         <script id="editor" type="text/plain" style="height:400px;"></script>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
+                                    <div class="col-md-offset-5 col-md-5">
                                         <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
                                     </div>
                                 </div>

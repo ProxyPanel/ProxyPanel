@@ -84,31 +84,31 @@ class BaseController extends Controller
     // 加密方式
     public function methodList()
     {
-        return SsConfig::where('type', 1)->get();
+        return SsConfig::query()->where('type', 1)->get();
     }
 
     // 协议
     public function protocolList()
     {
-        return SsConfig::where('type', 2)->get();
+        return SsConfig::query()->where('type', 2)->get();
     }
 
     // 混淆
     public function obfsList()
     {
-        return SsConfig::where('type', 3)->get();
+        return SsConfig::query()->where('type', 3)->get();
     }
 
     // 等级
     public function levelList()
     {
-        return Level::get()->sortBy('level');
+        return Level::query()->get()->sortBy('level');
     }
 
     // 系统配置
     public function systemConfig()
     {
-        $config = Config::get();
+        $config = Config::query()->get();
         $data = [];
         foreach ($config as $vo) {
             $data[$vo->name] = $vo->value;

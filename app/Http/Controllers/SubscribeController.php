@@ -33,12 +33,12 @@ class SubscribeController extends BaseController
         }
 
         // 校验合法性
-        $subscribe = UserSubscribe::where('code', $code)->where('status', 1)->with('user')->first();
+        $subscribe = UserSubscribe::query()->where('code', $code)->where('status', 1)->with('user')->first();
         if (empty($subscribe)) {
             exit('非法请求或者被禁用，请联系管理员');
         }
 
-        $user = User::where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
+        $user = User::query()->where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
         if (empty($user)) {
             exit('非法请求或者被禁用，请联系管理员');
         }
@@ -55,13 +55,13 @@ class SubscribeController extends BaseController
         $log->save();
 
         // 获取这个账号可用节点
-        $group_ids = SsGroup::where('level', '<=', $user->level)->select(['id'])->get();
+        $group_ids = SsGroup::query()->where('level', '<=', $user->level)->select(['id'])->get();
         if (empty($group_ids)) {
             exit();
         }
 
-        $node_ids = SsGroupNode::whereIn('group_id', $group_ids)->select(['node_id'])->get();
-        $nodeList = SsNode::whereIn('id', $node_ids)->get();
+        $node_ids = SsGroupNode::query()->whereIn('group_id', $group_ids)->select(['node_id'])->get();
+        $nodeList = SsNode::query()->whereIn('id', $node_ids)->get();
         $scheme = self::$config['subscribe_max'] > 0 ? 'MAX=' . self::$config['subscribe_max'] . "\n" : '';
         foreach ($nodeList as $node) {
             $obfs_param = $user->obfs_param ? $this->base64url_encode($user->obfs_param) : '';

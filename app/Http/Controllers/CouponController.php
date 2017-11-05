@@ -27,7 +27,7 @@ class CouponController extends BaseController
     // 优惠券列表
     public function couponList(Request $request)
     {
-        $view['couponList'] = Coupon::where('is_del', 0)->paginate(10);
+        $view['couponList'] = Coupon::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('coupon/couponList', $view);
     }
@@ -106,7 +106,7 @@ class CouponController extends BaseController
     {
         $id = $request->get('id');
 
-        Coupon::where('id', $id)->update(['is_del' => 1]);
+        Coupon::query()->where('id', $id)->update(['is_del' => 1]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
     }
@@ -114,8 +114,8 @@ class CouponController extends BaseController
     // 导出优惠券
     public function exportCoupon(Request $request)
     {
-        $cashCouponList = Coupon::where('is_del', 0)->where('status', 0)->where('type', 1)->get();
-        $discountCouponList = Coupon::where('is_del', 0)->where('status', 0)->where('type', 2)->get();
+        $cashCouponList = Coupon::query()->where('is_del', 0)->where('status', 0)->where('type', 1)->get();
+        $discountCouponList = Coupon::query()->where('is_del', 0)->where('status', 0)->where('type', 2)->get();
 
         $filename = '卡券' . date('Ymd');
         Excel::create($filename, function($excel) use($cashCouponList, $discountCouponList) {

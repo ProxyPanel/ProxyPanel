@@ -69,7 +69,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
     Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
-    Route::get('emailLog/list', 'EmailLogController@list'); // 邮件发送日志
+    Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
 });
 
 Route::group(['middleware' => ['user']], function(){

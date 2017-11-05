@@ -45,13 +45,13 @@ class UserController extends BaseController
     public function index(Request $request)
     {
         $user = $request->session()->get('user');
-        $user = User::where('id', $user['id'])->first();
+        $user = User::query()->where('id', $user['id'])->first();
         $user->totalTransfer = $this->flowAutoShow($user->transfer_enable - $user->u - $user->d);
         $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
-        $user->levelName = Level::where('level', $user['level'])->first()['level_name'];
+        $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
         $view['info'] = $user->toArray();
-        $view['articleList'] = Article::where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
+        $view['articleList'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
 
@@ -68,7 +68,7 @@ class UserController extends BaseController
     {
         $id = $request->get('id');
 
-        $view['info'] = Article::where('is_del', 0)->where('id', $id)->first();
+        $view['info'] = Article::query()->where('is_del', 0)->where('id', $id)->first();
         if (empty($view['info'])) {
             return Redirect::to('user');
         }
@@ -95,7 +95,7 @@ class UserController extends BaseController
                 $old_password = md5(trim($old_password));
                 $new_password = md5(trim($new_password));
 
-                $user = User::where('id', $user['id'])->first();
+                $user = User::query()->where('id', $user['id'])->first();
                 if ($user->password != $old_password) {
                     $request->session()->flash('errorMsg', '旧密码错误，请重新输入');
 
@@ -106,7 +106,7 @@ class UserController extends BaseController
                     return Redirect::to('user/profile#tab_1');
                 }
 
-                $ret = User::where('id', $user['id'])->update(['password' => $new_password]);
+                $ret = User::query()->where('id', $user['id'])->update(['password' => $new_password]);
                 if (!$ret) {
                     $request->session()->flash('errorMsg', '修改失败');
 
@@ -139,14 +139,14 @@ class UserController extends BaseController
                 'obfs'     => $obfs
             ];
 
-            $ret = User::where('id', $user['id'])->update($data);
+            $ret = User::query()->where('id', $user['id'])->update($data);
             if (!$ret) {
                 $request->session()->flash('errorMsg', '修改失败');
 
                 return Redirect::to('user/profile#tab_2');
             } else {
                 // 更新session
-                $user = User::where('id', $user['id'])->first()->toArray();
+                $user = User::query()->where('id', $user['id'])->first()->toArray();
                 $request->session()->remove('user');
                 $request->session()->put('user', $user);
 
@@ -159,7 +159,7 @@ class UserController extends BaseController
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
-            $view['info'] = User::where('id', $user['id'])->first();
+            $view['info'] = User::query()->where('id', $user['id'])->first();
 
             return Response::view('user/profile', $view);
         }
@@ -169,7 +169,7 @@ class UserController extends BaseController
     public function nodeList(Request $request)
     {
         $user = $request->session()->get('user');
-        $user = User::where('id', $user['id'])->first();
+        $user = User::query()->where('id', $user['id'])->first();
 
         $nodeList = DB::table('ss_group_node')
             ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
@@ -181,16 +181,16 @@ class UserController extends BaseController
         foreach ($nodeList as &$node) {
             // 在线人数
             $last_log_time = time() - 1800; // 10分钟内
-            $online_log = SsNodeOnlineLog::where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
+            $online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
 
             // 已产生流量
-            $u = UserTrafficLog::where('node_id', $node->id)->sum('u');
-            $d = UserTrafficLog::where('node_id', $node->id)->sum('d');
+            $u = UserTrafficLog::query()->where('node_id', $node->id)->sum('u');
+            $d = UserTrafficLog::query()->where('node_id', $node->id)->sum('d');
             $node->transfer = $this->flowAutoShow($u + $d);
 
             // 负载
-            $node_info = SsNodeInfo::where('node_id', $node->id)->orderBy('id', 'desc')->first();
+            $node_info = SsNodeInfo::query()->where('node_id', $node->id)->orderBy('id', 'desc')->first();
             $node->load = empty($node_info->load) ? 0 : $node_info->load;
 
             // 生成ssr scheme
@@ -260,7 +260,7 @@ TXT;
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/goodsList', $view);
     }
@@ -270,7 +270,7 @@ TXT;
     {
         $user = $request->session()->get('user');
 
-        $view['ticketList'] = Ticket::where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
+        $view['ticketList'] = Ticket::query()->where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/ticketList', $view);
     }
@@ -280,11 +280,11 @@ TXT;
     {
         $user = $request->session()->get('user');
 
-        $orderList = Order::where('user_id', $user['id'])->orderBy('oid', 'desc')->with('goodsList')->paginate(10)->appends($request->except('page'));
+        $orderList = Order::query()->where('user_id', $user['id'])->orderBy('oid', 'desc')->with('goodsList')->paginate(10)->appends($request->except('page'));
         if (!$orderList->isEmpty()) {
             foreach ($orderList as &$order) {
                 foreach ($order->goodsList as &$goods) {
-                    $g = Goods::where('id', $goods->goods_id)->first();
+                    $g = Goods::query()->where('id', $goods->goods_id)->first();
                     $goods->goods_name = empty($g) ? '【该商品已删除】' : $g->name;
                 }
             }
@@ -341,13 +341,13 @@ TXT;
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
             }
         } else {
-            $ticket = Ticket::where('id', $id)->with('user')->first();
+            $ticket = Ticket::query()->where('id', $id)->with('user')->first();
             if (empty($ticket) || $ticket->user_id != $user['id']) {
                 return Redirect::to('user/ticketList');
             }
 
             $view['ticket'] = $ticket;
-            $view['replyList'] = TicketReply::where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
+            $view['replyList'] = TicketReply::query()->where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
 
             return Response::view('user/replyTicket', $view);
         }
@@ -359,7 +359,7 @@ TXT;
         $id = $request->get('id');
         $user = $request->session()->get('user');
 
-        $ret = Ticket::where('id', $id)->where('user_id', $user['id'])->update(['status' => 2]);
+        $ret = Ticket::query()->where('id', $id)->where('user_id', $user['id'])->update(['status' => 2]);
         if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
         } else {
@@ -373,10 +373,10 @@ TXT;
         $user = $request->session()->get('user');
 
         // 已生成的邀请码数量
-        $num = Invite::where('uid', $user['id'])->count();
+        $num = Invite::query()->where('uid', $user['id'])->count();
 
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
-        $view['inviteList'] = Invite::where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
+        $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
         return Response::view('user/invite', $view);
     }
@@ -387,7 +387,7 @@ TXT;
         $user = $request->session()->get('user');
 
         // 已生成的邀请码数量
-        $num = Invite::where('uid', $user['id'])->count();
+        $num = Invite::query()->where('uid', $user['id'])->count();
         if ($num >= self::$config['invite_num']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . self::$config['invite_num'] . '个邀请码']);
         }
@@ -417,7 +417,7 @@ TXT;
             }
 
             // 查找账号
-            $user = User::where('username', $username)->first();
+            $user = User::query()->where('username', $username)->first();
             if (!$user) {
                 $request->session()->flash('errorMsg', '账号不存在，请重试');
 
@@ -482,7 +482,7 @@ TXT;
             return Redirect::to('login');
         }
 
-        $verify = Verify::where('token', $token)->with('user')->first();
+        $verify = Verify::query()->where('token', $token)->with('user')->first();
         if (empty($verify)) {
             return Redirect::to('login');
         } else if (empty($verify->user)) {
@@ -508,7 +508,7 @@ TXT;
         }
 
         // 更新账号状态
-        $ret = User::where('id', $verify->user_id)->update(['status' => 1]);
+        $ret = User::query()->where('id', $verify->user_id)->update(['status' => 1]);
         if (!$ret) {
             $request->session()->flash('errorMsg', '账号激活失败');
 
@@ -538,7 +538,7 @@ TXT;
             }
 
             // 查找账号
-            $user = User::where('username', $username)->first();
+            $user = User::query()->where('username', $username)->first();
             if (!$user) {
                 $request->session()->flash('errorMsg', '账号不存在，请重试');
 
@@ -608,7 +608,7 @@ TXT;
             }
 
             // 校验账号
-            $verify = Verify::where('token', $token)->with('User')->first();
+            $verify = Verify::query()->where('token', $token)->with('User')->first();
             if (empty($verify)) {
                 return Redirect::to('login');
             } else if ($verify->status == 1) {
@@ -626,7 +626,7 @@ TXT;
             }
 
             // 更新密码
-            $ret = User::where('id', $verify->user_id)->update(['password' => md5($password)]);
+            $ret = User::query()->where('id', $verify->user_id)->update(['password' => md5($password)]);
             if (!$ret) {
                 $request->session()->flash('errorMsg', '重设密码失败');
 
@@ -645,7 +645,7 @@ TXT;
                 return Redirect::to('login');
             }
 
-            $verify = Verify::where('token', $token)->with('user')->first();
+            $verify = Verify::query()->where('token', $token)->with('user')->first();
             if (empty($verify)) {
                 return Redirect::to('login');
             } else if (time() - strtotime($verify->created_at) >= 1800) {
@@ -673,7 +673,7 @@ TXT;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不能为空']);
         }
 
-        $coupon = Coupon::where('sn', $coupon_sn)->where('is_del', 0)->first();
+        $coupon = Coupon::query()->where('sn', $coupon_sn)->where('is_del', 0)->first();
         if (empty($coupon)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券不存在']);
         } else if ($coupon->status == 1) {
@@ -705,14 +705,14 @@ TXT;
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $goods = Goods::where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不存在']);
             }
 
             // 使用优惠券
             if (!empty($coupon_sn)) {
-                $coupon = Coupon::where('sn', $coupon_sn)->where('is_del', 0)->where('status', 0)->first();
+                $coupon = Coupon::query()->where('sn', $coupon_sn)->where('is_del', 0)->where('status', 0)->first();
                 if (empty($coupon)) {
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：优惠券不存在']);
                 }
@@ -725,7 +725,7 @@ TXT;
             }
 
             // 验证账号余额是否充足
-            $user = User::where('id', $user['id'])->first();
+            $user = User::query()->where('id', $user['id'])->first();
             if ($user->balance < $totalPrice) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
             }
@@ -761,7 +761,7 @@ TXT;
                 $orderGoods->save();
 
                 // 扣余额
-                User::where('id', $user['id'])->decrement('balance', $totalPrice);
+                User::query()->where('id', $user['id'])->decrement('balance', $totalPrice);
 
                 // 记录余额操作日志
                 $userBalanceLogObj = new UserBalanceLog();
@@ -790,11 +790,11 @@ TXT;
                 }
 
                 // 把流量包内的流量加到账号上
-                User::where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
+                User::query()->where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
 
                 // 将商品的有效期加到账号上，如果账号过期时间小于
                 //if (date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")) ) {}
-                User::where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days"))]);
+                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days"))]);
 
                 // 写入返利日志
                 if ($user->referral_uid) {
@@ -819,7 +819,7 @@ TXT;
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：' . $e->getMessage()]);
             }
         } else {
-            $goods = Goods::where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
                 return Redirect::to('user/goodsList');
             }
@@ -854,14 +854,14 @@ TXT;
 
             // 扣积分加流量
             if ($userScoreLog->id) {
-                User::where('id', $user['id'])->update(['score' => 0]);
-                User::where('id', $user['id'])->increment('transfer_enable', $user['score'] * 1048576);
+                User::query()->where('id', $user['id'])->update(['score' => 0]);
+                User::query()->where('id', $user['id'])->increment('transfer_enable', $user['score'] * 1048576);
             }
 
             DB::commit();
 
             // 更新session
-            $user = User::where('id', $user['id'])->first()->toArray();
+            $user = User::query()->where('id', $user['id'])->first()->toArray();
             $request->session()->remove('user');
             $request->session()->put('user', $user);
 
@@ -882,9 +882,9 @@ TXT;
         $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$config['referral_percent'];
         $view['referral_money'] = self::$config['referral_money'];
-        $view['referralLogList'] = ReferralLog::where('ref_user_id', $user['id'])->with('user')->paginate();
-        $view['totalAmount'] = ReferralLog::where('ref_user_id', $user['id'])->sum('ref_amount');
-        $view['canAmount'] = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate();
+        $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount');
+        $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
         $view['link'] = self::$config['website_url'] . '/register?aff=' . $user['id'];
 
         return Response::view('user/referral', $view);
@@ -896,20 +896,20 @@ TXT;
         $user = $request->session()->get('user');
 
         // 判断是否已存在申请
-        $referralApply = ReferralApply::where('user_id', $user['id'])->whereIn('status', [0, 1])->first();
+        $referralApply = ReferralApply::query()->where('user_id', $user['id'])->whereIn('status', [0, 1])->first();
         if ($referralApply) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
         }
 
         // 校验可以提现金额是否超过系统设置的阀值
-        $ref_amount = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        $ref_amount = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
         if ($ref_amount < self::$config['referral_money']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$config['referral_money'] . '元才可以提现，继续努力吧']);
         }
 
         // 取出本次申请关联返利日志ID
         $link_logs = '';
-        $referralLog = ReferralLog::where('ref_user_id', $user['id'])->where('status', 0)->get();
+        $referralLog = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->get();
         foreach ($referralLog as $log) {
             $link_logs .= $log->id . ',';
         }
@@ -933,7 +933,7 @@ TXT;
         $user = $request->session()->get('user');
 
         // 如果没有唯一码则生成一个
-        $subscribe = UserSubscribe::where('user_id', $user['id'])->first();
+        $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
         if (empty($subscribe)) {
             $code = mb_substr(md5($user['id'] . '-' . $user['username']), 8, 16);
 
