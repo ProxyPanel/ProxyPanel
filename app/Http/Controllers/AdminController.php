@@ -1174,6 +1174,23 @@ TXT;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
         }
 
+        $level = Level::where('id', $id)->first();
+        if (empty($level)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不存在']);
+        }
+
+        // 校验该等级下是否存在关联分组
+        $existGroups = SsGroup::where('level', $level->level)->get();
+        if (!$existGroups->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联分组，请先取消关联']);
+        }
+
+        // 校验该等级下是否存在关联账号
+        $existUsers = User::where('level', $level->level)->get();
+        if (!$existUsers->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
+        }
+
         try {
             Level::where('id', $id)->update(["level" => $level, "level_name" => $level_name]);
 
@@ -1192,6 +1209,23 @@ TXT;
 
         if (empty($id)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+        }
+
+        $level = Level::where('id', $id)->first();
+        if (empty($level)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不存在']);
+        }
+
+        // 校验该等级下是否存在关联分组
+        $existGroups = SsGroup::where('level', $level->level)->get();
+        if (!$existGroups->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联分组，请先取消关联']);
+        }
+
+        // 校验该等级下是否存在关联账号
+        $existUsers = User::where('level', $level->level)->get();
+        if (!$existUsers->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
         }
 
         try {
