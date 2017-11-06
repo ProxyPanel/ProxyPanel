@@ -27,6 +27,8 @@ telegram群组：https://t.me/chatssrpanel
 #### 打赏作者
 ````
 如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
+我不以此谋生，所以你在使用过程中有发现问题就提issue，有空我会改的
+别搞的我像是欠你钱似的，一个免费的开源的东西，你想要什么功能会的话自己加，不然就别哔哔
 持续开发，喜欢请star一下
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
@@ -45,15 +47,17 @@ telegram群组：https://t.me/chatssrpanel
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
+|Kris|￥40|
 
-截止目前收到的捐赠：￥432
-实际到账：￥427.68 （提款手续费4.32）
+截止目前收到的捐赠：￥472
+实际到账：￥477.68 （提款手续费4.72）
 
 这些捐赠的用途：
 - 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
 - 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
 - 3.感谢`Jyo`提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
 - 4.感谢`izhangxm`提交了自定义等级的分支代码
+- 5.感谢`Hao-Luo`提供的节点一键部署脚本
 
 
 #### 拉取代码
@@ -130,6 +134,7 @@ chown www:www ssserver.log
 ````
 
 ## SSR部署
+###### 手动部署
 ````
 cp server/ssr-3.4.0.zip /root/
 cd /root
@@ -138,7 +143,12 @@ cd shadowsocksr
 sh initcfg.sh
 把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
 把 user-config.json 里的 connect_verbose_info 设置为 1
-配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后再进后台添加节点
+配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
+````
+
+###### 一键自动部署
+````
+wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
 ````
 
 ## 更新代码
