@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Require Root Permission
 # SSR node deploy script
 # Author: Hao-Luo (https://github.com/Hao-Luo/Others/tree/master/apps/ssr)
