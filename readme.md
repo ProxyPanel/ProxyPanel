@@ -7,6 +7,8 @@ MYSQL 5.5 （推荐5.6+）
 磁盘空间 10G+
 KVM
 
+PHP必须开启gd2、fileinfo组件
+
 小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
 使用LNMP部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
