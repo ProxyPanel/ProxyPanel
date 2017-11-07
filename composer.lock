@@ -1071,7 +1071,7 @@
             ],
             "authors": [
                 {
-                    "name": "Muharrem ER?N",
+                    "name": "Muharrem ERİN",
                     "email": "me@mewebstudio.com",
                     "homepage": "https://github.com/mewebstudio",
                     "role": "Developer"
@@ -1885,7 +1885,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jean-Fran?ois Simon",
+                    "name": "Jean-François Simon",
                     "email": "jeanfrancois.simon@sensiolabs.com"
                 },
                 {
@@ -2825,7 +2825,7 @@
             ],
             "authors": [
                 {
-                    "name": "Fran?ois Zaninotto"
+                    "name": "François Zaninotto"
                 }
             ],
             "description": "Faker is a PHP library that generates fake data for you.",
@@ -2920,7 +2920,7 @@
             ],
             "authors": [
                 {
-                    "name": "P��draic Brady",
+                    "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },
