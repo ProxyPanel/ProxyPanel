@@ -18,7 +18,7 @@ class AutoResetUserTrafficJob extends Command
     {
         parent::__construct();
 
-        $config = Config::get();
+        $config = Config::query()->get();
         $data = [];
         foreach ($config as $vo) {
             $data[$vo->name] = $vo->value;
@@ -30,8 +30,8 @@ class AutoResetUserTrafficJob extends Command
     public function handle()
     {
         if (self::$config['reset_traffic']) {
-            $user_ids = User::where('pay_way', '<>', 0)->select(['id'])->get();
-            User::whereIn('id', $user_ids)->update(['u' => 0, 'd' => 0]);
+            $user_ids = User::query()->where('pay_way', '<>', 0)->select(['id'])->get();
+            User::query()->whereIn('id', $user_ids)->update(['u' => 0, 'd' => 0]);
         }
 
         Log::info('定时任务：' . $this->description);

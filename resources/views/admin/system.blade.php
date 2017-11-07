@@ -107,6 +107,13 @@
                                                             <span class="help-block"> 启用后用户可以通过邮件重置密码 </span>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label for="is_captcha" class="col-md-2 control-label">验证码</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" class="make-switch" @if($is_captcha) checked @endif id="is_captcha" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                            <span class="help-block"> 启用后登录、注册需要输入验证码 </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -499,6 +506,21 @@
                 var is_reset_password = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_reset_password', value:is_reset_password}, function (ret) {
+                    if (ret.status == 'fail') {
+                        layer.msg(ret.message, {time:1000}, function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        });
+
+        // 启用、禁用验证码
+        $('#is_captcha').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_captcha = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_captcha', value:is_captcha}, function (ret) {
                     if (ret.status == 'fail') {
                         layer.msg(ret.message, {time:1000}, function() {
                             window.location.reload();

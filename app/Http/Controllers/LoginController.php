@@ -7,6 +7,7 @@ use App\Http\Models\UserScoreLog;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
+use Captcha;
 use Cache;
 
 /**
@@ -29,11 +30,21 @@ class LoginController extends BaseController
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
+            $captcha = trim($request->get('captcha'));
 
             if (empty($username) || empty($password)) {
                 $request->session()->flash('errorMsg', '请输入用户名和密码');
 
                 return Redirect::back();
+            }
+
+            // 是否校验验证码
+            if (self::$config['is_captcha']) {
+                if (!Captcha::check($captcha)) {
+                    $request->session()->flash('errorMsg', '验证码错误，请重新输入');
+
+                    return Redirect::back()->withInput();
+                }
             }
 
             $user = User::query()->where('username', $username)->where('password', md5($password))->first();
@@ -88,6 +99,7 @@ class LoginController extends BaseController
 
             return Redirect::to('user');
         } else {
+            $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
 
             return Response::view('login', $view);

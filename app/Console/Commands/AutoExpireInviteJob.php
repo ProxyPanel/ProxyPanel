@@ -18,10 +18,10 @@ class AutoExpireInviteJob extends Command
 
     public function handle()
     {
-        $inviteList = Invite::where('status', 0)->where('dateline', '<=', date('Y-m-d H:i:s'))->get();
+        $inviteList = Invite::query()->where('status', 0)->where('dateline', '<=', date('Y-m-d H:i:s'))->get();
         if (!$inviteList->isEmpty()) {
             foreach ($inviteList as $invite) {
-                Invite::where('id', $invite->id)->update(['status' => 2]);
+                Invite::query()->where('id', $invite->id)->update(['status' => 2]);
             }
         }
 

@@ -15,7 +15,7 @@ telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
 开发测试演示：http://www.ssrpanel.com
 用户名：admin 密码：123456
-(请大家勿改admin的密码，SSR被滥用，我已关闭)
+(请大家勿改admin的密码)
 ````
 
 ![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
@@ -47,9 +47,9 @@ telegram群组：https://t.me/chatssrpanel
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
-|Kris|￥40|
+|【要求匿名】|￥60|
 
-截止目前收到的捐赠：￥472，实际到账：￥467.28 （提款手续费4.72）
+截止目前收到的捐赠：￥492，实际到账：￥487.08 （提款手续费4.92）
 
 这些捐赠的用途：
 - 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
@@ -153,7 +153,16 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpan
 ## 更新代码
 ````
 chmod a+x update.sh && sh update.sh
+
+如果每次更新都会出现数据库文件被覆盖
+请先执行一次 chmod a+x fix_git.sh && sh fix_git.sh
 ````
+
+## 网卡流量监控一键脚本
+````
+wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
+````
+
 
 ## 说明
 ````

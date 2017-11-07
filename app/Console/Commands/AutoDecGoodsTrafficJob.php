@@ -20,15 +20,15 @@ class AutoDecGoodsTrafficJob extends Command
 
     public function handle()
     {
-        $orderGoods = OrderGoods::where('is_expire', 0)->get();
+        $orderGoods = OrderGoods::query()->where('is_expire', 0)->get();
         foreach ($orderGoods as $og) {
-            $goods = Goods::where('id', $og->goods_id)->first();
+            $goods = Goods::query()->where('id', $og->goods_id)->first();
             if (empty($goods)) {
                 continue;
             }
 
             if (date("Y-m-d H:i:s", strtotime("-" . $goods->days . " days")) >= $og->created_at) {
-                $u = User::where('id', $og->user_id)->first();
+                $u = User::query()->where('id', $og->user_id)->first();
                 if (empty($u)) {
                     continue;
                 }
@@ -36,13 +36,13 @@ class AutoDecGoodsTrafficJob extends Command
                 // 流量包到期自动扣总流量
                 //if ($goods->type == 1) {
                     if ($u->transfer_enable - $goods->traffic * 1048576 <= 0) {
-                        User::where('id', $og->user_id)->update(['transfer_enable' => 0]);
+                        User::query()->where('id', $og->user_id)->update(['transfer_enable' => 0]);
                     } else {
-                        User::where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1048576);
+                        User::query()->where('id', $og->user_id)->decrement('transfer_enable', $goods->traffic * 1048576);
                     }
                 //}
 
-                OrderGoods::where('id', $og->id)->update(['is_expire' => 1]);
+                OrderGoods::query()->where('id', $og->id)->update(['is_expire' => 1]);
             }
         }
 

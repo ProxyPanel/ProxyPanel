@@ -8,6 +8,7 @@ use App\Http\Models\User;
 use App\Http\Models\Verify;
 use Illuminate\Http\Request;
 use App\Mail\activeUser;
+use Captcha;
 use Response;
 use Redirect;
 use Mail;
@@ -33,6 +34,7 @@ class RegisterController extends BaseController
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
             $repassword = trim($request->get('repassword'));
+            $captcha = trim($request->get('captcha'));
             $code = trim($request->get('code'));
             $aff = intval($request->get('aff', 0));
 
@@ -56,6 +58,15 @@ class RegisterController extends BaseController
                 $request->session()->flash('errorMsg', '用户名必须是合法邮箱，请重新输入');
 
                 return Redirect::back()->withInput();
+            }
+
+            // 是否校验验证码
+            if (self::$config['is_captcha']) {
+                if (!Captcha::check($captcha)) {
+                    $request->session()->flash('errorMsg', '验证码错误，请重新输入');
+
+                    return Redirect::back()->withInput($request->except(['password', 'repassword']));
+                }
             }
 
             // 是否开启注册
@@ -158,6 +169,7 @@ class RegisterController extends BaseController
 
             return Redirect::to('login');
         } else {
+            $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
             $view['is_invite_register'] = self::$config['is_invite_register'];
 

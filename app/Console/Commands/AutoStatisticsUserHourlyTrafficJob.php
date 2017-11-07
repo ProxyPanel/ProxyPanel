@@ -21,13 +21,13 @@ class AutoStatisticsUserHourlyTrafficJob extends Command
 
     public function handle()
     {
-        $userList = User::where('status', '>=', 0)->where('enable', 1)->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
         foreach ($userList as $user) {
             // 统计一次所有节点的总和
             $this->statisticsByNode($user->id);
 
             // 统计每个节点产生的流量
-            $nodeList = SsNode::get();
+            $nodeList = SsNode::query()->get();
             foreach ($nodeList as $node) {
                 $this->statisticsByNode($user->id, $node->id);
             }
@@ -40,7 +40,7 @@ class AutoStatisticsUserHourlyTrafficJob extends Command
         $start_time = strtotime(date('Y-m-d H:i:s', strtotime("-1 hour")));
         $end_time = time();
 
-        $query = UserTrafficLog::where('user_id', $user_id)->whereBetween('log_time', [$start_time, $end_time]);
+        $query = UserTrafficLog::query()->where('user_id', $user_id)->whereBetween('log_time', [$start_time, $end_time]);
 
         if ($node_id) {
             $query->where('node_id', $node_id);

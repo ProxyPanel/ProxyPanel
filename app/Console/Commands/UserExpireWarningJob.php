@@ -21,7 +21,7 @@ class UserExpireWarningJob extends Command
     {
         parent::__construct();
 
-        $config = Config::get();
+        $config = Config::query()->get();
         $data = [];
         foreach ($config as $vo) {
             $data[$vo->name] = $vo->value;
@@ -33,7 +33,7 @@ class UserExpireWarningJob extends Command
     public function handle()
     {
         if (self::$config['expire_warning']) {
-            $userList = User::where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
+            $userList = User::query()->where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
                 if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {

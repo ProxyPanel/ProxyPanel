@@ -18,10 +18,10 @@ class AutoExpireCouponJob extends Command
 
     public function handle()
     {
-        $couponList = Coupon::where('status', 0)->where('available_end', '<=', time())->get();
+        $couponList = Coupon::query()->where('status', 0)->where('available_end', '<=', time())->get();
         if (!$couponList->isEmpty()) {
             foreach ($couponList as $coupon) {
-                Coupon::where('id', $coupon->id)->update(['status' => 2]);
+                Coupon::query()->where('id', $coupon->id)->update(['status' => 2]);
             }
         }
 

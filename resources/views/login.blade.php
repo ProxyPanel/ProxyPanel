@@ -56,14 +56,21 @@
             </div>
         @endif
         <div class="form-group">
-            <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
             <label class="control-label visible-ie8 visible-ie9">用户名</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" /> </div>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" />
+        </div>
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">密码</label>
             <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="{{Request::old('password')}}" />
             <input type="hidden" name="_token" value="{{csrf_token()}}" />
         </div>
+        @if($is_captcha)
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">验证码</label>
+                <input class="form-control form-control-solid placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="captcha" value="" />
+                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="验证码" style="float:right;" />
+            </div>
+        @endif
         <div class="form-actions">
             <div class="pull-left">
                 <label class="rememberme mt-checkbox mt-checkbox-outline">

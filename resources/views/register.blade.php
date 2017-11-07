@@ -66,6 +66,13 @@
                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="邀请码" name="code" value="{{Request::old('code')}}" required />
                 </div>
             @endif
+            @if($is_captcha)
+            <div class="form-group padding-bottom-20">
+                <label class="control-label visible-ie8 visible-ie9">验证码</label>
+                <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="captcha" value="" required />
+                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="验证码" style="float:right;" />
+            </div>
+            @endif
             <div class="form-group margin-top-20 margin-bottom-20">
                 <label class="mt-checkbox mt-checkbox-outline">
                     <input type="checkbox" name="tnc" checked disabled /> 我已阅读并同意遵守

@@ -19,7 +19,7 @@ class autoDisableExpireUserJob extends Command
     public function handle()
     {
         // 到期账号禁用
-        User::where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->update(['enable' => 0]);
+        User::query()->where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->update(['enable' => 0]);
 
         Log::info('定时任务：' . $this->description);
     }
