@@ -535,7 +535,7 @@ class AdminController extends BaseController
         }
     }
 
-    // 编辑节点
+    // 编辑文章
     public function editArticle(Request $request)
     {
         $id = $request->get('id');

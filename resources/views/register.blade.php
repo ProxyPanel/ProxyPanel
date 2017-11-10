@@ -67,7 +67,7 @@
                 </div>
             @endif
             @if($is_captcha)
-            <div class="form-group padding-bottom-20">
+            <div class="form-group" style="margin-bottom:75px;">
                 <label class="control-label visible-ie8 visible-ie9">验证码</label>
                 <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="captcha" value="" required />
                 <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="验证码" style="float:right;" />

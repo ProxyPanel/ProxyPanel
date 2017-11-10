@@ -123,7 +123,7 @@ class BaseController extends Controller
         $config = $this->systemConfig();
 
         $port = mt_rand($config['min_port'], $config['max_port']);
-        $deny_port = [1068, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 28281]; // 不生成的端口
+        $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 28281, 60177, 60179]; // 不生成的端口
 
         $exists_port = User::query()->pluck('port')->toArray();
         if (in_array($port, $exists_port) || in_array($port, $deny_port)) {

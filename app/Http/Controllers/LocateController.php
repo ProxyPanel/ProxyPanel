@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\ArticleLog;
 use Illuminate\Http\Request;
 use Response;
+use Agent;
 
 /**
  * 定位控制器

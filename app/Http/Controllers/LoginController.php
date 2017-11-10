@@ -63,18 +63,18 @@ class LoginController extends BaseController
             }
 
             // 更新登录信息
-            User::query()->where('id', $user['id'])->update(['last_login' => time()]);
+            User::query()->where('id', $user->id)->update(['last_login' => time()]);
 
             // 登录送积分
             if (self::$config['login_add_score']) {
                 if (!Cache::has('loginAddScore_' . md5($username))) {
                     $score = mt_rand(self::$config['min_rand_score'], self::$config['max_rand_score']);
-                    $ret = User::query()->where('id', $user['id'])->increment('score', $score);
+                    $ret = User::query()->where('id', $user->id)->increment('score', $score);
                     if ($ret) {
                         $obj = new UserScoreLog();
-                        $obj->user_id = $user['id'];
-                        $obj->before = $user['score'];
-                        $obj->after = $user['score'] + $score;
+                        $obj->user_id = $user->id;
+                        $obj->before = $user->score;
+                        $obj->after = $user->score + $score;
                         $obj->score = $score;
                         $obj->desc = '登录送积分';
                         $obj->created_at = date('Y-m-d H:i:s');
@@ -88,12 +88,12 @@ class LoginController extends BaseController
             }
 
             // 重新取出用户信息
-            $user = User::query()->where('id', $user['id'])->first();
+            $userInfo = User::query()->where('id', $user->id)->first();
 
-            $request->session()->put('user', $user->toArray());
+            $request->session()->put('user', $userInfo->toArray());
 
             // 根据权限跳转
-            if ($user['is_admin']) {
+            if ($user->is_admin) {
                 return Redirect::to('admin');
             }
 

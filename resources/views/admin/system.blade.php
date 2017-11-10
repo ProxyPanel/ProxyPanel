@@ -56,62 +56,72 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <label for="website_name" class="col-md-2 control-label">网站名称</label>
-                                                        <div class="col-md-4">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="website_name" value="{{$website_name}}" id="website_name" />
-                                                                <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setWebsiteName()">修改</button>
-                                                                </span>
+                                                        <div class="col-md-6">
+                                                            <label for="website_name" class="col-md-3 control-label">网站名称</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="website_name" value="{{$website_name}}" id="website_name" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setWebsiteName()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 发邮件时展示 </span>
                                                             </div>
-                                                            <span class="help-block"> 发邮件时展示 </span>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="website_url" class="col-md-2 control-label">网站地址</label>
-                                                        <div class="col-md-4">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="website_url" value="{{$website_url}}" id="website_url" />
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="website_url" class="col-md-3 control-label">网站地址</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="website_url" value="{{$website_url}}" id="website_url" />
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 生成重置密码必备，示例：https://github.com </span>
                                                             </div>
-                                                            <span class="help-block"> 生成重置密码必备，示例：https://github.com </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="is_register" class="col-md-2 control-label">用户注册</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_register) checked @endif id="is_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 关闭后无法注册 </span>
+                                                            <label for="is_register" class="col-md-3 control-label">用户注册</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_register) checked @endif id="is_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 关闭后无法注册 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="is_active_register" class="col-md-3 control-label">激活账号</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_active_register) checked @endif id="is_active_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后用户需要通过邮件来激活账号 </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="is_invite_register" class="col-md-2 control-label">邀请注册</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_invite_register) checked @endif id="is_invite_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
+                                                            <label for="is_invite_register" class="col-md-3 control-label">邀请注册</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_invite_register) checked @endif id="is_invite_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="is_reset_password" class="col-md-3 control-label">重置密码</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_reset_password) checked @endif id="is_reset_password" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后用户可以通过邮件重置密码 </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="is_active_register" class="col-md-2 control-label">激活账号</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_active_register) checked @endif id="is_active_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后用户需要通过邮件来激活账号 </span>
+                                                            <label for="is_captcha" class="col-md-3 control-label">验证码</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_captcha) checked @endif id="is_captcha" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后登录、注册需要输入验证码 </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="is_reset_password" class="col-md-2 control-label">重置密码</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_reset_password) checked @endif id="is_reset_password" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后用户可以通过邮件重置密码 </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="is_captcha" class="col-md-2 control-label">验证码</label>
-                                                        <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_captcha) checked @endif id="is_captcha" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后登录、注册需要输入验证码 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -121,19 +131,22 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <label for="is_rand_port" class="col-md-2 control-label">随机端口</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 添加账号时随机生成端口 </span>
+                                                            <label for="is_rand_port" class="col-md-3 control-label">随机端口</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 注册、添加账号时随机生成端口 </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 control-label">端口范围</label>
-                                                        <div class="col-md-2">
-                                                            <div class="input-group input-large input-daterange">
-                                                                <input type="text" class="form-control" name="min_port" value="{{$min_port}}" id="min_port">
-                                                                <span class="input-group-addon"> ~ </span>
-                                                                <input type="text" class="form-control" name="max_port" value="{{$max_port}}" id="max_port">
+                                                        <div class="col-md-6">
+                                                            <label class="col-md-3 control-label">端口范围</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group input-large input-daterange">
+                                                                    <input type="text" class="form-control" name="min_port" value="{{$min_port}}" id="min_port">
+                                                                    <span class="input-group-addon"> ~ </span>
+                                                                    <input type="text" class="form-control" name="max_port" value="{{$max_port}}" id="max_port">
+                                                                </div>
+                                                                <span class="help-block"> 端口范围：1000 - 65535 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -147,77 +160,83 @@
                                                     </div>
                                                     -->
                                                     <div class="form-group">
-                                                        <label for="default_days" class="col-md-2 control-label">初始有效期</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="default_days" value="{{$default_days}}" id="default_days" />
-                                                                <span class="input-group-addon">天</span>
-                                                                <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setDefaultDays()">修改</button>
-                                                                </span>
+                                                        <div class="col-md-6">
+                                                            <label for="default_days" class="col-md-3 control-label">初始有效期</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="default_days" value="{{$default_days}}" id="default_days" />
+                                                                    <span class="input-group-addon">天</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setDefaultDays()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 用户注册时默认SS(R)有效天数 </span>
                                                             </div>
-                                                            <span class="help-block"> 用户注册时默认SS(R)有效天数 </span>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="default_traffic" class="col-md-2 control-label">初始流量</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="default_traffic" value="{{$default_traffic}}" id="default_traffic" />
-                                                                <span class="input-group-addon">MiB</span>
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="default_traffic" class="col-md-3 control-label">初始流量</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="default_traffic" value="{{$default_traffic}}" id="default_traffic" />
+                                                                    <span class="input-group-addon">MiB</span>
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setDefaultTraffic()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 用户注册时默认可用流量 </span>
                                                             </div>
-                                                            <span class="help-block"> 用户注册时默认可用流量 </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="invite_num" class="col-md-2 control-label">可生成邀请码数</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num" />
-                                                                <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setInviteNum()">修改</button>
-                                                                </span>
+                                                        <div class="col-md-6">
+                                                            <label for="invite_num" class="col-md-3 control-label">可生成邀请码数</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setInviteNum()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 用户可以生成的邀请码数 </span>
                                                             </div>
-                                                            <span class="help-block"> 用户可以生成的邀请码数 </span>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="reset_password_times" class="col-md-2 control-label">重置密码次数</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="reset_password_times" value="{{$reset_password_times}}" id="reset_password_times" />
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="reset_password_times" class="col-md-3 control-label">重置密码次数</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="reset_password_times" value="{{$reset_password_times}}" id="reset_password_times" />
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setResetPasswordTimes()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 24小时内可以通过邮件重置密码次数 </span>
                                                             </div>
-                                                            <span class="help-block"> 24小时内可以通过邮件重置密码次数 </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="active_times" class="col-md-2 control-label">激活账号次数</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="active_times" value="{{$active_times}}" id="active_times" />
-                                                                <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setActiveTimes()">修改</button>
-                                                                </span>
+                                                        <div class="col-md-6">
+                                                            <label for="active_times" class="col-md-3 control-label">激活账号次数</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="active_times" value="{{$active_times}}" id="active_times" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setActiveTimes()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
                                                             </div>
-                                                            <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="subscribe_max" class="col-md-2 control-label">订阅节点数</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="subscribe_max" value="{{$subscribe_max}}" id="subscribe_max" />
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="subscribe_max" class="col-md-3 control-label">订阅节点数</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="subscribe_max" value="{{$subscribe_max}}" id="subscribe_max" />
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setSubscribeMax()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
                                                             </div>
-                                                            <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -227,32 +246,38 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <label for="login_add_score" class="col-md-2 control-label">登录加积分</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 登录时将根据积分范围得到积分 </span>
+                                                            <label for="login_add_score" class="col-md-3 control-label">登录加积分</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 登录时将根据积分范围得到积分 </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="login_add_score_range" class="col-md-2 control-label">时间间隔</label>
-                                                        <div class="col-md-2">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="login_add_score_range" value="{{$login_add_score_range}}" id="login_add_score_range" />
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="login_add_score_range" class="col-md-3 control-label">时间间隔</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="login_add_score_range" value="{{$login_add_score_range}}" id="login_add_score_range" />
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setLoginAddScoreRange()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 每隔多久登录才会加积分(单位分钟) </span>
                                                             </div>
-                                                            <span class="help-block"> 每隔多久登录才会加积分(单位分钟) </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">积分范围</label>
-                                                        <div class="col-md-2">
-                                                            <div class="input-group input-large input-daterange">
-                                                                <input type="text" class="form-control" name="min_rand_score" value="{{$min_rand_score}}" id="min_rand_score">
-                                                                <span class="input-group-addon"> ~ </span>
-                                                                <input type="text" class="form-control" name="max_rand_score" value="{{$max_rand_score}}" id="max_rand_score">
+                                                        <div class="col-md-6">
+                                                            <label class="col-md-3 control-label">积分范围</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group input-large input-daterange">
+                                                                    <input type="text" class="form-control" name="min_rand_score" value="{{$min_rand_score}}" id="min_rand_score">
+                                                                    <span class="input-group-addon"> ~ </span>
+                                                                    <input type="text" class="form-control" name="max_rand_score" value="{{$max_rand_score}}" id="max_rand_score">
+                                                                </div>
                                                             </div>
+                                                        </div>
+                                                        <div class="col-md-6">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -262,49 +287,53 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <label for="referral_status" class="col-md-2 control-label">本功能</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($referral_status) checked @endif id="referral_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 关闭后用户不可见 </span>
+                                                            <label for="referral_status" class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($referral_status) checked @endif id="referral_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 关闭后用户不可见 </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="referral_traffic" class="col-md-2 control-label">注册送流量</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="referral_gift_traffic" value="{{$referral_traffic}}" id="referral_traffic" />
-                                                                <span class="input-group-addon">MiB</span>
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="referral_traffic" class="col-md-3 control-label">注册送流量</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="referral_gift_traffic" value="{{$referral_traffic}}" id="referral_traffic" />
+                                                                    <span class="input-group-addon">MiB</span>
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setReferralTraffic()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 根据推广链接注册则送多少流量（叠加在默认流量上） </span>
                                                             </div>
-                                                            <span class="help-block"> 根据推广链接注册则送多少流量（叠加在默认流量上） </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="referral_percent" class="col-md-2 control-label">返利比例</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="referral_percent" value="{{$referral_percent * 100}}" id="referral_percent" />
-                                                                <span class="input-group-addon">%</span>
-                                                                <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setReferralPercent()">修改</button>
-                                                                </span>
+                                                        <div class="col-md-6">
+                                                            <label for="referral_percent" class="col-md-3 control-label">返利比例</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="referral_percent" value="{{$referral_percent * 100}}" id="referral_percent" />
+                                                                    <span class="input-group-addon">%</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setReferralPercent()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 根据推广链接注册的账号每笔消费推广人可以分成的比例 </span>
                                                             </div>
-                                                            <span class="help-block"> 根据推广链接注册的账号每笔消费推广人可以分成的比例 </span>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="referral_money" class="col-md-2 control-label">提现限制</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="referral_money" value="{{$referral_money}}" id="referral_money" />
-                                                                <span class="input-group-addon">元</span>
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="referral_money" class="col-md-3 control-label">提现限制</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="referral_money" value="{{$referral_money}}" id="referral_money" />
+                                                                    <span class="input-group-addon">元</span>
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setReferralMoney()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 满多少元才可以申请提现 </span>
                                                             </div>
-                                                            <span class="help-block"> 满多少元才可以申请提现 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -314,50 +343,58 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <label for="reset_traffic" class="col-md-2 control-label">流量自动重置</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 每月1日自动重置账号可用流量 </span>
+                                                            <label for="reset_traffic" class="col-md-3 control-label">流量自动重置</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 每月1日自动重置账号可用流量 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="expire_warning" class="col-md-2 control-label">过期警告</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($expire_warning) checked @endif id="expire_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
+                                                            <label for="expire_warning" class="col-md-3 control-label">过期警告</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($expire_warning) checked @endif id="expire_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="expire_days" class="col-md-2 control-label">过期警告阈值</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="expire_days" value="{{$expire_days}}" id="expire_days" />
-                                                                <span class="input-group-addon">天</span>
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="expire_days" class="col-md-3 control-label">过期警告阈值</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="expire_days" value="{{$expire_days}}" id="expire_days" />
+                                                                    <span class="input-group-addon">天</span>
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setExpireDays()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 账号距离过期还差多少天时发警告邮件 </span>
                                                             </div>
-                                                            <span class="help-block"> 账号距离过期还差多少天时发警告邮件 </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="traffic_warning" class="col-md-2 control-label">流量警告</label>
                                                         <div class="col-md-6">
-                                                            <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                            <span class="help-block"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
+                                                            <label for="traffic_warning" class="col-md-3 control-label">流量警告</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="traffic_warning_percent" class="col-md-2 control-label">流量警告阈值</label>
-                                                        <div class="col-md-3">
-                                                            <div class="input-group">
-                                                                <input class="form-control" type="text" name="traffic_warning_percent" value="{{$traffic_warning_percent}}" id="traffic_warning_percent" />
-                                                                <span class="input-group-addon">%</span>
-                                                                <span class="input-group-btn">
+                                                        <div class="col-md-6">
+                                                            <label for="traffic_warning_percent" class="col-md-3 control-label">流量警告阈值</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_warning_percent" value="{{$traffic_warning_percent}}" id="traffic_warning_percent" />
+                                                                    <span class="input-group-addon">%</span>
+                                                                    <span class="input-group-btn">
                                                                     <button class="btn btn-success" type="button" onclick="setTrafficWarningPercent()">修改</button>
                                                                 </span>
+                                                                </div>
+                                                                <span class="help-block"> 建议设置在70%~90% </span>
                                                             </div>
-                                                            <span class="help-block"> 建议设置在70%~90% </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -368,47 +405,49 @@
                                                 <div class="form-body">
                                                     <div class="portlet-body">
                                                         <div class="form-group">
-                                                            <label class="col-md-2 control-label">微信</label>
                                                             <div class="col-md-6">
-                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                        @if ($wechat_qrcode)
-                                                                            <img src="{{$wechat_qrcode}}" alt="" />
-                                                                        @else
-                                                                            <img src="/assets/images/noimage.png" alt="" />
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                                    <div>
-                                                                        <span class="btn default btn-file">
-                                                                            <span class="fileinput-new"> 选择 </span>
-                                                                            <span class="fileinput-exists"> 更换 </span>
-                                                                            <input type="file" name="wechat_qrcode" id="wechat_qrcode">
-                                                                        </span>
-                                                                        <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                <label class="col-md-5 control-label">微信</label>
+                                                                <div class="col-md-7">
+                                                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                        <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                                            @if ($wechat_qrcode)
+                                                                                <img src="{{$wechat_qrcode}}" alt="" />
+                                                                            @else
+                                                                                <img src="/assets/images/noimage.png" alt="" />
+                                                                            @endif
+                                                                        </div>
+                                                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                                        <div>
+                                                                            <span class="btn default btn-file">
+                                                                                <span class="fileinput-new"> 选择 </span>
+                                                                                <span class="fileinput-exists"> 更换 </span>
+                                                                                <input type="file" name="wechat_qrcode" id="wechat_qrcode">
+                                                                            </span>
+                                                                            <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-md-2 control-label">支付宝</label>
                                                             <div class="col-md-6">
-                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                        @if ($alipay_qrcode)
-                                                                            <img src="{{$alipay_qrcode}}" alt="" />
-                                                                        @else
-                                                                            <img src="/assets/images/noimage.png" alt="" />
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                                    <div>
+                                                                <label class="col-md-5 control-label">支付宝</label>
+                                                                <div class="col-md-7">
+                                                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                        <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                                            @if ($alipay_qrcode)
+                                                                                <img src="{{$alipay_qrcode}}" alt="" />
+                                                                            @else
+                                                                                <img src="/assets/images/noimage.png" alt="" />
+                                                                            @endif
+                                                                        </div>
+                                                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                                        <div>
                                                                         <span class="btn default btn-file">
                                                                             <span class="fileinput-new"> 选择 </span>
                                                                             <span class="fileinput-exists"> 更换 </span>
                                                                             <input type="file" name="alipay_qrcode" id="alipay_qrcode">
                                                                         </span>
-                                                                        <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                            <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>

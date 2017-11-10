@@ -65,7 +65,7 @@
             <input type="hidden" name="_token" value="{{csrf_token()}}" />
         </div>
         @if($is_captcha)
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:65px;">
                 <label class="control-label visible-ie8 visible-ie9">验证码</label>
                 <input class="form-control form-control-solid placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="captcha" value="" />
                 <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="验证码" style="float:right;" />
