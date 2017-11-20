@@ -13,6 +13,8 @@ INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 
+ALTER TABLE `article` ADD COLUMN `type` tinyint(4) DEFAULT '1' COMMENT '类型：1-文章、2-公告' AFTER `content`;
+
 
 CREATE TABLE `user_ban_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -52,3 +54,5 @@ CREATE TABLE `ss_node_traffic_hourly` (
   PRIMARY KEY (`id`),
   KEY `idx_node_id` (`node_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
