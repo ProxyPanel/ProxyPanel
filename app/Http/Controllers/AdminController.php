@@ -111,8 +111,8 @@ class AdminController extends BaseController
 
             // 流量异常警告
             $time = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
-            $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '<=', $time)->sum('total');
-            $user->trafficWarning = $totalTraffic > self::$config['traffic_ban_value'] * 1024 * 1024 * 1024 ? 1 : 0;
+            $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
+            $user->trafficWarning = $totalTraffic > (self::$config['traffic_ban_value'] * 1024 * 1024 * 1024) ? 1 : 0;
         }
 
         $view['userList'] = $userList;
