@@ -15,7 +15,7 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <a href="{{url('admin/groupList')}}">节点分组列表</a>
+                <a href="{{url('admin/groupList')}}">节点分组</a>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->
@@ -27,7 +27,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-grid font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 节点分组列表 </span>
+                            <span class="caption-subject bold uppercase"> 节点分组 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">

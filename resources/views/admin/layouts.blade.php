@@ -184,7 +184,7 @@
                         <li class="nav-item {{Request::getRequestUri() == '/admin/groupList' ? 'active open' : ''}}">
                             <a href="{{url('admin/groupList')}}" class="nav-link ">
                                 <i class="icon-grid"></i>
-                                <span class="title">节点分组列表</span>
+                                <span class="title">节点分组</span>
                             </a>
                         </li>
                     </ul>

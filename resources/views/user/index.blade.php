@@ -47,8 +47,8 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="alert alert-danger">
-                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推，越是优质节点则比例越高。
-                    <button class="btn btn-sm blue" onclick="subscribe()"> 订阅节点 </button>
+                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，越是优质节点则比例越高。
+                    <button class="btn btn-sm red" onclick="subscribe()"> 订阅节点 </button>
                 </div>
                 <div class="row widget-row">
                     @if(!$nodeList->isEmpty())
@@ -97,7 +97,9 @@
                                 <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换</a>
                             </span>
                         </p>
-                        <p class="text-muted"> 账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} &ensp;&ensp; 最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}</p>
+                        <p class="text-muted"> 账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
+                        <p class="text-muted"> 最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
+                        <p class="text-muted"> 最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
                         <p class="text-muted">
                             已用流量：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
                             <div class="progress progress-striped active" style="margin-bottom:0;" title="共有流量{{$info['totalTransfer']}}，已用{{$info['usedTransfer']}}">
@@ -106,7 +108,6 @@
                                 </div>
                             </div>
                         </p>
-                        <p class="text-muted"> 最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
                     </div>
                 </div>
                 <div class="portlet box blue">
@@ -117,20 +118,11 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul class="list-group">
-                                    @foreach($articleList as $k => $article)
-                                        <li class="list-group-item">
-                                            <a href="{{url('user/article?id=') . $article->id}}" class="alert-link" target="_blank"> {{$article->title}} </a>
-                                            <div class="pull-right">
-                                                [{{date('Y/m/d', strtotime($article->created_at))}}]
-                                            </div>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
+                        @foreach($articleList as $k => $article)
+                            <p class="text-muted">
+                                [{{date('m/d', strtotime($article->created_at))}}] <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{$article->title}} </a>
+                            </p>
+                        @endforeach
                     </div>
                 </div>
             </div>

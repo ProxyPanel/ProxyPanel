@@ -20,7 +20,7 @@ class AutoReopenUserJob extends Command
     public function handle()
     {
         // 解封账号
-        $userList = User::query()->where('ban_time', '>', 0)->get();
+        $userList = User::query()->where('status', '>=', 0)->where('ban_time', '>', 0)->get();
         foreach ($userList as $user) {
             if ($user->ban_time < time()) {
                 User::query()->where('id', $user->id)->update(['enable' => 1, 'ban_time' => 0]);

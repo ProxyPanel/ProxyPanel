@@ -541,8 +541,8 @@ class AdminController extends BaseController
         $view['trafficDaily'] = SsNodeTrafficDaily::query()->where('node_id', $node_id)->whereBetween('created_at', [$daily_start_time, $daily_end_time])->get();
 
         // 24小时内流量
-        $hourly_start_time = date('Y-m-d 00:00:00');
-        $hourly_end_time = date('Y-m-d 23:59:59', strtotime("-1 hour"));
+        $hourly_start_time = date('Y-m-d H:i:s', strtotime("-24 hours"));
+        $hourly_end_time = date('Y-m-d H:i:s', strtotime("-1 hour"));
         $view['trafficHourly'] = SsNodeTrafficHourly::query()->where('node_id', $node_id)->whereBetween('created_at', [$hourly_start_time, $hourly_end_time])->get();
 
         $view['node'] = $node;

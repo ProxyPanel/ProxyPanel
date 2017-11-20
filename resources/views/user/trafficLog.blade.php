@@ -38,7 +38,6 @@
 @section('script')
     <script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         var ChartsFlotcharts = function() {

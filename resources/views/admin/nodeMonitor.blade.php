@@ -34,7 +34,7 @@
                     <div class="portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption">
-                                <span class="caption-subject font-dark sbold uppercase">【{{$node->name}}】</span>
+                                <span class="caption-subject font-dark sbold uppercase">节点流量监控<small>【{{$node->name}}】</small></span>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -42,12 +42,15 @@
                                 <button class="close" data-close="alert"></button>
                                 <strong>提示：</strong> 仅统计SSR的流量，如果使用锐速或BBR等加速工具，可能跟VPS管理面板上看到的不一致（通常是VPS管理面板上看到实际消耗流量更多）。
                             </div>
+                            <div class="note note-info">
+                                <h4>24小时内流量</h4>
+                                <div id="chart" class="chart"> </div>
+                            </div>
+                            <div class="note note-info">
+                                <h4>30天内流量</h4>
+                                <div id="chart2" class="chart"> </div>
+                            </div>
 
-                            <h4>24小时内流量（未统计本小时）</h4>
-                            <div id="chart1" class="chart"> </div>
-
-                            <h4>30天内流量（未统计今日）</h4>
-                            <div id="chart2" class="chart"> </div>
                         </div>
                     </div>
                 @endif
@@ -76,27 +79,21 @@
                     }
 
                     function chart() {
-                        if ($('#chart1').size() != 1) {
+                        if ($('#chart').size() != 1) {
                             return;
                         }
 
-                        @if (!empty($traffic))
-                            @foreach ($traffic as $node_id => $node_traffic_list)
-                                {{ 'var node_' . $node_id}} = [
-                                    @foreach ($node_traffic_list as $key => $vo)
-                                        [{{$key + 1}}, {{$vo->total}}],
-                                    @endforeach
-                                ];
-                            @endforeach
-                        @endif
-
-                        var plot = $.plot($("#chart1"), [
-                            @if (!empty($nodeList))
-                                @foreach($nodeList as $node)
-                                    {data: {{'node_' . $node->id}}, label: "{{$node->name}}", lines: {lineWidth: 1}, shadowSize: 0},
+                        var chartData = [
+                            @if (!empty($trafficHourly))
+                                @foreach ($trafficHourly as $key => $vo)
+                                [{{$key + 1}}, {{$vo->total}}],
                                 @endforeach
                             @endif
-                            ], {
+                        ];
+
+                        var plot = $.plot($("#chart"), [
+                            {data: chartData, label: "24小时内流量走势", lines: {lineWidth: 1}, shadowSize: 0},
+                        ], {
                             series: {
                                 lines: {
                                     show: true,
@@ -154,7 +151,7 @@
                         }
 
                         var previousPoint = null;
-                        $("#chart1").bind("plothover", function(event, pos, item) {
+                        $("#chart").bind("plothover", function(event, pos, item) {
                             $("#x").text(pos.x.toFixed(2));
                             $("#y").text(pos.y.toFixed(2));
 
