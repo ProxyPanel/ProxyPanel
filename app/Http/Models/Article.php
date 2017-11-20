@@ -18,6 +18,7 @@ class Article extends Model
         'author',
         'content',
         'is_del',
+        'type',
         'sort'
     ];
 

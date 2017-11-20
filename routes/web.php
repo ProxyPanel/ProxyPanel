@@ -21,6 +21,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
     Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
     Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
+    Route::get('admin/nodeMonitor', 'AdminController@nodeMonitor'); // 节点流量监控
     Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
     Route::get('admin/articleLogList', 'AdminController@articleLogList'); // 文章访问日志列表
     Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
@@ -51,7 +52,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::any('admin/export', 'AdminController@export'); // 导出配置信息
     Route::any('admin/convert', 'AdminController@convert'); // 格式转换
     Route::any('admin/import', 'AdminController@import'); // 数据导入
-    Route::get('admin/monitor', 'AdminController@monitor'); // 流量监控
+    Route::get('admin/userMonitor', 'AdminController@userMonitor'); // 用户流量监控
     Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
     Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
     Route::get('admin/system', 'AdminController@system'); // 系统设置
@@ -72,11 +73,10 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
 });
 
-Route::group(['middleware' => ['user']], function(){
+Route::group(['middleware' => ['user']], function() {
     Route::any('/', 'UserController@index'); // 用户首页
     Route::any('user', 'UserController@index'); // 用户首页
     Route::any('user/article', 'UserController@article'); // 文章详情
-    Route::get('user/nodeList', 'UserController@nodeList'); // 节点列表
     Route::get('user/subscribe', 'UserController@subscribe'); // 节点订阅
     Route::get('user/goodsList', 'UserController@goodsList'); // 商品列表
     Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志

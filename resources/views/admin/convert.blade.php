@@ -103,7 +103,7 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 转换
@@ -118,40 +118,27 @@
             var content = $('#content').val();
 
             if (content == '') {
-                bootbox.alert("请填入要转换的配置信息");
+                layer.msg('请填入要转换的配置信息', {time:1000});
                 return ;
             }
 
-            bootbox.confirm({
-                message: '确定继续转换吗',
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-default'
+            layer.confirm('确定继续转换吗？', {icon: 2, title:'警告'}, function(index) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('admin/convert')}}",
+                    async: false,
+                    data: {_token:_token, method:method, transfer_enable:transfer_enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, content: content},
+                    dataType: 'json',
+                    success: function (ret) {
+                        if (ret.status == 'success') {
+                            $("#result").val(ret.data);
+                        } else {
+                            $("#result").val(ret.message);
+                        }
                     }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.ajax({
-                            type: "POST",
-                            url: "{{url('admin/convert')}}",
-                            async: false,
-                            data: {_token:_token, method:method, transfer_enable:transfer_enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, content: content},
-                            dataType: 'json',
-                            success: function (ret) {
-                                if (ret.status == 'success') {
-                                    $("#result").val(ret.data);
-                                } else {
-                                    $("#result").val(ret.message);
-                                }
-                            }
-                        });
-                    }
-                }
+                });
+
+                layer.close(index);
             });
 
             return false;

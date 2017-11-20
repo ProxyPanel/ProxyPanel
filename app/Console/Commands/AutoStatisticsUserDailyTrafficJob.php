@@ -36,7 +36,8 @@ class AutoStatisticsUserDailyTrafficJob extends Command
         Log::info('定时任务：' . $this->description);
     }
 
-    private function statisticsByNode($user_id, $node_id = 0) {
+    private function statisticsByNode($user_id, $node_id = 0)
+    {
         $start_time = strtotime(date('Y-m-d 00:00:00', strtotime("-1 day")));
         $end_time = strtotime(date('Y-m-d 23:59:59', strtotime("-1 day")));
 

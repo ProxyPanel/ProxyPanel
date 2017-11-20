@@ -105,7 +105,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -129,29 +128,16 @@
                 return false;
             }
 
-            bootbox.confirm({
-                message: "确定提交工单？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret) {
-                            layer.msg(ret.message, {time:1000}, function() {
-                                if (ret.status == 'success') {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    }
-                }
+            layer.confirm('确定提交工单？', {icon: 3, title:'警告'}, function(index) {
+                $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
+
+                layer.close(index);
             });
         }
     </script>

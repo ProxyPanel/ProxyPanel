@@ -51,7 +51,8 @@ class UserController extends BaseController
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
         $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
         $view['info'] = $user->toArray();
-        $view['articleList'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
+        $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
+        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
 
@@ -59,6 +60,57 @@ class UserController extends BaseController
         if (!$request->session()->has('referral_status')) {
             $request->session()->put('referral_status', self::$config['referral_status']);
         }
+
+        // 节点列表
+        $nodeList = DB::table('ss_group_node')
+            ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
+            ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
+            ->where('ss_group.level', '<=', $user->level)
+            ->paginate(10)
+            ->appends($request->except('page'));
+
+        foreach ($nodeList as &$node) {
+            // 生成ssr scheme
+            $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
+            $protocol_param = $node->single ? base64_encode($user->port . ':' . $user->passwd) : base64_encode($user->protocol_param);
+
+            $ssr_str = '';
+            $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
+            $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
+            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? base64_encode($node->single_passwd) : base64_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . $obfs_param;
+            $ssr_str .= '&protoparam=' . $protocol_param;
+            $ssr_str .= '&remarks=' . base64_encode($node->name);
+            $ssr_str .= '&group=' . base64_encode('节点');
+            //$ssr_str .= '&udpport=0';
+            //$ssr_str .= '&uot=0';
+            $ssr_str = $this->base64url_encode($ssr_str);
+            $ssr_scheme = 'ssr://' . $ssr_str;
+
+            // 生成ss scheme
+            $ss_str = '';
+            $ss_str .= $user->method . ':' . $user->passwd . '@';
+            $ss_str .= $node->server . ':' . $user->port;
+            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
+            $ss_scheme = 'ss://' . $ss_str;
+
+            // 生成文本配置信息
+            $txt = "服务器：" . $node->server . "\r\n";
+            $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
+            $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
+            $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
+            $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
+            $txt .= "协议参数：" . ($node->single ? $user->port.':'.$user->passwd : $user->protocol_param) . "\r\n";
+            $txt .= "混淆方式：" . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . "\r\n";
+            $txt .= "混淆参数：" . ($node->single ? '' : $user->obfs_param) . "\r\n";
+            $txt .= "本地端口：1080\r\n路由：绕过局域网及中国大陆地址";
+
+            $node->txt = $txt;
+            $node->ssr_scheme = $ssr_scheme;
+            $node->ss_scheme = $node->compatible ? $ss_scheme : ''; // 节点兼容原版才显示
+        }
+
+        $view['nodeList'] = $nodeList;
 
         return Response::view('user/index', $view);
     }
@@ -163,82 +215,6 @@ class UserController extends BaseController
 
             return Response::view('user/profile', $view);
         }
-    }
-
-    // 节点列表
-    public function nodeList(Request $request)
-    {
-        $user = $request->session()->get('user');
-        $user = User::query()->where('id', $user['id'])->first();
-
-        $nodeList = DB::table('ss_group_node')
-            ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
-            ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
-            ->where('ss_group.level', '<=', $user->level)
-            ->paginate(10)
-            ->appends($request->except('page'));
-
-        foreach ($nodeList as &$node) {
-            // 在线人数
-            $last_log_time = time() - 1800; // 10分钟内
-            $online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
-            $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
-
-            // 已产生流量
-            $u = UserTrafficLog::query()->where('node_id', $node->id)->sum('u');
-            $d = UserTrafficLog::query()->where('node_id', $node->id)->sum('d');
-            $node->transfer = $this->flowAutoShow($u + $d);
-
-            // 负载
-            $node_info = SsNodeInfo::query()->where('node_id', $node->id)->orderBy('id', 'desc')->first();
-            $node->load = empty($node_info->load) ? 0 : $node_info->load;
-
-            // 生成ssr scheme
-            $obfs_param = $user->obfs_param ? base64_encode($user->obfs_param) : '';
-            $protocol_param = $user->protocol_param ? base64_encode($user->protocol_param) : '';
-
-            $ssr_str = '';
-            $ssr_str .= $node->server . ':' . $user->port;
-            $ssr_str .= ':' . $user->protocol . ':' . $user->method;
-            $ssr_str .= ':' . $user->obfs . ':' . base64_encode($user->passwd);
-            $ssr_str .= '/?obfsparam=' . $obfs_param;
-            $ssr_str .= '&protoparam=' . $protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode($node->name);
-            $ssr_str .= '&group=' . base64_encode('节点');
-            //$ssr_str .= '&udpport=0';
-            //$ssr_str .= '&uot=0';
-            $ssr_str = $this->base64url_encode($ssr_str);
-            $ssr_scheme = 'ssr://' . $ssr_str;
-
-            // 生成ss scheme
-            $ss_str = '';
-            $ss_str .= $user->method . ':' . $user->passwd . '@';
-            $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
-            $ss_scheme = 'ss://' . $ss_str;
-
-            // 生成文本配置信息
-            $txt = <<<TXT
-服务器：{$node->server}
-远程端口：{$user->port}
-本地端口：1080
-密码：{$user->passwd}
-加密方法：{$user->method}
-协议：{$user->protocol}
-协议参数：{$user->protocol_param}
-混淆方式：{$user->obfs}
-混淆参数：{$user->obfs_param}
-路由：绕过局域网及中国大陆地址
-TXT;
-
-            $node->txt = $txt;
-            $node->ssr_scheme = $ssr_scheme;
-            $node->ss_scheme = $ss_scheme;
-        }
-
-        $view['nodeList'] = $nodeList;
-
-        return Response::view('user/nodeList', $view);
     }
 
     // 流量日志
@@ -655,7 +631,10 @@ TXT;
                 $verify->status = 2;
                 $verify->save();
 
-                return Response::view('user/reset');
+                // 重新获取一遍verify
+                $view['verify'] = Verify::query()->where('token', $token)->with('user')->first();
+
+                return Response::view('user/reset', $view);
             }
 
             $view['verify'] = $verify;

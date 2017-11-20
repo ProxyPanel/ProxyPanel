@@ -29,6 +29,8 @@ class User extends Model
         'protocol_param',
         'obfs',
         'obfs_param',
+        'speed_limit_per_con',
+        'speed_limit_per_user',
         'gender',
         'wechat',
         'qq',
@@ -38,7 +40,11 @@ class User extends Model
         'enable_time',
         'expire_time',
         'remark',
+        'level',
         'is_admin',
-        'reg_ip'
+        'reg_ip',
+        'last_login',
+        'referral_uid',
+        'status',
     ];
 }

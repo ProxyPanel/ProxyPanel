@@ -124,6 +124,8 @@ return [
 
     'log_level' => 'debug',
 
+    'log_max_files' => 30,
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

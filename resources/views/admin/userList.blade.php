@@ -37,29 +37,30 @@
                     <div class="portlet-body">
                         <div class="row" style="padding-bottom:5px;">
                             <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
+                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信" onkeydown="if(event.keyCode==13){do_search();}">
+                                <input type="text" class="col-md-4 form-control input-sm" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ" onkeydown="if(event.keyCode==13){do_search();}">
+                                <input type="text" class="col-md-4 form-control input-sm" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){do_search();}">
+                                <input type="text" class="col-md-4 form-control input-sm" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="pay_way" id="pay_way" onChange="do_search()">
-                                    <option value="0" @if(empty(Request::get('pay_way'))) selected @endif>付费方式</option>
+                                <select class="form-control input-sm" name="pay_way" id="pay_way" onChange="doSearch()">
+                                    <option value="" @if(empty(Request::get('pay_way'))) selected @endif>付费方式</option>
+                                    <option value="0" @if(Request::get('pay_way') == '0') selected @endif>免费</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>月付</option>
                                     <option value="2" @if(Request::get('pay_way') == '2') selected @endif>半年付</option>
                                     <option value="3" @if(Request::get('pay_way') == '3') selected @endif>年付</option>
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="status" id="status" onChange="do_search()">
+                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
                                     <option value="" @if(empty(Request::get('status'))) selected @endif>状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
@@ -67,15 +68,15 @@
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="enable" id="enable" onChange="do_search()">
+                                <select class="form-control input-sm" name="enable" id="enable" onChange="doSearch()">
                                     <option value="" @if(empty(Request::get('enable'))) selected @endif>SS(R)状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
+                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
                         <div class="table-scrollable">
@@ -134,8 +135,8 @@
                                             <td>
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">编辑</button>
                                                 <!--<button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button>-->
-                                                <button type="button" class="btn btn-sm green btn-outline" onclick="do_export('{{$user->id}}')">配置信息</button>
-                                                <button type="button" class="btn btn-sm purple btn-outline" onclick="do_monitor('{{$user->id}}')">流量监控</button>
+                                                <button type="button" class="btn btn-sm green btn-outline" onclick="doExport('{{$user->id}}')">配置信息</button>
+                                                <button type="button" class="btn btn-sm purple btn-outline" onclick="doMonitor('{{$user->id}}')">流量监控</button>
                                                 <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">重置流量</button>
                                             </td>
                                         </tr>
@@ -164,7 +165,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -180,36 +180,21 @@
 
         // 删除账号
         function delUser(id) {
-            var _token = '{{csrf_token()}}';
+            layer.confirm('确定删除账号？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/delUser')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
 
-            bootbox.confirm({
-                message: "确定删除账号？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('admin/delUser')}}", {id:id, _token:_token}, function(ret) {
-                            layer.msg(ret.message, {time:1000}, function() {
-                                if (ret.status == 'success') {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    }
-                }
+                layer.close(index);
             });
         }
 
         // 搜索
-        function do_search() {
+        function doSearch() {
             var username = $("#username").val();
             var wechat = $("#wechat").val();
             var qq = $("#qq").val();
@@ -222,18 +207,18 @@
         }
 
         // 重置
-        function do_reset() {
+        function doReset() {
             window.location.href = '{{url('admin/userList')}}';
         }
 
         // 导出配置
-        function do_export(id) {
+        function doExport(id) {
             window.location.href = '{{url('admin/export?id=')}}' + id;
         }
 
         // 流量监控
-        function do_monitor(id) {
-            window.location.href = '{{url('admin/monitor?id=')}}' + id;
+        function doMonitor(id) {
+            window.location.href = '{{url('admin/userMonitor?id=')}}' + id;
         }
 
         // 重置流量

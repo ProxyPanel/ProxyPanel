@@ -12,7 +12,7 @@ use Log;
 class AutoStatisticsUserHourlyTrafficJob extends Command
 {
     protected $signature = 'command:autoStatisticsUserHourlyTrafficJob';
-    protected $description = '用户流量每小时自动统计';
+    protected $description = '用户每小时流量自动统计';
 
     public function __construct()
     {
@@ -36,7 +36,8 @@ class AutoStatisticsUserHourlyTrafficJob extends Command
         Log::info('定时任务：' . $this->description);
     }
 
-    private function statisticsByNode($user_id, $node_id = 0) {
+    private function statisticsByNode($user_id, $node_id = 0)
+    {
         $start_time = strtotime(date('Y-m-d H:i:s', strtotime("-1 hour")));
         $end_time = time();
 

@@ -10,7 +10,7 @@ use Log;
 class AutoResetUserTrafficJob extends Command
 {
     protected $signature = 'command:autoResetUserTrafficJob';
-    protected $description = '自动重置账号流量';
+    protected $description = '自动重置用户流量';
 
     protected static $config;
 

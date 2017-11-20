@@ -42,9 +42,9 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> <span class="node-id"><a href="javascript:showIdTips();">ID</a></span> </th>
                                     <th> 节点名称 </th>
-                                    <th> 出口带宽 </th>
+                                    <th> 单端口 </th>
                                     <th> 负载 </th>
                                     <th> 在线数 </th>
                                     <th> 产生流量/可用流量 </th>
@@ -63,8 +63,8 @@
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
-                                                <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容 </span> @endif </td>
-                                                <td> {{$node->bandwidth}}M </td>
+                                                <td> {{$node->name}} @if($node->compatible) <span class="label label-warning"> 兼容 </span> @endif </td>
+                                                <td> @if($node->single) <span class="label label-danger"> 是 </span> @else <span class="label label-info"> 否 </span> @endif </td>
                                                 <td> <span class="label label-danger"> {{$node->load}} </span> </td>
                                                 <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
                                                 <td> {{$node->transfer}} / {{$node->traffic}}G </td>
@@ -74,6 +74,7 @@
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">编辑</button>
                                                     <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">删除</button>
+                                                    <button type="button" class="btn btn-sm green btn-outline" onclick="nodeMonitor('{{$node->id}}')">流量监控</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -101,7 +102,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -117,31 +117,29 @@
 
         // 删除节点
         function delNode(id) {
-            var _token = '{{csrf_token()}}';
+            layer.confirm('确定删除节点？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/delNode')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
 
-            bootbox.confirm({
-                message: "确定删除节点？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('admin/delNode')}}", {id:id, _token:_token}, function(ret){
-                            layer.msg(ret.message, {time:1000}, function() {
-                                if (ret.status == 'success') {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    }
-                }
+                layer.close(index);
+            });
+        }
+
+        // 节点流量监控
+        function nodeMonitor(id) {
+            window.location.href = '{{url('admin/nodeMonitor?id=')}}' + id + '&page=' + '{{Request::get('page', 1)}}';
+        }
+
+        // 显示提示
+        function showIdTips() {
+            layer.tips('对应SSR后端usermysql.json中的nodeid', '.node-id', {
+                tips: [3, '#3595CC'],
+                time: 1200
             });
         }
     </script>

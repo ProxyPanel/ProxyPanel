@@ -41,6 +41,7 @@
                                 <tr>
                                     <th> ID </th>
                                     <th> 标题 </th>
+                                    <th> 类型 </th>
                                     <th> 排序 </th>
                                     <th> 发布日期 </th>
                                     <th> 操作 </th>
@@ -49,13 +50,14 @@
                                 <tbody>
                                 @if($articleList->isEmpty())
                                     <tr>
-                                        <td colspan="5">暂无数据</td>
+                                        <td colspan="6">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($articleList as $article)
                                         <tr class="odd gradeX">
                                             <td> {{$article->id}} </td>
                                             <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{$article->title}} </a> </td>
+                                            <td> {{$article->type == '1' ? '文章' : '公告'}} </td>
                                             <td> {{$article->sort}} </td>
                                             <td> {{$article->created_at}} </td>
                                             <td>
@@ -88,7 +90,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -104,31 +105,16 @@
 
         // 删除文章
         function delArticle(id) {
-            var _token = '{{csrf_token()}}';
+            layer.confirm('确定删除文章？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/delArticle')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
 
-            bootbox.confirm({
-                message: "确定删除文章？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('admin/delArticle')}}", {id:id, _token:_token}, function(ret) {
-                            layer.msg(ret.message, {time:1000}, function() {
-                                if (ret.status == 'success') {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    }
-                }
+                layer.close(index);
             });
         }
     </script>

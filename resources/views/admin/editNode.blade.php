@@ -46,6 +46,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="group_id" class="col-md-3 control-label"> 所属分组 </label>
                                                         <div class="col-md-8">
                                                             <select class="form-control" name="group_id" id="group_id">
@@ -60,37 +66,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
+                                                        <label for="desc" class="col-md-3 control-label"> 描述 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="method" class="col-md-3 control-label">加密方式</label>
-                                                        <div class="col-md-8">
-                                                            <select class="form-control" name="method" id="method">
-                                                                @foreach ($method_list as $method)
-                                                                    <option value="{{$method->name}}" @if($method->name == $node->method) selected @endif>{{$method->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
-                                                        <div class="col-md-8">
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control" name="bandwidth" value="{{$node->bandwidth}}" id="bandwidth" placeholder="" required>
-                                                                <span class="input-group-addon">M</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="traffic" class="col-md-3 control-label">每月可用流量</label>
-                                                        <div class="col-md-8">
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control right" name="traffic" value="{{$node->traffic}}" id="traffic" placeholder="" required>
-                                                                <span class="input-group-addon">G</span>
-                                                            </div>
+                                                            <input type="text" class="form-control" name="desc" value="{{$node->desc}}" id="desc" placeholder="简单描述">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -107,6 +85,62 @@
                                                                 <option value="1" {{$node->status == '1' ? 'selected' : ''}}>正常</option>
                                                                 <option value="0" {{$node->status == '0' ? 'selected' : ''}}>维护</option>
                                                             </select>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+                                                    <div class="form-group">
+                                                        <label for="single" class="col-md-3 control-label">单端口</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="single" id="single">
+                                                                <option value="0" {{!$node->single ? 'selected' : ''}}>关闭</option>
+                                                                <option value="1" {{$node->single ? 'selected' : ''}}>启用</option>
+                                                            </select>
+                                                            <span class="help-block"> 如果启用请配置服务端的<span style="color:red"> <a href="javascript:showTnc();">additional_ports</a> </span>信息 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group single-setting {{!$node->single ? 'hidden' : ''}}">
+                                                        <label for="single_force" class="col-md-3 control-label">[单] 模式</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="single_force" id="single_force">
+                                                                <option value="0" {{$node->single_force == '0' ? 'selected' : ''}}>兼容模式</option>
+                                                                <option value="1" {{$node->single_force == '1' ? 'selected' : ''}}>严格模式</option>
+                                                            </select>
+                                                            <span class="help-block"> 严格模式：用户的端口无法连接，只能通过以下指定的端口号进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group single-setting {{!$node->single ? 'hidden' : ''}}">
+                                                        <label for="single_port" class="col-md-3 control-label">[单] 端口号</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="single_port" value="{{$node->single_port}}" id="single_port" placeholder="443">
+                                                            <span class="help-block"> 推荐80或443，后端需要配置 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group single-setting {{!$node->single ? 'hidden' : ''}}">
+                                                        <label for="single_passwd" class="col-md-3 control-label">[单] 密码</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="single_passwd" value="{{$node->single_passwd}}" id="single_passwd" placeholder="password">
+                                                            <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group single-setting {{!$node->single ? 'hidden' : ''}}">
+                                                        <label for="single_method" class="col-md-3 control-label">[单] 加密方式</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="single_method" id="single_method">
+                                                                @foreach ($method_list as $method)
+                                                                    <option value="{{$method->name}}" @if($method->name == $node->single_method) selected @endif>{{$method->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group single-setting {{!$node->single ? 'hidden' : ''}}">
+                                                        <label for="single_protocol" class="col-md-3 control-label">[单] 协议</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="single_protocol" id="single_protocol">
+                                                                <option value="auth_aes128_md5" {{!$node->single_protocol == 'auth_aes128_md5' ? 'selected' : ''}}>auth_aes128_md5</option>
+                                                                <option value="auth_aes128_sha1" {{!$node->single_protocol == 'auth_aes128_sha1' ? 'selected' : ''}}>auth_aes128_sha1</option>
+                                                            </select>
+                                                            <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -129,7 +163,7 @@
                                                                 <option value="0" {{!$node->compatible ? 'selected' : ''}}>否</option>
                                                                 <option value="1" {{$node->compatible ? 'selected' : ''}}>是</option>
                                                             </select>
-                                                            <span class="help-block"> 请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
+                                                            <span class="help-block"> 如果兼容请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -137,6 +171,16 @@
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="traffic_rate" value="{{$node->traffic_rate}}" value="1.0" id="traffic_rate" placeholder="" required>
                                                             <span class="help-block"> 举例：0.1用100M结算10M，5用100M结算500M </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="method" class="col-md-3 control-label">加密方式</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="method" id="method">
+                                                                @foreach ($method_list as $method)
+                                                                    <option value="{{$method->name}}" @if($method->name == $node->method) selected @endif>{{$method->name}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -169,6 +213,24 @@
                                                         <label for="obfs_param" class="col-md-3 control-label"> 混淆参数 </label>
                                                         <div class="col-md-8">
                                                             <textarea class="form-control" rows="5" name="obfs_param" id="obfs_param">{{$node->obfs_param}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
+                                                        <div class="col-md-8">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" name="bandwidth" value="{{$node->bandwidth}}" id="bandwidth" placeholder="" required>
+                                                                <span class="input-group-addon">M</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="traffic" class="col-md-3 control-label">每月可用流量</label>
+                                                        <div class="col-md-8">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control right" name="traffic" value="{{$node->traffic}}" id="traffic" placeholder="" required>
+                                                                <span class="input-group-addon">G</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -208,7 +270,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -219,6 +280,7 @@
             var name = $('#name').val();
             var group_id = $("#group_id option:selected").val();
             var server = $('#server').val();
+            var desc = $('#desc').val();
             var method = $('#method').val();
             var custom_method = $('#custom_method').val();
             var traffic_rate = $('#traffic_rate').val();
@@ -230,6 +292,12 @@
             var traffic = $('#traffic').val();
             var monitor_url = $('#monitor_url').val();
             var compatible = $('#compatible').val();
+            var single = $('#single').val();
+            var single_force = $('#single_force').val();
+            var single_port = $('#single_port').val();
+            var single_passwd = $('#single_passwd').val();
+            var single_method = $('#single_method').val();
+            var single_protocol = $('#single_protocol').val();
             var sort = $('#sort').val();
             var status = $('#status').val();
 
@@ -237,7 +305,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, group_id:group_id, server:server, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, group_id:group_id, server:server, desc:desc, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
@@ -249,6 +317,85 @@
             });
 
             return false;
+        }
+
+        // 设置单端口多用户
+        $("#single").on('change', function() {
+            var single = parseInt($(this).val());
+
+            if (single) {
+                $(".single-setting").removeClass('hidden');
+            } else {
+                $(".single-setting").removeClass('hidden');
+                $(".single-setting").addClass('hidden');
+            }
+        });
+
+        // 服务条款
+        function showTnc() {
+            var content = '"additional_ports" : {'
+                + '<br>&ensp;&ensp;&ensp;&ensp;"80": {'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"passwd": "password",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"method": "aes-128-ctr",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol": "auth_aes128_md5",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol_param": "#",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs": "tls1.2_ticket_auth_compatible",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs_param": ""'
+                + '<br>&ensp;&ensp;&ensp;&ensp;},'
+                + '<br>&ensp;&ensp;&ensp;&ensp;"443": {'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"passwd": "password",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"method": "aes-128-ctr",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol": "auth_aes128_sha1",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol_param": "#",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs": "tls1.2_ticket_auth_compatible",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs_param": ""'
+                + '<br>&ensp;&ensp;&ensp;&ensp;}'
+                + '<br>},';
+
+            layer.open({
+                type: 1
+                ,title: '[节点 user-config.json 配置示例]' //不显示标题栏
+                ,closeBtn: false
+                ,area: '400px;'
+                ,shade: 0.8
+                ,id: 'tnc' //设定一个id，防止重复弹出
+                ,resize: false
+                ,btn: ['确定']
+                ,btnAlign: 'c'
+                ,moveType: 1 //拖拽模式，0或者1
+                ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">' + content + '</div>'
+                ,success: function(layero){
+                    //
+                }
+            });
+        }
+
+        // 模式提示
+        function showPortsOnlyConfig() {
+            var content = '严格模式：'
+                + '<br>'
+                + '"additional_ports_only": "true"'
+                + '<br><br>'
+                + '兼容模式：'
+                + '<br>'
+                + '"additional_ports_only": "false"';
+
+            layer.open({
+                type: 1
+                ,title: '[节点 user-config.json 配置示例]'
+                ,closeBtn: false
+                ,area: '400px;'
+                ,shade: 0.8
+                ,id: 'po-cfg' //设定一个id，防止重复弹出
+                ,resize: false
+                ,btn: ['确定']
+                ,btnAlign: 'c'
+                ,moveType: 1 //拖拽模式，0或者1
+                ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">' + content + '</div>'
+                ,success: function(layero){
+                    //
+                }
+            });
         }
     </script>
 @endsection

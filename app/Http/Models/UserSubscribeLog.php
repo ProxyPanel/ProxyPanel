@@ -17,6 +17,7 @@ class UserSubscribeLog extends Model
     protected $fillable = [
         'sid',
         'request_ip',
-        'request_time'
+        'request_time',
+        'request_header',
     ];
 }

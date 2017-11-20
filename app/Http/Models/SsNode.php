@@ -15,7 +15,9 @@ class SsNode extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'name',
+        'group_id',
         'server',
+        'desc',
         'method',
         'custom_method',
         'protocol',
@@ -24,7 +26,15 @@ class SsNode extends Model
         'obfs_param',
         'traffic_rate',
         'bandwidth',
-        'transfer',
+        'traffic',
+        'monitor_url',
+        'compatible',
+        'single',
+        'single_force',
+        'single_port',
+        'single_passwd',
+        'single_method',
+        'single_protocol',
         'sort',
         'status'
     ];

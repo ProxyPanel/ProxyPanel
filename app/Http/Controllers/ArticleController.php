@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Models\Article;
 use Illuminate\Http\Request;
 use Response;
-use Agent;
 
 /**
  * 文章控制器
@@ -23,13 +22,6 @@ class ArticleController extends BaseController
         if (empty($view['info'])) {
             exit('文章已删除');
         }
-
-        $headers = Agent::getHttpHeaders();
-        $browser = Agent::browser();
-        $scriptVersion = Agent::getScriptVersion();
-        $mobileHeaders = Agent::getMobileHeaders();
-        $userAgents = Agent::getUserAgents();
-        dump($headers, $browser, $scriptVersion, $mobileHeaders, $userAgents);
 
         return Response::view('article/detail', $view);
     }

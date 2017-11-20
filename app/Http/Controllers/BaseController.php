@@ -16,11 +16,11 @@ use App\Http\Models\User;
 class BaseController extends Controller
 {
     // 生成SS密码
-    public function makeRandStr($length = 4)
+    public function makeRandStr($length = 6)
     {
         // 密码字符集，可任意添加你需要的字符
-        $chars = 'abcdefghijkmnpqrstuvwxyz23456789';
-        $char = '@';
+        $chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        $char = '';
         for ($i = 0; $i < $length; $i++) {
             $char .= $chars[mt_rand(0, strlen($chars) - 1)];
         }
@@ -136,6 +136,11 @@ class BaseController extends Controller
     // 类似Linux中的tail命令
     public function tail($file, $n, $base = 5)
     {
+        $fileLines = $this->countLine($file);
+        if ($fileLines < 15000) {
+            return false;
+        }
+
         $fp = fopen($file, "r+");
         assert($n > 0);
         $pos = $n + 1;
@@ -155,6 +160,27 @@ class BaseController extends Controller
         }
 
         return array_slice($lines, 0, $n);
+    }
+
+    /**
+     * 计算文件行数
+     */
+    function countLine($file)
+    {
+        $fp = fopen($file, "r");
+        $i = 0;
+        while (!feof($fp)) {
+            //每次读取2M
+            if ($data = fread($fp, 1024 * 1024 * 2)) {
+                //计算读取到的行数
+                $num = substr_count($data, "\n");
+                $i += $num;
+            }
+        }
+
+        fclose($fp);
+
+        return $i;
     }
 
     /**

@@ -14,7 +14,11 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <a href="{{url('admin/monitor')}}">流量监控</a>
+                <a href="{{url('admin/userList')}}">账号列表</a>
+                <i class="fa fa-circle"></i>
+            </li>
+            <li>
+                <a href="{{url('admin/userMonitor')}}">账号流量监控</a>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->
@@ -41,7 +45,6 @@
 @section('script')
     <script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         var ChartsFlotcharts = function() {

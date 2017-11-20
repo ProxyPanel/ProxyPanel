@@ -283,7 +283,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -355,36 +354,16 @@
 
         // 删除等级
         function delLevel(tabId, id) {
-            bootbox.confirm({
-                message: "确定删除该等级吗？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.ajax({
-                            type: "POST",
-                            url: "{{url('admin/delLevel')}}",
-                            async: false,
-                            data: {_token:'{{csrf_token()}}', id: id},
-                            dataType: 'json',
-                            success: function (ret) {
-                                layer.msg(ret.message, {time:1000}, function() {
-                                    if (ret.status == 'success') {
-                                        window.location.href = '{{url('admin/config?tab=')}}' + tabId;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
+            layer.confirm('确定删除该等级吗？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/delLevel')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('admin/config?tab=')}}' + tabId;
+                        }
+                    });
+                });
+
+                layer.close(index);
             });
         }
 
@@ -424,31 +403,16 @@
 
         // 删除配置
         function delConfig(tabId, id) {
-            var _token = '{{csrf_token()}}';
+            layer.confirm('确定删除配置？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/delConfig')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('admin/config?tab=')}}' + tabId;
+                        }
+                    });
+                });
 
-            bootbox.confirm({
-                message: "确定删除配置？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('admin/delConfig')}}", {id:id, _token:_token}, function(ret) {
-                            layer.msg(ret.message, {time:1000}, function() {
-                                if (ret.status == 'success') {
-                                    window.location.href = '{{url('admin/config?tab=')}}' + tabId;
-                                }
-                            });
-                        });
-                    }
-                }
+                layer.close(index);
             });
         }
 

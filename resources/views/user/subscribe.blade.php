@@ -54,7 +54,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/pages/scripts/components-clipboard.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>

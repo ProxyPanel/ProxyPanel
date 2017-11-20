@@ -47,6 +47,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label col-md-1">类型</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="type" id="type">
+                                            <option value="1" {{$article->type == '1' ? 'selected' : ''}}>文章</option>
+                                            <option value="2" {{$article->type == '2' ? 'selected' : ''}}>公告</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-1">作者</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="author" value="{{$article->author}}" id="author" placeholder="" required>
@@ -85,7 +94,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/ueditor/ueditor.all.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
@@ -107,6 +115,7 @@
             var _token = '{{csrf_token()}}';
             var id = '{{$article->id}}';
             var title = $('#title').val();
+            var type = $('#type').val();
             var author = $('#author').val();
             var sort = $('#sort').val();
             var content = UE.getEditor('editor').getContent();
@@ -115,7 +124,7 @@
                 type: "POST",
                 url: "{{url('admin/editArticle')}}",
                 async: false,
-                data: {_token:_token, id:id, title: title, author:author, sort:sort, content:content},
+                data: {_token:_token, id:id, title: title, type:type, author:author, sort:sort, content:content},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

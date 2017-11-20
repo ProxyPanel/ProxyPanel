@@ -47,7 +47,7 @@
                                 <tbody>
                                     @if(empty($urlList))
                                         <tr>
-                                            <td colspan="2">暂无数据</td>
+                                            <td colspan="2">访问记录不足15000条，无法分析数据</td>
                                         </tr>
                                     @else
                                         @foreach($urlList as $url)
@@ -69,7 +69,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/scripts/datatable.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>

@@ -7,7 +7,7 @@ wget -c http://humdi.net/vnstat/vnstat-1.17.tar.gz && tar -zxvf vnstat-1.17.tar.
 echo '开始编译并安装vnstat...'
 ./configure
 make && make install
-ehco '开始配置vnstat...'
+echo '开始配置vnstat...'
 mkdir /var/lib/vnstat
 cp vnstat.conf.new /etc/vnstat.conf
 vnstat --create -i eth0

@@ -107,17 +107,17 @@
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu   " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{(Request::getRequestUri() == '/' || Request::getRequestUri() == '/user') ? 'active open' : ''}}">
+                <li class="nav-item start {{(Request::getRequestUri() == '/' || Request::getRequestUri() == '/user' || Request::getRequestUri() == '/user/subscribe') ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
                         <span class="title">首页</span>
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/user/nodeList' || Request::getRequestUri() == '/user/subscribe' ? 'active open' : ''}}">
-                    <a href="{{url('user/nodeList')}}" class="nav-link nav-toggle">
-                        <i class="icon-list"></i>
-                        <span class="title">节点列表</span>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/goodsList', '/user/addOrder']) ? 'active open' : ''}}">
+                    <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
+                        <i class="icon-basket"></i>
+                        <span class="title">购买服务</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/trafficLog' ? 'active open' : ''}}">
@@ -130,12 +130,6 @@
                     <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
                         <i class="icon-user-follow"></i>
                         <span class="title">邀请码</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/goodsList', '/user/addOrder']) ? 'active open' : ''}}">
-                    <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
-                        <i class="icon-basket"></i>
-                        <span class="title">流量套餐</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/orderList']) ? 'active open' : ''}}">

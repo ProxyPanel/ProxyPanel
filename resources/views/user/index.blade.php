@@ -31,112 +31,103 @@
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
         <!-- BEGIN PAGE BASE CONTENT -->
-        @if(!$articleList->isEmpty())
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ticker">
-                    <ul>
-                        @foreach($articleList as $k => $article)
-                            <li>
-                                <i class="fa fa-bell-o"></i>
-                                <a href="{{url('user/article?id=') . $article->id}}" class="alert-link" target="_blank"> {{$article->title}} </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
-        @endif
         @if (Session::has('successMsg'))
             <div class="alert alert-success">
                 <button class="close" data-close="alert"></button>
                 {{Session::get('successMsg')}}
             </div>
         @endif
+        @if($notice)
+            <div class="alert alert-success">
+                <i class="fa fa-bell-o"></i>
+                <button class="close" data-close="alert"></button>
+                <a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a>
+            </div>
+        @endif
         <div class="row">
-            <div class="col-md-6">
-                <!-- BEGIN PORTLET -->
-                <div class="portlet light bordered">
-                    <div class="portlet-title tabbable-line">
-                        <div class="caption caption-md">
-                            <i class="icon-globe theme-font hide"></i>
-                            <span class="caption-subject font-blue-madison bold uppercase"> 账号信息 </span>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul class="list-group">
-                                    <li class="list-group-item">
-                                        等级：{{$info['levelName']}}
-                                    </li>
-                                    <li class="list-group-item">
-                                        余额：{{$info['balance']}}
-                                        <span class="badge badge-danger">
-                                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        积分：{{$info['score']}}
-                                        <span class="badge badge-info">
-                                            <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换流量</a>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        已用流量：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
-                                        <div class="progress progress-striped active" style="margin-bottom:0;" title="共有流量{{$info['totalTransfer']}}，已用{{$info['usedTransfer']}}">
-                                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
-                                                <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
-                                            </div>
+            <div class="col-md-8">
+                <div class="alert alert-danger">
+                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，以此类推，越是优质节点则比例越高。
+                    <button class="btn btn-sm blue" onclick="subscribe()"> 订阅节点 </button>
+                </div>
+                <div class="row widget-row">
+                    @if(!$nodeList->isEmpty())
+                        @foreach($nodeList as $node)
+                            <div class="col-md-4">
+                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
+                                    <h4 class="widget-thumb-heading">{{$node->name}}</h4>
+                                    <div class="widget-thumb-wrap">
+                                        <div style="float:left;display: inline-block;padding-right:15px;">
+                                            <img src="{{asset('assets/images/country/pic_015.png')}}"/>
                                         </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}}
-                                    </li>
-                                    <li class="list-group-item">
-                                        最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}}
-                                    </li>
-                                </ul>
+                                        <div class="widget-thumb-body">
+                                            <span class="widget-thumb-subtitle"><a data-toggle="modal" href="#txt_{{$node->id}}">{{$node->server}}</a></span>
+                                            <span class="widget-thumb-body-stat">
+                                                @if($node->single)
+                                                    <a class="btn btn-sm red" href="javascript:;"> 单 </a>
+                                                @endif
+                                                <a class="btn btn-sm green btn-outline" href="javascript:show('{{$node->ssr_scheme . '<br><br>' . $node->ss_scheme}}');"> <i class="fa fa-paper-plane"></i> </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
-            <div class="col-md-6">
-                <!-- BEGIN PORTLET -->
-                <div class="portlet light bordered">
-                    <div class="portlet-title tabbable-line">
-                        <div class="caption caption-md">
-                            <i class="icon-globe theme-font hide"></i>
-                            <span class="caption-subject font-blue-madison bold uppercase"> SS(R)信息 </span>
+            <div class="col-md-4">
+                <div class="portlet box red">
+                    <div class="portlet-title">
+                        <div class="caption">账号信息</div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <p class="text-muted"> 等级：{{$info['levelName']}} </p>
+                        <p class="text-muted">
+                            余额：{{$info['balance']}}
+                            <span class="badge badge-danger">
+                                <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
+                            </span>
+                            &ensp;&ensp;积分：{{$info['score']}}
+                            <span class="badge badge-info">
+                                <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换</a>
+                            </span>
+                        </p>
+                        <p class="text-muted"> 账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} &ensp;&ensp; 最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}</p>
+                        <p class="text-muted">
+                            已用流量：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
+                            <div class="progress progress-striped active" style="margin-bottom:0;" title="共有流量{{$info['totalTransfer']}}，已用{{$info['usedTransfer']}}">
+                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
+                                    <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
+                                </div>
+                            </div>
+                        </p>
+                        <p class="text-muted"> 最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
+                    </div>
+                </div>
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption">文章</div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <ul class="list-group">
-                                    <li class="list-group-item">
-                                        端口：{{$info['port']}}
-                                    </li>
-                                    <li class="list-group-item">
-                                        加密方式：{{$info['method']}}
-                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        连接密码：{{$info['passwd']}}
-                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        协议：{{$info['protocol']}}
-                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        混淆：{{$info['obfs']}}
-                                        <span class="badge badge-success"><a href="{{url('user/profile#tab_2')}}" style="color:#FFF;">修改</a></span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}
-                                    </li>
+                                    @foreach($articleList as $k => $article)
+                                        <li class="list-group-item">
+                                            <a href="{{url('user/article?id=') . $article->id}}" class="alert-link" target="_blank"> {{$article->title}} </a>
+                                            <div class="pull-right">
+                                                [{{date('Y/m/d', strtotime($article->created_at))}}]
+                                            </div>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -184,7 +175,7 @@
                         <h4 class="modal-title"> 兑换流量 </h4>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info" id="msg">您有 {{$info['score']}} 积分，共计可兑换 {{$info['score']}}M 流量。</div>
+                        <div class="alert alert-info" id="msg">您有 {{$info['score']}} 积分，共计可兑换 {{$info['score']}}M 免费流量。</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-dismiss="modal" class="btn dark btn-outline">取消</button>
@@ -193,47 +184,61 @@
                 </div>
             </div>
         </div>
+
+        @foreach ($nodeList as $node)
+            <div class="modal fade draggable-modal" id="txt_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">配置信息</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea class="form-control" rows="10" readonly="readonly"> {{$node->txt}} </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog @if(!$node->compatible) modal-sm @endif">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">请使用客户端扫描二维码</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                @if ($node->compatible)
+                                    <div class="col-md-6">
+                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
+                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                    </div>
+                                @else
+                                    <div class="col-md-12">
+                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
+                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
         <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/jquery-knob/js/jquery.knob.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/jquery-easyticker/test/jquery.easing.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/jquery-easyticker/jquery.easy-ticker.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
-    <script>
-        // 流量饼图
-        $(function() {
-            $(".knob").knob({
-                'readOnly':true,
-                'angleoffset':0,
-                'width':150,
-                'height':150
-            });
-        });
-
-        // 公告
-        $(function(){
-            $('.ticker').easyTicker({
-                direction: 'up',
-                easing: 'easeInOutBack',
-                speed: 'slow',
-                interval: 2000,
-                height: 'auto',
-                visible: 1,
-                mousePause: 1,
-                controls: {
-                    up: '.up',
-                    down: '.down',
-                    toggle: '.toggle',
-                    stopText: 'Stop !!!'
-                }
-            }).data('easyTicker');
-        });
-
+    <script type="text/javascript">
         // 积分兑换流量
         function exchange() {
             $.ajax({
@@ -252,6 +257,43 @@
             });
 
             return false;
+        }
+    </script>
+
+    <script type="text/javascript">
+        var UIModals = function () {
+            var n = function () {
+                @foreach($nodeList as $node)
+                    $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
+                @endforeach
+            };
+
+            return {
+                init: function () {
+                    n()
+                }
+            }
+        }();
+
+        jQuery(document).ready(function () {
+            UIModals.init()
+        });
+
+        // 循环输出节点scheme用于生成二维码
+        @foreach ($nodeList as $node)
+            $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
+            $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+        @endforeach
+
+        // 节点订阅
+        function subscribe() {
+            window.location.href = '{{url('/user/subscribe')}}';
+        }
+
+        // 显示加密、混淆、协议
+        function show(txt) {
+            layer.msg(txt);
         }
     </script>
 @endsection

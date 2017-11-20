@@ -7,7 +7,7 @@ MYSQL 5.5 （推荐5.6+）
 磁盘空间 10G+
 KVM
 
-PHP必须开启gd2、fileinfo组件
+PHP必须开启gd、fileinfo组件
 
 小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
@@ -17,7 +17,7 @@ telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
 开发测试演示：http://www.ssrpanel.com
 用户名：admin 密码：123456
-(请大家勿改admin的密码)
+演示站已挂，求捐赠我自己买VPS搭建一个
 ````
 
 ![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
@@ -49,16 +49,18 @@ telegram群组：https://t.me/chatssrpanel
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
-|【要求匿名】|￥60|
+|【要求匿名】|￥130|
+|暮风|￥20|
+|huigeer|￥10|
+|真想悠哉|￥88|
+|osmond|￥10|
 
-截止目前收到的捐赠：￥492，实际到账：￥487.08 （提款手续费4.92）
 
 这些捐赠的用途：
-- 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
+- 1.30刀买了1台VPS做开发测试用（已被BAN）
 - 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-- 3.感谢`Jyo`提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
-- 4.感谢`izhangxm`提交了自定义等级的分支代码
-- 5.感谢`Hao-Luo`提供的节点一键部署脚本
+- 3.感谢`izhangxm`提交了自定义等级的分支代码
+- 4.感谢`Hao-Luo`提供的节点一键部署脚本
 
 
 #### 拉取代码
@@ -165,6 +167,55 @@ chmod a+x update.sh && sh update.sh
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
 ````
 
+## 单端口多用户
+````
+编辑节点的 user-config.json 文件：
+vim user-config.json
+
+将 "additional_ports" : {}, 改为以下内容：
+"additional_ports" : {
+    "80": {
+        "passwd": "统一认证密码", // 例如 SSRP4ne1，不要出现除大小写字母数字以外的任何字符
+        "method": "统一认证加密方式", // 例如 aes-128-ctr
+        "protocol": "统一认证协议", // 例如 auth_aes128_md5 或者 auth_aes128_sha1，目前只有这两种
+        "protocol_param": "#",
+        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs_param": ""
+    },
+    "443": {
+        "passwd": "统一认证密码",
+        "method": "统一认证加密方式",
+        "protocol": "统一认证协议",
+        "protocol_param": "#",
+        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs_param": ""
+    }
+},
+
+保存，然后重启SSR服务。
+客户端设置：
+
+远程端口：80
+密码：password
+加密方式：aes-128-ctr
+协议：auth_aes128_md5
+混淆插件：tls1.2_ticket_auth
+协议参数：1026:@123 (SSR端口:SSR密码)
+
+或
+
+远程端口：443
+密码：password
+加密方式：aes-128-ctr
+协议：auth_aes128_sha1
+混淆插件：tls1.2_ticket_auth
+协议参数：1026:@123 (SSR端口:SSR密码)
+
+经实测账号的协议可以是：auth_chain_a，建议节点后端使用auth_sha1_v4_compatible，方便兼容
+
+注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
+警告：我测试单端口多用户时发现锐速无法正常加速（可能是我的问题），可以换BBR试试
+````
 
 ## 说明
 ````
@@ -182,6 +233,7 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpan
 11.更多功能和开发排期请看WIKI
 ````
 
+## 预览（这个是第一版，很老很老了）
 ![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)
 ![Markdown](http://i4.bvimg.com/1949/a7c21b7504805130.png)
 ![Markdown](http://i4.bvimg.com/1949/ee4e72cab0deb8b0.png)
