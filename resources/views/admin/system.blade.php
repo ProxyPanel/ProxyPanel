@@ -439,8 +439,8 @@
                                                     <div class="portlet-body">
                                                         <div class="form-group">
                                                             <div class="col-md-6">
-                                                                <label class="col-md-5 control-label">微信</label>
-                                                                <div class="col-md-7">
+                                                                <label class="control-label col-md-3">微信</label>
+                                                                <div class="col-md-9">
                                                                     <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                         <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                                             @if ($wechat_qrcode)
@@ -461,9 +461,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-6"></div>
+                                                        </div>
+                                                        <div class="form-group">
                                                             <div class="col-md-6">
-                                                                <label class="col-md-5 control-label">支付宝</label>
-                                                                <div class="col-md-7">
+                                                                <label class="control-label col-md-3">支付宝</label>
+                                                                <div class="col-md-9">
                                                                     <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                         <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                                             @if ($alipay_qrcode)
@@ -484,12 +487,13 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-6"></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-actions">
                                                     <div class="row">
-                                                        <div class="col-md-offset-6 col-md-6">
+                                                        <div class="col-md-offset-2 col-md-9">
                                                             <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                                             <button type="submit" class="btn green">提 交</button>
                                                         </div>

@@ -46,7 +46,7 @@
                         <form action="{{url('shop/editGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">商品名称</label>
+                                    <label class="control-label col-md-2">商品名称</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="name" value="{{$goods->name}}" id="name" placeholder="" required>
                                         <input type="hidden" name="id" value="{{$goods->id}}" />
@@ -54,7 +54,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">商品图片</label>
+                                    <label class="control-label col-md-2">商品图片</label>
                                     <div class="col-md-9">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
                                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
@@ -77,13 +77,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">描述</label>
+                                    <label class="control-label col-md-2">描述</label>
                                     <div class="col-md-6">
                                         <textarea class="form-control" rows="3" name="desc" id="desc" placeholder="商品的简单描述">{{$goods->desc}}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">内含流量</label>
+                                    <label class="control-label col-md-2">内含流量</label>
                                     <div class="col-md-3">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="traffic" value="{{$goods->traffic}}" id="traffic" placeholder="" required="">
@@ -92,7 +92,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">售价</label>
+                                    <label class="control-label col-md-2">售价</label>
                                     <div class="col-md-3">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="price" value="{{$goods->price}}" id="price" placeholder="" required>
@@ -101,14 +101,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">所需积分</label>
+                                    <label class="control-label col-md-2">所需积分</label>
                                     <div class="col-md-3">
                                         <input type="text" class="form-control" name="score" value="{{$goods->score}}" id="score" placeholder="" required>
                                         <span class="help-block">换购该商品需要的积分值</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="type" class="col-md-3 control-label">类型</label>
+                                    <label for="type" class="control-label col-md-2">类型</label>
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
@@ -124,7 +124,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">有效期</label>
+                                    <label class="control-label col-md-2">有效期</label>
                                     <div class="col-md-3">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="days" value="{{$goods->days}}" id="days" placeholder="" required="">
@@ -134,7 +134,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group last">
-                                    <label class="control-label col-md-3">状态</label>
+                                    <label class="control-label col-md-2">状态</label>
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
@@ -152,7 +152,7 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
+                                    <div class="col-md-offset-2 col-md-9">
                                         <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
                                     </div>
                                 </div>

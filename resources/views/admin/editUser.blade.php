@@ -260,13 +260,13 @@
                                             <div class="form-group">
                                                 <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="protocol_param" value="{{$user->protocol_param}}" id="protocol_param" placeholder="">
+                                                    <input type="text" class="form-control" name="protocol_param" value="{{$user->protocol_param}}" id="protocol_param" placeholder="节点单端口时，请务必留空">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="obfs_param" class="col-md-3 control-label">混淆参数</label>
                                                 <div class="col-md-8">
-                                                    <textarea class="form-control" rows="5" name="obfs_param" id="obfs_param">{{$user->obfs_param}}</textarea>
+                                                    <textarea class="form-control" rows="5" name="obfs_param" id="obfs_param" placeholder="节点单端口时，请务必留空">{{$user->obfs_param}}</textarea>
                                                 </div>
                                             </div>
                                             <hr>

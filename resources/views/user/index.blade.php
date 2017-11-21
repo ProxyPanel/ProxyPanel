@@ -93,7 +93,7 @@
                                 <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
                             </span>
                             &ensp;&ensp;积分：{{$info['score']}}
-                            <span class="badge badge-info">
+                            <span class="badge badge-danger">
                                 <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换</a>
                             </span>
                         </p>
