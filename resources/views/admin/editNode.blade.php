@@ -333,7 +333,8 @@
 
         // 服务条款
         function showTnc() {
-            var content = '"additional_ports" : {'
+            var content = '1.请勿直接复制以下内容，否则SSR会报错；2.确保服务器时间为CST或UTC'
+                + '<br>"additional_ports" : {'
                 + '<br>&ensp;&ensp;&ensp;&ensp;"80": {'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"passwd": "password",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"method": "aes-128-ctr",'
