@@ -58,14 +58,15 @@
                                     <h4 class="widget-thumb-heading">{{$node->name}}</h4>
                                     <div class="widget-thumb-wrap">
                                         <div style="float:left;display: inline-block;padding-right:15px;">
-                                            <img src="{{asset('assets/images/country/pic_015.png')}}"/>
+                                            @if($node->country_code)
+                                                <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
+                                            @else
+                                                <img src="{{asset('/assets/images/country/un.png')}}"/>
+                                            @endif
                                         </div>
                                         <div class="widget-thumb-body">
                                             <span class="widget-thumb-subtitle"><a data-toggle="modal" href="#txt_{{$node->id}}">{{$node->server}}</a></span>
                                             <span class="widget-thumb-body-stat">
-                                                @if($node->single)
-                                                    <a class="btn btn-sm red" href="javascript:;"> 单 </a>
-                                                @endif
                                                 <a class="btn btn-sm green btn-outline" href="javascript:show('{{$node->ssr_scheme . '<br><br>' . $node->ss_scheme}}');"> <i class="fa fa-paper-plane"></i> </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
                                             </span>
@@ -186,7 +187,7 @@
                             <h4 class="modal-title">配置信息</h4>
                         </div>
                         <div class="modal-body">
-                            <textarea class="form-control" rows="10" readonly="readonly"> {{$node->txt}} </textarea>
+                            <textarea class="form-control" rows="10" readonly="readonly">{{$node->txt}}</textarea>
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Article;
 use App\Http\Models\ArticleLog;
 use App\Http\Models\Config;
+use App\Http\Models\Country;
 use App\Http\Models\Invite;
 use App\Http\Models\Level;
 use App\Http\Models\OrderGoods;
@@ -347,6 +348,7 @@ class AdminController extends BaseController
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $group_id = $request->get('group_id');
+            $country_code = $request->get('country_code');
             $server = $request->get('server');
             $desc = $request->get('desc');
             $method = $request->get('method');
@@ -372,6 +374,7 @@ class AdminController extends BaseController
             $node = SsNode::query()->create([
                 'name' => $name,
                 'group_id' => $group_id,
+                'country_code' => $country_code,
                 'server' => $server,
                 'desc' => $desc,
                 'method' => $method,
@@ -405,12 +408,13 @@ class AdminController extends BaseController
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
         } else {
-            // 加密方式、协议、混淆
+            // 加密方式、协议、混淆、等级、分组、国家地区
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
             $view['group_list'] = SsGroup::query()->get();
+            $view['country_list'] = Country::query()->get();
 
             return Response::view('admin/addNode', $view);
         }
@@ -423,6 +427,7 @@ class AdminController extends BaseController
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $group_id = $request->get('group_id');
+            $country_code = $request->get('country_code');
             $server = $request->get('server');
             $desc = $request->get('desc');
             $method = $request->get('method');
@@ -448,6 +453,7 @@ class AdminController extends BaseController
             $data = [
                 'name' => $name,
                 'group_id' => $group_id,
+                'country_code' => $country_code,
                 'server' => $server,
                 'desc' => $desc,
                 'method' => $method,
@@ -491,12 +497,13 @@ class AdminController extends BaseController
         } else {
             $view['node'] = SsNode::query()->where('id', $id)->first();
 
-            // 加密方式、协议、混淆
+            // 加密方式、协议、混淆、等级、分组、国家地区
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
             $view['group_list'] = SsGroup::query()->get();
+            $view['country_list'] = Country::query()->get();
 
             return Response::view('admin/editNode', $view);
         }
@@ -1118,12 +1125,12 @@ TXT;
         exit($this->makeRandStr());
     }
 
-    // 加密方式、混淆、协议、等级
+    // 加密方式、混淆、协议、等级、国家地区
     public function config(Request $request)
     {
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）、4 用户列表
+            $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）
             $is_default = $request->get('is_default', 0);
             $sort = $request->get('sort', 0);
 
@@ -1132,7 +1139,7 @@ TXT;
             }
 
             // 校验是否已存在
-            $config = SsConfig::where('name', $name)->where('type', $type)->first();
+            $config = SsConfig::query()->where('name', $name)->where('type', $type)->first();
             if ($config) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置已经存在，请勿重复添加']);
             }
@@ -1150,6 +1157,7 @@ TXT;
             $view['protocol_list'] = SsConfig::query()->where('type', 2)->get();
             $view['obfs_list'] = SsConfig::query()->where('type', 3)->get();
             $view['level_list'] = $this->levelList();
+            $view['country_list'] = Country::query()->get();
 
             return Response::view('admin/config', $view);
         }
@@ -1226,7 +1234,40 @@ TXT;
         return Response::view('admin/analysis', $view);
     }
 
-    // 等级设置
+    // 添加等级
+    public function addLevel(Request $request)
+    {
+        $level = $request->get('level');
+        $level_name = $request->get('level_name');
+
+        if (empty($level)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不能为空']);
+        }
+
+        if (empty($level_name)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
+        }
+
+        try {
+            $exists = Level::query()->where('level', $level)->first();
+            if ($exists) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级已存在，请勿重复添加']);
+            }
+
+            Level::query()->create([
+                'level' => $level,
+                'level_name' => $level_name
+            ]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+        }
+    }
+
+    // 编辑等级
     public function updateLevel(Request $request)
     {
         $id = $request->get('id');
@@ -1310,32 +1351,104 @@ TXT;
         }
     }
 
-    // 添加等级
-    public function addLevel(Request $request)
+    // 添加国家/地区
+    public function addCountry(Request $request)
     {
-        $level = $request->get('level');
-        $level_name = $request->get('level_name');
+        $country_name = $request->get('country_name');
+        $country_code = $request->get('country_code');
 
-        if (empty($level)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不能为空']);
+        if (empty($country_name)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区名称不能为空']);
         }
 
-        if (empty($level_name)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
+        if (empty($country_code)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
         }
 
         try {
-            $exists = Level::query()->where('level', $level)->first();
+            $exists = Country::query()->where('country_name', $country_name)->first();
             if ($exists) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级已存在，请勿重复添加']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区名称已存在，请勿重复添加']);
             }
 
-            Level::query()->create([
-                'level' => $level,
-                'level_name' => $level_name
+            Country::query()->create([
+                'country_name' => $country_name,
+                'country_code' => $country_code
             ]);
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+        }
+    }
+
+    // 编辑国家/地区
+    public function updateCountry(Request $request)
+    {
+        $id = $request->get('id');
+        $country_name = $request->get('country_name');
+        $country_code = $request->get('country_code');
+
+        if (empty($id)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+        }
+
+        if (empty($country_name)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区名称不能为空']);
+        }
+
+        if (empty($country_code)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
+        }
+
+        $country = Country::query()->where('id', $id)->first();
+        if (empty($country)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
+        }
+
+        // 校验该国家/地区下是否存在关联节点
+        $existNode = SsNode::query()->where('country_code', $country->country_code)->get();
+        if (!$existNode->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
+        }
+
+        try {
+            Country::query()->where('id', $id)->update(['country_name' => $country_name, 'country_code' => $country_code]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+        }
+    }
+
+    // 删除国家/地区
+    public function delCountry(Request $request)
+    {
+        $id = $request->get('id');
+
+        if (empty($id)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+        }
+
+        $country = Country::query()->where('id', $id)->first();
+        if (empty($country)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
+        }
+
+        // 校验该国家/地区下是否存在关联节点
+        $existNode = SsNode::query()->where('country_code', $country->country_code)->get();
+        if (!$existNode->isEmpty()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
+        }
+
+        try {
+            Country::query()->where('id', $id)->delete();
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 

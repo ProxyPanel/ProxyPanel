@@ -55,11 +55,13 @@ http://www.ssrpanel.com
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
-|【要求匿名】|￥130|
+|【要求匿名】|￥150|
 |暮风|￥20|
 |huigeer|￥10|
 |真想悠哉|￥88|
 |osmond|￥10|
+|风云_1688|￥20|
+|穆飞|￥10|
 
 
 这些捐赠的用途：
@@ -162,10 +164,15 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpan
 
 ## 更新代码
 ````
+进到ssrpanel目录下执行：
+git pull
+
+如果每次更新都会出现数据库文件被覆盖，请先执行一次：
+chmod a+x fix_git.sh && sh fix_git.sh
+
+如果本地自行改了文件，想用回原版代码，请先备份好 config/database.php，然后执行以下命令：
 chmod a+x update.sh && sh update.sh
 
-如果每次更新都会出现数据库文件被覆盖
-请先执行一次 chmod a+x fix_git.sh && sh fix_git.sh
 ````
 
 ## 网卡流量监控一键脚本
@@ -220,7 +227,9 @@ vim user-config.json
 经实测账号的协议可以是：auth_chain_a，建议节点后端使用auth_sha1_v4_compatible，方便兼容
 
 注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
-警告：我测试单端口多用户时发现锐速无法正常加速（可能是我的问题），可以换BBR试试
+警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
+提示：配置单端口最好先看下这个WIKI，防止才踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
+
 ````
 
 ## 说明

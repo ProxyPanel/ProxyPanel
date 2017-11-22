@@ -16,6 +16,7 @@ class SsNode extends Model
     protected $fillable = [
         'name',
         'group_id',
+        'country_code',
         'server',
         'desc',
         'method',

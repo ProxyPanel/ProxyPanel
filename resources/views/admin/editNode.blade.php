@@ -66,6 +66,19 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label for="country_code" class="col-md-3 control-label"> 所属国家/地区 </label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="country_code" id="country_code">
+                                                                <option value="">请选择</option>
+                                                                @if(!$country_list->isEmpty())
+                                                                    @foreach($country_list as $country)
+                                                                        <option value="{{$country->country_code}}" {{$node->country_code == $country->country_code ? 'selected' : ''}}>{{$country->country_code}} - {{$country->country_name}}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="desc" class="col-md-3 control-label"> 描述 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="desc" value="{{$node->desc}}" id="desc" placeholder="简单描述">
@@ -279,6 +292,7 @@
             var id = '{{Request::get('id')}}';
             var name = $('#name').val();
             var group_id = $("#group_id option:selected").val();
+            var country_code = $("#country_code option:selected").val();
             var server = $('#server').val();
             var desc = $('#desc').val();
             var method = $('#method').val();
@@ -305,7 +319,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, group_id:group_id, server:server, desc:desc, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
