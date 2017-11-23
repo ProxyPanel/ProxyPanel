@@ -988,13 +988,19 @@ class AdminController extends BaseController
         $nodeList = SsNode::query()->paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 生成ssr scheme
+            $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
+            $protocol_param = $node->single ? base64_encode($user->port . ':' . $user->passwd) : base64_encode($user->protocol_param);
+
             $ssr_str = '';
-            $ssr_str .= $node->server . ':' . $user->port;
-            $ssr_str .= ':' . $user->protocol . ':' . $user->method;
-            $ssr_str .= ':' . $user->obfs . ':' . $this->base64url_encode($user->passwd);
-            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($user->obfs_param);
-            $ssr_str .= '&=protoparam' . $this->base64url_encode($user->protocol_param);
-            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
+            $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
+            $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
+            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? base64_encode($node->single_passwd) : base64_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . $obfs_param;
+            $ssr_str .= '&protoparam=' . $protocol_param;
+            $ssr_str .= '&remarks=' . base64_encode($node->name);
+            $ssr_str .= '&group=' . base64_encode('节点');
+            //$ssr_str .= '&udpport=0';
+            //$ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
@@ -1002,47 +1008,23 @@ class AdminController extends BaseController
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#VPN'; // 加入#VPN是为了shadowrocket和ssr安卓客户端扫描时带上节点名称，windows c#版无效
+            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN'; // 加入#VPN是为了shadowrocket和ssr安卓客户端扫描时带上节点名称，windows c#版无效
             $ss_scheme = 'ss://' . $ss_str;
 
-            // 生成json配置信息
-            $config = <<<CONFIG
-{
-    "remarks" : "{$node->name}",
-    "server" : "{$node->server}",
-    "server_port" : {$user->port},
-    "server_udp_port" : 0,
-    "password" : "{$user->passwd}",
-    "method" : "{$user->method}",
-    "protocol" : "{$user->protocol}",
-    "protocolparam" : "{$user->protocol_param}",
-    "obfs" : "{$user->obfs}",
-    "obfsparam" : "{$user->obfs_param}",
-    "remarks_base64" : "",
-    "group" : "VPN",
-    "enable" : true,
-    "udp_over_tcp" : false
-}
-CONFIG;
-
             // 生成文本配置信息
-            $txt = <<<TXT
-服务器：{$node->server}
-远程端口：{$user->port}
-本地端口：1080
-密码：{$user->passwd}
-加密方法：{$user->method}
-协议：{$user->protocol}
-协议参数：{$user->protocol_param}
-混淆方式：{$user->obfs}
-混淆参数：{$user->obfs_param}
-路由：绕过局域网及中国大陆地址
-TXT;
+            $txt = "服务器：" . $node->server . "\r\n";
+            $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
+            $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
+            $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
+            $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
+            $txt .= "协议参数：" . ($node->single ? $user->port.':'.$user->passwd : $user->protocol_param) . "\r\n";
+            $txt .= "混淆方式：" . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . "\r\n";
+            $txt .= "混淆参数：" . ($node->single ? '' : $user->obfs_param) . "\r\n";
+            $txt .= "本地端口：1080\r\n路由：绕过局域网及中国大陆地址";
 
             $node->txt = $txt;
-            $node->json = $config;
             $node->ssr_scheme = $ssr_scheme;
-            $node->ss_scheme = $ss_scheme;
+            $node->ss_scheme = $node->compatible ? $ss_scheme : ''; // 节点兼容原版才显示
         }
 
         $view['nodeList'] = $nodeList;
