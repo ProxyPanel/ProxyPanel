@@ -34,12 +34,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($nodeList as $node)
+                                    @foreach($nodeList as $node)
                                         <tr>
                                             <td>
                                                 {{$node->name}}
-                                                @if ($node->compatible) <span class="label label-info"> 兼 </span> @endif
-                                                @if ($node->single) <span class="label label-danger"> 单 </span> @endif
+                                                @if($node->compatible) <span class="label label-info">兼</span> @endif
+                                                @if($node->single) <span class="label label-danger">单</span> @endif
                                             </td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
