@@ -46,7 +46,7 @@ class UserController extends BaseController
     {
         $user = $request->session()->get('user');
         $user = User::query()->where('id', $user['id'])->first();
-        $user->totalTransfer = $this->flowAutoShow($user->transfer_enable - $user->u - $user->d);
+        $user->totalTransfer = $this->flowAutoShow($user->transfer_enable);
         $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
         $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
