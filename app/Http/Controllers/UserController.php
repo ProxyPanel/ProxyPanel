@@ -66,6 +66,7 @@ class UserController extends BaseController
             ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
             ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
             ->where('ss_group.level', '<=', $user->level)
+            ->where('ss_node.status', 1)
             ->orderBy('ss_node.sort', 'desc')
             ->get();
 

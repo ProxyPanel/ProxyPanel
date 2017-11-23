@@ -63,7 +63,14 @@
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
-                                                <td> {{$node->name}} </td>
+                                                <td>
+                                                    @if(!$node->status)
+                                                        <span class="label label-warning" title="维护中">{{$node->name}}</span>
+                                                    @else
+                                                        {{$node->name}}
+                                                    @endif
+
+                                                </td>
                                                 <td> <span class="label label-danger">{{$node->load}}</span> </td>
                                                 <td> <span class="label label-danger">{{$node->online_users}}</span> </td>
                                                 <td> {{$node->transfer}} / {{$node->traffic}}G </td>
