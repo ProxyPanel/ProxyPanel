@@ -749,6 +749,7 @@ INSERT INTO `country` VALUES ('36', '波兰', 'pl');
 INSERT INTO `country` VALUES ('37', '哈萨克斯坦', 'kz');
 INSERT INTO `country` VALUES ('38', '乌克兰', 'ua');
 INSERT INTO `country` VALUES ('39', '罗马尼亚', 'ro');
+INSERT INTO `country` VALUES ('40', '阿拉伯联合酋长国', 'ae');
 
 
 

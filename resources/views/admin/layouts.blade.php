@@ -61,7 +61,8 @@
                     <li class="dropdown dropdown-user dropdown-dark">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                             <span class="username username-hide-on-mobile"> {{Session::get('user')['username']}} </span>
-                        </a>
+                            <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
+                            <img alt="" class="img-circle" src="/assets/images/avatar.jpg" /> </a>
                         <ul class="dropdown-menu dropdown-menu-default">
                             <li>
                                 <a href="{{url('/user')}}"> <i class="icon-home"></i> 个人中心 </a>

@@ -66,7 +66,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="country_code" class="col-md-3 control-label"> 所属国家/地区 </label>
+                                                        <label for="country_code" class="col-md-3 control-label"> 国家/地区 </label>
                                                         <div class="col-md-8">
                                                             <select class="form-control" name="country_code" id="country_code">
                                                                 <option value="">请选择</option>

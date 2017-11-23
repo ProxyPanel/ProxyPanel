@@ -44,11 +44,11 @@
                                 <tr>
                                     <th> <span class="node-id"><a href="javascript:showIdTips();">ID</a></span> </th>
                                     <th> 节点名称 </th>
-                                    <th> 单端口 </th>
                                     <th> 负载 </th>
-                                    <th> 在线数 </th>
+                                    <th> 在线 </th>
                                     <th> 产生流量/可用流量 </th>
                                     <th> 流量比例 </th>
+                                    <th> 扩展 </th>
                                     <th> 协议 </th>
                                     <th> 混淆 </th>
                                     <th> 操作 </th>
@@ -63,12 +63,15 @@
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
-                                                <td> {{$node->name}} @if($node->compatible) <span class="label label-warning"> 兼容 </span> @endif </td>
-                                                <td> @if($node->single) <span class="label label-danger"> 是 </span> @else <span class="label label-info"> 否 </span> @endif </td>
-                                                <td> <span class="label label-danger"> {{$node->load}} </span> </td>
-                                                <td> <span class="label label-danger"> {{$node->online_users}} </span> </td>
+                                                <td> {{$node->name}} </td>
+                                                <td> <span class="label label-danger">{{$node->load}}</span> </td>
+                                                <td> <span class="label label-danger">{{$node->online_users}}</span> </td>
                                                 <td> {{$node->transfer}} / {{$node->traffic}}G </td>
-                                                <td> {{$node->traffic_rate}} </td>
+                                                <td> <span class="label label-danger">{{$node->traffic_rate}}</span> </td>
+                                                <td>
+                                                    @if($node->compatible) <span class="label label-info">兼</span> @endif
+                                                    @if($node->single) <span class="label label-danger">是</span> @endif
+                                                </td>
                                                 <td> <span class="label label-info"> {{$node->protocol}} </span> </td>
                                                 <td> <span class="label label-info"> {{$node->obfs}} </span> </td>
                                                 <td>
