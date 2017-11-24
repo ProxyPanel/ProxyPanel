@@ -249,16 +249,19 @@ vim user-config.json
 13.屏蔽常见爬虫
 14.支持单端口多用户
 15.账号、节点24小时和近30天内的流量监控
+16.支持节点订阅功能，可一键封禁账号订阅地址
 ````
 
-## 预览（这个是第一版的预览，已过时）
-![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)
-![Markdown](http://i4.bvimg.com/1949/a7c21b7504805130.png)
-![Markdown](http://i4.bvimg.com/1949/ee4e72cab0deb8b0.png)
-![Markdown](http://i4.bvimg.com/1949/ee21b577359a638a.png)
-![Markdown](http://i1.ciimg.com/1949/6741b88c5a02d550.png)
-![Markdown](http://i1.ciimg.com/1949/a12612d57fdaa001.png)
-![Markdown](http://i1.ciimg.com/1949/c5c80818393d585e.png)
-![Markdown](http://i1.ciimg.com/1949/c52861d84ed70039.png)
-![Markdown](http://i1.ciimg.com/1949/83354a1cd7fbd041.png)
-![Markdown](http://i1.bvimg.com/1949/13b6e4713a6d29c2.png)
+## 预览
+![Wpy0e.png](https://s1.ax1x.com/2017/11/24/Wpy0e.png)
+![WpUYR.png](https://s1.ax1x.com/2017/11/24/WpUYR.png)
+![WpNk9.png](https://s1.ax1x.com/2017/11/24/WpNk9.png)
+![WpGmF.png](https://s1.ax1x.com/2017/11/24/WpGmF.png)
+![WpJw4.png](https://s1.ax1x.com/2017/11/24/WpJw4.png)
+![WpYTJ.png](https://s1.ax1x.com/2017/11/24/WpYTJ.png)
+![Wpaf1.png](https://s1.ax1x.com/2017/11/24/Wpaf1.png)
+![WpwSx.png](https://s1.ax1x.com/2017/11/24/WpwSx.png)
+![Wp0l6.png](https://s1.ax1x.com/2017/11/24/Wp0l6.png)
+![WpB6K.png](https://s1.ax1x.com/2017/11/24/WpB6K.png)
+![WpDOO.png](https://s1.ax1x.com/2017/11/24/WpDOO.png)
+![WpsmD.png](https://s1.ax1x.com/2017/11/24/WpsmD.png)
