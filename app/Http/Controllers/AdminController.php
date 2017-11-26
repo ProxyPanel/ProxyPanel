@@ -1086,29 +1086,37 @@ class AdminController extends BaseController
 
         // 30天内的流量
         $trafficDaily = [];
-        $nodeNameStr = [];
+        $trafficHourly = [];
         $nodeList = SsNode::query()->where('status', 1)->get();
         foreach ($nodeList as $node) {
             $dailyData = [];
-
-            // 节点名称数据
-            $nodeNameStr[] = $node->name;
+            $hourlyData = [];
 
             // 每个节点30日内每天的流量
             $userTrafficDaily = UserTrafficDaily::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->where('created_at', '<=', date('Y-m-d 00:00:00', strtotime("-1 day")))->get();
-            foreach ($userTrafficDaily as &$daily) {
+            foreach ($userTrafficDaily as $daily) {
                 $dailyData[] = round($daily->total / (1024 * 1024), 2);
+            }
+
+            // 每个节点24小时内每小时的流量
+            $userTrafficHourly = UserTrafficHourly::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d H:i:s', strtotime("-24 hours")))->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 hour")))->get();
+            foreach ($userTrafficHourly as $hourly) {
+                $hourlyData[] = round($hourly->total / (1024 * 1024), 2);
             }
 
             $trafficDaily[$node->id] = [
                 'nodeName' => $node->name,
                 'dailyData' => "'" . implode("','", $dailyData) . "'"
             ];
+
+            $trafficHourly[$node->id] = [
+                'nodeName' => $node->name,
+                'hourlyData' => "'" . implode("','", $hourlyData) . "'"
+            ];
         }
 
-
         $view['trafficDaily'] = $trafficDaily;
-        $view['nodeNameStr'] = "'" . implode("','", $nodeNameStr) . "'";
+        $view['trafficHourly'] = $trafficHourly;
 
         return Response::view('admin/userMonitor', $view);
     }

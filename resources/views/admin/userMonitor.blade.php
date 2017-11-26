@@ -51,24 +51,47 @@
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('chart1'));
 
-        // 指定图表的配置项和数据
-        var option = {
+        option = {
             title: {
-                text: '近30日流量'
+                text: '24小时内流量',
+                subtext: '单位M'
             },
-            tooltip: {},
-            legend: {
-                data:['销量']
+            tooltip: {
+                trigger: 'axis'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {}
+                }
             },
             xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                type: 'category',
+                boundaryGap: false,
+                data: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24']
             },
-            yAxis: {},
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} M'
+                }
+            },
+            series: [
+                @if(!empty($trafficHourly))
+                    @foreach($trafficHourly as $traffic)
+                        {
+                            name:'{{$traffic['nodeName']}}',
+                            type:'line',
+                            data:[{!! $traffic['dailyData'] !!}],
+                            markPoint: {
+                                data: [
+                                    {type: 'max', name: '最大值'}
+                                ]
+                            }
+                        },
+                    @endforeach
+                @endif
+            ]
         };
 
         myChart.setOption(option);
@@ -79,7 +102,7 @@
 
         option = {
             title: {
-                text: '24小时内流量',
+                text: '30日内流量',
                 subtext: '单位M'
             },
             tooltip: {
