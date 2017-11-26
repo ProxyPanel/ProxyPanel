@@ -29,7 +29,7 @@
 
         option = {
             title: {
-                text: '30日内的流量',
+                text: '30日内流量消耗情况',
                 subtext: '单位M'
             },
             tooltip: {
