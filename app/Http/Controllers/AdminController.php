@@ -554,7 +554,7 @@ class AdminController extends BaseController
         }
 
         // 节点24小时内每小时的流量
-        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d H:i:s', strtotime("-24 hours")))->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 hour")))->get();
+        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->orderBy('id', 'asc')->limit(24)->get();
         foreach ($nodeTrafficHourly as $hourly) {
             $hourlyData[] = round($hourly->total / (1024 * 1024), 2);
         }
