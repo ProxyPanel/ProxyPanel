@@ -548,7 +548,7 @@ class AdminController extends BaseController
         $hourlyData = [];
 
         // 节点30日内每天的流量
-        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->where('created_at', '<=', date('Y-m-d 00:00:00', strtotime("-1 day")))->get();
+        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->orderBy('id', 'asc')->limit(24)->get();
         foreach ($nodeTrafficDaily as $daily) {
             $dailyData[] = round($daily->total / (1024 * 1024), 2);
         }
