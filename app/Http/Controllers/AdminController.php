@@ -22,6 +22,7 @@ use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\User;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
+use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\UserTrafficLog;
 use Illuminate\Http\Request;
@@ -1070,7 +1071,7 @@ class AdminController extends BaseController
         }
     }
 
-    // 流量监控
+    // 用户流量监控
     public function userMonitor(Request $request)
     {
         $id = $request->get('id');
@@ -1084,19 +1085,30 @@ class AdminController extends BaseController
         }
 
         // 30天内的流量
-        $traffic = [];
-        $node_list = SsNode::query()->get();
-        foreach ($node_list as $node) {
-            $trafficList = \DB::select("SELECT date(from_unixtime(log_time)) AS dd, SUM(u) AS u, SUM(d) AS d FROM `user_traffic_log` WHERE `user_id` = {$id} AND `node_id` = {$node->id} GROUP BY `dd`");
-            foreach ($trafficList as $key => &$val) {
-                $val->total = ($val->u + $val->d) / (1024 * 1024); // 以M为单位
+        $trafficDaily = [];
+        $nodeNameStr = [];
+        $nodeList = SsNode::query()->where('status', 1)->get();
+        foreach ($nodeList as $node) {
+            $dailyData = [];
+
+            // 节点名称数据
+            $nodeNameStr[] = $node->name;
+
+            // 每个节点30日内每天的流量
+            $userTrafficDaily = UserTrafficDaily::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->where('created_at', '<=', date('Y-m-d 00:00:00', strtotime("-1 day")))->get();
+            foreach ($userTrafficDaily as &$daily) {
+                $dailyData[] = $daily->total / (1024 * 1024);
             }
 
-            $traffic[$node->id] = $trafficList;
+            $trafficDaily[$node->id] = [
+                'nodeName' => $node->name,
+                'dailyData' => "'" . implode("','", $dailyData) . "'"
+            ];
         }
 
-        $view['traffic'] = $traffic;
-        $view['nodeList'] = $node_list;
+
+        $view['trafficDaily'] = $trafficDaily;
+        $view['nodeNameStr'] = "'" . implode("','", $nodeNameStr) . "'";
 
         return Response::view('admin/userMonitor', $view);
     }

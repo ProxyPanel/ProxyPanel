@@ -22,4 +22,8 @@ class UserTrafficDaily extends Model
         'traffic'
     ];
 
+    public function node()
+    {
+        return $this->hasOne(SsNode::class, 'id', 'node_id');
+    }
 }

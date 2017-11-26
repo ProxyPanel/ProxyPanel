@@ -26,14 +26,17 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject font-dark sbold uppercase">节点流量（近30天）</span>
-                        </div>
-                    </div>
                     <div class="portlet-body">
-                        <div id="chart" class="chart"> </div>
+                        <div id="chart1" style="width: auto;height:450px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-body">
+                        <div id="chart2" style="width: auto;height:450px;"></div>
                     </div>
                 </div>
             </div>
@@ -43,131 +46,80 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/echarts/echarts.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        var ChartsFlotcharts = function() {
-            return {
-                init: function() {
-                    App.addResizeHandler(function() {
-                        Charts.initPieCharts();
-                    });
-                },
+        var myChart = echarts.init(document.getElementById('chart1'));
 
-                initCharts: function() {
-                    if (!jQuery.plot) {
-                        return;
-                    }
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '近30日流量'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
 
-                    function chart() {
-                        if ($('#chart').size() != 1) {
-                            return;
-                        }
+        myChart.setOption(option);
+    </script>
 
-                        @if (!empty($traffic))
-                            @foreach ($traffic as $node_id => $node_traffic_list)
-                                {{ 'var node_' . $node_id}} = [
-                                    @foreach ($node_traffic_list as $key => $vo)
-                                        [{{$key + 1}}, {{$vo->total}}],
-                                    @endforeach
-                                ];
-                            @endforeach
-                        @endif
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('chart2'));
 
-                        var plot = $.plot($("#chart"), [
-                            @if (!empty($nodeList))
-                                @foreach($nodeList as $node)
-                                    {data: {{'node_' . $node->id}}, label: "{{$node->name}}", lines: {lineWidth: 1}, shadowSize: 0},
-                                @endforeach
-                            @endif
-                            ], {
-                            series: {
-                                lines: {
-                                    show: true,
-                                    lineWidth: 2,
-                                    fill: true,
-                                    fillColor: {
-                                        colors: [{
-                                            opacity: 0.05
-                                        }, {
-                                            opacity: 0.01
-                                        }]
-                                    }
-                                },
-                                points: {
-                                    show: true,
-                                    radius: 3,
-                                    lineWidth: 1
-                                },
-                                shadowSize: 2
-                            },
-                            grid: {
-                                hoverable: true,
-                                clickable: true,
-                                tickColor: "#eee",
-                                borderColor: "#eee",
-                                borderWidth: 1
-                            },
-                            colors: ["#d12610", "#37b7f3", "#52e136"],
-                            xaxis: {
-                                ticks: 11,
-                                tickDecimals: 0,
-                                tickColor: "#eee",
-                            },
-                            yaxis: {
-                                ticks: 11,
-                                tickDecimals: 0,
-                                tickColor: "#eee",
-                            }
-                        });
-
-
-                        function showTooltip(x, y, contents) {
-                            $('<div id="tooltip">' + contents + '</div>').css({
-                                position: 'absolute',
-                                display: 'none',
-                                top: y + 5,
-                                left: x + 15,
-                                border: '1px solid #333',
-                                padding: '4px',
-                                color: '#fff',
-                                'border-radius': '3px',
-                                'background-color': '#333',
-                                opacity: 0.80
-                            }).appendTo("body").fadeIn(200);
-                        }
-
-                        var previousPoint = null;
-                        $("#chart").bind("plothover", function(event, pos, item) {
-                            $("#x").text(pos.x.toFixed(2));
-                            $("#y").text(pos.y.toFixed(2));
-
-                            if (item) {
-                                if (previousPoint != item.dataIndex) {
-                                    previousPoint = item.dataIndex;
-
-                                    $("#tooltip").remove();
-                                    var x = item.datapoint[0].toFixed(2),
-                                        y = item.datapoint[1].toFixed(2);
-
-                                    showTooltip(item.pageX, item.pageY, item.series.label + ": " + y + 'M');
-                                }
-                            } else {
-                                $("#tooltip").remove();
-                                previousPoint = null;
-                            }
-                        });
-                    }
-
-                    chart();
+        option = {
+            title: {
+                text: '24小时内流量',
+                subtext: '单位M'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {}
                 }
-            };
-        }();
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} M'
+                }
+            },
+            series: [
+                @if(!empty($trafficDaily))
+                    @foreach($trafficDaily as $traffic)
+                        {
+                            name:'{{$traffic['nodeName']}}',
+                            type:'line',
+                            data:[{!! $traffic['dailyData'] !!}],
+                            markPoint: {
+                                data: [
+                                    {type: 'max', name: '最大值'}
+                                ]
+                            }
+                        },
+                    @endforeach
+                @endif
+            ]
+        };
 
-        jQuery(document).ready(function() {
-            ChartsFlotcharts.init();
-            ChartsFlotcharts.initCharts();
-        });
+        myChart.setOption(option);
     </script>
 @endsection

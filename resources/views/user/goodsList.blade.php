@@ -18,7 +18,6 @@
         <div class="row">
             <div class="col-md-12">
                 <!-- BEGIN PAGE BASE CONTENT -->
-                <!--
                 <div class="portlet light portlet-fit bordered">
                     <div class="portlet-title">
                         <div class="caption">
@@ -222,7 +221,6 @@
                         </div>
                     </div>
                 </div>
-                -->
                 <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
