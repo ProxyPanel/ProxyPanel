@@ -77,19 +77,19 @@
                 }
             },
             series: [
-                    @if(!empty($trafficHourly))
+                @if(!empty($trafficHourly))
                     @foreach($trafficHourly as $traffic)
-                {
-                    name:'{{$traffic['nodeName']}}',
-                    type:'line',
-                    data:[{!! $traffic['hourlyData'] !!}],
-                    markPoint: {
-                        data: [
-                            {type: 'max', name: '最大值'}
-                        ]
-                    }
-                },
-                @endforeach
+                    {
+                        name:'{{$traffic['nodeName']}}',
+                        type:'line',
+                        data:[{!! $traffic['hourlyData'] !!}],
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'}
+                            ]
+                        }
+                    },
+                    @endforeach
                 @endif
             ]
         };
@@ -126,19 +126,19 @@
                 }
             },
             series: [
-                    @if(!empty($trafficDaily))
+                @if(!empty($trafficDaily))
                     @foreach($trafficDaily as $traffic)
-                {
-                    name:'{{$traffic['nodeName']}}',
-                    type:'line',
-                    data:[{!! $traffic['dailyData'] !!}],
-                    markPoint: {
-                        data: [
-                            {type: 'max', name: '最大值'}
-                        ]
-                    }
-                },
-                @endforeach
+                    {
+                        name:'{{$traffic['nodeName']}}',
+                        type:'line',
+                        data:[{!! $traffic['dailyData'] !!}],
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'}
+                            ]
+                        }
+                    },
+                    @endforeach
                 @endif
             ]
         };

@@ -544,8 +544,6 @@ class AdminController extends BaseController
         }
 
         // 30天内的流量
-        $trafficDaily = [];
-        $trafficHourly = [];
         $dailyData = [];
         $hourlyData = [];
 
@@ -561,18 +559,15 @@ class AdminController extends BaseController
             $hourlyData[] = round($hourly->total / (1024 * 1024), 2);
         }
 
-        $trafficDaily[$node->id] = [
+        $view['trafficDaily'] = [
             'nodeName' => $node->name,
             'dailyData' => "'" . implode("','", $dailyData) . "'"
         ];
 
-        $trafficHourly[$node->id] = [
+        $view['trafficHourly'] = [
             'nodeName' => $node->name,
             'hourlyData' => "'" . implode("','", $hourlyData) . "'"
         ];
-
-        $view['trafficDaily'] = $trafficDaily;
-        $view['trafficHourly'] = $trafficHourly;
 
         return Response::view('admin/nodeMonitor', $view);
     }
