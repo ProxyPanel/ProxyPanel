@@ -1097,7 +1097,7 @@ class AdminController extends BaseController
             // 每个节点30日内每天的流量
             $userTrafficDaily = UserTrafficDaily::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->where('created_at', '<=', date('Y-m-d 00:00:00', strtotime("-1 day")))->get();
             foreach ($userTrafficDaily as &$daily) {
-                $dailyData[] = $daily->total / (1024 * 1024);
+                $dailyData[] = floor($daily->total / (1024 * 1024));
             }
 
             $trafficDaily[$node->id] = [
