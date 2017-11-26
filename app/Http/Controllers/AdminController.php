@@ -543,17 +543,36 @@ class AdminController extends BaseController
             return Redirect::back();
         }
 
-        // 30天内流量
-        $daily_start_time = date('Y-m-d 00:00:00', strtotime("-30 days"));
-        $daily_end_time = date('Y-m-d 23:59:59', strtotime("-1 day"));
-        $view['trafficDaily'] = SsNodeTrafficDaily::query()->where('node_id', $node_id)->whereBetween('created_at', [$daily_start_time, $daily_end_time])->get();
+        // 30天内的流量
+        $trafficDaily = [];
+        $trafficHourly = [];
+        $dailyData = [];
+        $hourlyData = [];
 
-        // 24小时内流量
-        $hourly_start_time = date('Y-m-d H:i:s', strtotime("-24 hours"));
-        $hourly_end_time = date('Y-m-d H:i:s', strtotime("-1 hour"));
-        $view['trafficHourly'] = SsNodeTrafficHourly::query()->where('node_id', $node_id)->whereBetween('created_at', [$hourly_start_time, $hourly_end_time])->get();
+        // 节点30日内每天的流量
+        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->where('created_at', '<=', date('Y-m-d 00:00:00', strtotime("-1 day")))->get();
+        foreach ($nodeTrafficDaily as $daily) {
+            $dailyData[] = round($daily->total / (1024 * 1024), 2);
+        }
 
-        $view['node'] = $node;
+        // 节点24小时内每小时的流量
+        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d H:i:s', strtotime("-24 hours")))->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 hour")))->get();
+        foreach ($nodeTrafficHourly as $hourly) {
+            $hourlyData[] = round($hourly->total / (1024 * 1024), 2);
+        }
+
+        $trafficDaily[$node->id] = [
+            'nodeName' => $node->name,
+            'dailyData' => "'" . implode("','", $dailyData) . "'"
+        ];
+
+        $trafficHourly[$node->id] = [
+            'nodeName' => $node->name,
+            'hourlyData' => "'" . implode("','", $hourlyData) . "'"
+        ];
+
+        $view['trafficDaily'] = $trafficDaily;
+        $view['trafficHourly'] = $trafficHourly;
 
         return Response::view('admin/nodeMonitor', $view);
     }

@@ -21,4 +21,8 @@ class SsNodeTrafficHourly extends Model
         'traffic'
     ];
 
+    public function info()
+    {
+        return $this->hasOne(SsNode::class, 'id', 'node_id');
+    }
 }
