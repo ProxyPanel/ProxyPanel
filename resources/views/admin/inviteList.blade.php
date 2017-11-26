@@ -64,7 +64,7 @@
                                             @foreach($inviteList as $invite)
                                                 <tr>
                                                     <td> {{$invite->id}} </td>
-                                                    <td> {{$invite->code}} </td>
+                                                    <td> <a href="{{url('register?code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                     <td> {{$invite->dateline}} </td>
                                                     <td> {{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}} </td>
                                                     <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>

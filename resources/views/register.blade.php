@@ -63,7 +63,7 @@
             @if($is_invite_register)
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9">邀请码</label>
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="邀请码" name="code" value="{{Request::old('code')}}" required />
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="邀请码" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
                 </div>
             @endif
             @if($is_captcha)
