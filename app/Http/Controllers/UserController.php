@@ -12,15 +12,13 @@ use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
-use App\Http\Models\SsNodeInfo;
-use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
-use App\Http\Models\UserTrafficLog;
+use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
@@ -224,12 +222,14 @@ class UserController extends BaseController
         $user = $request->session()->get('user');
 
         // 30天内的流量
-        $trafficList = \DB::select("SELECT date(from_unixtime(log_time)) AS dd, SUM(u) AS u, SUM(d) AS d FROM `user_traffic_log` WHERE `user_id` = {$user['id']} GROUP BY `dd`");
-        foreach ($trafficList as $key => &$val) {
-            $val->total = ($val->u + $val->d) / (1024 * 1024); // 以M为单位
+        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'asc')->limit(30)->get();
+
+        $dailyData = [];
+        foreach ($userTrafficDaily as $daily) {
+            $dailyData[] = round($daily->total / (1024 * 1024), 2); // 以M为单位
         }
 
-        $view['trafficList'] = $trafficList;
+        $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
 
         return Response::view('user/trafficLog', $view);
     }
