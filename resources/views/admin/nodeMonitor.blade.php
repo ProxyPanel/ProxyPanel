@@ -78,18 +78,16 @@
             },
             series: [
                 @if(!empty($trafficHourly))
-                    @foreach($trafficHourly as $traffic)
                     {
-                        name:'{{$traffic['nodeName']}}',
+                        name:'{{$trafficHourly['nodeName']}}',
                         type:'line',
-                        data:[{!! $traffic['hourlyData'] !!}],
+                        data:[{!! $trafficHourly['hourlyData'] !!}],
                         markPoint: {
                             data: [
                                 {type: 'max', name: '最大值'}
                             ]
                         }
-                    },
-                    @endforeach
+                    }
                 @endif
             ]
         };
@@ -127,18 +125,16 @@
             },
             series: [
                 @if(!empty($trafficDaily))
-                    @foreach($trafficDaily as $traffic)
                     {
-                        name:'{{$traffic['nodeName']}}',
+                        name:'{{$trafficDaily['nodeName']}}',
                         type:'line',
-                        data:[{!! $traffic['dailyData'] !!}],
+                        data:[{!! $trafficDaily['dailyData'] !!}],
                         markPoint: {
                             data: [
                                 {type: 'max', name: '最大值'}
                             ]
                         }
-                    },
-                    @endforeach
+                    }
                 @endif
             ]
         };
