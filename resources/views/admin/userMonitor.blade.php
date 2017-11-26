@@ -82,7 +82,7 @@
                         {
                             name:'{{$traffic['nodeName']}}',
                             type:'line',
-                            data:[{!! $traffic['dailyData'] !!}],
+                            data:[{!! $traffic['hourlyData'] !!}],
                             markPoint: {
                                 data: [
                                     {type: 'max', name: '最大值'}
