@@ -769,12 +769,11 @@ class UserController extends BaseController
                     $couponLogObj->save();
                 }
 
-                // 把流量包内的流量加到账号上
+                // 把商品的流量加到账号上
                 User::query()->where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
 
-                // 将商品的有效期加到账号上，如果账号过期时间小于
-                //if (date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")) ) {}
-                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days"))]);
+                // 将商品的有效期加到账号上
+                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
 
                 // 写入返利日志
                 if ($user->referral_uid) {

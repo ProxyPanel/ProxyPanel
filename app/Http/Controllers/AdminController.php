@@ -48,13 +48,13 @@ class AdminController extends BaseController
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count();
         $view['onlineUserCount'] = User::query()->where('t', '>=', $online)->count();
         $view['nodeCount'] = SsNode::query()->count();
-        $flowCount = UserTrafficLog::query()->sum('u') + UserTrafficLog::sum('d');
+        $flowCount = UserTrafficLog::query()->sum('u') + UserTrafficLog::query()->sum('d');
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::query()->sum('balance');
         $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount');
         $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount');
-        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")))->where('enable', 1)->count();
+        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->where('enable', 1)->count();
 
         return Response::view('admin/index', $view);
     }

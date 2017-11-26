@@ -17,11 +17,11 @@
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <!-- BEGIN PAGE BASE CONTENT -->
-                <div class="portlet light portlet-fit bordered">
+                <!--
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject bold uppercase"> 套餐 </span>
+                            <span class="caption-subject bold uppercase"> 流量套餐 </span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -40,15 +40,9 @@
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">流量15G/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">15G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -87,15 +81,9 @@
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">流量25G/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">25G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -135,15 +123,9 @@
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">流量50G/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">50G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -182,15 +164,9 @@
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">流量50G/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">50G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -221,7 +197,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
@@ -277,7 +253,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->

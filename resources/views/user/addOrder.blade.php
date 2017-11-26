@@ -34,13 +34,13 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td style="padding: 20px;">
-                                <h3>{{$goods->name}}</h3>
-                                <p> <img src="{{$goods->logo}}" style="width:100px; height:100px;"> 内含流量 {{$goods->traffic}} MiB，有效期 {{date('Y-m-d', strtotime($goods->start_time))}} ~ {{date('Y-m-d', strtotime($goods->end_time))}} </p>
+                            <td style="padding: 10px;">
+                                <h2>{{$goods->name}}</h2>
+                                <p> 内含流量 {{$goods->traffic}} MiB <br> 有效期 {{$goods->days}}天，到期后自动扣除 </p>
                             </td>
-                            <td class="text-center sbold"> ￥{{$goods->price}} </td>
-                            <td class="text-center sbold"> x 1 </td>
-                            <td class="text-center sbold"> ￥{{$goods->price}} </td>
+                            <td class="text-center"> ￥{{$goods->price}} </td>
+                            <td class="text-center"> x 1 </td>
+                            <td class="text-center"> ￥{{$goods->price}} </td>
                         </tr>
                         </tbody>
                     </table>
