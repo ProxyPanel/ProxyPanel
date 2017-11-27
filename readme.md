@@ -16,9 +16,10 @@ PHP必须开启gd、fileinfo组件
 telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
 本人未实名微信小号：dxstx77 （请勿任何转账、红包行为）
+严禁在TG群里喧哗，只聊技术不扯淡，更别刷屏惹众怒，否则踢3天
 ````
 
-## 演示站(已挂，求捐赠)
+## 演示站(已挂)
 ````
 http://www.ssrpanel.com
 用户名：admin
@@ -62,6 +63,10 @@ http://www.ssrpanel.com
 |osmond|￥10|
 |风云_1688|￥20|
 |穆飞|￥10|
+|文青|￥10|
+|Sherl|￥48|
+|小孑、|￥20|
+|曾健|￥10|
 
 
 这些捐赠的用途：

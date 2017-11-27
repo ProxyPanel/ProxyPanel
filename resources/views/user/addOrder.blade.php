@@ -74,6 +74,7 @@
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
+    </div>
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
