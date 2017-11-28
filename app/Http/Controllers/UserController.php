@@ -240,7 +240,6 @@ class UserController extends BaseController
 
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
-        $view['username'] = $user['username'];
 
         return Response::view('user/trafficLog', $view);
     }

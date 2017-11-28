@@ -11,7 +11,6 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <h3 class="block">{{$username}}</h3>
                     <p> 提示：30日内流量统计不会统计当天，24小时内流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。 </p>
                 </div>
             </div>
