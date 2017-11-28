@@ -25,6 +25,14 @@
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
+                <div class="note note-info">
+                    <h3 class="block">{{$nodeName}}<small style="padding-left:10px;">{{$nodeServer}}</small></h3>
+                    <p> 提示：30日内流量统计不会统计当天，24小时内流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。 </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div class="portlet light bordered">
                     <div class="portlet-body">
                         <div id="chart1" style="width: auto;height:450px;"></div>

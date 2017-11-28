@@ -569,6 +569,9 @@ class AdminController extends BaseController
             'hourlyData' => "'" . implode("','", $hourlyData) . "'"
         ];
 
+        $view['nodeName'] = $node->name;
+        $view['nodeServer'] = $node->server;
+
         return Response::view('admin/nodeMonitor', $view);
     }
 
@@ -1131,6 +1134,7 @@ class AdminController extends BaseController
 
         $view['trafficDaily'] = $trafficDaily;
         $view['trafficHourly'] = $trafficHourly;
+        $view['username'] = $user->username;
 
         return Response::view('admin/userMonitor', $view);
     }

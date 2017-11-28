@@ -21,10 +21,12 @@ use Mail;
 class RegisterController extends BaseController
 {
     protected static $config;
+    protected static $forbidDomain;
 
     function __construct()
     {
         self::$config = $this->systemConfig();
+        self::$forbidDomain = $this->forbidDomain();
     }
 
     // 注册页
@@ -59,6 +61,9 @@ class RegisterController extends BaseController
 
                 return Redirect::back()->withInput();
             }
+//            else if (in_array(substr($username, strpos($username, '@') + 1), self::$forbidDomain)) {
+//                return Redirect::back()->withInput($request->except(['username']));
+//            }
 
             // 是否校验验证码
             if (self::$config['is_captcha']) {
