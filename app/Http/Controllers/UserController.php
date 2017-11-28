@@ -19,6 +19,7 @@ use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
+use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
@@ -222,14 +223,23 @@ class UserController extends BaseController
         $user = $request->session()->get('user');
 
         // 30天内的流量
-        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'asc')->limit(30)->get();
+        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'desc')->limit(30)->get();
 
         $dailyData = [];
         foreach ($userTrafficDaily as $daily) {
             $dailyData[] = round($daily->total / (1024 * 1024), 2); // 以M为单位
         }
 
+        // 24小时内的流量
+        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'desc')->limit(24)->get();
+
+        $hourlyData = [];
+        foreach ($userTrafficHourly as $hourly) {
+            $hourlyData[] = round($hourly->total / (1024 * 1024), 2); // 以M为单位
+        }
+
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
+        $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
 
         return Response::view('user/trafficLog', $view);
     }
