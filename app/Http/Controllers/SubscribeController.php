@@ -61,7 +61,7 @@ class SubscribeController extends BaseController
         }
 
         $node_ids = SsGroupNode::query()->whereIn('group_id', $group_ids)->select(['node_id'])->get();
-        $nodeList = SsNode::query()->whereIn('id', $node_ids)->get();
+        $nodeList = SsNode::query()->where('status', 1)->whereIn('id', $node_ids)->get();
         $scheme = self::$config['subscribe_max'] > 0 ? 'MAX=' . self::$config['subscribe_max'] . "\n" : '';
         foreach ($nodeList as $node) {
             $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
