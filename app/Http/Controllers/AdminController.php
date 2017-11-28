@@ -536,7 +536,7 @@ class AdminController extends BaseController
     {
         $node_id = $request->get('id');
 
-        $node = SsNode::query()->where('id', $node_id)->first();
+        $node = SsNode::query()->where('id', $node_id)->orderBy('sort', 'desc')->first();
         if (empty($node)) {
             $request->session()->flash('errorMsg', '节点不存在，请重试');
 
@@ -548,13 +548,13 @@ class AdminController extends BaseController
         $hourlyData = [];
 
         // 节点30日内每天的流量
-        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->orderBy('id', 'asc')->limit(30)->get();
+        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->orderBy('id', 'desc')->limit(30)->get();
         foreach ($nodeTrafficDaily as $daily) {
             $dailyData[] = round($daily->total / (1024 * 1024), 2);
         }
 
         // 节点24小时内每小时的流量
-        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->orderBy('id', 'asc')->limit(24)->get();
+        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->orderBy('id', 'desc')->limit(24)->get();
         foreach ($nodeTrafficHourly as $hourly) {
             $hourlyData[] = round($hourly->total / (1024 * 1024), 2);
         }
@@ -1104,19 +1104,19 @@ class AdminController extends BaseController
         // 30天内的流量
         $trafficDaily = [];
         $trafficHourly = [];
-        $nodeList = SsNode::query()->where('status', 1)->get();
+        $nodeList = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->get();
         foreach ($nodeList as $node) {
             $dailyData = [];
             $hourlyData = [];
 
             // 每个节点30日内每天的流量
-            $userTrafficDaily = UserTrafficDaily::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->where('created_at', '<=', date('Y-m-d 00:00:00', strtotime("-1 day")))->get();
+            $userTrafficDaily = UserTrafficDaily::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->orderBy('id', 'desc')->limit(30)->get();
             foreach ($userTrafficDaily as $daily) {
                 $dailyData[] = round($daily->total / (1024 * 1024), 2);
             }
 
             // 每个节点24小时内每小时的流量
-            $userTrafficHourly = UserTrafficHourly::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d H:i:s', strtotime("-24 hours")))->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 hour")))->get();
+            $userTrafficHourly = UserTrafficHourly::query()->with(['node'])->where('user_id', $user->id)->where('node_id', $node->id)->orderBy('id', 'desc')->limit(24)->get();
             foreach ($userTrafficHourly as $hourly) {
                 $hourlyData[] = round($hourly->total / (1024 * 1024), 2);
             }
