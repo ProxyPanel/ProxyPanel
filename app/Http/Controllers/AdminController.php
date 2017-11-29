@@ -30,7 +30,7 @@ use Redirect;
 use Response;
 use Log;
 
-class AdminController extends BaseController
+class AdminController extends Controller
 {
     protected static $config;
 

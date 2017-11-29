@@ -15,7 +15,7 @@ use Cache;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class LoginController extends BaseController
+class LoginController extends Controller
 {
     protected static $config;
 

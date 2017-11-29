@@ -12,7 +12,7 @@ use Redirect;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class ShopController extends BaseController
+class ShopController extends Controller
 {
     protected static $config;
 

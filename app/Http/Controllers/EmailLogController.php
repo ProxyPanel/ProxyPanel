@@ -11,7 +11,7 @@ use Response;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class EmailLogController extends BaseController
+class EmailLogController extends Controller
 {
     protected static $config;
 

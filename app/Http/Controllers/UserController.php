@@ -31,7 +31,7 @@ use Mail;
 use DB;
 use Log;
 
-class UserController extends BaseController
+class UserController extends Controller
 {
     protected static $config;
     protected static $userLevel;

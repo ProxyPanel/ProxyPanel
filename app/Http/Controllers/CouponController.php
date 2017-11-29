@@ -15,7 +15,7 @@ use Log;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class CouponController extends BaseController
+class CouponController extends Controller
 {
     protected static $config;
 

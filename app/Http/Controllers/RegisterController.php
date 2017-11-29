@@ -18,7 +18,7 @@ use Mail;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class RegisterController extends BaseController
+class RegisterController extends Controller
 {
     protected static $config;
     protected static $forbidDomain;
