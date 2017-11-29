@@ -109,16 +109,28 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="balance" class="col-md-3 control-label">余额</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="balance" value="{{$user->balance}}" id="balance" placeholder="" required>
+                                                <div class="col-md-5">
+                                                    <p class="form-control-static"> {{$user->balance}} </p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div style="float:right;">
+                                                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#handle_user_balance">充值</button>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <!--
                                             <div class="form-group">
                                                 <label for="score" class="col-md-3 control-label">积分</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="score" value="{{$user->score}}" id="score" placeholder="" required>
+                                                <div class="col-md-5">
+                                                    <p class="form-control-static"> {{$user->score}} </p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div style="float:right;">
+                                                        <button type="button" class="btn btn-sm btn-danger">操作</button>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            -->
                                             <div class="form-group">
                                                 <label class="col-md-3 control-label">有效期</label>
                                                 <div class="col-md-8">
@@ -307,6 +319,37 @@
                     <!-- END FORM-->
                 </div>
             </div>
+
+            <!-- 余额充值 -->
+            <div id="handle_user_balance" class="modal fade" tabindex="-1" data-focus-on="input:first" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog" style="width:300px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">充值</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger" style="display: none;" id="msg"></div>
+                            <!-- BEGIN FORM-->
+                            <form action="#" method="post" class="form-horizontal">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label for="amount" class="col-md-4 control-label"> 充值金额 </label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" onkeydown="if(event.keyCode==13){return false;}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- END FORM-->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
+                            <button type="button" class="btn red btn-outline" onclick="return handleUserBalance();">充值</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
@@ -382,6 +425,44 @@
         function makePasswd() {
             $.get("{{url('admin/makePasswd')}}",  function(ret) {
                 $("#passwd").val(ret);
+            });
+        }
+
+        // 余额充值
+        function handleUserBalance() {
+            var amount = $("#amount").val();
+            var reg = /^(\-?)\d+(\.\d+)?$/; //只可以是正负数字
+
+            if (amount == '' || amount == 0 || !reg.test(amount)) {
+                $("#msg").show().html("请输入充值金额");
+                $("#name").focus();
+                return false;
+            }
+
+            $.ajax({
+                url:'{{url('admin/handleUserBalance')}}',
+                type:"POST",
+                data:{_token:'{{csrf_token()}}', user_id:'{{Request::get('id')}}', amount:amount},
+                beforeSend:function(){
+                    $("#msg").show().html("充值中...");
+                },
+                success:function(ret){
+                    if (ret.status == 'fail') {
+                        $("#msg").show().html(ret.message);
+                        return false;
+                    } else {
+                        layer.msg(ret.message, {time:1000}, function() {
+                            if (ret.status == 'success') {
+                                $("#handle_user_balance").modal("hide");
+                                window.location.reload();
+                            }
+                        });
+                    }
+                },
+                error:function(){
+                    $("#msg").show().html("请求错误，请重试");
+                },
+                complete:function(){}
             });
         }
     </script>

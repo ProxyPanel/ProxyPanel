@@ -20,6 +20,7 @@ use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\SsNodeTrafficDaily;
 use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\User;
+use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficDaily;
@@ -143,8 +144,6 @@ class AdminController extends BaseController
             $qq = $request->get('qq');
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
-            $balance = $request->get('balance');
-            $score = $request->get('score');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
@@ -183,8 +182,8 @@ class AdminController extends BaseController
                 'qq' => $qq,
                 'usage' => $usage,
                 'pay_way' => $pay_way,
-                'balance' => $balance,
-                'score' => $score,
+                'balance' => 0,
+                'score' => 0,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                 'remark' => $remark,
@@ -237,8 +236,6 @@ class AdminController extends BaseController
             $qq = $request->get('qq');
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
-            $balance = $request->get('balance');
-            $score = $request->get('score');
             $status = $request->get('status');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
@@ -251,7 +248,7 @@ class AdminController extends BaseController
                 'port' => $port,
                 'passwd' => $passwd,
                 'transfer_enable' => $this->toGB($transfer_enable),
-                'enable' => $enable,
+                'enable' => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
                 'method' => $method,
                 'custom_method' => $method,
                 'protocol' => $protocol,
@@ -265,8 +262,6 @@ class AdminController extends BaseController
                 'qq' => $qq,
                 'usage' => $usage,
                 'pay_way' => $pay_way,
-                'balance' => $balance,
-                'score' => $score,
                 'status' => $status,
                 'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
                 'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
@@ -289,6 +284,7 @@ class AdminController extends BaseController
             $user = User::query()->where('id', $id)->first();
             if (!empty($user)) {
                 $user->transfer_enable = $this->flowToGB($user->transfer_enable);
+                $user->balance = $user->balance / 100;
             }
 
             $view['user'] = $user;
@@ -1656,5 +1652,46 @@ class AdminController extends BaseController
         User::query()->where('id', $id)->update(['u' => 0, 'd' => 0]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    // 操作用户余额
+    public function handleUserBalance(Request $request)
+    {
+        if ($request->method() == 'POST') {
+            $user_id = $request->get('user_id');
+            $amount = $request->get('amount');
+
+            if (empty($user_id) || empty($amount)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值异常']);
+            }
+
+            try {
+                $user = User::query()->where('id', $user_id)->first();
+
+                // 写入余额变动日志
+                $userBalanceLog = new UserBalanceLog();
+                $userBalanceLog->user_id = $user_id;
+                $userBalanceLog->order_id = 0;
+                $userBalanceLog->before = $user->balance;
+                $userBalanceLog->after = $user->balance + $amount * 100;
+                $userBalanceLog->amount = $amount * 100;
+                $userBalanceLog->desc = '后台手动充值';
+                $userBalanceLog->created_at = date('Y-m-d H:i:s');
+                $userBalanceLog->save();
+
+                // 加减余额
+                if ($amount < 0) {
+                    $user->decrement('balance', abs($amount * 100));
+                } else {
+                    $user->increment('balance', abs($amount * 100));
+                }
+
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
+            } catch (\Exception $e) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败：' . $e->getMessage()]);
+            }
+        } else {
+            return Response::view('admin/handleUserBalance');
+        }
     }
 }

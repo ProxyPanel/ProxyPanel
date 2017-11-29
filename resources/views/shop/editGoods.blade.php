@@ -14,7 +14,7 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <a href="{{url('shop/editGoods')}}">编辑商品</a>
+                <a href="{{url('shop/editGoods?id=' . Request::get('id'))}}">编辑商品</a>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->
