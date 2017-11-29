@@ -8,7 +8,7 @@ INSERT INTO `country` VALUES ('46', '比利时', 'be');
 
 
 -- 用户余额字段由decimal改为int，数值变大十倍
-ALTER TABLE `user` MODIFY `balance` int(11) NOT NULL DEFAULT '0' COMMENT '余额，单位分'
+ALTER TABLE `user` MODIFY `balance` int(11) NOT NULL DEFAULT '0' COMMENT '余额，单位分';
 UPDATE `user` SET balance = balance * 100;
 
 
