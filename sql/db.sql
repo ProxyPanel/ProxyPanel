@@ -760,7 +760,12 @@ INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_mchid'
 INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_token', '');
 INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_token', '');
 INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_token', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_phone', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_phone', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_phone', '');
 
+CREATE TABLE `ssrpanel`.`user_payment` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `money` FLOAT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`),  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL) ENGINE = InnoDB;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -504,7 +504,7 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab_7" style="height:300px">
+                                        <div class="tab-pane" id="tab_7" style="height:650px">
                                             <form class="form-horizontal">
                                                 <div class="form-body">
                                                     <div class="portlet-body">
@@ -529,7 +529,7 @@
                                                                 <span class="help-block"><small> 是否启用 <a href="//www.daimiyun.cn">黛米付</a> QQ支付 </small></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-12">
                                                             <label for="" class="control-label col-md-4">微信支付-商户id</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group">
@@ -541,7 +541,7 @@
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-12">
                                                             <label for="" class="control-label col-md-4">微信支付-商户token</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group">
@@ -553,7 +553,19 @@
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-12">
+                                                            <label for="" class="control-label col-md-4">微信支付-商户手机号</label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_wepay_phone}}" id="payment_wepay_phone" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_wepay_phone">提交</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 到黛米付后台查看. </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
                                                             <label for="" class="control-label col-md-4">支付宝-商户id</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group">
@@ -565,7 +577,7 @@
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-12">
                                                             <label for="" class="control-label col-md-4">支付宝-商户token</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group">
@@ -577,7 +589,19 @@
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-12">
+                                                            <label for="" class="control-label col-md-4">支付宝-商户手机号</label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_alipay_phone}}" id="payment_alipay_phone" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_alipay_phone">提交</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 到黛米付后台查看. </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
                                                             <label for="" class="control-label col-md-4">QQ支付-商户id</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group">
@@ -589,13 +613,25 @@
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-12">
                                                             <label for="" class="control-label col-md-4">QQ支付-商户token</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_qqpay_token}}" id="payment_qqpay_token" />
                                                                     <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button">提交</button>
+                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_qqpay_token">提交</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 到黛米付后台查看. </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label for="" class="control-label col-md-4">QQ支付-商户手机号</label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_qqpay_phone}}" id="payment_qqpay_phone" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_qqpay_phone">提交</button>
                                                                     </span>
                                                                 </div>
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
@@ -624,6 +660,7 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+
         $(".payment_commit").click(function(){
             var inp;
             inp = $("#"+$(this).data("for"));
@@ -638,6 +675,7 @@
                 'dataType':"json",
                 success:function(data){
                     console.log(data);
+                    layer.msg("保存成功!", {time:1000});
                 },
             });
         });
@@ -657,6 +695,8 @@
                         },
                         success:function(data){
                             console.log(data);
+                            if(data.status=="success")
+                            layer.msg("保存成功!", {time:1000});
                         },
                         'dataType':"JSON",
                         'type':"POST"

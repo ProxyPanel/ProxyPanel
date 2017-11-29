@@ -21,6 +21,7 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
+use App\Http\Models\Payment;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use Illuminate\Http\Request;
@@ -938,5 +939,16 @@ class UserController extends Controller
         $view['link'] = self::$config['website_url'] . '/subscribe/' . $code;
 
         return Response::view('/user/subscribe', $view);
+    }
+
+    /**
+     * 充值余额
+     * @param  Request $req 请求
+     * @return Response     响应
+     */
+    public function payment(Request $req){
+        $v = self::$config;
+        $v['payment'] = Payment::where("status",1)->where("user_id",$req->session()->get('user')['id'])->get();
+        return Response::view("user.payment",$v);
     }
 }

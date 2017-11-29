@@ -96,4 +96,11 @@ Route::group(['middleware' => ['user']], function() {
     Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
     Route::get('user/referral', 'UserController@referral'); // 推广返利
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
+
+    // payment
+    Route::get("user/payment","UserController@payment");
+    Route::post("user/payment","PaymentController@new");
 });
+Route::post("/payment/query","PaymentController@query");
+Route::post("/payment/callback/{type}","PaymentController@callback");
+Route::post("/payment/return/{type}","PaymentController@return");
