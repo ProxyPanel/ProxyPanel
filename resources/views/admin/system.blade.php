@@ -504,7 +504,7 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab_7" style="height:650px">
+                                        <div class="tab-pane" id="tab_7" style="height:850px">
                                             <form class="form-horizontal">
                                                 <div class="form-body">
                                                     <div class="portlet-body">
@@ -637,6 +637,14 @@
                                                                 <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
+                                                        <h5>使用支付接口,请先到 <a href="//www.daimiyun.cn">黛米付</a>签约,并将配置信息填写在上方.<br>
+                                                        黛米付后台的域名配置:</h5>
+                                                        <pre>
+通知地址: http://您的域名/doiam/callback/wepay
+回调地址: http://您的域名/doiam/return/wepay</pre>
+                                                        <h5>如果您使用了https,请一定使用https.</h5>
+                                                        <h5>上面的wepay可替换成alipay和qqpay.</h5>
+                                                        <h5>黛米付:qq群:624692881 <a href="https://t.me/daimifu">TG群</a> </h5>
                                                     </div>
                                                 </div>
                                             </form>
