@@ -129,6 +129,7 @@
                 'type':"POST",
                 'dataType':"json",
                 success:function(data){
+                    $("#submit").button("reset");
                     console.log(data);
                     if(data.errcode==0){
                         pid = data.pid;
@@ -142,6 +143,9 @@
                             $("body").append(data.code);
                         }
                     }
+                },
+                error:function(data){
+                    $("#submit").button("reset");
                 },
             });
         });

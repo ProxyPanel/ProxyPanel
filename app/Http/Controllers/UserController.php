@@ -55,6 +55,7 @@ class UserController extends Controller
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
+        $view['payment_enabled'] = (self::$config['qqpay_enabled'] or self::$config['wepay_enabled']or self::$config['alipay_enabled']);
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {

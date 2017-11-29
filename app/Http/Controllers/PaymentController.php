@@ -35,14 +35,27 @@ use Log;
 class PaymentController extends Controller
 {
     protected static $config;
-
-    function __construct()
+    /**
+     * 构造函数
+     */
+    public function __construct()
     {
         self::$config = $this->systemConfig();
     }
+
+    /**
+     * 查询订单状态(ajax)
+     * @param  Request $request [description]
+     * @return Payment          订单 JSON
+     */
     public function query(Request $request){
         return Payment::find($request->pid)->toarray();
     }
+    /**
+     * 发起订单创建请求
+     * @param  Request $request 请求
+     * @return JSON    订单信息
+     */
     public function new(Request $request){
         $type = $request->type;
         $price = $request->price;
@@ -87,6 +100,12 @@ class PaymentController extends Controller
         }
         return $result;
     }
+    /**
+     * 支付宝接口返回
+     * @param  Request $req  [description]
+     * @param  [type]  $type [description]
+     * @return [type]        [description]
+     */
     public function return(Request $req, $type){
     $money = $_GET['money'];
      echo "您已经成功支付 $money 元,正在跳转..";
@@ -97,6 +116,12 @@ location.href="/user/payment";
 HTML;
     return;
     }
+    /**
+     * 回调处理 标记订单状态
+     * @param  Request  $request [description]
+     * @param  [type]   $type    [description]
+     * @return function          [description]
+     */
     public function callback(Request $request, $type){
         $order_data = $_POST;
         $status    = $order_data['status'];         //获取传递过来的交易状态
