@@ -87,12 +87,12 @@ class PaymentController extends Controller
         }
         return $result;
     }
-    public function return($request, $response, $args){
+    public function return(Request $req, $type){
     $money = $_GET['money'];
      echo "您已经成功支付 $money 元,正在跳转..";
      echo <<<HTML
 <script>
-location.href="/user/doiam";
+location.href="/user/payment";
 </script>
 HTML;
     return;

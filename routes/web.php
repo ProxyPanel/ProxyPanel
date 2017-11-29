@@ -103,4 +103,4 @@ Route::group(['middleware' => ['user']], function() {
 });
 Route::post("/payment/query","PaymentController@query");
 Route::post("/payment/callback/{type}","PaymentController@callback");
-Route::post("/payment/return/{type}","PaymentController@return");
+Route::get("/payment/return/{type}","PaymentController@return");
