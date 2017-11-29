@@ -751,8 +751,15 @@ INSERT INTO `country` VALUES ('38', '乌克兰', 'ua');
 INSERT INTO `country` VALUES ('39', '罗马尼亚', 'ro');
 INSERT INTO `country` VALUES ('40', '阿拉伯联合酋长国', 'ae');
 
-
-
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'wepay_enabled', '0');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'alipay_enabled', '0');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'qqpay_enabled', '0');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_mchid', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_mchid', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_mchid', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_token', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_token', '');
+INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_token', '');
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
