@@ -106,7 +106,6 @@ class LoginController extends Controller
 
             return Redirect::to('user')->cookie('remember',$rememberme_token,36000);
         } else {
-            $request->session()->flush();
             if($request->cookie("remember")){
                 $u = User::where("rememberme_token",$request->cookie("remember"))->first();
                 if($u){
@@ -128,7 +127,6 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
-
         return Redirect::to('login')->cookie('remember',"",36000);;
     }
 
