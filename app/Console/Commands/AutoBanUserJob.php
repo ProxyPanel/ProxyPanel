@@ -12,7 +12,7 @@ use Log;
 class AutoBanUserJob extends Command
 {
     protected $signature = 'command:autoBanUserJob';
-    protected $description = '自动封禁账号';
+    protected $description = '自动封禁用户';
 
     protected static $config;
 

@@ -78,10 +78,8 @@ CREATE TABLE `ss_node_online_log` (
   `node_id` int(11) NOT NULL COMMENT '节点ID',
   `online_user` int(11) NOT NULL COMMENT '在线用户数',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_online` (`node_id`,`log_time`)
+  KEY `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
 
 
@@ -178,7 +176,8 @@ CREATE TABLE `user_traffic_log` (
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   KEY `idx_user` (`user_id`),
-  KEY `idx_node` (`node_id`)
+  KEY `idx_node` (`node_id`),
+  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -193,7 +192,7 @@ CREATE TABLE `ss_config` (
   `is_default` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否默认：0-不是、1-是',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序：值越大排越前',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -566,7 +565,7 @@ CREATE TABLE `referral_log` (
   `ref_amount` int(11) NOT NULL DEFAULT '0' COMMENT '返利金额',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未提现、1-审核中、2-已提现',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='消费返利日志';
 
@@ -627,7 +626,9 @@ CREATE TABLE `user_traffic_daily` (
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`) USING BTREE,
+  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
@@ -644,7 +645,9 @@ CREATE TABLE `user_traffic_hourly` (
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`) USING BTREE,
+  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
@@ -676,7 +679,7 @@ CREATE TABLE `ss_node_traffic_hourly` (
   `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_node_id` (`node_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
@@ -688,7 +691,7 @@ CREATE TABLE `ss_node_traffic_hourly` (
 CREATE TABLE `user_ban_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `minutes` int(11) NOT NULL DEFAULT '0' COMMENT '封禁账号市场，单位分钟',
+  `minutes` int(11) NOT NULL DEFAULT '0' COMMENT '封禁账号时长，单位分钟',
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '操作描述',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未处理、1-已处理',
   `created_at` datetime DEFAULT NULL COMMENT ' 创建时间',

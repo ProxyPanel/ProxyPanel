@@ -265,6 +265,18 @@ vim user-config.json
 
 ````
 
+## 校时
+````
+如果架构是“一面板机-一数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会影响节点在线数的准确性和单端口多用户功能的正常使用。
+推荐统一使用CST并安装校时服务：
+vim /etc/sysconfig/clock 把值改为 Asia/Shanghai
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+重启一下服务器，然后：
+yum install ntp
+ntpdate cn.pool.ntp.org
+````
+
 ## 致敬
 ````
 @breakwa11

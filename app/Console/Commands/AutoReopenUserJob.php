@@ -10,7 +10,7 @@ use Log;
 class AutoReopenUserJob extends Command
 {
     protected $signature = 'command:autoReopenUserJob';
-    protected $description = '自动解封账号';
+    protected $description = '自动解封用户';
 
     public function __construct()
     {
