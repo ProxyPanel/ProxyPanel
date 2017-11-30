@@ -1657,4 +1657,20 @@ class AdminController extends Controller
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
+
+    /**
+     * 以某用户登录
+     * @param  Request $req 请求
+     * @return JSON         响应
+     */
+    public function loginas(Request $req){
+        $id = $req->user_id;
+        $user = User::find($id);
+        if(!$user){
+            return ['errcode'=>-1,'errmsg'=>"用户不存在"];
+        }
+        $req->session()->put('admin',$req->session()->get("user"));
+        $req->session()->put('user', $user->toArray());
+        return ['errcode'=>0,'errmsg'=>"成功!"];
+    }
 }

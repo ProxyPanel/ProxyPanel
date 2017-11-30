@@ -74,6 +74,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
+    Route::post("admin/loginas","AdminController@loginas");
 });
 
 Route::group(['middleware' => ['user']], function() {
@@ -100,6 +101,9 @@ Route::group(['middleware' => ['user']], function() {
     // payment
     Route::get("user/payment","UserController@payment");
     Route::post("user/payment","PaymentController@new");
+
+    // 返回管理员页面
+    Route::post("user/loginasadmin","UserController@loginasadmin");
 });
 Route::post("/payment/query","PaymentController@query");
 Route::post("/payment/callback/{type}","PaymentController@callback");

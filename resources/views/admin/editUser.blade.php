@@ -29,9 +29,14 @@
                                 <div class="col-md-6">
                                     <!-- BEGIN SAMPLE FORM PORTLET-->
                                     <div class="portlet light bordered">
-                                        <div class="portlet-title">
-                                            <div class="caption">
-                                                <span class="caption-subject font-dark bold uppercase">账号信息</span>
+                                        <div class="portlet-title"  style="width:100%">
+                                            <div class="caption" style="width:100%">
+                                                <div class="row">
+                                                    <span class="caption-subject font-dark bold uppercase col-md-4">账号信息</span>
+                                                    <div class="text-right col-md-8" style="">
+                                                        <a href="#" id="loginas" class="badge badge-success">以此用户登录</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
@@ -318,6 +323,28 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 处理 以某客户登录
+        $("#loginas").click(function(){
+            $.ajax({
+                'url':"{{url("/admin/loginas")}}",
+                'data':{
+                    'user_id':{{$user->id}},
+                    '_token':"{{csrf_token()}}"
+                },
+                'dataType':"json",
+                'type':"POST",
+                success:function(data){
+                    if(data.errcode==0){
+                        layer.msg("操作成功!",{time:1000});
+                        setTimeout(function(){
+                            window.location.href="/user";
+                        },1000);
+                    }else{
+                        layer.msg("操作失败!"+data.errmsg,{time:5000});
+                    }
+                }
+            });
+        });
         // 有效期
         $('.input-daterange input').each(function() {
             $(this).datepicker({

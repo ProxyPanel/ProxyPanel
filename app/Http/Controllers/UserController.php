@@ -952,4 +952,16 @@ class UserController extends Controller
         $v['payment'] = Payment::where("status",1)->where("user_id",$req->session()->get('user')['id'])->get();
         return Response::view("user.payment",$v);
     }
+    /**
+     * 管理员以某用户登录后恢复到管理员权限
+     * @param  Request $req 请求
+     * @return Response     响应
+     */
+    public function loginasadmin(Request $req){
+        if(\Session::get("admin",[]) == User::find(\Session::get("admin",['id'=>0])['id'])->toarray() ){
+            \Session::put('user',\Session::get("admin",[]));
+            return ['errcode'=>0];
+        }
+        return ['errcode'=>-1,'errmsg'=>"非法的请求."];
+    }
 }
