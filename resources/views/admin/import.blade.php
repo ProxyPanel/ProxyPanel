@@ -40,8 +40,8 @@
                         <form action="{{url('admin/import')}}" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3"> JSON文件 </label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-2"> JSON文件 </label>
+                                    <div class="col-md-6">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
                                             <div class="input-group input-large">
                                                 <div class="form-control uneditable-input input-fixed input-medium" data-trigger="fileinput">
@@ -60,10 +60,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-actions">
+                            <div class="form-actions left">
                                 <div class="row">
-                                    <div class="col-md-offset-4 col-md-9">
-                                        <button type="submit" class="btn green"> 导 入 </button>
+                                    <div class="col-md-offset-2">
+                                        <button type="submit" class="btn green"> 导入 </button>
                                     </div>
                                 </div>
                             </div>

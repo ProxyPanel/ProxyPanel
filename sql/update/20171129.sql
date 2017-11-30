@@ -7,20 +7,10 @@ INSERT INTO `country` VALUES ('45', '卢森堡', 'lu');
 INSERT INTO `country` VALUES ('46', '比利时', 'be');
 
 
--- 用户余额字段由decimal改为int，数值变大十倍
+-- 用户余额字段由decimal改为int，数值变大一百倍
 ALTER TABLE `user` MODIFY `balance` int(11) NOT NULL DEFAULT '0' COMMENT '余额，单位分';
 UPDATE `user` SET balance = balance * 100;
 
 
-DROP TABLE `user_balance_log`;
-CREATE TABLE `user_balance_log` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '账号ID',
-  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
-  `before` int(11) NOT NULL DEFAULT '0' COMMENT '发生前余额，单位分',
-  `after` int(11) NOT NULL DEFAULT '0' COMMENT '发生后金额，单位分',
-  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '发生金额，单位分',
-  `desc` varchar(255) DEFAULT '' COMMENT '操作描述',
-  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- 用于余额日志表 balance 字段改 amount字段
+ALTER TABLE `user_balance_log` CHANGE `balance` `amount` int(11) NOT NULL DEFAULT '0' COMMENT '发生金额，单位分';

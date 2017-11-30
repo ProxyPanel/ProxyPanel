@@ -52,7 +52,7 @@ class AdminController extends BaseController
         $flowCount = UserTrafficLog::query()->sum('u') + UserTrafficLog::query()->sum('d');
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
-        $view['totalBalance'] = User::query()->sum('balance');
+        $view['totalBalance'] = User::query()->sum('balance') / 100;
         $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount');
         $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount');
         $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->where('enable', 1)->count();
@@ -1570,7 +1570,7 @@ class AdminController extends BaseController
             $obj = new Invite();
             $obj->uid = $user['id'];
             $obj->fuid = 0;
-            $obj->code = strtoupper(substr(md5(microtime() . $this->makeRandStr(6)), 8, 16));
+            $obj->code = strtoupper(substr(md5(microtime() . $this->makeRandStr(6)), 8, 12));
             $obj->status = 0;
             $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
             $obj->save();

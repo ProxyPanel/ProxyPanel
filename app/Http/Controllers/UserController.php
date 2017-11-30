@@ -758,8 +758,8 @@ class UserController extends BaseController
                 $userBalanceLogObj->user_id = $user->id;
                 $userBalanceLogObj->order_id = $order->oid;
                 $userBalanceLogObj->before = $user->balance;
-                $userBalanceLogObj->after = $user->balance - $totalPrice;
-                $userBalanceLogObj->balance = $totalPrice;
+                $userBalanceLogObj->after = $user->balance - $totalPrice * 100;
+                $userBalanceLogObj->amount = $totalPrice * 100;
                 $userBalanceLogObj->desc = '购买流量包';
                 $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
                 $userBalanceLogObj->save();

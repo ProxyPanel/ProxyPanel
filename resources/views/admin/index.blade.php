@@ -111,7 +111,7 @@
                             <h3 class="font-red">
                                 ￥<span data-counter="counterup" data-value="{{$totalBalance}}"></span>
                             </h3>
-                            <small>盈利</small>
+                            <small>总余额</small>
                         </div>
                         <div class="icon">
                             <i class="icon-diamond"></i>
