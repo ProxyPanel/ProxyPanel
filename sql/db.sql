@@ -767,6 +767,9 @@ INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_phone'
 CREATE TABLE `ssrpanel`.`user_payment` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `money` FLOAT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`),  `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL) ENGINE = InnoDB;
 
+
+ALTER TABLE `user` ADD `rememberme_token` VARCHAR(256) NULL DEFAULT '' AFTER `passwd`;
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
