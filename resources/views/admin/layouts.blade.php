@@ -111,12 +111,6 @@
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item start {{in_array(Request::getRequestUri(), ['/admin/userList', '/admin/addUser']) ? 'active open' : ''}}">
-                    <a href="{{url('admin/userList')}}" class="nav-link nav-toggle">
-                        <i class="icon-users"></i>
-                        <span class="title">账号管理</span>
-                    </a>
-                </li>
                 <li class="nav-item {{Request::getRequestUri() == '/admin/inviteList' ? 'active open' : ''}}">
                     <a href="{{url('admin/inviteList')}}" class="nav-link nav-toggle">
                         <i class="icon-puzzle"></i>
@@ -164,6 +158,27 @@
                             <a href="{{url('admin/articleLogList')}}" class="nav-link ">
                                 <i class="icon-list"></i>
                                 <span class="title">文章访问日志</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/userList', '/admin/addUser', '/admin/editUser', '/admin/userBalanceLogList']) ? 'active open' : ''}}">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="icon-users"></i>
+                        <span class="title">账号管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/userList', '/admin/addUser', '/admin/editUser']) ? 'active open' : ''}}">
+                            <a href="{{url('admin/userList')}}" class="nav-link ">
+                                <i class="icon-user"></i>
+                                <span class="title">账号列表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{Request::getRequestUri() == '/admin/userBalanceLogList' ? 'active open' : ''}}">
+                            <a href="{{url('admin/userBalanceLogList')}}" class="nav-link ">
+                                <i class="icon-credit-card"></i>
+                                <span class="title">余额变动日志</span>
                             </a>
                         </li>
                     </ul>

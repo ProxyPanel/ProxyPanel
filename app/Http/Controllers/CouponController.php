@@ -27,7 +27,12 @@ class CouponController extends BaseController
     // 优惠券列表
     public function couponList(Request $request)
     {
-        $view['couponList'] = Coupon::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
+        $couponList = Coupon::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
+        foreach ($couponList as $coupon) {
+            $coupon->amount = $coupon->amount / 100;
+        }
+
+        $view['couponList'] = $couponList;
 
         return Response::view('coupon/couponList', $view);
     }
@@ -76,7 +81,7 @@ class CouponController extends BaseController
                     $obj->logo = $logo;
                     $obj->type = $type;
                     $obj->usage = $usage;
-                    $obj->amount = empty($amount) ? 0 : $amount;
+                    $obj->amount = empty($amount) ? 0 : $amount * 100;
                     $obj->discount = empty($discount) ? 0 : $discount / 10;
                     $obj->available_start = strtotime(date('Y-m-d 0:0:0', strtotime($available_start)));
                     $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($available_end)));

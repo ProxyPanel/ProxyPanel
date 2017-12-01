@@ -53,8 +53,8 @@ class AdminController extends BaseController
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::query()->sum('balance') / 100;
-        $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount');
-        $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount');
+        $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
+        $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount') / 100;
         $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->where('enable', 1)->count();
 
         return Response::view('admin/index', $view);
@@ -165,31 +165,31 @@ class AdminController extends BaseController
             }
 
             $ret = User::query()->create([
-                'username' => $username,
-                'password' => $password,
-                'port' => $port,
-                'passwd' => empty($passwd) ? $this->makeRandStr() : $passwd, // SS密码为空时生成默认密码
+                'username'        => $username,
+                'password'        => $password,
+                'port'            => $port,
+                'passwd'          => empty($passwd) ? $this->makeRandStr() : $passwd, // SS密码为空时生成默认密码
                 'transfer_enable' => $this->toGB($transfer_enable),
-                'enable' => $enable,
-                'method' => $method,
-                'custom_method' => $method,
-                'protocol' => $protocol,
-                'protocol_param' => $protocol_param,
-                'obfs' => $obfs,
-                'obfs_param' => $obfs_param,
-                'gender' => $gender,
-                'wechat' => $wechat,
-                'qq' => $qq,
-                'usage' => $usage,
-                'pay_way' => $pay_way,
-                'balance' => 0,
-                'score' => 0,
-                'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
-                'remark' => $remark,
-                'level' => $level,
-                'is_admin' => $is_admin,
-                'reg_ip' => $request->getClientIp()
+                'enable'          => $enable,
+                'method'          => $method,
+                'custom_method'   => $method,
+                'protocol'        => $protocol,
+                'protocol_param'  => $protocol_param,
+                'obfs'            => $obfs,
+                'obfs_param'      => $obfs_param,
+                'gender'          => $gender,
+                'wechat'          => $wechat,
+                'qq'              => $qq,
+                'usage'           => $usage,
+                'pay_way'         => $pay_way,
+                'balance'         => 0,
+                'score'           => 0,
+                'enable_time'     => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                'expire_time'     => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
+                'remark'          => $remark,
+                'level'           => $level,
+                'is_admin'        => $is_admin,
+                'reg_ip'          => $request->getClientIp()
             ]);
 
             if ($ret) {
@@ -244,30 +244,30 @@ class AdminController extends BaseController
             $is_admin = $request->get('is_admin');
 
             $data = [
-                'username' => $username,
-                'port' => $port,
-                'passwd' => $passwd,
-                'transfer_enable' => $this->toGB($transfer_enable),
-                'enable' => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
-                'method' => $method,
-                'custom_method' => $method,
-                'protocol' => $protocol,
-                'protocol_param' => $protocol_param,
-                'obfs' => $obfs,
-                'obfs_param' => $obfs_param,
-                'speed_limit_per_con' => $speed_limit_per_con,
+                'username'             => $username,
+                'port'                 => $port,
+                'passwd'               => $passwd,
+                'transfer_enable'      => $this->toGB($transfer_enable),
+                'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
+                'method'               => $method,
+                'custom_method'        => $method,
+                'protocol'             => $protocol,
+                'protocol_param'       => $protocol_param,
+                'obfs'                 => $obfs,
+                'obfs_param'           => $obfs_param,
+                'speed_limit_per_con'  => $speed_limit_per_con,
                 'speed_limit_per_user' => $speed_limit_per_user,
-                'gender' => $gender,
-                'wechat' => $wechat,
-                'qq' => $qq,
-                'usage' => $usage,
-                'pay_way' => $pay_way,
-                'status' => $status,
-                'enable_time' => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                'expire_time' => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
-                'remark' => $remark,
-                'level' => $level,
-                'is_admin' => $is_admin
+                'gender'               => $gender,
+                'wechat'               => $wechat,
+                'qq'                   => $qq,
+                'usage'                => $usage,
+                'pay_way'              => $pay_way,
+                'status'               => $status,
+                'enable_time'          => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                'expire_time'          => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
+                'remark'               => $remark,
+                'level'                => $level,
+                'is_admin'             => $is_admin
             ];
 
             if (!empty($password)) {
@@ -369,37 +369,37 @@ class AdminController extends BaseController
             $status = $request->get('status');
 
             $node = SsNode::query()->create([
-                'name' => $name,
-                'group_id' => $group_id,
-                'country_code' => $country_code,
-                'server' => $server,
-                'desc' => $desc,
-                'method' => $method,
-                'custom_method' => $method,
-                'protocol' => $protocol,
-                'protocol_param' => $protocol_param,
-                'obfs' => $obfs,
-                'obfs_param' => $obfs_param,
-                'traffic_rate' => $traffic_rate,
-                'bandwidth' => $bandwidth,
-                'traffic' => $traffic,
-                'monitor_url' => $monitor_url,
-                'compatible' => $compatible,
-                'single' => $single,
-                'single_force' => $single ? $single_force : 0,
-                'single_port' => $single ? $single_port : '',
-                'single_passwd' => $single ? $single_passwd : '',
-                'single_method' => $single ? $single_method : '',
+                'name'            => $name,
+                'group_id'        => $group_id,
+                'country_code'    => $country_code,
+                'server'          => $server,
+                'desc'            => $desc,
+                'method'          => $method,
+                'custom_method'   => $method,
+                'protocol'        => $protocol,
+                'protocol_param'  => $protocol_param,
+                'obfs'            => $obfs,
+                'obfs_param'      => $obfs_param,
+                'traffic_rate'    => $traffic_rate,
+                'bandwidth'       => $bandwidth,
+                'traffic'         => $traffic,
+                'monitor_url'     => $monitor_url,
+                'compatible'      => $compatible,
+                'single'          => $single,
+                'single_force'    => $single ? $single_force : 0,
+                'single_port'     => $single ? $single_port : '',
+                'single_passwd'   => $single ? $single_passwd : '',
+                'single_method'   => $single ? $single_method : '',
                 'single_protocol' => $single ? $single_protocol : '',
-                'sort' => $sort,
-                'status' => $status,
+                'sort'            => $sort,
+                'status'          => $status,
             ]);
 
             // 建立分组关联
             if ($group_id) {
                 SsGroupNode::query()->create([
                     'group_id' => $group_id,
-                    'node_id' => $node->id
+                    'node_id'  => $node->id
                 ]);
             }
 
@@ -448,30 +448,30 @@ class AdminController extends BaseController
             $status = $request->get('status');
 
             $data = [
-                'name' => $name,
-                'group_id' => $group_id,
-                'country_code' => $country_code,
-                'server' => $server,
-                'desc' => $desc,
-                'method' => $method,
-                'custom_method' => $method,
-                'protocol' => $protocol,
-                'protocol_param' => $protocol_param,
-                'obfs' => $obfs,
-                'obfs_param' => $obfs_param,
-                'traffic_rate' => $traffic_rate,
-                'bandwidth' => $bandwidth,
-                'traffic' => $traffic,
-                'monitor_url' => $monitor_url,
-                'compatible' => $compatible,
-                'single' => $single,
-                'single_force' => $single ? $single_force : 0,
-                'single_port' => $single ? $single_port : '',
-                'single_passwd' => $single ? $single_passwd : '',
-                'single_method' => $single ? $single_method : '',
+                'name'            => $name,
+                'group_id'        => $group_id,
+                'country_code'    => $country_code,
+                'server'          => $server,
+                'desc'            => $desc,
+                'method'          => $method,
+                'custom_method'   => $method,
+                'protocol'        => $protocol,
+                'protocol_param'  => $protocol_param,
+                'obfs'            => $obfs,
+                'obfs_param'      => $obfs_param,
+                'traffic_rate'    => $traffic_rate,
+                'bandwidth'       => $bandwidth,
+                'traffic'         => $traffic,
+                'monitor_url'     => $monitor_url,
+                'compatible'      => $compatible,
+                'single'          => $single,
+                'single_force'    => $single ? $single_force : 0,
+                'single_port'     => $single ? $single_port : '',
+                'single_passwd'   => $single ? $single_passwd : '',
+                'single_method'   => $single ? $single_method : '',
                 'single_protocol' => $single ? $single_protocol : '',
-                'sort' => $sort,
-                'status' => $status
+                'sort'            => $sort,
+                'status'          => $status
             ];
 
             $ret = SsNode::query()->where('id', $id)->update($data);
@@ -483,7 +483,7 @@ class AdminController extends BaseController
 
                     SsGroupNode::query()->create([
                         'group_id' => $group_id,
-                        'node_id' => $id
+                        'node_id'  => $id
                     ]);
                 }
 
@@ -556,12 +556,12 @@ class AdminController extends BaseController
         }
 
         $view['trafficDaily'] = [
-            'nodeName' => $node->name,
+            'nodeName'  => $node->name,
             'dailyData' => "'" . implode("','", $dailyData) . "'"
         ];
 
         $view['trafficHourly'] = [
-            'nodeName' => $node->name,
+            'nodeName'   => $node->name,
             'hourlyData' => "'" . implode("','", $hourlyData) . "'"
         ];
 
@@ -598,12 +598,12 @@ class AdminController extends BaseController
             $sort = $request->get('sort');
 
             Article::query()->create([
-                'title' => $title,
-                'type' => $type,
-                'author' => $author,
+                'title'   => $title,
+                'type'    => $type,
+                'author'  => $author,
                 'content' => $content,
-                'is_del' => 0,
-                'sort' => $sort
+                'is_del'  => 0,
+                'sort'    => $sort
             ]);
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
@@ -624,11 +624,11 @@ class AdminController extends BaseController
             $content = $request->get('content');
 
             $data = [
-                'title' => $title,
-                'type' => $type,
-                'author' => $author,
+                'title'   => $title,
+                'type'    => $type,
+                'author'  => $author,
                 'content' => $content,
-                'sort' => $sort
+                'sort'    => $sort
             ];
 
             $ret = Article::query()->where('id', $id)->update($data);
@@ -679,7 +679,7 @@ class AdminController extends BaseController
             $level = $request->get('level');
 
             SsGroup::query()->create([
-                'name' => $name,
+                'name'  => $name,
                 'level' => $level
             ]);
 
@@ -700,7 +700,7 @@ class AdminController extends BaseController
             $level = $request->get('level');
 
             $data = [
-                'name' => $name,
+                'name'  => $name,
                 'level' => $level
             ];
 
@@ -852,18 +852,18 @@ class AdminController extends BaseController
             $data = [];
             foreach ($content->port_password as $port => $passwd) {
                 $data[] = [
-                    'd' => 0,
-                    'enable' => 1,
-                    'method' => $method,
-                    'obfs' => $obfs,
-                    'obfs_param' => empty($obfs_param) ? "" : $obfs_param,
-                    'passwd' => $passwd,
-                    'port' => $port,
-                    'protocol' => $protocol,
-                    'protocol_param' => empty($protocol_param) ? "" : $protocol_param,
+                    'd'               => 0,
+                    'enable'          => 1,
+                    'method'          => $method,
+                    'obfs'            => $obfs,
+                    'obfs_param'      => empty($obfs_param) ? "" : $obfs_param,
+                    'passwd'          => $passwd,
+                    'port'            => $port,
+                    'protocol'        => $protocol,
+                    'protocol_param'  => empty($protocol_param) ? "" : $protocol_param,
                     'transfer_enable' => $this->toGB($transfer_enable),
-                    'u' => 0,
-                    'user' => date('Ymd') . '_IMPORT_' . $port,
+                    'u'               => 0,
+                    'user'            => date('Ymd') . '_IMPORT_' . $port,
                 ];
             }
 
@@ -1031,7 +1031,7 @@ class AdminController extends BaseController
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
             $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
-            $txt .= "协议参数：" . ($node->single ? $user->port.':'.$user->passwd : $user->protocol_param) . "\r\n";
+            $txt .= "协议参数：" . ($node->single ? $user->port . ':' . $user->passwd : $user->protocol_param) . "\r\n";
             $txt .= "混淆方式：" . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . "\r\n";
             $txt .= "混淆参数：" . ($node->single ? '' : $user->obfs_param) . "\r\n";
             $txt .= "本地端口：1080\r\n路由：绕过局域网及中国大陆地址";
@@ -1118,12 +1118,12 @@ class AdminController extends BaseController
             }
 
             $trafficDaily[$node->id] = [
-                'nodeName' => $node->name,
+                'nodeName'  => $node->name,
                 'dailyData' => "'" . implode("','", $dailyData) . "'"
             ];
 
             $trafficHourly[$node->id] = [
-                'nodeName' => $node->name,
+                'nodeName'   => $node->name,
                 'hourlyData' => "'" . implode("','", $hourlyData) . "'"
             ];
         }
@@ -1161,10 +1161,10 @@ class AdminController extends BaseController
             }
 
             SsConfig::query()->create([
-                'name' => $name,
-                'type' => $type,
+                'name'       => $name,
+                'type'       => $type,
                 'is_default' => $is_default,
-                'sort' => $sort
+                'sort'       => $sort
             ]);
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
@@ -1271,7 +1271,7 @@ class AdminController extends BaseController
             }
 
             Level::query()->create([
-                'level' => $level,
+                'level'      => $level,
                 'level_name' => $level_name
             ]);
 
@@ -1596,6 +1596,12 @@ class AdminController extends BaseController
         }
 
         $list = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        if (!empty($list)) {
+            foreach ($list as $vo) {
+                $vo->amount = $vo->amount / 100;
+            }
+        }
+
         $view['applyList'] = $list;
 
         return Response::view('admin/applyList', $view);
@@ -1609,12 +1615,15 @@ class AdminController extends BaseController
         $list = [];
         $apply = ReferralApply::query()->where('id', $id)->with('user')->first();
         if ($apply && $apply->link_logs) {
+            $apply->amount = $apply->amount / 100;
             $link_logs = explode(',', $apply->link_logs);
             $list = ReferralLog::query()->whereIn('id', $link_logs)->with('user')->paginate(10);
         }
 
         foreach ($list as &$vo) {
             $vo->goods = OrderGoods::query()->where('oid', $vo->order_id)->with('goods')->first();
+            $vo->amount = $vo->amount / 100;
+            $vo->ref_amount = $vo->ref_amount / 100;
         }
 
         $view['info'] = $apply;
@@ -1667,23 +1676,24 @@ class AdminController extends BaseController
 
             try {
                 $user = User::query()->where('id', $user_id)->first();
+                $amount = $amount * 100;
 
                 // 写入余额变动日志
                 $userBalanceLog = new UserBalanceLog();
                 $userBalanceLog->user_id = $user_id;
                 $userBalanceLog->order_id = 0;
                 $userBalanceLog->before = $user->balance;
-                $userBalanceLog->after = $user->balance + $amount * 100;
-                $userBalanceLog->amount = $amount * 100;
+                $userBalanceLog->after = $user->balance + $amount;
+                $userBalanceLog->amount = $amount;
                 $userBalanceLog->desc = '后台手动充值';
                 $userBalanceLog->created_at = date('Y-m-d H:i:s');
                 $userBalanceLog->save();
 
                 // 加减余额
                 if ($amount < 0) {
-                    $user->decrement('balance', abs($amount * 100));
+                    $user->decrement('balance', abs($amount));
                 } else {
-                    $user->increment('balance', abs($amount * 100));
+                    $user->increment('balance', abs($amount));
                 }
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
@@ -1693,5 +1703,32 @@ class AdminController extends BaseController
         } else {
             return Response::view('admin/handleUserBalance');
         }
+    }
+
+    // 用户余额变动日志
+    public function userBalanceLogList(Request $request)
+    {
+        $username = trim($request->get('username'));
+
+        $query = UserBalanceLog::query()->with(['user'])->orderBy('id', 'desc');
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        $list = $query->paginate(10);
+        if (!empty($list)) {
+            foreach ($list as &$vo) {
+                $vo->before = $vo->before / 100;
+                $vo->after = $vo->after / 100;
+                $vo->amount = $vo->amount / 100;
+            }
+        }
+
+        $view['list'] = $list;
+
+        return Response::view('admin/userBalanceLogList', $view);
     }
 }

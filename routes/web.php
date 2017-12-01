@@ -64,6 +64,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 余额充值
+    Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动日志
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 获取随机密码
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
     Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表

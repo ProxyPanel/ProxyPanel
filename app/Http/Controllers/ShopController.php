@@ -24,7 +24,12 @@ class ShopController extends BaseController
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
+        $goodsList = Goods::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
+        foreach ($goodsList as $goods) {
+            $goods->price = $goods->price / 100;
+        }
+
+        $view['goodsList'] = $goodsList;
 
         return Response::view('shop/goodsList', $view);
     }
@@ -63,7 +68,7 @@ class ShopController extends BaseController
             $obj->desc = $desc;
             $obj->logo = $logo;
             $obj->traffic = $traffic;
-            $obj->price = $price;
+            $obj->price = $price * 100; // 单位分
             $obj->score = $score;
             $obj->type = $type;
             $obj->days = $days;
@@ -118,7 +123,7 @@ class ShopController extends BaseController
                 'desc'    => $desc,
                 'logo'    => $logo,
                 'traffic' => $traffic,
-                'price'   => $price,
+                'price'   => $price * 100, // 单位分
                 'score'   => $score,
                 'type'    => $type,
                 'days'    => $days,
@@ -133,7 +138,12 @@ class ShopController extends BaseController
 
             return Redirect::to('shop/editGoods?id=' . $id);
         } else {
-            $view['goods'] = Goods::query()->where('id', $id)->first();
+            $goods = Goods::query()->where('id', $id)->first();
+            if (!empty($goods)) {
+                $goods->price = $goods->price / 100;
+            }
+
+            $view['goods'] = $goods;
 
             return Response::view('shop/editGoods', $view);
         }
