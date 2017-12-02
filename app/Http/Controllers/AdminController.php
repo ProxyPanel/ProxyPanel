@@ -1002,19 +1002,19 @@ class AdminController extends BaseController
         $nodeList = SsNode::query()->paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 生成ssr scheme
-            $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
-            $protocol_param = $node->single ? base64_encode($user->port . ':' . $user->passwd) : base64_encode($user->protocol_param);
+            $obfs_param = $node->single ? '' : $user->obfs_param;
+            $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? base64_encode($node->single_passwd) : base64_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . $obfs_param;
-            $ssr_str .= '&protoparam=' . $protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode($node->name);
-            $ssr_str .= '&group=' . base64_encode('节点');
-            //$ssr_str .= '&udpport=0';
-            //$ssr_str .= '&uot=0';
+            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
+            $ssr_str .= '&protoparam=' . $this->base64url_encode($protocol_param);
+            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
+            $ssr_str .= '&group=' . $this->base64url_encode('节点');
+            $ssr_str .= '&udpport=0';
+            $ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 

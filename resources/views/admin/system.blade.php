@@ -347,7 +347,7 @@
                                                             <label for="reset_traffic" class="col-md-3 control-label">流量自动重置</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 每月1日自动重置账号可用流量 </span>
+                                                                <span class="help-block"> 账号会按其购买套餐的日期自动重置账号可用流量 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">

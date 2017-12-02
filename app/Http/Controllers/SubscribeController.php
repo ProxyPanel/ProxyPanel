@@ -64,18 +64,20 @@ class SubscribeController extends BaseController
         $nodeList = SsNode::query()->where('status', 1)->whereIn('id', $node_ids)->get();
         $scheme = self::$config['subscribe_max'] > 0 ? 'MAX=' . self::$config['subscribe_max'] . "\n" : '';
         foreach ($nodeList as $node) {
-            $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
-            $protocol_param = $node->single ? base64_encode($user->port . ':' . $user->passwd) : base64_encode($user->protocol_param);
+            $obfs_param = $node->single ? '' : $user->obfs_param;
+            $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             // 生成ssr scheme
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . base64_encode($user->passwd);
-            $ssr_str .= '/?obfsparam=' . $obfs_param;
-            $ssr_str .= '&protoparam=' . $protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode($node->name);
-            $ssr_str .= '&group=' . base64_encode('VPN');
+            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . $this->base64url_encode($user->passwd);
+            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
+            $ssr_str .= '&protoparam=' . $this->base64url_encode($protocol_param);
+            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
+            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
+            $ssr_str .= '&udpport=0';
+            $ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
             $scheme .= 'ssr://' . $ssr_str . "\n";
         }

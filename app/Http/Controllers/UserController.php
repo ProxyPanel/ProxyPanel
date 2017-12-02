@@ -71,19 +71,19 @@ class UserController extends BaseController
 
         foreach ($nodeList as &$node) {
             // 生成ssr scheme
-            $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
-            $protocol_param = $node->single ? base64_encode($user->port . ':' . $user->passwd) : base64_encode($user->protocol_param);
+            $obfs_param = $node->single ? '' : $user->obfs_param;
+            $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? base64_encode($node->single_passwd) : base64_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . $obfs_param;
-            $ssr_str .= '&protoparam=' . $protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode($node->name);
-            $ssr_str .= '&group=' . base64_encode('节点');
-            //$ssr_str .= '&udpport=0';
-            //$ssr_str .= '&uot=0';
+            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
+            $ssr_str .= '&protoparam=' . $this->base64url_encode($protocol_param);
+            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
+            $ssr_str .= '&group=' . $this->base64url_encode('节点');
+            $ssr_str .= '&udpport=0';
+            $ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
@@ -766,7 +766,7 @@ class UserController extends BaseController
                 $userBalanceLogObj->before = $user->balance;
                 $userBalanceLogObj->after = $user->balance - $totalPrice;
                 $userBalanceLogObj->amount = -1 * $totalPrice;
-                $userBalanceLogObj->desc = '购买流量包';
+                $userBalanceLogObj->desc = '购买服务：' . $goods->name;
                 $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
                 $userBalanceLogObj->save();
 
@@ -788,8 +788,9 @@ class UserController extends BaseController
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
 
-                // 将商品的有效期加到账号上
-                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                // 将商品的有效期和流量自动重置日期加到账号上
+                $traffic_reset_day = $goods->type == 2 ? (in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'))) : 0;
+                User::query()->where('id', $user['id'])->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
 
                 // 写入返利日志
                 if ($user->referral_uid) {

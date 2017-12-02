@@ -20,7 +20,7 @@ class AutoStatisticsNodeHourlyTrafficJob extends Command
 
     public function handle()
     {
-        $nodeList = SsNode::query()->where('status', 1)->get();
+        $nodeList = SsNode::query()->where('status', 1)->orderBy('id', 'asc')->get();
         foreach ($nodeList as $node) {
             $this->statisticsByNode($node->id);
         }
