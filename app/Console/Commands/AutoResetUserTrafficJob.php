@@ -33,7 +33,7 @@ class AutoResetUserTrafficJob extends Command
         if (self::$config['reset_traffic']) {
             $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
             foreach ($userList as $user) {
-                if (!$user->traffic_reset_day) {
+                if (empty($user->traffic_reset_day)) {
                     continue;
                 }
 
@@ -43,7 +43,7 @@ class AutoResetUserTrafficJob extends Command
                     continue;
                 }
 
-                if ($user->traffic_reset_day == abs(date('d')) && abs(date('m')) == abs(date('m', $orderGoods->created_at))) {
+                if ($user->traffic_reset_day == abs(date('d')) && date('m') == date('m', strtotime($orderGoods->created_at))) {
                     continue;
                 }
 

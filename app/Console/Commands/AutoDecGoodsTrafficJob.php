@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Models\Goods;
 use App\Http\Models\OrderGoods;
 use App\Http\Models\User;
 use Log;
