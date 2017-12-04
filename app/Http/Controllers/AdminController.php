@@ -44,13 +44,13 @@ class AdminController extends BaseController
     public function index(Request $request)
     {
         $past = strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days")));
-        $online = time() - 1800;
+        $online = time() - 120;
 
         $view['userCount'] = User::query()->count();
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count();
         $view['onlineUserCount'] = User::query()->where('t', '>=', $online)->count();
         $view['nodeCount'] = SsNode::query()->count();
-        $flowCount = UserTrafficLog::query()->sum('u') + UserTrafficLog::query()->sum('d');
+        $flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::query()->sum('balance') / 100;

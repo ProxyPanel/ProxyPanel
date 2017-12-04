@@ -13,7 +13,7 @@ use Log;
 class UserExpireWarningJob extends Command
 {
     protected $signature = 'command:userExpireWarningJob';
-    protected $description = '用户到期自动发邮件提醒';
+    protected $description = '自动发邮件提醒用户临近到期';
 
     protected static $config;
 

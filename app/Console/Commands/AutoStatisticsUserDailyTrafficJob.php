@@ -12,7 +12,7 @@ use Log;
 class AutoStatisticsUserDailyTrafficJob extends Command
 {
     protected $signature = 'command:autoStatisticsUserDailyTrafficJob';
-    protected $description = '用户每日流量自动统计';
+    protected $description = '自动统计用户每日流量';
 
     public function __construct()
     {

@@ -21,7 +21,7 @@
                             <h3 class="font-green-soft">
                                 <span data-counter="counterup" data-value="{{$userCount}}"></span>
                             </h3>
-                            <small>账号</small>
+                            <small>用户</small>
                         </div>
                         <div class="icon">
                             <i class="icon-users"></i>
@@ -36,7 +36,7 @@
                             <h3 class="font-green-sharp">
                                 <span data-counter="counterup" data-value="{{$activeUserCount}}">0</span>
                             </h3>
-                            <small>活跃账号</small>
+                            <small>活跃用户</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
@@ -51,7 +51,7 @@
                             <h3 class="font-green-sharp">
                                 <span data-counter="counterup" data-value="{{$onlineUserCount}}">0</span>
                             </h3>
-                            <small>当前在线数量</small>
+                            <small>当前在线</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
@@ -96,7 +96,7 @@
                     <div class="display">
                         <div class="number">
                             <h3 class="font-blue-sharp"> {{$flowCount}} </h3>
-                            <small>消耗流量</small>
+                            <small>30日内消耗流量</small>
                         </div>
                         <div class="icon">
                             <i class="icon-speedometer"></i>
