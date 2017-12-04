@@ -251,6 +251,7 @@ class UserController extends BaseController
         $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
         foreach ($goodsList as $goods) {
             $goods->price = $goods->price / 100;
+            $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
         }
 
         $view['goodsList'] = $goodsList;
@@ -822,6 +823,7 @@ class UserController extends BaseController
             }
 
             $goods->price = $goods->price / 100;
+            $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
 
             return Response::view('user/addOrder', $view);
