@@ -50,7 +50,7 @@ class AdminController extends BaseController
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count();
         $view['onlineUserCount'] = User::query()->where('t', '>=', $online)->count();
         $view['nodeCount'] = SsNode::query()->count();
-        $flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
+        $flowCount = SsNodeTrafficDaily::query()->where('node_id', 0)->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
         $flowCount = $this->flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::query()->sum('balance') / 100;
