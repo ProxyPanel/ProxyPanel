@@ -368,7 +368,7 @@ class UserController extends BaseController
 
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
-
+        
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 

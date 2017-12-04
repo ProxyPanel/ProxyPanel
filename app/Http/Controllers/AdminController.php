@@ -26,6 +26,7 @@ use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\UserTrafficLog;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -1556,7 +1557,7 @@ class AdminController extends BaseController
     // 邀请码列表
     public function inviteList(Request $request)
     {
-        $view['inviteList'] = Invite::query()->with(['generator', 'user'])->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['inviteList'] = Invite::query()->with(['generator', 'user'])->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/inviteList', $view);
     }
@@ -1577,6 +1578,29 @@ class AdminController extends BaseController
         }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
+    }
+
+    // 导出邀请码
+    public function exportInvite(Request $request)
+    {
+        $inviteList = Invite::query()->where('status', 0)->orderBy('id', 'asc')->get();
+
+        $filename = '邀请码' . date('Ymd');
+        Excel::create($filename, function($excel) use($inviteList) {
+            $excel->sheet('邀请码', function($sheet) use($inviteList) {
+                $sheet->row(1, array(
+                    '邀请码', '有效期'
+                ));
+
+                if (!$inviteList->isEmpty()) {
+                    foreach ($inviteList as $k => $vo) {
+                        $sheet->row($k + 2, array(
+                            $vo->code, $vo->dateline
+                        ));
+                    }
+                }
+            });
+        })->export('xls');
     }
 
     // 提现申请列表

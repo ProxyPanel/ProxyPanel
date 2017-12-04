@@ -270,6 +270,12 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item {{in_array(Request::getRequestUri(), ['/admin/donate']) ? 'active open' : ''}}">
+                    <a href="{{url('admin/donate')}}" class="nav-link nav-toggle">
+                        <i class="icon-question"></i>
+                        <span class="title">捐赠</span>
+                    </a>
+                </li>
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>

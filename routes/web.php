@@ -36,6 +36,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
     Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
+    Route::get('admin/exportInvite', 'AdminController@exportInvite'); // 导出邀请码
     Route::get('admin/applyList', 'AdminController@applyList'); // 提现申请管理
     Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
     Route::post('admin/setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
@@ -76,6 +77,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
+    Route::get('admin/donate', 'DonateController@donate'); // 捐赠
 });
 
 Route::group(['middleware' => ['user']], function() {
