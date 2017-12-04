@@ -38,7 +38,18 @@ class RegisterController extends BaseController
             $repassword = trim($request->get('repassword'));
             $captcha = trim($request->get('captcha'));
             $code = trim($request->get('code'));
+            $register_token = $request->get('register_token');
             $aff = intval($request->get('aff', 0));
+
+            // 预防重复提交
+            $session_register_token = $request->session()->get('register_token');
+            if (empty($register_token) || $register_token != $session_register_token) {
+                $request->session()->flash('errorMsg', '请勿重复请求，刷新一下页面再试试');
+
+                return Redirect::back()->withInput();
+            } else {
+                $request->session()->forget('register_token');
+            }
 
             if (empty($username)) {
                 $request->session()->flash('errorMsg', '请输入用户名');
@@ -174,6 +185,8 @@ class RegisterController extends BaseController
 
             return Redirect::to('login');
         } else {
+            $request->session()->put('register_token', $this->makeRandStr(16));
+
             $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
             $view['is_invite_register'] = self::$config['is_invite_register'];
