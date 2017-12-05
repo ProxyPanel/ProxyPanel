@@ -13,7 +13,7 @@ use Log;
 class UserTrafficWarningJob extends Command
 {
     protected $signature = 'command:userTrafficWarningJob';
-    protected $description = '用户流量警告自动发邮件提醒';
+    protected $description = '自动发邮件提醒用户流量超过警告阈值';
 
     protected static $config;
 

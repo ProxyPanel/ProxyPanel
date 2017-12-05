@@ -17,187 +17,6 @@
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <!--
-                <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <span class="caption-subject bold uppercase"> 流量套餐 </span>
-                        </div>
-                        <div class="actions"></div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="pricing-content-1">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="price-column-container border-active">
-                                        <div class="price-table-head bg-blue">
-                                            <h2 class="no-margin">月付套餐</h2>
-                                        </div>
-                                        <div class="arrow-down border-top-blue"></div>
-                                        <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>28</h3>
-                                        </div>
-                                        <div class="price-table-content">
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-drawer"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">15G/月</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-screen-smartphone"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持多设备</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">会员专属高速节点</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">每月1日流量重置</div>
-                                            </div>
-                                        </div>
-                                        <div class="arrow-down arrow-grey"></div>
-                                        <div class="price-table-footer">
-                                            <button type="button" class="btn grey-salsa btn-outline sbold uppercase price-button"> 购 买 </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="price-column-container border-active">
-                                        <div class="price-table-head bg-red">
-                                            <h2 class="no-margin">季付套餐</h2>
-                                        </div>
-                                        <div class="arrow-down border-top-red"></div>
-                                        <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>78</h3>
-                                        </div>
-                                        <div class="price-table-content">
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-drawer"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">25G/月</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-screen-smartphone"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持多设备</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">会员专属高速节点</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">每月1日流量重置</div>
-                                            </div>
-                                        </div>
-                                        <div class="arrow-down arrow-grey"></div>
-                                        <div class="price-table-footer">
-                                            <button type="button" class="btn grey-salsa btn-outline price-button sbold uppercase"> 购 买 </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="price-column-container border-active">
-                                        <div class="price-table-head bg-green">
-                                            <h2 class="no-margin">半年付套餐</h2>
-                                        </div>
-                                        <div class="arrow-down border-top-green"></div>
-                                        <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>168</h3>
-                                            <div class="price-ribbon">热门</div>
-                                        </div>
-                                        <div class="price-table-content">
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-drawer"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">50G/月</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-screen-smartphone"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持多设备</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">会员专属高速节点</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">每月1日流量重置</div>
-                                            </div>
-                                        </div>
-                                        <div class="arrow-down arrow-grey"></div>
-                                        <div class="price-table-footer">
-                                            <button type="button" class="btn green price-button sbold uppercase"> 购 买 </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="price-column-container border-active">
-                                        <div class="price-table-head bg-purple">
-                                            <h2 class="no-margin">年付套餐</h2>
-                                        </div>
-                                        <div class="arrow-down border-top-purple"></div>
-                                        <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>320</h3>
-                                        </div>
-                                        <div class="price-table-content">
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-drawer"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">50G/月</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-screen-smartphone"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持多设备</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">会员专属高速节点</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-refresh"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">每月1日流量重置</div>
-                                            </div>
-                                        </div>
-                                        <div class="arrow-down arrow-grey"></div>
-                                        <div class="price-table-footer">
-                                            <button type="button" class="btn grey-salsa btn-outline price-button sbold uppercase"> 购 买 </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
@@ -211,6 +30,7 @@
                                 <tr>
                                     <th style="text-align: center;"> 名称 </th>
                                     <th style="text-align: center;"> 内含流量 </th>
+                                    <th style="text-align: center;"> 有效期 </th>
                                     <th style="text-align: center;"> 售价 </th>
                                     <!--<th> 所需积分 </th>-->
                                     <th> </th>
@@ -228,7 +48,8 @@
                                                 <!--@if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif -->
                                                 {{$goods->name}}
                                             </td>
-                                            <td style="text-align: center;"> {{$goods->traffic}} MiB </td>
+                                            <td style="text-align: center;"> {{$goods->traffic}} </td>
+                                            <td style="text-align: center;"> {{$goods->days}} 天 </td>
                                             <td style="text-align: center;"> ￥{{$goods->price}} </td>
                                             <!--<td> {{$goods->score}} </td>-->
                                             <td style="text-align: center;">

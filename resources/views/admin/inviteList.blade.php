@@ -41,6 +41,13 @@
                             <div class="caption">
                                 <span class="caption-subject font-dark bold uppercase">邀请码列表</span>
                             </div>
+                            <div class="actions">
+                                <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                    <button class="btn sbold blue" onclick="exportInvite()"> 批量导出
+                                        <i class="fa fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="portlet-body">
                             <div class="table-scrollable table-scrollable-borderless">
@@ -64,7 +71,7 @@
                                             @foreach($inviteList as $invite)
                                                 <tr>
                                                     <td> {{$invite->id}} </td>
-                                                    <td> <a href="{{url('register?code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
+                                                    <td> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                     <td> {{$invite->dateline}} </td>
                                                     <td> {{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}} </td>
                                                     <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
@@ -126,6 +133,11 @@
             });
 
             return false;
+        }
+
+        // 导出邀请码
+        function exportInvite() {
+            window.location.href = '{{url('admin/exportInvite')}}';
         }
     </script>
 @endsection

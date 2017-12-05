@@ -47,7 +47,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="alert alert-danger">
-                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M，越是优质节点则比例越高。
+                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M。
                     <button class="btn btn-sm red" onclick="subscribe()"> 订阅节点 </button>
                 </div>
                 <div class="row widget-row">

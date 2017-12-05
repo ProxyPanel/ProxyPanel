@@ -50,6 +50,7 @@ class UserController extends Controller
         $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
         $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
+        $user->balance = $user->balance / 100;
         $view['info'] = $user->toArray();
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
@@ -73,19 +74,19 @@ class UserController extends Controller
 
         foreach ($nodeList as &$node) {
             // 生成ssr scheme
-            $obfs_param = $node->single ? '' : base64_encode($user->obfs_param);
-            $protocol_param = $node->single ? base64_encode($user->port . ':' . $user->passwd) : base64_encode($user->protocol_param);
+            $obfs_param = $node->single ? '' : $user->obfs_param;
+            $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? base64_encode($node->single_passwd) : base64_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . $obfs_param;
-            $ssr_str .= '&protoparam=' . $protocol_param;
-            $ssr_str .= '&remarks=' . base64_encode($node->name);
-            $ssr_str .= '&group=' . base64_encode('节点');
-            //$ssr_str .= '&udpport=0';
-            //$ssr_str .= '&uot=0';
+            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
+            $ssr_str .= '&protoparam=' . $this->base64url_encode($protocol_param);
+            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
+            $ssr_str .= '&group=' . $this->base64url_encode('节点');
+            $ssr_str .= '&udpport=0';
+            $ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
@@ -249,7 +250,13 @@ class UserController extends Controller
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        foreach ($goodsList as $goods) {
+            $goods->price = $goods->price / 100;
+            $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
+        }
+
+        $view['goodsList'] = $goodsList;
 
         return Response::view('user/goodsList', $view);
     }
@@ -275,6 +282,7 @@ class UserController extends Controller
                 foreach ($order->goodsList as &$goods) {
                     $g = Goods::query()->where('id', $goods->goods_id)->first();
                     $goods->goods_name = empty($g) ? '【该商品已删除】' : $g->name;
+                    $goods->price = $goods->price / 100;
                 }
             }
         }
@@ -363,7 +371,7 @@ class UserController extends Controller
 
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
-
+        
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
@@ -681,7 +689,7 @@ class UserController extends Controller
 
         $data = [
             'type'     => $coupon->type,
-            'amount'   => $coupon->amount,
+            'amount'   => $coupon->amount / 100,
             'discount' => $coupon->discount
         ];
 
@@ -761,8 +769,8 @@ class UserController extends Controller
                 $userBalanceLogObj->order_id = $order->oid;
                 $userBalanceLogObj->before = $user->balance;
                 $userBalanceLogObj->after = $user->balance - $totalPrice;
-                $userBalanceLogObj->balance = $totalPrice;
-                $userBalanceLogObj->desc = '购买流量包';
+                $userBalanceLogObj->amount = -1 * $totalPrice;
+                $userBalanceLogObj->desc = '购买服务：' . $goods->name;
                 $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
                 $userBalanceLogObj->save();
 
@@ -784,8 +792,9 @@ class UserController extends Controller
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
 
-                // 将商品的有效期加到账号上
-                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                // 将商品的有效期和流量自动重置日期加到账号上
+                $traffic_reset_day = $goods->type == 2 ? (in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'))) : 0;
+                User::query()->where('id', $user['id'])->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
 
                 // 写入返利日志
                 if ($user->referral_uid) {
@@ -815,6 +824,8 @@ class UserController extends Controller
                 return Redirect::to('user/goodsList');
             }
 
+            $goods->price = $goods->price / 100;
+            $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
 
             return Response::view('user/addOrder', $view);
@@ -873,10 +884,18 @@ class UserController extends Controller
         $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$config['referral_percent'];
         $view['referral_money'] = self::$config['referral_money'];
-        $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate();
-        $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount');
-        $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount') / 100;
+        $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount') / 100;
         $view['link'] = self::$config['website_url'] . '/register?aff=' . $user['id'];
+
+        $referralLogList = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
+        if (!empty($referralLogList)) {
+            foreach ($referralLogList as &$referral) {
+                $referral->amount = $referral->amount / 100;
+                $referral->ref_amount = $referral->ref_amount / 100;
+            }
+        }
+        $view['referralLogList'] = $referralLogList;
 
         return Response::view('user/referral', $view);
     }
@@ -894,7 +913,7 @@ class UserController extends Controller
 
         // 校验可以提现金额是否超过系统设置的阀值
         $ref_amount = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        if ($ref_amount < self::$config['referral_money']) {
+        if ($ref_amount / 100 < self::$config['referral_money']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$config['referral_money'] . '元才可以提现，继续努力吧']);
         }
 

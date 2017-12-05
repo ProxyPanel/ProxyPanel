@@ -11,7 +11,7 @@ use Log;
 class AutoStatisticsNodeDailyTrafficJob extends Command
 {
     protected $signature = 'command:autoStatisticsNodeDailyTrafficJob';
-    protected $description = '节点每日流量自动统计';
+    protected $description = '自动统计节点每日流量';
 
     public function __construct()
     {
@@ -20,7 +20,7 @@ class AutoStatisticsNodeDailyTrafficJob extends Command
 
     public function handle()
     {
-        $nodeList = SsNode::query()->where('status', 1)->get();
+        $nodeList = SsNode::query()->where('status', 1)->orderBy('id', 'asc')->get();
         foreach ($nodeList as $node) {
             $this->statisticsByNode($node->id);
         }

@@ -242,6 +242,17 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_clear_log" class="col-md-3 control-label">自动清除日志</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_clear_log) checked @endif id="is_clear_log" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后自动清除无用日志（推荐） </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -350,7 +361,7 @@
                                                             <label for="reset_traffic" class="col-md-3 control-label">流量自动重置</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 每月1日自动重置账号可用流量 </span>
+                                                                <span class="help-block"> 账号会按其购买套餐的日期自动重置账号可用流量 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -857,6 +868,17 @@
                 var traffic_warning = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning', value:traffic_warning}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 启用、禁用随机端口
+        $('#is_clear_log').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_clear_log = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_clear_log', value:is_clear_log}, function (ret) {
                     console.log(ret);
                 });
             }

@@ -12,7 +12,7 @@ use Log;
 class AutoStatisticsUserHourlyTrafficJob extends Command
 {
     protected $signature = 'command:autoStatisticsUserHourlyTrafficJob';
-    protected $description = '用户每小时流量自动统计';
+    protected $description = '自动统计用户每小时流量';
 
     public function __construct()
     {
@@ -27,7 +27,7 @@ class AutoStatisticsUserHourlyTrafficJob extends Command
             $this->statisticsByNode($user->id);
 
             // 统计每个节点产生的流量
-            $nodeList = SsNode::query()->get();
+            $nodeList = SsNode::query()->where('status', 1)->orderBy('id', 'asc')->get();
             foreach ($nodeList as $node) {
                 $this->statisticsByNode($user->id, $node->id);
             }

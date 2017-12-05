@@ -107,18 +107,6 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="balance" class="col-md-3 control-label">余额</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="balance" value="0" id="balance" placeholder="" required>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="score" class="col-md-3 control-label">积分</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="score" value="0" id="score" placeholder="" required>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="col-md-3 control-label">有效期</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group input-large input-daterange">
@@ -327,8 +315,6 @@
             var password = $('#password').val();
             var usage = $("input:radio[name='usage']:checked").val();
             var pay_way = $("input:radio[name='pay_way']:checked").val();
-            var balance = $('#balance').val();
-            var score = $('#score').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
             var gender = $('#gender').val();
@@ -354,7 +340,7 @@
                 type: "POST",
                 url: "{{url('admin/addUser')}}",
                 async: false,
-                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, custom_method:custom_method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

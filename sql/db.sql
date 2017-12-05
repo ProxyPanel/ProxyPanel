@@ -64,9 +64,8 @@ CREATE TABLE `ss_node_info` (
   `uptime` float NOT NULL COMMENT '更新时间',
   `load` varchar(32) NOT NULL COMMENT '负载',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
 
 
@@ -78,10 +77,8 @@ CREATE TABLE `ss_node_online_log` (
   `node_id` int(11) NOT NULL COMMENT '节点ID',
   `online_user` int(11) NOT NULL COMMENT '在线用户数',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_online` (`node_id`,`log_time`)
+  KEY `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
 
 
@@ -112,7 +109,7 @@ CREATE TABLE `user` (
   `qq` varchar(20) DEFAULT '' COMMENT 'QQ',
   `usage` tinyint(4) NOT NULL DEFAULT '4' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
   `pay_way` tinyint(4) NOT NULL DEFAULT '0' COMMENT '付费方式：0-免费、1-月付、2-半年付、3-年付',
-  `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
+  `balance` int(11) NOT NULL DEFAULT '0' COMMENT '余额，单位分',
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
   `enable_time` date DEFAULT NULL COMMENT '开通日期',
   `expire_time` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
@@ -121,14 +118,16 @@ CREATE TABLE `user` (
   `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '等级：可定义名称',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
-  `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
+  `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `referral_uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人',
+  `traffic_reset_day` tinyint(4) NOT NULL DEFAULT '0' COMMENT '流量自动重置日，0表示不重置',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-禁用、0-未激活、1-正常',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `port` (`port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
@@ -178,7 +177,8 @@ CREATE TABLE `user_traffic_log` (
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   KEY `idx_user` (`user_id`),
-  KEY `idx_node` (`node_id`)
+  KEY `idx_node` (`node_id`),
+  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -193,7 +193,7 @@ CREATE TABLE `ss_config` (
   `is_default` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否默认：0-不是、1-是',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序：值越大排越前',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -284,6 +284,7 @@ INSERT INTO `config` VALUES ('32', 'is_captcha', 0);
 INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
+INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
 
 
 -- ----------------------------
@@ -405,7 +406,6 @@ CREATE TABLE `goods` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品信息表';
 
 
-
 -- ----------------------------
 -- Table structure for `coupon`
 -- ----------------------------
@@ -450,13 +450,13 @@ CREATE TABLE `order` (
   `orderId` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人',
   `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券ID',
-  `totalOriginalPrice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单原始总价',
-  `totalPrice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总价',
+  `totalOriginalPrice` int(11) NOT NULL DEFAULT '0' COMMENT '订单原始总价，单位分',
+  `totalPrice` int(11) NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`oid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
 
 
 -- ----------------------------
@@ -469,8 +469,8 @@ CREATE TABLE `order_goods` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `num` int(11) NOT NULL DEFAULT '0' COMMENT '商品数量',
-  `original_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品原价',
-  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品实际价格',
+  `original_price` int(11) NOT NULL DEFAULT '0' COMMENT '商品原价，单位分',
+  `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品实际价格，单位分',
   `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
@@ -528,10 +528,10 @@ CREATE TABLE `user_balance_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '账号ID',
   `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
-  `before` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '发生前余额',
-  `after` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '发生后余额',
-  `balance` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '发生金额',
-  `desc` varchar(255) DEFAULT '' COMMENT '描述',
+  `before` int(11) NOT NULL DEFAULT '0' COMMENT '发生前余额，单位分',
+  `after` int(11) NOT NULL DEFAULT '0' COMMENT '发生后金额，单位分',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '发生金额，单位分',
+  `desc` varchar(255) DEFAULT '' COMMENT '操作描述',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -543,9 +543,9 @@ CREATE TABLE `user_balance_log` (
 CREATE TABLE `referral_apply` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `before` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '操作前可提现金额',
-  `after` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '操作后可提现金额',
-  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '本次提现金额',
+  `before` int(11) NOT NULL DEFAULT '0' COMMENT '操作前可提现金额，单位分',
+  `after` int(11) NOT NULL DEFAULT '0' COMMENT '操作后可提现金额，单位分',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '本次提现金额，单位分',
   `link_logs` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联返利日志ID，例如：1,3,4',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -562,13 +562,13 @@ CREATE TABLE `referral_log` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `ref_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '推广人ID',
   `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联订单ID',
-  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '消费金额',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '消费金额，单位分',
   `ref_amount` int(11) NOT NULL DEFAULT '0' COMMENT '返利金额',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未提现、1-审核中、2-已提现',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='消费返利日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='消费返利日志';
 
 
 -- ----------------------------
@@ -627,7 +627,9 @@ CREATE TABLE `user_traffic_daily` (
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`) USING BTREE,
+  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
@@ -644,7 +646,9 @@ CREATE TABLE `user_traffic_hourly` (
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`) USING BTREE,
+  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 
@@ -676,7 +680,7 @@ CREATE TABLE `ss_node_traffic_hourly` (
   `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_node_id` (`node_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
@@ -688,7 +692,7 @@ CREATE TABLE `ss_node_traffic_hourly` (
 CREATE TABLE `user_ban_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `minutes` int(11) NOT NULL DEFAULT '0' COMMENT '封禁账号市场，单位分钟',
+  `minutes` int(11) NOT NULL DEFAULT '0' COMMENT '封禁账号时长，单位分钟',
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '操作描述',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未处理、1-已处理',
   `created_at` datetime DEFAULT NULL COMMENT ' 创建时间',
@@ -749,7 +753,13 @@ INSERT INTO `country` VALUES ('36', '波兰', 'pl');
 INSERT INTO `country` VALUES ('37', '哈萨克斯坦', 'kz');
 INSERT INTO `country` VALUES ('38', '乌克兰', 'ua');
 INSERT INTO `country` VALUES ('39', '罗马尼亚', 'ro');
-INSERT INTO `country` VALUES ('40', '阿拉伯联合酋长国', 'ae');
+INSERT INTO `country` VALUES ('40', '阿联酋', 'ae');
+INSERT INTO `country` VALUES ('41', '南非', 'za');
+INSERT INTO `country` VALUES ('42', '缅甸', 'mm');
+INSERT INTO `country` VALUES ('43', '冰岛', 'is');
+INSERT INTO `country` VALUES ('44', '芬兰', 'fi');
+INSERT INTO `country` VALUES ('45', '卢森堡', 'lu');
+INSERT INTO `country` VALUES ('46', '比利时', 'be');
 
 INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'wepay_enabled', '0');
 INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'alipay_enabled', '0');

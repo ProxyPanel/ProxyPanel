@@ -36,6 +36,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
     Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
+    Route::get('admin/exportInvite', 'AdminController@exportInvite'); // 导出邀请码
     Route::get('admin/applyList', 'AdminController@applyList'); // 提现申请管理
     Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
     Route::post('admin/setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
@@ -63,6 +64,8 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
+    Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 余额充值
+    Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动日志
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 获取随机密码
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
     Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
@@ -75,6 +78,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
     Route::post("admin/loginas","AdminController@loginas");
+    Route::get('admin/donate', 'DonateController@donate'); // 捐赠
 });
 
 Route::group(['middleware' => ['user']], function() {

@@ -24,6 +24,10 @@ class OrderGoods extends Model
         'is_expire'
     ];
 
+    function user() {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
     function goods() {
         return $this->hasOne(Goods::class, 'id', 'goods_id');
     }

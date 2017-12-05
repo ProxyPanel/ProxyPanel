@@ -1,3 +1,10 @@
+## 演示站(已挂)
+````
+http://www.ssrpanel.com
+用户名：admin
+密码：123456
+````
+
 ## 安装步骤
 #### 环境要求
 ````
@@ -16,17 +23,10 @@ PHP必须开启gd、fileinfo组件
 telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
 本人未实名微信小号：dxstx77 （请勿任何转账、红包行为）
-严禁在TG群里喧哗，只聊VPS、技术不扯淡，更别刷屏惹众怒，否则踢3天，两次机会，第三次被踢你永远进不来，我都记得谁谁谁
+严禁在TG群里喧哗、谈论政治、发色情信息，只聊技术不扯淡，更别刷屏惹众怒，否则踢3天，两次机会，第三次被踢你永远进不来，我都记得谁谁谁
 ````
 
-## 演示站(已挂，求打赏)
-````
-http://www.ssrpanel.com
-用户名：admin
-密码：123456
-````
-
-![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
+[VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
 ````
 部署面板必须得用到VPS
 强烈推荐使用1G以上内存的KVM架构的VPS
@@ -42,7 +42,7 @@ http://www.ssrpanel.com
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
-### 打赏名单
+#### 打赏名单
 |昵称|金额|
 |:-------|--------:| 
 |Law-杰|￥10| 
@@ -56,7 +56,7 @@ http://www.ssrpanel.com
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
-|【要求匿名】|￥150|
+|【要求匿名】|￥270|
 |暮风|￥20|
 |huigeer|￥10|
 |真想悠哉|￥88|
@@ -67,6 +67,8 @@ http://www.ssrpanel.com
 |Sherl|￥48|
 |小孑、|￥20|
 |曾健|￥10|
+|Lojbk|￥10|
+|Denny Wei|￥100|
 
 
 这些捐赠的用途：
@@ -88,7 +90,7 @@ mysql 创建一个数据库，然后自行导入sql\db.sql
 config\database.php 中的mysql选项自行配置数据库
 ````
 
-#### 配置一下
+#### 其次配置一下运行环境
 ````
 cd ssrpanel/
 php composer.phar install
@@ -97,7 +99,7 @@ chown -R www:www storage/
 chmod -R 777 storage/
 ````
 
-#### NGINX配置文件加入
+#### 然后NGINX配置文件加入
 ````
 location / {
     try_files $uri $uri/ /index.php$is_args$args;
@@ -131,16 +133,44 @@ service php-fpm restart
 编辑crontab
 crontab -e
 
-然后加入如下（请自行修改ssrpanel路径）
+然后加入如下（请自行修改ssrpanel路径）：
+（表示每分钟都执行定时任务，具体什么任务什么时候执行程序里已经定义了，请不要乱改，否则流量统计数据可能出错）
 * * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
 ````
 
-#### 发送邮件配置
+## 邮件配置
+###### SMTP
 ````
-config\mail.php 修改其中的配置
+编辑 config\mail.php
+
+请自行配置如下内容
+'driver' => 'smtp',
+'host' => 'smtp.exmail.qq.com',
+'port' => 465,
+'from' => [
+    'address' => 'xxx@qq.com',
+    'name' => 'SSRPanel',
+],
+'encryption' => 'ssl',
+'username' => 'xxx@qq.com',
+'password' => 'xxxxxx',
 ````
 
-## 日志分析（目前仅支持单机单节点）
+###### Mailgun
+````
+编辑 config\mail.php
+将 driver 值改为 mailgun
+
+编辑 config/services.php
+
+请自行配置如下内容
+'mailgun' => [
+    'domain' => 'mailgun发件域名',
+    'secret' => 'mailgun上申请到的secret',
+],
+````
+
+## 日志分析（仅支持单机单节点）
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
@@ -177,7 +207,6 @@ chmod a+x fix_git.sh && sh fix_git.sh
 
 如果本地自行改了文件，想用回原版代码，请先备份好 config/database.php，然后执行以下命令：
 chmod a+x update.sh && sh update.sh
-
 ````
 
 ## 网卡流量监控一键脚本
@@ -237,14 +266,25 @@ vim user-config.json
 
 ````
 
+## 校时
+````
+如果架构是“一面板机-一数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会影响节点在线数的准确性和单端口多用户功能的正常使用。
+推荐统一使用CST时间并安装校时服务：
+vim /etc/sysconfig/clock 把值改为 Asia/Shanghai
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+重启一下服务器，然后：
+yum install ntp
+ntpdate cn.pool.ntp.org
+````
+
 ## 致敬
-````
-@breakwa11
-@glzjin
-@orvice
-@ToyoDAdoubi
-@91yun
-````
+- [@breakwa11](https://github.com/breakwa11)
+- [@glzjin](https://github.com/esdeathlove)
+- [@orvice](https://github.com/orvice)
+- [@ToyoDAdoubi](https://github.com/ToyoDAdoubi)
+- [@91yun](https://github.com/91yun)
+- [@Akkariiin](https://github.com/shadowsocksrr)
 
 ## 说明
 ````
@@ -254,17 +294,17 @@ vim user-config.json
 4.内含简单的购物、优惠券、流量兑换、邀请码、推广返利&提现、文章管理、工单等模块
 5.节点支持分组，不同级别的用户可以看到不同级别分组的节点
 6.SS配置转SSR配置，轻松一键导入SS账号
-7.流量日志、单机单节点日志分析功能，知道用户最近都看了哪些网站
+7.流量日志、单机单节点日志分析功能
 8.强大的定时任务
 9.所有邮件投递都有记录
-10.账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期、流量异常的账号
+10.账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志
 11.后台一键添加加密方式、混淆、协议、等级
 12.强大的后台一键配置功能
 13.屏蔽常见爬虫
 14.支持单端口多用户
 15.账号、节点24小时和近30天内的流量监控
 16.支持节点订阅功能，可一键封禁账号订阅地址
-17.引入serverStatus，可以在线实时查看节点的实时流量信息
+17.美观的国家图标
 ````
 
 ## 预览
