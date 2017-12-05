@@ -77,6 +77,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
+    Route::post("admin/loginas","AdminController@loginas");
     Route::get('admin/donate', 'DonateController@donate'); // 捐赠
 });
 
@@ -100,4 +101,14 @@ Route::group(['middleware' => ['user']], function() {
     Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
     Route::get('user/referral', 'UserController@referral'); // 推广返利
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
+
+    // payment
+    Route::get("user/payment","UserController@payment");
+    Route::post("user/payment","PaymentController@new");
+
+    // 返回管理员页面
+    Route::post("user/loginasadmin","UserController@loginasadmin");
 });
+Route::post("/payment/query","PaymentController@query");
+Route::post("/payment/callback/{type}","PaymentController@callback");
+Route::get("/payment/return/{type}","PaymentController@return");

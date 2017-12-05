@@ -144,6 +144,12 @@
                         <span class="title">我的工单</span>
                     </a>
                 </li>
+                <li class="nav-item {{Request::getRequestUri() == '/user/payment' ? 'active open' : ''}}">
+                    <a href="{{url('user/payment')}}" class="nav-link nav-toggle">
+                        <i class="icon-credit-card" aria-hidden="true"></i>
+                        <span class="title">充值余额</span>
+                    </a>
+                </li>
                 @if(Session::get('referral_status'))
                 <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">
                     <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
@@ -162,6 +168,14 @@
     <div class="page-content-wrapper">
         @yield('content')
     </div>
+    @if(Session::get("admin"))
+        <div class="portlet light bordered" style="position:fixed;right:20px;bottom:0px;width:200px">
+            <div class="portlet-body text-right">
+                <button class="btn btn-sm btn-success" id="return_to_admin"> 返回管理页面 </button>
+                <h6>您当前正在以{{Session::get("user")['username']}}用户登录,点击上面按钮返回管理页面</h6>
+            </div>
+        </div>
+    @endif
     <!-- END CONTENT -->
 </div>
 <!-- END CONTAINER -->
@@ -188,6 +202,35 @@
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 @yield('script')
+
+@if(Session::get("admin"))
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $("#return_to_admin").click(function(){
+            $.ajax({
+                'url':"{{url("/user/loginasadmin")}}",
+                'data':{
+                    '_token':"{{csrf_token()}}"
+                },
+                'dataType':"json",
+                'type':"POST",
+                success:function(data){
+                    if(data.errcode==0){
+                        layer.msg("操作成功!",{time:1000});
+                        setTimeout(function(){
+                            window.location.href="/admin";
+                        },1000);
+                    }else{
+                        layer.msg("操作失败!"+data.errmsg,{time:5000});
+                    }
+                },
+                error:function(data){
+                    layer.msg("操作失败!"+data,{time:5000});
+                }
+            });
+        });
+    </script>
+@endif
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
 <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>

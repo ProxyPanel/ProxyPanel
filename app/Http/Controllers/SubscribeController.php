@@ -16,7 +16,7 @@ use Redirect;
  * Class SubscribeController
  * @package App\Http\Controllers
  */
-class SubscribeController extends BaseController
+class SubscribeController extends Controller
 {
     protected static $config;
 

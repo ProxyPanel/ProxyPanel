@@ -12,7 +12,7 @@ use Agent;
  * Class LocateController
  * @package App\Http\Controllers
  */
-class LocateController extends BaseController
+class LocateController extends Controller
 {
     // 接收打开文章时上报的定位坐标信息
     public function locate(Request $request)

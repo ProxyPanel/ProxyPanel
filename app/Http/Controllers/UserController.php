@@ -21,6 +21,7 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
+use App\Http\Models\Payment;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ use Mail;
 use DB;
 use Log;
 
-class UserController extends BaseController
+class UserController extends Controller
 {
     protected static $config;
     protected static $userLevel;
@@ -55,6 +56,7 @@ class UserController extends BaseController
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
+        $view['payment_enabled'] = (self::$config['qqpay_enabled'] or self::$config['wepay_enabled']or self::$config['alipay_enabled']);
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -957,5 +959,28 @@ class UserController extends BaseController
         $view['link'] = self::$config['website_url'] . '/subscribe/' . $code;
 
         return Response::view('/user/subscribe', $view);
+    }
+
+    /**
+     * 充值余额
+     * @param  Request $req 请求
+     * @return Response     响应
+     */
+    public function payment(Request $req){
+        $v = self::$config;
+        $v['payment'] = Payment::where("status",1)->where("user_id",$req->session()->get('user')['id'])->get();
+        return Response::view("user.payment",$v);
+    }
+    /**
+     * 管理员以某用户登录后恢复到管理员权限
+     * @param  Request $req 请求
+     * @return Response     响应
+     */
+    public function loginasadmin(Request $req){
+        if(\Session::get("admin",[]) == User::find(\Session::get("admin",['id'=>0])['id'])->toarray() ){
+            \Session::put('user',\Session::get("admin",[]));
+            return ['errcode'=>0];
+        }
+        return ['errcode'=>-1,'errmsg'=>"非法的请求."];
     }
 }

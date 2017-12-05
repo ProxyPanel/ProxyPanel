@@ -11,7 +11,7 @@ use Response;
  * Class SubscribeController
  * @package App\Http\Controllers
  */
-class ArticleController extends BaseController
+class ArticleController extends Controller
 {
     // 文章详情页
     public function index(Request $request)

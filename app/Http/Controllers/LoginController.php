@@ -15,7 +15,7 @@ use Cache;
  * Class LoginController
  * @package App\Http\Controllers
  */
-class LoginController extends BaseController
+class LoginController extends Controller
 {
     protected static $config;
 
@@ -31,7 +31,6 @@ class LoginController extends BaseController
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
             $captcha = trim($request->get('captcha'));
-
             if (empty($username) || empty($password)) {
                 $request->session()->flash('errorMsg', '请输入用户名和密码');
 
@@ -61,9 +60,17 @@ class LoginController extends BaseController
 
                 return Redirect::back()->withInput();
             }
+            if($request->remember){
+                $rememberme_token = $this->makeRandStr(20);
+                // 更新登录信息
+                User::query()->where('id', $user->id)->update(['last_login' => time(),"rememberme_token"=>$rememberme_token]);
 
-            // 更新登录信息
-            User::query()->where('id', $user->id)->update(['last_login' => time()]);
+            }else{
+                $rememberme_token = "";
+                // 更新登录信息
+                User::query()->where('id', $user->id)->update(['last_login' => time()]);
+            }
+
 
             // 登录送积分
             if (self::$config['login_add_score']) {
@@ -94,11 +101,21 @@ class LoginController extends BaseController
 
             // 根据权限跳转
             if ($user->is_admin) {
-                return Redirect::to('admin');
+                return Redirect::to('admin')->cookie('remember',$rememberme_token,36000);
             }
 
-            return Redirect::to('user');
+            return Redirect::to('user')->cookie('remember',$rememberme_token,36000);
         } else {
+            if($request->cookie("remember")){
+                $u = User::where("rememberme_token",$request->cookie("remember"))->first();
+                if($u){
+                    $request->session()->put('user', $u->toArray());
+                    if ($u->is_admin) {
+                        return Redirect::to('admin');
+                    }
+                    return Redirect::to('user');
+                }
+            }
             $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
 
@@ -110,8 +127,7 @@ class LoginController extends BaseController
     public function logout(Request $request)
     {
         $request->session()->flush();
-
-        return Redirect::to('login');
+        return Redirect::to('login')->cookie('remember',"",36000);;
     }
 
 }

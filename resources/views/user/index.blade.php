@@ -91,7 +91,11 @@
                         <p class="text-muted">
                             余额：{{$info['balance']}}
                             <span class="badge badge-danger">
-                                <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
+                                @if (!$payment_enabled)
+                                    <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
+                                @else
+                                    <a href="/user/payment"  style="color:#FFF;">充值</a>
+                                @endif
                             </span>
                             &ensp;&ensp;积分：{{$info['score']}}
                             <span class="badge badge-danger">

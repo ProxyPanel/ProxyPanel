@@ -12,7 +12,7 @@ use Response;
  * Class TicketController
  * @package App\Http\Controllers
  */
-class TicketController extends BaseController
+class TicketController extends Controller
 {
     protected static $config;
 
