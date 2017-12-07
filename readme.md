@@ -171,6 +171,15 @@ crontab -e
 ],
 ````
 
+###### 发件失败处理
+````
+如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件，
+会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 错误
+不是逗比的脚本有问题，是因为smtp发邮件必须用到25,26,465,587这四个端口
+可以编辑iptables，注释掉以下这段（前面加个#号就可以），然后保存并重启iptables
+#-A OUTPUT -p tcp -m multiport --dports 25,26,465,587 -m state --state NEW,ESTABLISHED -j REJECT --reject-with icmp-port-unreachable
+````
+
 ## 日志分析（仅支持单机单节点）
 ````
 找到SSR服务端所在的ssserver.log文件
