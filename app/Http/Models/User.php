@@ -47,4 +47,8 @@ class User extends Model
         'referral_uid',
         'status',
     ];
+
+    function payment() {
+        return $this->hasMany(Payment::class, 'user_id', 'id');
+    }
 }

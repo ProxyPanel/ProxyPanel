@@ -122,6 +122,7 @@ CREATE TABLE `user` (
   `referral_uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人',
   `traffic_reset_day` tinyint(4) NOT NULL DEFAULT '0' COMMENT '流量自动重置日，0表示不重置',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-禁用、0-未激活、1-正常',
+  `remember_token` varchar(256) DEFAULT '',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -285,7 +286,18 @@ INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
-
+INSERT INTO `config` VALUES ('37', 'dmf_wepay', '0');
+INSERT INTO `config` VALUES ('38', 'dmf_alipay', '0');
+INSERT INTO `config` VALUES ('39', 'dmf_qqpay', '0');
+INSERT INTO `config` VALUES ('40', 'dmf_wepay_mchid', '');
+INSERT INTO `config` VALUES ('41', 'dmf_alipay_mchid', '');
+INSERT INTO `config` VALUES ('42', 'dmf_qqpay_mchid', '');
+INSERT INTO `config` VALUES ('43', 'dmf_wepay_token', '');
+INSERT INTO `config` VALUES ('44', 'dmf_alipay_token', '');
+INSERT INTO `config` VALUES ('45', 'dmf_qqpay_token', '');
+INSERT INTO `config` VALUES ('46', 'dmf_wepay_phone', '');
+INSERT INTO `config` VALUES ('47', 'dmf_alipay_phone', '');
+INSERT INTO `config` VALUES ('48', 'dmf_qqpay_phone', '');
 
 -- ----------------------------
 -- Table structure for `article`
@@ -761,24 +773,18 @@ INSERT INTO `country` VALUES ('44', '芬兰', 'fi');
 INSERT INTO `country` VALUES ('45', '卢森堡', 'lu');
 INSERT INTO `country` VALUES ('46', '比利时', 'be');
 
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'wepay_enabled', '0');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'alipay_enabled', '0');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'qqpay_enabled', '0');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_mchid', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_mchid', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_mchid', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_token', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_token', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_token', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_wepay_phone', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_alipay_phone', '');
-INSERT INTO `config` (`id`, `name`, `value`) VALUES (NULL, 'payment_qqpay_phone', '');
 
-CREATE TABLE `ssrpanel`.`user_payment` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `money` FLOAT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`),  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL) ENGINE = InnoDB;
+CREATE TABLE `payment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `pay_way` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付类型',
+  `money` int(11) NOT NULL DEFAULT '0' COMMENT '充值金额，单位分',
+  `status` int(11) NOT NULL DEFAULT '1' COMMENT '充值状态：1-成功',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-ALTER TABLE `user` ADD `rememberme_token` VARCHAR(256) NULL DEFAULT '' AFTER `passwd`;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -31,6 +31,7 @@ class LoginController extends Controller
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
             $captcha = trim($request->get('captcha'));
+
             if (empty($username) || empty($password)) {
                 $request->session()->flash('errorMsg', '请输入用户名和密码');
 
@@ -60,14 +61,15 @@ class LoginController extends Controller
 
                 return Redirect::back()->withInput();
             }
-            if($request->remember){
-                $rememberme_token = $this->makeRandStr(20);
-                // 更新登录信息
-                User::query()->where('id', $user->id)->update(['last_login' => time(),"rememberme_token"=>$rememberme_token]);
 
-            }else{
-                $rememberme_token = "";
-                // 更新登录信息
+            // 更新登录信息
+            $remember_token = "";
+            User::query()->where('id', $user->id)->update(['last_login' => time()]);
+            if ($request->get('remember')) {
+                $remember_token = $this->makeRandStr(20);
+
+                User::query()->where('id', $user->id)->update(['last_login' => time(), "remember_token" => $remember_token]);
+            } else {
                 User::query()->where('id', $user->id)->update(['last_login' => time()]);
             }
 
@@ -101,18 +103,19 @@ class LoginController extends Controller
 
             // 根据权限跳转
             if ($user->is_admin) {
-                return Redirect::to('admin')->cookie('remember',$rememberme_token,36000);
+                return Redirect::to('admin')->cookie('remember', $remember_token, 36000);
             }
 
-            return Redirect::to('user')->cookie('remember',$rememberme_token,36000);
+            return Redirect::to('user')->cookie('remember', $remember_token, 36000);
         } else {
-            if($request->cookie("remember")){
-                $u = User::where("rememberme_token",$request->cookie("remember"))->first();
-                if($u){
+            if ($request->cookie("remember")) {
+                $u = User::query()->where("remember_token", $request->cookie("remember"))->first();
+                if ($u) {
                     $request->session()->put('user', $u->toArray());
                     if ($u->is_admin) {
                         return Redirect::to('admin');
                     }
+
                     return Redirect::to('user');
                 }
             }
@@ -127,7 +130,8 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
-        return Redirect::to('login')->cookie('remember',"",36000);;
+
+        return Redirect::to('login')->cookie('remember', "", 36000);
     }
 
 }

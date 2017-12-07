@@ -14,7 +14,7 @@ MYSQL 5.5 （推荐5.6+）
 磁盘空间 10G+
 KVM
 
-PHP必须开启gd、fileinfo组件
+PHP必须开启curl、gd、fileinfo组件
 
 小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
@@ -69,6 +69,7 @@ telegram群组：https://t.me/chatssrpanel
 |曾健|￥10|
 |Lojbk|￥10|
 |Denny Wei|￥100|
+|leon|￥20|
 
 
 这些捐赠的用途：

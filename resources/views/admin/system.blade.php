@@ -48,9 +48,11 @@
                                         <li>
                                             <a href="#tab_6" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
+                                        <!--
                                         <li>
-                                            <a href="#tab_7" data-toggle="tab"> 支付接口设置 </a>
+                                            <a href="#tab_7" data-toggle="tab"> 黛米付接口设置 </a>
                                         </li>
+                                        -->
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -515,151 +517,153 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab_7" style="height:850px">
+                                        <!--
+                                        <div class="tab-pane" id="tab_7">
                                             <form class="form-horizontal">
                                                 <div class="form-body">
                                                     <div class="portlet-body">
-                                                        <div class="col-md-4">
-                                                            <label for="wepay_enabled" class="col-md-4 control-label">微信支付</label>
-                                                            <div class="col-md-8">
-                                                                <input type="checkbox" id="wepay_enabled" class="make-switch pay_enabled" @if($wepay_enabled) checked @endif data-enabled-type="wepay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"><small> 是否启用 <a href="//www.daimiyun.cn">黛米付</a> 微信支付 </small></span>
-                                                            </div>
+                                                        <div class="alert alert-info">
+                                                            <h4>风险提示：本支付接口为第四方支付接口，请谨慎使用！</h4>
+                                                            使用本支付接口，请先到 <a href="//www.daimiyun.cn" target="_blank">黛米付</a> 签约，并填写下列配置信息，然后到黛米付后台进行域名配置。
+                                                            <br>
+                                                            通知地址: {{$website_url}}/payment/callback/wepay
+                                                            <br>
+                                                            回调地址: {{$website_url}}/payment/return/wepay
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <label for="alipay_enabled" class="col-md-4 control-label">支付宝</label>
-                                                            <div class="col-md-8">
-                                                                <input type="checkbox" id="alipay_enabled" class="make-switch pay_enabled" @if($alipay_enabled) checked @endif data-enabled-type="alipay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"><small> 是否启用 <a href="//www.daimiyun.cn">黛米付</a> 支付宝支付 </small></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="qqpay_enabled" class="col-md-4 control-label">QQ支付</label>
-                                                            <div class="col-md-8">
-                                                                <input type="checkbox" id="qqpay_enabled" class="make-switch pay_enabled" @if($qqpay_enabled) checked @endif data-enabled-type="qqpay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"><small> 是否启用 <a href="//www.daimiyun.cn">黛米付</a> QQ支付 </small></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">微信支付-商户id</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_wepay_mchid}}" id="payment_wepay_mchid" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_wepay_mchid">提交</button>
-                                                                    </span>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                                <label for="dmf_wepay" class="col-md-3 control-label">微信支付</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="checkbox" id="dmf_wepay" class="make-switch pay_enabled" @if($dmf_wepay) checked @endif data-enabled-type="wepay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">微信支付-商户token</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_wepay_token}}" id="payment_wepay_token" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_wepay_token">提交</button>
-                                                                    </span>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="col-md-3 control-label">[微信]商户ID</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_wepay_mchid" value="{{$dmf_wepay_mchid}}" id="dmf_wepay_mchid" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_wepay_mchid">提交</button>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">微信支付-商户手机号</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_wepay_phone}}" id="payment_wepay_phone" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_wepay_phone">提交</button>
-                                                                    </span>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[微信]商户手机号</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_wepay_phone" value="{{$dmf_wepay_phone}}" id="dmf_wepay_phone" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_wepay_phone">提交</button>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">支付宝-商户id</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_alipay_mchid}}" id="payment_alipay_mchid" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_alipay_mchid">提交</button>
-                                                                    </span>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[微信]商户TOKEN</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_wepay_token" value="{{$dmf_wepay_token}}" id="dmf_wepay_token" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_wepay_token">提交</button>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">支付宝-商户token</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_alipay_token}}" id="payment_alipay_token" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_alipay_token">提交</button>
-                                                                    </span>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                                <label for="dmf_alipay" class="col-md-3 control-label">支付宝支付</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="checkbox" id="dmf_alipay" class="make-switch pay_enabled" @if($dmf_alipay) checked @endif data-enabled-type="alipay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">支付宝-商户手机号</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_alipay_phone}}" id="payment_alipay_phone" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_alipay_phone">提交</button>
-                                                                    </span>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[支付宝]商户ID</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_alipay_mchid" value="{{$dmf_alipay_mchid}}" id="dmf_alipay_mchid" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_alipay_mchid">提交</button>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">QQ支付-商户id</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_qqpay_mchid}}" id="payment_qqpay_mchid" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_qqpay_mchid">提交</button>
-                                                                    </span>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[支付宝]商户TOKEN</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_alipay_token" value="{{$dmf_alipay_token}}" id="dmf_alipay_token" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_alipay_token">提交</button>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">QQ支付-商户token</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_qqpay_token}}" id="payment_qqpay_token" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_qqpay_token">提交</button>
-                                                                    </span>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[支付宝]商户手机号</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_alipay_phone" value="{{$dmf_alipay_phone}}" id="dmf_alipay_phone" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_alipay_phone">提交</button>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <label for="" class="control-label col-md-4">QQ支付-商户手机号</label>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$payment_qqpay_phone}}" id="payment_qqpay_phone" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success payment_commit" type="button" data-for="payment_qqpay_phone">提交</button>
-                                                                    </span>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                                <label for="dmf_qqpay" class="col-md-3 control-label">QQ支付</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="checkbox" id="dmf_qqpay" class="make-switch pay_enabled" @if($dmf_qqpay) checked @endif data-enabled-type="qqpay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 </div>
-                                                                <span class="help-block"> 到黛米付后台查看. </span>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[QQ]商户ID</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_qqpay_mchid" value="{{$dmf_qqpay_mchid}}" id="dmf_qqpay_mchid" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_qqpay_mchid">提交</button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <h5>使用支付接口,请先到 <a href="//www.daimiyun.cn">黛米付</a>签约,并将配置信息填写在上方.<br>
-                                                        黛米付后台的域名配置:</h5>
-                                                        <pre>
-通知地址: http://您的域名/payment/callback/wepay
-回调地址: http://您的域名/payment/return/wepay</pre>
-                                                        <h5>如果您使用了https,请一定使用https.</h5>
-                                                        <h5>上面的wepay可替换成alipay和qqpay.</h5>
-                                                        <h5>黛米付:qq群:624692881 <a href="https://t.me/daimifu">TG群</a> </h5>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[QQ]商户TOKEN</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_qqpay_token" value="{{$dmf_qqpay_token}}" id="dmf_qqpay_token" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_qqpay_token">提交</button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="control-label col-md-3">[QQ]商户手机号</label>
+                                                                <div class="col-md-9">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control" type="text" name="dmf_qqpay_phone" value="{{$dmf_qqpay_phone}}" id="dmf_qqpay_phone" />
+                                                                        <span class="input-group-btn">
+                                                                            <button class="btn btn-success payment_commit" type="button" data-for="dmf_qqpay_phone">提交</button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
+                                        -->
                                     </div>
                                 </div>
                             </div>
@@ -680,58 +684,49 @@
 
     <script type="text/javascript">
 
-        $(".payment_commit").click(function(){
+        $(".payment_commit").click(function () {
             var inp;
-            inp = $("#"+$(this).data("for"));
+            inp = $("#" + $(this).data("for"));
             $.ajax({
-                'url':"{{url('admin/setConfig')}}",
-                'data':{
-                    _token:'{{csrf_token()}}',
-                    name:$(this).data("for"),
-                    value:inp.val(),
+                'url': "{{url('admin/setConfig')}}",
+                'data': {
+                    _token: '{{csrf_token()}}',
+                    name: $(this).data("for"),
+                    value: inp.val(),
                 },
-                'type':"POST",
-                'dataType':"json",
-                success:function(data){
+                'type': "POST",
+                'dataType': "json",
+                success: function (data) {
                     console.log(data);
-                    layer.msg("保存成功!", {time:1000});
+                    layer.msg("保存成功!", {time: 1000});
                 },
             });
         });
-        $(".pay_enabled").on(
-            {
-                'switchChange.bootstrapSwitch':function(event,state){
-                    state = state ? 1 : 0;
-                    console.log(state);
-                    console.log($(this).data("enabled-type"))
-                    var type = $(this).data("enabled-type");
-                    $.ajax({
-                        'url':"{{url('admin/setConfig')}}",
-                        'data':{
-                            _token:'{{csrf_token()}}',
-                            name:type+"_enabled",
-                            value:state,
-                        },
-                        success:function(data){
-                            console.log(data);
-                            if(data.status=="success")
-                            layer.msg("保存成功!", {time:1000});
-                        },
-                        'dataType':"JSON",
-                        'type':"POST"
-                    });
-                }
-            }
-        );
-        $('#is_rand_port').on({
-            'switchChange.bootstrapSwitch': function(event, state) {
-                var is_rand_port = state ? 1 : 0;
 
-                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_rand_port', value:is_rand_port}, function (ret) {
-                    console.log(ret);
+        $(".pay_enabled").on({
+            'switchChange.bootstrapSwitch': function (event, state) {
+                state = state ? 1 : 0;
+                console.log(state);
+                console.log($(this).data("enabled-type"))
+                var type = $(this).data("enabled-type");
+                $.ajax({
+                    'url': "{{url('admin/setConfig')}}",
+                    'data': {
+                        _token: '{{csrf_token()}}',
+                        name: "dmf_" + type,
+                        value: state,
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.status == "success")
+                            layer.msg("保存成功!", {time: 1000});
+                    },
+                    'dataType': "JSON",
+                    'type': "POST"
                 });
             }
         });
+
         // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {

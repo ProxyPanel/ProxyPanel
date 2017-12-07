@@ -78,7 +78,6 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
     Route::post("admin/loginas","AdminController@loginas");
-    Route::get('admin/donate', 'DonateController@donate'); // 捐赠
 });
 
 Route::group(['middleware' => ['user']], function() {

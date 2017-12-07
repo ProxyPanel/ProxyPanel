@@ -1,6 +1,3 @@
-
-ALTER TABLE `user` ADD `rememberme_token` VARCHAR(256) NULL DEFAULT '' AFTER `passwd`;
-
 -- 日志表加索引，提升查询速度
 ALTER TABLE `user_traffic_log`
 ADD INDEX `idx_user_node` (`user_id`, `node_id`) USING BTREE ;
@@ -28,3 +25,6 @@ DROP COLUMN `updated_at`;
 ALTER TABLE `ss_node_online_log`
 DROP COLUMN `created_at`,
 DROP COLUMN `updated_at`;
+
+
+

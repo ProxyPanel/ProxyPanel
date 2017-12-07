@@ -15,6 +15,7 @@ use App\Http\Models\User;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
     // 生成SS密码
     public function makeRandStr($length = 6)
     {
@@ -66,18 +67,21 @@ class Controller extends BaseController
     public static function toMB($traffic)
     {
         $mb = 1048576;
+
         return $traffic * $mb;
     }
 
     public static function toGB($traffic)
     {
         $gb = 1048576 * 1024;
+
         return $traffic * $gb;
     }
 
     public static function flowToGB($traffic)
     {
         $gb = 1048576 * 1024;
+
         return $traffic / $gb;
     }
 

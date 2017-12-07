@@ -56,7 +56,7 @@ class UserController extends Controller
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
-        $view['payment_enabled'] = (self::$config['qqpay_enabled'] or self::$config['wepay_enabled']or self::$config['alipay_enabled']);
+        $view['payment_enabled'] = self::$config['dmf_qqpay'] || self::$config['dmf_wepay'] || self::$config['dmf_alipay'];
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -103,7 +103,7 @@ class UserController extends Controller
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
             $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
-            $txt .= "协议参数：" . ($node->single ? $user->port.':'.$user->passwd : $user->protocol_param) . "\r\n";
+            $txt .= "协议参数：" . ($node->single ? $user->port . ':' . $user->passwd : $user->protocol_param) . "\r\n";
             $txt .= "混淆方式：" . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . "\r\n";
             $txt .= "混淆参数：" . ($node->single ? '' : $user->obfs_param) . "\r\n";
             $txt .= "本地端口：1080\r\n路由：绕过局域网及中国大陆地址";
@@ -371,7 +371,7 @@ class UserController extends Controller
 
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
-        
+
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
@@ -963,24 +963,33 @@ class UserController extends Controller
 
     /**
      * 充值余额
-     * @param  Request $req 请求
-     * @return Response     响应
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      */
-    public function payment(Request $req){
-        $v = self::$config;
-        $v['payment'] = Payment::where("status",1)->where("user_id",$req->session()->get('user')['id'])->get();
-        return Response::view("user.payment",$v);
+    public function payment(Request $request)
+    {
+        $view = self::$config;
+        $view['paymentList'] = Payment::query()->where("user_id", $request->session()->get('user')['id'])->get();
+
+        return Response::view("user.payment", $view);
     }
-    /**
-     * 管理员以某用户登录后恢复到管理员权限
-     * @param  Request $req 请求
-     * @return Response     响应
-     */
-    public function loginasadmin(Request $req){
-        if(\Session::get("admin",[]) == User::find(\Session::get("admin",['id'=>0])['id'])->toarray() ){
-            \Session::put('user',\Session::get("admin",[]));
-            return ['errcode'=>0];
+
+    // 管理员切换到用户身份后恢复到管理员权限
+    public function loginasadmin(Request $request)
+    {
+        if (!$request->session()->has('admin') || !$request->session()->has('user')) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
         }
-        return ['errcode'=>-1,'errmsg'=>"非法的请求."];
+
+        $admin = $request->session()->get('admin');
+        $user = User::query()->where('id', $admin['id'])->first();
+        if (!$user) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => "非法请求"]);
+        }
+
+        // 管理员信息重新写入user
+        $request->session()->put('user', $request->session()->get('admin'));
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
     }
 }

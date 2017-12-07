@@ -1586,8 +1586,8 @@ class AdminController extends Controller
         $inviteList = Invite::query()->where('status', 0)->orderBy('id', 'asc')->get();
 
         $filename = '邀请码' . date('Ymd');
-        Excel::create($filename, function($excel) use($inviteList) {
-            $excel->sheet('邀请码', function($sheet) use($inviteList) {
+        Excel::create($filename, function ($excel) use ($inviteList) {
+            $excel->sheet('邀请码', function ($sheet) use ($inviteList) {
                 $sheet->row(1, array(
                     '邀请码', '有效期'
                 ));
@@ -1687,24 +1687,6 @@ class AdminController extends Controller
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
-
-    /**
-     * 以某用户登录
-     * @param  Request $req 请求
-     * @return JSON         响应
-     */
-    public function loginas(Request $req){
-        $id = $req->user_id;
-        $user = User::find($id);
-        if(!$user){
-            return ['errcode'=>-1,'errmsg'=>"用户不存在"];
-        }
-        $req->session()->put('admin',$req->session()->get("user"));
-        $req->session()->put('user', $user->toArray());
-        return ['errcode'=>0,'errmsg'=>"成功!"];
-    }
-}
-
     // 操作用户余额
     public function handleUserBalance(Request $request)
     {
@@ -1773,5 +1755,24 @@ class AdminController extends Controller
 
         return Response::view('admin/userBalanceLogList', $view);
     }
-}
 
+    /**
+     * 以某用户登录
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function loginas(Request $request)
+    {
+        $id = $request->get('user_id');
+        $user = User::query()->find($id);
+        if (!$user) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => "用户不存在"]);
+        }
+
+        // 存储当前管理员身份信息，并将当前登录信息改成要切换的用户的身份信息
+        $request->session()->put('admin', $request->session()->get("user"));
+        $request->session()->put('user', $user->toArray());
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
+    }
+}

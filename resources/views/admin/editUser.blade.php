@@ -34,7 +34,7 @@
                                                 <div class="row">
                                                     <span class="caption-subject font-dark bold uppercase col-md-4">账号信息</span>
                                                     <div class="text-right col-md-8" style="">
-                                                        <a href="#" id="loginas" class="badge badge-success">以此用户登录</a>
+                                                        <button type="button" class="btn btn-sm btn-danger btn-outline" onclick="loginas()">切换身份</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -366,28 +366,26 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 处理 以某客户登录
-        $("#loginas").click(function(){
+        // 切换用户身份：以某用户的身份登录
+        function loginas() {
             $.ajax({
-                'url':"{{url("/admin/loginas")}}",
-                'data':{
-                    'user_id':{{$user->id}},
-                    '_token':"{{csrf_token()}}"
+                'url': "{{url("/admin/loginas")}}",
+                'data': {
+                    'user_id': '{{$user->id}}',
+                    '_token': '{{csrf_token()}}'
                 },
-                'dataType':"json",
-                'type':"POST",
-                success:function(data){
-                    if(data.errcode==0){
-                        layer.msg("操作成功!",{time:1000});
-                        setTimeout(function(){
-                            window.location.href="/user";
-                        },1000);
-                    }else{
-                        layer.msg("操作失败!"+data.errmsg,{time:5000});
-                    }
+                'dataType': "json",
+                'type': "POST",
+                success: function (ret) {
+                    layer.msg(ret.message, {time: 1000}, function () {
+                        if (ret.status == 'success') {
+                            window.location.href = "/user";
+                        }
+                    });
                 }
             });
-        });
+        }
+
         // 有效期
         $('.input-daterange input').each(function() {
             $(this).datepicker({
