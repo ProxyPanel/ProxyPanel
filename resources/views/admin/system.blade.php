@@ -441,6 +441,28 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_node_crash_warning" class="col-md-3 control-label">节点宕机警告</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_node_crash_warning) checked @endif id="is_node_crash_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用如果节点宕机则会发邮件提醒管理员 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="crash_warning_email" class="col-md-3 control-label">宕机警告收信地址</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="crash_warning_email" value="{{$crash_warning_email}}" id="crash_warning_email" placeholder="master@ssrpanel.com" />
+                                                                    <span class="input-group-addon">分钟</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setCrashWarningEmail()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 如果启用节点宕机警告提醒，请务必配置本值 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -723,6 +745,19 @@
             var traffic_ban_time = $("#traffic_ban_time").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_time', value:traffic_ban_time}, function (ret) {
+                if (ret.status == 'success') {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置节点宕机警告收件地址
+        function setCrashWarningEmail() {
+            var crash_warning_email = $("#crash_warning_email").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'crash_warning_email', value:crash_warning_email}, function (ret) {
                 if (ret.status == 'success') {
                     layer.msg(ret.message, {time:1000}, function() {
                         window.location.reload();

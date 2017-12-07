@@ -330,9 +330,9 @@ class AdminController extends Controller
             $totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
             $node->transfer = $this->flowAutoShow($totalTraffic);
 
-            // 负载
-            $node_info = SsNodeInfo::query()->where('node_id', $node->id)->orderBy('id', 'desc')->first();
-            $node->load = empty($node_info->load) ? 0 : $node_info->load;
+            // 负载（10分钟以内）
+            $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+            $node->load = empty($node_info) || empty($node_info->load) ? '宕机' : $node_info->load;
         }
 
         $view['nodeList'] = $nodeList;

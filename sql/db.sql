@@ -286,6 +286,9 @@ INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
+INSERT INTO `config` VALUES ('37', 'is_node_crash_warning', 0);
+INSERT INTO `config` VALUES ('38', 'crash_warning_email', '');
+
 
 -- ----------------------------
 -- Table structure for `article`

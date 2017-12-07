@@ -34,8 +34,8 @@ class AutoClearLogJob extends Command
     public function handle()
     {
         if (self::$config['is_clear_log']) {
-            // 自动清除12小时以前的节点负载信息日志
-            SsNodeInfo::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-12 hours"))))->delete();
+            // 自动清除10分钟以前的节点负载信息日志
+            SsNodeInfo::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-10 minutes"))))->delete();
 
             // 自动清除1小时以前的节点负载信息日志
             SsNodeOnlineLog::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-60 minutes"))))->delete();
