@@ -668,6 +668,21 @@
             }
         });
 
+        // 启用、禁用节点宕机发件提醒管理员
+        $('#is_node_crash_warning').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_node_crash_warning = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_node_crash_warning', value:is_node_crash_warning}, function (ret) {
+                    if (ret.status == 'fail') {
+                        layer.msg(ret.message, {time:1000}, function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        });
+
         // 启用、禁用退关返利用户可见与否
         $('#referral_status').on({
             'switchChange.bootstrapSwitch': function(event, state) {
