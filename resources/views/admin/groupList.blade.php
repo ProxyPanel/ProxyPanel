@@ -62,8 +62,12 @@
                                                     <span class="label label-warning">{{empty($level_dict) ? '' : $level_dict[$group->level]}}</span>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">编辑</button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delGroup('{{$group->id}}')">删除</button>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delGroup('{{$group->id}}')">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach

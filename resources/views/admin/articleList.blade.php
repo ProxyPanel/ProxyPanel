@@ -61,8 +61,12 @@
                                             <td> {{$article->sort}} </td>
                                             <td> {{$article->created_at}} </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$article->id}}')">编辑</button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$article->id}}')">删除</button>
+                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$article->id}}')">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$article->id}}')">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach

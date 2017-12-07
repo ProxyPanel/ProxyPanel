@@ -82,9 +82,15 @@
                                                 <td> <span class="label label-info"> {{$node->protocol}} </span> </td>
                                                 <td> <span class="label label-info"> {{$node->obfs}} </span> </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">编辑</button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">删除</button>
-                                                    <button type="button" class="btn btn-sm green btn-outline" onclick="nodeMonitor('{{$node->id}}')">流量监控</button>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm purple btn-outline" onclick="nodeMonitor('{{$node->id}}')">
+                                                        <i class="fa fa-area-chart"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
