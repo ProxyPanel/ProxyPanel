@@ -69,6 +69,7 @@
                                             <span class="widget-thumb-body-stat">
                                                 <a class="btn btn-sm green btn-outline" href="javascript:show('{{$node->ssr_scheme . '<br><br>' . $node->ss_scheme}}');"> <i class="fa fa-paper-plane"></i> </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                                <a class="btn btn-sm green btn-outline" href="javascript:show('结算比例：{{$node->traffic_rate}}');"> <i class="fa fa-exchange"></i> </a>
                                             </span>
                                         </div>
                                     </div>
