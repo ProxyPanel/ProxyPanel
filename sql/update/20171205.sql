@@ -1,16 +1,3 @@
-INSERT INTO `config` VALUES ('37', 'dmf_wepay', '0');
-INSERT INTO `config` VALUES ('38', 'dmf_alipay', '0');
-INSERT INTO `config` VALUES ('39', 'dmf_qqpay', '0');
-INSERT INTO `config` VALUES ('40', 'dmf_wepay_mchid', '');
-INSERT INTO `config` VALUES ('41', 'dmf_alipay_mchid', '');
-INSERT INTO `config` VALUES ('42', 'dmf_qqpay_mchid', '');
-INSERT INTO `config` VALUES ('43', 'dmf_wepay_token', '');
-INSERT INTO `config` VALUES ('44', 'dmf_alipay_token', '');
-INSERT INTO `config` VALUES ('45', 'dmf_qqpay_token', '');
-INSERT INTO `config` VALUES ('46', 'dmf_wepay_phone', '');
-INSERT INTO `config` VALUES ('47', 'dmf_alipay_phone', '');
-INSERT INTO `config` VALUES ('48', 'dmf_qqpay_phone', '');
-
 CREATE TABLE `payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -24,5 +11,3 @@ CREATE TABLE `payment` (
 
 
 ALTER TABLE `user` ADD `remember_token` VARCHAR(256) NULL DEFAULT '' AFTER `status`;
-
-

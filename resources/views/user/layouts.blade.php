@@ -144,14 +144,6 @@
                         <span class="title">我的工单</span>
                     </a>
                 </li>
-                <!--
-                <li class="nav-item {{Request::getRequestUri() == '/user/payment' ? 'active open' : ''}}">
-                    <a href="{{url('user/payment')}}" class="nav-link nav-toggle">
-                        <i class="icon-credit-card" aria-hidden="true"></i>
-                        <span class="title">充值余额</span>
-                    </a>
-                </li>
-                -->
                 @if(Session::get('referral_status'))
                 <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">
                     <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
@@ -210,7 +202,7 @@
     <script type="text/javascript">
         $("#return_to_admin").click(function () {
             $.ajax({
-                'url': "{{url("/user/loginasadmin")}}",
+                'url': "{{url("/user/switchToAdmin")}}",
                 'data': {
                     '_token': "{{csrf_token()}}"
                 },

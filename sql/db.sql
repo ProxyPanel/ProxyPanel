@@ -286,18 +286,6 @@ INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
-INSERT INTO `config` VALUES ('37', 'dmf_wepay', '0');
-INSERT INTO `config` VALUES ('38', 'dmf_alipay', '0');
-INSERT INTO `config` VALUES ('39', 'dmf_qqpay', '0');
-INSERT INTO `config` VALUES ('40', 'dmf_wepay_mchid', '');
-INSERT INTO `config` VALUES ('41', 'dmf_alipay_mchid', '');
-INSERT INTO `config` VALUES ('42', 'dmf_qqpay_mchid', '');
-INSERT INTO `config` VALUES ('43', 'dmf_wepay_token', '');
-INSERT INTO `config` VALUES ('44', 'dmf_alipay_token', '');
-INSERT INTO `config` VALUES ('45', 'dmf_qqpay_token', '');
-INSERT INTO `config` VALUES ('46', 'dmf_wepay_phone', '');
-INSERT INTO `config` VALUES ('47', 'dmf_alipay_phone', '');
-INSERT INTO `config` VALUES ('48', 'dmf_qqpay_phone', '');
 
 -- ----------------------------
 -- Table structure for `article`

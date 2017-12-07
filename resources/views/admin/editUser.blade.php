@@ -34,7 +34,7 @@
                                                 <div class="row">
                                                     <span class="caption-subject font-dark bold uppercase col-md-4">账号信息</span>
                                                     <div class="text-right col-md-8" style="">
-                                                        <button type="button" class="btn btn-sm btn-danger btn-outline" onclick="loginas()">切换身份</button>
+                                                        <button type="button" class="btn btn-sm btn-danger btn-outline" onclick="switchToUser()">切换身份</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -366,10 +366,10 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 切换用户身份：以某用户的身份登录
-        function loginas() {
+        // 切换用户身份
+        function switchToUser() {
             $.ajax({
-                'url': "{{url("/admin/loginas")}}",
+                'url': "{{url("/admin/switchToUser")}}",
                 'data': {
                     'user_id': '{{$user->id}}',
                     '_token': '{{csrf_token()}}'

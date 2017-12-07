@@ -56,7 +56,6 @@ class UserController extends Controller
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
-        $view['payment_enabled'] = self::$config['dmf_qqpay'] || self::$config['dmf_wepay'] || self::$config['dmf_alipay'];
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -961,21 +960,8 @@ class UserController extends Controller
         return Response::view('/user/subscribe', $view);
     }
 
-    /**
-     * 充值余额
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function payment(Request $request)
-    {
-        $view = self::$config;
-        $view['paymentList'] = Payment::query()->where("user_id", $request->session()->get('user')['id'])->get();
-
-        return Response::view("user.payment", $view);
-    }
-
-    // 管理员切换到用户身份后恢复到管理员权限
-    public function loginasadmin(Request $request)
+    // 转换成管理员的身份
+    public function switchToAdmin(Request $request)
     {
         if (!$request->session()->has('admin') || !$request->session()->has('user')) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);

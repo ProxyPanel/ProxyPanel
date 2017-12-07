@@ -1000,7 +1000,7 @@ class AdminController extends Controller
             return Redirect::to('admin/userList');
         }
 
-        $nodeList = SsNode::query()->paginate(10)->appends($request->except('page'));
+        $nodeList = SsNode::query()->where('status', 1)->paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 生成ssr scheme
             $obfs_param = $node->single ? '' : $user->obfs_param;
@@ -1756,12 +1756,8 @@ class AdminController extends Controller
         return Response::view('admin/userBalanceLogList', $view);
     }
 
-    /**
-     * 以某用户登录
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function loginas(Request $request)
+    // 转换成某个用户的身份
+    public function switchToUser(Request $request)
     {
         $id = $request->get('user_id');
         $user = User::query()->find($id);

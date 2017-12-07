@@ -133,11 +133,18 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">编辑</button>
-                                                <!--<button type="button" class="btn btn-sm red btn-outline" onclick="delUser('{{$user->id}}')">删除</button>-->
-                                                <button type="button" class="btn btn-sm green btn-outline" onclick="doExport('{{$user->id}}')">配置信息</button>
-                                                <button type="button" class="btn btn-sm purple btn-outline" onclick="doMonitor('{{$user->id}}')">流量监控</button>
-                                                <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">重置流量</button>
+                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm green btn-outline" onclick="doExport('{{$user->id}}')">
+                                                    <i class="fa fa-paper-plane-o"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm purple btn-outline" onclick="doMonitor('{{$user->id}}')">
+                                                    <i class="fa fa-area-chart"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">
+                                                    <i class="fa fa-refresh"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -223,10 +230,16 @@
 
         // 重置流量
         function resetTraffic(id) {
-            $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
-                layer.msg(ret.message, {time:1000}, function() {
-                    window.location.reload();
+            layer.confirm('确定重置该用户流量吗？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
                 });
+
+                layer.close(index);
             });
         }
     </script>
