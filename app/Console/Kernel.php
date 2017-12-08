@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('command:autoBanUserJob')->everyTenMinutes();
-        $schedule->command('command:autoCheckNodeStatusJob')->everyMinute();
+        $schedule->command('command:autoCheckNodeStatusJob')->everyThirtyMinutes();
         $schedule->command('command:autoClearLogJob')->everyThirtyMinutes();
         $schedule->command('command:autoDecGoodsTrafficJob')->everyTenMinutes();
         $schedule->command('command:autoDisableExpireUserJob')->everyMinute();
