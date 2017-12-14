@@ -2,54 +2,54 @@
 
 @section('css')
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-4">
-                <div class="tab-pane active" id="tab_0">
+                <div class="tab-pane active">
                     <div class="portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption">
-                                <span class="caption-subject font-dark bold uppercase">生成邀请码</span>
+                                <span class="caption-subject font-dark bold">{{trans('home.invite_code_make')}}</span>
                             </div>
                         </div>
                         <div class="portlet-body">
                             <div class="alert alert-info">
                                 <i class="fa fa-warning"></i>
-                                可生成 <strong> {{$num}} </strong> 个邀请码
+                                {{trans('home.invite_code_tips1')}} <strong> {{$num}} </strong> {{trans('home.invite_code_tips2')}}
                             </div>
-                            <button type="button" class="btn blue" onclick="makeInvite()" @if(!$num) disabled @endif> 生 成 </button>
+                            <button type="button" class="btn blue" onclick="makeInvite()" @if(!$num) disabled @endif> {{trans('home.invite_code_button')}} </button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="tab-pane active" id="tab_0">
+                <div class="tab-pane active">
                     <div class="portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption">
-                                <span class="caption-subject font-dark bold uppercase">我的邀请码</span>
+                                <span class="caption-subject font-dark bold">{{trans('home.invite_code_my_codes')}}</span>
                             </div>
                         </div>
                         <div class="portlet-body">
                             <div class="table-scrollable table-scrollable-borderless">
-                                <table class="table table-hover table-light">
+                                <table class="table table-hover table-light table-checkable order-column">
                                     <thead>
                                         <tr class="uppercase">
                                             <th> # </th>
-                                            <th> 邀请码 </th>
-                                            <th> 有效期 </th>
-                                            <th> 使用者 </th>
-                                            <th> 状态 </th>
+                                            <th> {{trans('home.invite_code_table_name')}} </th>
+                                            <th> {{trans('home.invite_code_table_date')}} </th>
+                                            <th> {{trans('home.invite_code_table_user')}} </th>
+                                            <th> {{trans('home.invite_code_table_status')}} </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @if($inviteList->isEmpty())
                                             <tr>
-                                                <td colspan="5" style="text-align: center;">暂无数据</td>
+                                                <td colspan="5" style="text-align: center;">{{trans('home.invite_code_table_none_codes')}}</td>
                                             </tr>
                                         @else
                                             @foreach($inviteList as $key => $invite)
@@ -60,11 +60,11 @@
                                                     <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                     <td>
                                                         @if($invite->status == '0')
-                                                            <span class="label label-sm label-success"> 未使用 </span>
+                                                            <span class="label label-sm label-success"> {{trans('home.invite_code_table_status_un')}} </span>
                                                         @elseif($invite->status == '1')
-                                                            <span class="label label-sm label-danger"> 已使用 </span>
+                                                            <span class="label label-sm label-danger"> {{trans('home.invite_code_table_status_yes')}} </span>
                                                         @else
-                                                            <span class="label label-sm label-default"> 已过期 </span>
+                                                            <span class="label label-sm label-default"> {{trans('home.invite_code_table_status_expire')}} </span>
                                                         @endif
                                                     </td>
                                                 </tr>

@@ -10,7 +10,7 @@
         }
     </style>
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -20,40 +20,40 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 流量加油包 </span>
+                            <span class="caption-subject bold"> {{trans('home.service_title')}} </span>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                            <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    <th style="text-align: center;"> 名称 </th>
-                                    <th style="text-align: center;"> 内含流量 </th>
-                                    <th style="text-align: center;"> 有效期 </th>
-                                    <th style="text-align: center;"> 售价 </th>
-                                    <!--<th> 所需积分 </th>-->
+                                    <th> {{trans('home.service_name')}} </th>
+                                    <th style="text-align: center;"> {{trans('home.service_price')}} </th>
                                     <th> </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($goodsList->isEmpty())
                                     <tr>
-                                        <td colspan="7">暂无数据</td>
+                                        <td colspan="3">{{trans('home.services_none')}}</td>
                                     </tr>
                                 @else
                                     @foreach($goodsList as $key => $goods)
                                         <tr class="odd gradeX">
-                                            <td style="text-align: center;">
+                                            <td>
                                                 <!--@if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif -->
-                                                {{$goods->name}}
+                                                <strong><span style="color:#dc9700">{{$goods->name}}</span></strong>
+                                                <br>
+                                                {{trans('home.service_traffic')}}：{{$goods->traffic}}
+                                                <br>
+                                                {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
+                                                <br>
+                                                Strictly Self-Managed, No Support.
                                             </td>
-                                            <td style="text-align: center;"> {{$goods->traffic}} </td>
-                                            <td style="text-align: center;"> {{$goods->days}} 天 </td>
                                             <td style="text-align: center;"> ￥{{$goods->price}} </td>
-                                            <!--<td> {{$goods->score}} </td>-->
                                             <td style="text-align: center;">
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="buy('{{$goods->id}}')">购买</button>
+                                                <button type="button" class="btn btn-sm blue" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
                                             </td>
                                         </tr>

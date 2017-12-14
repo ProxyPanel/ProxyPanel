@@ -446,20 +446,40 @@
                                                             <label for="is_node_crash_warning" class="col-md-3 control-label">节点宕机警告</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_node_crash_warning) checked @endif id="is_node_crash_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用如果节点宕机则会发邮件提醒管理员 </span>
+                                                                <span class="help-block"> 启用后如果节点宕机则发出提醒邮件 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="crash_warning_email" class="col-md-3 control-label">宕机警告收信地址</label>
+                                                            <label for="crash_warning_email" class="col-md-3 control-label">宕机收信地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="crash_warning_email" value="{{$crash_warning_email}}" id="crash_warning_email" placeholder="master@ssrpanel.com" />
-                                                                    <span class="input-group-addon">分钟</span>
                                                                     <span class="input-group-btn">
                                                                         <button class="btn btn-success" type="button" onclick="setCrashWarningEmail()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 如果启用节点宕机警告提醒，请务必配置本值 </span>
+                                                                <span class="help-block"> 启用节点宕机提醒时请务必配置本值 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_server_chan" class="col-md-3 control-label">ServerChan</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_server_chan) checked @endif id="is_server_chan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后将使用ServerChan推送节点宕机提醒（<a href="http://sc.ftqq.com" target="_blank">绑定微信</a>） </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="server_chan_key" class="col-md-3 control-label">SCKEY</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="server_chan_key" value="{{$server_chan_key}}" id="server_chan_key" placeholder="请到ServerChan申请" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setServerChanKey()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>） </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -559,7 +579,11 @@
                 var is_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_rand_port', value:is_rand_port}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -570,7 +594,11 @@
                 var is_user_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_user_rand_port', value:is_user_rand_port}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -581,7 +609,11 @@
                 var login_add_score = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score', value:login_add_score}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -592,7 +624,11 @@
                 var is_register = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_register', value:is_register}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -603,7 +639,11 @@
                 var is_invite_register = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_invite_register', value:is_invite_register}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -614,11 +654,11 @@
                 var is_reset_password = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_reset_password', value:is_reset_password}, function (ret) {
-                    if (ret.status == 'fail') {
-                        layer.msg(ret.message, {time:1000}, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
                             window.location.reload();
-                        });
-                    }
+                        }
+                    });
                 });
             }
         });
@@ -629,11 +669,11 @@
                 var is_captcha = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_captcha', value:is_captcha}, function (ret) {
-                    if (ret.status == 'fail') {
-                        layer.msg(ret.message, {time:1000}, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
                             window.location.reload();
-                        });
-                    }
+                        }
+                    });
                 });
             }
         });
@@ -644,11 +684,11 @@
                 var is_active_register = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_active_register', value:is_active_register}, function (ret) {
-                    if (ret.status == 'fail') {
-                        layer.msg(ret.message, {time:1000}, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
                             window.location.reload();
-                        });
-                    }
+                        }
+                    });
                 });
             }
         });
@@ -659,11 +699,11 @@
                 var expire_warning = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_warning', value:expire_warning}, function (ret) {
-                    if (ret.status == 'fail') {
-                        layer.msg(ret.message, {time:1000}, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
                             window.location.reload();
-                        });
-                    }
+                        }
+                    });
                 });
             }
         });
@@ -674,11 +714,26 @@
                 var is_node_crash_warning = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_node_crash_warning', value:is_node_crash_warning}, function (ret) {
-                    if (ret.status == 'fail') {
-                        layer.msg(ret.message, {time:1000}, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
                             window.location.reload();
-                        });
-                    }
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用节点宕机发ServerChan微信消息提醒
+        $('#is_server_chan').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_server_chan = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_server_chan', value:is_server_chan}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -689,11 +744,11 @@
                 var referral_status = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_status', value:referral_status}, function (ret) {
-                    if (ret.status == 'fail') {
-                        layer.msg(ret.message, {time:1000}, function() {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
                             window.location.reload();
-                        });
-                    }
+                        }
+                    });
                 });
             }
         });
@@ -704,7 +759,11 @@
                 var traffic_warning = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning', value:traffic_warning}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -715,7 +774,11 @@
                 var is_clear_log = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_clear_log', value:is_clear_log}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -726,7 +789,11 @@
                 var reset_traffic = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_traffic', value:reset_traffic}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -737,7 +804,11 @@
                 var is_traffic_ban = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_traffic_ban', value:is_traffic_ban}, function (ret) {
-                    console.log(ret);
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
                 });
             }
         });
@@ -747,11 +818,11 @@
             var traffic_ban_value = $("#traffic_ban_value").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_value', value:traffic_ban_value}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -760,11 +831,11 @@
             var traffic_ban_time = $("#traffic_ban_time").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_time', value:traffic_ban_time}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -773,11 +844,24 @@
             var crash_warning_email = $("#crash_warning_email").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'crash_warning_email', value:crash_warning_email}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
+            });
+        }
+
+        // 设置ServerChan的SCKEY
+        function setServerChanKey() {
+            var server_chan_key = $("#server_chan_key").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'server_chan_key', value:server_chan_key}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
             });
         }
 
@@ -855,11 +939,11 @@
             var default_days = $("#default_days").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_days', value:default_days}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -868,11 +952,11 @@
             var default_traffic = $("#default_traffic").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_traffic', value:default_traffic}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -881,11 +965,11 @@
             var invite_num = $("#invite_num").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'invite_num', value:invite_num}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -894,11 +978,11 @@
             var reset_password_times = $("#reset_password_times").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_password_times', value:reset_password_times}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -907,11 +991,11 @@
             var active_times = $("#active_times").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'active_times', value:active_times}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -920,11 +1004,11 @@
             var subscribe_max = $("#subscribe_max").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_max', value:subscribe_max}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -933,11 +1017,11 @@
             var traffic_warning_percent = $("#traffic_warning_percent").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning_percent', value:traffic_warning_percent}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -946,11 +1030,11 @@
             var expire_days = $("#expire_days").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_days', value:expire_days}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -959,11 +1043,11 @@
             var website_name = $("#website_name").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'website_name', value:website_name}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -972,11 +1056,11 @@
             var website_url = $("#website_url").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'website_url', value:website_url}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -985,11 +1069,11 @@
             var login_add_score_range = $("#login_add_score_range").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score_range', value:login_add_score_range}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -998,11 +1082,11 @@
             var referral_traffic = $("#referral_traffic").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_traffic', value:referral_traffic}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -1011,11 +1095,11 @@
             var referral_percent = $("#referral_percent").val();
 
             $.post("{{url('admin/setReferralPercent')}}", {_token:'{{csrf_token()}}', value:referral_percent}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
 
@@ -1024,11 +1108,11 @@
             var referral_money = $("#referral_money").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_money', value:referral_money}, function (ret) {
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1000}, function() {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
                         window.location.reload();
-                    });
-                }
+                    }
+                });
             });
         }
     </script>

@@ -77,7 +77,8 @@ return [
     |
     */
 
-    'locale' => 'zh-CN',
+    //'locale' => 'zh-CN',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -91,6 +92,7 @@ return [
     */
 
     'fallback_locale' => 'en',
+    //'fallback_locale' => 'zh-CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +163,7 @@ return [
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
-        Illuminate\Translation\TranslationServiceProvider::class,
+        //Illuminate\Translation\TranslationServiceProvider::class, // 弃用自带多国语言包功能
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
@@ -183,6 +185,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Mews\Captcha\CaptchaServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
+        Overtrue\LaravelLang\TranslationServiceProvider::class,
 
     ],
 

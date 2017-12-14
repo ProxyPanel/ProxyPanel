@@ -110,45 +110,45 @@
                 <li class="nav-item start {{(Request::getRequestUri() == '/' || Request::getRequestUri() == '/user' || Request::getRequestUri() == '/user/subscribe') ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
-                        <span class="title">首页</span>
+                        <span class="title">{{trans('home.home')}}</span>
                         <span class="selected"></span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/goodsList', '/user/addOrder']) ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
-                        <span class="title">购买服务</span>
+                        <span class="title">{{trans('home.services')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/trafficLog' ? 'active open' : ''}}">
                     <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
                         <i class="icon-speedometer"></i>
-                        <span class="title">流量日志</span>
+                        <span class="title">{{trans('home.traffic_log')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/invite' ? 'active open' : ''}}">
                     <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
                         <i class="icon-user-follow"></i>
-                        <span class="title">邀请码</span>
+                        <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/orderList']) ? 'active open' : ''}}">
                     <a href="{{url('user/orderList')}}" class="nav-link nav-toggle">
                         <i class="icon-wallet"></i>
-                        <span class="title">消费记录</span>
+                        <span class="title">{{trans('home.invoices')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{Request::getRequestUri() == '/user/ticketList' ? 'active open' : ''}}">
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
-                        <span class="title">我的工单</span>
+                        <span class="title">{{trans('home.tickets')}}</span>
                     </a>
                 </li>
                 @if(Session::get('referral_status'))
                 <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">
                     <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
                         <i class="icon-diamond"></i>
-                        <span class="title">推广返利</span>
+                        <span class="title">{{trans('home.referrals')}}</span>
                     </a>
                 </li>
                 @endif

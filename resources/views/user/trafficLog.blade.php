@@ -3,7 +3,7 @@
 @section('css')
 @endsection
 
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p> 提示：30日内流量统计不会统计当天，24小时内流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。 </p>
+                    <p> {{trans('home.traffic_log_tips')}} </p>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
 
         option = {
             title: {
-                text: '30日内流量消耗情况',
+                text: '{{trans('home.traffic_log_30days')}}',
                 subtext: '单位M'
             },
             tooltip: {
@@ -71,7 +71,7 @@
             series: [
                 @if(!empty($trafficDaily))
                 {
-                    name:'消耗流量',
+                    name:'{{trans('home.traffic_log_keywords')}}',
                     type:'line',
                     data:[{!! $trafficDaily !!}],
                     markPoint: {
@@ -91,7 +91,7 @@
 
         option = {
             title: {
-                text: '24小时内流量消耗情况',
+                text: '{{trans('home.traffic_log_24hours')}}',
                 subtext: '单位M'
             },
             tooltip: {
@@ -117,7 +117,7 @@
             series: [
                 @if(!empty($trafficHourly))
                 {
-                    name:'消耗流量',
+                    name:'{{trans('home.traffic_log_keywords')}}',
                     type:'line',
                     data:[{!! $trafficHourly !!}],
                     markPoint: {

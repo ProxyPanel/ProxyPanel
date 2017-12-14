@@ -12,6 +12,7 @@ use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
+use App\Http\Models\SsConfig;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
@@ -45,6 +46,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->session()->get('user');
+
         $user = User::query()->where('id', $user['id'])->first();
         $user->totalTransfer = $this->flowAutoShow($user->transfer_enable);
         $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
@@ -138,14 +140,15 @@ class UserController extends Controller
         if ($request->method() == 'POST') {
             $old_password = $request->get('old_password');
             $new_password = $request->get('new_password');
-            $port = trim($request->get('port'));
+            $wechat = $request->get('wechat');
+            $qq = $request->get('qq');
             $passwd = trim($request->get('passwd'));
             $method = $request->get('method');
             $protocol = $request->get('protocol');
             $obfs = $request->get('obfs');
 
             // 修改密码
-            if (!empty($old_password) && !empty($new_password)) {
+            if ($old_password && $new_password) {
                 $old_password = md5(trim($old_password));
                 $new_password = md5(trim($new_password));
 
@@ -173,24 +176,29 @@ class UserController extends Controller
             }
 
             // 修改SS信息
-            if (empty($port)) {
-                $request->session()->flash('errorMsg', '端口不能为空');
-
-                return Redirect::to('user/profile#tab_2');
-            }
-
             if (empty($passwd)) {
                 $request->session()->flash('errorMsg', '密码不能为空');
+
+                return Redirect::to('user/profile#tab_3');
+            }
+
+            // 加密方式、协议、混淆必须存在
+            $existMethod = SsConfig::query()->where('type', 1)->where('name', $method)->first();
+            $existProtocol = SsConfig::query()->where('type', 2)->where('name', $protocol)->first();
+            $existObfs = SsConfig::query()->where('type', 3)->where('name', $obfs)->first();
+            if (!$existMethod || !$existProtocol || !$existObfs) {
+                $request->session()->flash('errorMsg', '非法请求');
 
                 return Redirect::to('user/profile#tab_2');
             }
 
             $data = [
-                //'port' => $port,
                 'passwd'   => $passwd,
                 'method'   => $method,
                 'protocol' => $protocol,
-                'obfs'     => $obfs
+                'obfs'     => $obfs,
+                'wechat'   => $wechat,
+                'qq'       => $qq
             ];
 
             $ret = User::query()->where('id', $user['id'])->update($data);
@@ -353,6 +361,7 @@ class UserController extends Controller
     public function closeTicket(Request $request)
     {
         $id = $request->get('id');
+
         $user = $request->session()->get('user');
 
         $ret = Ticket::query()->where('id', $id)->where('user_id', $user['id'])->update(['status' => 2]);

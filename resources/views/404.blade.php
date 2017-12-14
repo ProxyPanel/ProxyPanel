@@ -8,7 +8,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>页面不存在</title>
+    <title>{{trans('404.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -36,11 +36,11 @@
     <div class="col-md-12 page-500">
         <div class="number font-red"> 404 </div>
         <div class="details">
-            <h3>页面不存在</h3>
-            <p> 如果发现BUG请提交到 <a href="https://github.com/ssrpanel/ssrpanel/issues" target="_blank">Issues</a>
+            <h3>{{trans('404.title')}}</h3>
+            <p> {{trans('404.tips')}} <a href="https://github.com/ssrpanel/ssrpanel/issues" target="_blank">Issues</a>
                 <br/> </p>
             <p>
-                <a href="{{url('admin')}}" class="btn red btn-outline"> 返 回 </a>
+                <a href="{{url('admin')}}" class="btn red btn-outline"> {{trans('404.back')}} </a>
                 <br> </p>
         </div>
     </div>

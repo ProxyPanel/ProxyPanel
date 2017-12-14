@@ -3,22 +3,10 @@
 @section('css')
     <link href="/assets/pages/css/invoice-2.min.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('user/goodsList')}}">流量包</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('user/addOrder')}}">购买</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="invoice-content-2 bordered">
             <div class="row invoice-body">
@@ -26,21 +14,19 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th class="invoice-title uppercase"> 商品信息 </th>
-                            <th class="invoice-title uppercase text-center"> 单价 </th>
-                            <th class="invoice-title uppercase text-center"> 数量 </th>
-                            <th class="invoice-title uppercase text-center"> 小计 </th>
+                            <th class="invoice-title uppercase"> {{trans('home.service_name')}} </th>
+                            <th class="invoice-title uppercase text-center"> {{trans('home.service_price')}} </th>
+                            <th class="invoice-title uppercase text-center"> {{trans('home.service_quantity')}} </th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td style="padding: 10px;">
                                 <h2>{{$goods->name}}</h2>
-                                <p> 内含流量 {{$goods->traffic}}（有效期 {{$goods->days}}天） </p>
+                                <p> {{trans('home.service_traffic')}} {{$goods->traffic}}（{{trans('home.service_days')}} {{$goods->days}}{{trans('home.day')}}） </p>
                             </td>
                             <td class="text-center"> ￥{{$goods->price}} </td>
                             <td class="text-center"> x 1 </td>
-                            <td class="text-center"> ￥{{$goods->price}} </td>
                         </tr>
                         </tbody>
                     </table>
@@ -48,22 +34,22 @@
             </div>
             <div class="row invoice-subtotal">
                 <div class="col-xs-3">
-                    <h2 class="invoice-title uppercase"> 共计 </h2>
+                    <h2 class="invoice-title uppercase"> {{trans('home.service_total_price')}} </h2>
                     <p class="invoice-desc"> ￥{{$goods->price}} </p>
                 </div>
                 <div class="col-xs-3">
-                    <h2 class="invoice-title uppercase"> 优惠 </h2>
+                    <h2 class="invoice-title uppercase"> {{trans('home.coupon')}} </h2>
                     <p class="invoice-desc">
                         <div class="input-group">
-                            <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="优惠券" />
+                            <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}" />
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" onclick="redeemCoupon()"><i class="fa fa-refresh"></i> 使用 </button>
+                                <button class="btn btn-default" type="button" onclick="redeemCoupon()"><i class="fa fa-refresh"></i> {{trans('home.redeem_coupon')}} </button>
                             </span>
                         </div>
                     </p>
                 </div>
                 <div class="col-xs-6">
-                    <h2 class="invoice-title uppercase"> 实际结算 </h2>
+                    <h2 class="invoice-title uppercase"> {{trans('home.service_settlement_price')}} </h2>
                     <p class="invoice-desc grand-total"> ￥{{$goods->price}} </p>
                 </div>
             </div>

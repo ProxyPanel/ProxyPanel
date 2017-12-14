@@ -89,8 +89,10 @@ class LoginController extends Controller
                         $obj->created_at = date('Y-m-d H:i:s');
                         $obj->save();
 
-                        $ttl = !empty(self::$config['login_add_score_range']) ? self::$config['login_add_score_range'] : 1440;
+                        // 登录多久后再登录可以获取积分
+                        $ttl = self::$config['login_add_score_range'] ? self::$config['login_add_score_range'] : 1440;
                         Cache::put('loginAddScore_' . md5($username), '1', $ttl);
+
                         $request->session()->flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量包');
                     }
                 }
@@ -112,6 +114,7 @@ class LoginController extends Controller
                 $u = User::query()->where("remember_token", $request->cookie("remember"))->first();
                 if ($u) {
                     $request->session()->put('user', $u->toArray());
+
                     if ($u->is_admin) {
                         return Redirect::to('admin');
                     }
@@ -119,6 +122,7 @@ class LoginController extends Controller
                     return Redirect::to('user');
                 }
             }
+
             $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
 

@@ -15,6 +15,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('admin', 'AdminController@index'); // 后台首页
     Route::get('admin/userList', 'AdminController@userList'); // 账号列表
     Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
+    Route::post('admin/batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
     Route::any('admin/editUser', 'AdminController@editUser'); // 编辑账号
     Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
     Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表
@@ -102,3 +103,7 @@ Route::group(['middleware' => ['user']], function() {
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
     Route::post("user/switchToAdmin","UserController@switchToAdmin"); // 转换成管理员的身份
 });
+
+//Route::group(['middleware' => ['user']], function() {
+    Route::any('payment/create', 'PaymentController@create');
+//});

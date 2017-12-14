@@ -21,12 +21,10 @@ use Mail;
 class RegisterController extends Controller
 {
     protected static $config;
-    protected static $forbidDomain;
 
     function __construct()
     {
         self::$config = $this->systemConfig();
-        self::$forbidDomain = $this->forbidDomain();
     }
 
     // 注册页
@@ -41,7 +39,7 @@ class RegisterController extends Controller
             $register_token = $request->get('register_token');
             $aff = intval($request->get('aff', 0));
 
-            // 预防重复提交
+            // 防止重复提交
             $session_register_token = $request->session()->get('register_token');
             if (empty($register_token) || $register_token != $session_register_token) {
                 $request->session()->flash('errorMsg', '请勿重复请求，刷新一下页面再试试');
@@ -72,9 +70,6 @@ class RegisterController extends Controller
 
                 return Redirect::back()->withInput();
             }
-//            else if (in_array(substr($username, strpos($username, '@') + 1), self::$forbidDomain)) {
-//                return Redirect::back()->withInput($request->except(['username']));
-//            }
 
             // 是否校验验证码
             if (self::$config['is_captcha']) {
@@ -87,7 +82,7 @@ class RegisterController extends Controller
 
             // 是否开启注册
             if (!self::$config['is_register']) {
-                $request->session()->flash('errorMsg', '系统维护暂停注册，如需账号请联系管理员');
+                $request->session()->flash('errorMsg', '系统维护暂停注册');
 
                 return Redirect::back();
             }

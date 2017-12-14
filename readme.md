@@ -1,4 +1,4 @@
-## 演示站(已挂)
+## 演示站
 ````
 http://www.ssrpanel.com
 用户名：admin
@@ -14,7 +14,7 @@ MYSQL 5.5 （推荐5.6+）
 磁盘空间 10G+
 KVM
 
-PHP必须开启curl、gd、fileinfo组件
+PHP必须开启curl、gd、fileinfo、openssl组件
 
 小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
@@ -34,50 +34,13 @@ telegram群组：https://t.me/chatssrpanel
 （节点强烈不建议使用OVZ，一无法加速二容易崩溃，512M以下内存的容易经常性宕机，即便是KVM）
 ````
 
-#### 打赏作者
-````
-如果你觉得这套代码好用，微信扫一下进行打赏
-在使用过程中有发现问题就提issue，有空我会改的
-持续开发，喜欢请star一下，如果你发现什么好玩的东西，也请发到issue
-````
-![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
-
-#### 打赏名单
-|昵称|金额|
-|:-------|--------:| 
-|Law-杰|￥10| 
-|Err| ￥51 | 
-|緃噺開始 |￥5| 
-|【要求匿名】|￥267|
-|、无奈|￥5|
-|Sunny Woon|￥10|
-|aazzpp678|￥26|
-|风云_1688|￥15|
-|Royal|￥25|
-|bingo|￥8|
-|Eason|￥10|
-|【要求匿名】|￥270|
-|暮风|￥20|
-|huigeer|￥10|
-|真想悠哉|￥88|
-|osmond|￥10|
-|风云_1688|￥20|
-|穆飞|￥10|
-|文青|￥10|
-|Sherl|￥48|
-|小孑、|￥20|
-|曾健|￥10|
-|Lojbk|￥10|
-|Denny Wei|￥100|
-|leon|￥20|
-
+![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
 这些捐赠的用途：
 - 1.30刀买了1台VPS做开发测试用（已被BAN）
 - 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
 - 3.感谢`izhangxm`提交了自定义等级的分支代码
 - 4.感谢`Hao-Luo`提供的节点一键部署脚本
-
 
 #### 拉取代码
 ````
@@ -276,6 +239,12 @@ vim user-config.json
 
 ````
 
+## 架构（私信咨询我）
+###### 单机单节点
+###### 单机多节点（数据库不分离）
+###### 单机多节点（数据库分离）
+###### 多级多节点（彻底分离）
+
 ## 校时
 ````
 如果架构是“一面板机-一数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会影响节点在线数的准确性和单端口多用户功能的正常使用。
@@ -314,7 +283,9 @@ ntpdate cn.pool.ntp.org
 14.支持单端口多用户
 15.账号、节点24小时和近30天内的流量监控
 16.支持节点订阅功能，可一键封禁账号订阅地址
-17.美观的国家图标
+17.节点宕机提醒（邮件+ServerChan微信提醒）
+18.Paypal在线支付接口
+19.兼容SS、SSRR
 ````
 
 ## 预览

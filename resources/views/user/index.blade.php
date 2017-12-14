@@ -26,7 +26,7 @@
 
     </style>
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -47,8 +47,8 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="alert alert-danger">
-                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M。
-                    <button class="btn btn-sm red" onclick="subscribe()"> 订阅节点 </button>
+                    {{trans('home.ratio_tips')}}
+                    <button class="btn btn-sm red" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
                 </div>
                 <div class="row widget-row">
                     @if(!$nodeList->isEmpty())
@@ -82,29 +82,29 @@
             <div class="col-md-4">
                 <div class="portlet box red">
                     <div class="portlet-title">
-                        <div class="caption">账号信息</div>
+                        <div class="caption">{{trans('home.account_info')}}</div>
                         <div class="tools">
                             <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <p class="text-muted"> 等级：{{$info['levelName']}} </p>
+                        <p class="text-muted"> {{trans('home.account_level')}}：{{$info['levelName']}} </p>
                         <p class="text-muted">
-                            余额：{{$info['balance']}}
+                            {{trans('home.account_balance')}}：{{$info['balance']}}
                             <span class="badge badge-danger">
                                 <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
                             </span>
-                            &ensp;&ensp;积分：{{$info['score']}}
+                            &ensp;&ensp;{{trans('home.account_score')}}：{{$info['score']}}
                             <span class="badge badge-danger">
                                 <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换</a>
                             </span>
                         </p>
-                        <p class="text-muted"> 账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
-                        <p class="text-muted"> 最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
-                        <p class="text-muted"> 最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
+                        <p class="text-muted"> {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
+                        <p class="text-muted"> {{trans('home.account_last_usage')}}：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
+                        <p class="text-muted"> {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
                         <p class="text-muted">
-                            已用流量：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
-                            <div class="progress progress-striped active" style="margin-bottom:0;" title="共有流量{{$info['totalTransfer']}}，已用{{$info['usedTransfer']}}">
+                            {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
+                            <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
                                 <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
                                     <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
                                 </div>
@@ -114,7 +114,7 @@
                 </div>
                 <div class="portlet box blue">
                     <div class="portlet-title">
-                        <div class="caption">文章</div>
+                        <div class="caption">{{trans('home.article_title')}}</div>
                         <div class="tools">
                             <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
                         </div>

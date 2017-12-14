@@ -1,6 +1,6 @@
 @extends('user.layouts')
 
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">

@@ -12,7 +12,9 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "~2.1.0",
-        "mews/captcha": "^2.1"
+        "mews/captcha": "^2.1",
+        "overtrue/laravel-lang": "~3.0",
+        "paypal/rest-api-sdk-php": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

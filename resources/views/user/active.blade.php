@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>激活账号</title>
+    <title>{{trans('active.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -29,7 +29,7 @@
     <link rel="shortcut icon" href="favicon.ico" />
 </head>
 
-<body class=" login">
+<body class="login">
 <!-- BEGIN LOGO -->
 <div class="logo">
     <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
@@ -50,7 +50,7 @@
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
         <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">登 录</button>
+            <button type="button" class="btn btn-default" onclick="login()">{{trans('active.login_button')}}</button>
         </div>
     </form>
     <!-- END REGISTRATION FORM -->

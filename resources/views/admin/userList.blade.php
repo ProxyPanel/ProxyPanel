@@ -27,7 +27,8 @@
                             <span class="caption-subject bold uppercase"> 账号列表 </span>
                         </div>
                         <div class="actions">
-                            <div class="btn-group">
+                            <div class="btn-group btn-group-devided">
+                                <button class="btn sbold blue" onclick="batchAddUsers()"> 批量生成 </button>
                                 <button class="btn sbold blue" onclick="addUser()"> 新增
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -175,6 +176,21 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 批量生成账号
+        function batchAddUsers() {
+            layer.confirm('将自动生成5个账号，确定继续吗？', {icon: 3, title:'警告'}, function(index) {
+                $.post("{{url('admin/batchAddUsers')}}", {_token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
+
+                layer.close(index);
+            });
+        }
+
         // 添加账号
         function addUser() {
             window.location.href = '{{url('admin/addUser')}}';

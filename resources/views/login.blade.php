@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>登录</title>
+    <title>{{trans('login.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -41,7 +41,7 @@
     <form class="login-form" action="{{url('login')}}" method="post">
         <div class="alert alert-danger display-hide">
             <button class="close" data-close="alert"></button>
-            <span> 请输入用户名和密码 </span>
+            <span> {{trans('login.tips')}} </span>
         </div>
         @if (Session::get('errorMsg'))
             <div class="alert alert-danger">
@@ -56,39 +56,39 @@
             </div>
         @endif
         <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9">用户名</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" />
+            <label class="control-label visible-ie8 visible-ie9">{{trans('login.username')}}</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('login.username')}}" name="username" value="{{Request::old('username')}}" />
         </div>
         <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9">密码</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="{{Request::old('password')}}" />
+            <label class="control-label visible-ie8 visible-ie9">{{trans('login.password')}}</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('login.password')}}" name="password" value="{{Request::old('password')}}" />
             <input type="hidden" name="_token" value="{{csrf_token()}}" />
         </div>
         @if($is_captcha)
             <div class="form-group" style="margin-bottom:65px;">
-                <label class="control-label visible-ie8 visible-ie9">验证码</label>
-                <input class="form-control form-control-solid placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="captcha" value="" />
-                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="验证码" style="float:right;" />
+                <label class="control-label visible-ie8 visible-ie9">{{trans('login.captcha')}}</label>
+                <input class="form-control form-control-solid placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('login.captcha')}}" name="captcha" value="" />
+                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('login.captcha')}}" style="float:right;" />
             </div>
         @endif
         <div class="form-actions">
             <div class="pull-left">
                 <label class="rememberme mt-checkbox mt-checkbox-outline">
-                    <input type="checkbox" name="remember" value="1"> 记住我
+                    <input type="checkbox" name="remember" value="1"> {{trans('login.remember')}}
                     <span></span>
                 </label>
             </div>
             <div class="pull-right forget-password-block">
-                <a href="{{url('resetPassword')}}" class="forget-password">忘记密码</a>
+                <a href="{{url('resetPassword')}}" class="forget-password">{{trans('login.forget_password')}}</a>
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn red btn-block uppercase">登 录</button>
+            <button type="submit" class="btn red btn-block uppercase">{{trans('login.login')}}</button>
         </div>
         @if($is_register)
             <div class="create-account">
                 <p>
-                    <a href="{{url('register')}}" class="btn-primary btn">注 册</a>
+                    <a href="{{url('register')}}" class="btn-primary btn">{{trans('login.register')}}</a>
                 </p>
             </div>
         @endif

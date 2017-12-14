@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>激活账号</title>
+    <title>{{trans('active.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -53,21 +53,21 @@
     <form class="forget-form" action="{{url('activeUser')}}" method="post" style="display: block;">
         @if($is_active_register)
             <div class="form-title">
-                <span class="form-title">激活账号</span>
+                <span class="form-title">{{trans('active.title')}}</span>
             </div>
             <div class="form-group">
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入用户名" name="username" value="{{Request::get('username')}}" required />
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('active.username_placeholder')}}" name="username" value="{{Request::get('username')}}" required />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
             </div>
         @else
             <div class="alert alert-danger">
-                <span> 系统维护中，如需激活账号请联系管理员 </span>
+                <span> {{trans('active.tips')}} </span>
             </div>
         @endif
         <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">返 回</button>
+            <button type="button" class="btn btn-default" onclick="login()">{{trans('active.back')}}</button>
             @if($is_active_register)
-                <button type="submit" class="btn red uppercase pull-right">激 活</button>
+                <button type="submit" class="btn red uppercase pull-right">{{trans('active.submit')}}</button>
             @endif
         </div>
     </form>

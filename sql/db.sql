@@ -288,6 +288,8 @@ INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
 INSERT INTO `config` VALUES ('37', 'is_node_crash_warning', 0);
 INSERT INTO `config` VALUES ('38', 'crash_warning_email', '');
+INSERT INTO `config` VALUES ('39', 'is_server_chan', 0);
+INSERT INTO `config` VALUES ('40', 'server_chan_key', '');
 
 
 -- ----------------------------

@@ -4,7 +4,7 @@
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -16,11 +16,11 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-question font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 工单列表 </span>
+                            <span class="caption-subject bold"> {{trans('home.ticket_title')}} </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" data-toggle="modal" data-target="#charge_modal"> 发起工单 </button>
+                                <button class="btn sbold blue" data-toggle="modal" data-target="#charge_modal"> {{trans('home.ticket_table_new_button')}} </button>
                             </div>
                         </div>
                     </div>
@@ -28,16 +28,16 @@
                         <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
-                                <tr>
-                                    <th> ID </th>
-                                    <th> 标题 </th>
-                                    <th> 状态 </th>
-                                </tr>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> {{trans('home.ticket_table_title')}} </th>
+                                        <th> {{trans('home.ticket_table_status')}} </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                 @if($ticketList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="4"> {{trans('home.ticket_table_none')}} </td>
                                     </tr>
                                 @else
                                     @foreach($ticketList as $key => $ticket)
@@ -46,11 +46,11 @@
                                             <td> <a href="{{url('user/replyTicket?id=') . $ticket->id}}" target="_blank">{{$ticket->title}}</a> </td>
                                             <td>
                                                 @if ($ticket->status == 0)
-                                                    <span class="label label-info"> 待处理 </span>
+                                                    <span class="label label-info"> {{trans('home.ticket_table_status_wait')}} </span>
                                                 @elseif ($ticket->status == 1)
-                                                    <span class="label label-danger"> 已回复 </span>
+                                                    <span class="label label-danger"> {{trans('home.ticket_table_status_reply')}} </span>
                                                 @else
-                                                    <span class="label label-default"> 已关闭 </span>
+                                                    <span class="label label-default"> {{trans('home.ticket_table_status_close')}} </span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -60,10 +60,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$ticketList->total()}} 个工单</div>
-                            </div>
-                            <div class="col-md-8 col-sm-8">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $ticketList->links() }}
                                 </div>
@@ -79,15 +76,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title"> 发起工单 </h4>
+                        <h4 class="modal-title"> {{trans('home.ticket_table_new_button')}} </h4>
                     </div>
                     <div class="modal-body">
-                        <input type="text" name="title" id="title" placeholder="工单标题" class="form-control margin-bottom-20">
-                        <textarea name="content" id="content" placeholder="请填写您的问题，如果图片请提交工单后在回复处上传图片" class="form-control margin-bottom-20" rows="4"></textarea>
+                        <input type="text" name="title" id="title" placeholder="{{trans('home.ticket_table_title')}}" class="form-control margin-bottom-20">
+                        <textarea name="content" id="content" placeholder="{{trans('home.ticket_table_new_desc')}}" class="form-control margin-bottom-20" rows="4"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn red btn-outline">关闭</button>
-                        <button type="button" data-dismiss="modal" class="btn green btn-outline" onclick="addTicket()">提交</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline"> {{trans('home.ticket_table_new_cancel')}} </button>
+                        <button type="button" data-dismiss="modal" class="btn green btn-outline" onclick="addTicket()"> {{trans('home.ticket_table_new_yes')}} </button>
                     </div>
                 </div>
             </div>

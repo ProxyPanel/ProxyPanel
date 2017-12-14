@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>注册</title>
+    <title>{{trans('register.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -47,49 +47,49 @@
                 </div>
             @endif
             <div class="form-group">
-                <label class="control-label visible-ie8 visible-ie9">用户名</label>
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入邮箱" name="username" value="{{Request::old('username')}}" required />
+                <label class="control-label visible-ie8 visible-ie9">{{trans('register.username')}}</label>
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.username_placeholder')}}" name="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="register_token" value="{{Session::get('register_token')}}" />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
                 <input type="hidden" name="aff" value="{{Request::get('aff')}}" />
             </div>
             <div class="form-group">
-                <label class="control-label visible-ie8 visible-ie9">密码</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="{{Request::old('password')}}" required />
+                <label class="control-label visible-ie8 visible-ie9">{{trans('register.password')}}</label>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.password')}}" name="password" value="{{Request::old('password')}}" required />
             </div>
             <div class="form-group">
-                <label class="control-label visible-ie8 visible-ie9">重复密码</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="重复密码" name="repassword" value="{{Request::old('repassword')}}" required />
+                <label class="control-label visible-ie8 visible-ie9">{{trans('register.retype_password')}}</label>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.retype_password')}}" name="repassword" value="{{Request::old('repassword')}}" required />
             </div>
             @if($is_invite_register)
                 <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">邀请码</label>
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="邀请码" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
+                    <label class="control-label visible-ie8 visible-ie9">{{trans('register.code')}}</label>
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
                 </div>
             @endif
             @if($is_captcha)
             <div class="form-group" style="margin-bottom:75px;">
-                <label class="control-label visible-ie8 visible-ie9">验证码</label>
-                <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="captcha" value="" required />
-                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="验证码" style="float:right;" />
+                <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
+                <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
+                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
             </div>
             @endif
             <div class="form-group margin-top-20 margin-bottom-20">
                 <label class="mt-checkbox mt-checkbox-outline">
-                    <input type="checkbox" name="tnc" checked disabled /> 我已阅读并同意遵守
-                    <a href="javascript:showTnc();"> 服务条款 </a>
+                    <input type="checkbox" name="tnc" checked disabled /> {{trans('register.tnc_button')}}
+                    <a href="javascript:showTnc();"> {{trans('register.tnc_link')}} </a>
                     <span></span>
                 </label>
             </div>
         @else
             <div class="alert alert-danger">
-                <span> 系统维护中，如需账号请联系管理员 </span>
+                <span> {{trans('register.register_alter')}} </span>
             </div>
         @endif
         <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">返 回</button>
+            <button type="button" class="btn btn-default" onclick="login()">{{trans('register.back')}}</button>
             @if($is_register)
-                <button type="submit" class="btn red uppercase pull-right">提 交</button>
+                <button type="submit" class="btn red uppercase pull-right">{{trans('register.submit')}}</button>
             @endif
         </div>
     </form>
@@ -124,10 +124,10 @@
             ,shade: 0.8
             ,id: 'tnc' //设定一个id，防止重复弹出
             ,resize: false
-            ,btn: ['我已完整阅读，并承诺遵守']
+            ,btn: ['{{trans('register.tnc_title')}}']
             ,btnAlign: 'c'
             ,moveType: 1 //拖拽模式，0或者1
-            ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">不得通过本站提供的服务发布、转载、传送含有下列内容之一的信息：<br>1.违反宪法确定的基本原则的；<br>2.危害国家安全，泄漏国家机密，颠覆国家政权，破坏国家统一的；<br>3.损害国家荣誉和利益的；<br>4.煽动民族仇恨、民族歧视，破坏民族团结的；<br>5.破坏国家宗教政策，宣扬邪教和封建迷信的； <br>6.散布谣言，扰乱社会秩序，破坏社会稳定的；<br>7.散布淫秽、色情、赌博、暴力、恐怖或者教唆犯罪的；<br>8.侮辱或者诽谤他人，侵害他人合法权益的；<br>9.煽动非法集会、结社、游行、示威、聚众扰乱社会秩序的；<br>10.以非法民间组织名义活动的；<br>11.含有法律、行政法规禁止的其他内容的。</div>'
+            ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">{{trans('register.tnc_content')}}</div>'
             ,success: function(layero){
 //                var btn = layero.find('.layui-layer-btn');
 //                btn.find('.layui-layer-btn0').attr({

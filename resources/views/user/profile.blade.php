@@ -3,7 +3,7 @@
 @section('css')
     <link href="/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
@@ -41,7 +41,7 @@
                                             <a href="#tab_1" data-toggle="tab">登录密码</a>
                                         </li>
                                         <li>
-                                            <a href="#tab_2" data-toggle="tab">SS(R)信息</a>
+                                            <a href="#tab_2" data-toggle="tab">通信配置</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -70,13 +70,18 @@
                                         <div class="tab-pane" id="tab_2">
                                             <form action="{{url('user/profile')}}" method="post" enctype="multipart/form-data" class="form-bordered">
                                                 <div class="form-group">
-                                                    <label class="control-label"> 端口 </label>
-                                                    <input type="text" class="form-control" name="port" value="{{$info->port}}" id="port" readonly />
-                                                    <input type="hidden" name="_token" value="{{csrf_token()}}" />
+                                                    <label class="control-label"> 微信 </label>
+                                                    <input type="text" class="form-control" name="wechat" value="{{$info->wechat}}" id="wechat" required />
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="control-label"> QQ </label>
+                                                    <input type="text" class="form-control" name="qq" value="{{$info->qq}}" id="qq" required />
+                                                </div>
+                                                <hr />
                                                 <div class="form-group">
                                                     <label class="control-label"> 连接密码 </label>
                                                     <input type="text" class="form-control" name="passwd" value="{{$info->passwd}}" id="passwd" required />
+                                                    <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="control-label"> 加密方式 </label>

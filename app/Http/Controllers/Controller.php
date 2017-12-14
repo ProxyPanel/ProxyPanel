@@ -206,20 +206,11 @@ class Controller extends BaseController
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
-    // 禁止注册的邮箱后缀
-    public function forbidDomain()
-    {
-        return [
-            'gov.cn',
-            'edu.cn'
-        ];
-    }
-
     /**
      * 写入邮件发送日志
      * @param int $user_id 用户ID
-     * @param string $title 投递类型（投递标题）
-     * @param string $content 投递内容（简要概述）
+     * @param string $title 标题
+     * @param string $content 内容
      * @param int $status 投递状态
      * @param string $error 投递失败时记录的异常信息
      */

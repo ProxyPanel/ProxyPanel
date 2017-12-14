@@ -9,39 +9,32 @@
         }
     </style>
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('user/nodeList')}}">节点列表</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('user/subscribe')}}">订阅</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger">
-                    <strong>警告：</strong>该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量异常。
+                <div class="note note-danger">
+                    <p> {{trans('home.subscribe_warning')}} </p>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div class="portlet light form-fit bordered">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="icon-link font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">订阅地址</span>
+                            <span class="caption-subject font-blue bold">{{trans('home.subscribe_address')}}</span>
                         </div>
                     </div>
                     <div class="portlet-body form">
                         <div class="mt-clipboard-container">
                             <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
                             <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
-                                <i class="icon-note"></i> 复制链接
+                                <i class="icon-note"></i> {{trans('home.copy_subscribe_address')}}
                             </a>
                         </div>
                     </div>

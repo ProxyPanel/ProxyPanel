@@ -9,7 +9,7 @@
         }
     </style>
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top: 0;">
@@ -21,7 +21,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-wallet font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 消费记录 </span>
+                            <span class="caption-subject bold"> {{trans('home.invoice_title')}} </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -29,28 +29,42 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                     <tr>
-                                        <th> ID </th>
-                                        <th> 订单编号 </th>
-                                        <th> 商品信息 </th>
-                                        <th> 创建时间 </th>
+                                        <th> # </th>
+                                        <th> {{trans('home.invoice_table_name')}} </th>
+                                        <th> {{trans('home.invoice_table_price')}} </th>
+                                        <th> {{trans('home.invoice_table_create_date')}} </th>
+                                        <th> {{trans('home.invoice_table_status')}} </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @if($orderList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="4">{{trans('home.invoice_table_none')}}</td>
                                     </tr>
                                 @else
                                     @foreach($orderList as $key => $order)
                                         <tr class="odd gradeX">
                                             <td> {{$key + 1}} </td>
-                                            <td> {{$order->orderId}} </td>
                                             <td>
                                                 @foreach($order->goodsList as $goods)
-                                                    {{$goods->goods_name}}（￥{{$goods->price}}）
+                                                    {{$goods->goods_name}}
                                                 @endforeach
                                             </td>
-                                            <td>{{$order->created_at}}</td>
+                                            <td>￥{{$order->totalPrice / 100}}</td>
+                                            <td>{{date('Y-m-d', strtotime($order->created_at))}}</td>
+                                            <td>
+                                                @if($order->status == -1)
+                                                    <span class="label label-default"> {{trans('home.invoice_table_closed')}} </span>
+                                                @elseif($order->status == 0)
+                                                    <span class="label label-default"> {{trans('home.invoice_table_wait_payment')}} </span>
+                                                @elseif($order->status == 1)
+                                                    <span class="label label-danger"> {{trans('home.invoice_table_wait_confirm')}} </span>
+                                                @elseif($order->status == 2)
+                                                    <span class="label label-success"> {{trans('home.invoice_table_wait_active')}} </span>
+                                                @else
+                                                    <span class="label label-default"> {{trans('home.invoice_table_expired')}} </span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -58,10 +72,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$orderList->total()}} 个记录</div>
-                            </div>
-                            <div class="col-md-7 col-sm-7">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $orderList->links() }}
                                 </div>
