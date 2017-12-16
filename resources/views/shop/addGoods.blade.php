@@ -7,18 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('shop/goodsList')}}">商品管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('shop/addGoods')}}">添加商品</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -34,6 +23,9 @@
                         <strong>错误：</strong> {{Session::get('errorMsg')}}
                     </div>
                 @endif
+                <div class="note note-warning">
+                    <p>警告：购买新套餐则会覆盖所有已购但未过期的旧套餐并删除对应的流量，所以设置商品时请务必注意类型和有效期。</p>
+                </div>
                 <!-- BEGIN PORTLET-->
                 <div class="portlet light bordered">
                     <div class="portlet-title">

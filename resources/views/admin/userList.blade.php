@@ -7,15 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin/userList')}}">账号管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -24,7 +16,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-users font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 账号列表 </span>
+                            <span class="caption-subject bold uppercase"> 用户列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group btn-group-devided">
@@ -53,7 +45,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="pay_way" id="pay_way" onChange="doSearch()">
-                                    <option value="" @if(empty(Request::get('pay_way'))) selected @endif>付费方式</option>
+                                    <option value="" @if(Request::get('pay_way') == '') selected @endif>付费方式</option>
                                     <option value="0" @if(Request::get('pay_way') == '0') selected @endif>免费</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>月付</option>
                                     <option value="2" @if(Request::get('pay_way') == '2') selected @endif>半年付</option>
@@ -62,7 +54,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
-                                    <option value="" @if(empty(Request::get('status'))) selected @endif>状态</option>
+                                    <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
@@ -70,7 +62,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="enable" id="enable" onChange="doSearch()">
-                                    <option value="" @if(empty(Request::get('enable'))) selected @endif>SS(R)状态</option>
+                                    <option value="" @if(Request::get('enable') == '') selected @endif>SS(R)状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>

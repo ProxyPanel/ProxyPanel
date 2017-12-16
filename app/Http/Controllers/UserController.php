@@ -9,7 +9,6 @@ use App\Http\Models\Goods;
 use App\Http\Models\Invite;
 use App\Http\Models\Level;
 use App\Http\Models\Order;
-use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
@@ -22,7 +21,6 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
-use App\Http\Models\Payment;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use Illuminate\Http\Request;
@@ -30,8 +28,8 @@ use Redirect;
 use Response;
 use Cache;
 use Mail;
-use DB;
 use Log;
+use DB;
 
 class UserController extends Controller
 {
@@ -283,14 +281,11 @@ class UserController extends Controller
     {
         $user = $request->session()->get('user');
 
-        $orderList = Order::query()->where('user_id', $user['id'])->orderBy('oid', 'desc')->with('goodsList')->paginate(10)->appends($request->except('page'));
+        $orderList = Order::query()->with(['user', 'goods', 'coupon'])->where('user_id', $user['id'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
         if (!$orderList->isEmpty()) {
             foreach ($orderList as &$order) {
-                foreach ($order->goodsList as &$goods) {
-                    $g = Goods::query()->where('id', $goods->goods_id)->first();
-                    $goods->goods_name = empty($g) ? '【该商品已删除】' : $g->name;
-                    $goods->price = $goods->price / 100;
-                }
+                $order->totalOriginalPrice = $order->totalOriginalPrice / 100;
+                $order->totalPrice = $order->totalPrice / 100;
             }
         }
 
@@ -704,7 +699,7 @@ class UserController extends Controller
         return Response::json(['status' => 'success', 'data' => $data, 'message' => '该优惠券有效']);
     }
 
-    // 添加订单
+    // 购买服务
     public function addOrder(Request $request)
     {
         $goods_id = intval($request->get('goods_id'));
@@ -715,7 +710,7 @@ class UserController extends Controller
         if ($request->method() == 'POST') {
             $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不存在']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：服务不存在']);
             }
 
             // 使用优惠券
@@ -738,38 +733,24 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
             }
 
-            // 订单长ID
-            $orderId = date('YmdHis') . mt_rand(100000, 999999);
-
             DB::beginTransaction();
             try {
                 // 生成订单
                 $order = new Order();
-                $order->orderId = $orderId;
+                $order->orderId = date('ymdHis') . mt_rand(100000, 999999);
                 $order->user_id = $user->id;
+                $order->goods_id = $goods_id;
                 $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
                 $order->totalOriginalPrice = $goods->price;
                 $order->totalPrice = $totalPrice;
+                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
+                $order->is_expire = 0;
+                $order->pay_way = 1; // 支付方式
                 $order->status = 2;
                 $order->save();
 
-                if (!$order->oid) {
-                    throw new \Exception('错误：生成订单失败');
-                }
-
-                $orderGoods = new OrderGoods();
-                $orderGoods->oid = $order->oid;
-                $orderGoods->orderId = $orderId;
-                $orderGoods->user_id = $user->id;
-                $orderGoods->goods_id = $goods_id;
-                $orderGoods->num = 1;
-                $orderGoods->original_price = $goods->price;
-                $orderGoods->price = $totalPrice;
-                $orderGoods->is_expire = 0;
-                $orderGoods->save();
-
                 // 扣余额
-                User::query()->where('id', $user['id'])->decrement('balance', $totalPrice);
+                User::query()->where('id', $user->id)->decrement('balance', $totalPrice);
 
                 // 记录余额操作日志
                 $userBalanceLogObj = new UserBalanceLog();
@@ -797,12 +778,19 @@ class UserController extends Controller
                     $couponLogObj->save();
                 }
 
+                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
+                $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) { $q->where('type', 2);})->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->get();
+                foreach ($existOrderList as $vo) {
+                    Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                    User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                }
+
                 // 把商品的流量加到账号上
-                User::query()->where('id', $user['id'])->increment('transfer_enable', $goods->traffic * 1048576);
+                User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);
 
                 // 将商品的有效期和流量自动重置日期加到账号上
                 $traffic_reset_day = $goods->type == 2 ? (in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'))) : 0;
-                User::query()->where('id', $user['id'])->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                User::query()->where('id', $user->id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
 
                 // 写入返利日志
                 if ($user->referral_uid) {
@@ -897,7 +885,7 @@ class UserController extends Controller
         $view['link'] = self::$config['website_url'] . '/register?aff=' . $user['id'];
 
         $referralLogList = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
-        if (!empty($referralLogList)) {
+        if (!$referralLogList->isEmpty()) {
             foreach ($referralLogList as &$referral) {
                 $referral->amount = $referral->amount / 100;
                 $referral->ref_amount = $referral->ref_amount / 100;
@@ -953,7 +941,7 @@ class UserController extends Controller
         // 如果没有唯一码则生成一个
         $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
         if (empty($subscribe)) {
-            $code = mb_substr(md5($user['id'] . '-' . $user['username']), 8, 16);
+            $code = mb_substr(md5($user['id'] . '-' . $user['username']), 8, 12);
 
             $obj = new UserSubscribe();
             $obj->user_id = $user['id'];

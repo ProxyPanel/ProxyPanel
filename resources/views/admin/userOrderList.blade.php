@@ -16,7 +16,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-credit-card font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 余额日志</span>
+                            <span class="caption-subject bold uppercase"> 消费记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -25,8 +25,22 @@
                                 <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
+                                <select class="form-control input-sm" name="is_expire" id="is_expire" onchange="doSearch()">
+                                    <option value="" @if(Request::get('is_expire') == '') selected @endif>过期</option>
+                                    <option value="0" @if(Request::get('is_expire') == '0') selected @endif>否</option>
+                                    <option value="1" @if(Request::get('is_expire') == '1') selected @endif>是</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="is_coupon" id="is_coupon" onchange="doSearch()">
+                                    <option value="" @if(Request::get('is_coupon') == '') selected @endif>使用优惠券</option>
+                                    <option value="0" @if(Request::get('is_coupon') == '0') selected @endif>否</option>
+                                    <option value="1" @if(Request::get('is_coupon') == '1') selected @endif>是</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
                         <div class="table-scrollable">
@@ -35,11 +49,11 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 用户名 </th>
-                                    <th> 订单ID </th>
-                                    <th> 操作前余额 </th>
-                                    <th> 发生金额 </th>
-                                    <th> 操作后金额 </th>
-                                    <th> 描述 </th>
+                                    <th> 服务 </th>
+                                    <th> 原价 </th>
+                                    <th> 实付 </th>
+                                    <th> 优惠券 </th>
+                                    <th> 过期 </th>
                                     <th> 操作时间 </th>
                                 </tr>
                                 </thead>
@@ -51,13 +65,13 @@
                                     @else
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
-                                                <td> {{$vo->id}} </td>
+                                                <td> {{$vo->oid}} </td>
                                                 <td> {{empty($vo->user) ? '【用户已删除】' : $vo->user->username}} </td>
-                                                <td> {{$vo->order_id}} </td>
-                                                <td> {{$vo->before}} </td>
-                                                <td> {{$vo->amount}} </td>
-                                                <td> {{$vo->after}} </td>
-                                                <td> {{$vo->desc}} </td>
+                                                <td> {{empty($vo->goods) ? '【商品已删除】' : $vo->goods->name}} </td>
+                                                <td> {{$vo->totalOriginalPrice}} </td>
+                                                <td> {{$vo->totalPrice}} </td>
+                                                <td> {{empty($vo->coupon) ? '' : $vo->coupon->name . ' - ' . $vo->coupon->sn}} </td>
+                                                <td> {{$vo->is_expire ? '是' : $vo->expire_at}} </td>
                                                 <td> {{$vo->created_at}} </td>
                                             </tr>
                                         @endforeach
@@ -87,15 +101,17 @@
 @section('script')
     <script type="text/javascript">
         // 搜索
-        function do_search() {
+        function doSearch() {
             var username = $("#username").val();
+            var is_expire = $("#is_expire").val();
+            var is_coupon = $("#is_coupon").val();
 
-            window.location.href = '{{url('admin/userBalanceLogList')}}' + '?username=' + username;
+            window.location.href = '{{url('admin/userOrderList')}}' + '?username=' + username + '&is_expire=' + is_expire + '&is_coupon=' + is_coupon;
         }
 
         // 重置
-        function do_reset() {
-            window.location.href = '{{url('admin/userBalanceLogList')}}';
+        function doReset() {
+            window.location.href = '{{url('admin/userOrderList')}}';
         }
     </script>
 @endsection

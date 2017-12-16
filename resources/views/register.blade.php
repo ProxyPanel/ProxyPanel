@@ -127,7 +127,7 @@
             ,btn: ['{{trans('register.tnc_title')}}']
             ,btnAlign: 'c'
             ,moveType: 1 //拖拽模式，0或者1
-            ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">{{trans('register.tnc_content')}}</div>'
+            ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">不得通过本站提供的服务发布、转载、传送含有下列内容之一的信息：<br>1.违反宪法确定的基本原则的；<br>2.危害国家安全，泄漏国家机密，颠覆国家政权，破坏国家统一的；<br>3.损害国家荣誉和利益的；<br>4.煽动民族仇恨、民族歧视，破坏民族团结的；<br>5.破坏国家宗教政策，宣扬邪教和封建迷信的； <br>6.散布谣言，扰乱社会秩序，破坏社会稳定的；<br>7.散布淫秽、色情、赌博、暴力、恐怖或者教唆犯罪的；<br>8.侮辱或者诽谤他人，侵害他人合法权益的；<br>9.煽动非法集会、结社、游行、示威、聚众扰乱社会秩序的；<br>10.以非法民间组织名义活动的；<br>11.含有法律、行政法规禁止的其他内容的。</div>'
             ,success: function(layero){
 //                var btn = layero.find('.layui-layer-btn');
 //                btn.find('.layui-layer-btn0').attr({

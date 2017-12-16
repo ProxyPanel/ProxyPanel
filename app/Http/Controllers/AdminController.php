@@ -8,6 +8,7 @@ use App\Http\Models\Config;
 use App\Http\Models\Country;
 use App\Http\Models\Invite;
 use App\Http\Models\Level;
+use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
@@ -31,6 +32,7 @@ use Illuminate\Http\Request;
 use Redirect;
 use Response;
 use Log;
+use DB;
 
 class AdminController extends Controller
 {
@@ -216,7 +218,7 @@ class AdminController extends Controller
     // 批量生成账号
     public function batchAddUsers(Request $request)
     {
-        \DB::beginTransaction();
+        DB::beginTransaction();
         try {
             for ($i = 0; $i < 5; $i++) {
                 // 生成一个可用端口
@@ -237,10 +239,10 @@ class AdminController extends Controller
                 $user->save();
             }
 
-            \DB::commit();
+            DB::commit();
             return Response::json(['status' => 'success', 'data' => '', 'message' => '批量生成账号成功']);
         } catch (\Exception $e) {
-            \DB::rollBack();
+            DB::rollBack();
 
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '批量生成账号失败：' . $e->getMessage()]);
         }
@@ -968,7 +970,7 @@ class AdminController extends Controller
                 return Redirect::back();
             }
 
-            \DB::beginTransaction();
+            DB::beginTransaction();
             try {
                 foreach ($data as $user) {
                     $obj = new User();
@@ -1004,9 +1006,9 @@ class AdminController extends Controller
                     $obj->save();
                 }
 
-                \DB::commit();
+                DB::commit();
             } catch (\Exception $e) {
-                \DB::rollBack();
+                DB::rollBack();
 
                 $request->session()->flash('errorMsg', '出错了，可能是导入的配置中有端口已经存在了');
 
@@ -1255,7 +1257,7 @@ class AdminController extends Controller
     // 日志分析
     public function analysis(Request $request)
     {
-        $file = storage_path('app/public/ssserver.log');
+        $file = storage_path('app/ssserver.log');
         if (!file_exists($file)) {
             $request->session()->flash('analysisErrorMsg', $file . ' 不存在，请先创建文件');
 
@@ -1793,6 +1795,46 @@ class AdminController extends Controller
         $view['list'] = $list;
 
         return Response::view('admin/userBalanceLogList', $view);
+    }
+
+    // 用户消费记录
+    public function userOrderList(Request $request)
+    {
+        $username = trim($request->get('username'));
+        $is_expire = $request->get('is_expire');
+        $is_coupon = $request->get('is_coupon');
+
+        $query = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc');
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        if ($is_expire != '') {
+            $query->where('is_expire', $is_expire);
+        }
+
+        if ($is_coupon != '') {
+            if ($is_coupon) {
+                $query->where('coupon_id', '<>', 0);
+            } else {
+                $query->where('coupon_id', 0);
+            }
+        }
+
+        $list = $query->paginate(10);
+        if (!$list->isEmpty()) {
+            foreach ($list as &$vo) {
+                $vo->totalOriginalPrice = $vo->totalOriginalPrice / 100;
+                $vo->totalPrice = $vo->totalPrice / 100;
+            }
+        }
+
+        $view['list'] = $list;
+
+        return Response::view('admin/userOrderList', $view);
     }
 
     // 转换成某个用户的身份

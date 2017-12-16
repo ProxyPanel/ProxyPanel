@@ -48,8 +48,6 @@
                                                 {{trans('home.service_traffic')}}：{{$goods->traffic}}
                                                 <br>
                                                 {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
-                                                <br>
-                                                Strictly Self-Managed, No Support.
                                             </td>
                                             <td style="text-align: center;"> ￥{{$goods->price}} </td>
                                             <td style="text-align: center;">

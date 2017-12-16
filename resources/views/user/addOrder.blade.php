@@ -14,9 +14,9 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th class="invoice-title uppercase"> {{trans('home.service_name')}} </th>
-                            <th class="invoice-title uppercase text-center"> {{trans('home.service_price')}} </th>
-                            <th class="invoice-title uppercase text-center"> {{trans('home.service_quantity')}} </th>
+                            <th class="invoice-title"> {{trans('home.service_name')}} </th>
+                            <th class="invoice-title text-center"> {{trans('home.service_price')}} </th>
+                            <th class="invoice-title text-center"> {{trans('home.service_quantity')}} </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,11 +34,11 @@
             </div>
             <div class="row invoice-subtotal">
                 <div class="col-xs-3">
-                    <h2 class="invoice-title uppercase"> {{trans('home.service_total_price')}} </h2>
+                    <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
                     <p class="invoice-desc"> ￥{{$goods->price}} </p>
                 </div>
                 <div class="col-xs-3">
-                    <h2 class="invoice-title uppercase"> {{trans('home.coupon')}} </h2>
+                    <h2 class="invoice-title"> {{trans('home.coupon')}} </h2>
                     <p class="invoice-desc">
                         <div class="input-group">
                             <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}" />
@@ -49,13 +49,13 @@
                     </p>
                 </div>
                 <div class="col-xs-6">
-                    <h2 class="invoice-title uppercase"> {{trans('home.service_settlement_price')}} </h2>
+                    <h2 class="invoice-title"> {{trans('home.service_settlement_price')}} </h2>
                     <p class="invoice-desc grand-total"> ￥{{$goods->price}} </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <a class="btn btn-lg green-haze hidden-print uppercase print-btn" onclick="addOrder()"> 支付 </a>
+                    <a class="btn btn-lg green-haze hidden-print uppercase print-btn" onclick="addOrder()"> {{trans('home.service_pay_button')}} </a>
                 </div>
             </div>
         </div>

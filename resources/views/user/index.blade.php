@@ -103,7 +103,7 @@
                         <p class="text-muted"> {{trans('home.account_last_usage')}}：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
                         <p class="text-muted"> {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
                         <p class="text-muted">
-                            {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
+                            {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;&ensp;每月{{$info['traffic_reset_day']}}日自动重置流量 @endif
                             <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
                                 <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
                                     <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>

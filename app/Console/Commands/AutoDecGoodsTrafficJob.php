@@ -3,14 +3,14 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Models\OrderGoods;
+use App\Http\Models\Order;
 use App\Http\Models\User;
 use Log;
 
 class AutoDecGoodsTrafficJob extends Command
 {
     protected $signature = 'command:autoDecGoodsTrafficJob';
-    protected $description = '自动扣除到期流量包的流量';
+    protected $description = '自动扣除用户到期流量包的流量';
 
     public function __construct()
     {
@@ -19,21 +19,23 @@ class AutoDecGoodsTrafficJob extends Command
 
     public function handle()
     {
-        $orderGoods = OrderGoods::query()->with(['user', 'goods'])->where('is_expire', 0)->get();
-        foreach ($orderGoods as $og) {
-            if (empty($og->goods) || $og->goods->is_del || empty($og->user)) {
-                continue;
-            }
-
-            // 到期自动处理
-            if (date("Y-m-d H:i:s", strtotime("-" . $og->goods->days . " days")) >= $og->created_at) {
-                if ($og->user->transfer_enable - $og->traffic * 1048576 <= 0) {
-                    User::query()->where('id', $og->user_id)->update(['transfer_enable' => 0]);
-                } else {
-                    User::query()->where('id', $og->user_id)->decrement('transfer_enable', $og->traffic * 1048576);
+        $order = Order::query()->with(['user', 'goods'])->where('is_expire', 0)->get();
+        if (!$order->isEmpty()) {
+            foreach ($order as $vo) {
+                if (empty($vo->user) || empty($vo->goods)) {
+                    continue;
                 }
 
-                OrderGoods::query()->where('id', $og->id)->update(['is_expire' => 1]);
+                // 到期自动处理
+                if (date("Y-m-d H:i:s") >= $vo->expire_at) {
+                    if ($vo->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                        User::query()->where('id', $vo->user_id)->update(['transfer_enable' => 0]);
+                    } else {
+                        User::query()->where('id', $vo->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                    }
+
+                    Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                }
             }
         }
 

@@ -147,7 +147,7 @@ crontab -e
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
-cd /home/wwwroot/ssrpanel/public/storage/app/public
+cd /home/wwwroot/ssrpanel/public/storage/app
 ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````

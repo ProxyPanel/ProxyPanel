@@ -57,7 +57,7 @@ class AutoCheckNodeStatusJob extends Command
                         $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
                     }
 
-                    // 写入发信缓存，防止短时间内大量发信
+                    // 写入发信缓存
                     Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 15);
                 }
 
@@ -71,7 +71,7 @@ class AutoCheckNodeStatusJob extends Command
                         $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
                     }
 
-                    // 写入发信缓存，防止短时间内大量发信
+                    // 写入发信缓存
                     Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 15);
                 }
             }

@@ -38,6 +38,7 @@ return [
     'service_quantity' => '数量',
     'service_total_price' => '共计',
     'service_settlement_price' => '结算价',
+    'service_pay_button' => '支付',
     'services_none' => '暂无可用服务',
     'service_traffic' => '内含流量',
     'service_days' => '有效期',
@@ -70,8 +71,8 @@ return [
     // 单据
     'invoice_title' => '消费记录',
     'invoice_table_name' => '服务',
-    'invoice_table_price' => '价格',
-    'invoice_table_create_date' => '创建日期',
+    'invoice_table_price' => '金额',
+    'invoice_table_create_date' => '日期',
     'invoice_table_status' => '状态',
     'invoice_table_none' => '暂无数据',
     'invoice_table_closed' => '关闭',

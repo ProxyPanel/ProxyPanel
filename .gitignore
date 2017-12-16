@@ -1,6 +1,8 @@
 /config/database.php
 /public/upload
-/storage
+/storage/framework
+/storage/logs
+/storage/app/public
 /vendor
 /.idea
 /.vagrant

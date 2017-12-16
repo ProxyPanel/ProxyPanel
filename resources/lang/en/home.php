@@ -38,6 +38,7 @@ return [
     'service_quantity' => 'Quantity',
     'service_total_price' => 'Total Price',
     'service_settlement_price' => 'Settlement Price',
+    'service_pay_button' => 'Pay',
     'services_none' => 'None Services',
     'service_traffic' => 'Transfer',
     'service_days' => 'Available Days',
@@ -71,7 +72,7 @@ return [
     // 单据
     'invoice_title' => 'My Invoices',
     'invoice_table_name' => 'Service',
-    'invoice_table_price' => 'Price',
+    'invoice_table_price' => 'Amount',
     'invoice_table_create_date' => 'Created On',
     'invoice_table_status' => 'Status',
     'invoice_table_none' => 'None Data',

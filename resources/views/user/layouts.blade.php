@@ -66,7 +66,7 @@
                         <ul class="dropdown-menu dropdown-menu-default">
                             @if(Session::get('user')['is_admin'])
                                 <li>
-                                    <a href="{{url('/admin')}}"> <i class="icon-settings"></i> 管理中心 </a>
+                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i> 管理中心 </a>
                                 </li>
                             @endif
                             <li>
@@ -106,46 +106,46 @@
             <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-            <ul class="page-sidebar-menu   " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{(Request::getRequestUri() == '/' || Request::getRequestUri() == '/user' || Request::getRequestUri() == '/user/subscribe') ? 'active open' : ''}}">
+            <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+                <li class="nav-item start {{in_array(Request::path(), ['/', 'user', 'user/subscribe']) ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
                         <span class="title">{{trans('home.home')}}</span>
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/goodsList', '/user/addOrder']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
                         <span class="title">{{trans('home.services')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/user/trafficLog' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">
                     <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
                         <i class="icon-speedometer"></i>
                         <span class="title">{{trans('home.traffic_log')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/user/invite' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
                     <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
                         <i class="icon-user-follow"></i>
                         <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::getRequestUri(), ['/user/orderList']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/orderList']) ? 'active open' : ''}}">
                     <a href="{{url('user/orderList')}}" class="nav-link nav-toggle">
                         <i class="icon-wallet"></i>
                         <span class="title">{{trans('home.invoices')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{Request::getRequestUri() == '/user/ticketList' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/ticketList']) ? 'active open' : ''}}">
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
                         <span class="title">{{trans('home.tickets')}}</span>
                     </a>
                 </li>
                 @if(Session::get('referral_status'))
-                <li class="nav-item {{Request::getRequestUri() == '/user/referral' ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/referral']) ? 'active open' : ''}}">
                     <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
                         <i class="icon-diamond"></i>
                         <span class="title">{{trans('home.referrals')}}</span>

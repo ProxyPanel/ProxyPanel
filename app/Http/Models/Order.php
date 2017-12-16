@@ -16,13 +16,28 @@ class Order extends Model
     protected $fillable = [
         'orderId',
         'user_id',
+        'goods_id',
         'coupon_id',
         'totalOriginalPrice',
         'totalPrice',
+        'expire_at',
+        'is_expire',
+        'pay_way',
         'status'
     ];
 
-    function goodsList() {
-        return $this->hasMany(OrderGoods::class, 'oid', 'oid');
+    function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    function goods()
+    {
+        return $this->hasOne(Goods::class, 'id', 'goods_id');
+    }
+
+    function coupon()
+    {
+        return $this->hasOne(Coupon::class, 'id', 'coupon_id');
     }
 }
