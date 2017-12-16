@@ -779,18 +779,28 @@ class UserController extends Controller
                 }
 
                 // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
-                $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) { $q->where('type', 2);})->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->get();
-                foreach ($existOrderList as $vo) {
-                    Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-                    User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                if ($goods->type == 2) {
+                    $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) {
+                        $q->where('type', 2);
+                    })->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->get();
+                    foreach ($existOrderList as $vo) {
+                        Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                        User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                    }
                 }
 
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);
 
-                // 将商品的有效期和流量自动重置日期加到账号上
-                $traffic_reset_day = $goods->type == 2 ? (in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'))) : 0;
-                User::query()->where('id', $user->id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
+                // 套餐就改流量重置日，加油包不改
+                if ($goods->type == 2) {
+                    // 将商品的有效期和流量自动重置日期加到账号上
+                    $traffic_reset_day = in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'));
+                    User::query()->where('id', $user->id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
+                } else {
+                    // 将商品的有效期和流量自动重置日期加到账号上
+                    User::query()->where('id', $user->id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
+                }
 
                 // 写入返利日志
                 if ($user->referral_uid) {
