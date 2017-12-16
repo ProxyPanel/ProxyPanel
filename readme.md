@@ -36,12 +36,6 @@ telegram群组：https://t.me/chatssrpanel
 
 ![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
-这些捐赠的用途：
-- 1.30刀买了1台VPS做开发测试用（已被BAN）
-- 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-- 3.感谢`izhangxm`提交了自定义等级的分支代码
-- 4.感谢`Hao-Luo`提供的节点一键部署脚本
-
 #### 拉取代码
 ````
 cd /home/wwwroot/
