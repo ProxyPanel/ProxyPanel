@@ -59,7 +59,7 @@
                                             <td> {{$goods->name}} </td>
                                             <td> {{$goods->type == 1 ? '流量包' : '套餐'}} </td>
                                             <td> @if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif </td>
-                                            <td> {{$goods->traffic}} MiB</td>
+                                            <td> {{$goods->traffic}} </td>
                                             <td> ￥{{$goods->price}} </td>
                                             <td> {{$goods->score}} </td>
                                             <td>

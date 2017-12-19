@@ -234,6 +234,9 @@ INSERT INTO `ss_config` VALUES ('30', 'http_simple', '3', '0', '0', '2017-08-01 
 INSERT INTO `ss_config` VALUES ('31', 'http_post', '3', '0', '0', '2017-08-01 13:29:38', '2017-08-01 13:29:38');
 INSERT INTO `ss_config` VALUES ('32', 'tls1.2_ticket_auth', '3', '1', '0', '2017-08-01 13:29:51', '2017-08-01 13:29:51');
 INSERT INTO `ss_config` VALUES ('33', 'tls1.2_ticket_fastauth', '3', '0', '0', '2017-08-01 14:02:19', '2017-08-01 14:02:19');
+INSERT INTO `ss_config` VALUES ('34', 'auth_chain_c', '2', '0', '0', '2017-08-01 14:02:31', '2017-08-01 14:02:31');
+INSERT INTO `ss_config` VALUES ('35', 'auth_chain_d', '2', '0', '0', '2017-08-01 14:02:31', '2017-08-01 14:02:31');
+INSERT INTO `ss_config` VALUES ('36', 'auth_chain_f', '2', '0', '0', '2017-08-01 14:02:31', '2017-08-01 14:02:31');
 
 
 -- ----------------------------

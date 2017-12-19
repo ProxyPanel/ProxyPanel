@@ -143,6 +143,7 @@
                                                             <select class="form-control" name="single_protocol" id="single_protocol">
                                                                 <option value="auth_aes128_md5" selected>auth_aes128_md5</option>
                                                                 <option value="auth_aes128_sha1">auth_aes128_sha1</option>
+                                                                <option value="auth_chain_a">auth_chain_a</option>
                                                             </select>
                                                             <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
                                                         </div>

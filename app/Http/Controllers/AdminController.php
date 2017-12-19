@@ -1015,7 +1015,6 @@ class AdminController extends Controller
                 return Redirect::back();
             }
 
-
             $request->session()->flash('successMsg', '导入成功');
 
             return Redirect::back();
@@ -1048,10 +1047,10 @@ class AdminController extends Controller
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
-            $ssr_str .= '&protoparam=' . $this->base64url_encode($protocol_param);
+            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : $this->base64url_encode($obfs_param));
+            $ssr_str .= '&protoparam=' . ($node->single ? $this->base64url_encode($user->port . ':' . $user->passwd) : $this->base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
-            $ssr_str .= '&group=' . $this->base64url_encode('节点');
+            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);
@@ -1061,7 +1060,7 @@ class AdminController extends Controller
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN'; // 加入#VPN是为了shadowrocket和ssr安卓客户端扫描时带上节点名称，windows c#版无效
+            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息

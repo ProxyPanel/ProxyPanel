@@ -42,7 +42,7 @@ class Controller extends BaseController
     }
 
     // 根据流量值自动转换单位输出
-    public static function flowAutoShow($value = 0)
+    public function flowAutoShow($value = 0)
     {
         $kb = 1024;
         $mb = 1048576;
@@ -64,21 +64,21 @@ class Controller extends BaseController
         }
     }
 
-    public static function toMB($traffic)
+    public function toMB($traffic)
     {
         $mb = 1048576;
 
         return $traffic * $mb;
     }
 
-    public static function toGB($traffic)
+    public function toGB($traffic)
     {
         $gb = 1048576 * 1024;
 
         return $traffic * $gb;
     }
 
-    public static function flowToGB($traffic)
+    public function flowToGB($traffic)
     {
         $gb = 1048576 * 1024;
 
@@ -152,7 +152,7 @@ class Controller extends BaseController
         while (count($lines) <= $n) {
             try {
                 fseek($fp, -$pos, SEEK_END);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 fseek(0);
                 break;
             }
@@ -169,7 +169,7 @@ class Controller extends BaseController
     /**
      * 计算文件行数
      */
-    function countLine($file)
+    public function countLine($file)
     {
         $fp = fopen($file, "r");
         $i = 0;

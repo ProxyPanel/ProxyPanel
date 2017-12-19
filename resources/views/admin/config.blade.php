@@ -49,7 +49,6 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> ID </th>
                                                 <th> 名称 </th>
                                                 <th> 操作 </th>
                                             </tr>
@@ -57,12 +56,11 @@
                                         <tbody>
                                         @if($method_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="2">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($method_list as $method)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$method->id}} </td>
                                                     <td> {{$method->name}} @if($method->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$method->is_default)
@@ -87,7 +85,6 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> ID </th>
                                                 <th> 名称 </th>
                                                 <th> 操作 </th>
                                             </tr>
@@ -95,12 +92,11 @@
                                         <tbody>
                                         @if($method_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="2">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($protocol_list as $protocol)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$protocol->id}} </td>
                                                     <td> {{$protocol->name}} @if($protocol->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$protocol->is_default)
@@ -125,7 +121,6 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                         <tr>
-                                            <th> ID </th>
                                             <th> 名称 </th>
                                             <th> 操作 </th>
                                         </tr>
@@ -133,12 +128,11 @@
                                         <tbody>
                                         @if($obfs_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="2">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($obfs_list as $obfs)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$obfs->id}} </td>
                                                     <td> {{$obfs->name}} @if($obfs->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$obfs->is_default)
