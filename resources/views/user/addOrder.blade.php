@@ -23,7 +23,7 @@
                         <tr>
                             <td style="padding: 10px;">
                                 <h2>{{$goods->name}}</h2>
-                                <p> {{trans('home.service_traffic')}} {{$goods->traffic}}（{{trans('home.service_days')}} {{$goods->days}}{{trans('home.day')}}） </p>
+                                <p> {{trans('home.service_traffic')}} {{$goods->traffic}}（{{trans('home.service_days')}} {{$goods->days}} {{trans('home.day')}}） </p>
                             </td>
                             <td class="text-center"> ￥{{$goods->price}} </td>
                             <td class="text-center"> x 1 </td>
@@ -34,7 +34,7 @@
             </div>
             <div class="row invoice-subtotal">
                 <div class="col-xs-3">
-                    <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
+                    <h2 class="invoice-title"> {{trans('home.service_subtotal_price')}} </h2>
                     <p class="invoice-desc"> ￥{{$goods->price}} </p>
                 </div>
                 <div class="col-xs-3">
@@ -49,7 +49,7 @@
                     </p>
                 </div>
                 <div class="col-xs-6">
-                    <h2 class="invoice-title"> {{trans('home.service_settlement_price')}} </h2>
+                    <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
                     <p class="invoice-desc grand-total"> ￥{{$goods->price}} </p>
                 </div>
             </div>
@@ -93,6 +93,7 @@
                             total_price = goods_price * ret.data.discount;
                         } else {
                             total_price = goods_price - ret.data.amount;
+                            total_price = total_price > 0 ? total_price : 0;
                         }
 
                         $(".grand-total").text("￥" + total_price);

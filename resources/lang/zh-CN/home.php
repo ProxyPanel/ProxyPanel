@@ -36,8 +36,8 @@ return [
     'service_desc' => '描述',
     'service_price' => '价格',
     'service_quantity' => '数量',
-    'service_total_price' => '共计',
-    'service_settlement_price' => '结算价',
+    'service_subtotal_price' => '小计',
+    'service_total_price' => '合计',
     'service_pay_button' => '支付',
     'services_none' => '暂无可用服务',
     'service_traffic' => '内含流量',
@@ -93,6 +93,9 @@ return [
     'ticket_table_new_desc' => '请填写您的问题，如果图片请提交工单后在回复处上传图片',
     'ticket_table_new_cancel' => '取消',
     'ticket_table_new_yes' => '提交',
+    'ticket_reply_me' => '我',
+    'ticket_reply_master' => '管理员',
+    'ticket_reply_button' => '回复',
 
     // 推广返利
     'referral_title' => '推广返利',

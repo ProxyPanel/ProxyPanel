@@ -7,15 +7,7 @@
 @section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('user/ticketList')}}">我的工单</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -45,7 +37,7 @@
                                     <div class="timeline-body-arrow"></div>
                                     <div class="timeline-body-head">
                                         <div class="timeline-body-head-caption">
-                                            <span class="timeline-body-alerttitle font-blue-madison">我</span>
+                                            <span class="timeline-body-alerttitle font-blue-madison">{{trans('home.ticket_reply_me')}}</span>
                                             <span class="timeline-body-time font-grey-cascade"> {{$ticket->created_at}} </span>
                                         </div>
                                         <div class="timeline-body-head-actions"></div>
@@ -72,9 +64,9 @@
                                             <div class="timeline-body-head">
                                                 <div class="timeline-body-head-caption">
                                                     @if($reply->user->is_admin)
-                                                        <a href="javascript:;" class="timeline-body-title font-red-intense">管理员</a>
+                                                        <a href="javascript:;" class="timeline-body-title font-red-intense">{{trans('home.ticket_reply_master')}}</a>
                                                     @else
-                                                        <span class="timeline-body-alerttitle font-blue-madison">我</span>
+                                                        <span class="timeline-body-alerttitle font-blue-madison">{{trans('home.ticket_reply_me')}}</span>
                                                     @endif
                                                     <span class="timeline-body-time font-grey-cascade"> {{$reply->created_at}} </span>
                                                 </div>
@@ -93,7 +85,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <script id="editor" type="text/plain" style="padding-bottom:10px;"></script>
-                                    <button class="btn blue" type="button" onclick="replyTicket()"> 回 复 </button>
+                                    <button class="btn blue" type="button" onclick="replyTicket()"> {{trans('home.ticket_reply_button')}} </button>
                                 </div>
                             </div>
                         @endif

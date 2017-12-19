@@ -26,10 +26,10 @@
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                     <tr>
-                                        <th> 编号 </th>
+                                        <th> # </th>
                                         <th> {{trans('home.invoice_table_name')}} </th>
                                         <th> {{trans('home.invoice_table_price')}} </th>
                                         <th> {{trans('home.invoice_table_create_date')}} </th>

@@ -38,7 +38,7 @@
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-hover table-light table-checkable order-column">
                                     <thead>
-                                        <tr class="uppercase">
+                                        <tr>
                                             <th> # </th>
                                             <th> {{trans('home.invite_code_table_name')}} </th>
                                             <th> {{trans('home.invite_code_table_date')}} </th>
