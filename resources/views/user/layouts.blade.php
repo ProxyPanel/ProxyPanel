@@ -30,7 +30,7 @@
     <link href="/assets/layouts/layout4/css/themes/default.min.css" rel="stylesheet" type="text/css" id="style_color" />
     <link href="/assets/layouts/layout4/css/custom.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="{{public_path('favicon.ico')}}" />
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" />
 </head>
 
 <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo">
