@@ -82,11 +82,11 @@
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
                                                     <button type="button" class="btn btn-sm purple btn-outline" onclick="nodeMonitor('{{$node->id}}')">
                                                         <i class="fa fa-area-chart"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
                                                 </td>
                                             </tr>
