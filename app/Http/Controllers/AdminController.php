@@ -46,7 +46,7 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $past = strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days")));
-        $online = time() - 120;
+        $online = time() - 600;
 
         $view['userCount'] = User::query()->count();
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count();
