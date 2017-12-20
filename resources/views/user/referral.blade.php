@@ -83,6 +83,7 @@
                                                 @else
                                                     <span class="label label-sm label-info">未提现</span>
                                                 @endif
+                                            </td>
                                             <td> {{$referralLog->created_at}} </td>
                                         </tr>
                                     @endforeach

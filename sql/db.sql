@@ -295,6 +295,9 @@ INSERT INTO `config` VALUES ('39', 'is_server_chan', 0);
 INSERT INTO `config` VALUES ('40', 'server_chan_key', '');
 INSERT INTO `config` VALUES ('41', 'is_subscribe_ban', 1);
 INSERT INTO `config` VALUES ('42', 'subscribe_ban_times', 20);
+INSERT INTO `config` VALUES ('43', 'paypal_status', 0);
+INSERT INTO `config` VALUES ('44', 'paypal_client_id', '');
+INSERT INTO `config` VALUES ('45', 'paypal_client_secret', '');
 
 
 -- ----------------------------

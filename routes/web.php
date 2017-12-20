@@ -106,5 +106,7 @@ Route::group(['middleware' => ['user']], function() {
 });
 
 //Route::group(['middleware' => ['user']], function() {
-    Route::any('payment/create', 'PaymentController@create');
+    Route::any('payment/create', 'PaymentController@create'); // 创建支付
+    Route::any('payment/execute', 'PaymentController@execute'); // 用户确认执行支付
+    Route::any('payment/cancel', 'PaymentController@cancel'); // 用户取消支付
 //});

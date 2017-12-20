@@ -40,6 +40,9 @@
                                         <li>
                                             <a href="#tab_7" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
+                                        <li>
+                                            <a href="#tab_8" data-toggle="tab"> PayPal接口设置 </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -533,9 +536,6 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6"></div>
-                                                        </div>
-                                                        <div class="form-group">
                                                             <div class="col-md-6">
                                                                 <label class="control-label col-md-3">支付宝</label>
                                                                 <div class="col-md-9">
@@ -559,15 +559,54 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6"></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-actions">
                                                     <div class="row">
-                                                        <div class="col-md-offset-2 col-md-9">
+                                                        <div class="col-md-offset-6">
                                                             <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                                             <button type="submit" class="btn green">提 交</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab_8">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="paypal_status" class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($paypal_status) checked @endif id="paypal_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用前请先去PayPal申请ClientID和ClientSecret </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="paypal_client_id" class="col-md-3 control-label">ClientID</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="paypal_client_id" value="{{$paypal_client_id}}" id="paypal_client_id" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setPaypalClientID()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="paypal_client_secret" class="col-md-3 control-label">ClientSecret</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="paypal_client_secret" value="{{$paypal_client_secret}}" id="paypal_client_secret" />
+                                                                    <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setPaypalClientSecret()">修改</button>
+                                                                </span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -847,6 +886,21 @@
             }
         });
 
+        // 启用、禁用PayPal支付接口
+        $('#paypal_status').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var paypal_status = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_status', value:paypal_status}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
         // 流量异常阈值
         function setTrafficBanValue() {
             var traffic_ban_value = $("#traffic_ban_value").val();
@@ -904,6 +958,32 @@
             var subscribe_ban_times = $("#subscribe_ban_times").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_ban_times', value:subscribe_ban_times}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置PayPal的ClientID
+        function setPaypalClientID() {
+            var paypal_client_id = $("#paypal_client_id").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_client_id', value:paypal_client_id}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置PayPal的ClientSecret
+        function setPaypalClientSecret() {
+            var paypal_client_secret = $("#paypal_client_secret").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_client_secret', value:paypal_client_secret}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();

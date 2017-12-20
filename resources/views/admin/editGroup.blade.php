@@ -51,8 +51,8 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
-                                        <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
+                                    <div class="col-md-offset-3">
+                                        <button type="submit" class="btn green"> 提 交</button>
                                     </div>
                                 </div>
                             </div>
