@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \App\Console\Commands\AutoBanSubscribeJob::class,
         \App\Console\Commands\AutoBanUserJob::class,
         \App\Console\Commands\AutoCheckNodeStatusJob::class,
         \App\Console\Commands\AutoClearLogJob::class,
@@ -39,6 +40,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('command:autoBanSubscribeJob')->everyThirtyMinutes();
         $schedule->command('command:autoBanUserJob')->everyTenMinutes();
         $schedule->command('command:autoCheckNodeStatusJob')->everyMinute();
         $schedule->command('command:autoClearLogJob')->everyThirtyMinutes();

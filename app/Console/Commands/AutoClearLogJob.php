@@ -46,8 +46,8 @@ class AutoClearLogJob extends Command
             // 自动清除10天以前的用户每小时流量数据日志
             UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-10 days')))->delete();
 
-            // 自动清除10天以前的节点每小时流量数据日志
-            SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-10 days')))->delete();
+            // 自动清除60天以前的节点每小时流量数据日志
+            SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-60 days')))->delete();
         }
 
         Log::info('定时任务：' . $this->description);

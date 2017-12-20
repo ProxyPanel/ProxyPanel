@@ -18,6 +18,8 @@ class UserSubscribe extends Model
         'code',
         'times',
         'status',
+        'ban_time',
+        'ban_desc',
     ];
 
     public function User()

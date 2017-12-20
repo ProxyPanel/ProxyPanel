@@ -834,19 +834,7 @@ class AdminController extends Controller
             });
         }
 
-        $subscribeList = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
-
-        // 是否存在地址泄露的可能
-        foreach ($subscribeList as &$subscribe) {
-            $ipCounts = UserSubscribeLog::query()->where('sid', $subscribe->id)->where('request_time', '>=', date('Y-m-d H:i:s', strtotime("-3 days")))->distinct('request_ip')->count('request_ip');
-            if ($ipCounts >= 10) {
-                $subscribe->isWarning = 1;
-            } else {
-                $subscribe->isWarning = 0;
-            }
-        }
-
-        $view['subscribeList'] = $subscribeList;
+        $view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
 
         return Response::view('admin/subscribeLog', $view);
     }
@@ -860,7 +848,11 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
         }
 
-        UserSubscribe::query()->where('id', $id)->update(['status' => $status]);
+        if ($status) {
+            UserSubscribe::query()->where('id', $id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
+        } else {
+            UserSubscribe::query()->where('id', $id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
+        }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }

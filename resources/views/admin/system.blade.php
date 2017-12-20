@@ -35,7 +35,10 @@
                                             <a href="#tab_5" data-toggle="tab"> 警告提醒设置 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_6" data-toggle="tab"> 充值二维码设置 </a>
+                                            <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_7" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -124,7 +127,7 @@
                                                             <label for="is_rand_port" class="col-md-3 control-label">随机端口</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 注册、添加账号时随机生成端口 </span>
+                                                                <span class="help-block"> 注册、添加用户时随机生成端口 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -226,17 +229,6 @@
                                                                 </div>
                                                                 <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6">
-                                                            <label for="is_clear_log" class="col-md-3 control-label">自动清除日志</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_clear_log) checked @endif id="is_clear_log" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后自动清除无用日志（推荐） </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -344,23 +336,7 @@
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="reset_traffic" class="col-md-3 control-label">流量自动重置</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 账号会按其购买套餐的日期自动重置账号可用流量 </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label for="is_traffic_ban" class="col-md-3 control-label">异常自动封号</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_traffic_ban) checked @endif id="is_traffic_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 24小时内流量超过异常阈值则自动封号 </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6">
-                                                            <label for="expire_warning" class="col-md-3 control-label">过期警告</label>
+                                                            <label for="expire_warning" class="col-md-3 control-label">用户过期警告</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($expire_warning) checked @endif id="expire_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
@@ -382,7 +358,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="traffic_warning" class="col-md-3 control-label">流量警告</label>
+                                                            <label for="traffic_warning" class="col-md-3 control-label">用户流量警告</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
@@ -399,34 +375,6 @@
                                                                 </span>
                                                                 </div>
                                                                 <span class="help-block"> 建议设置在70%~90% </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6">
-                                                            <label for="traffic_ban_value" class="col-md-3 control-label">流量异常阈值</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$traffic_ban_value}}" id="traffic_ban_value" />
-                                                                    <span class="input-group-addon">GiB</span>
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setTrafficBanValue()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                                <span class="help-block"> 24小时内超过该值，则触发自动封号 </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label for="traffic_ban_time" class="col-md-3 control-label">封号时长</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="traffic_ban_time" value="{{$traffic_ban_time}}" id="traffic_ban_time" />
-                                                                    <span class="input-group-addon">分钟</span>
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setTrafficBanTime()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                                <span class="help-block"> 触发流量异常导致账号被封禁的时长，到期后自动解封 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -476,6 +424,88 @@
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_6">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_clear_log" class="col-md-3 control-label">自动清除日志</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_clear_log) checked @endif id="is_clear_log" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后自动清除无用日志（推荐） </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="reset_traffic" class="col-md-3 control-label">流量自动重置</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 用户会按其购买套餐的日期自动重置可用流量 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_subscribe_ban" class="col-md-3 control-label">订阅异常自动封禁</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_subscribe_ban) checked @endif id="is_subscribe_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后用户订阅链接请求超过设定阈值则自动封禁 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="subscribe_ban_times" class="col-md-3 control-label">订阅请求阈值</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="subscribe_ban_times" value="{{$subscribe_ban_times}}" id="subscribe_ban_times" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setSubscribeBanTimes()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 24小时内订阅链接请求次数限制 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_traffic_ban" class="col-md-3 control-label">异常自动封号</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_traffic_ban) checked @endif id="is_traffic_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 24小时内流量超过异常阈值则自动封号 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="traffic_ban_value" class="col-md-3 control-label">流量异常阈值</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$traffic_ban_value}}" id="traffic_ban_value" />
+                                                                    <span class="input-group-addon">GiB</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTrafficBanValue()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 24小时内超过该值，则触发自动封号 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="traffic_ban_time" class="col-md-3 control-label">封号时长</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_time" value="{{$traffic_ban_time}}" id="traffic_ban_time" />
+                                                                    <span class="input-group-addon">分钟</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTrafficBanTime()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 触发流量异常导致用户被封禁的时长，到期后自动解封 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab_7">
                                             <form action="{{url('admin/setQrcode')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                                 <div class="form-body">
                                                     <div class="portlet-body">
@@ -667,7 +697,7 @@
             }
         });
 
-        // 启用、禁用用户激活账号
+        // 启用、禁用用户激活用户
         $('#is_active_register').on({
             'switchChange.bootstrapSwitch': function(event, state) {
                 var is_active_register = state ? 1 : 0;
@@ -682,7 +712,7 @@
             }
         });
 
-        // 启用、禁用账号到期自动邮件提醒
+        // 启用、禁用用户到期自动邮件提醒
         $('#expire_warning').on({
             'switchChange.bootstrapSwitch': function(event, state) {
                 var expire_warning = state ? 1 : 0;
@@ -718,6 +748,21 @@
                 var is_server_chan = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_server_chan', value:is_server_chan}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用订阅异常自动封禁
+        $('#is_subscribe_ban').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_subscribe_ban = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_subscribe_ban', value:is_subscribe_ban}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
@@ -815,7 +860,7 @@
             });
         }
 
-        // 设置账号封号时长
+        // 设置用户封号时长
         function setTrafficBanTime() {
             var traffic_ban_time = $("#traffic_ban_time").val();
 
@@ -846,6 +891,19 @@
             var server_chan_key = $("#server_chan_key").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'server_chan_key', value:server_chan_key}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置订阅封禁阈值
+        function setSubscribeBanTimes() {
+            var subscribe_ban_times = $("#subscribe_ban_times").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_ban_times', value:subscribe_ban_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
@@ -975,7 +1033,7 @@
             });
         }
 
-        // 设置激活账号次数
+        // 设置激活用户次数
         function setActiveTimes() {
             var active_times = $("#active_times").val();
 
@@ -1014,7 +1072,7 @@
             });
         }
 
-        // 设置账号过期提醒阈值
+        // 设置用户过期提醒阈值
         function setExpireDays() {
             var expire_days = $("#expire_days").val();
 

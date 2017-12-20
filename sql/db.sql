@@ -293,6 +293,8 @@ INSERT INTO `config` VALUES ('37', 'is_node_crash_warning', 0);
 INSERT INTO `config` VALUES ('38', 'crash_warning_email', '');
 INSERT INTO `config` VALUES ('39', 'is_server_chan', 0);
 INSERT INTO `config` VALUES ('40', 'server_chan_key', '');
+INSERT INTO `config` VALUES ('41', 'is_subscribe_ban', 1);
+INSERT INTO `config` VALUES ('42', 'subscribe_ban_times', 20);
 
 
 -- ----------------------------
@@ -607,6 +609,8 @@ CREATE TABLE `user_subscribe` (
   `code` varchar(255) DEFAULT '' COMMENT '订阅地址唯一识别码',
   `times` int(11) NOT NULL DEFAULT '0' COMMENT '地址请求次数',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁用、1-启用',
+  `ban_time` int(11) NOT NULL DEFAULT '0' COMMENT '封禁时间',
+  `ban_desc` varchar(50) NOT NULL DEFAULT '' COMMENT '封禁理由',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)

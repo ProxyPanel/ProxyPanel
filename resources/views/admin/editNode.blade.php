@@ -37,7 +37,7 @@
                                                     <div class="form-group">
                                                         <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="" required>
+                                                            <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="域名或IP地址" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -139,9 +139,9 @@
                                                         <label for="single_protocol" class="col-md-3 control-label">[单] 协议</label>
                                                         <div class="col-md-8">
                                                             <select class="form-control" name="single_protocol" id="single_protocol">
-                                                                <option value="auth_aes128_md5" {{!$node->single_protocol == 'auth_aes128_md5' ? 'selected' : ''}}>auth_aes128_md5</option>
-                                                                <option value="auth_aes128_sha1" {{!$node->single_protocol == 'auth_aes128_sha1' ? 'selected' : ''}}>auth_aes128_sha1</option>
-                                                                <option value="auth_chain_a" {{!$node->single_protocol == 'auth_chain_a' ? 'selected' : ''}}>auth_chain_a</option>
+                                                                <option value="auth_aes128_md5" {{$node->single_protocol == 'auth_aes128_md5' ? 'selected' : ''}}>auth_aes128_md5</option>
+                                                                <option value="auth_aes128_sha1" {{$node->single_protocol == 'auth_aes128_sha1' ? 'selected' : ''}}>auth_aes128_sha1</option>
+                                                                <option value="auth_chain_a" {{$node->single_protocol == 'auth_chain_a' ? 'selected' : ''}}>auth_chain_a</option>
                                                             </select>
                                                             <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
                                                         </div>
