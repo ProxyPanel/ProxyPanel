@@ -54,6 +54,13 @@ class ShopController extends Controller
                 return Redirect::back()->withInput();
             }
 
+            // 套餐有效天数必须大于30天
+            if ($type == 2 && $days < 30) {
+                $request->session()->flash('errorMsg', '套餐有效天数必须不能少于30天');
+
+                return Redirect::back()->withInput();
+            }
+
             // 商品LOGO
             $logo = '';
             if ($request->hasFile('logo')) {

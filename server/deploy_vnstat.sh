@@ -2,6 +2,7 @@
 # Deploy vnstat-1.17
 # Author:SSRPanel
 
+yum install -y gcc gcc+
 cd /root/
 wget -c http://humdi.net/vnstat/vnstat-1.17.tar.gz && tar -zxvf vnstat-1.17.tar.gz && cd vnstat-1.17
 echo '开始编译并安装vnstat...'

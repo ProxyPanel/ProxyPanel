@@ -50,6 +50,10 @@ class AutoResetUserTrafficJob extends Command
                         continue;
                     }
 
+                    if (date('m') == date('m', strtotime($order->created_at))) {
+                        continue;
+                    }
+
                     User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0]);
                 }
             }
