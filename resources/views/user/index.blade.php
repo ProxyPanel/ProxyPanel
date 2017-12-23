@@ -249,6 +249,11 @@
                 return false;
             }
 
+            if (charge_type == '2') {
+                $("#charge_msg").show().html("暂不支持");
+                return false;
+            }
+
             $.ajax({
                 url:'{{url('user/charge')}}',
                 type:"POST",
