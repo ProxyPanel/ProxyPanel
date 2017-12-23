@@ -985,4 +985,60 @@ class UserController extends Controller
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
     }
+
+    // 卡券余额充值
+    public function charge(Request $request)
+    {
+        $user = $request->session()->get('user');
+
+        $coupon_sn = trim($request->get('coupon_sn'));
+        if (empty($coupon_sn)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '券码不能为空']);
+        }
+
+        $coupon = Coupon::query()->where('sn', $coupon_sn)->where('type', 3)->where('is_del', 0)->where('status', 0)->first();
+        if (!$coupon) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该券不可用']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $user = User::query()->where('id', $user['id'])->first();
+
+            // 写入日志
+            $log = new UserBalanceLog();
+            $log->user_id = $user->id;
+            $log->order_id = 0;
+            $log->before = $user->balance;
+            $log->after = $user->balance + $coupon->amount;
+            $log->amount = $coupon->amount;
+            $log->desc = '用户手动充值 - [充值券：' . $coupon_sn . ']';
+            $log->created_at = date('Y-m-d H:i:s');
+            $log->save();
+
+            // 余额充值
+            $user->balance = $user->balance + $coupon->amount;
+            $user->save();
+
+            // 更改卡券状态
+            $coupon->status = 1;
+            $coupon->save();
+
+            // 写入卡券日志
+            $couponLog = new CouponLog();
+            $couponLog->coupon_id = $coupon->id;
+            $couponLog->goods_id = 0;
+            $couponLog->order_id = 0;
+            $couponLog->save();
+
+            DB::commit();
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
+        } catch (\Exception $e){
+            Log::error($e->getMessage());
+            DB::rollBack();
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败']);
+        }
+    }
 }

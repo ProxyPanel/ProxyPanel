@@ -60,11 +60,20 @@
                                         <tr class="odd gradeX">
                                             <td> {{$coupon->id}} </td>
                                             <td> {{$coupon->name}} </td>
+                                            <td>
+                                                @if($coupon->type == '1')
+                                                    <span class="label label-default"> 抵用券 </span>
+                                                @elseif($coupon->type == '2')
+                                                    <span class="label label-default"> 折扣券 </span>
+                                                @else
+                                                    <span class="label label-default"> 充值券 </span>
+                                                @endif
+                                            </td>
                                             <td> @if($coupon->logo) <a href="{{$coupon->logo}}" class="fancybox"><img src="{{$coupon->logo}}"/></a> @endif </td>
                                             <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
                                             <td> {{$coupon->usage == '1' ? '一次性' : '可重复'}} </td>
                                             <td>
-                                                @if($coupon->type == '1')
+                                                @if($coupon->type == '1' || $coupon->type == '3')
                                                     {{$coupon->amount}}元
                                                 @else
                                                     {{$coupon->discount * 10}}折
@@ -83,7 +92,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')">删除</button>
+                                                @if($coupon->status != '1')
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')">删除</button>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

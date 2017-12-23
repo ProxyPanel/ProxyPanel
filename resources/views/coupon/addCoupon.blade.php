@@ -66,11 +66,15 @@
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
-                                                <input type="radio" name="type" value="1" checked> 现金抵用券
+                                                <input type="radio" name="type" value="1" checked> 抵用券
                                                 <span></span>
                                             </label>
                                             <label class="mt-radio">
-                                                <input type="radio" name="type" value="2"> 折扣优惠券
+                                                <input type="radio" name="type" value="3"> 充值券
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="2"> 折扣券
                                                 <span></span>
                                             </label>
                                         </div>
@@ -167,17 +171,19 @@
         // 根据类型显示
         $("input[name='type']").change(function(){
             var type = $(this).val();
-            if (type == '1') {
+            if (type == '1' || type == '3') {
                 $("#amount").parent("div").parent("div").parent("div").removeClass("hide");
                 $("#discount").parent("div").parent("div").parent("div").addClass("hide");
-                $("#amount").attr('required', 'required');
+                $("#amount").prop('required', 'required');
                 $("#discount").removeAttr('required');
                 $("#discount").val('');
                 $("#usage2").parent("label").addClass("hide");
+                $("#usage1").prop('checked', 'checked');
+                $("#usage2").prop('checked', false);
             } else {
                 $("#amount").parent("div").parent("div").parent("div").addClass("hide");
                 $("#discount").parent("div").parent("div").parent("div").removeClass("hide");
-                $("#discount").attr('required', 'required');
+                $("#discount").prop('required', 'required');
                 $("#amount").removeAttr('required');
                 $("#amount").val('');
                 $("#usage2").parent("label").removeClass("hide");

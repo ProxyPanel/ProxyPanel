@@ -103,6 +103,7 @@ Route::group(['middleware' => ['user']], function() {
     Route::get('user/referral', 'UserController@referral'); // 推广返利
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
     Route::post("user/switchToAdmin","UserController@switchToAdmin"); // 转换成管理员的身份
+    Route::post("user/charge","UserController@charge"); // 卡券余额充值
 });
 
 //Route::group(['middleware' => ['user']], function() {

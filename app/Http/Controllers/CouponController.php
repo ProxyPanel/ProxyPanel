@@ -42,9 +42,9 @@ class CouponController extends Controller
     {
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $type = $request->get('type');
-            $usage = $request->get('usage');
-            $num = $request->get('num');
+            $type = $request->get('type', 1);
+            $usage = $request->get('usage', 1);
+            $num = $request->get('num', 1);
             $amount = $request->get('amount');
             $discount = $request->get('discount');
             $available_start = $request->get('available_start');
@@ -57,7 +57,7 @@ class CouponController extends Controller
             }
 
             if (strtotime($available_start) >= strtotime($available_end)) {
-                $request->session()->flash('errorMsg', '结束日期不能大于开始日期');
+                $request->session()->flash('errorMsg', '有效期范围错误');
 
                 return Redirect::back()->withInput();
             }

@@ -96,7 +96,7 @@
                             </span>
                             &ensp;&ensp;{{trans('home.account_score')}}：{{$info['score']}}
                             <span class="badge badge-danger">
-                                <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换</a>
+                                <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
                             </span>
                         </p>
                         <p class="text-muted"> {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
@@ -134,34 +134,38 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title"> 充值 </h4>
+                        <h4 class="modal-title">余额充值</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <span>微信</span>
-                                <br />
-                                <img src="{{$wechat_qrcode}}" alt="" style="width:200px; height:200px;" />
+                        <div class="alert alert-danger" style="display: none;" id="charge_msg"></div>
+                        <form action="#" method="post" class="form-horizontal">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label for="charge_type" class="col-md-4 control-label">充值方式</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="charge_type" id="charge_type">
+                                            <option value="1" selected>卡券</option>
+                                            <option value="2">PayPal在线充值</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="charge_coupon" class="col-md-4 control-label"> 券码 </label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="charge_coupon" id="charge_coupon" placeholder="请输入券码">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <span>支付宝</span>
-                                <br />
-                                <img src="{{$alipay_qrcode}}" alt="" style="width:200px; height:200px;" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-offset-4">
-                                <span>付款时请备注您的账号，以便及时到账</span>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
+                        <button type="button" class="btn red btn-outline" onclick="return charge();">充值</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="excharge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+        <div id="exchange_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -172,7 +176,7 @@
                         <div class="alert alert-info" id="msg">您有 {{$info['score']}} 积分，共计可兑换 {{$info['score']}}M 免费流量。</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">取消</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
                         <button type="button" class="btn red btn-outline" onclick="return exchange();">立即兑换</button>
                     </div>
                 </div>
@@ -233,6 +237,41 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 充值
+        function charge() {
+            var _token = '{{csrf_token()}}';
+            var charge_type = $("#charge_type").val();
+            var charge_coupon = $("#charge_coupon").val();
+
+            if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
+                $("#charge_msg").show().html("券码不能为空");
+                $("#charge_coupon").focus();
+                return false;
+            }
+
+            $.ajax({
+                url:'{{url('user/charge')}}',
+                type:"POST",
+                data:{_token:_token, coupon_sn:charge_coupon},
+                beforeSend:function(){
+                    $("#charge_msg").show().html("充值中...");
+                },
+                success:function(ret){
+                    if (ret.status == 'fail') {
+                        $("#charge_msg").show().html(ret.message);
+                        return false;
+                    }
+
+                    $("#charge_modal").modal("hide");
+                    window.location.reload();
+                },
+                error:function(){
+                    $("#charge_msg").show().html("请求错误，请重试");
+                },
+                complete:function(){}
+            });
+        }
+
         // 积分兑换流量
         function exchange() {
             $.ajax({
