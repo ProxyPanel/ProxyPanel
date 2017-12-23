@@ -779,6 +779,18 @@ INSERT INTO `country` VALUES ('43', '冰岛', 'is');
 INSERT INTO `country` VALUES ('44', '芬兰', 'fi');
 INSERT INTO `country` VALUES ('45', '卢森堡', 'lu');
 INSERT INTO `country` VALUES ('46', '比利时', 'be');
+INSERT INTO `country` VALUES ('47', '保加利亚', 'bg');
+INSERT INTO `country` VALUES ('48', '立陶宛', 'lt');
+INSERT INTO `country` VALUES ('49', '哥伦比亚', 'co');
+INSERT INTO `country` VALUES ('50', '澳门', 'mo');
+INSERT INTO `country` VALUES ('51', '肯尼亚', 'ke');
+INSERT INTO `country` VALUES ('52', '捷克', 'cz');
+INSERT INTO `country` VALUES ('53', '摩尔多瓦', 'md');
+INSERT INTO `country` VALUES ('54', '西班牙', 'es');
+INSERT INTO `country` VALUES ('55', '巴基斯坦', 'pk');
+INSERT INTO `country` VALUES ('56', '葡萄牙', 'pt');
+INSERT INTO `country` VALUES ('57', '匈牙利', 'hu');
+INSERT INTO `country` VALUES ('58', '阿根廷', 'ar');
 
 
 CREATE TABLE `payment` (
