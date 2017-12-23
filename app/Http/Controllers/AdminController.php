@@ -448,7 +448,7 @@ class AdminController extends Controller
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
             $view['group_list'] = SsGroup::query()->get();
-            $view['country_list'] = Country::query()->get();
+            $view['country_list'] = Country::query()->orderBy('country_code', 'asc')->get();
 
             return Response::view('admin/addNode', $view);
         }
@@ -536,7 +536,7 @@ class AdminController extends Controller
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
             $view['group_list'] = SsGroup::query()->get();
-            $view['country_list'] = Country::query()->get();
+            $view['country_list'] = Country::query()->orderBy('country_code', 'asc')->get();
 
             return Response::view('admin/editNode', $view);
         }
