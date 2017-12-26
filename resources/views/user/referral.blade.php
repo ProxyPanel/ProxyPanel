@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p> 通过您的推广链接注册的用户可获得 {{$referral_traffic}} 流量奖励。您可以获得他们每笔消费金额的 {{$referral_percent * 100}}% 作为现金返利。 </p>
+                    <p> 通过您的推广链接注册的用户可获得 {{$referral_traffic}} 流量奖励；当他们消费时，您可以获得他们每笔消费金额的 {{$referral_percent * 100}}% 作为奖励。 </p>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
                                 <tbody>
                                 @if($referralLogList->isEmpty())
                                     <tr>
-                                        <td colspan="5"> {{trans('home.referral_table_none')}} </td>
+                                        <td colspan="6"> {{trans('home.referral_table_none')}} </td>
                                     </tr>
                                 @else
                                     @foreach($referralLogList as $key => $referralLog)
@@ -92,10 +92,10 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 col-sm-4">
+                            <div class="col-md-5 col-sm-5">
                                 <div class="dataTables_info" role="status" aria-live="polite">共 {{$referralLogList->total()}} 条记录，合计返利<code>{{$canAmount}}</code>元，满 <code>{{$referral_money}}</code> 元可申请提现。</div>
                             </div>
-                            <div class="col-md-8 col-sm-8">
+                            <div class="col-md-7 col-sm-7">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $referralLogList->links() }}
                                 </div>

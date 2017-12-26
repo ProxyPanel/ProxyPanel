@@ -41,8 +41,9 @@
                                 <tr>
                                     <th> ID </th>
                                     <th> 名称 </th>
-                                    <th> LOGO </th>
                                     <th> 券码 </th>
+                                    <th> LOGO </th>
+                                    <th> 类型 </th>
                                     <th> 用途 </th>
                                     <th> 优惠 </th>
                                     <th> 有效期 </th>
@@ -53,24 +54,24 @@
                                 <tbody>
                                 @if($couponList->isEmpty())
                                     <tr>
-                                        <td colspan="9">暂无数据</td>
+                                        <td colspan="10">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($couponList as $coupon)
                                         <tr class="odd gradeX">
                                             <td> {{$coupon->id}} </td>
                                             <td> {{$coupon->name}} </td>
+                                            <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
+                                            <td> @if($coupon->logo) <a href="{{$coupon->logo}}" class="fancybox"><img src="{{$coupon->logo}}"/></a> @endif </td>
                                             <td>
                                                 @if($coupon->type == '1')
-                                                    <span class="label label-default"> 抵用券 </span>
+                                                    抵用券
                                                 @elseif($coupon->type == '2')
-                                                    <span class="label label-default"> 折扣券 </span>
+                                                    折扣券
                                                 @else
-                                                    <span class="label label-default"> 充值券 </span>
+                                                    充值券
                                                 @endif
                                             </td>
-                                            <td> @if($coupon->logo) <a href="{{$coupon->logo}}" class="fancybox"><img src="{{$coupon->logo}}"/></a> @endif </td>
-                                            <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
                                             <td> {{$coupon->usage == '1' ? '一次性' : '可重复'}} </td>
                                             <td>
                                                 @if($coupon->type == '1' || $coupon->type == '3')

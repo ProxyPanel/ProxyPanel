@@ -43,7 +43,7 @@ class UserExpireWarningJob extends Command
                 $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
                 if ($lastCanUseDays > 0 && $lastCanUseDays <= self::$config['expire_days']) {
                     $title = '账号过期提醒';
-                    $content = '账号还剩【' . $lastCanUseDays . '】天即将过期';
+                    $content = '账号还剩' . $lastCanUseDays . '天即将过期';
 
                     try {
                         Mail::to($user->username)->send(new userExpireWarning(self::$config['website_name'], $lastCanUseDays));
