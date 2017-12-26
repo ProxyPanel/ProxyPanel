@@ -26,12 +26,12 @@ telegram群组：https://t.me/chatssrpanel
 严禁在TG群里喧哗、谈论政治、发色情信息，只聊技术不扯淡，更别刷屏惹众怒，否则踢3天，两次机会，第三次被踢你永远进不来，我都记得谁谁谁
 ````
 
-[VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
+[VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
 ````
 部署面板必须得用到VPS
 强烈推荐使用1G以上内存的KVM架构的VPS
-做节点则只需要512M+内存的KVM即可
-（节点强烈不建议使用OVZ，一无法加速二容易崩溃，512M以下内存的容易经常性宕机，即便是KVM）
+做节点则只需要512M+内存的KVM即可，但是还是推荐使用1G+内存的KVM
+强烈不建议使用OVZ（OpenVZ），一无法加速二容易崩溃，512M以下内存的容易经常性宕机（低内存KVM也会宕机）
 ````
 
 ![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
@@ -130,9 +130,9 @@ crontab -e
 
 ###### 发件失败处理
 ````
-如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件，
-会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 错误
-不是逗比的脚本有问题，是因为smtp发邮件必须用到25,26,465,587这四个端口
+如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件
+可能会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
+因为smtp发邮件必须用到25,26,465,587这四个端口，逗比的一键脚本会将这些端口一并封禁
 可以编辑iptables，注释掉以下这段（前面加个#号就可以），然后保存并重启iptables
 #-A OUTPUT -p tcp -m multiport --dports 25,26,465,587 -m state --state NEW,ESTABLISHED -j REJECT --reject-with icmp-port-unreachable
 ````
@@ -176,7 +176,7 @@ chmod a+x fix_git.sh && sh fix_git.sh
 chmod a+x update.sh && sh update.sh
 ````
 
-## 网卡流量监控一键脚本
+## 网卡流量监控一键脚本（Vnstat）
 ````
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
 ````
@@ -191,7 +191,7 @@ vim user-config.json
     "80": {
         "passwd": "统一认证密码", // 例如 SSRP4ne1，推荐不要出现除大小写字母数字以外的任何字符
         "method": "统一认证加密方式", // 例如 aes-128-ctr
-        "protocol": "统一认证协议", // 例如 auth_aes128_md5 或者 auth_aes128_sha1，目前只有这两种
+        "protocol": "统一认证协议", // 例如 auth_aes128_md5 或者 auth_aes128_sha1 或 auth_chain_a，其他没试过，请自行测试
         "protocol_param": "#",
         "obfs": "tls1.2_ticket_auth_compatible",
         "obfs_param": ""
@@ -225,7 +225,8 @@ vim user-config.json
 混淆插件：tls1.2_ticket_auth
 协议参数：1026:SSRP4ne1 (SSR端口:SSR密码)
 
-经实测账号的协议可以是：auth_chain_a，建议节点后端使用auth_sha1_v4_compatible，方便兼容
+经实测账号的协议可以是：auth_chain_a
+建议节点后端使用auth_sha1_v4_compatible，方便兼容
 
 注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
 警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
@@ -233,11 +234,16 @@ vim user-config.json
 
 ````
 
-## 架构（私信咨询我）
-###### 单机单节点
-###### 单机多节点（数据库不分离）
-###### 单机多节点（数据库分离）
-###### 多级多节点（彻底分离）
+## 架构
+````
+1.单面板机-单节点 - 一打全死
+2.单面板机-多节点-数据库不分离 - 一打全死
+3.单面板机-多节点-数据库分离 - 打哪个死哪个，数据尚在
+4.多面板机-多节点-数据库分离 - 打不死，隐秘性强，数据通用
+5.多棉板机-多节点-数据库主从 - 打不死，隐秘性强，数据通用，灾备
+
+具体联系我运维，收费咨询，小白勿扰
+````
 
 ## 校时
 ````
@@ -264,7 +270,7 @@ ntpdate cn.pool.ntp.org
 1.多节点账号管理面板
 2.需配合SSR 3.4 Python版后端使用
 3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
-4.内含简单的购物、优惠券、流量兑换、邀请码、推广返利&提现、文章管理、工单等模块
+4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单等模块
 5.节点支持分组，不同级别的用户可以看到不同级别分组的节点
 6.SS配置转SSR配置，轻松一键导入SS账号
 7.流量日志、单机单节点日志分析功能
