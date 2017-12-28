@@ -381,6 +381,15 @@ class UserController extends Controller
         return Response::view('user/invite', $view);
     }
 
+    // 公开的邀请码列表
+    public function free(Request $request)
+    {
+        $view['is_invite_register'] = self::$config['is_invite_register'];
+        $view['inviteList'] = Invite::query()->where('uid', 1)->where('status', 0)->paginate();
+
+        return Response::view('user/free', $view);
+    }
+
     // 生成邀请码
     public function makeInvite(Request $request)
     {
@@ -833,6 +842,7 @@ class UserController extends Controller
             $goods->price = $goods->price / 100;
             $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
+            $view['paypal_status'] = self::$config['paypal_status'];
 
             return Response::view('user/addOrder', $view);
         }

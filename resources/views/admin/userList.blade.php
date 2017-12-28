@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="enable" id="enable" onChange="doSearch()">
-                                    <option value="" @if(Request::get('enable') == '') selected @endif>SS(R)状态</option>
+                                    <option value="" @if(Request::get('enable') == '') selected @endif>SSR(R)状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>
@@ -84,7 +84,7 @@
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
                                     <th> 状态 </th>
-                                    <th> SS(R) </th>
+                                    <th> SSR(R) </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>

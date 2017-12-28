@@ -49,7 +49,7 @@
                                                 <br>
                                                 {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
                                             </td>
-                                            <td style="text-align: center;"> ￥{{$goods->price}} </td>
+                                            <td style="text-align: center;"> $ {{$goods->price}} </td>
                                             <td style="text-align: center;">
                                                 <button type="button" class="btn btn-sm blue" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->

@@ -46,7 +46,7 @@
                                         <tr class="odd gradeX">
                                             <td>{{$order->orderId}}</td>
                                             <td>{{empty($order->goods) ? '【商品已删除】' : $order->goods->name}}</td>
-                                            <td>￥{{$order->totalPrice}}</td>
+                                            <td>${{$order->totalPrice}}</td>
                                             <td>{{date('Y-m-d', strtotime($order->created_at))}}</td>
                                             <td>
                                                 @if(!$order->is_expire)

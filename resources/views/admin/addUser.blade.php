@@ -152,7 +152,7 @@
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <span class="caption-subject font-dark bold">SS(R)信息</span>
+                                                <span class="caption-subject font-dark bold">SSR(R)信息</span>
                                             </div>
                                         </div>
                                         <div class="portlet-body">

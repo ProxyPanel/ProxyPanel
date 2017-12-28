@@ -24,7 +24,7 @@
                     </div>
                 @endif
                 <div class="note note-warning">
-                    <p>警告：购买新套餐则会覆盖所有已购但未过期的旧套餐并删除对应的流量，所以设置商品时请务必注意类型和有效期。</p>
+                    <p>警告：购买新套餐则会覆盖所有已购但未过期的旧套餐并删除这些旧套餐对应的流量，所以设置商品时请务必注意类型和有效期。</p>
                 </div>
                 <!-- BEGIN PORTLET-->
                 <div class="portlet light bordered">

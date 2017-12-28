@@ -14,6 +14,8 @@ return [
     'invoices' => '消费记录',
     'tickets' => '我的工单',
     'referrals' => '推广返利',
+    'free_invite_codes_title' => '邀请码',
+    'no_need_invite_codes' => '系统开放注册中，无需邀请码',
 
     // 首页
     'ratio_tips' => '结算比例： 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M。',
@@ -38,7 +40,7 @@ return [
     'service_quantity' => '数量',
     'service_subtotal_price' => '小计',
     'service_total_price' => '合计',
-    'service_pay_button' => '支付',
+    'service_pay_button' => '余额支付',
     'services_none' => '暂无可用服务',
     'service_traffic' => '内含流量',
     'service_days' => '有效期',

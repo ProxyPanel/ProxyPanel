@@ -15,7 +15,7 @@
                         <div class="caption font-dark">
                             <i class="icon-refresh font-dark"></i>
                             <span class="caption-subject bold uppercase"> 格式转换 </span>
-                            <small>SS转SSR</small>
+                            <small>SS转SSR(R)</small>
                         </div>
                     </div>
                     <div class="portlet-body">

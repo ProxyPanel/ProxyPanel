@@ -37,9 +37,11 @@
                                         <li>
                                             <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
                                         </li>
+                                        <!--
                                         <li>
                                             <a href="#tab_7" data-toggle="tab"> 充值二维码设置 </a>
                                         </li>
+                                        -->
                                         <li>
                                             <a href="#tab_8" data-toggle="tab"> PayPal接口设置 </a>
                                         </li>
@@ -508,6 +510,7 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <!--
                                         <div class="tab-pane" id="tab_7">
                                             <form action="{{url('admin/setQrcode')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                                 <div class="form-body">
@@ -572,6 +575,7 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        -->
                                         <div class="tab-pane" id="tab_8">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">

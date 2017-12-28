@@ -53,7 +53,7 @@
                                     <th> 原价 </th>
                                     <th> 实付 </th>
                                     <th> 优惠券 </th>
-                                    <th> 过期 </th>
+                                    <th> 过期时间 </th>
                                     <th> 操作时间 </th>
                                 </tr>
                                 </thead>
@@ -71,7 +71,7 @@
                                                 <td> {{$vo->totalOriginalPrice}} </td>
                                                 <td> {{$vo->totalPrice}} </td>
                                                 <td> {{empty($vo->coupon) ? '' : $vo->coupon->name . ' - ' . $vo->coupon->sn}} </td>
-                                                <td> {{$vo->is_expire ? '是' : $vo->expire_at}} </td>
+                                                <td> {{$vo->is_expire ? '已过期' : $vo->expire_at}} </td>
                                                 <td> {{$vo->created_at}} </td>
                                             </tr>
                                         @endforeach

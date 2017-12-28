@@ -14,6 +14,8 @@ return [
     'invoices' => 'Invoices',
     'tickets' => 'Tickets',
     'referrals' => 'Referrals',
+    'free_invite_codes_title' => 'Invite Codes',
+    'no_need_invite_codes' => 'In the open registration system, no invitation code is required',
 
     // 首页
     'ratio_tips' => 'Settlement Ratio: 1 means to settle 100M with 100M, 0.1 means to settle 10M with 100M, and 5 to express 500M with 100M.',

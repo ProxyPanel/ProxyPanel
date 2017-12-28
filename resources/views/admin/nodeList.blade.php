@@ -12,8 +12,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p>如果负载显示宕机，可能是节点服务器宕机或者节点上的SSR服务挂掉了，请重启节点服务器或者SSR服务。</p>
-                    <p>宕机是因为节点服务器IDC母鸡超售过载导致，SSR挂掉是因为节点服务器配置太渣。<a href="https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C" target="_blank" style="color:red;">[VPS推荐]</a></p>
+                    <p>如果负载显示宕机，可能是节点服务器宕机或者节点上的SSR(R)服务挂掉了，请重启节点服务器或者SSR(R)服务。</p>
+                    <p>宕机是因为节点服务器IDC母鸡超售过载导致，SSR(R)挂掉是因为节点服务器配置太渣。<a href="https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C" target="_blank" style="color:red;">[VPS推荐]</a></p>
                     <p>如果还是无法解决，请检查各节点服务器的时间是否同步。<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank" style="color:red;">[时间校准]</a></p>
                 </div>
             </div>

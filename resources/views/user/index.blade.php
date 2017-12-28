@@ -145,7 +145,6 @@
                                     <div class="col-md-6">
                                         <select class="form-control" name="charge_type" id="charge_type">
                                             <option value="1" selected>卡券</option>
-                                            <option value="2">PayPal在线充值</option>
                                         </select>
                                     </div>
                                 </div>
@@ -246,11 +245,6 @@
             if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
                 $("#charge_msg").show().html("券码不能为空");
                 $("#charge_coupon").focus();
-                return false;
-            }
-
-            if (charge_type == '2') {
-                $("#charge_msg").show().html("暂不支持");
                 return false;
             }
 

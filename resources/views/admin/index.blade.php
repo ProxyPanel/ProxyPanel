@@ -101,7 +101,7 @@
                     <div class="display">
                         <div class="number">
                             <h3 class="font-red">
-                                ￥<span data-counter="counterup" data-value="{{$totalBalance}}"></span>
+                                $<span data-counter="counterup" data-value="{{$totalBalance}}"></span>
                             </h3>
                             <small>总余额</small>
                         </div>
@@ -118,7 +118,7 @@
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green">
-                                ￥<span data-counter="counterup" data-value="{{$totalWaitRefAmount}}"></span>
+                                $<span data-counter="counterup" data-value="{{$totalWaitRefAmount}}"></span>
                             </h3>
                             <small>待提现佣金</small>
                         </div>
@@ -133,7 +133,7 @@
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green">
-                                ￥<span data-counter="counterup" data-value="{{$totalRefAmount}}"></span>
+                                $<span data-counter="counterup" data-value="{{$totalRefAmount}}"></span>
                             </h3>
                             <small>已支出佣金</small>
                         </div>

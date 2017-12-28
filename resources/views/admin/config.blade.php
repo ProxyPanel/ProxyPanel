@@ -49,8 +49,8 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> 名称 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 50%;"> 名称 </th>
+                                                <th style="width: 50%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -65,7 +65,9 @@
                                                     <td>
                                                         @if(!$method->is_default)
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('1', '{{$method->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">删除</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -85,8 +87,8 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> 名称 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 50%;"> 名称 </th>
+                                                <th style="width: 50%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -101,7 +103,9 @@
                                                     <td>
                                                         @if(!$protocol->is_default)
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('2', '{{$protocol->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">删除</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -121,8 +125,8 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                         <tr>
-                                            <th> 名称 </th>
-                                            <th> 操作 </th>
+                                            <th style="width: 50%;"> 名称 </th>
+                                            <th style="width: 50%;"> 操作 </th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -137,7 +141,9 @@
                                                     <td>
                                                         @if(!$obfs->is_default)
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('3', '{{$obfs->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">删除</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -157,9 +163,9 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> 等级 </th>
-                                                <th> 名称 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 35%;"> 等级 </th>
+                                                <th style="width: 35%;"> 名称 </th>
+                                                <th style="width: 30%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -174,7 +180,9 @@
                                                     <td> <input id="level_name_{{$level->id}}" name="level_name" value="{{$level->level_name}}" type="text" class="form-control"></td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm blue btn-outline" onclick="updateLevel('4', '{{$level->id}}')">修改</button>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delLevel('4', '{{$level->id}}')">删除</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delLevel('4', '{{$level->id}}')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -193,9 +201,9 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> 国家/地区名称 </th>
-                                                <th> 代码 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 35%;"> 国家/地区名称 </th>
+                                                <th style="width: 35%;"> 代码 </th>
+                                                <th style="width: 30%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -210,7 +218,9 @@
                                                     <td> <input id="country_code_{{$country->id}}" name="country_code" value="{{$country->country_code}}" type="text" class="form-control"></td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm blue btn-outline" onclick="updateCountry('5', '{{$country->id}}')">修改</button>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delCountry('5', '{{$country->id}}')">删除</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delCountry('5', '{{$country->id}}')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @endforeach
