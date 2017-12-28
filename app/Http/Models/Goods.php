@@ -14,6 +14,7 @@ class Goods extends Model
     protected $table = 'goods';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'sku',
         'name',
         'logo',
         'traffic',

@@ -35,12 +35,12 @@ class SubscribeController extends Controller
         // 校验合法性
         $subscribe = UserSubscribe::query()->where('code', $code)->where('status', 1)->with('user')->first();
         if (empty($subscribe)) {
-            exit('非法请求或者被禁用，请联系管理员');
+            exit('非法请求或已被封禁，请联系管理员');
         }
 
         $user = User::query()->where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
         if (empty($user)) {
-            exit('非法请求或者被禁用，请联系管理员');
+            exit('非法请求或已被封禁，请联系管理员');
         }
 
         // 更新访问次数
@@ -71,7 +71,7 @@ class SubscribeController extends Controller
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? 'tls1.2_ticket_auth' : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
+            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . ($node->single ? '' : $this->base64url_encode($obfs_param));
             $ssr_str .= '&protoparam=' . ($node->single ? $this->base64url_encode($user->port . ':' . $user->passwd) : $this->base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);

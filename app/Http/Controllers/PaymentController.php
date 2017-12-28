@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Models\Goods;
+use App\Http\Models\Paypal;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
-use Captcha;
 use Cache;
+use Log;
 
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
@@ -33,11 +35,11 @@ class PaymentController extends Controller
             new OAuthTokenCredential(self::$config['paypal_client_id'], self::$config['paypal_client_secret'])
         );
         $this->apiContext->setConfig([
-            'mode' => 'sandbox',
+            'mode'           => 'sandbox',
             'log.LogEnabled' => true,
-            'log.FileName' => storage_path('logs/paypal.log'),
-            'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS
-            'cache.enabled' => true,
+            'log.FileName'   => storage_path('logs/paypal.log'),
+            'log.LogLevel'   => 'DEBUG', // 测试DEBUG，生产环境INFO
+            'cache.enabled'  => true,
             // 'http.CURLOPT_CONNECTTIMEOUT' => 30
             // 'http.headers.PayPal-Partner-Attribution-Id' => '123123123'
             //'log.AdapterFactory' => '\PayPal\Log\DefaultLogFactory' // Factory class implementing \PayPal\Log\PayPalLogFactory
@@ -47,139 +49,119 @@ class PaymentController extends Controller
     // 创建支付
     public function create(Request $request)
     {
+        $oid = $request->get('oid');
+        $goods_id = $request->get('goods_id');
+        $user = $request->session()->get('user');
+
+        // 商品信息
+        $goods = Goods::query()->where('id', $goods_id)->first();
+        if (!$goods) {
+            //TODO:购买商品页需要做判断，出现异常时挂掉
+            $request->session()->flash('paypalErrorMsg', '创建支付订单失败：所购服务不存在');
+
+            return Redirect::back();
+        }
+
+        // 设置支付信息
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
 
-        // 商品1
+        // 设置所购商品信息，包含名称、数量、SKU、价格
         $item1 = new Item();
-        $item1->setName('Ground Coffee 40 oz')
-            ->setCurrency('USD')
-            ->setQuantity(1)
-            ->setSku("123123")
-            ->setPrice(20);
+        $item1->setName($goods->name)->setCurrency('USD')->setQuantity(1)->setSku($goods->sku)->setPrice($goods->price / 100);
 
-        // 商品2
-        $item2 = new Item();
-        $item2->setName('Granola bars')
-            ->setCurrency('USD')
-            ->setQuantity(5)
-            ->setSku("456456")
-            ->setPrice(10);
-
-        // 写入商品列表
         $itemList = new ItemList();
-        $itemList->setItems([$item1, $item2]);
+        $itemList->setItems([$item1]);
 
-
+        /*
         // 设定收货地址信息，防止用户自付款时可改
         $address = new ShippingAddress();
-        $address->setRecipientName('什么名字')
-            ->setLine1('什么街什么路什么小区')
-            ->setLine2('什么单元什么号')
-            ->setCity('城市名')
+        $address->setRecipientName($user['username'])
+            ->setLine1('余杭区')
+            ->setLine2('文一西路969号西溪园区')
+            ->setCity('杭州市')
             ->setState('浙江省')
-            ->setPhone('12345678911')
-            ->setPostalCode('12345')
+            ->setPhone('+8613800000000')
+            ->setPostalCode('311100')
             ->setCountryCode('CN');
 
         // 商品列表写入设定好的地址信息
         $itemList->setShippingAddress($address);
+        */
 
-        // 订单详情，带入运费和税，小计
+        // 设置单据运费、税费、小计算
         $details = new Details();
-        $details->setShipping(5)
-            ->setTax(10)
-            ->setSubtotal(70);
+        $details->setShipping(0)->setTax(0)->setSubtotal($goods->price / 100);
 
         // 设定单据金额
         $amount = new Amount();
-        $amount->setCurrency("USD")
-            ->setTotal(85)
-            ->setDetails($details);
-
-        // 设定交易描述
-        $transaction = new Transaction();
-        $transaction->setAmount($amount)
-            ->setItemList($itemList)
-            ->setDescription("测试支付")
-            ->setInvoiceNumber(uniqid());
+        $amount->setCurrency("USD")->setTotal($goods->price / 100)->setDetails($details);
 
         // 跳转页
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(url("payment/execute"))
-            ->setCancelUrl(url("payment/cancel"));
+        $redirectUrls->setReturnUrl(url("payment/execute?subtotal=" . $goods->price / 100))->setCancelUrl(url("payment/cancel"));
 
-        // 整个订单
-        $payment = new Payment();
-        $payment->setIntent("sale")
-            ->setPayer($payer)
-            ->setRedirectUrls($redirectUrls)
-            ->setTransactions([$transaction]);
-
-
-// For Sample Purposes Only.
-        $payment_request = clone $payment;
+        // 设定交易描述
+        $transaction = new Transaction();
+        $transaction->setAmount($amount)->setItemList($itemList)->setDescription("购买虚拟服务")->setInvoiceNumber(uniqid());
 
         // 创建支付
+        $payment = new Payment();
+        $payment->setIntent("sale")->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
         try {
             $payment->create($this->apiContext);
         } catch (\Exception $ex) {
-            var_dump($ex);
-            exit(1);
+            Log::error($ex->getMessage());
+            Log::error('PayPal授权失败，可能是接口配置错误');
+
+            $request->session()->flash('paypalErrorMsg', 'PayPal授权失败，可能是接口配置错误');
+
+            return Redirect::back();
         }
 
         // 得到支付授权跳转页（给用户点确认付款用）
         $approvalUrl = $payment->getApprovalLink();
 
-        \Log::info($approvalUrl);
-        \Log::info('22222'.var_export($payment_request, true));
-        \Log::info('33333'.var_export($payment, true));
-
-        return $payment;
+        return Redirect::to($approvalUrl);
     }
 
     // 执行支付
     public function execute(Request $request)
     {
-        \Log::info('execute_params:'.var_export($request->all(), true));
+        \Log::info('execute_params:' . var_export($request->all(), true));
 
+        $subtotal = $request->get('subtotal');
         $paymentId = $request->get('paymentId');
         $token = $request->get('token');
         $PayerID = $request->get('PayerID');
 
-        // ### Approval Status
-// Determine if the user approved the payment or not
-\Log::info($paymentId);
-\Log::info($token);
-\Log::info($PayerID);
         if (empty($paymentId) || empty($token) || empty($PayerID)) {
-            exit("return_url支付回调地址错误");
+            $request->session()->flash('paypalErrorMsg', '支付回调地址错误');
+
+            return Redirect::to('user/goodsList');
         } else {
-            // 支付
+            // 根据支付单据获取支付信息
             $payment = Payment::get($paymentId, $this->apiContext);
+
+            $details = new Details();
+            $details->setShipping(0)->setTax(0)->setSubtotal($subtotal);
+
+            $amount = new Amount();
+            $amount->setCurrency('USD')->setTotal($subtotal)->setDetails($details);
+
+            $transaction = new Transaction();
+            $transaction->setAmount($amount);
 
             // 执行支付
             $execution = new PaymentExecution();
-            $execution->setPayerId($PayerID);
-
-            $transaction = new Transaction();
-
-            $details = new Details();
-            $details->setShipping(5)->setTax(10)->setSubtotal(70);
-
-            $amount = new Amount();
-            $amount->setCurrency('USD');
-            $amount->setTotal(85);
-            $amount->setDetails($details);
-            $transaction->setAmount($amount);
-
-            $execution->addTransaction($transaction);
+            $execution->setPayerId($PayerID)->addTransaction($transaction);
 
             try {
                 $result = $payment->execute($execution, $this->apiContext);
                 \Log::info(var_export($result, true));
 
                 // 支付成功，写入支付单据信息
+
 
             } catch (\Exception $ex) {
                 var_dump($ex);
@@ -204,6 +186,20 @@ class PaymentController extends Controller
     // 查询支付状态
     public function query()
     {
-        
+
+    }
+
+    // 写入日志
+    private function log($oid, $invoice_number = '', $items = '', $response_data = '', $error = '')
+    {
+        $paypal = new Paypal();
+        $paypal->oid = $oid;
+        $paypal->invoice_number = $invoice_number;
+        $paypal->items = $items;
+        $paypal->response_data = $response_data;
+        $paypal->error = $error;
+        $paypal->save();
+
+        return $paypal->id;
     }
 }

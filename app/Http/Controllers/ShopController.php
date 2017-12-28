@@ -84,6 +84,10 @@ class ShopController extends Controller
             $obj->save();
 
             if ($obj->id) {
+                // 生成SKU
+                $obj->sku = 'S0000' . $obj->id;
+                $obj->save();
+
                 $request->session()->flash('successMsg', '添加成功');
             } else {
                 $request->session()->flash('errorMsg', '添加失败');

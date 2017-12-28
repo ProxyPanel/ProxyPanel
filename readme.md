@@ -191,9 +191,9 @@ vim user-config.json
     "80": {
         "passwd": "统一认证密码", // 例如 SSRP4ne1，推荐不要出现除大小写字母数字以外的任何字符
         "method": "统一认证加密方式", // 例如 aes-128-ctr
-        "protocol": "统一认证协议", // 例如 auth_aes128_md5 或者 auth_aes128_sha1 或 auth_chain_a，其他没试过，请自行测试
+        "protocol": "统一认证协议", // 可选值：orgin、verify_deflate、auth_sha1_v4、auth_aes128_md5（推荐）、auth_aes128_sha1（推荐）、auth_chain_a（强烈推荐）
         "protocol_param": "#",
-        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs": "tls1.2_ticket_auth", // 可选值：plain、http_simple（该值下客户端可用http_post）、random_head、tls1.2_ticket_auth（强烈推荐）
         "obfs_param": ""
     },
     "443": {
@@ -201,7 +201,7 @@ vim user-config.json
         "method": "统一认证加密方式",
         "protocol": "统一认证协议",
         "protocol_param": "#",
-        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs": "tls1.2_ticket_auth",
         "obfs_param": ""
     }
 },
@@ -225,9 +225,7 @@ vim user-config.json
 混淆插件：tls1.2_ticket_auth
 协议参数：1026:SSRP4ne1 (SSR端口:SSR密码)
 
-经实测账号的协议可以是：auth_chain_a
-建议节点后端使用auth_sha1_v4_compatible，方便兼容
-
+经实测，节点后端使用auth_sha1_v4_compatible，可以兼容auth_chain_a
 注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
 警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
 提示：配置单端口最好先看下这个WIKI，防止才踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
@@ -242,7 +240,7 @@ vim user-config.json
 4.多面板机-多节点-数据库分离 - 打不死，隐秘性强，数据通用
 5.多棉板机-多节点-数据库主从 - 打不死，隐秘性强，数据通用，灾备
 
-具体联系我运维，收费咨询，小白勿扰
+具体联系我，直接打赏（哪个自己看着办）并备注TG号我会联系你，小白勿扰
 ````
 
 ## 校时
@@ -287,17 +285,3 @@ ntpdate cn.pool.ntp.org
 18.Paypal在线支付接口
 19.兼容SS、SSRR
 ````
-
-## 预览
-![Wpy0e.png](https://s1.ax1x.com/2017/11/24/Wpy0e.png)
-![WpUYR.png](https://s1.ax1x.com/2017/11/24/WpUYR.png)
-![WpNk9.png](https://s1.ax1x.com/2017/11/24/WpNk9.png)
-![WpGmF.png](https://s1.ax1x.com/2017/11/24/WpGmF.png)
-![WpJw4.png](https://s1.ax1x.com/2017/11/24/WpJw4.png)
-![WpYTJ.png](https://s1.ax1x.com/2017/11/24/WpYTJ.png)
-![Wpaf1.png](https://s1.ax1x.com/2017/11/24/Wpaf1.png)
-![WpwSx.png](https://s1.ax1x.com/2017/11/24/WpwSx.png)
-![Wp0l6.png](https://s1.ax1x.com/2017/11/24/Wp0l6.png)
-![WpB6K.png](https://s1.ax1x.com/2017/11/24/WpB6K.png)
-![WpDOO.png](https://s1.ax1x.com/2017/11/24/WpDOO.png)
-![WpsmD.png](https://s1.ax1x.com/2017/11/24/WpsmD.png)

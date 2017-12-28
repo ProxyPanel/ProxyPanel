@@ -47,6 +47,7 @@ CREATE TABLE `ss_node` (
   `single_passwd` varchar(50) DEFAULT '' COMMENT '密码',
   `single_method` varchar(50) DEFAULT '' COMMENT '加密方式',
   `single_protocol` varchar(50) NOT NULL DEFAULT '' COMMENT '协议',
+  `single_obfs` varchar(50) NOT NULL DEFAULT '' COMMENT '混淆',
   `sort` int(3) NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
   `created_at` datetime NOT NULL,
@@ -403,6 +404,7 @@ CREATE TABLE `ss_group_node` (
 -- ----------------------------
 CREATE TABLE `goods` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sku` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品服务SKU',
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品图片地址',
   `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位Mib',
@@ -803,6 +805,20 @@ CREATE TABLE `payment` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `paypal` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `oid` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `invoice_number` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '账单号',
+  `items` text COLLATE utf8mb4_unicode_ci COMMENT '商品信息，json格式',
+  `response_data` text COLLATE utf8mb4_unicode_ci COMMENT '收货地址，json格式',
+  `error` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '错误信息',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

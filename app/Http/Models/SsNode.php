@@ -36,6 +36,7 @@ class SsNode extends Model
         'single_passwd',
         'single_method',
         'single_protocol',
+        'single_obfs',
         'sort',
         'status'
     ];

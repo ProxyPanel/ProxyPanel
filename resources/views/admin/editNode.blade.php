@@ -139,9 +139,24 @@
                                                         <label for="single_protocol" class="col-md-3 control-label">[单] 协议</label>
                                                         <div class="col-md-8">
                                                             <select class="form-control" name="single_protocol" id="single_protocol">
+                                                                <option value="origin" {{$node->single_protocol == 'origin' ? 'selected' : ''}}>origin</option>
+                                                                <option value="verify_deflate" {{$node->single_protocol == 'verify_deflate' ? 'selected' : ''}}>verify_deflate</option>
+                                                                <option value="auth_sha1_v4" {{$node->single_protocol == 'auth_sha1_v4' ? 'selected' : ''}}>auth_sha1_v4</option>
                                                                 <option value="auth_aes128_md5" {{$node->single_protocol == 'auth_aes128_md5' ? 'selected' : ''}}>auth_aes128_md5</option>
                                                                 <option value="auth_aes128_sha1" {{$node->single_protocol == 'auth_aes128_sha1' ? 'selected' : ''}}>auth_aes128_sha1</option>
                                                                 <option value="auth_chain_a" {{$node->single_protocol == 'auth_chain_a' ? 'selected' : ''}}>auth_chain_a</option>
+                                                            </select>
+                                                            <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group single-setting {{!$node->single ? 'hidden' : ''}}">
+                                                        <label for="single_obfs" class="col-md-3 control-label">[单] 混淆</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="single_obfs" id="single_obfs">
+                                                                <option value="plain" {{$node->single_obfs == 'plain' ? 'selected' : ''}}>plain</option>
+                                                                <option value="http_simple" {{$node->single_obfs == 'http_simple' ? 'selected' : ''}}>http_simple</option>
+                                                                <option value="random_head" {{$node->single_obfs == 'random_head' ? 'selected' : ''}}>random_head</option>
+                                                                <option value="tls1.2_ticket_auth" {{$node->single_obfs == 'tls1.2_ticket_auth' ? 'selected' : ''}}>tls1.2_ticket_auth</option>
                                                             </select>
                                                             <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
                                                         </div>
@@ -297,6 +312,7 @@
             var single_passwd = $('#single_passwd').val();
             var single_method = $('#single_method').val();
             var single_protocol = $('#single_protocol').val();
+            var single_obfs = $('#single_obfs').val();
             var sort = $('#sort').val();
             var status = $('#status').val();
 
@@ -304,7 +320,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
@@ -332,15 +348,17 @@
 
         // 服务条款
         function showTnc() {
-            var content = '1.请勿直接复制以下内容，否则SSR会报错；'
-                + '<br>2.确保服务器时间为CST或UTC；'
+            var content = '1、请勿直接复制黏贴以下配置，SSR(R)会报错的；'
+                + '<br>2、确保服务器时间为CST或UTC；'
+                + '<br>3、请看<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank">WIKI</a>；'
+                + '<br>'
                 + '<br>"additional_ports" : {'
                 + '<br>&ensp;&ensp;&ensp;&ensp;"80": {'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"passwd": "password",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"method": "aes-128-ctr",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol": "auth_aes128_md5",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol_param": "#",'
-                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs": "tls1.2_ticket_auth_compatible",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs": "tls1.2_ticket_auth",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs_param": ""'
                 + '<br>&ensp;&ensp;&ensp;&ensp;},'
                 + '<br>&ensp;&ensp;&ensp;&ensp;"443": {'
@@ -348,7 +366,7 @@
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"method": "aes-128-ctr",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol": "auth_aes128_sha1",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"protocol_param": "#",'
-                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs": "tls1.2_ticket_auth_compatible",'
+                + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs": "tls1.2_ticket_auth",'
                 + '<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"obfs_param": ""'
                 + '<br>&ensp;&ensp;&ensp;&ensp;}'
                 + '<br>},';

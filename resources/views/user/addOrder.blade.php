@@ -54,8 +54,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
-                    <a class="btn btn-lg green-haze hidden-print uppercase print-btn" onclick="addOrder()"> {{trans('home.service_pay_button')}} </a>
+                <div class="col-xs-12" style="text-align: right;">
+                    @if($paypal_status)
+                        <a class="btn btn red hidden-print" onclick="paypalPay()"> PayPal支付 </a>
+                    @endif
+                    <a class="btn btn blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
                 </div>
             </div>
         </div>
@@ -106,8 +109,15 @@
             });
         }
 
-        // 添加订单
-        function addOrder() {
+        // PayPal在线支付
+        function paypalPay() {
+            var goods_id = '{{$goods->id}}';
+            var coupon_sn = $('#coupon_sn').val();
+            window.location.href="{{url('payment/create?goods_id=')}}" + goods_id + '&coupon_sn=' + coupon_sn;
+        }
+
+        // 余额支付
+        function pay() {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
 
