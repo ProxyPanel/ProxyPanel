@@ -1,30 +1,34 @@
-## 演示站
+## 项目描述
 ````
-http://www.ssrpanel.com
-用户名：admin
-密码：123456
+1.多节点账号管理面板
+2.需配合SSR 3.4 Python版后端使用
+3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
+4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单等模块
+5.节点支持分组，不同级别的用户可以看到不同级别分组的节点
+6.SS配置转SSR配置，轻松一键导入SS账号
+7.流量日志、单机单节点日志分析功能
+8.强大的定时任务
+9.所有邮件投递都有记录
+10.账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志
+11.后台一键添加加密方式、混淆、协议、等级
+12.强大的后台一键配置功能
+13.屏蔽常见爬虫
+14.支持单端口多用户
+15.账号、节点24小时和近30天内的流量监控
+16.支持节点订阅功能，可一键封禁账号订阅地址
+17.节点宕机提醒（邮件+ServerChan微信提醒）
+18.Paypal在线支付接口
+19.兼容SS、SSRR
 ````
 
-## 安装步骤
-#### 环境要求
+## 演示&交流
 ````
-PHP 7.1 （必须）
-MYSQL 5.5 （推荐5.6+）
-内存 1G+ 
-磁盘空间 10G+
-KVM
-
-PHP必须开启curl、gd、fileinfo、openssl组件
-
-小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
-手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
-使用LNMP部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
-
+演示站：http://www.ssrpanel.com （用户名：admin 密码：123456，请勿修改密码）
 telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
-本人未实名微信小号：dxstx77 （请勿任何转账、红包行为）
-严禁在TG群里喧哗、谈论政治、发色情信息，只聊技术不扯淡，更别刷屏惹众怒，否则踢3天，两次机会，第三次被踢你永远进不来，我都记得谁谁谁
 ````
+
+![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
 [VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
 ````
@@ -34,7 +38,15 @@ telegram群组：https://t.me/chatssrpanel
 强烈不建议使用OVZ（OpenVZ），一无法加速二容易崩溃，512M以下内存的容易经常性宕机（低内存KVM也会宕机）
 ````
 
-![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
+## 安装步骤
+#### 环境要求
+````
+PHP 7.1 （必须）
+MYSQL 5.5 （推荐5.6+）
+内存 1G+ 
+磁盘空间 10G+
+PHP必须开启curl、gd、fileinfo、openssl组件
+````
 
 #### 拉取代码
 ````
@@ -57,7 +69,7 @@ chown -R www:www storage/
 chmod -R 777 storage/
 ````
 
-#### 然后NGINX配置文件加入
+#### 加入NGINX的URL重写规则
 ````
 location / {
     try_files $uri $uri/ /index.php$is_args$args;
@@ -88,10 +100,7 @@ service php-fpm restart
 
 ## 定时任务（发邮件、流量统计、自动任务全部需要用到）
 ````
-编辑crontab
-crontab -e
-
-然后加入如下（请自行修改ssrpanel路径）：
+crontab加入如下命令（请自行修改ssrpanel路径）：
 （表示每分钟都执行定时任务，具体什么任务什么时候执行程序里已经定义了，请不要乱改，否则流量统计数据可能出错）
 * * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
 ````
@@ -128,7 +137,7 @@ crontab -e
 ],
 ````
 
-###### 发件失败处理
+###### 发邮件失败处理
 ````
 如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件
 可能会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
@@ -146,7 +155,7 @@ ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
-## SSR部署
+## SSR(R)部署
 ###### 手动部署
 ````
 cp server/ssr-3.4.0.zip /root/
@@ -157,11 +166,17 @@ sh initcfg.sh
 把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
 把 user-config.json 里的 connect_verbose_info 设置为 1
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
+
+同理部署SSRR，SSRR位于此处，自行下载：https://github.com/shadowsocksrr/shadowsocksr/tree/akkariiin/dev
 ````
 
 ###### 一键自动部署
 ````
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
+
+或者使用另一个脚本
+
+wget -N --no-check-certificate https://raw.githubusercontent.com/maxzh0916/Shadowsowcks1Click/master/Shadowsowcks1Click.sh;chmod +x Shadowsowcks1Click.sh;./Shadowsowcks1Click.sh
 ````
 
 ## 更新代码
@@ -263,25 +278,3 @@ ntpdate cn.pool.ntp.org
 - [@91yun](https://github.com/91yun)
 - [@Akkariiin](https://github.com/shadowsocksrr)
 
-## 说明
-````
-1.多节点账号管理面板
-2.需配合SSR 3.4 Python版后端使用
-3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
-4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单等模块
-5.节点支持分组，不同级别的用户可以看到不同级别分组的节点
-6.SS配置转SSR配置，轻松一键导入SS账号
-7.流量日志、单机单节点日志分析功能
-8.强大的定时任务
-9.所有邮件投递都有记录
-10.账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志
-11.后台一键添加加密方式、混淆、协议、等级
-12.强大的后台一键配置功能
-13.屏蔽常见爬虫
-14.支持单端口多用户
-15.账号、节点24小时和近30天内的流量监控
-16.支持节点订阅功能，可一键封禁账号订阅地址
-17.节点宕机提醒（邮件+ServerChan微信提醒）
-18.Paypal在线支付接口
-19.兼容SS、SSRR
-````
