@@ -52,7 +52,7 @@
                                     <div class="timeline-item">
                                         <div class="timeline-badge">
                                             @if ($reply->user->is_admin)
-                                                <img class="timeline-badge-userpic" src="/assets/images/avatar.jpg">
+                                                <img class="timeline-badge-userpic" src="/assets/images/avatar.png">
                                             @else
                                                 <div class="timeline-icon">
                                                     <i class="icon-user font-green-haze"></i>

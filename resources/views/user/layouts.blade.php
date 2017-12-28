@@ -138,7 +138,7 @@
                         <span class="title">{{trans('home.invoices')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/ticketList']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/ticketList', 'user/replyTicket']) ? 'active open' : ''}}">
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
                         <span class="title">{{trans('home.tickets')}}</span>
