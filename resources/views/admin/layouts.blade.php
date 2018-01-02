@@ -148,7 +148,7 @@
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/articleList']) ? 'active open' : ''}}">
+                        <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
                             <a href="{{url('admin/articleList')}}" class="nav-link ">
                                 <i class="icon-list"></i>
                                 <span class="title">文章列表</span>
@@ -189,20 +189,20 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/groupList', 'admin/addGroup', 'admin/editGroup', 'admin/nodeMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-layers"></i>
                         <span class="title">节点管理</span>
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/nodeList']) ? 'active open' : ''}}">
+                        <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor']) ? 'active open' : ''}}">
                             <a href="{{url('admin/nodeList')}}" class="nav-link ">
                                 <i class="icon-list"></i>
                                 <span class="title">节点列表</span>
                             </a>
                         </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/groupList']) ? 'active open' : ''}}">
+                        <li class="nav-item {{in_array(Request::path(), ['admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
                             <a href="{{url('admin/groupList')}}" class="nav-link ">
                                 <i class="icon-grid"></i>
                                 <span class="title">节点分组</span>

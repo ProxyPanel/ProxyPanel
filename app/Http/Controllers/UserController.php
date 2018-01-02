@@ -404,7 +404,7 @@ class UserController extends Controller
         $obj = new Invite();
         $obj->uid = $user['id'];
         $obj->fuid = 0;
-        $obj->code = strtoupper(mb_substr(md5(microtime() . $this->makeRandStr(6)), 8, 16));
+        $obj->code = strtoupper(mb_substr(md5(microtime() . $this->makeRandStr(6)), 8, 12));
         $obj->status = 0;
         $obj->dateline = date('Y-m-d H:i:s', strtotime("+7 days"));
         $obj->save();

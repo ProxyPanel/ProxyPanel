@@ -76,8 +76,20 @@
                                                     @if($node->compatible) <span class="label label-info">兼</span> @endif
                                                     @if($node->single) <span class="label label-danger">单</span> @endif
                                                 </td>
-                                                <td> <span class="label label-info"> {{$node->protocol}} </span> </td>
-                                                <td> <span class="label label-info"> {{$node->obfs}} </span> </td>
+                                                <td>
+                                                    @if($node->single)
+                                                        <span class="label label-info"> {{$node->single_protocol}} </span>
+                                                    @else
+                                                        <span class="label label-info"> {{$node->protocol}} </span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($node->single)
+                                                        <span class="label label-info"> {{$node->single_obfs}} </span>
+                                                    @else
+                                                        <span class="label label-info"> {{$node->obfs}} </span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">
                                                         <i class="fa fa-pencil"></i>
