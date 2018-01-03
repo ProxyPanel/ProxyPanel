@@ -16,24 +16,16 @@ class AutoClearLogJob extends Command
     protected $signature = 'command:autoClearLogJob';
     protected $description = '自动清除日志';
 
-    protected static $config;
-
     public function __construct()
     {
         parent::__construct();
-
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        self::$config = $data;
     }
 
     public function handle()
     {
-        if (self::$config['is_clear_log']) {
+        $config = $this->systemConfig();
+
+        if ($config['is_clear_log']) {
             // 自动清除10分钟以前的节点负载信息日志
             SsNodeInfo::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-10 minutes"))))->delete();
 
@@ -51,5 +43,16 @@ class AutoClearLogJob extends Command
         }
 
         Log::info('定时任务：' . $this->description);
+    }
+
+    // 系统配置
+    private function systemConfig() {
+        $config = Config::query()->get();
+        $data = [];
+        foreach ($config as $vo) {
+            $data[$vo->name] = $vo->value;
+        }
+
+        return $data;
     }
 }

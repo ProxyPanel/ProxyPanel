@@ -18,23 +18,16 @@ class AutoCheckNodeStatusJob extends Command
     protected $signature = 'command:autoCheckNodeStatusJob';
     protected $description = '自动监测节点是否宕机';
     protected $cacheKey = 'node_shutdown_warning_';
-    protected static $config;
 
     public function __construct()
     {
         parent::__construct();
-
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        self::$config = $data;
     }
 
     public function handle()
     {
+        $config = $this->systemConfig();
+
         $nodeList = SsNode::query()->where('status', 1)->get();
         foreach ($nodeList as $node) {
             // 10分钟内无节点信息则认为是宕机，因为每个节点的负载信息最多保存10分钟
@@ -49,9 +42,9 @@ class AutoCheckNodeStatusJob extends Command
                 $content = "系统监测到节点【{$node->name}】({$node->server})可能宕机了，请及时检查。";
 
                 // 发邮件通知管理员
-                if (self::$config['is_node_crash_warning'] && self::$config['crash_warning_email']) {
+                if ($config['is_node_crash_warning'] && $config['crash_warning_email']) {
                     try {
-                        Mail::to(self::$config['crash_warning_email'])->send(new nodeCrashWarning(self::$config['website_name'], $node->name, $node->server));
+                        Mail::to($config['crash_warning_email'])->send(new nodeCrashWarning($config['website_name'], $node->name, $node->server));
                         $this->sendEmailLog(1, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
@@ -62,9 +55,9 @@ class AutoCheckNodeStatusJob extends Command
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
-                if (self::$config['is_server_chan'] && self::$config['server_chan_key']) {
+                if ($config['is_server_chan'] && $config['server_chan_key']) {
                     $serverChan = new ServerChan();
-                    $result = $serverChan->send($title, $content, self::$config['server_chan_key']);
+                    $result = $serverChan->send($title, $content, $config['server_chan_key']);
                     if ($result->errno > 0) {
                         $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
                     } else {
@@ -98,5 +91,17 @@ class AutoCheckNodeStatusJob extends Command
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
+    }
+
+    // 系统配置
+    private function systemConfig()
+    {
+        $config = Config::query()->get();
+        $data = [];
+        foreach ($config as $vo) {
+            $data[$vo->name] = $vo->value;
+        }
+
+        return $data;
     }
 }

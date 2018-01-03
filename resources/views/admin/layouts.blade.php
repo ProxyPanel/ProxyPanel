@@ -162,14 +162,14 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-users"></i>
                         <span class="title">用户管理</span>
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser']) ? 'active open' : ''}}">
+                        <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userList')}}" class="nav-link ">
                                 <i class="icon-user"></i>
                                 <span class="title">用户列表</span>

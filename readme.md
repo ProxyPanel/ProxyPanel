@@ -38,7 +38,7 @@ telegram群组：https://t.me/chatssrpanel
 强烈不建议使用OVZ（OpenVZ），一无法加速二容易崩溃，512M以下内存的容易经常性宕机（低内存KVM也会宕机）
 ````
 
-## 安装步骤
+## 安装
 #### 环境要求
 ````
 PHP 7.1 （必须）
@@ -54,19 +54,43 @@ cd /home/wwwroot/
 git clone https://github.com/ssrpanel/ssrpanel.git
 ````
 
-#### 先配置数据库
-````
-mysql 创建一个数据库，然后自行导入sql\db.sql
-config\database.php 中的mysql选项自行配置数据库
-````
-
-#### 其次配置一下运行环境
+#### 安装面板
 ````
 cd ssrpanel/
 php composer.phar install
 php artisan key:generate
 chown -R www:www storage/
 chmod -R 777 storage/
+````
+
+#### 配置数据库
+
+##### 连接数据库
+````
+先自行创建一个utf8mb4的数据库，
+然后编辑config/database.php，编辑mysql选项中如下配置值：
+host、port、database、username、password
+````
+
+##### 自动部署
+
+###### 表结构迁移
+````
+php artisan migrate
+````
+
+###### 数据播种
+````
+php artisan db:seed --class=ConfigTableSeeder
+php artisan db:seed --class=CountryTableSeeder
+php artisan db:seed --class=LevelTableSeeder
+php artisan db:seed --class=SsConfigTableSeeder
+php artisan db:seed --class=UserTableSeeder
+````
+
+##### 手工迁移数据
+````
+手动将sql/db.sql导入到创建好的数据库
 ````
 
 #### 加入NGINX的URL重写规则

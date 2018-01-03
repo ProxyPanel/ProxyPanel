@@ -20,19 +20,13 @@ class UserExpireWarningJob extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        self::$config = $data;
     }
 
     public function handle()
     {
-        if (self::$config['expire_warning']) {
+        $config = $this->systemConfig();
+
+        if ($config['expire_warning']) {
             $userList = User::query()->where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
@@ -41,12 +35,12 @@ class UserExpireWarningJob extends Command
                 }
 
                 $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
-                if ($lastCanUseDays > 0 && $lastCanUseDays <= self::$config['expire_days']) {
+                if ($lastCanUseDays > 0 && $lastCanUseDays <= $config['expire_days']) {
                     $title = '账号过期提醒';
                     $content = '账号还剩' . $lastCanUseDays . '天即将过期';
 
                     try {
-                        Mail::to($user->username)->send(new userExpireWarning(self::$config['website_name'], $lastCanUseDays));
+                        Mail::to($user->username)->send(new userExpireWarning($config['website_name'], $lastCanUseDays));
                         $this->sendEmailLog($user->id, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
@@ -76,5 +70,16 @@ class UserExpireWarningJob extends Command
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
+    }
+
+    // 系统配置
+    private function systemConfig() {
+        $config = Config::query()->get();
+        $data = [];
+        foreach ($config as $vo) {
+            $data[$vo->name] = $vo->value;
+        }
+
+        return $data;
     }
 }

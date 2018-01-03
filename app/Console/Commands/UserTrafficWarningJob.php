@@ -20,19 +20,13 @@ class UserTrafficWarningJob extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        self::$config = $data;
     }
 
     public function handle()
     {
-        if (self::$config['traffic_warning']) {
+        $config = $this->systemConfig();
+
+        if ($config['traffic_warning']) {
             $userList = User::query()->where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
@@ -41,12 +35,12 @@ class UserTrafficWarningJob extends Command
                 }
 
                 $usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
-                if ($usedPercent >= self::$config['traffic_warning_percent']) {
+                if ($usedPercent >= $config['traffic_warning_percent']) {
                     $title = '流量警告';
-                    $content = '流量已使用：' . $usedPercent . '%，超过设置的流量阈值' . self::$config['traffic_warning_percent'] . '%';
+                    $content = '流量已使用：' . $usedPercent . '%，超过设置的流量阈值' . $config['traffic_warning_percent'] . '%';
 
                     try {
-                        Mail::to($user->username)->send(new userTrafficWarning(self::$config['website_name'], $usedPercent));
+                        Mail::to($user->username)->send(new userTrafficWarning($config['website_name'], $usedPercent));
                         $this->sendEmailLog($user->id, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
@@ -76,5 +70,16 @@ class UserTrafficWarningJob extends Command
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
+    }
+
+    // 系统配置
+    private function systemConfig() {
+        $config = Config::query()->get();
+        $data = [];
+        foreach ($config as $vo) {
+            $data[$vo->name] = $vo->value;
+        }
+
+        return $data;
     }
 }
