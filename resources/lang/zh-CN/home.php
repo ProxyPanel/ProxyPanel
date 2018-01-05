@@ -24,6 +24,7 @@ return [
     'account_level' => '等级',
     'account_balance' => '余额',
     'account_score' => '积分',
+    'account_status' => '账号状态',
     'account_expire' => '账号到期',
     'account_last_usage' => '最后使用',
     'account_last_login' => '最后登录',

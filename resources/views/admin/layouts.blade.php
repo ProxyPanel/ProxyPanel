@@ -210,13 +210,19 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub-menu">
+                        <li class="nav-item {{in_array(Request::path(), ['admin/decompile']) ? 'active open' : ''}}">
+                            <a href="{{url('admin/decompile')}}" class="nav-link">
+                                <i class="icon-reload"></i>
+                                <span class="title">反解析</span>
+                            </a>
+                        </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/convert']) ? 'active open' : ''}}">
                             <a href="{{url('admin/convert')}}" class="nav-link">
                                 <i class="icon-refresh"></i>

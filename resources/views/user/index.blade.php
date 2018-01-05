@@ -99,6 +99,7 @@
                                 <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
                             </span>
                         </p>
+                        <p class="text-muted"> {{trans('home.account_status')}}：{{$info['enable'] ? '正常' : '禁用'}} </p>
                         <p class="text-muted"> {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
                         <p class="text-muted"> {{trans('home.account_last_usage')}}：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
                         <p class="text-muted"> {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>

@@ -26,15 +26,17 @@ class AutoBanUserJob extends Command
         // 封禁24小时内流量异常账号
         if ($config['is_traffic_ban']) {
             $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
-            foreach ($userList as $user) {
-                $time = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
-                $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
-                if ($totalTraffic >= ($config['traffic_ban_value'] * 1024 * 1024 * 1024)) {
-                    $ban_time = date('Y-m-d H:i:s', strtotime("+" . $config['traffic_ban_time'] . " minutes"));
-                    User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => $ban_time]);
+            if (!$userList->isEmpty()) {
+                foreach ($userList as $user) {
+                    $time = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
+                    $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
+                    if ($totalTraffic >= ($config['traffic_ban_value'] * 1024 * 1024 * 1024)) {
+                        $ban_time = date('Y-m-d H:i:s', strtotime("+" . $config['traffic_ban_time'] . " minutes"));
+                        User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => $ban_time]);
 
-                    // 写入日志
-                    $this->log($user->id, $config['traffic_ban_time'], '【自动封禁】-流量异常');
+                        // 写入日志
+                        $this->log($user->id, $config['traffic_ban_time'], '【自动封禁】-24小时内流量异常');
+                    }
                 }
             }
         }

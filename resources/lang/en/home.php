@@ -24,6 +24,7 @@ return [
     'account_level' => 'Level',
     'account_balance' => 'Balance',
     'account_score' => 'Score',
+    'account_status' => 'Status',
     'account_expire' => 'Overdue At',
     'account_last_usage' => 'Last Usage',
     'account_last_login' => 'Last Login',

@@ -240,6 +240,7 @@ class AdminController extends Controller
             }
 
             DB::commit();
+
             return Response::json(['status' => 'success', 'data' => '', 'message' => '批量生成账号成功']);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -263,9 +264,9 @@ class AdminController extends Controller
             $method = $request->get('method');
             //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
-            $protocol_param = $request->get('protocol_param');
+            $protocol_param = $request->get('protocol_param', '');
             $obfs = $request->get('obfs');
-            $obfs_param = $request->get('obfs_param');
+            $obfs_param = $request->get('obfs_param', '');
             $speed_limit_per_con = $request->get('speed_limit_per_con');
             $speed_limit_per_user = $request->get('speed_limit_per_user');
             $gender = $request->get('gender');
@@ -861,6 +862,41 @@ class AdminController extends Controller
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
+    // SS(R)链接反解析
+    public function decompile(Request $request)
+    {
+        if ($request->method() == 'POST') {
+            $content = $request->get('content');
+
+            if (empty($content)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '请在左侧填入要反解析的SS(R)链接']);
+            }
+
+            // 反解析处理
+            $content = str_replace("\n", ",", $content);
+            $content = explode(',', $content);
+            $txt = '';
+            foreach ($content as $item) {
+                // 判断是SS还是SSR链接
+                $str = '';
+                if (false !== strpos($item, 'ssr://')) {
+                    $str = mb_substr($item, 6);
+                } else if (false !== strpos($item, 'ss://')) {
+                    $str = mb_substr($item, 5);
+                }
+
+                $txt .= "\r\n" . $this->base64url_decode($str);
+            }
+
+            // 生成转换好的JSON文件
+            file_put_contents(public_path('downloads/decompile.json'), $txt);
+
+            return Response::json(['status' => 'success', 'data' => $txt, 'message' => '反解析成功']);
+        } else {
+            return Response::view('admin/decompile');
+        }
+    }
+
     // 格式转换(SS转SSR)
     public function convert(Request $request)
     {
@@ -921,7 +957,18 @@ class AdminController extends Controller
     // 下载转换好的JSON文件
     public function download(Request $request)
     {
-        if (!file_exists(public_path('downloads/convert.json'))) {
+        $type = $request->get('type');
+        if (empty($type)) {
+            exit('参数异常');
+        }
+
+        if ($type == '1') {
+            $filePath = public_path('downloads/convert.json');
+        } else {
+            $filePath = public_path('downloads/decompile.json');
+        }
+
+        if (!file_exists($filePath)) {
             exit('文件不存在');
         }
 

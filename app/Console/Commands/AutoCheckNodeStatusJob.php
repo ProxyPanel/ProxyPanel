@@ -33,7 +33,7 @@ class AutoCheckNodeStatusJob extends Command
             // 10分钟内无节点信息则认为是宕机，因为每个节点的负载信息最多保存10分钟
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             if (empty($node_info) || empty($node_info->load)) {
-                // 15分钟内已发警告，则不再发
+                // 10分钟内已发警告，则不再发
                 if (Cache::has($this->cacheKey . $node->id)) {
                     continue;
                 }
@@ -65,7 +65,7 @@ class AutoCheckNodeStatusJob extends Command
                     }
 
                     // 写入发信缓存
-                    Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 15);
+                    Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 10);
                 }
             }
         }

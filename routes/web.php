@@ -81,6 +81,7 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
     Route::post("admin/switchToUser","AdminController@switchToUser"); // 转换成某个用户的身份
+    Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
 });
 
 Route::group(['middleware' => ['user']], function() {

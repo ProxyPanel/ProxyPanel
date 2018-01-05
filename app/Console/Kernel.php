@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutoClearLogJob::class,
         \App\Console\Commands\AutoDecGoodsTrafficJob::class,
         \App\Console\Commands\AutoDisableExpireUserJob::class,
+        \App\Console\Commands\AutoDisableUserJob::class,
         \App\Console\Commands\AutoExpireCouponJob::class,
         \App\Console\Commands\AutoExpireInviteJob::class,
         \App\Console\Commands\AutoGetLocationInfoJob::class,
@@ -46,6 +47,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:autoClearLogJob')->everyThirtyMinutes();
         $schedule->command('command:autoDecGoodsTrafficJob')->everyTenMinutes();
         $schedule->command('command:autoDisableExpireUserJob')->everyMinute();
+        $schedule->command('command:autoDisableUserJob')->everyMinute();
         $schedule->command('command:autoExpireCouponJob')->everyThirtyMinutes();
         $schedule->command('command:autoExpireInviteJob')->everyThirtyMinutes();
         //$schedule->command('command:autoGetLocationInfoJob')->everyMinute();
