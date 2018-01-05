@@ -9,7 +9,7 @@ use Log;
 
 class autoDisableUserJob extends Command
 {
-    protected $signature = 'command:autoDisableExpireUserJob';
+    protected $signature = 'command:autoDisableUserJob';
     protected $description = '自动禁用流量超限的用户';
 
     public function __construct()
