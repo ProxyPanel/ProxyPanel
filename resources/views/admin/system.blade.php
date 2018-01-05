@@ -999,9 +999,15 @@
         // 设置最小积分
         $("#min_rand_score").change(function () {
             var min_rand_score = $(this).val();
+            var max_rand_score = $("#max_rand_score").val();
 
             if (parseInt(min_rand_score) < 0) {
                 layer.msg('最小积分小于0', {time:1000});
+                return ;
+            }
+
+            if (parseInt(min_rand_score) >= parseInt(max_rand_score)) {
+                layer.msg('最小积分必须小于最大积分', {time:1000});
                 return ;
             }
 
@@ -1016,10 +1022,16 @@
 
         // 设置最大积分
         $("#max_rand_score").change(function () {
+            var min_rand_score = $("#min_rand_score").val();
             var max_rand_score = $(this).val();
 
             if (parseInt(max_rand_score) > 99999) {
                 layer.msg('最大积分不能大于99999', {time:1000});
+                return ;
+            }
+
+            if (parseInt(min_rand_score) >= parseInt(max_rand_score)) {
+                layer.msg('最大积分必须大于最小积分', {time:1000});
                 return ;
             }
 
