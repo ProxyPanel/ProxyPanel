@@ -1000,6 +1000,11 @@
         $("#min_rand_score").change(function () {
             var min_rand_score = $(this).val();
 
+            if (parseInt(min_rand_score) < 0) {
+                layer.msg('最小积分小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'min_rand_score', value:min_rand_score}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1012,6 +1017,11 @@
         // 设置最大积分
         $("#max_rand_score").change(function () {
             var max_rand_score = $(this).val();
+
+            if (parseInt(max_rand_score) > 99999) {
+                layer.msg('最大积分不能大于99999', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'max_rand_score', value:max_rand_score}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
