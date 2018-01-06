@@ -162,7 +162,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-users"></i>
                         <span class="title">用户管理</span>
@@ -184,7 +184,13 @@
                         <li class="nav-item {{in_array(Request::path(), ['admin/userBalanceLogList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userBalanceLogList')}}" class="nav-link ">
                                 <i class="icon-credit-card"></i>
-                                <span class="title">余额日志</span>
+                                <span class="title">余额变动记录</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
+                            <a href="{{url('admin/userBanLogList')}}" class="nav-link ">
+                                <i class="icon-credit-card"></i>
+                                <span class="title">用户封禁记录</span>
                             </a>
                         </li>
                     </ul>

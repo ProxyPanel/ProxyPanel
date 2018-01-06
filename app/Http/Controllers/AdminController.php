@@ -22,6 +22,7 @@ use App\Http\Models\SsNodeTrafficDaily;
 use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
+use App\Http\Models\UserBanLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficDaily;
@@ -1812,7 +1813,7 @@ class AdminController extends Controller
         }
     }
 
-    // 用户余额变动日志
+    // 用户余额变动记录
     public function userBalanceLogList(Request $request)
     {
         $username = trim($request->get('username'));
@@ -1837,6 +1838,24 @@ class AdminController extends Controller
         $view['list'] = $list;
 
         return Response::view('admin/userBalanceLogList', $view);
+    }
+
+    // 用户封禁记录
+    public function userBanLogList(Request $request)
+    {
+        $username = trim($request->get('username'));
+
+        $query = UserBanLog::query()->with(['user'])->orderBy('id', 'desc');
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        $view['list'] = $query->paginate(10);
+
+        return Response::view('admin/userBanLogList', $view);
     }
 
     // 用户消费记录

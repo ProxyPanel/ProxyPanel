@@ -16,7 +16,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-credit-card font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 余额变动记录 </span>
+                            <span class="caption-subject bold uppercase"> 用户封禁记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -25,8 +25,8 @@
                                 <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
+                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
                         <div class="table-scrollable">
@@ -35,28 +35,22 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 用户名 </th>
-                                    <th> 订单ID </th>
-                                    <th> 操作前余额 </th>
-                                    <th> 发生金额 </th>
-                                    <th> 操作后金额 </th>
+                                    <th> 封禁时长 </th>
                                     <th> 描述 </th>
-                                    <th> 操作时间 </th>
+                                    <th> 发生时间 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     @if($list->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="5">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
                                                 <td> {{empty($vo->user) ? '【用户已删除】' : $vo->user->username}} </td>
-                                                <td> {{$vo->order_id}} </td>
-                                                <td> {{$vo->before}} </td>
-                                                <td> {{$vo->amount}} </td>
-                                                <td> {{$vo->after}} </td>
+                                                <td> {{$vo->minutes}}分钟 </td>
                                                 <td> {{$vo->desc}} </td>
                                                 <td> {{$vo->created_at}} </td>
                                             </tr>
@@ -87,15 +81,15 @@
 @section('script')
     <script type="text/javascript">
         // 搜索
-        function do_search() {
+        function doSearch() {
             var username = $("#username").val();
 
-            window.location.href = '{{url('admin/userBalanceLogList')}}' + '?username=' + username;
+            window.location.href = '{{url('admin/userBanLogList')}}' + '?username=' + username;
         }
 
         // 重置
-        function do_reset() {
-            window.location.href = '{{url('admin/userBalanceLogList')}}';
+        function doReset() {
+            window.location.href = '{{url('admin/userBanLogList')}}';
         }
     </script>
 @endsection

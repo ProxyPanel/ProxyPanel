@@ -20,4 +20,8 @@ class UserBanLog extends Model
         'status'
     ];
 
+    public function User()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }
