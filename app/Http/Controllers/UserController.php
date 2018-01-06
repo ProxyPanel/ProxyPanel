@@ -385,6 +385,7 @@ class UserController extends Controller
     public function free(Request $request)
     {
         $view['is_invite_register'] = self::$config['is_invite_register'];
+        $view['is_free_code'] = self::$config['is_free_code'];
         $view['inviteList'] = Invite::query()->where('uid', 1)->where('status', 0)->paginate();
 
         return Response::view('user/free', $view);

@@ -14,7 +14,7 @@ return [
     'invoices' => '消费记录',
     'tickets' => '我的工单',
     'referrals' => '推广返利',
-    'free_invite_codes_title' => '邀请码',
+    'free_invite_codes_title' => '免费邀请码',
     'no_need_invite_codes' => '系统开放注册中，无需邀请码',
 
     // 首页

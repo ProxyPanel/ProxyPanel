@@ -71,26 +71,34 @@
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-hover table-light">
                                     @if($is_invite_register)
-                                        <thead>
-                                            <tr>
-                                                <th style="text-align: center;"> {{trans('home.invite_code_table_name')}} </th>
-                                                <th style="text-align: center;"> {{trans('home.invite_code_table_date')}} </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if($inviteList->isEmpty())
+                                        @if($is_free_code)
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;"> {{trans('home.invite_code_table_name')}} </th>
+                                                    <th style="text-align: center;"> {{trans('home.invite_code_table_date')}} </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if($inviteList->isEmpty())
+                                                    <tr>
+                                                        <td colspan="2" style="text-align: center;">{{trans('home.invite_code_table_none_codes')}}</td>
+                                                    </tr>
+                                                @else
+                                                    @foreach($inviteList as $key => $invite)
+                                                        <tr>
+                                                            <td style="width: 50%; text-align: center;"> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
+                                                            <td style="width: 50%; text-align: center;"> {{$invite->dateline}} </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        @else
+                                            <tbody>
                                                 <tr>
                                                     <td colspan="2" style="text-align: center;">{{trans('home.invite_code_table_none_codes')}}</td>
                                                 </tr>
-                                            @else
-                                                @foreach($inviteList as $key => $invite)
-                                                    <tr>
-                                                        <td style="width: 50%; text-align: center;"> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
-                                                        <td style="width: 50%; text-align: center;"> {{$invite->dateline}} </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                        </tbody>
+                                            </tbody>
+                                        @endif
                                     @else
                                         <tbody>
                                             <tr>
@@ -100,13 +108,15 @@
                                     @endif
                                 </table>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                        {{ $inviteList->links() }}
+                            @if($is_invite_register && $is_free_code)
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                            {{ $inviteList->links() }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

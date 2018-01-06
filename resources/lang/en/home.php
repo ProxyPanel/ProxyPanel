@@ -14,7 +14,7 @@ return [
     'invoices' => 'Invoices',
     'tickets' => 'Tickets',
     'referrals' => 'Referrals',
-    'free_invite_codes_title' => 'Invite Codes',
+    'free_invite_codes_title' => 'Free Invite Codes',
     'no_need_invite_codes' => 'In the open registration system, no invitation code is required',
 
     // 首页

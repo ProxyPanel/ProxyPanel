@@ -300,6 +300,7 @@ INSERT INTO `config` VALUES ('42', 'subscribe_ban_times', 20);
 INSERT INTO `config` VALUES ('43', 'paypal_status', 0);
 INSERT INTO `config` VALUES ('44', 'paypal_client_id', '');
 INSERT INTO `config` VALUES ('45', 'paypal_client_secret', '');
+INSERT INTO `config` VALUES ('46', 'is_free_code', 0);
 
 
 -- ----------------------------

@@ -119,6 +119,11 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
+                                                            <label for="is_free_code" class="col-md-3 control-label">免费邀请码</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_free_code) checked @endif id="is_free_code" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 关闭后免费邀请码不可见 </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -731,6 +736,21 @@
                 var is_captcha = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_captcha', value:is_captcha}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用免费邀请码
+        $('#is_free_code').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_free_code = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_free_code', value:is_free_code}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
