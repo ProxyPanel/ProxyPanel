@@ -31,7 +31,7 @@ class AutoBanUserJob extends Command
                     $time = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
                     $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
                     if ($totalTraffic >= ($config['traffic_ban_value'] * 1024 * 1024 * 1024)) {
-                        $ban_time = date('Y-m-d H:i:s', strtotime("+" . $config['traffic_ban_time'] . " minutes"));
+                        $ban_time = strtotime(date('Y-m-d H:i:s', strtotime("+" . $config['traffic_ban_time'] . " minutes")));
                         User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => $ban_time]);
 
                         // 写入日志
