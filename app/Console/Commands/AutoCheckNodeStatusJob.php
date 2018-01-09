@@ -42,26 +42,25 @@ class AutoCheckNodeStatusJob extends Command
                 $content = "系统监测到节点【{$node->name}】({$node->server})可能宕机了，请及时检查。";
 
                 // 发邮件通知管理员
-                if ($config['is_node_crash_warning'] && $config['crash_warning_email']) {
-                    try {
-                        Mail::to($config['crash_warning_email'])->send(new nodeCrashWarning($config['website_name'], $node->name, $node->server));
-                        $this->sendEmailLog(1, $title, $content);
-                    } catch (\Exception $e) {
-                        $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
+                if ($config['is_node_crash_warning']) {
+                    if ($config['crash_warning_email']) {
+                        try {
+                            Mail::to($config['crash_warning_email'])->send(new nodeCrashWarning($config['website_name'], $node->name, $node->server));
+                            $this->sendEmailLog(1, $title, $content);
+                        } catch (\Exception $e) {
+                            $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
+                        }
                     }
 
-                    // 写入发信缓存
-                    Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 15);
-                }
-
-                // 通过ServerChan发微信消息提醒管理员
-                if ($config['is_server_chan'] && $config['server_chan_key']) {
-                    $serverChan = new ServerChan();
-                    $result = $serverChan->send($title, $content, $config['server_chan_key']);
-                    if ($result->errno > 0) {
-                        $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
-                    } else {
-                        $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
+                    // 通过ServerChan发微信消息提醒管理员
+                    if ($config['is_server_chan'] && $config['server_chan_key']) {
+                        $serverChan = new ServerChan();
+                        $result = $serverChan->send($title, $content, $config['server_chan_key']);
+                        if ($result->errno > 0) {
+                            $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
+                        } else {
+                            $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
+                        }
                     }
 
                     // 写入发信缓存
