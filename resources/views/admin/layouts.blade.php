@@ -131,7 +131,7 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['coupon/couponList', 'coupon/addCoupon']) ? 'active open' : ''}}">
                     <a href="{{url('coupon/couponList')}}" class="nav-link nav-toggle">
-                        <i class="icon-wallet"></i>
+                        <i class="fa fa-ticket"></i>
                         <span class="title">卡券管理</span>
                     </a>
                 </li>
@@ -150,7 +150,7 @@
                     <ul class="sub-menu">
                         <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
                             <a href="{{url('admin/articleList')}}" class="nav-link ">
-                                <i class="icon-list"></i>
+                                <i class="fa fa-file-archive-o"></i>
                                 <span class="title">文章列表</span>
                             </a>
                         </li>
@@ -177,19 +177,19 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userOrderList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userOrderList')}}" class="nav-link ">
-                                <i class="icon-credit-card"></i>
+                                <i class="fa fa-money"></i>
                                 <span class="title">消费记录</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userBalanceLogList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userBalanceLogList')}}" class="nav-link ">
-                                <i class="icon-credit-card"></i>
+                                <i class="fa fa-money"></i>
                                 <span class="title">余额变动记录</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userBanLogList')}}" class="nav-link ">
-                                <i class="icon-credit-card"></i>
+                                <i class="fa fa-user-times"></i>
                                 <span class="title">用户封禁记录</span>
                             </a>
                         </li>
@@ -197,20 +197,20 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/groupList', 'admin/addGroup', 'admin/editGroup', 'admin/nodeMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="icon-layers"></i>
+                        <i class="icon-list"></i>
                         <span class="title">节点管理</span>
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub-menu">
                         <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor']) ? 'active open' : ''}}">
                             <a href="{{url('admin/nodeList')}}" class="nav-link ">
-                                <i class="icon-list"></i>
+                                <i class="fa fa-list"></i>
                                 <span class="title">节点列表</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
                             <a href="{{url('admin/groupList')}}" class="nav-link ">
-                                <i class="icon-grid"></i>
+                                <i class="fa fa-list-ul"></i>
                                 <span class="title">节点分组</span>
                             </a>
                         </li>
@@ -243,7 +243,7 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/trafficLog']) ? 'active open' : ''}}">
                             <a href="{{url('admin/trafficLog')}}" class="nav-link">
-                                <i class="icon-speedometer"></i>
+                                <i class="fa fa-bar-chart"></i>
                                 <span class="title">流量日志</span>
                             </a>
                         </li>
@@ -261,7 +261,7 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['emailLog/logList']) ? 'active open' : ''}}">
                             <a href="{{url('emailLog/logList')}}" class="nav-link">
-                                <i class="icon-list"></i>
+                                <i class="fa fa-envelope-o"></i>
                                 <span class="title">邮件投递记录</span>
                             </a>
                         </li>
@@ -276,13 +276,13 @@
                     <ul class="sub-menu">
                         <li class="nav-item {{in_array(Request::path(), ['admin/config']) ? 'active open' : ''}}">
                             <a href="{{url('admin/config')}}" class="nav-link ">
-                                <i class="icon-info"></i>
+                                <i class="fa fa-cog"></i>
                                 <span class="title">通用配置</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/system']) ? 'active open' : ''}}">
                             <a href="{{url('admin/system')}}" class="nav-link ">
-                                <i class="icon-settings"></i>
+                                <i class="fa fa-cogs"></i>
                                 <span class="title">系统设置</span>
                             </a>
                         </li>
