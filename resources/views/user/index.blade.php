@@ -17,14 +17,6 @@
             padding: 15px;
         }
     </style>
-
-    <style type="text/css">
-        #lottery{width:574px;height:584px;margin:20px auto;background:url(/assets/images/bg.jpg) no-repeat;padding:50px 55px;}
-        #lottery table td{width:142px;height:142px;text-align:center;vertical-align:middle;font-size:24px;color:#333;font-index:-999}
-        #lottery table td a{width:284px;height:284px;line-height:150px;display:block;text-decoration:none;}
-        #lottery table td.active{background-color:#ea0000;}
-
-    </style>
 @endsection
 @section('title', trans('home.panel'))
 @section('content')
@@ -67,7 +59,7 @@
                                         <div class="widget-thumb-body">
                                             <span class="widget-thumb-subtitle"><a data-toggle="modal" href="#txt_{{$node->id}}">{{$node->server}}</a></span>
                                             <span class="widget-thumb-body-stat">
-                                                <a class="btn btn-sm green btn-outline" href="javascript:show('{{$node->ssr_scheme . '<br><br>' . $node->ss_scheme}}');"> <i class="fa fa-paper-plane"></i> </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
                                                 <a class="btn btn-sm green btn-outline" href="javascript:show('结算比例：{{$node->traffic_rate}}');"> <i class="fa fa-exchange"></i> </a>
                                             </span>
@@ -197,6 +189,19 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade draggable-modal" id="link_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Scheme Links</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea class="form-control" rows="10" readonly="readonly">{{$node->ssr_scheme}}{{$node->ss_scheme ? "\n\n".$node->ss_scheme : ''}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog @if(!$node->compatible) modal-sm @endif">
                     <div class="modal-content">
@@ -208,17 +213,14 @@
                             <div class="row">
                                 @if ($node->compatible)
                                     <div class="col-md-6">
-                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
-                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                        <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                 @else
                                     <div class="col-md-12">
-                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                 @endif
                             </div>
