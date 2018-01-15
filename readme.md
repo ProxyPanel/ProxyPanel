@@ -19,6 +19,7 @@
 17.节点宕机提醒（邮件+ServerChan微信提醒）
 18.Paypal在线支付接口
 19.兼容SS、SSRR
+20.支持多国语言
 ````
 
 ## 演示&交流
@@ -28,6 +29,7 @@ telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
 ````
 
+## 捐赠
 ![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
 [VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
@@ -169,6 +171,11 @@ crontab加入如下命令（请自行修改ssrpanel路径）：
 因为smtp发邮件必须用到25,26,465,587这四个端口，逗比的一键脚本会将这些端口一并封禁
 可以编辑iptables，注释掉以下这段（前面加个#号就可以），然后保存并重启iptables
 #-A OUTPUT -p tcp -m multiport --dports 25,26,465,587 -m state --state NEW,ESTABLISHED -j REJECT --reject-with icmp-port-unreachable
+````
+
+## 英文版
+````
+修改 config/app.php 下的 locale 值为 en
 ````
 
 ## 日志分析（仅支持单机单节点）

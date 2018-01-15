@@ -433,7 +433,7 @@ CREATE TABLE `coupon` (
   `sn` char(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '优惠券码',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '类型：1-现金券、2-折扣券、3-充值券',
   `usage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '用途：1-仅限一次性使用、2-可重复使用',
-  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
+  `amount` bigint(20) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
   `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '折扣',
   `available_start` int(11) NOT NULL DEFAULT '0' COMMENT '有效期开始',
   `available_end` int(11) NOT NULL DEFAULT '0' COMMENT '有效期结束',
