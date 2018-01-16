@@ -112,6 +112,7 @@
 <script src="/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     // 雪花特效
+    /*
     (function () {
         var style = document.createElement("style");
         style.innerText = "body .snow{position: fixed;color: #fff;line-height: 1;text-shadow: 0 0 .2em #ffffff;z-index: 2;}";
@@ -167,6 +168,7 @@
         }
         draw();
     })();
+    */
 </script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
