@@ -94,17 +94,14 @@
                                             <div class="row">
                                                 @if ($node->compatible)
                                                     <div class="col-md-6">
-                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
-                                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                                        <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
                                                     </div>
                                                 @else
                                                     <div class="col-md-12">
-                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                                     </div>
                                                 @endif
                                             </div>
