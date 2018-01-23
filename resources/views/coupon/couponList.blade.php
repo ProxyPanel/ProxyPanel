@@ -20,17 +20,12 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-list font-dark"></i>
                             <span class="caption-subject bold uppercase"> 卡券列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group btn-group-devided" data-toggle="buttons">
-                                <button class="btn sbold blue" onclick="exportCoupon()"> 批量导出
-                                    <i class="fa fa-download"></i>
-                                </button>
-                                <button class="btn sbold blue" onclick="addCoupon()"> 生成
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <button class="btn sbold blue" onclick="exportCoupon()"> 批量导出 </button>
+                                <button class="btn sbold blue" onclick="addCoupon()"> 生成 </button>
                             </div>
                         </div>
                     </div>

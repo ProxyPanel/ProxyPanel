@@ -51,7 +51,7 @@
                                         <th colspan="6">ID：{{$info->id}} | 申请人：{{$info->user->username}} | 提现金额：{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
                                     </tr>
                                     <tr class="uppercase">
-                                        <th> ID </th>
+                                        <th> # </th>
                                         <th> 发生人 </th>
                                         <th> 发生订单 </th>
                                         <th> 发生金额 </th>

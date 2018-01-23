@@ -15,14 +15,11 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-docs font-dark"></i>
                             <span class="caption-subject bold uppercase"> 文章列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addArticle()"> 新增
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <button class="btn sbold blue" onclick="addArticle()"> 添加文章 </button>
                             </div>
                         </div>
                     </div>
@@ -31,7 +28,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 标题 </th>
                                     <th> 类型 </th>
                                     <th> 排序 </th>

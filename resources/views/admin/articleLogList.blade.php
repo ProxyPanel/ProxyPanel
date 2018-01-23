@@ -15,7 +15,6 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-docs font-dark"></i>
                             <span class="caption-subject bold uppercase"> 文章访问日志 </span>
                         </div>
                         <div class="actions">
@@ -29,7 +28,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 文章ID </th>
                                     <th> 坐标 </th>
                                     <th> IP </th>

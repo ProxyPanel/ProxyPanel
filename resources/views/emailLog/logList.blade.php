@@ -20,8 +20,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-list font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 邮件发送记录 </span>
+                            <span class="caption-subject bold uppercase"> 邮件投递记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -29,7 +28,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 接收者 </th>
                                     <th> 邮件类型 </th>
                                     <th> 投递内容 </th>

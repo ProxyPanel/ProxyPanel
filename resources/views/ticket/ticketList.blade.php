@@ -15,7 +15,6 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-question font-dark"></i>
                             <span class="caption-subject bold uppercase"> 工单列表 </span>
                         </div>
                     </div>
@@ -24,7 +23,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 账号 </th>
                                     <th> 标题 </th>
                                     <th> 状态 </th>

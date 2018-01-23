@@ -809,7 +809,7 @@ class UserController extends Controller
                     User::query()->where('id', $user->id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
                 } else {
                     // 将商品的有效期和流量自动重置日期加到账号上
-                    User::query()->where('id', $user->id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
+                    User::query()->where('id', $user->id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
                 }
 
                 // 写入返利日志

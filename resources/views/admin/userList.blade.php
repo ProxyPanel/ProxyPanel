@@ -15,15 +15,12 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-users font-dark"></i>
                             <span class="caption-subject bold uppercase"> 用户列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group btn-group-devided">
                                 <button class="btn sbold blue" onclick="batchAddUsers()"> 批量生成 </button>
-                                <button class="btn sbold blue" onclick="addUser()"> 新增
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <button class="btn sbold blue" onclick="addUser()"> 添加用户 </button>
                             </div>
                         </div>
                     </div>
@@ -76,7 +73,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 用户名 </th>
                                     <th> 端口 </th>
                                     <th> 加密方式 </th>

@@ -1,18 +1,20 @@
 <?php
 
-Route::any('login', 'LoginController@index'); // 登录
-Route::get('logout', 'LoginController@logout'); // 退出
-Route::any('register', 'RegisterController@index'); // 注册
-Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
-Route::any('reset/{token}', 'UserController@reset'); // 重设密码
-Route::any('activeUser', 'UserController@activeUser'); // 激活账号
-Route::get('active/{token}', 'UserController@active'); // 激活账号
-Route::get('subscribe/{code}', 'SubscribeController@index'); // 节点订阅地址
-Route::get('article', 'ArticleController@index'); // 定位文章详情
-Route::post('locate', 'LocateController@locate'); // 上报文章打开时的定位
-Route::get('free', 'UserController@free'); // 免费邀请码
+Route::group(['middleware' => ['forbidden']], function () {
+    Route::any('login', 'LoginController@index'); // 登录
+    Route::get('logout', 'LoginController@logout'); // 退出
+    Route::any('register', 'RegisterController@index'); // 注册
+    Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
+    Route::any('reset/{token}', 'UserController@reset'); // 重设密码
+    Route::any('activeUser', 'UserController@activeUser'); // 激活账号
+    Route::get('active/{token}', 'UserController@active'); // 激活账号
+    Route::get('subscribe/{code}', 'SubscribeController@index'); // 节点订阅地址
+    Route::get('article', 'ArticleController@index'); // 定位文章详情
+    Route::post('locate', 'LocateController@locate'); // 上报文章打开时的定位
+    Route::get('free', 'UserController@free'); // 免费邀请码
+});
 
-Route::group(['middleware' => ['user', 'admin']], function() {
+Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin', 'AdminController@index'); // 后台首页
     Route::get('admin/userList', 'AdminController@userList'); // 账号列表
     Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
@@ -81,11 +83,11 @@ Route::group(['middleware' => ['user', 'admin']], function() {
     Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
-    Route::post("admin/switchToUser","AdminController@switchToUser"); // 转换成某个用户的身份
+    Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
     Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
 });
 
-Route::group(['middleware' => ['user']], function() {
+Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::any('/', 'UserController@index'); // 用户首页
     Route::any('user', 'UserController@index'); // 用户首页
     Route::any('user/article', 'UserController@article'); // 文章详情
@@ -105,12 +107,12 @@ Route::group(['middleware' => ['user']], function() {
     Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
     Route::get('user/referral', 'UserController@referral'); // 推广返利
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
-    Route::post("user/switchToAdmin","UserController@switchToAdmin"); // 转换成管理员的身份
-    Route::post("user/charge","UserController@charge"); // 卡券余额充值
+    Route::post("user/switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
+    Route::post("user/charge", "UserController@charge"); // 卡券余额充值
 });
 
 //Route::group(['middleware' => ['user']], function() {
-    Route::any('payment/create', 'PaymentController@create'); // 创建支付
-    Route::any('payment/execute', 'PaymentController@execute'); // 用户确认执行支付
-    Route::any('payment/cancel', 'PaymentController@cancel'); // 用户取消支付
+Route::any('payment/create', 'PaymentController@create'); // 创建支付
+Route::any('payment/execute', 'PaymentController@execute'); // 用户确认执行支付
+Route::any('payment/cancel', 'PaymentController@cancel'); // 用户取消支付
 //});

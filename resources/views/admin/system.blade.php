@@ -241,6 +241,16 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_forbid_robot" class="col-md-3 control-label">阻止机器人访问</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_forbid_robot) checked @endif id="is_forbid_robot" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 如果是机器人、爬虫、代理访问网站则会抛出403错误 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -646,6 +656,21 @@
                 var is_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_rand_port', value:is_rand_port}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用机器人访问
+        $('#is_forbid_robot').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_forbid_robot = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_forbid_robot', value:is_forbid_robot}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();

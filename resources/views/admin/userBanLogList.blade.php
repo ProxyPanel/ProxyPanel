@@ -15,7 +15,6 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-credit-card font-dark"></i>
                             <span class="caption-subject bold uppercase"> 用户封禁记录 </span>
                         </div>
                     </div>

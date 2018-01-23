@@ -15,14 +15,11 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-grid font-dark"></i>
                             <span class="caption-subject bold uppercase"> 节点分组 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addGroup()"> 新增
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <button class="btn sbold blue" onclick="addGroup()"> 添加分组 </button>
                             </div>
                         </div>
                     </div>

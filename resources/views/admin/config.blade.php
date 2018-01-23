@@ -13,13 +13,6 @@
             <div class="col-md-12">
                 <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <i class="icon-info font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 通用配置 </span>
-                        </div>
-
-                    </div>
                     <div class="portlet-body">
                         <ul class="nav nav-tabs">
                             <li @if(Request::get('tab') == '' || Request::get('tab') == '1') class="active" @endif>

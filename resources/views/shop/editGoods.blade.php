@@ -29,7 +29,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">编辑商品</span>
+                            <span class="caption-subject font-dark sbold uppercase">编辑商品</span>
                         </div>
                         <div class="actions"></div>
                     </div>

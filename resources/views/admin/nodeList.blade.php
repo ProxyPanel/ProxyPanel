@@ -24,14 +24,11 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-list font-dark"></i>
                             <span class="caption-subject bold uppercase"> 节点列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addNode()"> 新增
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <button class="btn sbold blue" onclick="addNode()"> 添加节点 </button>
                             </div>
                         </div>
                     </div>

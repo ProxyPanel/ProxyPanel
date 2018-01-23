@@ -38,7 +38,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                     <tr class="uppercase">
-                                        <th> ID </th>
+                                        <th> # </th>
                                         <th> 申请账号 </th>
                                         <th> 提现金额 </th>
                                         <th> 申请时间 </th>

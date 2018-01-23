@@ -13,7 +13,6 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-refresh font-dark"></i>
                             <span class="caption-subject bold uppercase"> 格式转换 </span>
                             <small>SS转SSR(R)</small>
                         </div>

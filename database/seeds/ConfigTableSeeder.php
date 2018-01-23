@@ -56,5 +56,7 @@ class ConfigTableSeeder extends Seeder
         DB::insert("INSERT INTO `config` VALUES ('43', 'paypal_status', 0);");
         DB::insert("INSERT INTO `config` VALUES ('44', 'paypal_client_id', '');");
         DB::insert("INSERT INTO `config` VALUES ('45', 'paypal_client_secret', '');");
+        DB::insert("INSERT INTO `config` VALUES ('46', 'is_free_code', 0);");
+        DB::insert("INSERT INTO `config` VALUES ('47', 'is_forbid_robot', 0);");
     }
 }
