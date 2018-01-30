@@ -13,11 +13,5 @@ class SsConfig extends Model
 {
     protected $table = 'ss_config';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'name',
-        'type',
-        'is_default',
-        'sort'
-    ];
 
 }

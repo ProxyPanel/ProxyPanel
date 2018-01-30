@@ -13,13 +13,6 @@ class SsNodeTrafficDaily extends Model
 {
     protected $table = 'ss_node_traffic_daily';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'node_id',
-        'u',
-        'd',
-        'total',
-        'traffic'
-    ];
 
     public function info()
     {

@@ -13,8 +13,4 @@ class Level extends Model
 {
     protected $table = 'level';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'level',
-        'level_name'
-    ];
 }

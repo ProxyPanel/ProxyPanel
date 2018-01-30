@@ -13,9 +13,5 @@ class SsGroup extends Model
 {
     protected $table = 'ss_group';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'name',
-        'level'
-    ];
 
 }

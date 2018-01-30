@@ -13,22 +13,5 @@ class ArticleLog extends Model
 {
     protected $table = 'article_log';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'aid',
-        'lat',
-        'lng',
-        'ip',
-        'headers',
-        'nation',
-        'province',
-        'city',
-        'district',
-        'street',
-        'street_number',
-        'address',
-        'full',
-        'is_pull',
-        'status'
-    ];
 
 }

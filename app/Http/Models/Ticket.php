@@ -14,13 +14,6 @@ class Ticket extends Model
     protected $table = 'ticket';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'user_id',
-        'title',
-        'content',
-        'status',
-        'created_at'
-    ];
 
     public function User()
     {

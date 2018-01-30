@@ -14,14 +14,6 @@ class UserScoreLog extends Model
     protected $table = 'user_score_log';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'user_id',
-        'before',
-        'after',
-        'score',
-        'desc',
-        'created_at'
-    ];
 
     public function User()
     {

@@ -14,10 +14,5 @@ class UserSubscribeLog extends Model
     protected $table = 'user_subscribe_log';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'sid',
-        'request_ip',
-        'request_time',
-        'request_header',
-    ];
+
 }

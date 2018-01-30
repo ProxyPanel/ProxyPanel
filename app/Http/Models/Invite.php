@@ -13,13 +13,6 @@ class Invite extends Model
 {
     protected $table = 'invite';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'uid',
-        'fuid',
-        'code',
-        'status',
-        'dateline'
-    ];
 
     public function Generator()
     {

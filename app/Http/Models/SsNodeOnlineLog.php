@@ -14,10 +14,5 @@ class SsNodeOnlineLog extends Model
     protected $table = 'ss_node_online_log';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'node_id',
-        'online_user',
-        'log_time'
-    ];
 
 }

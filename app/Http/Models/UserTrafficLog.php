@@ -14,15 +14,6 @@ class UserTrafficLog extends Model
     protected $table = 'user_traffic_log';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'user_id',
-        'u',
-        'd',
-        'node_id',
-        'rate',
-        'traffic',
-        'log_time'
-    ];
 
     // 关联账号
     public function User () {

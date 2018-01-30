@@ -13,12 +13,6 @@ class UserBanLog extends Model
 {
     protected $table = 'user_ban_log';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'user_id',
-        'minutes',
-        'desc',
-        'status'
-    ];
 
     public function User()
     {

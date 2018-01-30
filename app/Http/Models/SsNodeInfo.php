@@ -14,11 +14,5 @@ class SsNodeInfo extends Model
     protected $table = 'ss_node_info';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'node_id',
-        'uptime',
-        'load',
-        'log_time'
-    ];
 
 }

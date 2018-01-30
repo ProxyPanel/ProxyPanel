@@ -13,18 +13,6 @@ class Order extends Model
 {
     protected $table = 'order';
     protected $primaryKey = 'oid';
-    protected $fillable = [
-        'orderId',
-        'user_id',
-        'goods_id',
-        'coupon_id',
-        'totalOriginalPrice',
-        'totalPrice',
-        'expire_at',
-        'is_expire',
-        'pay_way',
-        'status'
-    ];
 
     function user()
     {

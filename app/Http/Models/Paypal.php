@@ -13,12 +13,5 @@ class Paypal extends Model
 {
     protected $table = 'paypal';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'oid',
-        'invoice_number',
-        'items',
-        'response_data',
-        'error',
-    ];
 
 }

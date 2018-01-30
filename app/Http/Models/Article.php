@@ -13,13 +13,5 @@ class Article extends Model
 {
     protected $table = 'article';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'title',
-        'author',
-        'content',
-        'is_del',
-        'type',
-        'sort'
-    ];
 
 }

@@ -13,14 +13,6 @@ class UserSubscribe extends Model
 {
     protected $table = 'user_subscribe';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'user_id',
-        'code',
-        'times',
-        'status',
-        'ban_time',
-        'ban_desc',
-    ];
 
     public function User()
     {

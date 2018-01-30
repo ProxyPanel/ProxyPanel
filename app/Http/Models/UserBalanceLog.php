@@ -14,14 +14,6 @@ class UserBalanceLog extends Model
     protected $table = 'user_balance_log';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'user_id',
-        'before',
-        'after',
-        'balance',
-        'desc',
-        'created_at'
-    ];
 
     public function User()
     {

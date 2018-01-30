@@ -13,14 +13,6 @@ class UserTrafficHourly extends Model
 {
     protected $table = 'user_traffic_hourly';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'user_id',
-        'node_id',
-        'u',
-        'd',
-        'total',
-        'traffic'
-    ];
 
     public function node()
     {

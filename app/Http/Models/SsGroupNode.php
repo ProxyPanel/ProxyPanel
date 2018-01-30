@@ -14,9 +14,5 @@ class SsGroupNode extends Model
     protected $table = 'ss_group_node';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'group_id',
-        'node_id'
-    ];
 
 }
