@@ -110,7 +110,7 @@ class AdminController extends Controller
             $query->where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")));
         }
 
-        $userList = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        $userList = $query->orderBy('enable', 'desc')->orderBy('status', 'desc')->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
         foreach ($userList as &$user) {
             $user->transfer_enable = $this->flowAutoShow($user->transfer_enable);
             $user->used_flow = $this->flowAutoShow($user->u + $user->d);
