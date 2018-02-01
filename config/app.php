@@ -186,6 +186,7 @@ return [
         Mews\Captcha\CaptchaServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Overtrue\LaravelLang\TranslationServiceProvider::class,
+        Mews\Purifier\PurifierServiceProvider::class,
 
     ],
 
@@ -238,6 +239,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Purifier' => Mews\Purifier\Facades\Purifier::class,
 
     ],
 

@@ -37,7 +37,7 @@ class TicketController extends Controller
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $content = $request->get('content');
+            $content = clean($request->get('content'));
 
             $obj = new TicketReply();
             $obj->ticket_id = $id;

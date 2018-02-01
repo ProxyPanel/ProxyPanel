@@ -298,7 +298,7 @@ class UserController extends Controller
     public function addTicket(Request $request)
     {
         $title = $request->get('title');
-        $content = $request->get('content');
+        $content = clean($request->get('content'));
 
         $user = $request->session()->get('user');
 
@@ -325,7 +325,7 @@ class UserController extends Controller
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $content = $request->get('content');
+            $content = clean($request->get('content'));
 
             $obj = new TicketReply();
             $obj->ticket_id = $id;
