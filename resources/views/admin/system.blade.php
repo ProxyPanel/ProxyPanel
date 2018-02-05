@@ -400,7 +400,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="is_node_crash_warning" class="col-md-3 control-label">节点宕机警告</label>
+                                                            <label for="is_node_crash_warning" class="col-md-3 control-label">节点宕机提醒</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_node_crash_warning) checked @endif id="is_node_crash_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后如果节点宕机则发出提醒邮件 </span>
@@ -415,7 +415,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setCrashWarningEmail()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 启用节点宕机提醒时请务必配置本值 </span>
+                                                                <span class="help-block"> 启用节点宕机提醒后如果不填写此值，则不发信 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -424,7 +424,7 @@
                                                             <label for="is_server_chan" class="col-md-3 control-label">ServerChan</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_server_chan) checked @endif id="is_server_chan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后将使用ServerChan推送节点宕机提醒（<a href="http://sc.ftqq.com" target="_blank">绑定微信</a>） </span>
+                                                                <span class="help-block"> 使用ServerChan推送节点宕机提醒（<a href="http://sc.ftqq.com" target="_blank">绑定微信</a>），须先启用节点宕机警告 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
