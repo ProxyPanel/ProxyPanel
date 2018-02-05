@@ -18,7 +18,7 @@ class CreateLevelTable extends Migration
 
             $table->increments('id');
             $table->integer('level')->default('1')->comment('等级');
-            $table->string('level_name', 100)->comment('等级名称');
+            $table->string('level_name', 100)->default('')->comment('等级名称');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();;
         });

@@ -19,8 +19,8 @@ class CreateSsNodeInfoTable extends Migration
             $table->increments('id');
             $table->integer('node_id')->default('0')->comment('节点ID');
             $table->float('uptime')->comment('更新时间');
-            $table->string('load', 32)->comment('负载');
-            $table->integer('log_time')->comment('记录时间');
+            $table->string('load', 32)->default('')->nullable()->comment('负载');
+            $table->integer('log_time')->default('0')->comment('记录时间');
 
             $table->index('node_id');
         });

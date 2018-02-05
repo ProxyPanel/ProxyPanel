@@ -17,7 +17,7 @@ class CreateSsConfigTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->increments('id');
-            $table->string('name', 50)->default('0')->comment('配置名');
+            $table->string('name', 50)->default('')->comment('配置名');
             $table->tinyInteger('type')->default('1')->comment('类型：1-加密方式、2-协议、3-混淆');
             $table->tinyInteger('is_default')->default('0')->comment('是否默认：0-不是、1-是');
             $table->integer('sort')->default('0')->comment('排序：值越大排越前');

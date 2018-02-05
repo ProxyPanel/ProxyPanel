@@ -23,7 +23,6 @@ class UserTableSeeder extends Seeder
             't'                    => 0,
             'enable'               => 1,
             'method'               => 'aes-192-ctr',
-            'custom_method'        => 'aes-192-ctr',
             'protocol'             => 'auth_chain_a',
             'protocol_param'       => '',
             'obfs'                 => 'tls1.2_ticket_auth',

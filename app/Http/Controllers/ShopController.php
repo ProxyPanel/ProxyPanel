@@ -40,7 +40,7 @@ class ShopController extends Controller
     {
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $desc = $request->get('desc');
+            $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
             $price = $request->get('price');
             $score = $request->get('score', 0);

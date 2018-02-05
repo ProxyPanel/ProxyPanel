@@ -18,11 +18,11 @@ class CreateEmailLogTable extends Migration
 
             $table->increments('id');
             $table->integer('user_id')->default('0')->comment('接收者ID');
-            $table->string('title', 255)->comment('邮件标题');
-            $table->text('content')->comment('邮件内容')->nullable();
-            $table->tinyInteger('status')->comment('状态：1-发送成功、2-发送失败');
-            $table->text('error')->comment('发送失败抛出的异常信息')->nullable();
-            $table->dateTime('created_at');
+            $table->string('title', 255)->default('')->comment('邮件标题');
+            $table->text('content')->nullable()->comment('邮件内容');
+            $table->tinyInteger('status')->default('1')->comment('状态：1-发送成功、2-发送失败');
+            $table->text('error')->nullable()->comment('发送失败抛出的异常信息');
+            $table->dateTime('created_at')->comment('创建时间');
         });
     }
 

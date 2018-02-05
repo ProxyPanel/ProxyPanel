@@ -154,7 +154,6 @@ class AdminController extends Controller
             $user->transfer_enable = $this->toGB($request->get('transfer_enable', 0));
             $user->enable = $request->get('enable', 0);
             $user->method = $request->get('method');
-            $user->custom_method = $request->get('method');
             $user->protocol = $request->get('protocol', '');
             $user->protocol_param = $request->get('protocol_param', '');
             $user->obfs = $request->get('obfs', '');
@@ -207,14 +206,14 @@ class AdminController extends Controller
                 $user = new User();
                 $user->username = '批量生成-' . $this->makeRandStr(6);
                 $user->password = md5($this->makeRandStr());
-                $user->enable = 0;
+                $user->enable = 1;
                 $user->port = $port;
                 $user->passwd = $this->makeRandStr();
                 $user->transfer_enable = $this->toGB(1000);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
                 $user->reg_ip = $request->getClientIp();
-                $user->status = -1;
+                $user->status = 0;
                 $user->save();
             }
 
@@ -241,7 +240,6 @@ class AdminController extends Controller
             $transfer_enable = $request->get('transfer_enable');
             $enable = $request->get('enable');
             $method = $request->get('method');
-            //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param', '');
             $obfs = $request->get('obfs');
@@ -267,7 +265,6 @@ class AdminController extends Controller
                 'transfer_enable'      => $this->toGB($transfer_enable),
                 'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
                 'method'               => $method,
-                'custom_method'        => $method,
                 'protocol'             => $protocol,
                 'protocol_param'       => $protocol_param,
                 'obfs'                 => $obfs,
@@ -364,11 +361,10 @@ class AdminController extends Controller
             $ssNode = new SsNode();
             $ssNode->name = $request->get('name');
             $ssNode->group_id = $request->get('group_id', 0);
-            $ssNode->country_code = $request->get('country_code', '');
+            $ssNode->country_code = $request->get('country_code', 'un');
             $ssNode->server = $request->get('server');
             $ssNode->desc = $request->get('desc', '');
             $ssNode->method = $request->get('method');
-            $ssNode->custom_method = $request->get('method');
             $ssNode->protocol = $request->get('protocol');
             $ssNode->protocol_param = $request->get('protocol_param');
             $ssNode->obfs = $request->get('obfs', '');
@@ -422,7 +418,6 @@ class AdminController extends Controller
             $server = $request->get('server');
             $desc = $request->get('desc');
             $method = $request->get('method');
-            //$custom_method = $request->get('custom_method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
@@ -449,7 +444,6 @@ class AdminController extends Controller
                 'server'          => $server,
                 'desc'            => $desc,
                 'method'          => $method,
-                'custom_method'   => $method,
                 'protocol'        => $protocol,
                 'protocol_param'  => $protocol_param,
                 'obfs'            => $obfs,
@@ -572,14 +566,6 @@ class AdminController extends Controller
         $view['articleList'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/articleList', $view);
-    }
-
-    // 文章访问日志列表
-    public function articleLogList(Request $request)
-    {
-        $view['articleLogList'] = ArticleLog::query()->paginate(10)->appends($request->except('page'));
-
-        return Response::view('admin/articleLogList', $view);
     }
 
     // 添加文章
@@ -972,7 +958,6 @@ class AdminController extends Controller
                     $obj->t = 0;
                     $obj->enable = 1;
                     $obj->method = $user->method;
-                    $obj->custom_method = $user->method;
                     $obj->protocol = $user->protocol;
                     $obj->protocol_param = $user->protocol_param;
                     $obj->obfs = $user->obfs;

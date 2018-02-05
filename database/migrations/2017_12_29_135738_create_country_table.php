@@ -17,8 +17,8 @@ class CreateCountryTable extends Migration
             $table->engine = 'MyISAM';
 
             $table->increments('id');
-            $table->string('country_name', 50)->comment('名称');
-            $table->string('country_code', 10)->comment('代码');
+            $table->string('country_name', 50)->default('')->comment('名称');
+            $table->string('country_code', 10)->default('')->comment('代码');
         });
     }
 

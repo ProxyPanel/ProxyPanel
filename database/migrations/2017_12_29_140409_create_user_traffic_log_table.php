@@ -21,9 +21,9 @@ class CreateUserTrafficLogTable extends Migration
             $table->integer('u')->default('0')->comment('上传流量');
             $table->integer('d')->default('0')->comment('下载流量');
             $table->integer('node_id')->default('0')->comment('节点ID');
-            $table->float('rate')->comment('流量比例');
-            $table->string('traffic', 32)->comment('产生流量');
-            $table->integer('log_time')->comment('记录时间');
+            $table->float('rate')->default('1.0')->comment('流量比例');
+            $table->string('traffic', 32)->default('')->comment('产生流量');
+            $table->integer('log_time')->default('0')->comment('记录时间');
 
             $table->index('user_id');
             $table->index('node_id');

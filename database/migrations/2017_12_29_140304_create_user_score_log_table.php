@@ -21,7 +21,7 @@ class CreateUserScoreLogTable extends Migration
             $table->integer('before')->default('0')->comment('发生前的积分值');
             $table->integer('after')->default('0')->comment('发生后的积分值');
             $table->integer('score')->default('0')->comment('发生值');
-            $table->string('desc', 50)->comment('描述');
+            $table->string('desc', 50)->default('')->nullable()->comment('描述');
             $table->dateTime('created_at');
 
             $table->index('user_id');

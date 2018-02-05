@@ -18,7 +18,7 @@ class CreateTicketTable extends Migration
 
             $table->increments('id');
             $table->integer('user_id')->default('0')->comment('用户ID');
-            $table->string('title', 255)->comment('标题');
+            $table->string('title', 255)->default('')->comment('标题');
             $table->text('content')->comment('内容');
             $table->tinyInteger('status')->default('0')->comment('状态：0-待处理、1-已处理未关闭、2-已关闭');
             $table->dateTime('created_at');

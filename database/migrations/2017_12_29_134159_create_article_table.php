@@ -17,11 +17,11 @@ class CreateArticleTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->increments('id');
-            $table->string('title', 100)->comment('文章标题');
-            $table->string('author', 50)->comment('作者');
-            $table->text('content')->comment('文章内容')->nullable();
+            $table->string('title', 100)->default('')->comment('标题');
+            $table->string('author', 50)->default('')->comment('作者');
+            $table->text('content')->comment('内容')->nullable();
             $table->tinyInteger('is_del')->default('0')->comment('是否删除');
-            $table->tinyInteger('type')->comment('类型：1-文章、2-公告');
+            $table->tinyInteger('type')->default('1')->comment('类型：1-文章、2-公告');
             $table->integer('sort')->default('0')->comment('排序');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();

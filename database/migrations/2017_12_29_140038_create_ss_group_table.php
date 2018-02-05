@@ -17,8 +17,8 @@ class CreateSsGroupTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->increments('id');
-            $table->string('name', 50)->comment('分组名称');
-            $table->tinyInteger('level')->default('1')->comment('分组级别');
+            $table->string('name', 50)->default('')->comment('分组名称');
+            $table->tinyInteger('level')->default('1')->comment('分组级别，对应账号级别');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
         });

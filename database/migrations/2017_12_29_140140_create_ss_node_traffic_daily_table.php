@@ -21,7 +21,7 @@ class CreateSsNodeTrafficDailyTable extends Migration
             $table->bigInteger('u')->default('0')->comment('上传流量');
             $table->bigInteger('d')->default('0')->comment('下载流量');
             $table->bigInteger('total')->default('0')->comment('总流量');
-            $table->string('traffic', 255)->comment('总流量（带单位）');
+            $table->string('traffic', 255)->default('')->comment('总流量（带单位）');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
 

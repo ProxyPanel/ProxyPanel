@@ -17,8 +17,8 @@ class CreateConfigTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->increments('id');
-            $table->string('name', 255)->comment('配置名');
-            $table->string('value', 255)->comment('配置值');
+            $table->string('name', 255)->default('')->comment('配置名');
+            $table->string('value', 255)->default('')->comment('配置值');
         });
     }
 

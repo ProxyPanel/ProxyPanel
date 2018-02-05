@@ -22,8 +22,8 @@ class CreateUserBalanceLogTable extends Migration
             $table->integer('before')->default('0')->comment('发生前余额，单位分');
             $table->integer('after')->default('0')->comment('发生后金额，单位分');
             $table->integer('amount')->default('0')->comment('发生金额，单位分');
-            $table->string('desc', 255)->comment('操作描述');
-            $table->dateTime('created_at');
+            $table->string('desc', 255)->default('')->nullable()->comment('操作描述');
+            $table->dateTime('created_at')->nullable()->comment('创建时间');
 
             $table->index('user_id');
         });

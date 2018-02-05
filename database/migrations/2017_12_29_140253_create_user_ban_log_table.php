@@ -19,7 +19,7 @@ class CreateUserBanLogTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->default('0')->comment('用户ID');
             $table->integer('minutes')->default('0')->comment('封禁账号时长，单位分钟');
-            $table->string('desc', 255)->comment('操作描述');
+            $table->string('desc', 255)->default('')->nullable()->comment('操作描述');
             $table->tinyInteger('status')->default('0')->comment('状态：0-未处理、1-已处理');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();

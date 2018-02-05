@@ -18,7 +18,7 @@ class CreateOrderGoodsTable extends Migration
 
             $table->increments('id');
             $table->integer('oid')->default('0')->comment('订单ID');
-            $table->string('orderId', 20)->comment('订单编号');
+            $table->string('orderId', 20)->default('')->comment('订单编号');
             $table->integer('user_id')->default('0')->comment('用户ID');
             $table->integer('goods_id')->default('0')->comment('商品ID');
             $table->integer('num')->default('0')->comment('商品数量');

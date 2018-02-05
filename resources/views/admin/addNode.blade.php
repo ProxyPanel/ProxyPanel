@@ -296,7 +296,6 @@
             var server = $('#server').val();
             var desc = $('#desc').val();
             var method = $('#method').val();
-            var custom_method = $('#custom_method').val();
             var traffic_rate = $('#traffic_rate').val();
             var protocol = $('#protocol').val();
             var protocol_param = $('#protocol_param').val();
@@ -320,7 +319,7 @@
                 type: "POST",
                 url: "{{url('admin/addNode')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', name: name, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, custom_method:custom_method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:'{{csrf_token()}}', name: name, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
