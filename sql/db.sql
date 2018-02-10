@@ -83,6 +83,20 @@ CREATE TABLE `ss_node_online_log` (
 
 
 -- ----------------------------
+-- Table structure for `ss_node_label`
+-- ----------------------------
+CREATE TABLE `ss_node_label` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
+  PRIMARY KEY (`id`),
+  KEY `idx` (`node_id`,`label_id`),
+  KEY `idx_node_id` (`node_id`),
+  KEY `idx_label_id` (`label_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点标签';
+
+
+-- ----------------------------
 -- Table structure for `user`
 -- ----------------------------
 CREATE TABLE `user` (
@@ -301,6 +315,7 @@ INSERT INTO `config` VALUES ('44', 'paypal_client_id', '');
 INSERT INTO `config` VALUES ('45', 'paypal_client_secret', '');
 INSERT INTO `config` VALUES ('46', 'is_free_code', 0);
 INSERT INTO `config` VALUES ('47', 'is_forbid_robot', 0);
+INSERT INTO `config` VALUES ('48', 'subscribe_domain', '');
 
 
 -- ----------------------------
@@ -334,6 +349,28 @@ CREATE TABLE `invite` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邀请码表';
+
+
+-- ----------------------------
+-- Table structure for `label`
+-- ----------------------------
+CREATE TABLE `label` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序值',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='标签';
+
+
+-- ----------------------------
+-- Records of label
+-- ----------------------------
+INSERT INTO `label` VALUES ('1', '电信', '0');
+INSERT INTO `label` VALUES ('2', '联通', '0');
+INSERT INTO `label` VALUES ('3', '移动', '0');
+INSERT INTO `label` VALUES ('4', '教育网', '0');
+INSERT INTO `label` VALUES ('5', '其他网络', '0');
+INSERT INTO `label` VALUES ('6', '免费体验', '0');
 
 
 -- ----------------------------
@@ -587,7 +624,7 @@ CREATE TABLE `email_log` (
 CREATE TABLE `user_subscribe` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `code` varchar(255) DEFAULT '' COMMENT '订阅地址唯一识别码',
+  `code` char(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '订阅地址唯一识别码',
   `times` int(11) NOT NULL DEFAULT '0' COMMENT '地址请求次数',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁用、1-启用',
   `ban_time` int(11) NOT NULL DEFAULT '0' COMMENT '封禁时间',
@@ -696,6 +733,20 @@ CREATE TABLE `user_ban_log` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户封禁日志';
+
+
+-- ----------------------------
+-- Table structure for `user_label`
+-- ----------------------------
+CREATE TABLE `user_label` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
+  PRIMARY KEY (`id`),
+  KEY `idx` (`user_id`,`label_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_label_id` (`label_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户标签';
 
 
 -- ----------------------------

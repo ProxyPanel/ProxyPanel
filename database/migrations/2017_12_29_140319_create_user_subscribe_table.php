@@ -18,7 +18,7 @@ class CreateUserSubscribeTable extends Migration
 
             $table->increments('id');
             $table->integer('user_id')->default('0')->comment('用户ID');
-            $table->string('code', 20)->default('')->nullable()->comment('订阅地址唯一识别码');
+            $table->char('code', 5)->default('')->nullable()->charset('utf8mb4')->collation('utf8mb4_bin')->comment('订阅地址唯一识别码');
             $table->integer('times')->default('0')->comment('地址请求次数');
             $table->tinyInteger('status')->default('1')->comment('状态：0-禁用、1-启用');
             $table->integer('ban_time')->default('0')->comment('封禁时间');

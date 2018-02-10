@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\UserSubscribe;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -27,6 +28,16 @@ class Controller extends BaseController
         }
 
         return $char;
+    }
+
+    public function makeSubscribeCode()
+    {
+        $code = $this->makeRandStr(5);
+        if (UserSubscribe::query()->where('code', $code)->exists()) {
+            $code = $this->makeSubscribeCode();
+        }
+
+        return $code;
     }
 
     // base64加密（处理URL）

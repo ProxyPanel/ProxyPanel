@@ -17,4 +17,8 @@ class User extends Model
     function payment() {
         return $this->hasMany(Payment::class, 'user_id', 'id');
     }
+
+    function label() {
+        return $this->hasMany(UserLabel::class, 'user_id', 'id');
+    }
 }

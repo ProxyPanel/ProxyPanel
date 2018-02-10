@@ -962,7 +962,7 @@ class UserController extends Controller
         // 如果没有唯一码则生成一个
         $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
         if (empty($subscribe)) {
-            $code = mb_substr(md5($user['id'] . '-' . $user['username']), 8, 12);
+            $code = $this->makeSubscribeCode();
 
             $obj = new UserSubscribe();
             $obj->user_id = $user['id'];
@@ -973,7 +973,7 @@ class UserController extends Controller
             $code = $subscribe->code;
         }
 
-        $view['link'] = self::$config['website_url'] . '/subscribe/' . $code;
+        $view['link'] = self::$config['subscribe_domain'] ? self::$config['subscribe_domain'] . '/s/' . $code : self::$config['website_url'] . '/s/' . $code;
 
         return Response::view('/user/subscribe', $view);
     }

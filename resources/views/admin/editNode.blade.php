@@ -2,6 +2,8 @@
 
 @section('css')
     <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('title', '控制面板')
 @section('content')
@@ -38,6 +40,16 @@
                                                         <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="域名或IP地址" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="status" class="col-md-3 control-label">标签</label>
+                                                        <div class="col-md-8">
+                                                            <select id="labels" class="form-control select2-multiple" name="labels[]" multiple>
+                                                                @foreach($label_list as $label)
+                                                                    <option value="{{$label->id}}" @if(in_array($label->id, $node->labels)) selected @endif>{{$label->name}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -283,14 +295,22 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 用户标签选择器
+        $('#labels').select2({
+            placeholder: '设置后则可见相同标签的节点',
+            allowClear: true
+        });
+
         // ajax同步提交
         function do_submit() {
             var _token = '{{csrf_token()}}';
             var id = '{{Request::get('id')}}';
             var name = $('#name').val();
+            var labels = $("#labels").val();
             var group_id = $("#group_id option:selected").val();
             var country_code = $("#country_code option:selected").val();
             var server = $('#server').val();
@@ -319,7 +339,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

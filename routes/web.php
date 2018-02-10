@@ -1,6 +1,6 @@
 <?php
 
-Route::get('subscribe/{code}', 'SubscribeController@index'); // 节点订阅地址
+Route::get('s/{code}', 'SubscribeController@index'); // 节点订阅地址
 Route::post('locate', 'LocateController@locate'); // 上报文章打开时的定位
 
 Route::group(['middleware' => ['forbidden']], function () {
@@ -27,14 +27,17 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
     Route::get('admin/nodeMonitor', 'AdminController@nodeMonitor'); // 节点流量监控
     Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
-    Route::get('admin/articleLogList', 'AdminController@articleLogList'); // 文章访问日志列表
     Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
     Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
     Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章
-    Route::get('admin/groupList', 'AdminController@groupList'); // 文章列表
-    Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加文章
-    Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑文章
-    Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除文章
+    Route::get('admin/groupList', 'AdminController@groupList'); // 分组列表
+    Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加分组
+    Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑分组
+    Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除分组
+    Route::get('admin/labelList', 'AdminController@labelList'); // 标签列表
+    Route::any('admin/addLabel', 'AdminController@addLabel'); // 添加标签
+    Route::any('admin/editLabel', 'AdminController@editLabel'); // 编辑标签
+    Route::post('admin/delLabel', 'AdminController@delLabel'); // 删除标签
     Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
     Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Article;
-use App\Http\Models\ArticleLog;
 use App\Http\Models\Config;
 use App\Http\Models\Country;
 use App\Http\Models\Invite;
+use App\Http\Models\Label;
 use App\Http\Models\Level;
 use App\Http\Models\Order;
 use App\Http\Models\OrderGoods;
@@ -17,12 +17,14 @@ use App\Http\Models\SsGroup;
 use App\Http\Models\SsGroupNode;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
+use App\Http\Models\SsNodeLabel;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\SsNodeTrafficDaily;
 use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserBanLog;
+use App\Http\Models\UserLabel;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficDaily;
@@ -174,6 +176,17 @@ class AdminController extends Controller
             $user->save();
 
             if ($user->id) {
+                // 生成用户标签
+                $labels = $request->get('labels');
+                if (!empty($labels)) {
+                    foreach ($labels as $label) {
+                        $userLabel = new UserLabel();
+                        $userLabel->user_id = $user->id;
+                        $userLabel->label_id = $label;
+                        $userLabel->save();
+                    }
+                }
+
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
             } else {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
@@ -183,11 +196,11 @@ class AdminController extends Controller
             $last_user = User::query()->orderBy('id', 'desc')->first();
             $view['last_port'] = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
-            // 加密方式、协议、混淆、等级
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
             return Response::view('admin/addUser', $view);
         }
@@ -252,62 +265,88 @@ class AdminController extends Controller
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
             $status = $request->get('status');
+            $labels = $request->get('labels');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = $request->get('remark');
             $level = $request->get('level');
             $is_admin = $request->get('is_admin');
 
-            $data = [
-                'username'             => $username,
-                'port'                 => $port,
-                'passwd'               => $passwd,
-                'transfer_enable'      => $this->toGB($transfer_enable),
-                'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
-                'method'               => $method,
-                'protocol'             => $protocol,
-                'protocol_param'       => $protocol_param,
-                'obfs'                 => $obfs,
-                'obfs_param'           => $obfs_param,
-                'speed_limit_per_con'  => $speed_limit_per_con,
-                'speed_limit_per_user' => $speed_limit_per_user,
-                'gender'               => $gender,
-                'wechat'               => $wechat,
-                'qq'                   => $qq,
-                'usage'                => $usage,
-                'pay_way'              => $pay_way,
-                'status'               => $status,
-                'enable_time'          => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                'expire_time'          => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
-                'remark'               => $remark,
-                'level'                => $level,
-                'is_admin'             => $is_admin
-            ];
+            DB::beginTransaction();
+            try {
+                $data = [
+                    'username'             => $username,
+                    'port'                 => $port,
+                    'passwd'               => $passwd,
+                    'transfer_enable'      => $this->toGB($transfer_enable),
+                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
+                    'method'               => $method,
+                    'protocol'             => $protocol,
+                    'protocol_param'       => $protocol_param,
+                    'obfs'                 => $obfs,
+                    'obfs_param'           => $obfs_param,
+                    'speed_limit_per_con'  => $speed_limit_per_con,
+                    'speed_limit_per_user' => $speed_limit_per_user,
+                    'gender'               => $gender,
+                    'wechat'               => $wechat,
+                    'qq'                   => $qq,
+                    'usage'                => $usage,
+                    'pay_way'              => $pay_way,
+                    'status'               => $status,
+                    'enable_time'          => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                    'expire_time'          => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
+                    'remark'               => $remark,
+                    'level'                => $level,
+                    'is_admin'             => $is_admin
+                ];
 
-            if (!empty($password)) {
-                $data['password'] = md5($password);
-            }
+                if (!empty($password)) {
+                    $data['password'] = md5($password);
+                }
 
-            $ret = User::query()->where('id', $id)->update($data);
-            if ($ret) {
+                User::query()->where('id', $id)->update($data);
+
+                // 生成用户标签
+                if (!empty($labels)) {
+                    // 先删除所有该用户的标签
+                    UserLabel::query()->where('user_id', $id)->delete();
+
+                    foreach ($labels as $label) {
+                        $userLabel = new UserLabel();
+                        $userLabel->user_id = $id;
+                        $userLabel->label_id = $label;
+                        $userLabel->save();
+                    }
+                }
+
+                DB::commit();
+
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
-            } else {
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('编辑用户信息异常：' . $e->getMessage());
+
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
             }
         } else {
-            $user = User::query()->where('id', $id)->first();
+            $user = User::query()->with(['label'])->where('id', $id)->first();
             if ($user) {
                 $user->transfer_enable = $this->flowToGB($user->transfer_enable);
                 $user->balance = $user->balance / 100;
+
+                $label = [];
+                foreach ($user->label as $vo) {
+                    $label[] = $vo->label_id;
+                }
+                $user->labels = $label;
             }
 
             $view['user'] = $user;
-
-            // 加密方式、协议、混淆、等级
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
             return Response::view('admin/editUser', $view);
         }
@@ -393,6 +432,17 @@ class AdminController extends Controller
                 $ssGroupNode->save();
             }
 
+            // 生成节点标签
+            $labels = $request->get('labels');
+            if ($ssNode->id && !empty($labels)) {
+                foreach ($labels as $label) {
+                    $ssNodeLabel = new SsNodeLabel();
+                    $ssNodeLabel->node_id = $ssNode->id;
+                    $ssNodeLabel->label_id = $label;
+                    $ssNodeLabel->save();
+                }
+            }
+
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
         } else {
             $view['method_list'] = $this->methodList();
@@ -401,6 +451,7 @@ class AdminController extends Controller
             $view['level_list'] = $this->levelList();
             $view['group_list'] = SsGroup::query()->get();
             $view['country_list'] = Country::query()->orderBy('country_code', 'asc')->get();
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
             return Response::view('admin/addNode', $view);
         }
@@ -413,6 +464,7 @@ class AdminController extends Controller
 
         if ($request->method() == 'POST') {
             $name = $request->get('name');
+            $labels = $request->get('labels');
             $group_id = $request->get('group_id');
             $country_code = $request->get('country_code');
             $server = $request->get('server');
@@ -437,35 +489,37 @@ class AdminController extends Controller
             $sort = $request->get('sort');
             $status = $request->get('status');
 
-            $data = [
-                'name'            => $name,
-                'group_id'        => $group_id,
-                'country_code'    => $country_code,
-                'server'          => $server,
-                'desc'            => $desc,
-                'method'          => $method,
-                'protocol'        => $protocol,
-                'protocol_param'  => $protocol_param,
-                'obfs'            => $obfs,
-                'obfs_param'      => $obfs_param,
-                'traffic_rate'    => $traffic_rate,
-                'bandwidth'       => $bandwidth,
-                'traffic'         => $traffic,
-                'monitor_url'     => $monitor_url,
-                'compatible'      => $compatible,
-                'single'          => $single,
-                'single_force'    => $single ? $single_force : 0,
-                'single_port'     => $single ? $single_port : '',
-                'single_passwd'   => $single ? $single_passwd : '',
-                'single_method'   => $single ? $single_method : '',
-                'single_protocol' => $single ? $single_protocol : '',
-                'single_obfs'     => $single ? $single_obfs : '',
-                'sort'            => $sort,
-                'status'          => $status
-            ];
+            DB::beginTransaction();
+            try {
+                $data = [
+                    'name'            => $name,
+                    'group_id'        => $group_id,
+                    'country_code'    => $country_code,
+                    'server'          => $server,
+                    'desc'            => $desc,
+                    'method'          => $method,
+                    'protocol'        => $protocol,
+                    'protocol_param'  => $protocol_param,
+                    'obfs'            => $obfs,
+                    'obfs_param'      => $obfs_param,
+                    'traffic_rate'    => $traffic_rate,
+                    'bandwidth'       => $bandwidth,
+                    'traffic'         => $traffic,
+                    'monitor_url'     => $monitor_url,
+                    'compatible'      => $compatible,
+                    'single'          => $single,
+                    'single_force'    => $single ? $single_force : 0,
+                    'single_port'     => $single ? $single_port : '',
+                    'single_passwd'   => $single ? $single_passwd : '',
+                    'single_method'   => $single ? $single_method : '',
+                    'single_protocol' => $single ? $single_protocol : '',
+                    'single_obfs'     => $single ? $single_obfs : '',
+                    'sort'            => $sort,
+                    'status'          => $status
+                ];
 
-            $ret = SsNode::query()->where('id', $id)->update($data);
-            if ($ret) {
+                SsNode::query()->where('id', $id)->update($data);
+
                 // 建立分组关联
                 if ($group_id) {
                     // 先删除该节点所有关联
@@ -478,18 +532,46 @@ class AdminController extends Controller
                     $ssGroupNode->save();
                 }
 
+                // 生成节点标签
+                if (!empty($labels)) {
+                    // 先删除所有该用户的标签
+                    SsNodeLabel::query()->where('node_id', $id)->delete();
+
+                    foreach ($labels as $label) {
+                        $ssNodeLabel = new SsNodeLabel();
+                        $ssNodeLabel->node_id = $id;
+                        $ssNodeLabel->label_id = $label;
+                        $ssNodeLabel->save();
+                    }
+                }
+
+                DB::commit();
+
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
-            } else {
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('编辑节点信息异常：' . $e->getMessage());
+
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
             }
         } else {
-            $view['node'] = SsNode::query()->where('id', $id)->first();
+            $node = SsNode::query()->with(['label'])->where('id', $id)->first();
+            if ($node) {
+                $labels = [];
+                foreach ($node->label as $vo) {
+                    $labels[] = $vo->label_id;
+                }
+                $node->labels = $labels;
+            }
+
+            $view['node'] = $node;
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['level_list'] = $this->levelList();
             $view['group_list'] = SsGroup::query()->get();
             $view['country_list'] = Country::query()->orderBy('country_code', 'asc')->get();
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
             return Response::view('admin/editNode', $view);
         }
@@ -1842,5 +1924,71 @@ class AdminController extends Controller
         $request->session()->put('user', $user->toArray());
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
+    }
+
+    // 标签列表
+    public function labelList(Request $request)
+    {
+        $view['labelList'] = Label::query()->paginate(10);
+
+        return Response::view('admin/labelList', $view);
+    }
+
+    // 添加标签
+    public function addLabel(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $name = $request->get('name');
+            $sort = $request->get('sort');
+
+            $label = new Label();
+            $label->name = $name;
+            $label->sort = $sort;
+            $label->save();
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+        } else {
+            return Response::view('admin/addLabel');
+        }
+    }
+
+    // 编辑标签
+    public function editLabel(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $id = $request->get('id');
+            $name = $request->get('name');
+            $sort = $request->get('sort');
+
+            Label::query()->where('id', $id)->update(['name' => $name, 'sort' => $sort]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+        } else {
+            $id = $request->get('id');
+            $view['label'] = Label::query()->where('id', $id)->first();
+
+            return Response::view('admin/editLabel', $view);
+        }
+    }
+
+    // 删除标签
+    public function delLabel(Request $request)
+    {
+        $id = $request->get('id');
+
+        DB::beginTransaction();
+        try {
+            Label::query()->where('id', $id)->delete();
+            UserLabel::query()->where('label_id', $id)->delete(); // 删除用户关联
+            SsNodeLabel::query()->where('label_id', $id)->delete(); // 删除节点关联
+
+            DB::commit();
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：' . $e->getMessage()]);
+        }
     }
 }

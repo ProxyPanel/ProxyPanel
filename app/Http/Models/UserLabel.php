@@ -5,13 +5,13 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 文章日志
- * Class ArticleLog
+ * 用户标签
+ * Class UserLabel
  * @package App\Http\Models
  */
-class ArticleLog extends Model
+class UserLabel extends Model
 {
-    protected $table = 'article_log';
+    protected $table = 'user_label';
     protected $primaryKey = 'id';
-
+    public $timestamps = false;
 }
