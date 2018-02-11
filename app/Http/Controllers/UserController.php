@@ -16,6 +16,7 @@ use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
+use App\Http\Models\UserLabel;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
@@ -63,12 +64,12 @@ class UserController extends Controller
         }
 
         // 节点列表
-        $nodeList = DB::table('ss_group_node')
-            ->leftJoin('ss_group', 'ss_group.id', '=', 'ss_group_node.group_id')
-            ->leftJoin('ss_node', 'ss_node.id', '=', 'ss_group_node.node_id')
-            ->where('ss_group.level', '<=', $user->level)
+        $userLabelIds = UserLabel::query()->where('user_id', $user['id'])->pluck(['label_id']);
+        $nodeList = DB::table('ss_node')
+            ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
+            ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->where('ss_node.status', 1)
-            ->orderBy('ss_node.sort', 'desc')
+            ->groupBy('ss_node.id')
             ->get();
 
         foreach ($nodeList as &$node) {
