@@ -87,7 +87,7 @@ class UserController extends Controller
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
+            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : $this->base64url_encode($obfs_param));
             $ssr_str .= '&protoparam=' . ($node->single ? $this->base64url_encode($user->port . ':' . $user->passwd) : $this->base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
             $ssr_str .= '&group=' . $this->base64url_encode('VPN');
