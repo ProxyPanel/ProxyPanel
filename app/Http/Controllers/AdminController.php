@@ -306,11 +306,11 @@ class AdminController extends Controller
 
                 User::query()->where('id', $id)->update($data);
 
+                // 先删除所有该用户的标签
+                UserLabel::query()->where('user_id', $id)->delete();
+
                 // 生成用户标签
                 if (!empty($labels)) {
-                    // 先删除所有该用户的标签
-                    UserLabel::query()->where('user_id', $id)->delete();
-
                     foreach ($labels as $label) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $id;

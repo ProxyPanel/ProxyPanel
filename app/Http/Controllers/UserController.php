@@ -64,7 +64,13 @@ class UserController extends Controller
         }
 
         // 节点列表
-        $userLabelIds = UserLabel::query()->where('user_id', $user['id'])->pluck(['label_id']);
+        $userLabelIds = UserLabel::query()->where('user_id', $user['id'])->pluck('label_id');
+        if (empty($userLabelIds)) {
+            $view['nodeList'] = [];
+
+            return Response::view('user/index', $view);
+        }
+
         $nodeList = DB::table('ss_node')
             ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
             ->whereIn('ss_node_label.label_id', $userLabelIds)
@@ -1046,7 +1052,7 @@ class UserController extends Controller
             DB::commit();
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             DB::rollBack();
 
