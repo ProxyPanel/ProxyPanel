@@ -1929,7 +1929,13 @@ class AdminController extends Controller
     // 标签列表
     public function labelList(Request $request)
     {
-        $view['labelList'] = Label::query()->paginate(10);
+        $labelList = Label::query()->paginate(10);
+        foreach ($labelList as $label) {
+            $label->userCount = UserLabel::query()->where('label_id', $label->id)->groupBy('user_id')->count();
+            $label->nodeCount = SsNodeLabel::query()->where('label_id', $label->id)->groupBy('node_id')->count();
+        }
+
+        $view['labelList'] = $labelList;
 
         return Response::view('admin/labelList', $view);
     }

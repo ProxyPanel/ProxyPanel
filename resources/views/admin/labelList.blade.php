@@ -30,6 +30,8 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 名称 </th>
+                                    <th> 关联用户数 </th>
+                                    <th> 关联节点数 </th>
                                     <th> 排序 </th>
                                     <th> 操作 </th>
                                 </tr>
@@ -37,13 +39,15 @@
                                 <tbody>
                                 @if($labelList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="6">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($labelList as $label)
                                         <tr class="odd gradeX">
                                             <td> {{$label->id}} </td>
                                             <td> {{$label->name}} </td>
+                                            <td> {{$label->userCount}} </td>
+                                            <td> {{$label->nodeCount}} </td>
                                             <td> {{$label->sort}} </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editLabel('{{$label->id}}')">
