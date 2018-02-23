@@ -4,6 +4,7 @@ return [
     'panel' => 'Control Panel',
     'subscribe_address' => 'My Subscribe Address',
     'copy_subscribe_address' => 'Copy Address',
+    'exchange_subscribe' => 'Exchange Address',
     'subscribe_warning' => 'Warning: the subscription address is only for personal use, do not spread the address, otherwise it will lead to abnormal flow of your account.',
 
     // 菜单

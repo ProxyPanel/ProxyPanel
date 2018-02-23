@@ -401,7 +401,8 @@ class AdminController extends Controller
             $ssNode->name = $request->get('name');
             $ssNode->group_id = $request->get('group_id', 0);
             $ssNode->country_code = $request->get('country_code', 'un');
-            $ssNode->server = $request->get('server');
+            $ssNode->server = $request->get('server', '');
+            $ssNode->ip = $request->get('ip');
             $ssNode->desc = $request->get('desc', '');
             $ssNode->method = $request->get('method');
             $ssNode->protocol = $request->get('protocol');
@@ -465,10 +466,11 @@ class AdminController extends Controller
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $labels = $request->get('labels');
-            $group_id = $request->get('group_id');
-            $country_code = $request->get('country_code');
-            $server = $request->get('server');
-            $desc = $request->get('desc');
+            $group_id = $request->get('group_id', 0);
+            $country_code = $request->get('country_code', 'un');
+            $server = $request->get('server', '');
+            $ip = $request->get('ip');
+            $desc = $request->get('desc', '');
             $method = $request->get('method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param');
@@ -496,6 +498,7 @@ class AdminController extends Controller
                     'group_id'        => $group_id,
                     'country_code'    => $country_code,
                     'server'          => $server,
+                    'ip'              => $ip,
                     'desc'            => $desc,
                     'method'          => $method,
                     'protocol'        => $protocol,

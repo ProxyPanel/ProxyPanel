@@ -39,9 +39,15 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="server" class="col-md-3 control-label"> 服务器地址 </label>
+                                                        <label for="server" class="col-md-3 control-label"> 域名地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="server" id="server" placeholder="域名或IP地址" required>
+                                                            <input type="text" class="form-control" name="server" id="server" placeholder="服务器域名地址，填写则优先取域名地址">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="ip" class="col-md-3 control-label"> IP地址 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="ip" id="ip" placeholder="服务器IP地址" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -314,6 +320,7 @@
             var group_id = $("#group_id option:selected").val();
             var country_code = $("#country_code option:selected").val();
             var server = $('#server').val();
+            var ip = $('#ip').val();
             var desc = $('#desc').val();
             var method = $('#method').val();
             var traffic_rate = $('#traffic_rate').val();
@@ -339,7 +346,7 @@
                 type: "POST",
                 url: "{{url('admin/addNode')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

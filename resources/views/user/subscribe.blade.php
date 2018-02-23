@@ -36,10 +36,12 @@
                             <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
                                 <i class="icon-note"></i> {{trans('home.copy_subscribe_address')}}
                             </a>
+                            <a href="javascript:exchangeSubscribe();" class="btn red">
+                                <i class="fa fa-exchange"></i> {{trans('home.exchange_subscribe')}}
+                            </a>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
@@ -52,10 +54,14 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 申请提现
-        function extractMoney() {
-            $.post("{{url('user/extractMoney')}}", {_token:'{{csrf_token()}}'}, function (ret) {
-                layer.msg(ret.message, {time:1000});
+        // 更换订阅地址
+        function exchangeSubscribe() {
+            $.post("{{url('user/exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function () {
+                    if (ret.status == 'success') {
+                        window.location.reload();
+                    }
+                });
             });
         }
     </script>

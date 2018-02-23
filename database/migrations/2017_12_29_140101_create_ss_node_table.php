@@ -20,7 +20,8 @@ class CreateSsNodeTable extends Migration
             $table->string('name', 128)->default('')->comment('名称');
             $table->integer('group_id')->default('0')->comment('所属分组');
             $table->char('country_code', 5)->default('')->nullable()->comment('国家代码');
-            $table->string('server', 128)->default('')->comment('服务器地址');
+            $table->string('server', 128)->default('')->nullable()->comment('服务器域名地址');
+            $table->string('ip', 30)->default('')->nullable()->comment('服务器IP地址');
             $table->string('desc', 255)->default('')->nullable()->comment('节点简单描述');
             $table->string('method', 30)->default('aes-192-ctr')->comment('加密方式');
             $table->string('protocol', 128)->default('auth_chain_a')->comment('协议');

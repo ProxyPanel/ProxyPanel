@@ -968,7 +968,7 @@ class UserController extends Controller
 
         // 如果没有唯一码则生成一个
         $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
-        if (empty($subscribe)) {
+        if (!$subscribe) {
             $code = $this->makeSubscribeCode();
 
             $obj = new UserSubscribe();
@@ -983,6 +983,18 @@ class UserController extends Controller
         $view['link'] = self::$config['subscribe_domain'] ? self::$config['subscribe_domain'] . '/s/' . $code : self::$config['website_url'] . '/s/' . $code;
 
         return Response::view('/user/subscribe', $view);
+    }
+
+    // 更换订阅地址
+    public function exchangeSubscribe(Request $request)
+    {
+        $user = $request->session()->get('user');
+
+        $code = $this->makeSubscribeCode();
+
+        UserSubscribe::query()->where('user_id', $user['id'])->update(['code' => $code]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '更换成功']);
     }
 
     // 转换成管理员的身份

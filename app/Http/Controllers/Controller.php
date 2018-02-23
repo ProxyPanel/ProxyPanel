@@ -30,6 +30,7 @@ class Controller extends BaseController
         return $char;
     }
 
+    // 生成订阅地址的唯一码
     public function makeSubscribeCode()
     {
         $code = $this->makeRandStr(5);
