@@ -18,7 +18,7 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     // 生成SS密码
-    public function makeRandStr($length = 6)
+    public function makeRandStr($length = 8)
     {
         // 密码字符集，可任意添加你需要的字符
         $chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';

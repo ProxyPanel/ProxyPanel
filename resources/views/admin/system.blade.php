@@ -530,78 +530,18 @@
                                                                 <span class="help-block"> 触发流量异常导致用户被封禁的时长，到期后自动解封 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6"></div>
+                                                        <div class="col-md-6">
+                                                            <label for="auto_release_port" class="col-md-3 control-label">端口释放</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($auto_release_port) checked @endif id="auto_release_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> （推荐）被禁用的用户端口自动释放，重新启用则需要手动分配端口 </span>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                 </div>
                                             </form>
                                         </div>
-                                        <!--
-                                        <div class="tab-pane" id="tab_7">
-                                            <form action="{{url('admin/setQrcode')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                <div class="form-body">
-                                                    <div class="portlet-body">
-                                                        <div class="form-group">
-                                                            <div class="col-md-6">
-                                                                <label class="control-label col-md-3">微信</label>
-                                                                <div class="col-md-9">
-                                                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                        <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                            @if ($wechat_qrcode)
-                                                                                <img src="{{$wechat_qrcode}}" alt="" />
-                                                                            @else
-                                                                                <img src="/assets/images/noimage.png" alt="" />
-                                                                            @endif
-                                                                        </div>
-                                                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                                        <div>
-                                                                            <span class="btn default btn-file">
-                                                                                <span class="fileinput-new"> 选择 </span>
-                                                                                <span class="fileinput-exists"> 更换 </span>
-                                                                                <input type="file" name="wechat_qrcode" id="wechat_qrcode">
-                                                                            </span>
-                                                                            <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label class="control-label col-md-3">支付宝</label>
-                                                                <div class="col-md-9">
-                                                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                        <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                            @if ($alipay_qrcode)
-                                                                                <img src="{{$alipay_qrcode}}" alt="" />
-                                                                            @else
-                                                                                <img src="/assets/images/noimage.png" alt="" />
-                                                                            @endif
-                                                                        </div>
-                                                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                                        <div>
-                                                                        <span class="btn default btn-file">
-                                                                            <span class="fileinput-new"> 选择 </span>
-                                                                            <span class="fileinput-exists"> 更换 </span>
-                                                                            <input type="file" name="alipay_qrcode" id="alipay_qrcode">
-                                                                        </span>
-                                                                            <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-actions">
-                                                    <div class="row">
-                                                        <div class="col-md-offset-6">
-                                                            <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                                                            <button type="submit" class="btn green">提 交</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        -->
                                         <div class="tab-pane" id="tab_8">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
@@ -937,6 +877,21 @@
                 var is_traffic_ban = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_traffic_ban', value:is_traffic_ban}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用端口自动释放
+        $('#auto_release_port').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var auto_release_port = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'auto_release_port', value:auto_release_port}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();

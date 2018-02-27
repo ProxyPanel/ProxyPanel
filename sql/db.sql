@@ -317,6 +317,7 @@ INSERT INTO `config` VALUES ('45', 'paypal_client_secret', '');
 INSERT INTO `config` VALUES ('46', 'is_free_code', 0);
 INSERT INTO `config` VALUES ('47', 'is_forbid_robot', 0);
 INSERT INTO `config` VALUES ('48', 'subscribe_domain', '');
+INSERT INTO `config` VALUES ('49', 'auto_release_port', 1);
 
 
 -- ----------------------------

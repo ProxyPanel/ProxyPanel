@@ -195,7 +195,7 @@ class AdminController extends Controller
             // 生成一个可用端口
             $last_user = User::query()->orderBy('id', 'desc')->first();
             $view['last_port'] = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
-
+            $view['is_rand_port'] = self::$config['is_rand_port'];
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
@@ -217,7 +217,7 @@ class AdminController extends Controller
                 $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
                 $user = new User();
-                $user->username = '批量生成-' . $this->makeRandStr(6);
+                $user->username = '批量生成-' . $this->makeRandStr();
                 $user->password = md5($this->makeRandStr());
                 $user->enable = 1;
                 $user->port = $port;
@@ -1231,6 +1231,15 @@ class AdminController extends Controller
         return Response::view('admin/userMonitor', $view);
     }
 
+    // 生成SS端口
+    public function makePort(Request $request)
+    {
+        $last_user = User::query()->orderBy('id', 'desc')->first();
+        $last_port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
+        echo $last_port;
+        exit;
+    }
+
     // 生成SS密码
     public function makePasswd(Request $request)
     {
@@ -1668,7 +1677,7 @@ class AdminController extends Controller
             $obj = new Invite();
             $obj->uid = $user['id'];
             $obj->fuid = 0;
-            $obj->code = strtoupper(substr(md5(microtime() . $this->makeRandStr(6)), 8, 12));
+            $obj->code = strtoupper(substr(md5(microtime() . $this->makeRandStr()), 8, 12));
             $obj->status = 0;
             $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
             $obj->save();
