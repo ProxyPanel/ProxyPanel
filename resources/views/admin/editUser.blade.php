@@ -215,8 +215,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="port" value="{{$user->port}}" id="port" />
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-success" type="button" onclick="makePort()">
-                                                                <i class="fa fa-arrow-left fa-fw" /></i> {{$user->port ? '更换' : '生成'}} </button>
+                                                            <button class="btn btn-success" type="button" onclick="makePort()"> {{$user->port ? '更换' : '生成'}} </button>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -227,8 +226,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="passwd" value="{{$user->passwd}}" id="passwd" />
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-success" type="button" onclick="makePasswd()">
-                                                                <i class="fa fa-arrow-left fa-fw" /></i> 生成 </button>
+                                                            <button class="btn btn-success" type="button" onclick="makePasswd()"> 生成 </button>
                                                         </span>
                                                     </div>
                                                 </div>

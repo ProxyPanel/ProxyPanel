@@ -176,8 +176,7 @@
                                                         <div class="input-group">
                                                             <input class="form-control" type="text" name="port" value="{{$last_port}}" id="port" />
                                                             <span class="input-group-btn">
-                                                                <button class="btn btn-success" type="button" onclick="makePort()">
-                                                                    <i class="fa fa-arrow-left fa-fw" /></i> 生成 </button>
+                                                                <button class="btn btn-success" type="button" onclick="makePort()"> 生成 </button>
                                                             </span>
                                                         </div>
                                                     @else
@@ -191,8 +190,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="passwd" id="passwd" placeholder="留空则自动生成随机密码" />
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-success" type="button" onclick="makePasswd()">
-                                                                <i class="fa fa-arrow-left fa-fw" /></i> 生成 </button>
+                                                            <button class="btn btn-success" type="button" onclick="makePasswd()"> 生成 </button>
                                                         </span>
                                                     </div>
                                                 </div>
