@@ -132,6 +132,12 @@ service php-fpm restart
 ````
 crontab加入如下命令（请自行修改php、ssrpanel路径）：
 * * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
+
+注意运行权限，必须跟ssrpanel项目权限一致：
+例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
+crontab -e -u www
+
+如果用crontab -e 默认是root权限，则整个ssrpanel项目也要用root:root用户组
 ````
 
 ## 邮件配置
