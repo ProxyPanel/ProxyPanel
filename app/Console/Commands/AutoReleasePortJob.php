@@ -25,7 +25,9 @@ class AutoReleasePortJob extends Command
             $userList = User::query()->where('status', '<', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
-                    User::query()->where('id', $user->id)->update(['port' => 0]);
+                    if ($user->port) {
+                        User::query()->where('id', $user->id)->update(['port' => 0]);
+                    }
                 }
             }
         }
