@@ -135,7 +135,7 @@ class RegisterController extends Controller
             $user->username = $username;
             $user->password = md5($password);
             $user->port = $port;
-            $user->passwd = $this->makeRandStr();
+            $user->passwd = makeRandStr();
             $user->transfer_enable = $transfer_enable;
             $user->method = $method ? $method->name : 'aes-192-ctr';
             $user->protocol = $protocol ? $protocol->name : 'auth_chain_a';
@@ -180,7 +180,7 @@ class RegisterController extends Controller
 
             return Redirect::to('login');
         } else {
-            $request->session()->put('register_token', $this->makeRandStr(16));
+            $request->session()->put('register_token', makeRandStr(16));
 
             $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];

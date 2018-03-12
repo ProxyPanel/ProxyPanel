@@ -8,7 +8,7 @@ use Log;
 
 class AutoExpireCouponJob extends Command
 {
-    protected $signature = 'command:autoExpireCouponJob';
+    protected $signature = 'autoExpireCouponJob';
     protected $description = '优惠券到期自动置无效';
 
     public function __construct()

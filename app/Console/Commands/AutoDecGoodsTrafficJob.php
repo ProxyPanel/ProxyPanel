@@ -9,7 +9,7 @@ use Log;
 
 class AutoDecGoodsTrafficJob extends Command
 {
-    protected $signature = 'command:autoDecGoodsTrafficJob';
+    protected $signature = 'autoDecGoodsTrafficJob';
     protected $description = '自动扣除用户到期流量包的流量';
 
     public function __construct()

@@ -17,84 +17,15 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    // 生成SS密码
-    public function makeRandStr($length = 8)
-    {
-        // 密码字符集，可任意添加你需要的字符
-        $chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
-        $char = '';
-        for ($i = 0; $i < $length; $i++) {
-            $char .= $chars[mt_rand(0, strlen($chars) - 1)];
-        }
-
-        return $char;
-    }
-
     // 生成订阅地址的唯一码
     public function makeSubscribeCode()
     {
-        $code = $this->makeRandStr(5);
+        $code = makeRandStr(5);
         if (UserSubscribe::query()->where('code', $code)->exists()) {
             $code = $this->makeSubscribeCode();
         }
 
         return $code;
-    }
-
-    // base64加密（处理URL）
-    function base64url_encode($data)
-    {
-        return strtr(base64_encode($data), array('+' => '-', '/' => '_', '=' => ''));
-    }
-
-    // base64解密（处理URL）
-    function base64url_decode($data)
-    {
-        return base64_decode(strtr($data, '-_', '+/'));
-    }
-
-    // 根据流量值自动转换单位输出
-    public function flowAutoShow($value = 0)
-    {
-        $kb = 1024;
-        $mb = 1048576;
-        $gb = 1073741824;
-        $tb = $gb * 1024;
-        $pb = $tb * 1024;
-        if (abs($value) > $pb) {
-            return round($value / $pb, 2) . "PB";
-        } elseif (abs($value) > $tb) {
-            return round($value / $tb, 2) . "TB";
-        } elseif (abs($value) > $gb) {
-            return round($value / $gb, 2) . "GB";
-        } elseif (abs($value) > $mb) {
-            return round($value / $mb, 2) . "MB";
-        } elseif (abs($value) > $kb) {
-            return round($value / $kb, 2) . "KB";
-        } else {
-            return round($value, 2) . "B";
-        }
-    }
-
-    public function toMB($traffic)
-    {
-        $mb = 1048576;
-
-        return $traffic * $mb;
-    }
-
-    public function toGB($traffic)
-    {
-        $gb = 1048576 * 1024;
-
-        return $traffic * $gb;
-    }
-
-    public function flowToGB($traffic)
-    {
-        $gb = 1048576 * 1024;
-
-        return $traffic / $gb;
     }
 
     // 加密方式
@@ -160,7 +91,7 @@ class Controller extends BaseController
         $fp = fopen($file, "r+");
         assert($n > 0);
         $pos = $n + 1;
-        $lines = array();
+        $lines = [];
         while (count($lines) <= $n) {
             try {
                 fseek($fp, -$pos, SEEK_END);
@@ -200,31 +131,13 @@ class Controller extends BaseController
     }
 
     /**
-     * 文件大小转换
-     *
-     * @param int $bytes
-     * @param int $precision
-     *
-     * @return string
-     */
-    public function formatBytes($bytes, $precision = 2)
-    {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        $bytes /= pow(1024, $pow);
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
-    }
-
-    /**
      * 写入邮件发送日志
-     * @param int $user_id 用户ID
-     * @param string $title 标题
+     *
+     * @param int    $user_id 用户ID
+     * @param string $title   标题
      * @param string $content 内容
-     * @param int $status 投递状态
-     * @param string $error 投递失败时记录的异常信息
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
      */
     public function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
     {

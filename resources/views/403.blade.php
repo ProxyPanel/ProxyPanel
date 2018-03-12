@@ -28,7 +28,7 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" /> </head>
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" /> </head>
 <!-- END HEAD -->
 
 <body class="page-404-3">

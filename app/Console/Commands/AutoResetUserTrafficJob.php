@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\Order;
 use Illuminate\Console\Command;
+use App\Http\Models\Order;
 use App\Http\Models\Config;
 use App\Http\Models\User;
 use Log;
 
 class AutoResetUserTrafficJob extends Command
 {
-    protected $signature = 'command:autoResetUserTrafficJob';
+    protected $signature = 'autoResetUserTrafficJob';
     protected $description = '自动重置用户可用流量';
 
     public function __construct()

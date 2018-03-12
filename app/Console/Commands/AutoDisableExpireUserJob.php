@@ -8,7 +8,7 @@ use Log;
 
 class autoDisableExpireUserJob extends Command
 {
-    protected $signature = 'command:autoDisableExpireUserJob';
+    protected $signature = 'autoDisableExpireUserJob';
     protected $description = '自动禁用到期用户';
 
     public function __construct()

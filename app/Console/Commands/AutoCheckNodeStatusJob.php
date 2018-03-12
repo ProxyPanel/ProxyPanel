@@ -15,7 +15,7 @@ use Log;
 
 class AutoCheckNodeStatusJob extends Command
 {
-    protected $signature = 'command:autoCheckNodeStatusJob';
+    protected $signature = 'autoCheckNodeStatusJob';
     protected $description = '自动监测节点是否宕机';
     protected $cacheKey = 'node_shutdown_warning_';
 

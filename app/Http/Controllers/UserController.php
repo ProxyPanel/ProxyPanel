@@ -47,8 +47,8 @@ class UserController extends Controller
         $user = $request->session()->get('user');
 
         $user = User::query()->where('id', $user['id'])->first();
-        $user->totalTransfer = $this->flowAutoShow($user->transfer_enable);
-        $user->usedTransfer = $this->flowAutoShow($user->u + $user->d);
+        $user->totalTransfer = flowAutoShow($user->transfer_enable);
+        $user->usedTransfer = flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
         $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
         $user->balance = $user->balance / 100;
@@ -86,21 +86,21 @@ class UserController extends Controller
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : $this->base64url_encode($obfs_param));
-            $ssr_str .= '&protoparam=' . ($node->single ? $this->base64url_encode($user->port . ':' . $user->passwd) : $this->base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
-            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
+            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
+            $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
+            $ssr_str .= '&remarks=' . base64url_encode($node->name);
+            $ssr_str .= '&group=' . base64url_encode('VPN');
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
-            $ssr_str = $this->base64url_encode($ssr_str);
+            $ssr_str = base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
             // 生成ss scheme
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
+            $ss_str = base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
@@ -265,7 +265,7 @@ class UserController extends Controller
         $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
         foreach ($goodsList as $goods) {
             $goods->price = $goods->price / 100;
-            $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
+            $goods->traffic = flowAutoShow($goods->traffic * 1048576);
         }
 
         $view['goodsList'] = $goodsList;
@@ -412,7 +412,7 @@ class UserController extends Controller
         $obj = new Invite();
         $obj->uid = $user['id'];
         $obj->fuid = 0;
-        $obj->code = strtoupper(mb_substr(md5(microtime() . $this->makeRandStr()), 8, 12));
+        $obj->code = strtoupper(mb_substr(md5(microtime() . makeRandStr()), 8, 12));
         $obj->status = 0;
         $obj->dateline = date('Y-m-d H:i:s', strtotime("+7 days"));
         $obj->save();
@@ -848,7 +848,7 @@ class UserController extends Controller
             }
 
             $goods->price = $goods->price / 100;
-            $goods->traffic = $this->flowAutoShow($goods->traffic * 1048576);
+            $goods->traffic = flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
             $view['paypal_status'] = self::$config['paypal_status'];
 
@@ -905,7 +905,7 @@ class UserController extends Controller
         // 生成个人推广链接
         $user = $request->session()->get('user');
 
-        $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic'] * 1048576);
+        $view['referral_traffic'] = flowAutoShow(self::$config['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$config['referral_percent'];
         $view['referral_money'] = self::$config['referral_money'];
         $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount') / 100;

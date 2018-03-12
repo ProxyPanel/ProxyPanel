@@ -84,23 +84,23 @@ class SubscribeController extends Controller
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : $this->base64url_encode($obfs_param));
-            $ssr_str .= '&protoparam=' . ($node->single ? $this->base64url_encode($user->port . ':' . $user->passwd) : $this->base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
-            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
+            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
+            $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
+            $ssr_str .= '&remarks=' . base64url_encode($node->name);
+            $ssr_str .= '&group=' . base64url_encode('VPN');
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
-            $ssr_str = $this->base64url_encode($ssr_str);
+            $ssr_str = base64url_encode($ssr_str);
             $scheme .= 'ssr://' . $ssr_str . "\n";
         }
 
-        exit($this->base64url_encode($scheme));
+        exit(base64url_encode($scheme));
     }
 
     // 抛出无可用的节点信息，用于兼容防止客户端订阅失败
     private function noneNode()
     {
-        return $this->base64url_encode('ssr://' . $this->base64url_encode('8.8.8.8:8888:origin:none:plain:' . $this->base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . $this->base64url_encode('无可用节点或账号被封禁') . '&group=' . $this->base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
+        return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode('无可用节点或账号被封禁') . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
     }
 }

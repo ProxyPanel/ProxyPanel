@@ -48,7 +48,7 @@ PHP 7.1 （必须）
 MYSQL 5.5 （推荐5.6+）
 内存 1G+ 
 磁盘空间 10G+
-PHP必须开启curl、gd、fileinfo、openssl组件
+PHP必须开启curl、gd、fileinfo、openssl、mbstring组件
 安装完成后记得编辑config/app.php中 'debug' => true, 改为 false
 ````
 
@@ -193,21 +193,15 @@ chown www:www ssserver.log
 ````
 
 ## SSR(R)部署
-###### 手动部署
+###### 手动部署(基于SSRR)
 ````
-cp server/ssr-3.4.0.zip /root/
-cd /root
-unzip ssr-3.4.0.zip
+git clone https://github.com/ssrpanel/shadowsocksr.git
 cd shadowsocksr
 sh initcfg.sh
-把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
-把 user-config.json 里的 connect_verbose_info 设置为 1
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
-
-同理部署SSRR，SSRR位于此处，自行下载：https://github.com/shadowsocksrr/shadowsocksr/tree/akkariiin/dev
 ````
 
-###### 一键自动部署
+###### 一键自动部署(基于SSR3.4)
 ````
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
 

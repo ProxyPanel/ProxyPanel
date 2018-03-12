@@ -13,7 +13,7 @@ use Log;
 
 class AutoClearLogJob extends Command
 {
-    protected $signature = 'command:autoClearLogJob';
+    protected $signature = 'autoClearLogJob';
     protected $description = '自动清除日志';
 
     public function __construct()

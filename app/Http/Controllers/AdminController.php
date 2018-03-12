@@ -56,7 +56,7 @@ class AdminController extends Controller
         $view['onlineUserCount'] = User::query()->where('t', '>=', $online)->count();
         $view['nodeCount'] = SsNode::query()->count();
         $flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
-        $flowCount = $this->flowAutoShow($flowCount);
+        $flowCount = flowAutoShow($flowCount);
         $view['flowCount'] = $flowCount;
         $view['totalBalance'] = User::query()->sum('balance') / 100;
         $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
@@ -114,8 +114,8 @@ class AdminController extends Controller
 
         $userList = $query->orderBy('enable', 'desc')->orderBy('status', 'desc')->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
         foreach ($userList as &$user) {
-            $user->transfer_enable = $this->flowAutoShow($user->transfer_enable);
-            $user->used_flow = $this->flowAutoShow($user->u + $user->d);
+            $user->transfer_enable = flowAutoShow($user->transfer_enable);
+            $user->used_flow = flowAutoShow($user->u + $user->d);
             $user->expireWarning = $user->expire_time <= date('Y-m-d', strtotime("+ 30 days")) ? 1 : 0; // 临近过期提醒
 
             // 流量异常警告
@@ -142,7 +142,7 @@ class AdminController extends Controller
             // 密码为空时则生成随机密码
             $password = $request->get('password');
             if (empty($password)) {
-                $str = $this->makeRandStr();
+                $str = makeRandStr();
                 $password = md5($str);
             } else {
                 $password = md5($password);
@@ -152,8 +152,8 @@ class AdminController extends Controller
             $user->username = $request->get('username');
             $user->password = $password;
             $user->port = $request->get('port');
-            $user->passwd = empty($request->get('passwd')) ? $this->makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
-            $user->transfer_enable = $this->toGB($request->get('transfer_enable', 0));
+            $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
+            $user->transfer_enable = toGB($request->get('transfer_enable', 0));
             $user->enable = $request->get('enable', 0);
             $user->method = $request->get('method');
             $user->protocol = $request->get('protocol', '');
@@ -217,12 +217,12 @@ class AdminController extends Controller
                 $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
 
                 $user = new User();
-                $user->username = '批量生成-' . $this->makeRandStr();
-                $user->password = md5($this->makeRandStr());
+                $user->username = '批量生成-' . makeRandStr();
+                $user->password = md5(makeRandStr());
                 $user->enable = 1;
                 $user->port = $port;
-                $user->passwd = $this->makeRandStr();
-                $user->transfer_enable = $this->toGB(1000);
+                $user->passwd = makeRandStr();
+                $user->transfer_enable = toGB(1000);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
                 $user->reg_ip = $request->getClientIp();
@@ -278,7 +278,7 @@ class AdminController extends Controller
                     'username'             => $username,
                     'port'                 => $port,
                     'passwd'               => $passwd,
-                    'transfer_enable'      => $this->toGB($transfer_enable),
+                    'transfer_enable'      => toGB($transfer_enable),
                     'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
                     'method'               => $method,
                     'protocol'             => $protocol,
@@ -331,7 +331,7 @@ class AdminController extends Controller
         } else {
             $user = User::query()->with(['label'])->where('id', $id)->first();
             if ($user) {
-                $user->transfer_enable = $this->flowToGB($user->transfer_enable);
+                $user->transfer_enable = flowToGB($user->transfer_enable);
                 $user->balance = $user->balance / 100;
 
                 $label = [];
@@ -381,7 +381,7 @@ class AdminController extends Controller
 
             // 已产生流量
             $totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
-            $node->transfer = $this->flowAutoShow($totalTraffic);
+            $node->transfer = flowAutoShow($totalTraffic);
 
             // 负载（10分钟以内）
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
@@ -823,12 +823,12 @@ class AdminController extends Controller
         }
 
         // 已使用流量
-        $view['totalTraffic'] = $this->flowAutoShow($query->sum('u') + $query->sum('d'));
+        $view['totalTraffic'] = flowAutoShow($query->sum('u') + $query->sum('d'));
 
         $trafficLogList = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
         foreach ($trafficLogList as &$trafficLog) {
-            $trafficLog->u = $this->flowAutoShow($trafficLog->u);
-            $trafficLog->d = $this->flowAutoShow($trafficLog->d);
+            $trafficLog->u = flowAutoShow($trafficLog->u);
+            $trafficLog->d = flowAutoShow($trafficLog->d);
             $trafficLog->log_time = date('Y-m-d H:i:s', $trafficLog->log_time);
         }
 
@@ -948,7 +948,7 @@ class AdminController extends Controller
                     'port'            => $port,
                     'protocol'        => $protocol,
                     'protocol_param'  => empty($protocol_param) ? "" : $protocol_param,
-                    'transfer_enable' => $this->toGB($transfer_enable),
+                    'transfer_enable' => toGB($transfer_enable),
                     'u'               => 0,
                     'user'            => date('Ymd') . '_IMPORT_' . $port,
                 ];
@@ -1104,21 +1104,21 @@ class AdminController extends Controller
             $ssr_str = '';
             $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? $this->base64url_encode($node->single_passwd) : $this->base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : $this->base64url_encode($obfs_param));
-            $ssr_str .= '&protoparam=' . ($node->single ? $this->base64url_encode($user->port . ':' . $user->passwd) : $this->base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
-            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
+            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
+            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
+            $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
+            $ssr_str .= '&remarks=' . base64url_encode($node->name);
+            $ssr_str .= '&group=' . base64url_encode('VPN');
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
-            $ssr_str = $this->base64url_encode($ssr_str);
+            $ssr_str = base64url_encode($ssr_str);
             $ssr_scheme = 'ssr://' . $ssr_str;
 
             // 生成ss scheme
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
+            $ss_str = base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
@@ -1243,7 +1243,7 @@ class AdminController extends Controller
     // 生成SS密码
     public function makePasswd(Request $request)
     {
-        exit($this->makeRandStr());
+        exit(makeRandStr());
     }
 
     // 加密方式、混淆、协议、等级、国家地区
@@ -1677,7 +1677,7 @@ class AdminController extends Controller
             $obj = new Invite();
             $obj->uid = $user['id'];
             $obj->fuid = 0;
-            $obj->code = strtoupper(substr(md5(microtime() . $this->makeRandStr()), 8, 12));
+            $obj->code = strtoupper(substr(md5(microtime() . makeRandStr()), 8, 12));
             $obj->status = 0;
             $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
             $obj->save();
@@ -1943,8 +1943,8 @@ class AdminController extends Controller
     {
         $labelList = Label::query()->paginate(10);
         foreach ($labelList as $label) {
-            $label->userCount = UserLabel::query()->where('label_id', $label->id)->groupBy('user_id')->count();
-            $label->nodeCount = SsNodeLabel::query()->where('label_id', $label->id)->groupBy('node_id')->count();
+            $label->userCount = UserLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
+            $label->nodeCount = SsNodeLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
         }
 
         $view['labelList'] = $labelList;

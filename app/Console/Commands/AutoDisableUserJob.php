@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\UserBanLog;
 use Illuminate\Console\Command;
+use App\Http\Models\UserBanLog;
 use App\Http\Models\User;
 use Log;
 
 class autoDisableUserJob extends Command
 {
-    protected $signature = 'command:autoDisableUserJob';
+    protected $signature = 'autoDisableUserJob';
     protected $description = '自动禁用流量超限的用户';
 
     public function __construct()

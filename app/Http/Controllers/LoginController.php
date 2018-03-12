@@ -66,7 +66,7 @@ class LoginController extends Controller
             $remember_token = "";
             User::query()->where('id', $user->id)->update(['last_login' => time()]);
             if ($request->get('remember')) {
-                $remember_token = $this->makeRandStr(20);
+                $remember_token = makeRandStr(20);
 
                 User::query()->where('id', $user->id)->update(['last_login' => time(), "remember_token" => $remember_token]);
             } else {

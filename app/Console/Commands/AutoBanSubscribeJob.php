@@ -10,7 +10,7 @@ use Log;
 
 class AutoBanSubscribeJob extends Command
 {
-    protected $signature = 'command:autoBanSubscribeJob';
+    protected $signature = 'autoBanSubscribeJob';
     protected $description = '自动封禁异常订阅链接';
 
     public function __construct()

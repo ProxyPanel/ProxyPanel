@@ -10,7 +10,7 @@ use Log;
 
 class AutoStatisticsNodeHourlyTrafficJob extends Command
 {
-    protected $signature = 'command:autoStatisticsNodeHourlyTrafficJob';
+    protected $signature = 'autoStatisticsNodeHourlyTrafficJob';
     protected $description = '自动统计节点每小时流量';
 
     public function __construct()

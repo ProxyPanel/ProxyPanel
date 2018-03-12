@@ -11,7 +11,7 @@ use Log;
 
 class AutoBanUserJob extends Command
 {
-    protected $signature = 'command:autoBanUserJob';
+    protected $signature = 'autoBanUserJob';
     protected $description = '自动封禁用户';
 
     public function __construct()

@@ -8,7 +8,7 @@ use Log;
 
 class AutoExpireInviteJob extends Command
 {
-    protected $signature = 'command:autoExpireInviteJob';
+    protected $signature = 'autoExpireInviteJob';
     protected $description = '邀请码过期自动置无效';
 
     public function __construct()
