@@ -13,13 +13,6 @@ use Response;
  */
 class EmailLogController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 邮件发送日志列表
     public function logList(Request $request)
     {

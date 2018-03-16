@@ -14,13 +14,6 @@ use Redirect;
  */
 class ShopController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 商品列表
     public function goodsList(Request $request)
     {

@@ -35,7 +35,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 用户 </th>
                                     <th> 唯一识别码 </th>
                                     <th> 请求次数 </th>

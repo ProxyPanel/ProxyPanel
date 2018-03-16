@@ -34,7 +34,7 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 名称 </th>
                                     <th> 券码 </th>
                                     <th> LOGO </th>

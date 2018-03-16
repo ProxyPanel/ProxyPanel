@@ -84,7 +84,7 @@ class UserController extends Controller
             $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
-            $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
+            $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
@@ -104,7 +104,7 @@ class UserController extends Controller
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
-            $txt = "服务器：" . $node->server . "\r\n";
+            $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
             $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
@@ -536,6 +536,16 @@ class UserController extends Controller
         $verify->status = 1;
         $verify->save();
 
+        // 账号激活后给邀请人送流量
+        if ($verify->user->referral_uid) {
+            $transfer_enable = self::$config['referral_traffic'] * 1048576;
+
+            User::query()->where('id', $verify->user->referral_uid)->increment('transfer_enable', $transfer_enable);
+
+            // TODO：写入流量增加日志
+
+        }
+
         $request->session()->flash('successMsg', '账号激活成功');
 
         return Response::view('user/active');
@@ -727,7 +737,7 @@ class UserController extends Controller
         if ($request->method() == 'POST') {
             $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：服务不存在']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
             }
 
             // 使用优惠券
@@ -850,7 +860,7 @@ class UserController extends Controller
             $goods->price = $goods->price / 100;
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
-            $view['paypal_status'] = self::$config['paypal_status'];
+            $view['is_youzan'] = self::$config['is_youzan'];
 
             return Response::view('user/addOrder', $view);
         }
