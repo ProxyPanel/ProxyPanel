@@ -1583,6 +1583,7 @@ class AdminController extends Controller
     public function system(Request $request)
     {
         $view = $this->systemConfig();
+        $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
         return Response::view('admin/system', $view);
     }

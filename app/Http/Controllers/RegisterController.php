@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Invite;
 use App\Http\Models\SsConfig;
 use App\Http\Models\User;
+use App\Http\Models\UserLabel;
 use App\Http\Models\Verify;
 use Illuminate\Http\Request;
 use App\Mail\activeUser;
@@ -145,6 +146,16 @@ class RegisterController extends Controller
             $user->reg_ip = $request->getClientIp();
             $user->referral_uid = $referral_uid;
             $user->save();
+
+            if(count(self::$config['initial_labels_for_user']) > 0) {
+                $labels = explode(',', self::$config['initial_labels_for_user']);
+                foreach ($labels as $label) {
+                    $userLabel = new UserLabel();
+                    $userLabel->user_id = $user->id;
+                    $userLabel->label_id = $label;
+                    $userLabel->save();
+                }
+            }
 
             // 更新邀请码
             if (self::$config['is_invite_register'] && $user->id) {
