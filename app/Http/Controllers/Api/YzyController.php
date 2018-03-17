@@ -84,7 +84,7 @@ class YzyController extends Controller
                 $method = 'youzan.trade.get';
                 $apiVersion = '3.0.0';
                 $params = [
-                    'tid' => $data['id'], // 有赞订单号
+                    'tid' => $msg['tid'], // 有赞订单号
                 ];
 
                 $result = $client->post($method, $apiVersion, $params);
@@ -95,7 +95,7 @@ class YzyController extends Controller
                 }
 
                 // 处理订单&支付单
-                $payment = Payment::query()->where('qr_id', $result['trade']['qr_id'])->first();
+                $payment = Payment::query()->where('qr_id', $result['response']['trade']['qr_id'])->first();
                 if (!$payment) {
                     Log::info('【有赞云】回调订单不存在');
 
