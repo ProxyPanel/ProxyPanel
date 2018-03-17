@@ -84,7 +84,7 @@ class YzyController extends Controller
                 $method = 'youzan.trade.get';
                 $apiVersion = '3.0.0';
                 $params = [
-                    'tid' => $msg['id'], // 有赞订单号
+                    'tid' => $data['id'], // 有赞订单号
                 ];
 
                 $result = $client->post($method, $apiVersion, $params);
