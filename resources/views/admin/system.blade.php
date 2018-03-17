@@ -37,13 +37,8 @@
                                         <li>
                                             <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
                                         </li>
-                                        <!--
                                         <li>
-                                            <a href="#tab_7" data-toggle="tab"> 充值二维码设置 </a>
-                                        </li>
-                                        -->
-                                        <li>
-                                            <a href="#tab_8" data-toggle="tab"> PayPal接口设置 </a>
+                                            <a href="#tab_7" data-toggle="tab"> 有赞云设置 </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -74,7 +69,7 @@
                                                                     <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
                                                                 </span>
                                                                 </div>
-                                                                <span class="help-block"> 生成重置密码必备，示例：https://github.com </span>
+                                                                <span class="help-block"> 生成重置密码必备，示例：https://www.ssrpanel.com </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -246,7 +241,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setSubscribeDomain()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> （推荐）防止网站域名被投毒后用户无法正常订阅，需带http://或https:// </span>
+                                                                <span class="help-block"> （推荐）防止面板域名被投毒后无法正常订阅，需带http://或https:// </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -531,10 +526,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="auto_release_port" class="col-md-3 control-label">端口释放</label>
+                                                            <label for="auto_release_port" class="col-md-3 control-label">端口自动释放</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($auto_release_port) checked @endif id="auto_release_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> （推荐）被禁用的用户端口自动释放，重新启用则需要手动分配端口 </span>
+                                                                <span class="help-block"> 被禁用的用户端口自动释放，重新启用用户则需要手动分配端口并手动重启一次SSR(R) </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -542,38 +537,56 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab_8">
+                                        <div class="tab-pane" id="tab_7">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
-                                                            <label for="paypal_status" class="col-md-3 control-label">本功能</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($paypal_status) checked @endif id="paypal_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用前请先去PayPal申请ClientID和ClientSecret </span>
+                                                        <div class="col-md-12">
+                                                            <div class="alert alert-info" style="text-align: center;">
+                                                                请在<a href="https://console.youzanyun.com/login" target="_blank">有赞云</a>后台设置应用的推送网址为：{{$website_url . '/api/yzy'}}
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="paypal_client_id" class="col-md-3 control-label">ClientID</label>
+                                                            <label for="is_youzan" class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_youzan) checked @endif id="is_youzan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用前请先到<a href="https://console.youzanyun.com/dashboard">有赞云</a>申请client_id和client_secret并绑定店铺 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="kdt_id" class="col-md-3 control-label">kdt_id</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
-                                                                    <input class="form-control" type="text" name="paypal_client_id" value="{{$paypal_client_id}}" id="paypal_client_id" />
+                                                                    <input class="form-control" type="text" name="kdt_id" value="{{$kdt_id}}" id="kdt_id" />
                                                                     <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setPaypalClientID()">修改</button>
+                                                                        <button class="btn btn-success" type="button" onclick="setKdtId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 即：授权店铺id </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="youzan_client_id" class="col-md-3 control-label">client_id</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="youzan_client_id" value="{{$youzan_client_id}}" id="youzan_client_id" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setYouzanClientId()">修改</button>
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="paypal_client_secret" class="col-md-3 control-label">ClientSecret</label>
+                                                            <label for="youzan_client_secret" class="col-md-3 control-label">client_secret</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
-                                                                    <input class="form-control" type="text" name="paypal_client_secret" value="{{$paypal_client_secret}}" id="paypal_client_secret" />
+                                                                    <input class="form-control" type="text" name="youzan_client_secret" value="{{$youzan_client_secret}}" id="youzan_client_secret" />
                                                                     <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setPaypalClientSecret()">修改</button>
+                                                                    <button class="btn btn-success" type="button" onclick="setYouzanClientSecret()">修改</button>
                                                                 </span>
                                                                 </div>
                                                             </div>
@@ -901,12 +914,12 @@
             }
         });
 
-        // 启用、禁用PayPal支付接口
-        $('#paypal_status').on({
+        // 启用、禁用有赞云
+        $('#is_youzan').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var paypal_status = state ? 1 : 0;
+                var is_youzan = state ? 1 : 0;
 
-                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_status', value:paypal_status}, function (ret) {
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_youzan', value:is_youzan}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
@@ -981,11 +994,11 @@
             });
         }
 
-        // 设置PayPal的ClientID
-        function setPaypalClientID() {
-            var paypal_client_id = $("#paypal_client_id").val();
+        // 设置有赞云的kdt_id
+        function setKdtId() {
+            var kdt_id = $("#kdt_id").val();
 
-            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_client_id', value:paypal_client_id}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'kdt_id', value:kdt_id}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
@@ -994,11 +1007,24 @@
             });
         }
 
-        // 设置PayPal的ClientSecret
-        function setPaypalClientSecret() {
-            var paypal_client_secret = $("#paypal_client_secret").val();
+        // 设置有赞云的client_id
+        function setYouzanClientId() {
+            var youzan_client_id = $("#youzan_client_id").val();
 
-            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_client_secret', value:paypal_client_secret}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'youzan_client_id', value:youzan_client_id}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置有赞云的client_secret
+        function setYouzanClientSecret() {
+            var youzan_client_secret = $("#youzan_client_secret").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'youzan_client_secret', value:youzan_client_secret}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();

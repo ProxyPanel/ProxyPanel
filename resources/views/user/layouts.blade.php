@@ -107,29 +107,23 @@
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{in_array(Request::path(), ['/', 'user', 'user/subscribe']) ? 'active open' : ''}}">
+                <li class="nav-item start {{in_array(Request::path(), ['/', 'user', 'user/subscribe', 'user/profile']) ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
                         <span class="title">{{trans('home.home')}}</span>
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) ? 'active open' : ''}}">
-                    <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
-                        <i class="icon-basket"></i>
-                        <span class="title">{{trans('home.services')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">
-                    <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
-                        <i class="icon-speedometer"></i>
-                        <span class="title">{{trans('home.traffic_log')}}</span>
-                    </a>
-                </li>
                 <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
                     <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
                         <i class="icon-user-follow"></i>
                         <span class="title">{{trans('home.invite_code')}}</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) ? 'active open' : ''}}">
+                    <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
+                        <i class="icon-basket"></i>
+                        <span class="title">{{trans('home.services')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['user/orderList']) ? 'active open' : ''}}">
@@ -142,6 +136,12 @@
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
                         <span class="title">{{trans('home.tickets')}}</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">
+                    <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
+                        <i class="icon-speedometer"></i>
+                        <span class="title">{{trans('home.traffic_log')}}</span>
                     </a>
                 </li>
                 @if(Session::get('referral_status'))

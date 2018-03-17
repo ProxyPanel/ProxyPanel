@@ -18,17 +18,12 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <span class="caption-subject bold"> {{trans('home.service_title')}} </span>
-                        </div>
-                    </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> {{trans('home.service_name')}} </th>
+                                    <th style="width:35%;"> {{trans('home.service_name')}} </th>
                                     <th style="text-align: center;"> {{trans('home.service_price')}} </th>
                                     <th> </th>
                                 </tr>
@@ -49,9 +44,9 @@
                                                 <br>
                                                 {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
                                             </td>
-                                            <td style="text-align: center;"> ￥ {{$goods->price}} </td>
+                                            <td style="text-align: center;"> ￥{{$goods->price}} </td>
                                             <td style="text-align: center;">
-                                                <button type="button" class="btn btn-sm blue" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
+                                                <a href="javascript:buy('{{$goods->id}}');" class="btn btn-sm blue"> {{trans('home.service_buy_button')}} </a>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
                                             </td>
                                         </tr>
@@ -62,7 +57,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$goodsList->total()}} 个流量包</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$goodsList->total()}} 个服务</div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">

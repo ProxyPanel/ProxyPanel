@@ -318,6 +318,10 @@ INSERT INTO `config` VALUES ('46', 'is_free_code', 0);
 INSERT INTO `config` VALUES ('47', 'is_forbid_robot', 0);
 INSERT INTO `config` VALUES ('48', 'subscribe_domain', '');
 INSERT INTO `config` VALUES ('49', 'auto_release_port', 1);
+INSERT INTO `config` VALUES ('50', 'is_youzan', 0);
+INSERT INTO `config` VALUES ('51', 'youzan_client_id', '');
+INSERT INTO `config` VALUES ('52', 'youzan_client_secret', '');
+INSERT INTO `config` VALUES ('53', 'kdt_id', '');
 
 
 -- ----------------------------
@@ -485,7 +489,7 @@ CREATE TABLE `order` (
   `totalPrice` int(11) NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
   `expire_at` datetime DEFAULT NULL COMMENT '过期时间',
   `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
-  `pay_way` tinyint(4) NOT NULL DEFAULT '1' COMMENT '支付方式：1-余额支付、2-PayPal',
+  `pay_way` tinyint(4) NOT NULL DEFAULT '1' COMMENT '支付方式：1-余额支付、2-有赞云支付',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
@@ -826,10 +830,16 @@ INSERT INTO `country` VALUES ('58', '阿根廷', 'ar');
 
 CREATE TABLE `payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `pay_way` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付类型',
-  `money` int(11) NOT NULL DEFAULT '0' COMMENT '充值金额，单位分',
-  `status` int(11) NOT NULL DEFAULT '1' COMMENT '充值状态：1-成功',
+  `sn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `user_id` int(11) NOT NULL COMMENT '用户ID',
+  `oid` int(11) DEFAULT NULL COMMENT '本地订单ID',
+  `orderId` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '本地订单长ID',
+  `pay_way` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1' COMMENT '支付类型：1-扫码支付',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
+  `qr_id` int(11) NOT NULL DEFAULT '0' COMMENT '有赞生成的支付单ID',
+  `qr_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '有赞生成的支付二维码URL',
+  `qr_code` text COLLATE utf8mb4_unicode_ci COMMENT '有赞生成的支付二维码图片base64',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态：-1-支付失败、0-等待支付、1-支付成功',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)

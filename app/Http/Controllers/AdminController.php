@@ -1763,6 +1763,23 @@ class AdminController extends Controller
         return Response::view('admin/applyDetail', $view);
     }
 
+    // 订单列表
+    public function orderList(Request $request)
+    {
+        $username = $request->get('username');
+        $status = $request->get('status');
+
+        $orderList = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc')->paginate(10);
+        foreach ($orderList as $order) {
+            $order->totalOriginalPrice = $order->totalOriginalPrice / 100;
+            $order->totalPrice = $order->totalPrice / 100;
+        }
+
+        $view['orderList'] = $orderList;
+
+        return Response::view('admin/orderList', $view);
+    }
+
     // 设置提现申请状态
     public function setApplyStatus(Request $request)
     {

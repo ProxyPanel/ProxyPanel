@@ -38,9 +38,9 @@
         @endif
         <div class="row">
             <div class="col-md-8">
-                <div class="alert alert-danger">
+                <div class="well">
                     {{trans('home.ratio_tips')}}
-                    <button class="btn btn-sm red" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
+                    <button class="btn btn-sm blue" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
                 </div>
                 <div class="row widget-row">
                     @if(!$nodeList->isEmpty())
@@ -72,47 +72,48 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="portlet box red">
-                    <div class="portlet-title">
-                        <div class="caption">{{trans('home.account_info')}}</div>
-                        <div class="tools">
-                            <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <p class="text-muted"> {{trans('home.account_level')}}：{{$info['levelName']}} </p>
-                        <p class="text-muted">
-                            {{trans('home.account_balance')}}：{{$info['balance']}}
-                            <span class="badge badge-danger">
-                                <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
-                            </span>
-                            &ensp;&ensp;{{trans('home.account_score')}}：{{$info['score']}}
-                            <span class="badge badge-danger">
-                                <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
-                            </span>
-                        </p>
-                        <p class="text-muted"> {{trans('home.account_status')}}：{{$info['enable'] ? '正常' : '禁用'}} </p>
-                        <p class="text-muted"> {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
-                        <p class="text-muted"> {{trans('home.account_last_usage')}}：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
-                        <p class="text-muted"> {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
-                        <p class="text-muted">
-                            {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;&ensp;每月{{$info['traffic_reset_day']}}日自动重置流量 @endif
-                            <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
-                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
-                                    <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
-                                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        {{trans('home.account_status')}}：{{$info['enable'] ? '正常' : '禁用'}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_balance')}}：￥{{$info['balance']}}
+                        <span class="badge badge-danger">
+                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
+                        </span>
+                    </li>
+                    @if($login_add_score)
+                    <li class="list-group-item">
+                        {{trans('home.account_score')}}：{{$info['score']}}
+                        <span class="badge badge-info">
+                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
+                        </span>
+                    </li>
+                    @endif
+                    <li class="list-group-item">
+                        {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;每月{{$info['traffic_reset_day']}}日自动重置流量 @endif
+                        <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
+                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
+                                <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
                             </div>
-                        </p>
-                    </div>
-                </div>
-                <div class="portlet box blue">
-                    <div class="portlet-title">
-                        <div class="caption">{{trans('home.article_title')}}</div>
-                        <div class="tools">
-                            <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
                         </div>
+                    </li>
+                </ul>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{trans('home.article_title')}}</h3>
                     </div>
-                    <div class="portlet-body">
+                    <div class="panel-body">
                         @foreach($articleList as $k => $article)
                             <p class="text-muted">
                                 [{{date('m/d', strtotime($article->created_at))}}] <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{$article->title}} </a>
@@ -130,7 +131,7 @@
                         <h4 class="modal-title">余额充值</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger" style="display: none;" id="charge_msg"></div>
+                        <div class="alert alert-danger" style="display: none; text-align: center;" id="charge_msg"></div>
                         <form action="#" method="post" class="form-horizontal">
                             <div class="form-body">
                                 <div class="form-group">

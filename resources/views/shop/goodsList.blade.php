@@ -34,7 +34,6 @@
                                 <thead>
                                 <tr>
                                     <th> # </th>
-                                    <th> SKU </th>
                                     <th> 名称 </th>
                                     <th> 类型 </th>
                                     <th> 图片 </th>
@@ -54,7 +53,6 @@
                                     @foreach($goodsList as $goods)
                                         <tr class="odd gradeX">
                                             <td> {{$goods->id}} </td>
-                                            <td> {{$goods->sku}} </td>
                                             <td> {{$goods->name}} </td>
                                             <td> {{$goods->type == 1 ? '流量包' : '套餐'}} </td>
                                             <td> @if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif </td>

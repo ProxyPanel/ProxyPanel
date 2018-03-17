@@ -23,7 +23,9 @@
                         <tr>
                             <td style="padding: 10px;">
                                 <h2>{{$goods->name}}</h2>
-                                <p> {{trans('home.service_traffic')}} {{$goods->traffic}}（{{trans('home.service_days')}} {{$goods->days}} {{trans('home.day')}}） </p>
+                                {{trans('home.service_traffic')}} {{$goods->traffic}}
+                                <br/>
+                                {{trans('home.service_days')}} {{$goods->days}} {{trans('home.day')}}
                             </td>
                             <td class="text-center"> ￥{{$goods->price}} </td>
                             <td class="text-center"> x 1 </td>
@@ -38,25 +40,25 @@
                     <p class="invoice-desc"> ￥{{$goods->price}} </p>
                 </div>
                 <div class="col-xs-3">
-                    <h2 class="invoice-title"> {{trans('home.coupon')}} </h2>
-                    <p class="invoice-desc">
-                        <div class="input-group">
-                            <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" onclick="redeemCoupon()"><i class="fa fa-refresh"></i> {{trans('home.redeem_coupon')}} </button>
-                            </span>
-                        </div>
-                    </p>
-                </div>
-                <div class="col-xs-6">
                     <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
                     <p class="invoice-desc grand-total"> ￥{{$goods->price}} </p>
+                </div>
+                <div class="col-xs-6">
+                    <h2 class="invoice-title"> {{trans('home.coupon')}} </h2>
+                    <p class="invoice-desc">
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="redeemCoupon()"><i class="fa fa-refresh"></i> {{trans('home.redeem_coupon')}} </button>
+                        </span>
+                    </div>
+                    </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12" style="text-align: right;">
-                    @if($paypal_status)
-                        <a class="btn btn red hidden-print" onclick="paypalPay()"> PayPal支付 </a>
+                    @if($is_youzan)
+                        <a class="btn btn red hidden-print" onclick="onlinePay()"> 在线支付 </a>
                     @endif
                     <a class="btn btn blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
                 </div>
@@ -109,11 +111,25 @@
             });
         }
 
-        // PayPal在线支付
-        function paypalPay() {
+        // 在线支付
+        function onlinePay() {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
-            window.location.href="{{url('payment/create?goods_id=')}}" + goods_id + '&coupon_sn=' + coupon_sn;
+
+            $.ajax({
+                type: "POST",
+                url: "{{url('payment/create')}}",
+                async: false,
+                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
+                dataType: 'json',
+                success: function (ret) {
+                    layer.msg(ret.message, {time:1300}, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('payment')}}' + "/" + ret.data;
+                        }
+                    });
+                }
+            });
         }
 
         // 余额支付
