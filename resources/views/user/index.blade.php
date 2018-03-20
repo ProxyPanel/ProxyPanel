@@ -29,13 +29,6 @@
                 {{Session::get('successMsg')}}
             </div>
         @endif
-        @if($notice)
-            <div class="alert alert-success">
-                <i class="fa fa-bell-o"></i>
-                <button class="close" data-close="alert"></button>
-                <a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a>
-            </div>
-        @endif
         <div class="row">
             <div class="col-md-8">
                 <div class="well">
@@ -113,11 +106,14 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">{{trans('home.article_title')}}</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" style="font-size:1.0em; color: #333;">
+                        @if($notice)
+                            <span style="font-size:1.15em">[公告]<a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a></span>
+                            <br>
+                        @endif
                         @foreach($articleList as $k => $article)
-                            <p class="text-muted">
-                                [{{date('m/d', strtotime($article->created_at))}}] <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{$article->title}} </a>
-                            </p>
+                            <span>[{{date('m/d', strtotime($article->created_at))}}] <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{str_limit($article->title, 50)}} </a></span>
+                            <br>
                         @endforeach
                     </div>
                 </div>

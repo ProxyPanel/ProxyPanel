@@ -17,7 +17,7 @@
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="caption-subject font-darm sbold uppercase">编辑文章</span>

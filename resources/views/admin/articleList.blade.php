@@ -45,7 +45,7 @@
                                     @foreach($articleList as $article)
                                         <tr class="odd gradeX">
                                             <td> {{$article->id}} </td>
-                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{$article->title}} </a> </td>
+                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{str_limit($article->title, 80)}} </a> </td>
                                             <td> {{$article->type == '1' ? '文章' : '公告'}} </td>
                                             <td> {{$article->sort}} </td>
                                             <td> {{$article->created_at}} </td>
