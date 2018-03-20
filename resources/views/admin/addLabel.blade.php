@@ -37,7 +37,7 @@
                                     <span class="help-block"> 值越高显示时越靠前 </span>
                                 </div>
                             </div>
-                            <div class="form-actions right">
+                            <div class="form-actions">
                                 <button type="submit" class="btn green">提交</button>
                             </div>
                         </form>
