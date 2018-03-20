@@ -75,7 +75,7 @@
                                                             <span class="label label-sm label-default"> 已过期 </span>
                                                         @endif
                                                     </td>
-                                                    <td> {{empty($invite->user) ? '【账号已删除】' : $invite->user->username}} </td>
+                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                 </tr>
                                             @endforeach
                                         @endif
