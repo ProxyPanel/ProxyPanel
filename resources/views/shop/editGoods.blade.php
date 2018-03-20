@@ -38,16 +38,16 @@
                         <form action="{{url('shop/editGoods')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">商品名称</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">商品名称</label>
+                                    <div class="col-md-4">
                                         <input type="text" class="form-control" name="name" value="{{$goods->name}}" id="name" placeholder="" required>
                                         <input type="hidden" name="id" value="{{$goods->id}}" />
                                         <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">商品图片</label>
-                                    <div class="col-md-9">
+                                    <label class="control-label col-md-3">商品图片</label>
+                                    <div class="col-md-4">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
                                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                 @if ($goods->logo)
@@ -69,14 +69,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">描述</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">描述</label>
+                                    <div class="col-md-4">
                                         <textarea class="form-control" rows="3" name="desc" id="desc" placeholder="商品的简单描述">{{$goods->desc}}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">内含流量</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">内含流量</label>
+                                    <div class="col-md-4">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="traffic" value="{{$goods->traffic}}" id="traffic" placeholder="" required="">
                                             <span class="input-group-addon">MiB</span>
@@ -84,8 +84,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">售价</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">售价</label>
+                                    <div class="col-md-4">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="price" value="{{$goods->price}}" id="price" placeholder="" required>
                                             <span class="input-group-addon">元</span>
@@ -93,15 +93,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">所需积分</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">所需积分</label>
+                                    <div class="col-md-4">
                                         <input type="text" class="form-control" name="score" value="{{$goods->score}}" id="score" placeholder="" required>
                                         <span class="help-block">换购该商品需要的积分值</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="type" class="control-label col-md-2">类型</label>
-                                    <div class="col-md-6">
+                                    <label for="type" class="control-label col-md-3">类型</label>
+                                    <div class="col-md-4">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
                                                 <input type="radio" name="type" value="1" @if($goods->type == 1) checked @endif> 流量包
@@ -116,8 +116,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">有效期</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">有效期</label>
+                                    <div class="col-md-4">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="days" value="{{$goods->days}}" id="days" placeholder="" required="">
                                             <span class="input-group-addon">天</span>
@@ -126,8 +126,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group last">
-                                    <label class="control-label col-md-2">状态</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">状态</label>
+                                    <div class="col-md-4">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
                                                 <input type="radio" name="status" value="1" {{$goods->status == 1 ? 'checked' : ''}} /> 上架
@@ -144,7 +144,7 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-2 col-md-9">
+                                    <div class="col-md-offset-3 col-md-4">
                                         <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
                                     </div>
                                 </div>

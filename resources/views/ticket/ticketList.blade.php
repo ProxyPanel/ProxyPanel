@@ -19,8 +19,8 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
@@ -32,7 +32,7 @@
                                 <tbody>
                                 @if($ticketList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="4" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($ticketList as $key => $ticket)

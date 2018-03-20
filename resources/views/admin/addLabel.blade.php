@@ -17,41 +17,30 @@
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-dark sbold uppercase">添加标签</span>
+                            <span class="caption-subject font-dark bold uppercase">添加标签</span>
                         </div>
-                        <div class="actions"></div>
                     </div>
                     <div class="portlet-body form">
-                        <!-- BEGIN FORM-->
-                        <form action="{{url('admin/addLabel')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return doSubmit();">
+                        <form role="form" action="{{url('admin/addLabel')}}" method="post" enctype="multipart/form-data" onsubmit="return doSubmit();">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-1">名称</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="name" id="name" placeholder="" autofocus required>
-                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    </div>
+                                    <label>名称</label>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="" autofocus required>
+                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-1">排序</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="sort" id="sort" value="0" required />
-                                        <span class="help-block"> 值越高显示时越靠前 </span>
-                                    </div>
+                                    <label>排序</label>
+                                    <input type="text" class="form-control" name="sort" id="sort" value="0" required />
+                                    <span class="help-block"> 值越高显示时越靠前 </span>
                                 </div>
                             </div>
-                            <div class="form-actions">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn green">提 交</button>
-                                    </div>
-                                </div>
+                            <div class="form-actions right">
+                                <button type="submit" class="btn green">提交</button>
                             </div>
                         </form>
-                        <!-- END FORM-->
                     </div>
                 </div>
                 <!-- END PORTLET-->

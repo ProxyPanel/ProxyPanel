@@ -31,7 +31,7 @@
                                 <tbody>
                                 @if($goodsList->isEmpty())
                                     <tr>
-                                        <td colspan="3">{{trans('home.services_none')}}</td>
+                                        <td colspan="3" style="text-align: center;">{{trans('home.services_none')}}</td>
                                     </tr>
                                 @else
                                     @foreach($goodsList as $key => $goods)
