@@ -5,7 +5,7 @@ return [
     'subscribe_address' => '我的订阅地址',
     'copy_subscribe_address' => '复制地址',
     'exchange_subscribe' => '更换地址',
-    'subscribe_warning' => '警告：该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量异常。',
+    'subscribe_warning' => '警告：该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量异常；更换订阅地址之后请修改SSR(R)密码即可。',
 
     // 菜单
     'home' => '首页',
