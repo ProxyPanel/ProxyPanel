@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutoBanUserJob::class,
         \App\Console\Commands\AutoCheckNodeStatusJob::class,
         \App\Console\Commands\AutoClearLogJob::class,
+        \App\Console\Commands\AutoCloseOrderJob::class,
         \App\Console\Commands\AutoDecGoodsTrafficJob::class,
         \App\Console\Commands\AutoDisableExpireUserJob::class,
         \App\Console\Commands\AutoDisableUserJob::class,
@@ -45,6 +46,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoBanUserJob')->everyTenMinutes();
         $schedule->command('autoCheckNodeStatusJob')->everyMinute();
         $schedule->command('autoClearLogJob')->everyThirtyMinutes();
+        $schedule->command('autoCloseOrderJob')->everyMinute();
         $schedule->command('autoDecGoodsTrafficJob')->everyTenMinutes();
         $schedule->command('autoDisableExpireUserJob')->everyMinute();
         $schedule->command('autoDisableUserJob')->everyMinute();

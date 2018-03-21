@@ -30,6 +30,11 @@
                                     <td align="left">{{$payment->order->goods->days}} 天</td>
                                 </tr>
                                 <tr>
+                                    <td colspan="2">
+                                        请于15分钟内支付，到期未支付订单将自动关闭
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td colspan="2" align="center">
                                         <img src="{{$payment->qr_code}}"/>
                                     </td>
