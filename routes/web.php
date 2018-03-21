@@ -1,7 +1,6 @@
 <?php
 
 Route::get('s/{code}', 'SubscribeController@index'); // 节点订阅地址
-Route::post('locate', 'LocateController@locate'); // 上报文章打开时的定位
 
 Route::group(['middleware' => ['forbidden']], function () {
     Route::any('login', 'LoginController@index'); // 登录
@@ -40,6 +39,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/delLabel', 'AdminController@delLabel'); // 删除标签
     Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
     Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
+    Route::get('admin/orderList', 'AdminController@orderList'); // 订单列表
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
     Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
@@ -114,10 +114,9 @@ Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
     Route::post("user/switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
     Route::post("user/charge", "UserController@charge"); // 卡券余额充值
-});
 
-//Route::group(['middleware' => ['user']], function() {
-Route::any('payment/create', 'PaymentController@create'); // 创建支付
-Route::any('payment/execute', 'PaymentController@execute'); // 用户确认执行支付
-Route::any('payment/cancel', 'PaymentController@cancel'); // 用户取消支付
-//});
+    Route::post('payment/create', 'PaymentController@create'); // 创建支付
+    Route::get('payment/getStatus', 'PaymentController@getStatus'); // 获取支付单状态
+    Route::get('payment/{sn}', 'PaymentController@detail'); // 支付单详情
+
+});

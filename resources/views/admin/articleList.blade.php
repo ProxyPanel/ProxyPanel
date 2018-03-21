@@ -24,8 +24,8 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
@@ -39,13 +39,13 @@
                                 <tbody>
                                 @if($articleList->isEmpty())
                                     <tr>
-                                        <td colspan="6">暂无数据</td>
+                                        <td colspan="6" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($articleList as $article)
                                         <tr class="odd gradeX">
                                             <td> {{$article->id}} </td>
-                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{$article->title}} </a> </td>
+                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{str_limit($article->title, 80)}} </a> </td>
                                             <td> {{$article->type == '1' ? '文章' : '公告'}} </td>
                                             <td> {{$article->sort}} </td>
                                             <td> {{$article->created_at}} </td>

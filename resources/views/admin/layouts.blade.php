@@ -147,6 +147,12 @@
                         <span class="title">标签管理</span>
                     </a>
                 </li>
+                <li class="nav-item {{in_array(Request::path(), ['admin/orderList']) ? 'active open' : ''}}">
+                    <a href="{{url('admin/orderList')}}" class="nav-link nav-toggle">
+                        <i class="fa fa-reorder"></i>
+                        <span class="title">订单管理</span>
+                    </a>
+                </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle', 'admin/articleLogList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-docs"></i>

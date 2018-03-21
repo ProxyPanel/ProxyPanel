@@ -57,6 +57,7 @@ class UserController extends Controller
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
+        $view['login_add_score'] = self::$config['login_add_score'];
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -84,7 +85,7 @@ class UserController extends Controller
             $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
-            $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
+            $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
@@ -104,7 +105,7 @@ class UserController extends Controller
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
-            $txt = "服务器：" . $node->server . "\r\n";
+            $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
             $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
@@ -180,46 +181,60 @@ class UserController extends Controller
                 }
             }
 
-            // 修改SS信息
-            if (empty($passwd)) {
-                $request->session()->flash('errorMsg', '密码不能为空');
+            // 修改联系方式
+            if ($wechat || $qq) {
+                $ret = User::query()->where('id', $user['id'])->update(['wechat' => $wechat, 'qq' => $qq]);
+                if (!$ret) {
+                    $request->session()->flash('errorMsg', '修改失败');
 
-                return Redirect::to('user/profile#tab_3');
+                    return Redirect::to('user/profile#tab_2');
+                } else {
+                    $request->session()->flash('successMsg', '修改成功');
+
+                    return Redirect::to('user/profile#tab_2');
+                }
             }
 
-            // 加密方式、协议、混淆必须存在
-            $existMethod = SsConfig::query()->where('type', 1)->where('name', $method)->first();
-            $existProtocol = SsConfig::query()->where('type', 2)->where('name', $protocol)->first();
-            $existObfs = SsConfig::query()->where('type', 3)->where('name', $obfs)->first();
-            if (!$existMethod || !$existProtocol || !$existObfs) {
-                $request->session()->flash('errorMsg', '非法请求');
+            // 修改SSR(R)设置
+            if ($method || $protocol || $obfs) {
+                if (empty($passwd)) {
+                    $request->session()->flash('errorMsg', '密码不能为空');
 
-                return Redirect::to('user/profile#tab_2');
-            }
+                    return Redirect::to('user/profile#tab_3');
+                }
 
-            $data = [
-                'passwd'   => $passwd,
-                'method'   => $method,
-                'protocol' => $protocol,
-                'obfs'     => $obfs,
-                'wechat'   => $wechat,
-                'qq'       => $qq
-            ];
+                // 加密方式、协议、混淆必须存在
+                $existMethod = SsConfig::query()->where('type', 1)->where('name', $method)->first();
+                $existProtocol = SsConfig::query()->where('type', 2)->where('name', $protocol)->first();
+                $existObfs = SsConfig::query()->where('type', 3)->where('name', $obfs)->first();
+                if (!$existMethod || !$existProtocol || !$existObfs) {
+                    $request->session()->flash('errorMsg', '非法请求');
 
-            $ret = User::query()->where('id', $user['id'])->update($data);
-            if (!$ret) {
-                $request->session()->flash('errorMsg', '修改失败');
+                    return Redirect::to('user/profile#tab_3');
+                }
 
-                return Redirect::to('user/profile#tab_2');
-            } else {
-                // 更新session
-                $user = User::query()->where('id', $user['id'])->first()->toArray();
-                $request->session()->remove('user');
-                $request->session()->put('user', $user);
+                $data = [
+                    'passwd'   => $passwd,
+                    'method'   => $method,
+                    'protocol' => $protocol,
+                    'obfs'     => $obfs
+                ];
 
-                $request->session()->flash('successMsg', '修改成功');
+                $ret = User::query()->where('id', $user['id'])->update($data);
+                if (!$ret) {
+                    $request->session()->flash('errorMsg', '修改失败');
 
-                return Redirect::to('user/profile#tab_2');
+                    return Redirect::to('user/profile#tab_3');
+                } else {
+                    // 更新session
+                    $user = User::query()->where('id', $user['id'])->first()->toArray();
+                    $request->session()->remove('user');
+                    $request->session()->put('user', $user);
+
+                    $request->session()->flash('successMsg', '修改成功');
+
+                    return Redirect::to('user/profile#tab_3');
+                }
             }
         } else {
             // 加密方式、协议、混淆
@@ -288,7 +303,7 @@ class UserController extends Controller
     {
         $user = $request->session()->get('user');
 
-        $orderList = Order::query()->with(['user', 'goods', 'coupon'])->where('user_id', $user['id'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
+        $orderList = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', $user['id'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
         if (!$orderList->isEmpty()) {
             foreach ($orderList as &$order) {
                 $order->totalOriginalPrice = $order->totalOriginalPrice / 100;
@@ -536,6 +551,16 @@ class UserController extends Controller
         $verify->status = 1;
         $verify->save();
 
+        // 账号激活后给邀请人送流量
+        if ($verify->user->referral_uid) {
+            $transfer_enable = self::$config['referral_traffic'] * 1048576;
+
+            User::query()->where('id', $verify->user->referral_uid)->increment('transfer_enable', $transfer_enable);
+
+            // TODO：写入流量增加日志
+
+        }
+
         $request->session()->flash('successMsg', '账号激活成功');
 
         return Response::view('user/active');
@@ -727,7 +752,7 @@ class UserController extends Controller
         if ($request->method() == 'POST') {
             $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：服务不存在']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
             }
 
             // 使用优惠券
@@ -770,15 +795,15 @@ class UserController extends Controller
                 User::query()->where('id', $user->id)->decrement('balance', $totalPrice);
 
                 // 记录余额操作日志
-                $userBalanceLogObj = new UserBalanceLog();
-                $userBalanceLogObj->user_id = $user->id;
-                $userBalanceLogObj->order_id = $order->oid;
-                $userBalanceLogObj->before = $user->balance;
-                $userBalanceLogObj->after = $user->balance - $totalPrice;
-                $userBalanceLogObj->amount = -1 * $totalPrice;
-                $userBalanceLogObj->desc = '购买服务：' . $goods->name;
-                $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
-                $userBalanceLogObj->save();
+                $userBalanceLog = new UserBalanceLog();
+                $userBalanceLog->user_id = $user->id;
+                $userBalanceLog->order_id = $order->oid;
+                $userBalanceLog->before = $user->balance;
+                $userBalanceLog->after = $user->balance - $totalPrice;
+                $userBalanceLog->amount = -1 * $totalPrice;
+                $userBalanceLog->desc = '购买服务：' . $goods->name;
+                $userBalanceLog->created_at = date('Y-m-d H:i:s');
+                $userBalanceLog->save();
 
                 // 优惠券置为已使用
                 if (!empty($coupon)) {
@@ -788,11 +813,11 @@ class UserController extends Controller
                     }
 
                     // 写入日志
-                    $couponLogObj = new CouponLog();
-                    $couponLogObj->coupon_id = $coupon->id;
-                    $couponLogObj->goods_id = $goods_id;
-                    $couponLogObj->order_id = $order->oid;
-                    $couponLogObj->save();
+                    $couponLog = new CouponLog();
+                    $couponLog->coupon_id = $coupon->id;
+                    $couponLog->goods_id = $goods_id;
+                    $couponLog->order_id = $order->oid;
+                    $couponLog->save();
                 }
 
                 // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
@@ -850,7 +875,7 @@ class UserController extends Controller
             $goods->price = $goods->price / 100;
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
-            $view['paypal_status'] = self::$config['paypal_status'];
+            $view['is_youzan'] = self::$config['is_youzan'];
 
             return Response::view('user/addOrder', $view);
         }

@@ -42,8 +42,8 @@
                                             <th> # </th>
                                             <th> {{trans('home.invite_code_table_name')}} </th>
                                             <th> {{trans('home.invite_code_table_date')}} </th>
-                                            <th> {{trans('home.invite_code_table_user')}} </th>
                                             <th> {{trans('home.invite_code_table_status')}} </th>
+                                            <th> {{trans('home.invite_code_table_user')}} </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -57,7 +57,6 @@
                                                     <td> {{$key + 1}} </td>
                                                     <td> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                     <td> {{$invite->dateline}} </td>
-                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                     <td>
                                                         @if($invite->status == '0')
                                                             <span class="label label-sm label-success"> {{trans('home.invite_code_table_status_un')}} </span>
@@ -67,6 +66,7 @@
                                                             <span class="label label-sm label-default"> {{trans('home.invite_code_table_status_expire')}} </span>
                                                         @endif
                                                     </td>
+                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                 </tr>
                                             @endforeach
                                         @endif

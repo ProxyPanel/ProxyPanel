@@ -50,8 +50,8 @@
                                             <th> 邀请码 </th>
                                             <th> 有效期 </th>
                                             <th> 生成者 </th>
-                                            <th> 使用者 </th>
                                             <th> 状态 </th>
+                                            <th> 使用者 </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -66,7 +66,6 @@
                                                     <td> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                     <td> {{$invite->dateline}} </td>
                                                     <td> {{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}} </td>
-                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                     <td>
                                                         @if($invite->status == '0')
                                                             <span class="label label-sm label-success"> 未使用 </span>
@@ -76,6 +75,7 @@
                                                             <span class="label label-sm label-default"> 已过期 </span>
                                                         @endif
                                                     </td>
+                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                 </tr>
                                             @endforeach
                                         @endif

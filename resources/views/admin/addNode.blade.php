@@ -71,7 +71,7 @@
                                                                     @endforeach
                                                                 @endif
                                                             </select>
-                                                            <span class="help-block">没有关联任何分组时则节点对于用户不可见</span>
+                                                            <span class="help-block">订阅时分组展示</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -286,7 +286,7 @@
                                 </div>
                                 <div class="form-actions">
                                     <div class="row">
-                                        <div class="col-md-offset-6">
+                                        <div class="col-md-12">
                                             <button type="submit" class="btn green">提 交</button>
                                         </div>
                                     </div>

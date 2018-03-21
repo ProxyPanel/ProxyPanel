@@ -30,11 +30,11 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 名称 </th>
                                     <th> 券码 </th>
                                     <th> LOGO </th>
@@ -49,7 +49,7 @@
                                 <tbody>
                                 @if($couponList->isEmpty())
                                     <tr>
-                                        <td colspan="10">暂无数据</td>
+                                        <td colspan="10" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($couponList as $coupon)
@@ -89,7 +89,7 @@
                                             </td>
                                             <td>
                                                 @if($coupon->status != '1')
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')">删除</button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')"><i class="fa fa-trash"></i></button>
                                                 @endif
                                             </td>
                                         </tr>

@@ -17,7 +17,7 @@
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="caption-subject font-dark sbold uppercase">添加文章</span>
@@ -66,7 +66,7 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-6">
+                                    <div class="col-md-12">
                                         <button type="submit" class="btn green">提 交</button>
                                     </div>
                                 </div>

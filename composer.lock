@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "65390c337cfc8249876cc6d926531cf5",
+    "content-hash": "ae800cd483f8bd48860981b10cf83432",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -3164,6 +3164,49 @@
                 "environment"
             ],
             "time": "2016-09-01T10:05:43+00:00"
+        },
+        {
+            "name": "youzan/open-sdk",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/youzan/open-sdk-php.git",
+                "reference": "adb2d9bb4f315627e3ea66a2455bda08a34dce27"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/youzan/open-sdk-php/adb2d9bb4f315627e3ea66a2455bda08a34dce27.zip",
+                "reference": "adb2d9bb4f315627e3ea66a2455bda08a34dce27",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Youzan\\Open\\": "src/Open"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xu42",
+                    "homepage": "https://github.com/xu42",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Youzan Open SDK",
+            "homepage": "https://github.com/youzan/open-sdk-php",
+            "keywords": [
+                "open-sdk",
+                "youzan",
+                "youzanyun"
+            ],
+            "time": "2017-10-30T07:57:36+00:00"
         }
     ],
     "packages-dev": [

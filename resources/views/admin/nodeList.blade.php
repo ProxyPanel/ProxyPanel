@@ -33,8 +33,8 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> <span class="node-id"><a href="javascript:showIdTips();">ID</a></span> </th>
@@ -43,7 +43,7 @@
                                     <th> IP </th>
                                     <th> 负载 </th>
                                     <th> 在线 </th>
-                                    <th> 产生流量/可用流量 </th>
+                                    <th> 产生流量 </th>
                                     <th> 流量比例 </th>
                                     <th> 扩展 </th>
                                     <th> 操作 </th>
@@ -69,7 +69,7 @@
                                                 <td> <span class="label label-danger">{{$node->ip}}</span> </td>
                                                 <td> <span class="label label-danger">{{$node->load}}</span> </td>
                                                 <td> <span class="label label-danger">{{$node->online_users}}</span> </td>
-                                                <td> {{$node->transfer}} / {{$node->traffic}}G </td>
+                                                <td> {{$node->transfer}}G </td>
                                                 <td> <span class="label label-danger">{{$node->traffic_rate}}</span> </td>
                                                 <td>
                                                     @if($node->compatible) <span class="label label-info">兼</span> @endif
@@ -147,7 +147,7 @@
 
         // 显示提示
         function showIdTips() {
-            layer.tips('对应SSR后端usermysql.json中的nodeid', '.node-id', {
+            layer.tips('对应SSR(R)后端usermysql.json中的nodeid', '.node-id', {
                 tips: [3, '#3595CC'],
                 time: 1200
             });

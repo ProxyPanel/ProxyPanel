@@ -18,18 +18,12 @@
             <div class="col-md-12">
                 <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <i class="icon-wallet font-dark"></i>
-                            <span class="caption-subject bold"> {{trans('home.invoice_title')}} </span>
-                        </div>
-                    </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light table-checkable order-column">
                                 <thead>
                                     <tr>
-                                        <th> # </th>
+                                        <th style="width:20%;"> 编号 </th>
                                         <th> {{trans('home.invoice_table_name')}} </th>
                                         <th> {{trans('home.invoice_table_price')}} </th>
                                         <th> {{trans('home.invoice_table_create_date')}} </th>
@@ -46,23 +40,26 @@
                                         <tr class="odd gradeX">
                                             <td>{{$order->orderId}}</td>
                                             <td>{{empty($order->goods) ? '【商品已删除】' : $order->goods->name}}</td>
-                                            <td>${{$order->totalPrice}}</td>
-                                            <td>{{date('Y-m-d', strtotime($order->created_at))}}</td>
+                                            <td>￥{{$order->totalPrice}}</td>
+                                            <td>{{$order->created_at}}</td>
                                             <td>
                                                 @if(!$order->is_expire)
                                                     @if($order->status == -1)
-                                                        <span class="label label-default"> {{trans('home.invoice_table_closed')}} </span>
+                                                        <a href="javascript:;" class="btn btn-sm default disabled"> {{trans('home.invoice_table_closed')}} </a>
                                                     @elseif($order->status == 0)
-                                                        <span class="label label-default"> {{trans('home.invoice_table_wait_payment')}} </span>
+                                                        <a href="javascript:;" class="btn btn-sm dark disabled"> {{trans('home.invoice_table_wait_payment')}} </a>
+                                                        @if(!empty($order->payment))
+                                                            <a href="{{url('payment/' . $order->payment->sn)}}" target="_self" class="btn btn-sm red">支付</a>
+                                                        @endif
                                                     @elseif($order->status == 1)
-                                                        <span class="label label-danger"> {{trans('home.invoice_table_wait_confirm')}} </span>
+                                                        <a href="javascript:;" class="btn btn-sm dark disabled"> {{trans('home.invoice_table_wait_confirm')}} </a>
                                                     @elseif($order->status == 2)
-                                                        <span class="label label-success"> {{trans('home.invoice_table_wait_active')}} </span>
+                                                        <a href="javascript:;" class="btn btn-sm green disabled"> {{trans('home.invoice_table_wait_active')}} </a>
                                                     @else
-                                                        <span class="label label-default"> {{trans('home.invoice_table_expired')}} </span>
+                                                        <a href="javascript:;" class="btn btn-sm default disabled"> {{trans('home.invoice_table_expired')}} </a>
                                                     @endif
                                                 @else
-                                                    <span class="label label-default"> {{trans('home.invoice_table_expired')}} </span>
+                                                    <a href="javascript:;" class="btn btn-sm default disabled"> {{trans('home.invoice_table_expired')}} </a>
                                                 @endif
                                             </td>
                                         </tr>

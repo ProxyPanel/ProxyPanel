@@ -149,7 +149,7 @@ class AdminController extends Controller
             }
 
             $user = new User();
-            $user->username = $request->get('username');
+            $user->username = trim($request->get('username'));
             $user->password = $password;
             $user->port = $request->get('port');
             $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
@@ -169,7 +169,7 @@ class AdminController extends Controller
             $user->score = 0;
             $user->enable_time = empty($request->get('enable_time')) ? date('Y-m-d') : $request->get('enable_time');
             $user->expire_time = empty($request->get('expire_time')) ? date('Y-m-d', strtotime("+365 days")) : $request->get('expire_time');
-            $user->remark = $request->get('remark', '');
+            $user->remark = clean($request->get('remark', ''));
             $user->level = $request->get('level', 1);
             $user->is_admin = $request->get('is_admin', 0);
             $user->reg_ip = $request->getClientIp();
@@ -246,7 +246,7 @@ class AdminController extends Controller
         $id = $request->get('id');
 
         if ($request->method() == 'POST') {
-            $username = $request->get('username');
+            $username = trim($request->get('username'));
             $password = $request->get('password');
             $port = $request->get('port');
             $passwd = $request->get('passwd');
@@ -268,9 +268,15 @@ class AdminController extends Controller
             $labels = $request->get('labels');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
-            $remark = $request->get('remark');
+            $remark = clean($request->get('remark'));
             $level = $request->get('level');
             $is_admin = $request->get('is_admin');
+
+            // 校验username是否已存在
+            $exists = User::query()->where('id', '<>', $id)->where('username', $username)->first();
+            if ($exists) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
+            }
 
             DB::beginTransaction();
             try {
@@ -1102,7 +1108,7 @@ class AdminController extends Controller
             $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
-            $ssr_str .= $node->server . ':' . ($node->single ? $node->single_port : $user->port);
+            $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
@@ -1122,7 +1128,7 @@ class AdminController extends Controller
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
-            $txt = "服务器：" . $node->server . "\r\n";
+            $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
             $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
@@ -1762,6 +1768,23 @@ class AdminController extends Controller
         $view['list'] = $list;
 
         return Response::view('admin/applyDetail', $view);
+    }
+
+    // 订单列表
+    public function orderList(Request $request)
+    {
+        $username = $request->get('username');
+        $status = $request->get('status');
+
+        $orderList = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc')->paginate(10);
+        foreach ($orderList as $order) {
+            $order->totalOriginalPrice = $order->totalOriginalPrice / 100;
+            $order->totalPrice = $order->totalPrice / 100;
+        }
+
+        $view['orderList'] = $orderList;
+
+        return Response::view('admin/orderList', $view);
     }
 
     // 设置提现申请状态

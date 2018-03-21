@@ -33,11 +33,11 @@
                     <div class="portlet-body form">
                         <div class="mt-clipboard-container">
                             <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
-                            <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
-                                <i class="icon-note"></i> {{trans('home.copy_subscribe_address')}}
+                            <a href="javascript:exchangeSubscribe();" class="btn green">
+                                {{trans('home.exchange_subscribe')}}
                             </a>
-                            <a href="javascript:exchangeSubscribe();" class="btn red">
-                                <i class="fa fa-exchange"></i> {{trans('home.exchange_subscribe')}}
+                            <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
+                                {{trans('home.copy_subscribe_address')}}
                             </a>
                         </div>
                     </div>
@@ -56,12 +56,16 @@
     <script type="text/javascript">
         // 更换订阅地址
         function exchangeSubscribe() {
-            $.post("{{url('user/exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
-                layer.msg(ret.message, {time:1000}, function () {
-                    if (ret.status == 'success') {
-                        window.location.reload();
-                    }
+            layer.confirm('确定更换订阅地址吗？', {icon: 7, title:'警告'}, function(index) {
+                $.post("{{url('user/exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function () {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
                 });
+
+                layer.close(index);
             });
         }
     </script>

@@ -17,13 +17,6 @@ use Log;
  */
 class CouponController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 优惠券列表
     public function couponList(Request $request)
     {

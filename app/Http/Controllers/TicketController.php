@@ -14,13 +14,6 @@ use Response;
  */
 class TicketController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 工单列表
     public function ticketList(Request $request)
     {

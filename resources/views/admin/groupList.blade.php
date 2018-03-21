@@ -24,11 +24,11 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 分组名称 </th>
                                     <th> 可见级别 </th>
                                     <th> 操作 </th>
@@ -37,7 +37,7 @@
                                 <tbody>
                                     @if($groupList->isEmpty())
                                         <tr>
-                                            <td colspan="4">暂无数据</td>
+                                            <td colspan="4" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($groupList as $group)

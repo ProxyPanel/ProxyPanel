@@ -15,7 +15,6 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-question font-dark"></i>
                             <span class="caption-subject bold"> {{trans('home.ticket_title')}} </span>
                         </div>
                         <div class="actions">
@@ -25,8 +24,8 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light table-checkable order-column">
                                 <thead>
                                     <tr>
                                         <th> # </th>

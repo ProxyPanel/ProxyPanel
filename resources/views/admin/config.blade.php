@@ -194,19 +194,23 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th style="width: 35%;"> 国家/地区名称 </th>
-                                                <th style="width: 35%;"> 代码 </th>
+                                                <th style="width: 20%;"> 图标 </th>
+                                                <th style="width: 25%;"> 国家/地区名称 </th>
+                                                <th style="width: 25%;"> 代码 </th>
                                                 <th style="width: 30%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         @if($country_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="4">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($country_list as $country)
                                                 <tr class="odd gradeX" >
+                                                    <td>
+                                                        <img src="{{asset('assets/images/country/' . $country->country_code . '.png')}}" />
+                                                    </td>
                                                     <td> <input id="country_name_{{$country->id}}" name="country_name" value="{{$country->country_name}}" type="text" class="form-control"> </td>
                                                     <td> <input id="country_code_{{$country->id}}" name="country_code" value="{{$country->country_code}}" type="text" class="form-control"></td>
                                                     <td>

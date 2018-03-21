@@ -24,7 +24,7 @@
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="caption-subject font-dark sbold uppercase">生成卡券</span>
@@ -36,15 +36,15 @@
                         <form action="{{url('coupon/addCoupon')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">卡券名称</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">卡券名称</label>
+                                    <div class="col-md-4">
                                         <input type="text" class="form-control" name="name" value="" id="name" placeholder="" required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">LOGO</label>
-                                    <div class="col-md-9">
+                                    <label class="control-label col-md-3">LOGO</label>
+                                    <div class="col-md-4">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
                                             <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                 <img src="/assets/images/noimage.png" alt="" />
@@ -62,8 +62,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">类型</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">类型</label>
+                                    <div class="col-md-4">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
                                                 <input type="radio" name="type" value="1" checked> 抵用券
@@ -81,8 +81,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">用途</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">用途</label>
+                                    <div class="col-md-4">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
                                                 <input type="radio" name="usage" value="1" id="usage1" checked> 仅限一次性使用
@@ -96,8 +96,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">数量</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">数量</label>
+                                    <div class="col-md-4">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="num" value="{{Request::old('num')}}" id="num" placeholder="" required>
                                             <span class="input-group-addon">张</span>
@@ -105,8 +105,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">金额</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">金额</label>
+                                    <div class="col-md-4">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="amount" value="{{Request::old('amount')}}" id="amount" placeholder="" required>
                                             <span class="input-group-addon">元</span>
@@ -114,8 +114,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group hide">
-                                    <label class="control-label col-md-2">折扣</label>
-                                    <div class="col-md-3">
+                                    <label class="control-label col-md-3">折扣</label>
+                                    <div class="col-md-4">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="discount" value="{{Request::old('discount')}}" id="discount" placeholder="">
                                             <span class="input-group-addon">折</span>
@@ -123,8 +123,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">有效期</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">有效期</label>
+                                    <div class="col-md-4">
                                         <div class="input-group input-large input-daterange">
                                             <input type="text" class="form-control" name="available_start" value="{{Request::old('available_start')}}" id="available_start" required>
                                             <span class="input-group-addon"> 至 </span>
@@ -135,8 +135,8 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-2 col-md-9">
-                                        <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
+                                    <div class="col-md-offset-3 col-md-4">
+                                        <button type="submit" class="btn green">提交</button>
                                     </div>
                                 </div>
                             </div>

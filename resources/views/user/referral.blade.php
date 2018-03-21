@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p> 通过您的推广链接注册的用户可获得 {{$referral_traffic}} 流量奖励；当他们消费时，您可以获得他们每笔消费金额的 {{$referral_percent * 100}}% 作为奖励。 </p>
+                    <p> 通过您的推广链接注册并激活的用户可获得 {{$referral_traffic}} 流量奖励，同时您也可以获得 {{$referral_traffic}} 流量奖励；当他们消费时，您可以获得他们每笔消费金额的 {{$referral_percent * 100}}% 作为奖励。 </p>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                             <span class="caption-subject bold"> {{trans('home.referral_title')}} </span>
                         </div>
                         <div class="actions">
-                            <button type="submit" class="btn red" onclick="extractMoney()"><i class="fa fa-money"></i> {{trans('home.referral_table_apply')}} </button>
+                            <button type="submit" class="btn red" onclick="extractMoney()"> {{trans('home.referral_table_apply')}} </button>
                         </div>
                     </div>
                     <div class="portlet-body">
