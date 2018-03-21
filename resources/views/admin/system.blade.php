@@ -651,6 +651,7 @@
                 });
             });
         });
+	
         // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
@@ -970,6 +971,11 @@
         function setTrafficBanValue() {
             var traffic_ban_value = $("#traffic_ban_value").val();
 
+            if (traffic_ban_value < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_value', value:traffic_ban_value}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -982,6 +988,11 @@
         // 设置用户封号时长
         function setTrafficBanTime() {
             var traffic_ban_time = $("#traffic_ban_time").val();
+
+            if (traffic_ban_time < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_time', value:traffic_ban_time}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1021,6 +1032,11 @@
         // 设置订阅封禁阈值
         function setSubscribeBanTimes() {
             var subscribe_ban_times = $("#subscribe_ban_times").val();
+
+            if (subscribe_ban_times < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_ban_times', value:subscribe_ban_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1163,7 +1179,12 @@
 
         // 设置注册时默认有效期
         function setDefaultDays() {
-            var default_days = $("#default_days").val();
+            var default_days = parseInt($("#default_days").val());
+
+            if (default_days < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_days', value:default_days}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1176,7 +1197,12 @@
 
         // 设置注册时默认流量
         function setDefaultTraffic() {
-            var default_traffic = $("#default_traffic").val();
+            var default_traffic = parseInt($("#default_traffic").val());
+
+            if (default_traffic < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_traffic', value:default_traffic}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1189,7 +1215,12 @@
 
         // 设置可生成邀请码数量
         function setInviteNum() {
-            var invite_num = $("#invite_num").val();
+            var invite_num = parseInt($("#invite_num").val());
+
+            if (invite_num < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'invite_num', value:invite_num}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1204,6 +1235,11 @@
         function setResetPasswordTimes() {
             var reset_password_times = $("#reset_password_times").val();
 
+            if (reset_password_times < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_password_times', value:reset_password_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1215,7 +1251,12 @@
 
         // 设置激活用户次数
         function setActiveTimes() {
-            var active_times = $("#active_times").val();
+            var active_times = parseInt($("#active_times").val());
+
+            if (active_times < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'active_times', value:active_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1226,7 +1267,7 @@
             });
         }
 
-        // 设置激活用户次数
+        // 设置节点订阅地址
         function setSubscribeDomain() {
             var subscribe_domain = $("#subscribe_domain").val();
 
@@ -1241,7 +1282,12 @@
 
         // 设置节点订阅随机展示节点数
         function setSubscribeMax() {
-            var subscribe_max = $("#subscribe_max").val();
+            var subscribe_max = parseInt($("#subscribe_max").val());
+
+            if (subscribe_max < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_max', value:subscribe_max}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1256,6 +1302,11 @@
         function setTrafficWarningPercent() {
             var traffic_warning_percent = $("#traffic_warning_percent").val();
 
+            if (traffic_warning_percent < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning_percent', value:traffic_warning_percent}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1267,7 +1318,12 @@
 
         // 设置用户过期提醒阈值
         function setExpireDays() {
-            var expire_days = $("#expire_days").val();
+            var expire_days = parseInt($("#expire_days").val());
+
+            if (expire_days < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_days', value:expire_days}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1306,7 +1362,12 @@
 
         // 登录加积分的时间间隔
         function setLoginAddScoreRange() {
-            var login_add_score_range = $("#login_add_score_range").val();
+            var login_add_score_range = parseInt($("#login_add_score_range").val());
+
+            if (login_add_score_range < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score_range', value:login_add_score_range}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1319,7 +1380,12 @@
 
         // 设置根据推广链接注册送流量
         function setReferralTraffic() {
-            var referral_traffic = $("#referral_traffic").val();
+            var referral_traffic = parseInt($("#referral_traffic").val());
+
+            if (referral_traffic < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_traffic', value:referral_traffic}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1334,6 +1400,11 @@
         function setReferralPercent() {
             var referral_percent = $("#referral_percent").val();
 
+            if (referral_percent < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setReferralPercent')}}", {_token:'{{csrf_token()}}', value:referral_percent}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1346,6 +1417,11 @@
         // 设置返利满多少元才可以提现
         function setReferralMoney() {
             var referral_money = $("#referral_money").val();
+
+            if (referral_money < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_money', value:referral_money}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {

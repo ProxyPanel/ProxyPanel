@@ -72,7 +72,6 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 余额充值
-    Route::get('admin/userOrderList', 'AdminController@userOrderList'); // 用户消费记录
     Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动日志
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
     Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口

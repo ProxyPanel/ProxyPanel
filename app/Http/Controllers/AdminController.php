@@ -1773,11 +1773,42 @@ class AdminController extends Controller
     // 订单列表
     public function orderList(Request $request)
     {
-        $username = $request->get('username');
-        $status = $request->get('status');
+        $username = trim($request->get('username'));
+        $is_coupon = $request->get('is_coupon');
+        $is_expire = $request->get('is_expire');
+        $pay_way = $request->get('pay_way');
+        $status = intval($request->get('status'));
 
-        $orderList = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc')->paginate(10);
-        foreach ($orderList as $order) {
+        $query = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc');
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        if ($is_coupon != '') {
+            if ($is_coupon) {
+                $query->where('coupon_id', '<>', 0);
+            } else {
+                $query->where('coupon_id', 0);
+            }
+        }
+
+        if ($is_expire != '') {
+            $query->where('is_expire', $is_expire);
+        }
+
+        if ($pay_way != '') {
+            $query->where('pay_way', $pay_way);
+        }
+
+        if ($status != '') {
+            $query->where('status', $status);
+        }
+
+        $orderList = $query->paginate(10);
+        foreach ($orderList as &$order) {
             $order->totalOriginalPrice = $order->totalOriginalPrice / 100;
             $order->totalPrice = $order->totalPrice / 100;
         }
@@ -1903,46 +1934,6 @@ class AdminController extends Controller
         $view['list'] = $query->paginate(10);
 
         return Response::view('admin/userBanLogList', $view);
-    }
-
-    // 用户消费记录
-    public function userOrderList(Request $request)
-    {
-        $username = trim($request->get('username'));
-        $is_expire = $request->get('is_expire');
-        $is_coupon = $request->get('is_coupon');
-
-        $query = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc');
-
-        if ($username) {
-            $query->whereHas('user', function ($q) use ($username) {
-                $q->where('username', 'like', '%' . $username . '%');
-            });
-        }
-
-        if ($is_expire != '') {
-            $query->where('is_expire', $is_expire);
-        }
-
-        if ($is_coupon != '') {
-            if ($is_coupon) {
-                $query->where('coupon_id', '<>', 0);
-            } else {
-                $query->where('coupon_id', 0);
-            }
-        }
-
-        $list = $query->paginate(10);
-        if (!$list->isEmpty()) {
-            foreach ($list as &$vo) {
-                $vo->totalOriginalPrice = $vo->totalOriginalPrice / 100;
-                $vo->totalPrice = $vo->totalPrice / 100;
-            }
-        }
-
-        $view['list'] = $list;
-
-        return Response::view('admin/userOrderList', $view);
     }
 
     // 转换成某个用户的身份

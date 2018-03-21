@@ -16,6 +16,45 @@
                         </div>
                     </div>
                     <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-2">
+                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="is_expire" id="is_expire" onchange="doSearch()">
+                                    <option value="" @if(Request::get('is_expire') == '') selected @endif>过期</option>
+                                    <option value="0" @if(Request::get('is_expire') == '0') selected @endif>否</option>
+                                    <option value="1" @if(Request::get('is_expire') == '1') selected @endif>是</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="is_coupon" id="is_coupon" onchange="doSearch()">
+                                    <option value="" @if(Request::get('is_coupon') == '') selected @endif>使用优惠券</option>
+                                    <option value="0" @if(Request::get('is_coupon') == '0') selected @endif>否</option>
+                                    <option value="1" @if(Request::get('is_coupon') == '1') selected @endif>是</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="pay_way" id="pay_way" onchange="doSearch()">
+                                    <option value="" @if(Request::get('pay_way') == '') selected @endif>支付方式</option>
+                                    <option value="1" @if(Request::get('pay_way') == '1') selected @endif>余额支付</option>
+                                    <option value="2" @if(Request::get('pay_way') == '2') selected @endif>有赞云支付</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="status" id="status" onchange="doSearch()">
+                                    <option value="" @if(Request::get('status') == '') selected @endif>订单状态</option>
+                                    <option value="-1" @if(Request::get('status') == '-1') selected @endif>已关闭</option>
+                                    <option value="0" @if(Request::get('status') == '0') selected @endif>待支付</option>
+                                    <option value="1" @if(Request::get('status') == '1') selected @endif>已支付待确认</option>
+                                    <option value="2" @if(Request::get('status') == '2') selected @endif>已完成</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
+                            </div>
+                        </div>
                         <div class="table-scrollable table-scrollable-borderless">
                             <table class="table table-hover table-light">
                                 <thead>
@@ -90,22 +129,20 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 审核
-        function doAudit(id) {
-            window.open('{{url('admin/applyDetail?id=')}}' + id);
-        }
-
         // 搜索
-        function do_search() {
+        function doSearch() {
             var username = $("#username").val();
-            var status = $("#status option:checked").val();
+            var is_expire = $("#is_expire").val();
+            var is_coupon = $("#is_coupon").val();
+            var pay_way = $("#pay_way").val();
+            var status = $("#status").val();
 
-            window.location.href = '{{url('admin/applyList')}}' + '?username=' + username + '&status=' + status;
+            window.location.href = '{{url('admin/orderList')}}' + '?username=' + username + '&is_expire=' + is_expire + '&is_coupon=' + is_coupon + '&pay_way=' + pay_way + '&status=' + status;
         }
 
         // 重置
-        function do_reset() {
-            window.location.href = '{{url('admin/applyList')}}';
+        function doReset() {
+            window.location.href = '{{url('admin/orderList')}}';
         }
     </script>
 @endsection

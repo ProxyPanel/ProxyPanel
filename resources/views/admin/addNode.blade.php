@@ -374,9 +374,9 @@
 
         // 服务条款
         function showTnc() {
-            var content = '1、请勿直接复制黏贴以下配置，SSR(R)会报错的；'
-                + '<br>2、确保服务器时间为CST或UTC；'
-                + '<br>3、请看<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank">WIKI</a>；'
+            var content = '1.请勿直接复制黏贴以下配置，SSR(R)会报错的；'
+                + '<br>2.确保服务器时间为CST；'
+                + '<br>3.具体请看<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank">WIKI</a>；'
                 + '<br>'
                 + '<br>additional_ports" : {'
                 + '<br>&ensp;&ensp;&ensp;&ensp;"80": {'

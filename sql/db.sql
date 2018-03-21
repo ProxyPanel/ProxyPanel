@@ -322,6 +322,7 @@ INSERT INTO `config` VALUES ('50', 'is_youzan', 0);
 INSERT INTO `config` VALUES ('51', 'youzan_client_id', '');
 INSERT INTO `config` VALUES ('52', 'youzan_client_secret', '');
 INSERT INTO `config` VALUES ('53', 'kdt_id', '');
+INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');
 
 
 -- ----------------------------

@@ -14,12 +14,13 @@
 12.强大的后台一键配置功能
 13.屏蔽常见爬虫、屏蔽机器人
 14.支持单端口多用户
-15.支持节点订阅功能，可一键封禁账号订阅地址
+15.支持节点订阅功能，可自由更换订阅地址、封禁账号订阅地址
 16.节点宕机提醒（邮件、ServerChan微信提醒）
 17.支持多国语言，自带英文语言包
 18.订阅防投毒机制
 19.自动释放端口机制，防止端口被大量长期占用
-20.封IP段
+20.封特定国家、地区、封IP段
+21.支持有赞云支付
 ````
 
 ## 演示&交流
@@ -27,7 +28,7 @@
 官方站：http://www.ssrpanel.com
 演示站：http://demo.ssrpanel.com （用户名：admin 密码：123456，请勿修改密码）
 telegram订阅频道：https://t.me/ssrpanel
-telegram千人讨论群已解散，不用加了，有问题提issues
+telegram千人讨论群已解散，有问题提issues
 ````
 
 ## 捐赠
@@ -38,7 +39,7 @@ telegram千人讨论群已解散，不用加了，有问题提issues
 部署面板必须得用到VPS
 强烈推荐使用1G以上内存的KVM架构的VPS
 做节点则只需要512M+内存的KVM即可，但是还是推荐使用1G+内存的KVM
-强烈不建议使用OVZ（OpenVZ），一无法加速二容易崩溃，512M以下内存的容易经常性宕机（低内存KVM也会宕机）
+强烈不建议使用OVZ（OpenVZ），一无法加速二容易崩溃，512M以下内存的容易经常性宕机（低内存KVM也容易宕机）
 ````
 
 ## 安装
@@ -128,13 +129,11 @@ service php-fpm restart
 ## 定时任务
 ````
 crontab加入如下命令（请自行修改php、ssrpanel路径）：
-* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
+* * * * * php /home/wwwroot/SSRPanel/artisan schedule:run >> /dev/null 2>&1
 
 注意运行权限，必须跟ssrpanel项目权限一致：
 例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
 crontab -e -u www
-
-如果用crontab -e 默认是root权限，则整个ssrpanel项目也要用root:root用户组
 ````
 
 ## 邮件配置
@@ -282,7 +281,7 @@ vim user-config.json
 
 ## 校时
 ````
-如果架构是“面板机-数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会产生：节点的在线数不准确、产生最后使用时间异常、单端口多用户功能失效等。
+如果架构是“面板机-数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会产生：节点的在线数不准确、最后使用时间异常、单端口多用户功能失效等。
 推荐统一使用CST时间并安装校时服务：
 vim /etc/sysconfig/clock 把值改为 Asia/Shanghai
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -293,6 +292,7 @@ ntpdate cn.pool.ntp.org
 ````
 
 ## 致敬
+- [@shadowsocks](https://github.com/shadowsocks)
 - [@breakwa11](https://github.com/breakwa11)
 - [@glzjin](https://github.com/esdeathlove)
 - [@orvice](https://github.com/orvice)

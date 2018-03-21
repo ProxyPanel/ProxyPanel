@@ -181,12 +181,6 @@
                                 <span class="title">用户列表</span>
                             </a>
                         </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userOrderList']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userOrderList')}}" class="nav-link ">
-                                <i class="fa fa-money"></i>
-                                <span class="title">消费记录</span>
-                            </a>
-                        </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userBalanceLogList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userBalanceLogList')}}" class="nav-link ">
                                 <i class="fa fa-money"></i>
