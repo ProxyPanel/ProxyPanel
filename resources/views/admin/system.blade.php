@@ -4,7 +4,10 @@
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 @endsection
+
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
@@ -256,6 +259,25 @@
                                                                 <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
                                                             </div>
                                                         </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="subscribe_domain" class="col-md-3 control-label">初始用户标签</label>
+                                                            <div class="col-md-9">
+                                                                <select id="labels" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
+                                                                    @foreach($label_list as $label)
+                                                                        <option value="{{$label->id}}"
+                                                                            @if (in_array($label->id, explode(',', $initial_labels_for_user)))
+                                                                            selected
+                                                                            @endif
+                                                                        >{{$label->name}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <span class="help-block"> 注册用户初始标签 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
                                                     </div>
                                                 </div>
                                             </form>
@@ -611,9 +633,24 @@
 @section('script')
     <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        $('#labels').select2({
+            placeholder: '设置后则可见相同标签的节点',
+            allowClear: true,
+            width:'100%'
+        }).change(function () {
+            var initial_labels_for_user = $(this).val().join(',');
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'initial_labels_for_user', value:initial_labels_for_user}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
         // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
