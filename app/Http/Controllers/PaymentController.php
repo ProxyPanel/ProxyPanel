@@ -32,11 +32,11 @@ class PaymentController extends Controller
             return Cache::get('YZY_TOKEN')['access_token'];
         }
 
-        $clientId = self::$config['youzan_client_id']; // f531e5282e4689712a
-        $clientSecret = self::$config['youzan_client_secret']; // 4020b1743633ef334fd06a32190ee677
+        $clientId = self::$config['youzan_client_id'];
+        $clientSecret = self::$config['youzan_client_secret'];
 
         $type = 'self';
-        $keys['kdt_id'] = self::$config['kdt_id']; // 40503761
+        $keys['kdt_id'] = self::$config['kdt_id'];
 
         $token = (new \Youzan\Open\Token($clientId, $clientSecret))->getToken($type, $keys);
 
@@ -54,6 +54,17 @@ class PaymentController extends Controller
         $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
         if (!$goods) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品或服务已下架']);
+        }
+
+        // 判断是否开启有赞云支付
+        if (!self::$config['is_youzan']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
+        }
+
+        // 判断是否存在同个商品的未支付订单
+        $existsOrder = Order::query()->where('goods_id', $goods_id)->where('status', 0)->first();
+        if ($existsOrder) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：尚有未支付的订单，请先去支付']);
         }
 
         // 使用优惠券
