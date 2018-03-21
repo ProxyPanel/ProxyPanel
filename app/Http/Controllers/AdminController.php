@@ -228,6 +228,17 @@ class AdminController extends Controller
                 $user->reg_ip = $request->getClientIp();
                 $user->status = 0;
                 $user->save();
+
+                // 初始化默认标签
+                if(count(self::$config['initial_labels_for_user']) > 0) {
+                    $labels = explode(',', self::$config['initial_labels_for_user']);
+                    foreach ($labels as $label) {
+                        $userLabel = new UserLabel();
+                        $userLabel->user_id = $user->id;
+                        $userLabel->label_id = $label;
+                        $userLabel->save();
+                    }
+                }
             }
 
             DB::commit();

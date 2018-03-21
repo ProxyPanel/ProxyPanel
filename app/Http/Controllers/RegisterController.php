@@ -147,6 +147,7 @@ class RegisterController extends Controller
             $user->referral_uid = $referral_uid;
             $user->save();
 
+            // 初始化默认标签
             if(count(self::$config['initial_labels_for_user']) > 0) {
                 $labels = explode(',', self::$config['initial_labels_for_user']);
                 foreach ($labels as $label) {
