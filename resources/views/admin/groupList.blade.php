@@ -30,23 +30,19 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 分组名称 </th>
-                                    <th> 可见级别 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     @if($groupList->isEmpty())
                                         <tr>
-                                            <td colspan="4" style="text-align: center;">暂无数据</td>
+                                            <td colspan="3" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($groupList as $group)
                                             <tr class="odd gradeX">
                                                 <td> {{$group->id}} </td>
                                                 <td> {{$group->name}} </td>
-                                                <td>
-                                                    <span class="label label-warning">{{empty($level_dict) ? '' : $level_dict[$group->level]}}</span>
-                                                </td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">
                                                         <i class="fa fa-pencil"></i>
@@ -63,7 +59,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$groupList->total()}} 个节点</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$groupList->total()}} 个节点分组</div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">

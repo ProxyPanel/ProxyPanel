@@ -1114,8 +1114,11 @@ class AdminController extends Controller
 
         $nodeList = SsNode::query()->where('status', 1)->paginate(10)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
+            // 获取分组名称
+            $group = SsGroup::query()->where('id', $node->group_id)->first();
+
             // 生成ssr scheme
-            $obfs_param = $node->single ? '' : $user->obfs_param;
+            $obfs_param = $user->obfs_param ? $user->obfs_param : $node->obfs_param;
             $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             $ssr_str = '';
@@ -1125,7 +1128,7 @@ class AdminController extends Controller
             $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
             $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . base64url_encode($node->name);
-            $ssr_str .= '&group=' . base64url_encode('VPN');
+            $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
             $ssr_str = base64url_encode($ssr_str);
@@ -1146,7 +1149,7 @@ class AdminController extends Controller
             $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
             $txt .= "协议参数：" . ($node->single ? $user->port . ':' . $user->passwd : $user->protocol_param) . "\r\n";
             $txt .= "混淆方式：" . ($node->single ? $node->single_obfs : $user->obfs) . "\r\n";
-            $txt .= "混淆参数：" . ($node->single ? '' : $user->obfs_param) . "\r\n";
+            $txt .= "混淆参数：" . ($user->obfs_param ? $user->obfs_param : $node->obfs_param) . "\r\n";
             $txt .= "本地端口：1080\r\n路由：绕过局域网及中国大陆地址";
 
             $node->txt = $txt;

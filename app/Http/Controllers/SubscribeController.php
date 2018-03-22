@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\SsGroup;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Http\Models\UserSubscribe;
@@ -77,7 +78,10 @@ class SubscribeController extends Controller
                 break;
             }
 
-            $obfs_param = $node->single ? '' : $user->obfs_param;
+            // 获取分组名称
+            $group = SsGroup::query()->where('id', $node->group_id)->first();
+
+            $obfs_param = $user->obfs_param ? $user->obfs_param : $node->obfs_param;
             $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             // 生成ssr scheme
@@ -88,7 +92,7 @@ class SubscribeController extends Controller
             $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
             $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . base64url_encode($node->name);
-            $ssr_str .= '&group=' . base64url_encode('VPN');
+            $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
             $ssr_str = base64url_encode($ssr_str);
