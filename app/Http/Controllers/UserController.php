@@ -187,6 +187,12 @@ class UserController extends Controller
 
             // 修改联系方式
             if ($wechat || $qq) {
+                if (empty(clean($wechat)) && empty(clean($qq))) {
+                    $request->session()->flash('errorMsg', '修改失败');
+
+                    return Redirect::to('user/profile#tab_2');
+                }
+
                 $ret = User::query()->where('id', $user['id'])->update(['wechat' => $wechat, 'qq' => $qq]);
                 if (!$ret) {
                     $request->session()->flash('errorMsg', '修改失败');
@@ -323,10 +329,14 @@ class UserController extends Controller
     // 添加工单
     public function addTicket(Request $request)
     {
-        $title = $request->get('title');
+        $title = clean($request->get('title'));
         $content = clean($request->get('content'));
 
         $user = $request->session()->get('user');
+
+        if (empty($title) || empty($content)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '请输入标题和内容']);
+        }
 
         $obj = new Ticket();
         $obj->user_id = $user['id'];

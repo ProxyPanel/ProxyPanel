@@ -23,7 +23,8 @@
                             <table class="table table-hover table-light table-checkable order-column">
                                 <thead>
                                     <tr>
-                                        <th style="width:20%;"> 编号 </th>
+                                        <th> # </th>
+                                        <th> {{trans('home.invoice_table_id')}} </th>
                                         <th> {{trans('home.invoice_table_name')}} </th>
                                         <th> {{trans('home.invoice_table_price')}} </th>
                                         <th> {{trans('home.invoice_table_create_date')}} </th>
@@ -38,6 +39,7 @@
                                 @else
                                     @foreach($orderList as $key => $order)
                                         <tr class="odd gradeX">
+                                            <td>{{$key + 1}}</td>
                                             <td>{{$order->orderId}}</td>
                                             <td>{{empty($order->goods) ? '【商品已删除】' : $order->goods->name}}</td>
                                             <td>￥{{$order->totalPrice}}</td>

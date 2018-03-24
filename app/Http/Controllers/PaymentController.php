@@ -29,20 +29,30 @@ class PaymentController extends Controller
     private function getAccessToken()
     {
         if (Cache::has('YZY_TOKEN')) {
-            return Cache::get('YZY_TOKEN')['access_token'];
+            $yzyToken = Cache::get('YZY_TOKEN');
+            if (isset($yzyToken['error'])) { // 错误兼容
+                Cache::forget('YZY_TOKEN');
+            } else {
+                return Cache::get('YZY_TOKEN')['access_token'];
+            }
         }
 
         $clientId = self::$config['youzan_client_id'];
         $clientSecret = self::$config['youzan_client_secret'];
-
         $type = 'self';
         $keys['kdt_id'] = self::$config['kdt_id'];
 
         $token = (new \Youzan\Open\Token($clientId, $clientSecret))->getToken($type, $keys);
 
-        Cache::put('YZY_TOKEN', $token, 10000);
+        if (isset($token['error'])) {
+            Log::info('获取有赞云支付access_token失败：' . $token['error_description']);
 
-        return $token['access_token'];
+            return '';
+        } else {
+            Cache::put('YZY_TOKEN', $token, 10000);
+
+            return $token['access_token'];
+        }
     }
 
     // 创建支付单

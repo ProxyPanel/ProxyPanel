@@ -58,9 +58,9 @@
             <div class="row">
                 <div class="col-xs-12" style="text-align: right;">
                     @if($is_youzan)
-                        <a class="btn btn red hidden-print" onclick="onlinePay()"> 在线支付 </a>
+                        <a class="btn btn-lg red hidden-print" onclick="onlinePay()"> 在线支付 </a>
                     @endif
-                    <a class="btn btn blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
+                    <a class="btn btn-lg blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
                 </div>
             </div>
         </div>

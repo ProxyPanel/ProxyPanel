@@ -38,6 +38,7 @@ return [
     'service_title' => '购买服务',
     'service_name' => '服务',
     'service_desc' => '描述',
+    'service_type' => '类型',
     'service_price' => '售价',
     'service_quantity' => '数量',
     'service_subtotal_price' => '小计',
@@ -74,6 +75,7 @@ return [
 
     // 单据
     'invoice_title' => '消费记录',
+    'invoice_table_id' => '编号',
     'invoice_table_name' => '服务',
     'invoice_table_price' => '金额',
     'invoice_table_create_date' => '购买日期',

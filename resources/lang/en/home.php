@@ -38,6 +38,7 @@ return [
     'service_title' => 'Services',
     'service_name' => 'Service',
     'service_desc' => 'Description',
+    'service_type' => 'Type',
     'service_price' => 'Sales Price',
     'service_quantity' => 'Quantity',
     'service_subtotal_price' => 'Subtotal Price',
@@ -74,6 +75,7 @@ return [
 
     // 单据
     'invoice_title' => 'My Invoices',
+    'invoice_table_id' => 'No.',
     'invoice_table_name' => 'Service',
     'invoice_table_price' => 'Amount',
     'invoice_table_create_date' => 'Created On',

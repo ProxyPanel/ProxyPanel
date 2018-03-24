@@ -31,9 +31,9 @@
         @endif
         <div class="row">
             <div class="col-md-8">
-                <div class="well">
+                <div class="well" style="background-color: #FFF;">
                     {{trans('home.ratio_tips')}}
-                    <button class="btn btn-sm blue" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
+                    <button class="btn btn-sm red" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
                 </div>
                 <div class="row widget-row">
                     @if(!$nodeList->isEmpty())

@@ -24,6 +24,8 @@
                                 <thead>
                                 <tr>
                                     <th style="width:35%;"> {{trans('home.service_name')}} </th>
+                                    <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
+                                    <th style="text-align: center;"> {{trans('home.service_type')}} </th>
                                     <th style="text-align: center;"> {{trans('home.service_price')}} </th>
                                     <th> </th>
                                 </tr>
@@ -44,9 +46,11 @@
                                                 <br>
                                                 {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
                                             </td>
+                                            <td style="text-align: center;"> {{$goods->description}} </td>
+                                            <td style="text-align: center;"> {{$goods->type == '1' ? '流量包' : '套餐'}} </td>
                                             <td style="text-align: center;"> ￥{{$goods->price}} </td>
                                             <td style="text-align: center;">
-                                                <a href="javascript:buy('{{$goods->id}}');" class="btn btn-sm blue"> {{trans('home.service_buy_button')}} </a>
+                                                <a href="javascript:buy('{{$goods->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
                                             </td>
                                         </tr>
