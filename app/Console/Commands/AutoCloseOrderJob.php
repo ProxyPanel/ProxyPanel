@@ -20,8 +20,8 @@ class AutoCloseOrderJob extends Command
 
     public function handle()
     {
-        // 超过15分钟未支付则关闭
-        $paymentList = Payment::query()->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
+        // 有赞云超过60分钟未支付则自动关闭，我们这则只给30分钟
+        $paymentList = Payment::query()->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
         if (!$paymentList->isEmpty()) {
             DB::beginTransaction();
             try {

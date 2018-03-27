@@ -33,23 +33,23 @@
                                 <tbody>
                                 @if($goodsList->isEmpty())
                                     <tr>
-                                        <td colspan="3" style="text-align: center;">{{trans('home.services_none')}}</td>
+                                        <td colspan="5" style="text-align: center;">{{trans('home.services_none')}}</td>
                                     </tr>
                                 @else
                                     @foreach($goodsList as $key => $goods)
                                         <tr class="odd gradeX">
-                                            <td>
+                                            <td style="width: 20%;">
                                                 <!--@if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif -->
-                                                <strong><span style="color:#dc9700">{{$goods->name}}</span></strong>
+                                                <span style="font-size: 1.15em; color: #000;">{{$goods->name}}</span>
                                                 <br>
-                                                {{trans('home.service_traffic')}}：{{$goods->traffic}}
+                                                <span style="color: #000;">{{trans('home.service_traffic')}}：{{$goods->traffic}}</span>
                                                 <br>
-                                                {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
+                                                <span style="color: #000;">{{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}</span>
                                             </td>
-                                            <td style="text-align: center;"> {{$goods->description}} </td>
-                                            <td style="text-align: center;"> {{$goods->type == '1' ? '流量包' : '套餐'}} </td>
-                                            <td style="text-align: center;"> ￥{{$goods->price}} </td>
-                                            <td style="text-align: center;">
+                                            <td style="width: 20%; text-align: center;"> {{$goods->desc}} </td>
+                                            <td style="width: 20%; text-align: center;"> {{$goods->type == '1' ? '流量包' : '套餐'}} </td>
+                                            <td style="width: 20%; text-align: center;"> ￥{{$goods->price}} </td>
+                                            <td style="width: 20%; text-align: center;">
                                                 <a href="javascript:buy('{{$goods->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
                                             </td>

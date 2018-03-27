@@ -2,11 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Coupon;
-use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
-use App\Http\Models\User;
+use App\Http\Models\PaymentCallback;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
@@ -204,5 +203,21 @@ class PaymentController extends Controller
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等待支付']);
         }
+    }
+
+    // 有赞云回调日志
+    public function callbackList(Request $request)
+    {
+        $status = $request->get('status', 0);
+
+        $query = PaymentCallback::query();
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $view['list'] = $query->orderBy('id', 'desc')->paginate(10);
+
+        return Response::view('payment/callbackList', $view);
     }
 }

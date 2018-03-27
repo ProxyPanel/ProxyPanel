@@ -88,6 +88,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
     Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
     Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
+    Route::any("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
 });
 
 Route::group(['middleware' => ['forbidden', 'user']], function () {

@@ -69,20 +69,20 @@
                     <li class="list-group-item">
                         {{trans('home.account_status')}}：{{$info['enable'] ? '正常' : '禁用'}}
                     </li>
+                    @if($login_add_score)
+                        <li class="list-group-item">
+                            {{trans('home.account_score')}}：{{$info['score']}}
+                            <span class="badge badge-info">
+                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
+                        </span>
+                        </li>
+                    @endif
                     <li class="list-group-item">
-                        {{trans('home.account_balance')}}：￥{{$info['balance']}}
+                        {{trans('home.account_balance')}}：{{$info['balance']}}
                         <span class="badge badge-danger">
                             <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
                         </span>
                     </li>
-                    @if($login_add_score)
-                    <li class="list-group-item">
-                        {{trans('home.account_score')}}：{{$info['score']}}
-                        <span class="badge badge-info">
-                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
-                        </span>
-                    </li>
-                    @endif
                     <li class="list-group-item">
                         {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}}
                     </li>

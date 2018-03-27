@@ -287,7 +287,7 @@ class UserController extends Controller
     // 商品列表
     public function goodsList(Request $request)
     {
-        $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->orderBy('type', 'desc')->paginate(10)->appends($request->except('page'));
         foreach ($goodsList as $goods) {
             $goods->price = $goods->price / 100;
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);

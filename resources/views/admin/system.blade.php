@@ -263,9 +263,9 @@
 
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="subscribe_domain" class="col-md-3 control-label">初始用户标签</label>
+                                                            <label for="initial_labels_for_user" class="col-md-3 control-label">用户初始标签</label>
                                                             <div class="col-md-9">
-                                                                <select id="labels" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
+                                                                <select id="initial_labels_for_user" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
                                                                     @foreach($label_list as $label)
                                                                         <option value="{{$label->id}}"
                                                                             @if (in_array($label->id, explode(',', $initial_labels_for_user)))
@@ -274,7 +274,7 @@
                                                                         >{{$label->name}}</option>
                                                                     @endforeach
                                                                 </select>
-                                                                <span class="help-block"> 注册用户初始标签 </span>
+                                                                <span class="help-block"> 注册用户时的初始标签 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6"></div>
@@ -637,12 +637,14 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $('#labels').select2({
+        $('#initial_labels_for_user').select2({
             placeholder: '设置后则可见相同标签的节点',
             allowClear: true,
             width:'100%'
         }).change(function () {
-            var initial_labels_for_user = $(this).val().join(',');
+            var initial_labels_for_user = $(this).val() ? $(this).val().join(',') : '';
+
+            console.log(initial_labels_for_user);
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'initial_labels_for_user', value:initial_labels_for_user}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {

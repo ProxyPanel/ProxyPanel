@@ -51,7 +51,7 @@
                                 <tbody>
                                     @if($trafficLogList->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($trafficLogList as $trafficLog)

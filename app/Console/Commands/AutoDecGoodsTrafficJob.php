@@ -19,22 +19,22 @@ class AutoDecGoodsTrafficJob extends Command
 
     public function handle()
     {
-        $order = Order::query()->with(['user', 'goods'])->where('is_expire', 0)->get();
-        if (!$order->isEmpty()) {
-            foreach ($order as $vo) {
-                if (empty($vo->user) || empty($vo->goods)) {
+        $orderList = Order::query()->with(['user', 'goods'])->where('is_expire', 0)->get();
+        if (!$orderList->isEmpty()) {
+            foreach ($orderList as $order) {
+                if (empty($order->user) || empty($order->goods)) {
                     continue;
                 }
 
                 // 到期自动处理
-                if (date("Y-m-d H:i:s") >= $vo->expire_at) {
-                    if ($vo->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
-                        User::query()->where('id', $vo->user_id)->update(['transfer_enable' => 0]);
+                if (date("Y-m-d H:i:s") >= $order->expire_at) {
+                    if ($order->user->transfer_enable - $order->goods->traffic * 1048576 <= 0) {
+                        User::query()->where('id', $order->user_id)->update(['transfer_enable' => 0]);
                     } else {
-                        User::query()->where('id', $vo->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                        User::query()->where('id', $order->user_id)->decrement('transfer_enable', $order->goods->traffic * 1048576);
                     }
 
-                    Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                    Order::query()->where('oid', $order->oid)->update(['is_expire' => 1]);
                 }
             }
         }

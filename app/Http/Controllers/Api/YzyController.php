@@ -8,6 +8,7 @@ use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
+use App\Http\Models\PaymentCallback;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\User;
 use Illuminate\Http\Request;
@@ -67,6 +68,9 @@ class YzyController extends Controller
 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
+        if (!$data) {
+            exit();
+        }
 
         // 判断消息是否合法
         $msg = $data['msg'];
@@ -75,39 +79,38 @@ class YzyController extends Controller
         if ($sign != $data['sign']) {
             exit();
         } else {
-            // msg内容经过 urlencode 编码，需进行解码
-            $msg = json_decode(urldecode($msg), true);
+            var_dump(["code" => 0, "msg" => "success"]);
+        }
 
-            if ($data['type'] == 'TRADE_ORDER_STATE' && $data['status'] == 'TRADE_SUCCESS') {
-                $client = new \Youzan\Open\Client($this->accessToken);
+        // 先写入回调日志
+        $this->callbackLog($data['client_id'], $data['id'], $data['kdt_id'], $data['kdt_name'], $data['mode'], $data['msg'], $data['sendCount'], $data['sign'], $data['status'], $data['test'], $data['type'], $data['version']);
 
-                $method = 'youzan.trade.get';
-                $apiVersion = '3.0.0';
-                $params = [
-                    'tid' => $msg['tid'], // 有赞订单号
-                ];
+        // msg内容经过 urlencode 编码，需进行解码
+        $msg = json_decode(urldecode($msg), true);
 
-                $result = $client->post($method, $apiVersion, $params);
-                if (isset($result['error_response'])) {
-                    Log::info('【有赞云】回调订单信息错误：' . $result['error_response']['msg']);
+        if ($data['type'] == 'TRADE_ORDER_STATE') {
+            // 读取订单信息
+            $client = new \Youzan\Open\Client($this->accessToken);
+            $result = $client->post('youzan.trade.get', '3.0.0', ['tid' => $msg['tid']]);
+            if (isset($result['error_response'])) {
+                Log::info('【有赞云】回调订单信息错误：' . $result['error_response']['msg']);
+                exit();
+            }
 
-                    return Response::json(['code' => 0, 'msg' => 'success']);
-                }
+            $payment = Payment::query()->where('qr_id', $result['response']['trade']['qr_id'])->first();
+            if (!$payment) {
+                Log::info('【有赞云】回调订单不存在');
+                exit();
+            }
 
-                // 处理订单&支付单
-                $payment = Payment::query()->where('qr_id', $result['response']['trade']['qr_id'])->first();
-                if (!$payment) {
-                    Log::info('【有赞云】回调订单不存在');
-
-                    return Response::json(['code' => 0, 'msg' => 'success']);
-                }
-
+            // 交易成功
+            if ($data['status'] == 'TRADE_SUCCESS') {
                 if ($payment->status != '0') {
                     Log::info('【有赞云】回调订单状态不正确');
-
-                    return Response::json(['code' => 0, 'msg' => 'success']);
+                    exit();
                 }
 
+                // 处理订单
                 DB::beginTransaction();
                 try {
                     // 更新支付单
@@ -115,7 +118,6 @@ class YzyController extends Controller
                     $payment->save();
 
                     // 更新订单
-
                     $order = Order::query()->with(['user'])->where('oid', $payment->oid)->first();
                     $order->status = 2;
                     $order->save();
@@ -181,22 +183,74 @@ class YzyController extends Controller
                     }
 
                     DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
 
-                    return Response::json(['code' => 0, 'msg' => 'success']);
+                    Log::info('【有赞云】更新支付单和订单异常');
+                }
+
+                exit();
+            }
+
+            // 超时自动关闭订单
+            if ($data['status'] == 'TRADE_CLOSED') {
+                if ($payment->status != 0) {
+                    Log::info('【有赞云】自动关闭支付单异常，本地支付单状态不正确');
+                    exit();
+                }
+
+                $order = Order::query()->where('oid', $payment->oid)->first();
+                if ($order->status != 0) {
+                    Log::info('【有赞云】自动关闭支付单异常，本地订单状态不正确');
+                    exit();
+                }
+
+                DB::beginTransaction();
+                try {
+                    // 关闭支付单
+                    $payment->status = -1;
+                    $payment->save();
+
+                    // 关闭订单
+                    $order->status = -1;
+                    $order->save();
+
+                    DB::commit();
                 } catch (\Exception $e) {
                     DB::rollBack();
                     Log::info('【有赞云】更新支付单和订单异常');
-
-                    return Response::json(['code' => 0, 'msg' => 'success']);
                 }
-            }
 
-            return Response::json(['code' => 0, 'msg' => 'success']);
+                exit();
+            }
         }
+
+        exit();
     }
 
     public function show(Request $request)
     {
         exit('show');
+    }
+
+    // 写入回调请求日志
+    private function callbackLog($client_id, $yz_id, $kdt_id, $kdt_name, $mode, $msg, $sendCount, $sign, $status, $test, $type, $version)
+    {
+        $paymentCallback = new PaymentCallback();
+        $paymentCallback->client_id = $client_id;
+        $paymentCallback->yz_id = $yz_id;
+        $paymentCallback->kdt_id = $kdt_id;
+        $paymentCallback->kdt_name = $kdt_name;
+        $paymentCallback->mode = $mode;
+        $paymentCallback->msg = urldecode($msg);
+        $paymentCallback->sendCount = $sendCount;
+        $paymentCallback->sign = $sign;
+        $paymentCallback->status = $status;
+        $paymentCallback->test = $test;
+        $paymentCallback->type = $type;
+        $paymentCallback->version = $version;
+        $paymentCallback->save();
+
+        return $paymentCallback->id;
     }
 }

@@ -26,7 +26,6 @@ use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserBanLog;
 use App\Http\Models\UserLabel;
 use App\Http\Models\UserSubscribe;
-use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\UserTrafficLog;
@@ -230,7 +229,7 @@ class AdminController extends Controller
                 $user->save();
 
                 // 初始化默认标签
-                if(count(self::$config['initial_labels_for_user']) > 0) {
+                if (count(self::$config['initial_labels_for_user']) > 0) {
                     $labels = explode(',', self::$config['initial_labels_for_user']);
                     foreach ($labels as $label) {
                         $userLabel = new UserLabel();
@@ -553,10 +552,8 @@ class AdminController extends Controller
                 }
 
                 // 生成节点标签
+                SsNodeLabel::query()->where('node_id', $id)->delete(); // 删除所有该节点的标签
                 if (!empty($labels)) {
-                    // 先删除所有该用户的标签
-                    SsNodeLabel::query()->where('node_id', $id)->delete();
-
                     foreach ($labels as $label) {
                         $ssNodeLabel = new SsNodeLabel();
                         $ssNodeLabel->node_id = $id;
@@ -607,13 +604,19 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '节点不存在，请重试']);
         }
 
+        DB::beginTransaction();
         try {
-            // 删除分组关联
+            // 删除分组关联、节点标签
             SsGroupNode::query()->where('node_id', $id)->delete();
+            SsNodeLabel::query()->where('node_id', $id)->delete();
             SsNode::query()->where('id', $id)->delete();
+
+            DB::commit();
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：' . $e->getMessage()]);
         }
     }
@@ -727,8 +730,8 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        $user = Article::query()->where('id', $id)->update(['is_del' => 1]);
-        if ($user) {
+        $ret = Article::query()->where('id', $id)->update(['is_del' => 1]);
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
@@ -806,8 +809,8 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：该分组下有节点关联，请先解除关联']);
         }
 
-        $user = SsGroup::query()->where('id', $id)->delete();
-        if ($user) {
+        $ret = SsGroup::query()->where('id', $id)->delete();
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
@@ -1309,8 +1312,8 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        $config = SsConfig::query()->where('id', $id)->delete();
-        if ($config) {
+        $ret = SsConfig::query()->where('id', $id)->delete();
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
@@ -1391,21 +1394,19 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
         }
 
-        try {
-            $exists = Level::query()->where('level', $level)->first();
-            if ($exists) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级已存在，请勿重复添加']);
-            }
+        $exists = Level::query()->where('level', $level)->first();
+        if ($exists) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级已存在，请勿重复添加']);
+        }
 
-            $level = new Level();
-            $level->level = $level;
-            $level->level_name = $level_name;
-            $level->save();
+        $level = new Level();
+        $level->level = $level;
+        $level->level_name = $level_name;
+        $level->save();
 
+        if ($level->id) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
+        } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
         }
     }
@@ -1446,13 +1447,10 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
         }
 
-        try {
-            Level::query()->where('id', $id)->update(['level' => $level, 'level_name' => $level_name]);
-
+        $ret = Level::query()->where('id', $id)->update(['level' => $level, 'level_name' => $level_name]);
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
+        } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
         }
     }
@@ -1483,13 +1481,10 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
         }
 
-        try {
-            Level::query()->where('id', $id)->delete();
-
+        $ret = Level::query()->where('id', $id)->delete();
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
+        } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
         }
     }
@@ -1508,21 +1503,19 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
         }
 
-        try {
-            $exists = Country::query()->where('country_name', $country_name)->first();
-            if ($exists) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区名称已存在，请勿重复添加']);
-            }
+        $exists = Country::query()->where('country_name', $country_name)->first();
+        if ($exists) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区名称已存在，请勿重复添加']);
+        }
 
-            $country = new Country();
-            $country->country_name = $country_name;
-            $country->country_code = $country_code;
-            $country->save();
+        $country = new Country();
+        $country->country_name = $country_name;
+        $country->country_code = $country_code;
+        $country->save();
 
+        if ($country->id) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
+        } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
         }
     }
@@ -1557,13 +1550,10 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
         }
 
-        try {
-            Country::query()->where('id', $id)->update(['country_name' => $country_name, 'country_code' => $country_code]);
-
+        $ret = Country::query()->where('id', $id)->update(['country_name' => $country_name, 'country_code' => $country_code]);
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
+        } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
         }
     }
@@ -1588,13 +1578,10 @@ class AdminController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
         }
 
-        try {
-            Country::query()->where('id', $id)->delete();
-
+        $ret = Country::query()->where('id', $id)->delete();
+        if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-
+        } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
         }
     }
@@ -1764,6 +1751,7 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
+        // TODO:list 应该改为 object
         $list = [];
         $apply = ReferralApply::query()->where('id', $id)->with('user')->first();
         if ($apply && $apply->link_logs) {
@@ -1874,6 +1862,7 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值异常']);
             }
 
+            DB::beginTransaction();
             try {
                 $user = User::query()->where('id', $user_id)->first();
                 $amount = $amount * 100;
@@ -1896,8 +1885,12 @@ class AdminController extends Controller
                     $user->increment('balance', abs($amount));
                 }
 
+                DB::commit();
+
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
             } catch (\Exception $e) {
+                DB::rollBack();
+
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败：' . $e->getMessage()]);
             }
         } else {

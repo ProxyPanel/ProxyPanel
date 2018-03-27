@@ -33,6 +33,7 @@ class AutoResetUserTrafficJob extends Command
                 $order = Order::query()->with(['user', 'goods'])->whereHas('goods', function ($q) {
                     $q->where('type', 2);
                 })->where('user_id', $user->id)->where('is_expire', 0)->orderBy('oid', 'desc')->first();
+
                 if (!$order) {
                     continue;
                 }

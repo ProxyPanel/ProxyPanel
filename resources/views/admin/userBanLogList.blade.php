@@ -42,7 +42,7 @@
                                 <tbody>
                                     @if($list->isEmpty())
                                         <tr>
-                                            <td colspan="5">暂无数据</td>
+                                            <td colspan="5" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($list as $vo)

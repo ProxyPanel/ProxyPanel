@@ -66,7 +66,7 @@
                                 <tbody>
                                 @if($referralLogList->isEmpty())
                                     <tr>
-                                        <td colspan="6"> {{trans('home.referral_table_none')}} </td>
+                                        <td colspan="6" style="text-align: center;"> {{trans('home.referral_table_none')}} </td>
                                     </tr>
                                 @else
                                     @foreach($referralLogList as $key => $referralLog)

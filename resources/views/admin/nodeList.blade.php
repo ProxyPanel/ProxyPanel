@@ -52,7 +52,7 @@
                                 <tbody>
                                     @if($nodeList->isEmpty())
                                         <tr>
-                                            <td colspan="10">暂无数据</td>
+                                            <td colspan="10" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($nodeList as $node)

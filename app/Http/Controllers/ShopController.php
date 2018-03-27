@@ -134,6 +134,7 @@ class ShopController extends Controller
                 'days'    => $days,
                 'status'  => $status
             ];
+
             $ret = Goods::query()->where('id', $id)->update($data);
             if ($ret) {
                 $request->session()->flash('successMsg', '编辑成功');

@@ -216,7 +216,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList', 'payment/callbackList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="icon-wrench"></i>
                         <span class="title">工具箱</span>
@@ -263,6 +263,12 @@
                             <a href="{{url('emailLog/logList')}}" class="nav-link">
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="title">邮件投递记录</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
+                            <a href="{{url('payment/callbackList')}}" class="nav-link">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="title">有赞云回调日志</span>
                             </a>
                         </li>
                     </ul>
