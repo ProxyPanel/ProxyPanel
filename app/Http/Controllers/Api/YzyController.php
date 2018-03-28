@@ -69,6 +69,7 @@ class YzyController extends Controller
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
         if (!$data) {
+            Log::info('YZY-POST:回调数据无法解析，可能是非法请求');
             exit();
         }
 
@@ -77,15 +78,17 @@ class YzyController extends Controller
         $sign_string = self::$config['youzan_client_id'] . "" . $msg . "" . self::$config['youzan_client_secret'];
         $sign = md5($sign_string);
         if ($sign != $data['sign']) {
+            Log::info('YZY-POST:回调数据签名错误，可能是非法请求');
             exit();
         } else {
+            // 返回请求成功标识给有赞
             var_dump(["code" => 0, "msg" => "success"]);
         }
 
         // 先写入回调日志
         $this->callbackLog($data['client_id'], $data['id'], $data['kdt_id'], $data['kdt_name'], $data['mode'], $data['msg'], $data['sendCount'], $data['sign'], $data['status'], $data['test'], $data['type'], $data['version']);
 
-        // msg内容经过 urlencode 编码，需进行解码
+        // msg内容经过 urlencode 编码，进行解码
         $msg = json_decode(urldecode($msg), true);
 
         if ($data['type'] == 'TRADE_ORDER_STATE') {
@@ -103,6 +106,12 @@ class YzyController extends Controller
                 exit();
             }
 
+            // 等待支付
+            if ($data['status'] == 'WAIT_BUYER_PAY') {
+                Log::info('【有赞云】等待支付' . urldecode($data['msg']));
+                exit();
+            }
+
             // 交易成功
             if ($data['status'] == 'TRADE_SUCCESS') {
                 if ($payment->status != '0') {
@@ -114,6 +123,7 @@ class YzyController extends Controller
                 DB::beginTransaction();
                 try {
                     // 更新支付单
+                    $payment->pay_way = $msg['pay_type'] == '微信支付' ? 1 : 2; // 1-微信、2-支付宝
                     $payment->status = 1;
                     $payment->save();
 
@@ -221,6 +231,23 @@ class YzyController extends Controller
                     Log::info('【有赞云】更新支付单和订单异常');
                 }
 
+                exit();
+            }
+        }
+
+        if ($data['type'] == 'TRADE') {
+            if ($data['status'] == 'WAIT_BUYER_PAY') {
+                Log::info('【有赞云】等待支付' . urldecode($data['msg']));
+                exit();
+            }
+
+            if ($data['status'] == 'TRADE_SUCCESS') {
+                Log::info('【有赞云】支付成功' . urldecode($data['msg']));
+                exit();
+            }
+
+            if ($data['status'] == 'TRADE_CLOSED') {
+                Log::info('【有赞云】超时未支付自动支付' . urldecode($data['msg']));
                 exit();
             }
         }

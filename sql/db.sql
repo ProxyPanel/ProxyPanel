@@ -835,7 +835,7 @@ CREATE TABLE `payment` (
   `user_id` int(11) NOT NULL COMMENT '用户ID',
   `oid` int(11) DEFAULT NULL COMMENT '本地订单ID',
   `orderId` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '本地订单长ID',
-  `pay_way` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1' COMMENT '支付类型：1-扫码支付',
+  `pay_way` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1' COMMENT '支付方式：1-微信、2-支付宝',
   `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
   `qr_id` int(11) NOT NULL DEFAULT '0' COMMENT '有赞生成的支付单ID',
   `qr_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '有赞生成的支付二维码URL',

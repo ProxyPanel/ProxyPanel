@@ -34,15 +34,11 @@
 <body class="page-500-full-page">
 <div class="row">
     <div class="col-md-12 page-500">
-        <div class="number font-red"> 404 </div>
-        <div class="details">
-            <h3>{{trans('404.title')}}</h3>
-            <p> {{trans('404.tips')}} <a href="https://github.com/ssrpanel/ssrpanel/issues" target="_blank">Issues</a>
-                <br/> </p>
-            <p>
-                <a href="{{url('admin')}}" class="btn red btn-outline"> {{trans('404.back')}} </a>
-                <br> </p>
-        </div>
+        <h3>{{trans('404.title')}}</h3>
+        <p><br></p>
+        <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
+        <p><br></p>
+        <a href="{{url('admin')}}" class="btn default"> {{trans('404.back')}} </a>
     </div>
 </div>
 <!--[if lt IE 9]>
