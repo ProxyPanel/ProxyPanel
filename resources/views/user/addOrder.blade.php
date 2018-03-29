@@ -76,7 +76,6 @@
         function redeemCoupon() {
             var coupon_sn = $('#coupon_sn').val();
             var goods_price = '{{$goods->price}}';
-            var layerIndex;
 
             $.ajax({
                 type: "POST",
@@ -124,7 +123,6 @@
         function onlinePay() {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
-            var layerIndex;
 
             $.ajax({
                 type: "POST",
@@ -154,7 +152,6 @@
         function pay() {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
-            var layerIndex;
 
             $.ajax({
                 type: "POST",
