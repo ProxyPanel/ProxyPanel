@@ -88,7 +88,7 @@ return [
     'invoice_table_expired' => '已过期',
 
     // 工单
-    'ticket_title' => '工单列表',
+    'ticket_title' => '我的工单',
     'ticket_table_title' => '标题',
     'ticket_table_status' => '状态',
     'ticket_table_none' => '暂无数据',

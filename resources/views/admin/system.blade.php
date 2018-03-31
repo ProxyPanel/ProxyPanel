@@ -435,7 +435,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="crash_warning_email" class="col-md-3 control-label">宕机收信地址</label>
+                                                            <label for="crash_warning_email" class="col-md-3 control-label">管理员收信地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="crash_warning_email" value="{{$crash_warning_email}}" id="crash_warning_email" placeholder="master@ssrpanel.com" />
@@ -443,7 +443,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setCrashWarningEmail()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 启用节点宕机提醒后如果不填写此值，则不发信 </span>
+                                                                <span class="help-block"> 填写此值则节点宕机、工单回复会自动提醒 </span>
                                                             </div>
                                                         </div>
                                                     </div>

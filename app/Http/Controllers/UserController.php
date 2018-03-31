@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\ServerChan;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
 use App\Http\Models\CouponLog;
@@ -24,6 +25,9 @@ use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
+use App\Mail\newTicket;
+use App\Mail\closeTicket;
+use App\Mail\replyTicket;
 use App\Mail\resetPassword;
 use Illuminate\Http\Request;
 use Redirect;
@@ -224,10 +228,10 @@ class UserController extends Controller
                 }
 
                 $data = [
-                    'passwd'   => $passwd,
-                    'method'   => $method,
+                    'passwd' => $passwd,
+                    'method' => $method,
                     'protocol' => $protocol,
-                    'obfs'     => $obfs
+                    'obfs' => $obfs
                 ];
 
                 $ret = User::query()->where('id', $user['id'])->update($data);
@@ -329,7 +333,7 @@ class UserController extends Controller
     // 添加工单
     public function addTicket(Request $request)
     {
-        $title = clean($request->get('title'));
+        $title = $request->get('title');
         $content = clean($request->get('content'));
 
         $user = $request->session()->get('user');
@@ -347,6 +351,30 @@ class UserController extends Controller
         $obj->save();
 
         if ($obj->id) {
+            $emailTitle = "新工单提醒";
+            $content = "标题：【" . $title . "】<br>内容：" . $content;
+
+            // 发邮件通知管理员
+            try {
+                if (self::$config['crash_warning_email']) {
+                    Mail::to(self::$config['crash_warning_email'])->send(new newTicket(self::$config['website_name'], $emailTitle, $content));
+                    $this->sendEmailLog(1, $emailTitle, $content);
+                }
+            } catch (\Exception $e) {
+                $this->sendEmailLog(1, $emailTitle, $content, 0, $e->getMessage());
+            }
+
+            // 通过ServerChan发微信消息提醒管理员
+            if (self::$config['is_server_chan'] && self::$config['server_chan_key']) {
+                $serverChan = new ServerChan();
+                $result = $serverChan->send($emailTitle, $content, self::$config['server_chan_key']);
+                if ($result->errno > 0) {
+                    $this->sendEmailLog(1, '[ServerChan]' . $emailTitle, $content);
+                } else {
+                    $this->sendEmailLog(1, '[ServerChan]' . $emailTitle, $content, 0, $result->errmsg);
+                }
+            }
+
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '提交失败']);
@@ -356,7 +384,7 @@ class UserController extends Controller
     // 回复工单
     public function replyTicket(Request $request)
     {
-        $id = $request->get('id');
+        $id = intval($request->get('id'));
 
         $user = $request->session()->get('user');
 
@@ -371,6 +399,32 @@ class UserController extends Controller
             $obj->save();
 
             if ($obj->id) {
+                $ticket = Ticket::query()->where('id', $id)->first();
+
+                $title = "工单回复提醒";
+                $content = "标题：【" . $ticket->title . "】<br>用户回复：" . $content;
+
+                // 发邮件通知管理员
+                try {
+                    if (self::$config['crash_warning_email']) {
+                        Mail::to(self::$config['crash_warning_email'])->send(new replyTicket(self::$config['website_name'], $title, $content));
+                        $this->sendEmailLog(1, $title, $content);
+                    }
+                } catch (\Exception $e) {
+                    $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
+                }
+
+                // 通过ServerChan发微信消息提醒管理员
+                if (self::$config['is_server_chan'] && self::$config['server_chan_key']) {
+                    $serverChan = new ServerChan();
+                    $result = $serverChan->send($title, $content, self::$config['server_chan_key']);
+                    if ($result->errno > 0) {
+                        $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
+                    } else {
+                        $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
+                    }
+                }
+
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
             } else {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
@@ -747,8 +801,8 @@ class UserController extends Controller
         }
 
         $data = [
-            'type'     => $coupon->type,
-            'amount'   => $coupon->amount / 100,
+            'type' => $coupon->type,
+            'amount' => $coupon->amount / 100,
             'discount' => $coupon->discount
         ];
 
