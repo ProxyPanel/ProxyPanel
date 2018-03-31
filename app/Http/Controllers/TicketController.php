@@ -61,7 +61,7 @@ class TicketController extends Controller
                 $content = "标题：" . $ticket->title . "<br>管理员回复：" . $content;
 
                 // 发通知邮件
-                if ($user['is_admin']) {
+                if (!$user['is_admin']) {
                     if (self::$config['crash_warning_email']) {
                         try {
                             Mail::to(self::$config['crash_warning_email'])->send(new replyTicket(self::$config['website_name'], $title, $content));
