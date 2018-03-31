@@ -28,7 +28,7 @@ CREATE TABLE `ss_node` (
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '名称',
   `group_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属分组',
   `country_code` char(5) DEFAULT '' COMMENT '国家代码',
-  `server` varchar(128) DEFAULT '' COMMENT '服务器域名地址',
+  `server` varchar(255) DEFAULT '' COMMENT '服务器域名地址',
   `ip` varchar(30) DEFAULT NULL COMMENT '服务器IP地址',
   `desc` varchar(255) DEFAULT '' COMMENT '节点简单描述',
   `method` varchar(32) NOT NULL DEFAULT 'aes-192-ctr' COMMENT '加密方式',
