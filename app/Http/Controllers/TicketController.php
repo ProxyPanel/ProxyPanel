@@ -52,7 +52,7 @@ class TicketController extends Controller
 
             if ($obj->id) {
                 // 将工单置为已回复
-                $ticket = Ticket::query()->where('id', $id)->first();
+                $ticket = Ticket::query()->with(['user'])->where('id', $id)->first();
                 $ticket->status = 1;
                 $ticket->save();
 
@@ -72,10 +72,10 @@ class TicketController extends Controller
                     }
                 } else {
                     try {
-                        Mail::to($user['username'])->send(new replyTicket(self::$config['website_name'], $title, $content));
-                        $this->sendEmailLog($user['id'], $title, $content);
+                        Mail::to($ticket->user->username)->send(new replyTicket(self::$config['website_name'], $title, $content));
+                        $this->sendEmailLog($ticket->user_id, $title, $content);
                     } catch (\Exception $e) {
-                        $this->sendEmailLog($user['id'], $title, $content, 0, $e->getMessage());
+                        $this->sendEmailLog($ticket->user_id, $title, $content, 0, $e->getMessage());
                     }
                 }
 
@@ -106,9 +106,8 @@ class TicketController extends Controller
     public function closeTicket(Request $request)
     {
         $id = $request->get('id');
-        $user = $request->session()->get('user');
 
-        $ticket = Ticket::query()->where('id', $id)->first();
+        $ticket = Ticket::query()->with(['user'])->where('id', $id)->first();
         $ticket->status = 2;
         $ret = $ticket->save();
         if (!$ret) {
@@ -120,10 +119,10 @@ class TicketController extends Controller
 
         // 发邮件通知用户
         try {
-            Mail::to($user['username'])->send(new closeTicket(self::$config['website_name'], $title, $content));
-            $this->sendEmailLog($user['id'], $title, $content);
+            Mail::to($ticket->user->username)->send(new closeTicket(self::$config['website_name'], $title, $content));
+            $this->sendEmailLog($ticket->user_id, $title, $content);
         } catch (\Exception $e) {
-            $this->sendEmailLog($user['id'], $title, $content, 0, $e->getMessage());
+            $this->sendEmailLog($ticket->user_id, $title, $content, 0, $e->getMessage());
         }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
