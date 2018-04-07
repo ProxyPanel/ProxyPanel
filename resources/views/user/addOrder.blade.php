@@ -122,6 +122,10 @@
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
 
+            index = layer.load(1, {
+                shade: [0.7,'#CCC']
+            });
+
             $.ajax({
                 type: "POST",
                 url: "{{url('payment/create')}}",
@@ -152,6 +156,10 @@
         function pay() {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
+
+            index = layer.load(1, {
+                shade: [0.7,'#CCC']
+            });
 
             $.ajax({
                 type: "POST",

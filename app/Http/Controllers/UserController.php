@@ -96,7 +96,7 @@ class UserController extends Controller
             $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
+            $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
             $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . base64url_encode($node->name);
             $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
@@ -114,6 +114,9 @@ class UserController extends Controller
 
             // 生成文本配置信息
             $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
+            if ($node->ipv6) {
+                $txt .= "IPv6：" . $node->ipv6 . "\r\n";
+            }
             $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
@@ -1083,11 +1086,25 @@ class UserController extends Controller
     {
         $user = $request->session()->get('user');
 
-        $code = $this->makeSubscribeCode();
+        DB::beginTransaction();
+        try {
+            // 更换订阅地址
+            $code = $this->makeSubscribeCode();
+            UserSubscribe::query()->where('user_id', $user['id'])->update(['code' => $code]);
 
-        UserSubscribe::query()->where('user_id', $user['id'])->update(['code' => $code]);
+            // 更换连接密码
+            User::query()->where('id', $user['id'])->update(['passwd' => makeRandStr()]);
 
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '更换成功']);
+            DB::commit();
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '更换成功']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::info("更换订阅地址异常：" . $e->getMessage());
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '更换失败' . $e->getMessage()]);
+        }
     }
 
     // 转换成管理员的身份

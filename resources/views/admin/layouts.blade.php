@@ -106,26 +106,26 @@
             <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
                 <li class="nav-item start {{in_array(Request::path(), ['admin']) ? 'active open' : ''}}">
                     <a href="{{url('admin')}}" class="nav-link nav-toggle">
-                        <i class="icon-home"></i>
+                        <i class="fa fa-home"></i>
                         <span class="title">管理中心</span>
                         <span class="selected"></span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/inviteList']) ? 'active open' : ''}}">
                     <a href="{{url('admin/inviteList')}}" class="nav-link nav-toggle">
-                        <i class="icon-puzzle"></i>
-                        <span class="title">邀请码管理</span>
+                        <i class="fa fa-puzzle-piece"></i>
+                        <span class="title">邀请管理</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/applyList', 'admin/applyDetail']) ? 'active open' : ''}}">
                     <a href="{{url('admin/applyList')}}" class="nav-link nav-toggle">
-                        <i class="icon-credit-card"></i>
+                        <i class="fa fa-credit-card"></i>
                         <span class="title">提现管理</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['shop/goodsList', 'shop/addGoods', 'shop/editGoods']) ? 'active open' : ''}}">
                     <a href="{{url('shop/goodsList')}}" class="nav-link nav-toggle">
-                        <i class="icon-basket"></i>
+                        <i class="fa fa-shopping-cart"></i>
                         <span class="title">商品管理</span>
                     </a>
                 </li>
@@ -137,7 +137,7 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['ticket/ticketList', 'ticket/replyTicket']) ? 'active open' : ''}}">
                     <a href="{{url('ticket/ticketList')}}" class="nav-link nav-toggle">
-                        <i class="icon-question"></i>
+                        <i class="fa fa-question-circle"></i>
                         <span class="title">工单管理</span>
                     </a>
                 </li>
@@ -155,7 +155,7 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle', 'admin/articleLogList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="icon-docs"></i>
+                        <i class="fa fa-file-word-o"></i>
                         <span class="title">文章管理</span>
                         <span class="arrow"></span>
                     </a>
@@ -170,14 +170,14 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="icon-users"></i>
+                        <i class="fa fa-users"></i>
                         <span class="title">用户管理</span>
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub-menu">
                         <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userList')}}" class="nav-link ">
-                                <i class="icon-user"></i>
+                                <i class="fa fa-user"></i>
                                 <span class="title">用户列表</span>
                             </a>
                         </li>
@@ -197,7 +197,7 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/groupList', 'admin/addGroup', 'admin/editGroup', 'admin/nodeMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="icon-list"></i>
+                        <i class="fa fa-list-alt"></i>
                         <span class="title">节点管理</span>
                         <span class="arrow"></span>
                     </a>
@@ -218,7 +218,7 @@
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList', 'payment/callbackList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="icon-wrench"></i>
+                        <i class="fa fa-wrench"></i>
                         <span class="title">工具箱</span>
                         <span class="arrow"></span>
                     </a>
@@ -267,15 +267,15 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
                             <a href="{{url('payment/callbackList')}}" class="nav-link">
-                                <i class="fa fa-envelope-o"></i>
-                                <span class="title">有赞云回调日志</span>
+                                <i class="fa fa-th"></i>
+                                <span class="title">有赞回调日志</span>
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/config', 'admin/addConfig', 'admin/system']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="icon-settings"></i>
+                        <i class="fa fa-gear"></i>
                         <span class="title">设置</span>
                         <span class="arrow"></span>
                     </a>

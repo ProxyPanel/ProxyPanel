@@ -28,7 +28,7 @@
                             <h3 class="font-green-sharp">
                                 <span data-counter="counterup" data-value="{{$activeUserCount}}">0</span>
                             </h3>
-                            <small>活跃用户</small>
+                            <small>7日内活跃用户</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
@@ -79,6 +79,19 @@
                         </div>
                         <div class="icon">
                             <i class="icon-list"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/trafficLog');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-blue-sharp"> {{$totalFlowCount}} </h3>
+                            <small>总消耗流量</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-speedometer"></i>
                         </div>
                     </div>
                 </div>

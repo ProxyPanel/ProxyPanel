@@ -93,7 +93,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$referralLogList->total()}} 条记录，合计返利<code>{{$canAmount}}</code>元，满 <code>{{$referral_money}}</code> 元可申请提现。</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$referralLogList->total()}} 条记录，合计返利 {{$canAmount}} 元，满 <span style="color:red;">{{$referral_money}}</span> 元可申请提现。</div>
                             </div>
                             <div class="col-md-7 col-sm-7">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">

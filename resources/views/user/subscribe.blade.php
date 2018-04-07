@@ -56,7 +56,7 @@
     <script type="text/javascript">
         // 更换订阅地址
         function exchangeSubscribe() {
-            layer.confirm('确定更换订阅地址吗？', {icon: 7, title:'警告'}, function(index) {
+            layer.confirm('更换订阅地址将导致：<br>1.旧地址立即失效；<br>2.连接密码被更改；', {icon: 7, title:'警告'}, function(index) {
                 $.post("{{url('user/exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function () {
                         if (ret.status == 'success') {

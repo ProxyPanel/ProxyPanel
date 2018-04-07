@@ -20,7 +20,7 @@
                                 <div class="form-body">
                                     <div class="alert alert-danger alert-dismissable">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点后端部署SSR时<code>usermysql.json</code>的<code>node_id</code>的值
+                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点后端部署SSR(R)时<code>usermysql.json</code>中的<code>node_id</code>的值
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -41,13 +41,19 @@
                                                     <div class="form-group">
                                                         <label for="server" class="col-md-3 control-label"> 域名地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="server" id="server" placeholder="服务器域名地址，填写则优先取域名地址">
+                                                            <input type="text" class="form-control" name="server" id="server" placeholder="服务器域名地址，填则优先取域名地址">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="ip" class="col-md-3 control-label"> IP地址 </label>
+                                                        <label for="ip" class="col-md-3 control-label"> IPV4地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="ip" id="ip" placeholder="服务器IP地址" required>
+                                                            <input type="text" class="form-control" name="ip" id="ip" placeholder="服务器IPV4地址" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="ipv6" class="col-md-3 control-label"> IPV6地址 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="ipv6" id="ipv6" placeholder="服务器IPV6地址，填写则用户可见，域名无效">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -274,8 +280,8 @@
                                                     <div class="form-group">
                                                         <label for="monitor_url" class="col-md-3 control-label">监控地址</label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control right" name="monitor_url" value="" id="monitor_url" placeholder="">
-                                                            <span class="help-block"> 例如：http://us1.xxx.com/monitor.php </span>
+                                                            <input type="text" class="form-control right" name="monitor_url" value="" id="monitor_url" placeholder="节点实时监控地址">
+                                                            <span class="help-block"> 例如：http://us1.ssrpanel.com/api/monitor </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,6 +327,7 @@
             var country_code = $("#country_code option:selected").val();
             var server = $('#server').val();
             var ip = $('#ip').val();
+            var ipv6 = $('#ipv6').val();
             var desc = $('#desc').val();
             var method = $('#method').val();
             var traffic_rate = $('#traffic_rate').val();
@@ -342,11 +349,19 @@
             var sort = $('#sort').val();
             var status = $('#status').val();
 
+            // 判断IPV4合法性
+            var reg = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;
+            if(reg.test(ip))
+            {
+                if( RegExp.$1<256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256)
+                    return true;
+            }
+            // 判断IPV6合法性
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/addNode')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

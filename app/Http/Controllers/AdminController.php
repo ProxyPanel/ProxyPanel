@@ -55,8 +55,9 @@ class AdminController extends Controller
         $view['onlineUserCount'] = User::query()->where('t', '>=', $online)->count();
         $view['nodeCount'] = SsNode::query()->count();
         $flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
-        $flowCount = flowAutoShow($flowCount);
-        $view['flowCount'] = $flowCount;
+        $view['flowCount'] = flowAutoShow($flowCount);
+        $totalFlowCount = SsNodeTrafficDaily::query()->sum('total');
+        $view['totalFlowCount'] = flowAutoShow($totalFlowCount);
         $view['totalBalance'] = User::query()->sum('balance') / 100;
         $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
         $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount') / 100;
@@ -419,6 +420,7 @@ class AdminController extends Controller
             $ssNode->country_code = $request->get('country_code', 'un');
             $ssNode->server = $request->get('server', '');
             $ssNode->ip = $request->get('ip');
+            $ssNode->ipv6 = $request->get('ipv6');
             $ssNode->desc = $request->get('desc', '');
             $ssNode->method = $request->get('method');
             $ssNode->protocol = $request->get('protocol');
@@ -486,6 +488,7 @@ class AdminController extends Controller
             $country_code = $request->get('country_code', 'un');
             $server = $request->get('server', '');
             $ip = $request->get('ip');
+            $ipv6 = $request->get('ipv6');
             $desc = $request->get('desc', '');
             $method = $request->get('method');
             $protocol = $request->get('protocol');
@@ -515,6 +518,7 @@ class AdminController extends Controller
                     'country_code'    => $country_code,
                     'server'          => $server,
                     'ip'              => $ip,
+                    'ipv6'            => $ipv6,
                     'desc'            => $desc,
                     'method'          => $method,
                     'protocol'        => $protocol,
@@ -1128,7 +1132,7 @@ class AdminController extends Controller
             $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
-            $ssr_str .= '/?obfsparam=' . ($node->single ? '' : base64url_encode($obfs_param));
+            $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
             $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
             $ssr_str .= '&remarks=' . base64url_encode($node->name);
             $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
@@ -1144,8 +1148,11 @@ class AdminController extends Controller
             $ss_str = base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
-            // 生成文本配置信息
+            // 生成配置信息
             $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
+            if ($node->ipv6) {
+                $txt .= "IPv6：" . $node->ipv6 . "\r\n";
+            }
             $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";

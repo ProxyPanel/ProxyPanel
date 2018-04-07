@@ -29,6 +29,7 @@
                                                 {{$node->name}}
                                                 @if($node->compatible) <span class="label label-info">兼</span> @endif
                                                 @if($node->single) <span class="label label-danger">单</span> @endif
+                                                @if($node->ipv6) <span class="label label-danger">IPv6</span> @endif
                                             </td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
@@ -128,6 +129,7 @@
             var n = function () {
                 @foreach($nodeList as $node)
                     $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#txt_v6_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#scheme_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
                 @endforeach

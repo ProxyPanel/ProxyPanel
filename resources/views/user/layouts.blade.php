@@ -120,7 +120,7 @@
                         <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) || Request::segment(1) == 'payment' ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
                         <span class="title">{{trans('home.services')}}</span>
