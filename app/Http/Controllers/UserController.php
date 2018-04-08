@@ -370,12 +370,7 @@ class UserController extends Controller
             // 通过ServerChan发微信消息提醒管理员
             if (self::$config['is_server_chan'] && self::$config['server_chan_key']) {
                 $serverChan = new ServerChan();
-                $result = $serverChan->send($emailTitle, $content, self::$config['server_chan_key']);
-                if ($result->errno > 0) {
-                    $this->sendEmailLog(1, '[ServerChan]' . $emailTitle, $content);
-                } else {
-                    $this->sendEmailLog(1, '[ServerChan]' . $emailTitle, $content, 0, $result->errmsg);
-                }
+                $serverChan->send($emailTitle, $content);
             }
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
@@ -420,12 +415,7 @@ class UserController extends Controller
                 // 通过ServerChan发微信消息提醒管理员
                 if (self::$config['is_server_chan'] && self::$config['server_chan_key']) {
                     $serverChan = new ServerChan();
-                    $result = $serverChan->send($title, $content, self::$config['server_chan_key']);
-                    if ($result->errno > 0) {
-                        $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
-                    } else {
-                        $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
-                    }
+                    $serverChan->send($title, $content);
                 }
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
