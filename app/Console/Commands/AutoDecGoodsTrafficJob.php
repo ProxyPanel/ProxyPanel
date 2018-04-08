@@ -19,7 +19,7 @@ class AutoDecGoodsTrafficJob extends Command
 
     public function handle()
     {
-        $orderList = Order::query()->with(['user', 'goods'])->where('is_expire', 0)->get();
+        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->get();
         if (!$orderList->isEmpty()) {
             foreach ($orderList as $order) {
                 if (empty($order->user) || empty($order->goods)) {
