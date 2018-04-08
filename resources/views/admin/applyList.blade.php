@@ -75,7 +75,7 @@
                                                     @if($apply->status > 0 && $apply->status < 2)
                                                         <button type="button" class="btn btn-sm red btn-outline" onclick="doAudit('{{$apply->id}}')"> 审核 </button>
                                                     @else
-                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')"> 查看 </button>
+                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')"> <i class="fa fa-search"></i> </button>
                                                     @endif
                                                 </td>
                                             </tr>

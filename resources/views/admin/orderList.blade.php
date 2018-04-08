@@ -63,13 +63,13 @@
                                         <th> 订单编号 </th>
                                         <th> 操作人 </th>
                                         <th> 商品 </th>
+                                        <th> 过期时间 </th>
                                         <th> 优惠券 </th>
                                         <th> 原价 </th>
                                         <th> 实价 </th>
-                                        <th> 过期时间 </th>
                                         <th> 支付方式 </th>
                                         <th> 订单状态 </th>
-                                        <th> 操作 </th>
+                                        <th> 创建时间 </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,10 +84,10 @@
                                                 <td> {{$order->orderId}} </td>
                                                 <td> {{$order->user->username}} </td>
                                                 <td> {{$order->goods->name}} </td>
+                                                <td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
                                                 <td> {{$order->coupon ? $order->coupon->name : ''}} </td>
                                                 <td> ￥{{$order->totalOriginalPrice}} </td>
                                                 <td> ￥{{$order->totalPrice}} </td>
-                                                <td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
                                                 <td> {{$order->pay_way == '1' ? '余额支付' : '有赞云支付'}} </td>
                                                 <td>
                                                     @if($order->status == '-1')

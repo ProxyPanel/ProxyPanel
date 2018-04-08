@@ -33,7 +33,7 @@
                                     <th> 关联用户数 </th>
                                     <th> 关联节点数 </th>
                                     <th> 排序 </th>
-                                    <th> 操作 </th>
+                                    <th style="text-align: center;"> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -49,7 +49,7 @@
                                             <td> {{$label->userCount}} </td>
                                             <td> {{$label->nodeCount}} </td>
                                             <td> {{$label->sort}} </td>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editLabel('{{$label->id}}')">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>

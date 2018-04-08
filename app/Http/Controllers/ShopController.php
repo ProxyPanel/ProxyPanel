@@ -100,14 +100,14 @@ class ShopController extends Controller
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $desc = $request->get('desc');
-            $traffic = $request->get('traffic');
+            //$traffic = $request->get('traffic');
             $price = $request->get('price');
-            $score = $request->get('score', 0);
-            $type = $request->get('type', 1);
-            $days = $request->get('days', 30);
+            //$score = $request->get('score', 0);
+            //$type = $request->get('type', 1);
+            //$days = $request->get('days', 30);
             $status = $request->get('status');
 
-            if (empty($name) || empty($traffic) || $price == '') {
+            if (empty($name) || $price == '') {
                 $request->session()->flash('errorMsg', '请填写完整');
 
                 return Redirect::back()->withInput();
@@ -127,11 +127,11 @@ class ShopController extends Controller
                 'name'    => $name,
                 'desc'    => $desc,
                 'logo'    => $logo,
-                'traffic' => $traffic,
+                //'traffic' => $traffic,
                 'price'   => $price * 100, // 单位分
-                'score'   => $score,
-                'type'    => $type,
-                'days'    => $days,
+                //'score'   => $score,
+                //'type'    => $type,
+                //'days'    => $days,
                 'status'  => $status
             ];
 

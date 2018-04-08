@@ -36,7 +36,7 @@ class ServerChan
             ]);
 
             $result = json_decode($response->getBody());
-            if ($result->errno > 0) {
+            if (!$result->errno) {
                 $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
             } else {
                 $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
