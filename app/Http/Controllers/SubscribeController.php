@@ -71,8 +71,7 @@ class SubscribeController extends Controller
             exit($this->noneNode());
         }
 
-        // 打乱
-        shuffle($nodeList);
+        //TODO:打乱数组
 
         // 控制客户端最多获取节点数
         $scheme = self::$config['subscribe_max'] > 0 ? 'MAX=' . self::$config['subscribe_max'] . "\n" : '';

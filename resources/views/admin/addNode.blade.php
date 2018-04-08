@@ -349,14 +349,6 @@
             var sort = $('#sort').val();
             var status = $('#status').val();
 
-            // 判断IPV4合法性
-            var reg = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;
-            if(reg.test(ip))
-            {
-                if( RegExp.$1<256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256)
-                    return true;
-            }
-            // 判断IPV6合法性
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/addNode')}}",

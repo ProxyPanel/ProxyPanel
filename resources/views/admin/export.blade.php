@@ -14,17 +14,19 @@
                 <!-- BEGIN PORTLET-->
                 <div class="portlet light bordered">
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-hover table-striped table-bordered">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
-                                    <tr>
-                                        <th>节点</th>
-                                        <th>配置信息</th>
+                                    <tr class="uppercase">
+                                        <th style="width: 10%;">#</th>
+                                        <th style="width: 30%;">节点</th>
+                                        <th style="width: 60%;">配置信息</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($nodeList as $node)
+                                    @foreach($nodeList as $k => $node)
                                         <tr>
+                                            <td>{{$k + 1}}</td>
                                             <td>
                                                 {{$node->name}}
                                                 @if($node->compatible) <span class="label label-info">兼</span> @endif
