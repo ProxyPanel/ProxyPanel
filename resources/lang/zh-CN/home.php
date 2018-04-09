@@ -104,7 +104,7 @@ return [
     'ticket_reply_button' => '回复',
 
     // 推广返利
-    'referral_title' => '推广返利',
+    'referral_title' => '我的推广',
     'referral_button' => '复制链接',
     'referral_my_link' => '我的推广链接',
     'referral_table_user' => '消费者',

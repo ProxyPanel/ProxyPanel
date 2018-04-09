@@ -34,7 +34,7 @@
                                 <tbody>
                                 @if($orderList->isEmpty())
                                     <tr>
-                                        <td colspan="5">{{trans('home.invoice_table_none')}}</td>
+                                        <td colspan="6">{{trans('home.invoice_table_none')}}</td>
                                     </tr>
                                 @else
                                     @foreach($orderList as $key => $order)
