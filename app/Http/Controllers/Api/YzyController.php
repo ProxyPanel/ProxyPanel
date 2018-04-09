@@ -222,6 +222,12 @@ class YzyController extends Controller
                 exit();
             }
 
+            // 用户已签收
+            if ($data['status'] == 'TRADE_BUYER_SIGNED') {
+                Log::info('【有赞云】用户已签收' . urldecode($data['msg']));
+                exit();
+            }
+
             if ($data['status'] == 'TRADE_CLOSED') {
                 Log::info('【有赞云】超时未支付自动支付' . urldecode($data['msg']));
                 exit();

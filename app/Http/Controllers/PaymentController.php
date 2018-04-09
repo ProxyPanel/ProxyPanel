@@ -59,6 +59,11 @@ class PaymentController extends Controller
             $totalPrice = $goods->price;
         }
 
+        // 如果最后总价格为0，则不允许创建支付单
+        if ($totalPrice <= 0) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：合计价格为0，无需使用在线支付']);
+        }
+
         DB::beginTransaction();
         try {
             $user = $request->session()->get('user');
