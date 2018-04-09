@@ -47,7 +47,7 @@
                                 <tbody>
                                 @if($goodsList->isEmpty())
                                     <tr>
-                                        <td colspan="9">暂无数据</td>
+                                        <td colspan="9" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($goodsList as $goods)
