@@ -146,7 +146,7 @@ class YzyController extends Controller
                     // 把商品的流量加到账号上
                     User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
 
-                    // 套餐就改流量重置日，加油包不改
+                    // 套餐就改流量重置日，流量包不改
                     if ($goods->type == 2) {
                         // 将商品的有效期和流量自动重置日期加到账号上
                         $traffic_reset_day = in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'));
@@ -172,7 +172,7 @@ class YzyController extends Controller
                 } catch (\Exception $e) {
                     DB::rollBack();
 
-                    Log::info('【有赞云】更新支付单和订单异常');
+                    Log::info('【有赞云】更新支付单和订单异常：' . $e->getMessage());
                 }
 
                 exit();

@@ -54,6 +54,13 @@ class ShopController extends Controller
                 return Redirect::back()->withInput();
             }
 
+            // 流量不能超过1PB
+            if ($traffic > 1073741824) {
+                $request->session()->flash('errorMsg', '内含流量不能超过1PB');
+
+                return Redirect::back()->withInput();
+            }
+
             // 商品LOGO
             $logo = '';
             if ($request->hasFile('logo')) {
