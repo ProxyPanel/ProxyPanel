@@ -25,7 +25,7 @@ class SubscribeController extends Controller
         self::$config = $this->systemConfig();
     }
 
-    // 登录页
+    // 获取订阅信息
     public function index(Request $request, $code)
     {
         if (empty($code)) {

@@ -13,8 +13,8 @@ use App\Http\Models\PaymentCallback;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\User;
 use Illuminate\Http\Request;
-use DB;
 use Log;
+use DB;
 
 /**
  * 有赞云支付

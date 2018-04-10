@@ -14,11 +14,13 @@ class User extends Model
     protected $table = 'user';
     protected $primaryKey = 'id';
 
-    function payment() {
+    function payment()
+    {
         return $this->hasMany(Payment::class, 'user_id', 'id');
     }
 
-    function label() {
+    function label()
+    {
         return $this->hasMany(UserLabel::class, 'user_id', 'id');
     }
 }
