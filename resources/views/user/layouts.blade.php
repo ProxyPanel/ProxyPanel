@@ -50,6 +50,13 @@
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
         <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
         <!-- END RESPONSIVE MENU TOGGLER -->
+        <!-- BEGIN Language TOGGLER -->
+        @if(Session::get('locale') == 'zh-CN')
+            <a href="/?locale=en">English</a>
+        @else
+            <a href="/?locale=zh-CN">中文</a>
+        @endif
+        <!-- END Language TOGGLER -->
         <!-- BEGIN PAGE TOP -->
         <div class="page-top">
             <!-- BEGIN TOP NAVIGATION MENU -->

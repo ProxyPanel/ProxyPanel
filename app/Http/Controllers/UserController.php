@@ -50,6 +50,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->session()->get('user');
+        $request->session()->put("locale", $request->input('locale', 'en'));
 
         $user = User::query()->where('id', $user['id'])->first();
         $user->totalTransfer = flowAutoShow($user->transfer_enable);
