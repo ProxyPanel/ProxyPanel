@@ -48,6 +48,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
     Route::post('admin/setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
     Route::any('admin/config', 'AdminController@config'); // 配置列表
+    Route::post('admin/setExtend', 'AdminController@setExtend'); // 设置客服、统计代码
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
     Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
     Route::post('admin/addLevel', 'AdminController@addLevel'); // 增加等级

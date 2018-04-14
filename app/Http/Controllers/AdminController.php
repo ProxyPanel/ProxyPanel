@@ -413,56 +413,74 @@ class AdminController extends Controller
     // 添加节点
     public function addNode(Request $request)
     {
-        if ($request->method() == 'POST') {
-            $ssNode = new SsNode();
-            $ssNode->name = $request->get('name');
-            $ssNode->group_id = $request->get('group_id', 0);
-            $ssNode->country_code = $request->get('country_code', 'un');
-            $ssNode->server = $request->get('server', '');
-            $ssNode->ip = $request->get('ip');
-            $ssNode->ipv6 = $request->get('ipv6');
-            $ssNode->desc = $request->get('desc', '');
-            $ssNode->method = $request->get('method');
-            $ssNode->protocol = $request->get('protocol');
-            $ssNode->protocol_param = $request->get('protocol_param');
-            $ssNode->obfs = $request->get('obfs', '');
-            $ssNode->obfs_param = $request->get('obfs_param', '');
-            $ssNode->traffic_rate = $request->get('traffic_rate', 1);
-            $ssNode->bandwidth = $request->get('bandwidth', 100);
-            $ssNode->traffic = $request->get('traffic', 1000);
-            $ssNode->monitor_url = $request->get('monitor_url', '');
-            $ssNode->compatible = $request->get('compatible', 0);
-            $ssNode->single = $request->get('single', 0);
-            $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
-            $ssNode->single_port = $request->get('single') ? $request->get('single_port') : '';
-            $ssNode->single_passwd = $request->get('single') ? $request->get('single_passwd') : '';
-            $ssNode->single_method = $request->get('single') ? $request->get('single_method') : '';
-            $ssNode->single_protocol = $request->get('single') ? $request->get('single_protocol') : '';
-            $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
-            $ssNode->sort = $request->get('sort', 0);
-            $ssNode->status = $request->get('status', 1);
-            $ssNode->save();
-
-            // 建立分组关联
-            if ($ssNode->id && $request->get('group_id', 0)) {
-                $ssGroupNode = new SsGroupNode();
-                $ssGroupNode->group_id = $request->get('group_id', 0);
-                $ssGroupNode->node_id = $ssNode->id;
-                $ssGroupNode->save();
+        if ($request->isMethod('POST')) {
+            if (false === filter_var($request->get('ip'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv4地址不合法']);
             }
 
-            // 生成节点标签
-            $labels = $request->get('labels');
-            if ($ssNode->id && !empty($labels)) {
-                foreach ($labels as $label) {
-                    $ssNodeLabel = new SsNodeLabel();
-                    $ssNodeLabel->node_id = $ssNode->id;
-                    $ssNodeLabel->label_id = $label;
-                    $ssNodeLabel->save();
+            if (false === filter_var($request->get('ipv6'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv6地址不合法']);
+            }
+
+            DB::beginTransaction();
+            try {
+                $ssNode = new SsNode();
+                $ssNode->name = $request->get('name');
+                $ssNode->group_id = $request->get('group_id', 0);
+                $ssNode->country_code = $request->get('country_code', 'un');
+                $ssNode->server = $request->get('server', '');
+                $ssNode->ip = $request->get('ip');
+                $ssNode->ipv6 = $request->get('ipv6');
+                $ssNode->desc = $request->get('desc', '');
+                $ssNode->method = $request->get('method');
+                $ssNode->protocol = $request->get('protocol');
+                $ssNode->protocol_param = $request->get('protocol_param');
+                $ssNode->obfs = $request->get('obfs', '');
+                $ssNode->obfs_param = $request->get('obfs_param', '');
+                $ssNode->traffic_rate = $request->get('traffic_rate', 1);
+                $ssNode->bandwidth = $request->get('bandwidth', 100);
+                $ssNode->traffic = $request->get('traffic', 1000);
+                $ssNode->monitor_url = $request->get('monitor_url', '');
+                $ssNode->compatible = $request->get('compatible', 0);
+                $ssNode->single = $request->get('single', 0);
+                $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
+                $ssNode->single_port = $request->get('single') ? $request->get('single_port') : '';
+                $ssNode->single_passwd = $request->get('single') ? $request->get('single_passwd') : '';
+                $ssNode->single_method = $request->get('single') ? $request->get('single_method') : '';
+                $ssNode->single_protocol = $request->get('single') ? $request->get('single_protocol') : '';
+                $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
+                $ssNode->sort = $request->get('sort', 0);
+                $ssNode->status = $request->get('status', 1);
+                $ssNode->save();
+
+                // 建立分组关联
+                if ($ssNode->id && $request->get('group_id', 0)) {
+                    $ssGroupNode = new SsGroupNode();
+                    $ssGroupNode->group_id = $request->get('group_id', 0);
+                    $ssGroupNode->node_id = $ssNode->id;
+                    $ssGroupNode->save();
                 }
-            }
 
-            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+                // 生成节点标签
+                $labels = $request->get('labels');
+                if ($ssNode->id && !empty($labels)) {
+                    foreach ($labels as $label) {
+                        $ssNodeLabel = new SsNodeLabel();
+                        $ssNodeLabel->node_id = $ssNode->id;
+                        $ssNodeLabel->label_id = $label;
+                        $ssNodeLabel->save();
+                    }
+                }
+
+                DB::commit();
+
+                return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('添加节点信息异常：' . $e->getMessage());
+
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：' . $e->getMessage()]);
+            }
         } else {
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
@@ -509,6 +527,14 @@ class AdminController extends Controller
             $single_obfs = $request->get('single_obfs');
             $sort = $request->get('sort');
             $status = $request->get('status');
+
+            if (false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv4地址不合法']);
+            }
+
+            if (false === filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv6地址不合法']);
+            }
 
             DB::beginTransaction();
             try {
@@ -573,7 +599,7 @@ class AdminController extends Controller
                 DB::rollBack();
                 Log::error('编辑节点信息异常：' . $e->getMessage());
 
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：' . $e->getMessage()]);
             }
         } else {
             $node = SsNode::query()->with(['label'])->where('id', $id)->first();
@@ -620,6 +646,7 @@ class AdminController extends Controller
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('删除节点信息异常：' . $e->getMessage());
 
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：' . $e->getMessage()]);
         }
@@ -748,7 +775,7 @@ class AdminController extends Controller
         $view['groupList'] = SsGroup::query()->paginate(10)->appends($request->except('page'));
 
         $level_list = $this->levelList();
-        $level_dict = array();
+        $level_dict = [];
         foreach ($level_list as $level) {
             $level_dict[$level['level']] = $level['level_name'];
         }
@@ -1041,14 +1068,14 @@ class AdminController extends Controller
             }
 
             $save_path = realpath(storage_path('uploads'));
-            $new_name = md5($file->getClientOriginalExtension()) . 'json';
+            $new_name = md5($file->getClientOriginalExtension()) . '.json';
             $file->move($save_path, $new_name);
 
             // 读取文件内容
             $data = file_get_contents($save_path . '/' . $new_name);
             $data = json_decode($data);
             if (!$data) {
-                $request->session()->flash('errorMsg', '内容格式解析异常，请上传符合SSR配置规范的JSON文件');
+                $request->session()->flash('errorMsg', '内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
 
                 return Redirect::back();
             }
@@ -1348,6 +1375,22 @@ class AdminController extends Controller
         SsConfig::query()->where('id', $id)->update(['is_default' => 1]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+    }
+
+    // 设置系统扩展信息，例如客服、统计代码
+    public function setExtend(Request $request)
+    {
+        $websiteAnalytics = $request->get('website_analytics');
+        $websiteCustomerService = $request->get('website_customer_service');
+
+        try {
+            Config::query()->where('name', 'website_analytics')->update(['value' => $websiteAnalytics]);
+            Config::query()->where('name', 'website_customer_service')->update(['value' => $websiteCustomerService]);
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+        } catch (\Exception $e) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+        }
     }
 
     // 日志分析
@@ -1709,15 +1752,15 @@ class AdminController extends Controller
         $filename = '邀请码' . date('Ymd');
         Excel::create($filename, function ($excel) use ($inviteList) {
             $excel->sheet('邀请码', function ($sheet) use ($inviteList) {
-                $sheet->row(1, array(
+                $sheet->row(1, [
                     '邀请码', '有效期'
-                ));
+                ]);
 
                 if (!$inviteList->isEmpty()) {
                     foreach ($inviteList as $k => $vo) {
-                        $sheet->row($k + 2, array(
+                        $sheet->row($k + 2, [
                             $vo->code, $vo->dateline
-                        ));
+                        ]);
                     }
                 }
             });

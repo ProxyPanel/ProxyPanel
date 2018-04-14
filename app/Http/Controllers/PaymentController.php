@@ -140,6 +140,8 @@ class PaymentController extends Controller
         }
 
         $view['payment'] = $payment;
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
 
         return Response::view('payment/detail', $view);
     }

@@ -261,7 +261,7 @@ INSERT INTO `ss_config` VALUES ('37', 'auth_chain_f', '2', '0', '0', '2017-08-01
 CREATE TABLE `config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '配置名',
-  `value` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
+  `value` TEXT NULL COMMENT '配置值',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置';
 
@@ -323,6 +323,8 @@ INSERT INTO `config` VALUES ('51', 'youzan_client_id', '');
 INSERT INTO `config` VALUES ('52', 'youzan_client_secret', '');
 INSERT INTO `config` VALUES ('53', 'kdt_id', '');
 INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');
+INSERT INTO `config` VALUES ('55', 'website_analytics', '');
+INSERT INTO `config` VALUES ('56', 'website_customer_service', '');
 
 
 -- ----------------------------

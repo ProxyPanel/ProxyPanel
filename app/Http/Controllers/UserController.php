@@ -63,6 +63,8 @@ class UserController extends Controller
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
         $view['login_add_score'] = self::$config['login_add_score'];
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {
@@ -145,6 +147,9 @@ class UserController extends Controller
         if (empty($view['info'])) {
             return Redirect::to('user');
         }
+
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
 
         return Response::view('user/article', $view);
     }
@@ -259,6 +264,8 @@ class UserController extends Controller
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['info'] = User::query()->where('id', $user['id'])->first();
+            $view['website_analytics'] = self::$config['website_analytics'];
+            $view['website_customer_service'] = self::$config['website_customer_service'];
 
             return Response::view('user/profile', $view);
         }
@@ -287,6 +294,8 @@ class UserController extends Controller
 
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
 
         return Response::view('user/trafficLog', $view);
     }
@@ -301,6 +310,8 @@ class UserController extends Controller
         }
 
         $view['goodsList'] = $goodsList;
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
 
         return Response::view('user/goodsList', $view);
     }
@@ -310,6 +321,8 @@ class UserController extends Controller
     {
         $user = $request->session()->get('user');
 
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['ticketList'] = Ticket::query()->where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/ticketList', $view);
@@ -329,6 +342,8 @@ class UserController extends Controller
         }
 
         $view['orderList'] = $orderList;
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
 
         return Response::view('user/orderList', $view);
     }
@@ -430,6 +445,8 @@ class UserController extends Controller
 
             $view['ticket'] = $ticket;
             $view['replyList'] = TicketReply::query()->where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
+            $view['website_analytics'] = self::$config['website_analytics'];
+            $view['website_customer_service'] = self::$config['website_customer_service'];
 
             return Response::view('user/replyTicket', $view);
         }
@@ -458,6 +475,8 @@ class UserController extends Controller
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
 
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
 
@@ -467,6 +486,8 @@ class UserController extends Controller
     // 公开的邀请码列表
     public function free(Request $request)
     {
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['is_invite_register'] = self::$config['is_invite_register'];
         $view['is_free_code'] = self::$config['is_free_code'];
         $view['inviteList'] = Invite::query()->where('uid', 1)->where('status', 0)->paginate();
@@ -685,6 +706,8 @@ class UserController extends Controller
 
             return Redirect::back();
         } else {
+            $view['website_analytics'] = self::$config['website_analytics'];
+            $view['website_customer_service'] = self::$config['website_customer_service'];
             $view['is_reset_password'] = self::$config['is_reset_password'];
 
             return Response::view('user/resetPassword', $view);
@@ -937,6 +960,8 @@ class UserController extends Controller
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
             $view['is_youzan'] = self::$config['is_youzan'];
+            $view['website_analytics'] = self::$config['website_analytics'];
+            $view['website_customer_service'] = self::$config['website_customer_service'];
 
             return Response::view('user/addOrder', $view);
         }
@@ -991,6 +1016,8 @@ class UserController extends Controller
         // 生成个人推广链接
         $user = $request->session()->get('user');
 
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['referral_traffic'] = flowAutoShow(self::$config['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$config['referral_percent'];
         $view['referral_money'] = self::$config['referral_money'];
@@ -1066,6 +1093,8 @@ class UserController extends Controller
             $code = $subscribe->code;
         }
 
+        $view['website_analytics'] = self::$config['website_analytics'];
+        $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['link'] = self::$config['subscribe_domain'] ? self::$config['subscribe_domain'] . '/s/' . $code : self::$config['website_url'] . '/s/' . $code;
 
         return Response::view('/user/subscribe', $view);
