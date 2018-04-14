@@ -37,6 +37,11 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    @if(Session::get('locale') == 'zh-CN')
+        <a href="/?locale=en">English</a>
+    @else
+        <a href="/?locale=zh-CN">中文</a>
+    @endif
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" action="{{url('register')}}" method="post" style="display: block;">
         @if($is_register)

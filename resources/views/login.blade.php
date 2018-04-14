@@ -37,6 +37,11 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    @if(Session::get('locale') == 'zh-CN')
+        <a href="/?locale=en">English</a>
+    @else
+        <a href="/?locale=zh-CN">中文</a>
+    @endif
     <!-- BEGIN LOGIN FORM -->
     <form class="login-form" action="{{url('login')}}" method="post">
         <div class="alert alert-danger display-hide">
