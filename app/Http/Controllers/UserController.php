@@ -50,7 +50,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->session()->get('user');
-        $request->session()->put("locale", $request->input('locale', 'en'));
 
         $user = User::query()->where('id', $user['id'])->first();
         $user->totalTransfer = flowAutoShow($user->transfer_enable);
@@ -1172,4 +1171,11 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败']);
         }
     }
+
+    public function switchLang(Request $request, $locale)
+    {
+        $request->session()->put("locale", $locale);
+        return Redirect::back();
+    }
+
 }
