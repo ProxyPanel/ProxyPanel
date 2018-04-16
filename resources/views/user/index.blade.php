@@ -54,7 +54,7 @@
                                             <span class="widget-thumb-body-stat">
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                                <a class="btn btn-sm green btn-outline" href="javascript:show('结算比例：{{$node->traffic_rate}}');"> <i class="fa fa-exchange"></i> </a>
+                                                <a class="btn btn-sm green btn-outline" href="javascript:show('{{trans('home.ratio')}}：{{$node->traffic_rate}}');"> <i class="fa fa-exchange"></i> </a>
                                             </span>
                                         </div>
                                     </div>
@@ -93,7 +93,7 @@
                         {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? trans('home.nerver_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}}
                     </li>
                     <li class="list-group-item">
-                        {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;每月{{$info['traffic_reset_day']}}日自动重置流量 @endif
+                        {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;{{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}}  @endif
                         <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
                             <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
                                 <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="panel-body" style="font-size:1.0em; color: #333;">
                         @if($notice)
-                            <span style="font-size:1.15em">[公告]<a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a></span>
+                            <span style="font-size:1.15em">[{{trans('home.announcement')}}]<a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a></span>
                             <br>
                         @endif
                         @foreach($articleList as $k => $article)
@@ -124,32 +124,32 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title">余额充值</h4>
+                        <h4 class="modal-title">{{trans('home.recharge_balance')}}</h4>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-danger" style="display: none; text-align: center;" id="charge_msg"></div>
                         <form action="#" method="post" class="form-horizontal">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label for="charge_type" class="col-md-4 control-label">充值方式</label>
+                                    <label for="charge_type" class="col-md-4 control-label">{{trans('home.payment_method')}}</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="charge_type" id="charge_type">
-                                            <option value="1" selected>卡券</option>
+                                            <option value="1" selected>{{trans('home.coupon')}}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="charge_coupon" class="col-md-4 control-label"> 券码 </label>
+                                    <label for="charge_coupon" class="col-md-4 control-label"> {{trans('home.coupon_code')}} </label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" name="charge_coupon" id="charge_coupon" placeholder="请输入券码">
+                                        <input type="text" class="form-control" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
-                        <button type="button" class="btn red btn-outline" onclick="return charge();">充值</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">{{trans('home.close')}}</button>
+                        <button type="button" class="btn red btn-outline" onclick="return charge();">{{trans('home.recharge')}}</button>
                     </div>
                 </div>
             </div>
@@ -159,14 +159,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title"> 兑换流量 </h4>
+                        <h4 class="modal-title"> {{trans('home.redeem_score')}} </h4>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info" id="msg">您有 {{$info['score']}} 积分，共计可兑换 {{$info['score']}}M 免费流量。</div>
+                        <div class="alert alert-info" id="msg">{{trans('home.redeem_info', ['score' => $info['score']])}}</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
-                        <button type="button" class="btn red btn-outline" onclick="return exchange();">立即兑换</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">{{trans('home.close')}}</button>
+                        <button type="button" class="btn red btn-outline" onclick="return exchange();">{{trans('home.redeem')}}</button>
                     </div>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">配置信息</h4>
+                            <h4 class="modal-title">{{trans('home.setting_info')}}</h4>
                         </div>
                         <div class="modal-body">
                             <textarea class="form-control" rows="10" readonly="readonly">{{$node->txt}}</textarea>
@@ -204,7 +204,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">请使用客户端扫描二维码</h4>
+                            <h4 class="modal-title">{{trans('home.scan_qrcode')}}</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
@@ -243,7 +243,7 @@
             var charge_coupon = $("#charge_coupon").val();
 
             if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
-                $("#charge_msg").show().html("券码不能为空");
+                $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
                 return false;
             }
@@ -253,7 +253,7 @@
                 type:"POST",
                 data:{_token:_token, coupon_sn:charge_coupon},
                 beforeSend:function(){
-                    $("#charge_msg").show().html("充值中...");
+                    $("#charge_msg").show().html("{{trans('home.recharging')}}");
                 },
                 success:function(ret){
                     if (ret.status == 'fail') {
@@ -265,7 +265,7 @@
                     window.location.reload();
                 },
                 error:function(){
-                    $("#charge_msg").show().html("请求错误，请重试");
+                    $("#charge_msg").show().html("{{trans('home.error_response')}}");
                 },
                 complete:function(){}
             });

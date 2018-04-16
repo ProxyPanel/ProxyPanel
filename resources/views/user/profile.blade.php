@@ -19,7 +19,7 @@
                 @if (Session::has('errorMsg'))
                     <div class="alert alert-danger alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        <strong>错误：</strong> {{Session::get('errorMsg')}}
+                        <strong>{{trans('home.error')}}：</strong> {{Session::get('errorMsg')}}
                     </div>
                 @endif
                 <!-- BEGIN PROFILE CONTENT -->
