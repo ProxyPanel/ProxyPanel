@@ -67,30 +67,30 @@
             <div class="col-md-4">
                 <ul class="list-group">
                     <li class="list-group-item">
-                        {{trans('home.account_status')}}：{{$info['enable'] ? '正常' : '禁用'}}
+                        {{trans('home.account_status')}}：{{$info['enable'] ? trans('home.enabled') : trans('home.disabled') }}
                     </li>
                     @if($login_add_score)
                         <li class="list-group-item">
                             {{trans('home.account_score')}}：{{$info['score']}}
                             <span class="badge badge-info">
-                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">兑换</a>
+                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">{{trans('home.redeem_coupon')}}</a>
                         </span>
                         </li>
                     @endif
                     <li class="list-group-item">
                         {{trans('home.account_balance')}}：{{$info['balance']}}
                         <span class="badge badge-danger">
-                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
+                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">{{trans('home.recharge')}}</a>
                         </span>
                     </li>
                     <li class="list-group-item">
-                        {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}}
+                        {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? trans('expired') : $info['expire_time']}}
                     </li>
                     <li class="list-group-item">
-                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}}
+                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? trans('home.nerver_used') : date('Y-m-d H:i:s', $info['t'])}}
                     </li>
                     <li class="list-group-item">
-                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}}
+                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? trans('home.nerver_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}}
                     </li>
                     <li class="list-group-item">
                         {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;每月{{$info['traffic_reset_day']}}日自动重置流量 @endif

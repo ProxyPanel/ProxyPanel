@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p> 通过您的推广链接注册并激活的用户可获得 {{$referral_traffic}} 流量奖励，同时您也可以获得 {{$referral_traffic}} 流量奖励；当他们消费时，您可以获得他们每笔消费金额的 {{$referral_percent * 100}}% 作为奖励。 </p>
+                    <p>{{trans('home.promote', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}</p>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$referralLogList->total()}} 条记录，合计返利 {{$canAmount}} 元，满 <span style="color:red;">{{$referral_money}}</span> 元可申请提现。</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">{{trans('home.referral_summary', ['total' => $referralLogList->total(), 'amount' => $canAmount, 'money' => $referral_money])}}</div>
                             </div>
                             <div class="col-md-7 col-sm-7">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">

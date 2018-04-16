@@ -75,15 +75,15 @@
                         <ul class="dropdown-menu dropdown-menu-default">
                             @if(Session::get('user')['is_admin'])
                                 <li>
-                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i> 管理中心 </a>
+                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i>{{trans('home.console')}}</a>
                                 </li>
                             @endif
                             <li>
-                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i> 个人资料 </a>
+                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i>{{trans('home.profile')}}</a>
                             </li>
                             <li class="divider"> </li>
                             <li>
-                                <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
+                                <a href="{{url('logout')}}"> <i class="icon-key"></i>{{trans('home.logout')}}</a>
                             </li>
                         </ul>
                     </li>

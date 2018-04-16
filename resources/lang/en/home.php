@@ -33,6 +33,25 @@ return [
     'account_total_traffic' => 'Total',
     'account_usage_traffic' => 'Usage',
     'article_title' => 'Article List',
+    'recharge' => 'Recharge',
+    'enabled' => 'normal',
+    'disabled' => 'disabled',
+    'nerver_used' => 'never used',
+    'expired' => 'expired',
+    'never_loggedin' => 'never logged in',
+
+    // 用户资料
+    'submit' => 'submit',
+    'contact' => 'contact',
+    'ssr_setting' => 'SSR setting',
+    'password' => 'password',
+    'new_password' => 'new password',
+    'current_password' => 'current password',
+    'wechat' => 'wechat',
+    'connection_password' => 'connection password',
+    'encrpytion' => 'encrpytion',
+    'protocal' => 'protocal',
+    'obfs' => 'obfs',
 
     // 购买服务
     'service_title' => 'Services',
@@ -57,6 +76,8 @@ return [
     'traffic_log_30days' => '30Days Statistics',
     'traffic_log_24hours' => '24Hours Statistics',
     'traffic_log_keywords' => 'Bandwidth',
+    'traffic_log_unit' => 'unit: M',
+    'traffic_log_max' => 'Max',
 
     // 邀请码
     'invite_code_make' => 'Generate Invite Code',
@@ -72,6 +93,7 @@ return [
     'invite_code_table_status_un' => 'Active',
     'invite_code_table_status_yes' => 'Already Used',
     'invite_code_table_status_expire' => 'Overdue',
+    'invite_code_summary' => 'total of :total invite codes',
 
     // 单据
     'invoice_title' => 'My Invoices',
@@ -114,4 +136,9 @@ return [
     'referral_table_date' => 'Date',
     'referral_table_none' => 'None Data',
     'referral_table_apply' => 'Apply',
+    'referral_summary' => 'total of :total records, total rewards of :amount RMB, minimum withdraw limit of :money RMB.',
+    'console' => 'Console',
+    'profile' => 'Profile',
+    'logout' => 'Log out',
+    'promote' => 'Any actived freind you invited would bring you :traffic brandwidth as bonus. Meanwhile, you will get :referral_percent% cash reward every time your invited friends make payments.',
 ];
