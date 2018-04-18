@@ -133,7 +133,7 @@ class UserController extends Controller
             $node->ss_scheme = $node->compatible ? $ss_scheme : ''; // 节点兼容原版才显示
 
             // 节点在线状态
-            $nodeInfo = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+            $nodeInfo = SsNodeInfo::query()->where('node_id', $node->node_id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             $node->online_status = empty($nodeInfo) || empty($nodeInfo->load) ? 0 : 1;
         }
 
