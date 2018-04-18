@@ -3,12 +3,12 @@
 1.多节点账号管理面板，兼容SS、SSRR
 2.需配合SSR或SSRR版后端使用
 3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
-4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单等模块
+4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
 5.用户、节点标签化，不同用户可见不同节点
-6.SS配置转SSR配置，轻松一键导入SS账号
+6.SS配置转SSR(R)配置，轻松一键导入SS账号
 7.单机单节点日志分析功能
 8.账号、节点24小时和近30天内的流量监控
-9.所有邮件投递都有记录
+9.邮件、serverChan投递都有记录
 10.账号临近到期、流量不够会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志等各种强大的定时任务
 11.后台一键添加加密方式、混淆、协议、等级
 12.强大的后台一键配置功能
@@ -20,7 +20,8 @@
 18.订阅防投毒机制
 19.自动释放端口机制，防止端口被大量长期占用
 20.封特定国家、地区、封IP段
-21.支持有赞云支付
+21.有赞云支付
+22.开放API，方便自行定制改造客户端
 ````
 
 ## 演示&交流
@@ -32,6 +33,8 @@ telegram千人讨论群已解散，有问题提issues
 ````
 
 ## 捐赠
+**ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
+
 ![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
 [VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
@@ -131,8 +134,8 @@ service php-fpm restart
 crontab加入如下命令（请自行修改php、ssrpanel路径）：
 * * * * * php /home/wwwroot/SSRPanel/artisan schedule:run >> /dev/null 2>&1
 
-注意运行权限，必须跟ssrpanel项目权限一致：
-例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
+注意运行权限，必须跟ssrpanel项目权限一致，否则出现无权限报错：
+例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的，宝塔自己搞定：
 crontab -e -u www
 ````
 
@@ -180,6 +183,7 @@ crontab -e -u www
 ## 英文版
 ````
 修改 config/app.php 下的 locale 值为 en
+欢迎提交其他语言的语言包，语言包在：resources/lang下
 ````
 
 ## 日志分析（仅支持单机单节点）
@@ -238,9 +242,9 @@ vim user-config.json
     "80": {
         "passwd": "统一认证密码", // 例如 SSRP4ne1，推荐不要出现除大小写字母数字以外的任何字符
         "method": "统一认证加密方式", // 例如 aes-128-ctr
-        "protocol": "统一认证协议", // 可选值：orgin、verify_deflate、auth_sha1_v4、auth_aes128_md5（推荐）、auth_aes128_sha1（推荐）、auth_chain_a（强烈推荐）
+        "protocol": "统一认证协议", // 可选值：orgin、verify_deflate、auth_sha1_v4、auth_aes128_md5、auth_aes128_sha1、auth_chain_a
         "protocol_param": "#", // #号前面带上数字，则可以限制在线每个用户的最多在线设备数，仅限 auth_chain_a 协议下有效，例如： 3# 表示限制最多3个设备在线
-        "obfs": "tls1.2_ticket_auth", // 可选值：plain、http_simple（该值下客户端可用http_post）、random_head、tls1.2_ticket_auth（强烈推荐）
+        "obfs": "tls1.2_ticket_auth", // 可选值：plain、http_simple、http_post、random_head、tls1.2_ticket_auth
         "obfs_param": ""
     },
     "443": {

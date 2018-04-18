@@ -3,9 +3,9 @@
 return [
     'title' => '注册',
     'username' => '用户名',
-    'username_placeholder' => '请输入邮箱',
-    'password' => '密码',
-    'retype_password' => '重复密码',
+    'username_placeholder' => '请填入邮箱',
+    'password' => '请填入密码',
+    'retype_password' => '请再次填入密码',
     'code' => '邀请码',
     'captcha' => '验证码',
     'tnc_button' => '我已阅读并同意遵守',

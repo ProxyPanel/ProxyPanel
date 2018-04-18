@@ -19,8 +19,8 @@ return [
     'no_need_invite_codes' => '系统开放注册中，无需邀请码',
 
     // 首页
-    'ratio_tips' => '结算比例：0.1表示用100M结算10M，5表示用100M结算500M。',
-    'subscribe_button' => '订阅节点',
+    'ratio_tips' => '节点订阅服务：客户端可自动同步更新节点信息。',
+    'subscribe_button' => '点此显示订阅地址',
     'account_info' => '账号信息',
     'account_level' => '等级',
     'account_balance' => '账户余额',

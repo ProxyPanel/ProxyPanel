@@ -43,6 +43,9 @@
                                         <li>
                                             <a href="#tab_7" data-toggle="tab"> 有赞云设置 </a>
                                         </li>
+                                        <li>
+                                            <a href="#tab_8" data-toggle="tab"> 客服、统计设置 </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -617,6 +620,27 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="tab-pane" id="tab_8">
+                                            <form action="{{url('admin/setExtend')}}" method="post" class="form-horizontal" role="form" onsubmit="return submitExtend();">
+                                                <div class="form-group">
+                                                    <label for="website_analytics" class="col-md-2 control-label">统计代码</label>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" rows="10" name="website_analytics" id="website_analytics">{{$website_analytics}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="website_customer_service" class="col-md-2 control-label">客服代码</label>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" rows="10" name="website_customer_service" id="website_customer_service">{{$website_customer_service}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-offset-2 col-md-10">
+                                                        <button type="submit" class="btn blue">提交</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -637,6 +661,25 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 设置客服、统计代码
+        function submitExtend() {
+            var website_analytics = $('#website_analytics').val();
+            var website_customer_service = $('#website_customer_service').val();
+
+            $.ajax({
+                type: "POST",
+                url: "{{url('admin/setExtend')}}",
+                async: false,
+                data: {_token:'{{csrf_token()}}', website_analytics:website_analytics, website_customer_service:website_customer_service},
+                dataType: 'json',
+                success: function (ret) {
+                    layer.msg(ret.message, {time:1000});
+                }
+            });
+
+            return false;
+        }
+
         $('#initial_labels_for_user').select2({
             placeholder: '设置后则可见相同标签的节点',
             allowClear: true,
