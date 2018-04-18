@@ -33,7 +33,7 @@
             <div class="col-md-8">
                 <div class="well" style="background-color: #FFF;">
                     {{trans('home.ratio_tips')}}
-                    <button class="btn btn-sm red" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
+                    <button class="btn btn-sm blue" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
                 </div>
                 <div class="row widget-row">
                     @if(!$nodeList->isEmpty())
@@ -52,9 +52,13 @@
                                         <div class="widget-thumb-body">
                                             <span class="widget-thumb-subtitle"><a data-toggle="modal" href="#txt_{{$node->id}}">{{$node->server ? $node->server : $node->ip}}</a></span>
                                             <span class="widget-thumb-body-stat">
+                                                @if($node->online_status)
+                                                    <a class="btn btn-sm green">正常</a>
+                                                @else
+                                                    <a class="btn btn-sm red">宕机</a>
+                                                @endif
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                                <a class="btn btn-sm green btn-outline" href="javascript:show('结算比例：{{$node->traffic_rate}}');"> <i class="fa fa-exchange"></i> </a>
                                             </span>
                                         </div>
                                     </div>
@@ -102,20 +106,13 @@
                     </li>
                 </ul>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{trans('home.article_title')}}</h3>
-                    </div>
-                    <div class="panel-body" style="font-size:1.0em; color: #333;">
-                        @if($notice)
-                            <span style="font-size:1.15em">[公告]<a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a></span>
-                            <br>
-                        @endif
-                        @foreach($articleList as $k => $article)
-                            <span>[{{date('m/d', strtotime($article->created_at))}}] <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{str_limit($article->title, 50)}} </a></span>
-                            <br>
-                        @endforeach
-                    </div>
+                <div class="list-group">
+                    @if($notice)
+                        <a href="{{url('user/article?id=') . $notice->id}}" class="list-group-item"> [公告] {{$notice->title}} </a>
+                    @endif
+                    @foreach($articleList as $k => $article)
+                        <a href="{{url('user/article?id=') . $article->id}}" class="list-group-item"> [{{date('m/d', strtotime($article->created_at))}}] {{str_limit($article->title, 50)}}</a>
+                    @endforeach
                 </div>
             </div>
         </div>

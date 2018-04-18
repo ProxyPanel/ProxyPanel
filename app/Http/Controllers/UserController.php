@@ -14,6 +14,7 @@ use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsGroup;
+use App\Http\Models\SsNodeInfo;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
@@ -26,7 +27,6 @@ use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
 use App\Mail\newTicket;
-use App\Mail\closeTicket;
 use App\Mail\replyTicket;
 use App\Mail\resetPassword;
 use Illuminate\Http\Request;
@@ -131,6 +131,10 @@ class UserController extends Controller
             $node->txt = $txt;
             $node->ssr_scheme = $ssr_scheme;
             $node->ss_scheme = $node->compatible ? $ss_scheme : ''; // 节点兼容原版才显示
+
+            // 节点在线状态
+            $nodeInfo = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+            $node->online_status = empty($nodeInfo) || empty($nodeInfo->load) ? '0' : '1';
         }
 
         $view['nodeList'] = $nodeList;

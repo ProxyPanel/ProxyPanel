@@ -20,7 +20,7 @@ class CouponController extends Controller
     // 优惠券列表
     public function couponList(Request $request)
     {
-        $couponList = Coupon::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
+        $couponList = Coupon::query()->where('is_del', 0)->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10);
         foreach ($couponList as $coupon) {
             $coupon->amount = $coupon->amount / 100;
         }
