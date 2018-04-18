@@ -52,6 +52,15 @@
         <!-- END RESPONSIVE MENU TOGGLER -->
         <!-- BEGIN PAGE TOP -->
         <div class="page-top">
+            <!-- BEGIN Language TOGGLER -->
+            <div style="display:inline-table;height:100%;float:left;">
+                @if(app()->getLocale() == 'zh-CN')
+                    <a style="display:table-cell;vertical-align:middle;color:red;font-weight:600;" href="{{url('lang', ['locale' => 'en'])}}">English</a>
+                @else
+                    <a style="display:table-cell;vertical-align:middle;color:red;font-weight:600;" href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+                @endif
+            </div>
+            <!-- END Language TOGGLER -->
             <!-- BEGIN TOP NAVIGATION MENU -->
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right">
@@ -66,15 +75,15 @@
                         <ul class="dropdown-menu dropdown-menu-default">
                             @if(Session::get('user')['is_admin'])
                                 <li>
-                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i> 管理中心 </a>
+                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i>{{trans('home.console')}}</a>
                                 </li>
                             @endif
                             <li>
-                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i> 个人资料 </a>
+                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i>{{trans('home.profile')}}</a>
                             </li>
                             <li class="divider"> </li>
                             <li>
-                                <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
+                                <a href="{{url('logout')}}"> <i class="icon-key"></i>{{trans('home.logout')}}</a>
                             </li>
                         </ul>
                     </li>

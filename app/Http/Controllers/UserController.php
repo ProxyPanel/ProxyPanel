@@ -1204,4 +1204,11 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败']);
         }
     }
+
+    public function switchLang(Request $request, $locale)
+    {
+        $request->session()->put("locale", $locale);
+        return Redirect::back();
+    }
+
 }

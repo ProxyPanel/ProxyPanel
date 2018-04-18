@@ -46,7 +46,7 @@
         option = {
             title: {
                 text: '{{trans('home.traffic_log_30days')}}',
-                subtext: '单位M'
+                subtext: '{{trans('home.traffic_log_unit')}}'
             },
             tooltip: {
                 trigger: 'axis'
@@ -76,7 +76,7 @@
                     data:[{!! $trafficDaily !!}],
                     markPoint: {
                         data: [
-                            {type: 'max', name: '最大值'}
+                            {type: 'max', name: '{{trans('home.traffic_log_max')}}'}
                         ]
                     }
                 }
@@ -92,7 +92,7 @@
         option = {
             title: {
                 text: '{{trans('home.traffic_log_24hours')}}',
-                subtext: '单位M'
+                subtext: '{{trans('home.traffic_log_unit')}}'
             },
             tooltip: {
                 trigger: 'axis'
@@ -122,7 +122,7 @@
                     data:[{!! $trafficHourly !!}],
                     markPoint: {
                         data: [
-                            {type: 'max', name: '最大值'}
+                            {type: 'max', name: '{{trans('home.traffic_log_max')}}'}
                         ]
                     }
                 }

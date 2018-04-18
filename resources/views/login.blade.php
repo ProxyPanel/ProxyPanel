@@ -37,6 +37,13 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    <nav style="padding-bottom: 20px;text-align: center;">
+        @if(app()->getLocale() == 'zh-CN')
+            <a style="border: 1px solid;padding: 10px;" href="{{url('lang', ['locale' => 'en'])}}">English</a>
+        @else
+            <a style="border: 1px solid;padding: 10px;" href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+        @endif
+    </nav>
     <!-- BEGIN LOGIN FORM -->
     <form class="login-form" action="{{url('login')}}" method="post">
         <div class="alert alert-danger display-hide">
