@@ -56,7 +56,7 @@ class UserController extends Controller
         $user->usedTransfer = flowAutoShow($user->u + $user->d);
         $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
         $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
-        $user->balance = $user->balance / 100;
+
         $view['info'] = $user->toArray();
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);

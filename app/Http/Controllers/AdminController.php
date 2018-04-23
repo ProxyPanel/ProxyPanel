@@ -1911,9 +1911,9 @@ class AdminController extends Controller
 
                 // 加减余额
                 if ($amount < 0) {
-                    $user->decrement('balance', abs($amount));
+                    $user->decrement('balance', abs($amount) * 100);
                 } else {
-                    $user->increment('balance', abs($amount));
+                    $user->increment('balance', abs($amount) * 100);
                 }
 
                 DB::commit();

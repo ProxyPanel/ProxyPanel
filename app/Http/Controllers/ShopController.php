@@ -134,7 +134,7 @@ class ShopController extends Controller
                 'desc'    => $desc,
                 'logo'    => $logo,
                 //'traffic' => $traffic,
-                'price'   => $price,
+                'price'   => $price * 100,
                 //'score'   => $score,
                 //'type'    => $type,
                 //'days'    => $days,
