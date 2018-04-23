@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 账号余额操作日志
  * Class UserBalanceLog
+ *
  * @package App\Http\Models
  */
 class UserBalanceLog extends Model
@@ -18,5 +19,35 @@ class UserBalanceLog extends Model
     public function User()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    function getBeforeAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    function setBeforeAttribute($value)
+    {
+        return $this->attributes['before'] = $value * 100;
+    }
+
+    function getAfterAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    function setAfterAttribute($value)
+    {
+        return $this->attributes['after'] = $value * 100;
+    }
+
+    function getAmountAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    function setAmountAttribute($value)
+    {
+        return $this->attributes['amount'] = $value * 100;
     }
 }

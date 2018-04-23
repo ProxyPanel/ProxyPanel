@@ -60,7 +60,7 @@
     <form class="forget-form" action="{{url('resetPassword')}}" method="post" style="display: block;">
         @if($is_reset_password)
             <div class="form-title">
-                <span class="form-title">重置密码</span>
+                <span class="form-title">{{trans('home.reset_password_title')}}</span>
             </div>
             <div class="form-group">
                 <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入用户名" name="username" value="{{Request::old('username')}}" required />
@@ -68,7 +68,7 @@
             </div>
         @else
             <div class="alert alert-danger">
-                <span> 系统维护中，如需重置密码请联系管理员 </span>
+                <span> {{trans('home.system_down')}} </span>
             </div>
         @endif
         <div class="form-actions">

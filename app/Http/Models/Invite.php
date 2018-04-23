@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 邀请码
  * Class Invite
+ *
  * @package App\Http\Models
  */
 class Invite extends Model

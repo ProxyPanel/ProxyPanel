@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 订单
  * Class Order
+ *
  * @package App\Http\Models
  */
 class Order extends Model
@@ -29,7 +30,28 @@ class Order extends Model
         return $this->hasOne(Coupon::class, 'id', 'coupon_id');
     }
 
-    function payment() {
+    function payment()
+    {
         return $this->hasOne(Payment::class, 'oid', 'oid');
+    }
+
+    function getOriginAmountAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    function setOriginAmountAttribute($value)
+    {
+        return $this->attributes['origin_amount'] = $value * 100;
+    }
+
+    function getAmountAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    function setAmountAttribute($value)
+    {
+        return $this->attributes['amount'] = $value * 100;
     }
 }

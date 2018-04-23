@@ -86,8 +86,8 @@
                                                 <td> {{$order->goods->name}} </td>
                                                 <td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
                                                 <td> {{$order->coupon ? $order->coupon->name : ''}} </td>
-                                                <td> ￥{{$order->totalOriginalPrice}} </td>
-                                                <td> ￥{{$order->totalPrice}} </td>
+                                                <td> ￥{{$order->origin_amount}} </td>
+                                                <td> ￥{{$order->amount}} </td>
                                                 <td> {{$order->pay_way == '1' ? '余额支付' : '有赞云支付'}} </td>
                                                 <td>
                                                     @if($order->status == '-1')

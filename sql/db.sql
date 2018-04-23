@@ -488,8 +488,8 @@ CREATE TABLE `order` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券ID',
-  `totalOriginalPrice` int(11) NOT NULL DEFAULT '0' COMMENT '订单原始总价，单位分',
-  `totalPrice` int(11) NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
+  `origin_amount` int(11) NOT NULL DEFAULT '0' COMMENT '订单原始总价，单位分',
+  `amount` int(11) NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
   `expire_at` datetime DEFAULT NULL COMMENT '过期时间',
   `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
   `pay_way` tinyint(4) NOT NULL DEFAULT '1' COMMENT '支付方式：1-余额支付、2-有赞云支付',
@@ -510,7 +510,7 @@ CREATE TABLE `order_goods` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `num` int(11) NOT NULL DEFAULT '0' COMMENT '商品数量',
-  `original_price` int(11) NOT NULL DEFAULT '0' COMMENT '商品原价，单位分',
+  `origin_price` int(11) NOT NULL DEFAULT '0' COMMENT '商品原价，单位分',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品实际价格，单位分',
   `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -866,18 +866,6 @@ CREATE TABLE `payment_callback` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='有赞云回调日志';
-
-CREATE TABLE `paypal` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `oid` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
-  `invoice_number` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '账单号',
-  `items` text COLLATE utf8mb4_unicode_ci COMMENT '商品信息，json格式',
-  `response_data` text COLLATE utf8mb4_unicode_ci COMMENT '收货地址，json格式',
-  `error` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '错误信息',
-  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

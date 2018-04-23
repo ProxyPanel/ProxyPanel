@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * SS节点信息
  * Class SsNode
+ *
  * @package App\Http\Models
  */
 class SsNode extends Model

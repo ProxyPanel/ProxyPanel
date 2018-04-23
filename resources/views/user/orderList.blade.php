@@ -42,7 +42,7 @@
                                             <td>{{$key + 1}}</td>
                                             <td>{{$order->orderId}}</td>
                                             <td>{{empty($order->goods) ? '【商品已删除】' : $order->goods->name}}</td>
-                                            <td>￥{{$order->totalPrice}}</td>
+                                            <td>￥{{$order->amount}}</td>
                                             <td>{{$order->created_at}}</td>
                                             <td>
                                                 @if(!$order->is_expire)

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 工单
  * Class Ticket
+ *
  * @package App\Http\Models
  */
 class Ticket extends Model

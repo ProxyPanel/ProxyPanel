@@ -47,20 +47,20 @@ class PaymentController extends Controller
 
         // 使用优惠券
         if ($coupon_sn) {
-            $coupon = Coupon::query()->where('sn', $coupon_sn)->where('is_del', 0)->where('status', 0)->first();
+            $coupon = Coupon::query()->where('sn', $coupon_sn)->whereIn('type', [1, 2])->where('is_del', 0)->where('status', 0)->first();
             if (!$coupon) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：优惠券不存在']);
             }
 
             // 计算实际应支付总价
-            $totalPrice = $coupon->type == 2 ? $goods->price * $coupon->discount : $goods->price - $coupon->amount;
-            $totalPrice = $totalPrice > 0 ? $totalPrice : 0;
+            $amount = $coupon->type == 2 ? $goods->price * $coupon->discount : $goods->price - $coupon->amount;
+            $amount = $amount > 0 ? $amount : 0;
         } else {
-            $totalPrice = $goods->price;
+            $amount = $goods->price;
         }
 
         // 如果最后总价格为0，则不允许创建支付单
-        if ($totalPrice <= 0) {
+        if ($amount <= 0) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：合计价格为0，无需使用在线支付']);
         }
 
@@ -76,8 +76,8 @@ class PaymentController extends Controller
             $order->user_id = $user['id'];
             $order->goods_id = $goods_id;
             $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
-            $order->totalOriginalPrice = $goods->price;
-            $order->totalPrice = $totalPrice;
+            $order->origin_amount = $goods->price;
+            $order->amount = $amount;
             $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
             $order->is_expire = 0;
             $order->pay_way = 2;
@@ -86,7 +86,7 @@ class PaymentController extends Controller
 
             // 生成支付单
             $yzy = new Yzy();
-            $result = $yzy->createQrCode($goods->name, $totalPrice, $orderId);
+            $result = $yzy->createQrCode($goods->name, $amount, $orderId);
             if (isset($result['error_response'])) {
                 Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
 
@@ -99,7 +99,7 @@ class PaymentController extends Controller
             $payment->oid = $order->oid;
             $payment->orderId = $orderId;
             $payment->pay_way = 1;
-            $payment->amount = $order->totalPrice;
+            $payment->amount = $order->amount;
             $payment->qr_id = $result['response']['qr_id'];
             $payment->qr_url = $result['response']['qr_url'];
             $payment->qr_code = $result['response']['qr_code'];

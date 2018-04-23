@@ -19,7 +19,6 @@ class ShopController extends Controller
     {
         $goodsList = Goods::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
         foreach ($goodsList as $goods) {
-            $goods->price = $goods->price / 100;
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);
         }
 
@@ -76,7 +75,7 @@ class ShopController extends Controller
             $obj->desc = $desc;
             $obj->logo = $logo;
             $obj->traffic = $traffic;
-            $obj->price = $price * 100; // 单位分
+            $obj->price = $price;
             $obj->score = $score;
             $obj->type = $type;
             $obj->days = $days;
@@ -135,7 +134,7 @@ class ShopController extends Controller
                 'desc'    => $desc,
                 'logo'    => $logo,
                 //'traffic' => $traffic,
-                'price'   => $price * 100, // 单位分
+                'price'   => $price,
                 //'score'   => $score,
                 //'type'    => $type,
                 //'days'    => $days,
@@ -151,12 +150,7 @@ class ShopController extends Controller
 
             return Redirect::to('shop/editGoods?id=' . $id);
         } else {
-            $goods = Goods::query()->where('id', $id)->first();
-            if (!empty($goods)) {
-                $goods->price = $goods->price / 100;
-            }
-
-            $view['goods'] = $goods;
+            $view['goods'] = Goods::query()->where('id', $id)->first();
 
             return Response::view('shop/editGoods', $view);
         }

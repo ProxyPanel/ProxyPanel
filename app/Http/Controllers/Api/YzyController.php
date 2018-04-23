@@ -162,8 +162,8 @@ class YzyController extends Controller
                         $referralLog->user_id = $order->user_id;
                         $referralLog->ref_user_id = $order->user->referral_uid;
                         $referralLog->order_id = $order->oid;
-                        $referralLog->amount = $order->totalPrice;
-                        $referralLog->ref_amount = $order->totalPrice * self::$config['referral_percent'];
+                        $referralLog->amount = $order->amount;
+                        $referralLog->ref_amount = $order->amount * self::$config['referral_percent'];
                         $referralLog->status = 0;
                         $referralLog->save();
                     }

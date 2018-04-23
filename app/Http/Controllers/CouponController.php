@@ -13,6 +13,7 @@ use Log;
 /**
  * 优惠券控制器
  * Class LoginController
+ *
  * @package App\Http\Controllers
  */
 class CouponController extends Controller
@@ -20,12 +21,7 @@ class CouponController extends Controller
     // 优惠券列表
     public function couponList(Request $request)
     {
-        $couponList = Coupon::query()->where('is_del', 0)->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10);
-        foreach ($couponList as $coupon) {
-            $coupon->amount = $coupon->amount / 100;
-        }
-
-        $view['couponList'] = $couponList;
+        $view['couponList'] = Coupon::query()->where('is_del', 0)->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('coupon/couponList', $view);
     }
@@ -74,8 +70,8 @@ class CouponController extends Controller
                     $obj->logo = $logo;
                     $obj->type = $type;
                     $obj->usage = $usage;
-                    $obj->amount = empty($amount) ? 0 : $amount * 100;
-                    $obj->discount = empty($discount) ? 0 : $discount / 10;
+                    $obj->amount = empty($amount) ? 0 : $amount;
+                    $obj->discount = empty($discount) ? 0 : $discount;
                     $obj->available_start = strtotime(date('Y-m-d 0:0:0', strtotime($available_start)));
                     $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($available_end)));
                     $obj->status = 0;
@@ -117,45 +113,45 @@ class CouponController extends Controller
         $chargeCouponList = Coupon::query()->where('is_del', 0)->where('status', 0)->where('type', 3)->get();
 
         $filename = '卡券' . date('Ymd');
-        Excel::create($filename, function($excel) use($cashCouponList, $discountCouponList, $chargeCouponList) {
-            $excel->sheet('抵用券', function($sheet) use($cashCouponList) {
-                $sheet->row(1, array(
+        Excel::create($filename, function ($excel) use ($cashCouponList, $discountCouponList, $chargeCouponList) {
+            $excel->sheet('抵用券', function ($sheet) use ($cashCouponList) {
+                $sheet->row(1, [
                     '名称', '类型', '有效期', '券码', '面额'
-                ));
+                ]);
 
                 if (!$cashCouponList->isEmpty()) {
                     foreach ($cashCouponList as $k => $vo) {
-                        $sheet->row($k + 2, array(
-                            $vo->name, $vo->type == 1 ? '一次性' : '可重复', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn, $vo->amount / 100
-                        ));
+                        $sheet->row($k + 2, [
+                            $vo->name, $vo->type == 1 ? '一次性' : '可重复', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn, $vo->amount
+                        ]);
                     }
                 }
             });
 
-            $excel->sheet('折扣券', function($sheet) use($discountCouponList) {
-                $sheet->row(1, array(
+            $excel->sheet('折扣券', function ($sheet) use ($discountCouponList) {
+                $sheet->row(1, [
                     '名称', '类型', '有效期', '券码', '折扣'
-                ));
+                ]);
 
                 if (!$discountCouponList->isEmpty()) {
                     foreach ($discountCouponList as $k => $vo) {
-                        $sheet->row($k + 2, array(
+                        $sheet->row($k + 2, [
                             $vo->name, $vo->type == 1 ? '一次性' : '可重复', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn, $vo->discount
-                        ));
+                        ]);
                     }
                 }
             });
 
-            $excel->sheet('充值券', function($sheet) use($chargeCouponList) {
-                $sheet->row(1, array(
+            $excel->sheet('充值券', function ($sheet) use ($chargeCouponList) {
+                $sheet->row(1, [
                     '名称', '类型', '有效期', '券码', '面额'
-                ));
+                ]);
 
                 if (!$chargeCouponList->isEmpty()) {
                     foreach ($chargeCouponList as $k => $vo) {
-                        $sheet->row($k + 2, array(
-                            $vo->name, '一次性', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn, $vo->amount / 100
-                        ));
+                        $sheet->row($k + 2, [
+                            $vo->name, '一次性', date('Y-m-d', $vo->available_start) . ' ~ ' . date('Y-m-d', $vo->available_end), $vo->sn, $vo->amount
+                        ]);
                     }
                 }
             });

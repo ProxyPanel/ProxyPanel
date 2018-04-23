@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 商品
  * Class Goods
+ *
  * @package App\Http\Models
  */
 class Goods extends Model
@@ -14,4 +15,13 @@ class Goods extends Model
     protected $table = 'goods';
     protected $primaryKey = 'id';
 
+    function getPriceAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    function setPriceAttribute($value)
+    {
+        $this->attributes['price'] = $value * 100;
+    }
 }

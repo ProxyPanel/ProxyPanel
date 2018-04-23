@@ -21,8 +21,8 @@ class CreateOrderTable extends Migration
             $table->integer('user_id')->default('0')->comment('操作人');
             $table->integer('goods_id')->default('0')->comment('商品ID');
             $table->integer('coupon_id')->default('0')->comment('优惠券ID');
-            $table->integer('totalOriginalPrice')->default('0')->comment('订单原始总价，单位分');
-            $table->integer('totalPrice')->default('0')->comment('订单总价，单位分');
+            $table->integer('orgin_amount')->default('0')->comment('订单原始总价，单位分');
+            $table->integer('amount')->default('0')->comment('订单总价，单位分');
             $table->dateTime('expire_at')->nullable()->comment('过期时间');
             $table->tinyInteger('is_expire')->default('0')->comment('是否已过期：0-未过期、1-已过期');
             $table->tinyInteger('pay_way')->default('1')->comment('支付方式：1-余额支付、2-PayPal');

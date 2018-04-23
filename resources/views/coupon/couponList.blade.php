@@ -72,7 +72,7 @@
                                                 @if($coupon->type == '1' || $coupon->type == '3')
                                                     {{$coupon->amount}}元
                                                 @else
-                                                    {{$coupon->discount * 10}}折
+                                                    {{$coupon->discount}}折
                                                 @endif
                                             </td>
                                             <td> {{date('Y-m-d', $coupon->available_start)}} ~ {{date('Y-m-d', $coupon->available_end)}} </td>

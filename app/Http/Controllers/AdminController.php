@@ -349,7 +349,6 @@ class AdminController extends Controller
             $user = User::query()->with(['label'])->where('id', $id)->first();
             if ($user) {
                 $user->transfer_enable = flowToGB($user->transfer_enable);
-                $user->balance = $user->balance / 100;
 
                 $label = [];
                 foreach ($user->label as $vo) {
@@ -1784,14 +1783,7 @@ class AdminController extends Controller
             $query->where('status', $status);
         }
 
-        $list = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
-        if (!empty($list)) {
-            foreach ($list as $vo) {
-                $vo->amount = $vo->amount / 100;
-            }
-        }
-
-        $view['applyList'] = $list;
+        $view['applyList'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('admin/applyList', $view);
     }
@@ -1801,19 +1793,15 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        // TODO:list 应该改为 object
-        $list = [];
-        $apply = ReferralApply::query()->where('id', $id)->with('user')->first();
+        $list = new \stdClass();
+        $apply = ReferralApply::query()->with(['user'])->where('id', $id)->first();
         if ($apply && $apply->link_logs) {
-            $apply->amount = $apply->amount / 100;
             $link_logs = explode(',', $apply->link_logs);
             $list = ReferralLog::query()->whereIn('id', $link_logs)->with('user')->paginate(10);
         }
 
         foreach ($list as &$vo) {
             $vo->goods = OrderGoods::query()->where('oid', $vo->order_id)->with('goods')->first();
-            $vo->amount = $vo->amount / 100;
-            $vo->ref_amount = $vo->ref_amount / 100;
         }
 
         $view['info'] = $apply;
@@ -1859,13 +1847,7 @@ class AdminController extends Controller
             $query->where('status', $status);
         }
 
-        $orderList = $query->paginate(10);
-        foreach ($orderList as &$order) {
-            $order->totalOriginalPrice = $order->totalOriginalPrice / 100;
-            $order->totalPrice = $order->totalPrice / 100;
-        }
-
-        $view['orderList'] = $orderList;
+        $view['orderList'] = $query->paginate(10);
 
         return Response::view('admin/orderList', $view);
     }
@@ -1915,7 +1897,6 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $user = User::query()->where('id', $user_id)->first();
-                $amount = $amount * 100;
 
                 // 写入余额变动日志
                 $userBalanceLog = new UserBalanceLog();
@@ -1961,16 +1942,7 @@ class AdminController extends Controller
             });
         }
 
-        $list = $query->paginate(10);
-        if (!$list->isEmpty()) {
-            foreach ($list as &$vo) {
-                $vo->before = $vo->before / 100;
-                $vo->after = $vo->after / 100;
-                $vo->amount = $vo->amount / 100;
-            }
-        }
-
-        $view['list'] = $list;
+        $view['list'] = $query->paginate(10);
 
         return Response::view('admin/userBalanceLogList', $view);
     }

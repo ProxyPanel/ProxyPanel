@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 优惠券使用日志
  * Class Goods
+ *
  * @package App\Http\Models
  */
 class CouponLog extends Model

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 节点每日流量统计
  * Class SsUserTrafficHourly
+ *
  * @package App\Http\Models
  */
 class SsNodeTrafficHourly extends Model

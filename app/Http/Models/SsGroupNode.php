@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * SS分组和节点关联表
  * Class SsNodeGroup
+ *
  * @package App\Http\Models
  */
 class SsGroupNode extends Model

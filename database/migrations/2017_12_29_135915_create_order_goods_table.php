@@ -22,7 +22,7 @@ class CreateOrderGoodsTable extends Migration
             $table->integer('user_id')->default('0')->comment('用户ID');
             $table->integer('goods_id')->default('0')->comment('商品ID');
             $table->integer('num')->default('0')->comment('商品数量');
-            $table->integer('original_price')->default('0')->comment('商品原价，单位分');
+            $table->integer('origin_price')->default('0')->comment('商品原价，单位分');
             $table->integer('price')->default('0')->comment('商品实际价格，单位分');
             $table->tinyInteger('is_expire')->default('0')->comment('是否已过期：0-未过期、1-已过期');
             $table->dateTime('created_at')->nullable();

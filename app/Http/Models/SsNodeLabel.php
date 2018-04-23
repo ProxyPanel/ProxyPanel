@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 节点标签
  * Class SsNodeLabel
+ *
  * @package App\Http\Models
  */
 class SsNodeLabel extends Model

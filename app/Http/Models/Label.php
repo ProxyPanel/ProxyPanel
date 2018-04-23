@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 标签
  * Class Label
+ *
  * @package App\Http\Models
  */
 class Label extends Model

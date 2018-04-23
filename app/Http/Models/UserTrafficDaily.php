@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 用户每日流量统计
  * Class UserTrafficDaily
+ *
  * @package App\Http\Models
  */
 class UserTrafficDaily extends Model
