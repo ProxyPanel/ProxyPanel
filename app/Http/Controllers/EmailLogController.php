@@ -9,6 +9,7 @@ use Response;
 /**
  * 邮件发送日志控制器
  * Class LoginController
+ *
  * @package App\Http\Controllers
  */
 class EmailLogController extends Controller

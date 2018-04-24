@@ -45,14 +45,14 @@ class Yzy
     }
 
     // 生成收款二维码
-    public function createQrCode($goodsName, $price, $orderId)
+    public function createQrCode($goodsName, $price, $orderSn)
     {
         $client = new \Youzan\Open\Client($this->accessToken);
 
         $params = [
             'qr_name'   => $goodsName, // 商品名
             'qr_price'  => $price, // 单位分
-            'qr_source' => $orderId, // 本地订单号
+            'qr_source' => $orderSn, // 本地订单号
             'qr_type'   => 'QR_TYPE_DYNAMIC'
         ];
 

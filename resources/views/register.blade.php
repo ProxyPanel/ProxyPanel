@@ -39,9 +39,9 @@
 <div class="content">
     <nav style="padding-bottom: 20px;text-align: center;">
         @if(app()->getLocale() == 'zh-CN')
-            <a style="border: 1px solid;padding: 10px;" href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
         @else
-            <a style="border: 1px solid;padding: 10px;" href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
         @endif
     </nav>
     <!-- BEGIN REGISTRATION FORM -->
@@ -73,7 +73,7 @@
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.code')}}</label>
                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
                 </div>
-                <p class="hint"> <a href="{{url('free')}}" target="_blank">获取免费邀请码</a> </p>
+                <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
             @endif
             @if($is_captcha)
             <div class="form-group" style="margin-bottom:75px;">

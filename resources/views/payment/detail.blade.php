@@ -23,7 +23,7 @@
                                 </tr>
                                 <tr>
                                     <td align="right">应付金额：</td>
-                                    <td align="left">{{$payment->amount / 100}} 元</td>
+                                    <td align="left">{{$payment->amount}} 元</td>
                                 </tr>
                                 <tr>
                                     <td align="right">有效期：</td>

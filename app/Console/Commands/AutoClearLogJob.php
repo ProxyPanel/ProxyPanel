@@ -29,7 +29,7 @@ class AutoClearLogJob extends Command
             // 自动清除10分钟以前的节点负载信息日志
             SsNodeInfo::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-10 minutes"))))->delete();
 
-            // 自动清除1小时以前的节点负载信息日志
+            // 自动清除1小时以前的节点在线用户数日志
             SsNodeOnlineLog::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-60 minutes"))))->delete();
 
             // 自动清除30天以前的用户流量日志

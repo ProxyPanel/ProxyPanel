@@ -240,10 +240,10 @@ class UserController extends Controller
                 }
 
                 $data = [
-                    'passwd' => $passwd,
-                    'method' => $method,
+                    'passwd'   => $passwd,
+                    'method'   => $method,
                     'protocol' => $protocol,
-                    'obfs' => $obfs
+                    'obfs'     => $obfs
                 ];
 
                 $ret = User::query()->where('id', $user['id'])->update($data);
@@ -812,8 +812,8 @@ class UserController extends Controller
         }
 
         $data = [
-            'type' => $coupon->type,
-            'amount' => $coupon->amount,
+            'type'     => $coupon->type,
+            'amount'   => $coupon->amount,
             'discount' => $coupon->discount
         ];
 
@@ -858,7 +858,7 @@ class UserController extends Controller
             try {
                 // 生成订单
                 $order = new Order();
-                $order->orderId = date('ymdHis') . mt_rand(100000, 999999);
+                $order->order_sn = date('ymdHis') . mt_rand(100000, 999999);
                 $order->user_id = $user->id;
                 $order->goods_id = $goods_id;
                 $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
@@ -866,7 +866,7 @@ class UserController extends Controller
                 $order->amount = $amount;
                 $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
                 $order->is_expire = 0;
-                $order->pay_way = 1; // 支付方式
+                $order->pay_way = 1;
                 $order->status = 2;
                 $order->save();
 
@@ -908,19 +908,23 @@ class UserController extends Controller
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
                         User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
                     }
+
+                    // 重置已用流量
+                    User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0]);
                 }
 
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);
 
-                // 套餐就改流量重置日，加油包不改
+                // 更新账号过期时间、流量重置日
                 if ($goods->type == 2) {
-                    // 将商品的有效期和流量自动重置日期加到账号上
                     $traffic_reset_day = in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'));
-                    User::query()->where('id', $user->id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time))), 'enable' => 1]);
+                    User::query()->where('id', $user->id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
                 } else {
-                    // 将商品的有效期和流量自动重置日期加到账号上
-                    User::query()->where('id', $user->id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                    $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
+                    if ($lastCanUseDays < $goods->days) {
+                        User::query()->where('id', $user->id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                    }
                 }
 
                 // 写入返利日志
@@ -1081,6 +1085,7 @@ class UserController extends Controller
 
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
+        $view['subscribe_status'] = $subscribe->status;
         $view['link'] = self::$config['subscribe_domain'] ? self::$config['subscribe_domain'] . '/s/' . $code : self::$config['website_url'] . '/s/' . $code;
 
         return Response::view('/user/subscribe', $view);
@@ -1190,6 +1195,7 @@ class UserController extends Controller
     public function switchLang(Request $request, $locale)
     {
         $request->session()->put("locale", $locale);
+
         return Redirect::back();
     }
 

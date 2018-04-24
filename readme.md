@@ -97,7 +97,7 @@ php artisan db:seed --class=UserTableSeeder
 
 ##### 手工部署
 ````
-迁移未经完整测试，可能存在BUG，可以手动将sql/db.sql导入到创建好的数据库
+迁移未经完整测试，存在BUG，可以手动将sql/db.sql导入到创建好的数据库
 ````
 
 #### 加入NGINX的URL重写规则
@@ -293,6 +293,14 @@ cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 重启一下服务器，然后：
 yum install ntp
 ntpdate cn.pool.ntp.org
+````
+
+## 二开规范
+````
+如果有小伙伴要基于本程序进行二次开发，自行定制，请谨记一下规则（如果愿意提PR我也很欢迎）
+1.数据库表字段请务必使用蟒蛇法，严禁使用驼峰法
+2.写完代码最好格式化，该空格一定要空格，该注释一定要注释，便于他人阅读代码
+3.本项目中ajax返回格式都是 {"status":"fail 或者 success", "data":[数据], "message":"文本消息提示语"}
 ````
 
 ## 致敬

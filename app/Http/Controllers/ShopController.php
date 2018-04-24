@@ -10,6 +10,7 @@ use Redirect;
 /**
  * 商店控制器
  * Class LoginController
+ *
  * @package App\Http\Controllers
  */
 class ShopController extends Controller
@@ -34,21 +35,28 @@ class ShopController extends Controller
             $name = $request->get('name');
             $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
-            $price = $request->get('price');
+            $price = $request->get('price', 0);
             $score = $request->get('score', 0);
             $type = $request->get('type', 1);
-            $days = $request->get('days', 30);
+            $days = $request->get('days', 90);
             $status = $request->get('status');
 
-            if (empty($name) || empty($traffic) || $price == '') {
+            if (empty($name) || empty($traffic)) {
                 $request->session()->flash('errorMsg', '请填写完整');
 
                 return Redirect::back()->withInput();
             }
 
-            // 套餐有效天数必须大于30天
-            if ($type == 2 && $days < 30) {
-                $request->session()->flash('errorMsg', '套餐有效天数必须不能少于30天');
+            // 套餐必须有价格
+            if ($type == 2 && $price <= 0) {
+                $request->session()->flash('errorMsg', '套餐价格必须大于0');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 套餐有效天数必须大于90天
+            if ($type == 2 && $days < 90) {
+                $request->session()->flash('errorMsg', '套餐有效天数必须不能少于90天');
 
                 return Redirect::back()->withInput();
             }
@@ -79,6 +87,7 @@ class ShopController extends Controller
             $obj->score = $score;
             $obj->type = $type;
             $obj->days = $days;
+            $obj->is_del = 0;
             $obj->status = $status;
             $obj->save();
 
@@ -106,15 +115,25 @@ class ShopController extends Controller
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $desc = $request->get('desc');
-            //$traffic = $request->get('traffic');
-            $price = $request->get('price');
-            //$score = $request->get('score', 0);
-            //$type = $request->get('type', 1);
-            //$days = $request->get('days', 30);
+            $price = $request->get('price', 0);
             $status = $request->get('status');
 
-            if (empty($name) || $price == '') {
+            $goods = Goods::query()->where('id', $id)->first();
+            if (!$goods) {
+                $request->session()->flash('errorMsg', '商品不存在');
+
+                return Redirect::back();
+            }
+
+            if (empty($name)) {
                 $request->session()->flash('errorMsg', '请填写完整');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 套餐必须有价格
+            if ($goods->type == 2 && $price <= 0) {
+                $request->session()->flash('errorMsg', '套餐价格必须大于0');
 
                 return Redirect::back()->withInput();
             }
@@ -130,15 +149,11 @@ class ShopController extends Controller
             }
 
             $data = [
-                'name'    => $name,
-                'desc'    => $desc,
-                'logo'    => $logo,
-                //'traffic' => $traffic,
-                'price'   => $price * 100,
-                //'score'   => $score,
-                //'type'    => $type,
-                //'days'    => $days,
-                'status'  => $status
+                'name'   => $name,
+                'desc'   => $desc,
+                'logo'   => $logo,
+                'price'  => $price * 100, // 更新时修改器不生效，需要手动*100，原因未知
+                'status' => $status
             ];
 
             $ret = Goods::query()->where('id', $id)->update($data);

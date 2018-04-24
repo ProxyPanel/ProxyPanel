@@ -81,7 +81,7 @@
                                         @foreach($orderList as $order)
                                             <tr>
                                                 <td> {{$order->oid}} </td>
-                                                <td> {{$order->orderId}} </td>
+                                                <td> {{$order->order_sn}} </td>
                                                 <td> {{$order->user->username}} </td>
                                                 <td> {{$order->goods->name}} </td>
                                                 <td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>

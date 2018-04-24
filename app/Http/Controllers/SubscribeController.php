@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\SsGroup;
+use App\Http\Models\SsNode;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Http\Models\UserSubscribe;
@@ -14,6 +15,7 @@ use DB;
 /**
  * 订阅控制器
  * Class SubscribeController
+ *
  * @package App\Http\Controllers
  */
 class SubscribeController extends Controller
@@ -47,12 +49,7 @@ class SubscribeController extends Controller
         $subscribe->increment('times', 1);
 
         // 记录每次请求
-        $log = new UserSubscribeLog();
-        $log->sid = $subscribe->id;
-        $log->request_ip = $request->getClientIp();
-        $log->request_time = date('Y-m-d H:i:s');
-        $log->request_header = $request->headers;
-        $log->save();
+        $this->log($subscribe->id, $request->getClientIp(), $request->headers);
 
         // 获取这个账号可用节点
         $userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');
@@ -60,40 +57,41 @@ class SubscribeController extends Controller
             exit($this->noneNode());
         }
 
-        $nodeList = DB::table('ss_node')
-            ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
-            ->whereIn('ss_node_label.label_id', $userLabelIds)
+        $nodeList = SsNode::query()->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
             ->where('ss_node.status', 1)
+            ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->groupBy('ss_node.id')
-            ->get();
-
-        if ($nodeList->isEmpty()) {
+            ->get()
+            ->toArray();
+        if (empty($nodeList)) {
             exit($this->noneNode());
         }
 
-        //TODO:打乱数组
+        // 打乱数组
+        shuffle($nodeList);
 
         // 控制客户端最多获取节点数
-        $scheme = self::$config['subscribe_max'] > 0 ? 'MAX=' . self::$config['subscribe_max'] . "\n" : '';
+        $scheme = '';
         foreach ($nodeList as $key => $node) {
-            if (self::$config['subscribe_max'] && $key >= self::$config['subscribe_max']) { // 控制显示的节点数
+            // 控制显示的节点数
+            if (self::$config['subscribe_max'] && $key >= self::$config['subscribe_max']) {
                 break;
             }
 
             // 获取分组名称
-            $group = SsGroup::query()->where('id', $node->group_id)->first();
+            $group = SsGroup::query()->where('id', $node['group_id'])->first();
 
-            $obfs_param = $user->obfs_param ? $user->obfs_param : $node->obfs_param;
-            $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
+            $obfs_param = $user->obfs_param ? $user->obfs_param : $node['obfs_param'];
+            $protocol_param = $node['single'] ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             // 生成ssr scheme
             $ssr_str = '';
-            $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
-            $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-            $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
+            $ssr_str .= ($node['server'] ? $node['server'] : $node['ip']) . ':' . ($node['single'] ? $node['single_port'] : $user->port);
+            $ssr_str .= ':' . ($node['single'] ? $node['single_protocol'] : $user->protocol) . ':' . ($node['single'] ? $node['single_method'] : $user->method);
+            $ssr_str .= ':' . ($node['single'] ? $node['single_obfs'] : $user->obfs) . ':' . ($node['single'] ? base64url_encode($node['single_passwd']) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
-            $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . base64url_encode($node->name);
+            $ssr_str .= '&protoparam=' . ($node['single'] ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
+            $ssr_str .= '&remarks=' . base64url_encode($node['name']);
             $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
@@ -102,6 +100,17 @@ class SubscribeController extends Controller
         }
 
         exit(base64url_encode($scheme));
+    }
+
+    // 写入订阅访问日志
+    private function log($subscribeId, $ip, $headers)
+    {
+        $log = new UserSubscribeLog();
+        $log->sid = $subscribeId;
+        $log->request_ip = $ip;
+        $log->request_time = date('Y-m-d H:i:s');
+        $log->request_header = $headers;
+        $log->save();
     }
 
     // 抛出无可用的节点信息，用于兼容防止客户端订阅失败

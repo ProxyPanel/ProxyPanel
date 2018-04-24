@@ -39,9 +39,9 @@
 <div class="content">
     <nav style="padding-bottom: 20px;text-align: center;">
         @if(app()->getLocale() == 'zh-CN')
-            <a style="border: 1px solid;padding: 10px;" href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
         @else
-            <a style="border: 1px solid;padding: 10px;" href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
         @endif
     </nav>
     @if (Session::get('errorMsg'))
@@ -63,7 +63,7 @@
                 <span class="form-title">{{trans('home.reset_password_title')}}</span>
             </div>
             <div class="form-group">
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入用户名" name="username" value="{{Request::old('username')}}" required />
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="" name="username" value="{{Request::old('username')}}" required autofocus />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
             </div>
         @else
@@ -72,9 +72,9 @@
             </div>
         @endif
         <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">返 回</button>
+            <button type="button" class="btn btn-default" onclick="login()">{{trans('register.back')}}</button>
             @if($is_reset_password)
-                <button type="submit" class="btn red uppercase pull-right">提 交</button>
+                <button type="submit" class="btn red uppercase pull-right">{{trans('register.submit')}}</button>
             @endif
         </div>
     </form>

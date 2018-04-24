@@ -67,12 +67,12 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try {
             $user = $request->session()->get('user');
-            $orderId = date('ymdHis') . mt_rand(100000, 999999);
+            $orderSn = date('ymdHis') . mt_rand(100000, 999999);
             $sn = makeRandStr(12);
 
             // 生成订单
             $order = new Order();
-            $order->orderId = $orderId;
+            $order->order_sn = $orderSn;
             $order->user_id = $user['id'];
             $order->goods_id = $goods_id;
             $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
@@ -86,7 +86,7 @@ class PaymentController extends Controller
 
             // 生成支付单
             $yzy = new Yzy();
-            $result = $yzy->createQrCode($goods->name, $amount, $orderId);
+            $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
             if (isset($result['error_response'])) {
                 Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
 
@@ -97,9 +97,9 @@ class PaymentController extends Controller
             $payment->sn = $sn;
             $payment->user_id = $user['id'];
             $payment->oid = $order->oid;
-            $payment->orderId = $orderId;
+            $payment->order_sn = $orderSn;
             $payment->pay_way = 1;
-            $payment->amount = $order->amount;
+            $payment->amount = $amount;
             $payment->qr_id = $result['response']['qr_id'];
             $payment->qr_url = $result['response']['qr_url'];
             $payment->qr_code = $result['response']['qr_code'];

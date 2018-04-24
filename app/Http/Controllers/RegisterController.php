@@ -17,6 +17,7 @@ use Mail;
 /**
  * 注册控制器
  * Class LoginController
+ *
  * @package App\Http\Controllers
  */
 class RegisterController extends Controller
@@ -148,7 +149,7 @@ class RegisterController extends Controller
             $user->save();
 
             // 初始化默认标签
-            if(count(self::$config['initial_labels_for_user']) > 0) {
+            if (count(self::$config['initial_labels_for_user']) > 0) {
                 $labels = explode(',', self::$config['initial_labels_for_user']);
                 foreach ($labels as $label) {
                     $userLabel = new UserLabel();

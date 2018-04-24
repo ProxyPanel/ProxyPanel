@@ -40,7 +40,7 @@
                                     @foreach($orderList as $key => $order)
                                         <tr class="odd gradeX">
                                             <td>{{$key + 1}}</td>
-                                            <td>{{$order->orderId}}</td>
+                                            <td>{{$order->order_sn}}</td>
                                             <td>{{empty($order->goods) ? '【商品已删除】' : $order->goods->name}}</td>
                                             <td>￥{{$order->amount}}</td>
                                             <td>{{$order->created_at}}</td>

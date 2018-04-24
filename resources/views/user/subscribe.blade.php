@@ -32,13 +32,17 @@
                     </div>
                     <div class="portlet-body form">
                         <div class="mt-clipboard-container">
-                            <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
-                            <a href="javascript:exchangeSubscribe();" class="btn green">
-                                {{trans('home.exchange_subscribe')}}
-                            </a>
-                            <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
-                                {{trans('home.copy_subscribe_address')}}
-                            </a>
+                            @if($subscribe_status)
+                                <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
+                                <a href="javascript:exchangeSubscribe();" class="btn green">
+                                    {{trans('home.exchange_subscribe')}}
+                                </a>
+                                <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
+                                    {{trans('home.copy_subscribe_address')}}
+                                </a>
+                            @else
+                                <span>{{trans('home.subscribe_baned')}}</span>
+                            @endif
                         </div>
                     </div>
                 </div>

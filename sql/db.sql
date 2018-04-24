@@ -484,7 +484,7 @@ CREATE TABLE `coupon_log` (
 -- ----------------------------
 CREATE TABLE `order` (
   `oid` int(11) NOT NULL AUTO_INCREMENT,
-  `orderId` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
+  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券ID',
@@ -506,7 +506,7 @@ CREATE TABLE `order` (
 CREATE TABLE `order_goods` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `oid` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
-  `orderId` varchar(20) NOT NULL DEFAULT '' COMMENT '订单编号',
+  `order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '订单编号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `num` int(11) NOT NULL DEFAULT '0' COMMENT '商品数量',
@@ -836,7 +836,7 @@ CREATE TABLE `payment` (
   `sn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `user_id` int(11) NOT NULL COMMENT '用户ID',
   `oid` int(11) DEFAULT NULL COMMENT '本地订单ID',
-  `orderId` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '本地订单长ID',
+  `order_sn` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '本地订单长ID',
   `pay_way` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1' COMMENT '支付方式：1-微信、2-支付宝',
   `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
   `qr_id` int(11) NOT NULL DEFAULT '0' COMMENT '有赞生成的支付单ID',

@@ -7,7 +7,8 @@ return [
     'exchange_subscribe' => 'Exchange Address',
     'subscribe_warning' => 'Warning: the subscription address is only for personal use, do not spread the address, otherwise it will lead to abnormal flow of your account.',
     'reset_password_title' => 'Reset Password',
-    'system_down' => 'System ',
+    'system_down' => 'The system is being maintained',
+    'subscribe_baned' => 'Your subscription function has been banned. Please contact the administrator.',
 
     // 菜单
     'home' => 'Home',

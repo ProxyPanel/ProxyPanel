@@ -13,6 +13,7 @@ use Cache;
 /**
  * 登录控制器
  * Class LoginController
+ *
  * @package App\Http\Controllers
  */
 class LoginController extends Controller
