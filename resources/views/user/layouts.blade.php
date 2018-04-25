@@ -52,15 +52,6 @@
         <!-- END RESPONSIVE MENU TOGGLER -->
         <!-- BEGIN PAGE TOP -->
         <div class="page-top">
-            <!-- BEGIN Language TOGGLER -->
-            <div style="display:inline-table;height:100%;float:left;">
-                @if(app()->getLocale() == 'zh-CN')
-                    <a style="display:table-cell;vertical-align:middle;color:red;font-weight:600;" href="{{url('lang', ['locale' => 'en'])}}">English</a>
-                @else
-                    <a style="display:table-cell;vertical-align:middle;color:red;font-weight:600;" href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
-                @endif
-            </div>
-            <!-- END Language TOGGLER -->
             <!-- BEGIN TOP NAVIGATION MENU -->
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right">

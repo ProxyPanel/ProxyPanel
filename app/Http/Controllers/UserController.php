@@ -871,7 +871,7 @@ class UserController extends Controller
                 $order->save();
 
                 // 扣余额
-                User::query()->where('id', $user->id)->decrement('balance', $amount);
+                User::query()->where('id', $user->id)->decrement('balance', $amount * 100);
 
                 // 记录余额操作日志
                 $userBalanceLog = new UserBalanceLog();
