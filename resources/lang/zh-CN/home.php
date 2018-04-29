@@ -42,7 +42,7 @@ return [
     'disabled' => '禁用',
     'nerver_used' => '从未使用',
     'expired' => '已过期',
-    'never_loggedin' => '未登录',
+    'nerver_loggedin' => '未登录',
     'announcement' => '公告',
     'recharge_balance' => '余额充值',
     'payment_method' => '充值方式',

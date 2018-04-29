@@ -42,7 +42,7 @@ return [
     'disabled' => 'disabled',
     'nerver_used' => 'never used',
     'expired' => 'expired',
-    'never_loggedin' => 'never logged in',
+    'nerver_loggedin' => 'never logged in',
     'announcement' => 'Announcement',
     'recharge_balance' => 'Recharge Balance',
     'payment_method' => 'charge method',
