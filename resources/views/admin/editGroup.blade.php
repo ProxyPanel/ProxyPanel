@@ -29,23 +29,23 @@
                         <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">分组名称</label>
+                                    <label class="control-label col-md-3">名称</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="name" value="{{$group->name}}" id="name" placeholder="" autofocus required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">可见级别</label>
+                                    <label class="control-label col-md-3">级别</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="level" id="level" required>
                                             @if(!$level_list->isEmpty())
                                                 @foreach($level_list as $level)
-                                                    <option value="{{$level['level']}}" {{$group->level == $level['level'] ? 'selected' : ''}}>{{$level['level_name']}}</option>
+                                                    <option value="{{$level->level}}" {{$group->level == $level->level ? 'selected' : ''}}>{{$level->level_name}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
-                                        <span class="help-block">对应账号级别可见该分组下的节点（向下兼容）</span>
+                                        <span class="help-block">暂无用</span>
                                     </div>
                                 </div>
                             </div>

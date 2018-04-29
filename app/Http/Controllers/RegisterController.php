@@ -12,6 +12,7 @@ use App\Mail\activeUser;
 use Captcha;
 use Response;
 use Redirect;
+use Cache;
 use Mail;
 
 /**
@@ -32,6 +33,8 @@ class RegisterController extends Controller
     // 注册页
     public function index(Request $request)
     {
+        $cacheKey = 'register_times_' . md5($request->getClientIp()); // 注册限制缓存key
+
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
@@ -106,6 +109,18 @@ class RegisterController extends Controller
                 }
             }
 
+            // 24小时内同IP注册限制
+            if (self::$config['register_ip_limit']) {
+                if (Cache::has($cacheKey)) {
+                    $registerTimes = Cache::get($cacheKey);
+                    if ($registerTimes >= self::$config['register_ip_limit']) {
+                        $request->session()->flash('errorMsg', '系统已开启防刷机制，请勿频繁注册');
+
+                        return Redirect::back()->withInput($request->except(['code']));
+                    }
+                }
+            }
+
             // 校验用户名是否已存在
             $exists = User::query()->where('username', $username)->first();
             if ($exists) {
@@ -148,8 +163,17 @@ class RegisterController extends Controller
             $user->referral_uid = $referral_uid;
             $user->save();
 
+            // 注册次数+1
+            if ($user->id) {
+                if (Cache::has($cacheKey)) {
+                    Cache::increment($cacheKey);
+                } else {
+                    Cache::put($cacheKey, 1, 1440); // 24小时
+                }
+            }
+
             // 初始化默认标签
-            if (count(self::$config['initial_labels_for_user']) > 0) {
+            if (count(self::$config['initial_labels_for_user']) > 0 && $user->id) {
                 $labels = explode(',', self::$config['initial_labels_for_user']);
                 foreach ($labels as $label) {
                     $userLabel = new UserLabel();

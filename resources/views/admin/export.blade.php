@@ -19,9 +19,10 @@
                                 <thead>
                                     <tr class="uppercase">
                                         <th style="width: 10%;">#</th>
-                                        <th style="width: 20%;">节点</th>
-                                        <th style="width: 20%;">识别域名</th>
-                                        <th style="width: 50%;">配置信息</th>
+                                        <th style="width: 15%;">节点</th>
+                                        <th style="width: 15%;">域名</th>
+                                        <th style="width: 15%;">IPv4</th>
+                                        <th style="width: 45%;">配置信息</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -35,6 +36,7 @@
                                                 @if($node->ipv6) <span class="label label-danger">IPv6</span> @endif
                                             </td>
                                             <td>{{$node->server}}</td>
+                                            <td>{{$node->ip}}</td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#scheme_{{$node->id}}"> SCHEME </a>

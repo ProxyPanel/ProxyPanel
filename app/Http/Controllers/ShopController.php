@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Goods;
+use App\Http\Models\GoodsLabel;
+use App\Http\Models\Label;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
+use DB;
 
 /**
  * 商店控制器
@@ -39,6 +42,7 @@ class ShopController extends Controller
             $score = $request->get('score', 0);
             $type = $request->get('type', 1);
             $days = $request->get('days', 90);
+            $labels = $request->get('labels');
             $status = $request->get('status');
 
             if (empty($name) || empty($traffic)) {
@@ -78,32 +82,49 @@ class ShopController extends Controller
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';
             }
 
-            $obj = new Goods();
-            $obj->name = $name;
-            $obj->desc = $desc;
-            $obj->logo = $logo;
-            $obj->traffic = $traffic;
-            $obj->price = $price;
-            $obj->score = $score;
-            $obj->type = $type;
-            $obj->days = $days;
-            $obj->is_del = 0;
-            $obj->status = $status;
-            $obj->save();
+            DB::beginTransaction();
+            try {
+                $goods = new Goods();
+                $goods->name = $name;
+                $goods->desc = $desc;
+                $goods->logo = $logo;
+                $goods->traffic = $traffic;
+                $goods->price = $price;
+                $goods->score = $score;
+                $goods->type = $type;
+                $goods->days = $days;
+                $goods->is_del = 0;
+                $goods->status = $status;
+                $goods->save();
 
-            if ($obj->id) {
                 // 生成SKU
-                $obj->sku = 'S0000' . $obj->id;
-                $obj->save();
+                $goods->sku = 'S0000' . $goods->id;
+                $goods->save();
+
+                // 生成商品标签
+                if (!empty($labels)) {
+                    foreach ($labels as $label) {
+                        $goodsLabel = new GoodsLabel();
+                        $goodsLabel->goods_id = $goods->id;
+                        $goodsLabel->label_id = $label;
+                        $goodsLabel->save();
+                    }
+                }
 
                 $request->session()->flash('successMsg', '添加成功');
-            } else {
+
+                DB::commit();
+            } catch (\Exception $e) {
                 $request->session()->flash('errorMsg', '添加失败');
+
+                DB::rollBack();
             }
 
             return Redirect::to('shop/addGoods');
         } else {
-            return Response::view('shop/addGoods');
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
+
+            return Response::view('shop/addGoods', $view);
         }
     }
 
@@ -116,6 +137,7 @@ class ShopController extends Controller
             $name = $request->get('name');
             $desc = $request->get('desc');
             $price = $request->get('price', 0);
+            $labels = $request->get('labels');
             $status = $request->get('status');
 
             $goods = Goods::query()->where('id', $id)->first();
@@ -148,24 +170,53 @@ class ShopController extends Controller
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';
             }
 
-            $data = [
-                'name'   => $name,
-                'desc'   => $desc,
-                'logo'   => $logo,
-                'price'  => $price * 100, // 更新时修改器不生效，需要手动*100，原因未知
-                'status' => $status
-            ];
+            DB::beginTransaction();
+            try {
+                $data = [
+                    'name'   => $name,
+                    'desc'   => $desc,
+                    'logo'   => $logo,
+                    'price'  => $price * 100,
+                    'status' => $status
+                ];
 
-            $ret = Goods::query()->where('id', $id)->update($data);
-            if ($ret) {
+                Goods::query()->where('id', $id)->update($data);
+
+                // 先删除该商品所有的标签
+                GoodsLabel::query()->where('goods_id', $id)->delete();
+
+                // 生成商品标签
+                if (!empty($labels)) {
+                    foreach ($labels as $label) {
+                        $goodsLabel = new GoodsLabel();
+                        $goodsLabel->goods_id = $id;
+                        $goodsLabel->label_id = $label;
+                        $goodsLabel->save();
+                    }
+                }
+
                 $request->session()->flash('successMsg', '编辑成功');
-            } else {
+
+                DB::commit();
+            } catch (\Exception $e) {
                 $request->session()->flash('errorMsg', '编辑失败');
+
+                DB::rollBack();
             }
 
             return Redirect::to('shop/editGoods?id=' . $id);
         } else {
-            $view['goods'] = Goods::query()->where('id', $id)->first();
+            $goods = Goods::query()->with(['label'])->where('id', $id)->first();
+            if ($goods) {
+                $label = [];
+                foreach ($goods->label as $vo) {
+                    $label[] = $vo->label_id;
+                }
+                $goods->labels = $label;
+            }
+
+            $view['goods'] = $goods;
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
             return Response::view('shop/editGoods', $view);
         }

@@ -7,6 +7,7 @@ use App\Http\Models\Article;
 use App\Http\Models\Coupon;
 use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
+use App\Http\Models\GoodsLabel;
 use App\Http\Models\Invite;
 use App\Http\Models\Level;
 use App\Http\Models\Order;
@@ -829,7 +830,7 @@ class UserController extends Controller
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->with(['label'])->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
             }
@@ -924,6 +925,25 @@ class UserController extends Controller
                     $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
                     if ($lastCanUseDays < $goods->days) {
                         User::query()->where('id', $user->id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                    }
+                }
+
+                // 写入用户标签
+                if ($goods->label) {
+                    // 取出现有的标签
+                    $userLabels = UserLabel::query()->where('user_id', $user->id)->pluck('label_id')->toArray();
+                    $goodsLabels = GoodsLabel::query()->where('goods_id', $goods_id)->pluck('label_id')->toArray();
+                    $newUserLabels = array_merge($userLabels, $goodsLabels);
+
+                    // 删除用户所有标签
+                    UserLabel::query()->where('user_id', $user->id)->delete();
+
+                    // 生成标签
+                    foreach ($newUserLabels as $vo) {
+                        $obj = new UserLabel();
+                        $obj->user_id = $user->id;
+                        $obj->label_id = $vo;
+                        $obj->save();
                     }
                 }
 

@@ -325,6 +325,7 @@ INSERT INTO `config` VALUES ('53', 'kdt_id', '');
 INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');
 INSERT INTO `config` VALUES ('55', 'website_analytics', '');
 INSERT INTO `config` VALUES ('56', 'website_customer_service', '');
+INSERT INTO `config` VALUES ('57', 'register_ip_limit', 5);
 
 
 -- ----------------------------
@@ -756,6 +757,20 @@ CREATE TABLE `user_label` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_label_id` (`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户标签';
+
+
+-- ----------------------------
+-- Table structure for `goods_label`
+-- ----------------------------
+CREATE TABLE `goods_label` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `goods_id` INT(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
+  `label_id` INT(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
+  PRIMARY KEY (`id`),
+  INDEX `idx` (`goods_id`, `label_id`),
+  INDEX `idx_goods_id` (`goods_id`),
+  INDEX `idx_label_id` (`label_id`)
+) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci' COMMENT='商品标签';
 
 
 -- ----------------------------

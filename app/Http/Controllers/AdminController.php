@@ -323,7 +323,7 @@ class AdminController extends Controller
 
                 User::query()->where('id', $id)->update($data);
 
-                // 先删除所有该用户的标签
+                // 先删除该用户所有的标签
                 UserLabel::query()->where('user_id', $id)->delete();
 
                 // 生成用户标签

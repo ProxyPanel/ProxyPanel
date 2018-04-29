@@ -91,7 +91,7 @@
                                                     <select class="form-control" name="level" id="level">
                                                         @if(!$level_list->isEmpty())
                                                             @foreach($level_list as $ele)
-                                                                <option value="{{$ele['level']}}">{{$ele['level_name']}}</option>
+                                                                <option value="{{$ele->level}}">{{$ele->level_name}}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
@@ -110,7 +110,7 @@
                                             </div>
                                             <hr>
                                             <div class="form-group">
-                                                <label for="status" class="col-md-3 control-label">标签</label>
+                                                <label for="labels" class="col-md-3 control-label">标签</label>
                                                 <div class="col-md-8">
                                                     <select id="labels" class="form-control select2-multiple" name="labels[]" multiple>
                                                         @foreach($label_list as $label)

@@ -15,6 +15,11 @@ class Goods extends Model
     protected $table = 'goods';
     protected $primaryKey = 'id';
 
+    function label()
+    {
+        return $this->hasMany(GoodsLabel::class, 'goods_id', 'id');
+    }
+
     function getPriceAttribute($value)
     {
         return $value / 100;
