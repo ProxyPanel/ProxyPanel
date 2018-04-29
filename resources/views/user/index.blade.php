@@ -91,10 +91,10 @@
                         {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? trans('expired') : $info['expire_time']}}
                     </li>
                     <li class="list-group-item">
-                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? trans('home.nerver_used') : date('Y-m-d H:i:s', $info['t'])}}
+                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? trans('home.never_used') : date('Y-m-d H:i:s', $info['t'])}}
                     </li>
                     <li class="list-group-item">
-                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? trans('home.nerver_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}}
+                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? trans('home.never_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}}
                     </li>
                     <li class="list-group-item">
                         {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;{{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}}  @endif
