@@ -20,6 +20,11 @@ class ReferralLog extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
+    function order()
+    {
+        return $this->hasOne(Order::class, 'oid', 'order_id');
+    }
+
     function getAmountAttribute($value)
     {
         return $value / 100;

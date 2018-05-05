@@ -634,9 +634,7 @@ class UserController extends Controller
             $transfer_enable = self::$config['referral_traffic'] * 1048576;
 
             User::query()->where('id', $verify->user->referral_uid)->increment('transfer_enable', $transfer_enable);
-
-            // TODO：写入流量增加日志
-
+            User::query()->where('id', $verify->user->referral_uid)->update(['enable' => 1]);
         }
 
         $request->session()->flash('successMsg', '账号激活成功');
@@ -1105,7 +1103,7 @@ class UserController extends Controller
 
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
-        $view['subscribe_status'] = $subscribe->status;
+        $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
         $view['link'] = self::$config['subscribe_domain'] ? self::$config['subscribe_domain'] . '/s/' . $code : self::$config['website_url'] . '/s/' . $code;
 
         return Response::view('/user/subscribe', $view);

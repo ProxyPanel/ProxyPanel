@@ -69,7 +69,7 @@
                                             <tr>
                                                 <td> {{$vo->id}} </td>
                                                 <td> {{$vo->user->username}} </td>
-                                                <td> {{$vo->goods->goods->name}}</td>
+                                                <td> {{$vo->order->goods->name}}</td>
                                                 <td> {{$vo->amount}} </td>
                                                 <td> {{$vo->ref_amount}} </td>
                                                 <td> {{$vo->created_at}} </td>

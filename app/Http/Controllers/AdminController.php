@@ -1797,11 +1797,7 @@ class AdminController extends Controller
         $apply = ReferralApply::query()->with(['user'])->where('id', $id)->first();
         if ($apply && $apply->link_logs) {
             $link_logs = explode(',', $apply->link_logs);
-            $list = ReferralLog::query()->whereIn('id', $link_logs)->with('user')->paginate(10);
-        }
-
-        foreach ($list as &$vo) {
-            $vo->goods = OrderGoods::query()->where('oid', $vo->order_id)->with('goods')->first();
+            $list = ReferralLog::query()->with(['user', 'order.goods'])->whereIn('id', $link_logs)->paginate(10);
         }
 
         $view['info'] = $apply;
