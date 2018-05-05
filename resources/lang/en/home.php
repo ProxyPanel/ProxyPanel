@@ -59,6 +59,8 @@ return [
     'recharging' => 'Recharging...',
     'error_response' => 'Error reponse, please retry',
     'error' => 'Error',
+    'online_pay' => 'Online Pay',
+    'pay' => 'Pay Now',
 
     // 用户资料
     'submit' => 'submit',

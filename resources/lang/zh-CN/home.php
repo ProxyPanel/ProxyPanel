@@ -59,6 +59,8 @@ return [
     'recharging' => '充值中...',
     'error_response' => '请求错误，请重试',
     'error' => '错误',
+    'online_pay' => '在线支付',
+    'pay' => '支付',
 
     // 用户资料
     'submit' => '提 交',
