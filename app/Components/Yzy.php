@@ -38,7 +38,7 @@ class Yzy
 
             return '';
         } else {
-            Cache::put('YZY_TOKEN', $token, 10000);
+            Cache::put('YZY_TOKEN', $token, 180);
 
             return $token['access_token'];
         }

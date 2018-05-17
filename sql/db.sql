@@ -857,6 +857,7 @@ CREATE TABLE `payment` (
   `qr_id` int(11) NOT NULL DEFAULT '0' COMMENT '有赞生成的支付单ID',
   `qr_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '有赞生成的支付二维码URL',
   `qr_code` text COLLATE utf8mb4_unicode_ci COMMENT '有赞生成的支付二维码图片base64',
+  `qr_local_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '支付二维码的本地存储URL',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态：-1-支付失败、0-等待支付、1-支付成功',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,

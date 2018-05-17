@@ -112,7 +112,7 @@ class AdminController extends Controller
             $query->where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")));
         }
 
-        $userList = $query->orderBy('enable', 'desc')->orderBy('status', 'desc')->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        $userList = $query->orderBy('enable', 'desc')->orderBy('status', 'desc')->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
         foreach ($userList as &$user) {
             $user->transfer_enable = flowAutoShow($user->transfer_enable);
             $user->used_flow = flowAutoShow($user->u + $user->d);
@@ -388,7 +388,7 @@ class AdminController extends Controller
     // 节点列表
     public function nodeList(Request $request)
     {
-        $nodeList = SsNode::query()->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(10)->appends($request->except('page'));
+        $nodeList = SsNode::query()->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 在线人数
             $last_log_time = time() - 600; // 10分钟内
@@ -698,7 +698,7 @@ class AdminController extends Controller
     // 文章列表
     public function articleList(Request $request)
     {
-        $view['articleList'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['articleList'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin/articleList', $view);
     }
@@ -771,7 +771,7 @@ class AdminController extends Controller
     // 节点分组列表
     public function groupList(Request $request)
     {
-        $view['groupList'] = SsGroup::query()->paginate(10)->appends($request->except('page'));
+        $view['groupList'] = SsGroup::query()->paginate(15)->appends($request->except('page'));
 
         $level_list = $this->levelList();
         $level_dict = [];
@@ -1145,7 +1145,7 @@ class AdminController extends Controller
             return Redirect::to('admin/userList');
         }
 
-        $nodeList = SsNode::query()->where('status', 1)->paginate(10)->appends($request->except('page'));
+        $nodeList = SsNode::query()->where('status', 1)->paginate(15)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 获取分组名称
             $group = SsGroup::query()->where('id', $node->group_id)->first();
@@ -1720,7 +1720,7 @@ class AdminController extends Controller
     // 邀请码列表
     public function inviteList(Request $request)
     {
-        $view['inviteList'] = Invite::query()->with(['generator', 'user'])->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['inviteList'] = Invite::query()->with(['generator', 'user'])->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin/inviteList', $view);
     }
@@ -1783,7 +1783,7 @@ class AdminController extends Controller
             $query->where('status', $status);
         }
 
-        $view['applyList'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['applyList'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin/applyList', $view);
     }
@@ -1797,7 +1797,7 @@ class AdminController extends Controller
         $apply = ReferralApply::query()->with(['user'])->where('id', $id)->first();
         if ($apply && $apply->link_logs) {
             $link_logs = explode(',', $apply->link_logs);
-            $list = ReferralLog::query()->with(['user', 'order.goods'])->whereIn('id', $link_logs)->paginate(10);
+            $list = ReferralLog::query()->with(['user', 'order.goods'])->whereIn('id', $link_logs)->paginate(15);
         }
 
         $view['info'] = $apply;
@@ -1843,7 +1843,7 @@ class AdminController extends Controller
             $query->where('status', $status);
         }
 
-        $view['orderList'] = $query->paginate(10);
+        $view['orderList'] = $query->paginate(15);
 
         return Response::view('admin/orderList', $view);
     }
@@ -1938,7 +1938,7 @@ class AdminController extends Controller
             });
         }
 
-        $view['list'] = $query->paginate(10);
+        $view['list'] = $query->paginate(15);
 
         return Response::view('admin/userBalanceLogList', $view);
     }
@@ -1956,7 +1956,7 @@ class AdminController extends Controller
             });
         }
 
-        $view['list'] = $query->paginate(10);
+        $view['list'] = $query->paginate(15);
 
         return Response::view('admin/userBanLogList', $view);
     }
@@ -1981,7 +1981,7 @@ class AdminController extends Controller
     // 标签列表
     public function labelList(Request $request)
     {
-        $labelList = Label::query()->paginate(10);
+        $labelList = Label::query()->paginate(15);
         foreach ($labelList as $label) {
             $label->userCount = UserLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
             $label->nodeCount = SsNodeLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();

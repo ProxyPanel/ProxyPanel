@@ -108,7 +108,7 @@
 
                 <div class="list-group">
                     @if($notice)
-                        <a href="{{url('user/article?id=') . $notice->id}}" class="list-group-item"> [公告] {{$notice->title}} </a>
+                        <a href="{{url('user/article?id=') . $notice->id}}" class="list-group-item"> {{$notice->title}} </a>
                     @endif
                     @foreach($articleList as $k => $article)
                         <a href="{{url('user/article?id=') . $article->id}}" class="list-group-item"> [{{date('m/d', strtotime($article->created_at))}}] {{str_limit($article->title, 50)}}</a>

@@ -15,5 +15,5 @@ return [
     'back'                 => 'Back',
     'submit'               => 'Submit',
     'tnc_title'            => 'I have read and agree to obey',
-    'tnc_content'          => 'Do just what you want to do.',
+    'tnc_content'          => 'Please abide by the local laws and regulations.',
 ];
