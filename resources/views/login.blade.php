@@ -39,14 +39,21 @@
 <div class="content">
     <nav style="padding-bottom: 20px;text-align: center;">
         @if(app()->getLocale() == 'zh-CN')
-            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'kr'])}}">Korea</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>|
+            <a href="{{url('lang', ['locale' => 'kr'])}}">Korea</a>|
+            <a href="{{url('lang', ['locale' => 'jp'])}}">Japanese</a>
         @elseif(app()->getLocale() == 'kr')
-            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
-            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-        @else
-            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>|
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>|
+            <a href="{{url('lang', ['locale' => 'jp'])}}">Japanese</a>
+        @elseif(app()->getLocale() == 'jp')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>|
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>|
             <a href="{{url('lang', ['locale' => 'kr'])}}">Korea</a>
+        @else
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>|
+            <a href="{{url('lang', ['locale' => 'kr'])}}">Korea</a>|
+            <a href="{{url('lang', ['locale' => 'jp'])}}">Japanese</a>
         @endif
     </nav>
     <!-- BEGIN LOGIN FORM -->
