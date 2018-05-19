@@ -8,7 +8,7 @@ return [
     'retype_password'      => 'パスワードの確認',
     'code'                 => '招待コード',
     'captcha'              => '認証コード',
-    'tnc_button'           => '',
+    'tnc_button'           => '私はすでに読んで守ることに同意した',
     'tnc_link'             => '私は利用規約を読み、同意した',
     'register_alter'       => 'システムはメンテナンス中です',
     'get_free_code'        => '無料の招待コードを入手する',

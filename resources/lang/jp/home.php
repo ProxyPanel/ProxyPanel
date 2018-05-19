@@ -65,7 +65,7 @@ return [
     // 用户资料
     'submit'                          => '提出する',
     'contact'                         => '連絡方法',
-    'ssr_setting'                     => 'SS(R) プロキシ設定',
+    'ssr_setting'                     => 'プロキシ設定',
     'password'                        => 'パスワード',
     'new_password'                    => '新しいパスワード',
     'current_password'                => '既存のパスワード',

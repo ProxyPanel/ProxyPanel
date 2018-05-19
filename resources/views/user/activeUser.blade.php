@@ -40,8 +40,21 @@
     <nav style="padding-bottom: 20px;text-align: center;">
         @if(app()->getLocale() == 'zh-CN')
             <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-        @else
+            <a href="{{url('lang', ['locale' => 'jp'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'kr'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'en')
             <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+            <a href="{{url('lang', ['locale' => 'jp'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'kr'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'kr')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'jp'])}}">日本語</a>
+        @elseif(app()->getLocale() == 'jp')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'kr'])}}">한국어</a>
+        @else
         @endif
     </nav>
     @if (Session::get('errorMsg'))

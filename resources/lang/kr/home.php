@@ -49,7 +49,7 @@ return [
     'close'                           => '취소',
     'redeem_score'                    => '트래픽 ',
     'redeem'                          => '환전하기',
-    'redeem_info'                     => '총 :score 포인트，scoreM의 트레픽 화전가능。',
+    'redeem_info'                     => '총 :score 포인트，:scoreM 의 트레픽 화전가능。',
     'coupon_code'                     => '충전카드',
     'please_input_coupon'             => '충전 카드 번호를 입력하세요',
     'scan_qrcode'                     => '앱 으로 QR코드를 스켄해주시면 서버가 추가 됩니다',
