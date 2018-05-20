@@ -440,6 +440,7 @@ class AdminController extends Controller
                 $ssNode->bandwidth = $request->get('bandwidth', 100);
                 $ssNode->traffic = $request->get('traffic', 1000);
                 $ssNode->monitor_url = $request->get('monitor_url', '');
+                $ssNode->is_subscribe = $request->get('is_subscribe', 1);
                 $ssNode->compatible = $request->get('compatible', 0);
                 $ssNode->single = $request->get('single', 0);
                 $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
@@ -516,8 +517,9 @@ class AdminController extends Controller
             $bandwidth = $request->get('bandwidth');
             $traffic = $request->get('traffic');
             $monitor_url = $request->get('monitor_url');
+            $is_subscribe = $request->get('is_subscribe', 1);
             $compatible = $request->get('compatible');
-            $single = $request->get('single');
+            $single = $request->get('single', 0);
             $single_force = $request->get('single_force');
             $single_port = $request->get('single_port');
             $single_passwd = $request->get('single_passwd');
@@ -554,6 +556,7 @@ class AdminController extends Controller
                     'bandwidth'       => $bandwidth,
                     'traffic'         => $traffic,
                     'monitor_url'     => $monitor_url,
+                    'is_subscribe'    => $is_subscribe,
                     'compatible'      => $compatible,
                     'single'          => $single,
                     'single_force'    => $single ? $single_force : 0,

@@ -57,8 +57,10 @@ class SubscribeController extends Controller
             exit($this->noneNode());
         }
 
-        $nodeList = SsNode::query()->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
+        $nodeList = SsNode::query()
+            ->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
             ->where('ss_node.status', 1)
+            ->where('ss_node.is_subscribe', 1)
             ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->groupBy('ss_node.id')
             ->get()

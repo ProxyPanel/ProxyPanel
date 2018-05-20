@@ -51,7 +51,7 @@
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
-                                                <td> {{empty($vo->user) ? '【用户已删除】' : $vo->user->username}} </td>
+                                                <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
                                                 <td> {{$vo->order_id}} </td>
                                                 <td> {{$vo->before}} </td>
                                                 <td> {{$vo->amount}} </td>

@@ -73,7 +73,8 @@
                                                 <td> <span class="label label-danger">{{$node->traffic_rate}}</span> </td>
                                                 <td>
                                                     @if($node->compatible) <span class="label label-info">兼</span> @endif
-                                                    @if($node->single) <span class="label label-danger">单</span> @endif
+                                                    @if($node->single) <span class="label label-info">单</span> @endif
+                                                    @if(!$node->is_subscribe) <span class="label label-info"><s>订阅</s></span> @endif
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">

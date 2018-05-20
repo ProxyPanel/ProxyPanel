@@ -41,6 +41,7 @@ CREATE TABLE `ss_node` (
   `bandwidth` INT(11) NOT NULL DEFAULT '100' COMMENT '出口带宽，单位M',
   `traffic` BIGINT(20) NOT NULL DEFAULT '1000' COMMENT '每月可用流量，单位G',
   `monitor_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '监控地址',
+  `is_subscribe` TINYINT(4) NULL DEFAULT '1' COMMENT '是否允许用户订阅该节点：0-否、1-是',
   `compatible` TINYINT(4) NULL DEFAULT '0' COMMENT '兼容SS',
   `single` TINYINT(4) NULL DEFAULT '0' COMMENT '单端口多用户：0-否、1-是',
   `single_force` TINYINT(4) NULL DEFAULT NULL COMMENT '模式：0-兼容模式、1-严格模式',

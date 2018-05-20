@@ -16,6 +16,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <span class="caption-subject bold uppercase"> 标签列表 </span>
+                            <small>标签影响用户查看/订阅节点信息（用户和节点通过标签进行关联）</small>
                         </div>
                         <div class="actions">
                             <div class="btn-group">

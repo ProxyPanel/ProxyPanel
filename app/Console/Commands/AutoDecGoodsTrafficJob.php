@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Models\Config;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\UserLabel;
 use Illuminate\Console\Command;
@@ -23,6 +24,13 @@ class AutoDecGoodsTrafficJob extends Command
     {
         $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->get();
         if (!$orderList->isEmpty()) {
+            // 用户默认标签
+            $config = $this->systemConfig();
+            $defaultLabels = [];
+            if ($config['initial_labels_for_user']) {
+                $defaultLabels = explode(',', $config['initial_labels_for_user']);
+            }
+
             foreach ($orderList as $order) {
                 if (empty($order->user) || empty($order->goods)) {
                     continue;
@@ -39,15 +47,19 @@ class AutoDecGoodsTrafficJob extends Command
                     // 删除该商品对应用户的所有标签
                     UserLabel::query()->where('user_id', $order->user->id)->delete();
 
-                    // 取出用户的全部其他商品
+                    // 取出用户的全部其他商品并打上对应的标签
                     $goodsIds = Order::query()->where('user_id', $order->user->id)->where('oid', '<>', $order->oid)->groupBy('goods_id')->pluck('goods_id')->toArray();
                     $goodsLabels = GoodsLabel::query()->whereIn('goods_id', $goodsIds)->groupBy('label_id')->pluck('label_id')->toArray();
-                    foreach ($goodsLabels as $label) {
+
+                    // 合并默认标签
+                    $labels = $defaultLabels ? array_merge($goodsLabels, $defaultLabels) : $goodsLabels;
+                    foreach ($labels as $vo) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $order->user->id;
-                        $userLabel->label_id = $label;
+                        $userLabel->label_id = $vo;
                         $userLabel->save();
                     }
+
 
                     Order::query()->where('oid', $order->oid)->update(['is_expire' => 1]);
                 }
@@ -55,5 +67,17 @@ class AutoDecGoodsTrafficJob extends Command
         }
 
         Log::info('定时任务：' . $this->description);
+    }
+
+    // 系统配置
+    private function systemConfig()
+    {
+        $config = Config::query()->get();
+        $data = [];
+        foreach ($config as $vo) {
+            $data[$vo->name] = $vo->value;
+        }
+
+        return $data;
     }
 }

@@ -50,16 +50,6 @@
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right"></ul>
             </div>
-
-            <!-- BEGIN LANGUAGE -->
-            <div style="display:inline-table;height:100%;float:left;">
-                @if(app()->getLocale() == 'zh-CN')
-                    <a style="display:table-cell;vertical-align:middle;color:red;font-weight:600;" href="{{url('lang', ['locale' => 'en'])}}">English</a>
-                @else
-                    <a style="display:table-cell;vertical-align:middle;color:red;font-weight:600;" href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
-                @endif
-            </div>
-            <!-- END LANGUAGE -->
         </div>
     </div>
     <!-- END HEADER INNER -->

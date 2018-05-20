@@ -40,20 +40,20 @@
     <nav style="padding-bottom: 20px;text-align: center;">
         @if(app()->getLocale() == 'zh-CN')
             <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'jp'])}}">日本語</a>
-            <a href="{{url('lang', ['locale' => 'kr'])}}">한국어</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
         @elseif(app()->getLocale() == 'en')
             <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
-            <a href="{{url('lang', ['locale' => 'jp'])}}">日本語</a>
-            <a href="{{url('lang', ['locale' => 'kr'])}}">한국어</a>
-        @elseif(app()->getLocale() == 'kr')
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'ko')
             <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
             <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'jp'])}}">日本語</a>
-        @elseif(app()->getLocale() == 'jp')
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+        @elseif(app()->getLocale() == 'ja')
             <a href="{{url('lang', ['locale' => 'zh-CN'])}}">中文</a>
             <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'kr'])}}">한국어</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
         @else
         @endif
     </nav>
@@ -71,7 +71,7 @@
                 <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.username_placeholder')}}" name="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="register_token" value="{{Session::get('register_token')}}" />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                <input type="hidden" name="aff" value="{{Request::get('aff')}}" />
+                <input type="hidden" name="aff" value="{{Session::get('register_aff')}}" />
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.password')}}</label>

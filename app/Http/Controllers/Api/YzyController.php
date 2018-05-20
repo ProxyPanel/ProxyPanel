@@ -7,11 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Coupon;
 use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
+use App\Http\Models\GoodsLabel;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\User;
+use App\Http\Models\UserLabel;
 use Illuminate\Http\Request;
 use Log;
 use DB;
@@ -154,6 +156,25 @@ class YzyController extends Controller
                     } else {
                         // 将商品的有效期和流量自动重置日期加到账号上
                         User::query()->where('id', $order->user_id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                    }
+
+                    // 写入用户标签
+                    if ($goods->label) {
+                        // 取出现有的标签
+                        $userLabels = UserLabel::query()->where('user_id', $order->user_id)->pluck('label_id')->toArray();
+                        $goodsLabels = GoodsLabel::query()->where('goods_id', $order->goods_id)->pluck('label_id')->toArray();
+                        $newUserLabels = array_merge($userLabels, $goodsLabels);
+
+                        // 删除用户所有标签
+                        UserLabel::query()->where('user_id', $order->user_id)->delete();
+
+                        // 生成标签
+                        foreach ($newUserLabels as $vo) {
+                            $obj = new UserLabel();
+                            $obj->user_id = $order->user_id;
+                            $obj->label_id = $vo;
+                            $obj->save();
+                        }
                     }
 
                     // 写入返利日志

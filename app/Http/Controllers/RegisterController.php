@@ -227,6 +227,13 @@ class RegisterController extends Controller
         } else {
             $request->session()->put('register_token', makeRandStr(16));
 
+            // 如果第一次打开带返aff，则存储aff，防止再次打开无返利aff
+            if (intval($request->get('aff'))) {
+                if (!$request->session()->get('register_aff')) {
+                    $request->session()->put('register_aff', intval($request->get('aff')));
+                }
+            }
+
             $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
             $view['is_invite_register'] = self::$config['is_invite_register'];
