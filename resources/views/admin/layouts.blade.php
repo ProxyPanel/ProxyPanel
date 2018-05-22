@@ -68,7 +68,7 @@
                                 <a href="{{url('/user')}}"> <i class="icon-home"></i> 个人中心 </a>
                             </li>
                             <li>
-                                <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人资料 </a>
+                                <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人设置 </a>
                             </li>
                             <li>
                                 <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>

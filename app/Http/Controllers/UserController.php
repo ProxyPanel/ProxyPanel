@@ -898,7 +898,7 @@ class UserController extends Controller
                     $couponLog->save();
                 }
 
-                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
+                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，并移除之前所有套餐的标签
                 if ($goods->type == 2) {
                     $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) {
                         $q->where('type', 2);
@@ -906,6 +906,8 @@ class UserController extends Controller
                     foreach ($existOrderList as $vo) {
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
                         User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+
+                        //todo：移除之前套餐的标签（需要注意：有些套餐和流量包用同一个标签，所以移除完套餐的标签后需要补齐流量包的标签）
                     }
 
                     // 重置已用流量

@@ -114,12 +114,6 @@
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
-                    <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
-                        <i class="icon-user-follow"></i>
-                        <span class="title">{{trans('home.invite_code')}}</span>
-                    </a>
-                </li>
                 <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) || Request::segment(1) == 'payment' ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
@@ -136,6 +130,12 @@
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
                         <span class="title">{{trans('home.tickets')}}</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
+                    <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
+                        <i class="icon-user-follow"></i>
+                        <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">

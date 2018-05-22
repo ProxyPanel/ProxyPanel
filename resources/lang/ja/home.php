@@ -92,11 +92,13 @@ return [
     'day'                             => '日',
     'coupon'                          => 'クーポン券',
     'redeem_coupon'                   => '使用する',
+    'service_type_1'                  => '流量包',
+    'service_type_2'                  => 'コース',
 
     // 流量日志
-    'traffic_log_tips'                => 'ヒント：30日のデータ通信量統計は当日、24時間内のデータ通信量統計が現在の時間を統計していない。',
-    'traffic_log_30days'              => '30日内のデータ通信量消耗',
-    'traffic_log_24hours'             => '24時間内のデータ通信量消耗',
+    'traffic_log_tips'                => 'ヒント：流量統計図更新は遅延がある。日の統計図を押すと翌日に更新され、時間統計図で次の時間に更新されます。',
+    'traffic_log_30days'              => '30 日内のデータ通信量消耗',
+    'traffic_log_24hours'             => '24 時間内のデータ通信量消耗',
     'traffic_log_keywords'            => 'データ通信量消耗',
     'traffic_log_unit'                => '単位/M',
     'traffic_log_max'                 => '最大値',

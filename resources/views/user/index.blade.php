@@ -188,10 +188,16 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">Scheme Links</h4>
+                            <h4 class="modal-title">Scheme Links - {{$node->name}}</h4>
                         </div>
                         <div class="modal-body">
-                            <textarea class="form-control" rows="10" readonly="readonly">{{$node->ssr_scheme}}{{$node->ss_scheme ? "\n\n".$node->ss_scheme : ''}}</textarea>
+                            <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
+                            <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
+                            @if($node->ss_scheme)
+                            <p></p>
+                            <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
+                            <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                            @endif
                         </div>
                     </div>
                 </div>

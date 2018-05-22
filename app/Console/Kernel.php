@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutoExpireCouponJob::class,
         \App\Console\Commands\AutoExpireInviteJob::class,
         \App\Console\Commands\AutoReleasePortJob::class,
+        \App\Console\Commands\AutoRemoveDisabledUserLabelsJob::class,
         \App\Console\Commands\AutoReopenUserJob::class,
         \App\Console\Commands\AutoResetUserTrafficJob::class,
         \App\Console\Commands\AutoStatisticsNodeDailyTrafficJob::class,
@@ -52,6 +53,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoDisableUserJob')->everyMinute();
         $schedule->command('autoExpireCouponJob')->everyThirtyMinutes();
         $schedule->command('autoExpireInviteJob')->everyThirtyMinutes();
+        $schedule->command('autoRemoveDisabledUserLabelsJob')->everyMinute();
         $schedule->command('autoReleasePortJob')->everyMinute();
         $schedule->command('autoReopenUserJob')->everyMinute();
         $schedule->command('autoResetUserTrafficJob')->everyFiveMinutes();

@@ -90,11 +90,13 @@ return [
     'day'                             => '일',
     'coupon'                          => '할인권',
     'redeem_coupon'                   => '사용',
+    'service_type_1'                  => '유량용 가방',
+    'service_type_2'                  => '세트',
 
     // 流量日志
-    'traffic_log_tips'                => '주의하다：30일내의트래픽은당일을 통계안하면，24간내의트래픅은현재시간은 통계안합니다。',
-    'traffic_log_30days'              => '30일트래픽 사용현황',
-    'traffic_log_24hours'             => '24간트패픽 사용현환',
+    'traffic_log_tips'                => '주의하다：유량 통계도 갱신 지연.천인 통계도로는 이튿날 갱신하며 시간별로 통계도가 1 시간에 갱신한다.',
+    'traffic_log_30days'              => '30 일트래픽 사용현황',
+    'traffic_log_24hours'             => '24 간트패픽 사용현환',
     'traffic_log_keywords'            => '사용된트래픽',
     'traffic_log_unit'                => '단위M',
     'traffic_log_max'                 => '최대치',
