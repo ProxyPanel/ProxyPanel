@@ -15,6 +15,8 @@ class CreateSsGroupNodeTable extends Migration
     {
         Schema::create('ss_group_node', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
             $table->integer('group_id')->default('0')->comment('分组ID');

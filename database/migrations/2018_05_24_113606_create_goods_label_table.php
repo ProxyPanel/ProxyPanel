@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSsNodeInfoTable extends Migration
+class CreateGoodsLabelTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,17 @@ class CreateSsNodeInfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('ss_node_info', function (Blueprint $table) {
+        Schema::create('goods_label', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
-            $table->integer('node_id')->default('0')->comment('节点ID');
-            $table->float('uptime')->comment('更新时间');
-            $table->string('load', 32)->default('')->nullable()->comment('负载');
-            $table->integer('log_time')->default('0')->comment('记录时间');
+            $table->integer('goods_id')->default('0')->comment('商品ID');
+            $table->integer('label_id')->default('0')->comment('标签ID');
 
-            $table->index('node_id');
+            $table->index('goods_id');
+            $table->index('label_id');
         });
     }
 
@@ -35,6 +34,6 @@ class CreateSsNodeInfoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ss_node_info');
+        Schema::dropIfExists('goods_label');
     }
 }

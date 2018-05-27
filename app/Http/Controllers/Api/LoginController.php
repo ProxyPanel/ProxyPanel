@@ -68,7 +68,7 @@ class LoginController extends Controller
         }
 
         // 用户信息
-        unset($user->password, $user->custom_method, $user->remember_token);
+        unset($user->password, $user->remember_token);
         $data['user'] = $user;
 
         // 订阅链接

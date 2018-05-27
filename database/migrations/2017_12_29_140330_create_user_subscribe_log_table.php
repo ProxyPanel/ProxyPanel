@@ -15,6 +15,8 @@ class CreateUserSubscribeLogTable extends Migration
     {
         Schema::create('user_subscribe_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
             $table->integer('sid')->default('0')->comment('对应user_subscribe的id');

@@ -19,10 +19,10 @@ class AutoRemoveDisabledUserLabelsJob extends Command
 
     public function handle()
     {
-        $userList = User::query()->where('enable', 0)->get();
+        // 账号被禁用，则删除所有标签
+        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
-                // 账号被禁用，则删除所有标签
                 UserLabel::query()->where('user_id', $user->id)->delete();
             }
         }

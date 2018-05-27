@@ -15,6 +15,8 @@ class CreateCouponLogTable extends Migration
     {
         Schema::create('coupon_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
             $table->integer('coupon_id')->default('0')->comment('优惠券ID');

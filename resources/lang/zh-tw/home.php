@@ -5,7 +5,7 @@ return [
     'subscribe_address'               => '我的訂閱地址',
     'copy_subscribe_address'          => '複製',
     'exchange_subscribe'              => '更換',
-    'subscribe_warning'               => '注意:該訂閱地址僅限個人使用，請勿傳播該地址，這會導致您的帳號流量使用情况异常。',
+    'subscribe_warning'               => '注意：該訂閱地址僅限個人使用，請勿傳播該地址，這會導致您的帳號流量使用情况异常。',
     'reset_password_title'            => '重置密碼',
     'system_down'                     => '系統維護中',
     'subscribe_baned'                 => '您的訂閱功能被暫時禁用，請聯系管理員恢復',
@@ -49,7 +49,7 @@ return [
     'close'                           => '取消',
     'redeem_score'                    => '兌換流量',
     'redeem'                          => '立即兌換',
-    'redeem_info'                     => '您有:score積分，可兌換:scoreM免費流量。',
+    'redeem_info'                     => '您有：score積分，可兌換：scoreM免費流量。',
     'coupon_code'                     => '優惠券碼',
     'please_input_coupon'             => '請輸入優惠券碼',
     'scan_qrcode'                     => '請使用用戶端掃描二維碼',
@@ -96,7 +96,7 @@ return [
     'service_type_2'                  => '套餐',
 
     // 流量日志
-    'traffic_log_tips'                => '提示:流量統計圖更新會有延遲。按天統計圖在次日更新，按小時統計圖在次小時更新。',
+    'traffic_log_tips'                => '提示：流量統計圖更新會有延遲。按天統計圖在次日更新，按小時統計圖在次小時更新。',
     'traffic_log_30days'              => '最近 30 天的流量使用情况',
     'traffic_log_24hours'             => '最近 24 小時的流量使用情况',
     'traffic_log_keywords'            => '使用流量',
@@ -160,9 +160,9 @@ return [
     'referral_table_date'             => '返利時間',
     'referral_table_none'             => '暫無數據',
     'referral_table_apply'            => '提現',
-    'referral_summary'                => '合計返利 :amount元（:total次），滿:money元可以申請提現。',
+    'referral_summary'                => '合計返利：amount元（：total次），滿：money元可以申請提現。',
     'console'                         => '管理中心',
     'profile'                         => '個人設置',
     'logout'                          => '登出',
-    'promote'                         => '通過您的推廣連結注册並啟動，您和新用戶都會獲得:traffic流量獎勵；當他們消費時，您將獲得他們消費金額的:referral_percent%作為獎勵。',
+    'promote'                         => '通過您的推廣連結注册並啟動，您和新用戶都會獲得：traffic流量獎勵；當他們消費時，您將獲得他們消費金額的：referral_percent%作為獎勵。',
 ];

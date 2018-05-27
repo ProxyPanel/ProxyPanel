@@ -14,5 +14,5 @@ class SsConfig extends Model
 {
     protected $table = 'ss_config';
     protected $primaryKey = 'id';
-
+    public $timestamps = false;
 }

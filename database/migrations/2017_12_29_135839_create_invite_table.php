@@ -15,6 +15,8 @@ class CreateInviteTable extends Migration
     {
         Schema::create('invite', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
             $table->integer('uid')->default('0')->comment('邀请人ID');

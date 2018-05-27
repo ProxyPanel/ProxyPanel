@@ -15,6 +15,8 @@ class CreateUserTable extends Migration
     {
         Schema::create('user', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
             $table->string('username', 128)->default('')->comment('用户名');
@@ -54,8 +56,6 @@ class CreateUserTable extends Migration
             $table->string('remember_token', 255)->default('')->nullable();
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
-
-            $table->unique('port');
         });
     }
 

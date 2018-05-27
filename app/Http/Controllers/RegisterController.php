@@ -163,29 +163,29 @@ class RegisterController extends Controller
             $user->referral_uid = $referral_uid;
             $user->save();
 
-            // 注册次数+1
             if ($user->id) {
+                // 注册次数+1
                 if (Cache::has($cacheKey)) {
                     Cache::increment($cacheKey);
                 } else {
                     Cache::put($cacheKey, 1, 1440); // 24小时
                 }
-            }
 
-            // 初始化默认标签
-            if (count(self::$config['initial_labels_for_user']) > 0 && $user->id) {
-                $labels = explode(',', self::$config['initial_labels_for_user']);
-                foreach ($labels as $label) {
-                    $userLabel = new UserLabel();
-                    $userLabel->user_id = $user->id;
-                    $userLabel->label_id = $label;
-                    $userLabel->save();
+                // 初始化默认标签
+                if (strlen(self::$config['initial_labels_for_user'])) {
+                    $labels = explode(',', self::$config['initial_labels_for_user']);
+                    foreach ($labels as $label) {
+                        $userLabel = new UserLabel();
+                        $userLabel->user_id = $user->id;
+                        $userLabel->label_id = $label;
+                        $userLabel->save();
+                    }
                 }
-            }
 
-            // 更新邀请码
-            if (self::$config['is_invite_register'] && $user->id) {
-                Invite::query()->where('id', $code->id)->update(['fuid' => $user->id, 'status' => 1]);
+                // 更新邀请码
+                if (self::$config['is_invite_register']) {
+                    Invite::query()->where('id', $code->id)->update(['fuid' => $user->id, 'status' => 1]);
+                }
             }
 
             // 发送邮件

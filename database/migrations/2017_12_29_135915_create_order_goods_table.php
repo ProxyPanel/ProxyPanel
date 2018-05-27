@@ -15,10 +15,12 @@ class CreateOrderGoodsTable extends Migration
     {
         Schema::create('order_goods', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->increments('id');
             $table->integer('oid')->default('0')->comment('订单ID');
-            $table->string('orderId', 20)->default('')->comment('订单编号');
+            $table->string('order_sn', 20)->default('')->comment('订单编号');
             $table->integer('user_id')->default('0')->comment('用户ID');
             $table->integer('goods_id')->default('0')->comment('商品ID');
             $table->integer('num')->default('0')->comment('商品数量');

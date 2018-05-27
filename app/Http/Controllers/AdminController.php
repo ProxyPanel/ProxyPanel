@@ -1366,12 +1366,12 @@ class AdminController extends Controller
         }
 
         $config = SsConfig::query()->where('id', $id)->first();
-        if (empty($config)) {
+        if (!$config) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置不存在']);
         }
 
         // 去除该配置所属类型的默认值
-        SsConfig::query()->where('type', $config->type)->update(['is_default' => 0]);
+        SsConfig::query()->where('type', $config->type)->where('is_default', 1)->update(['is_default' => 0]);
 
         // 将该ID对应记录值置为默认值
         SsConfig::query()->where('id', $id)->update(['is_default' => 1]);
