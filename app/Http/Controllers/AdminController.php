@@ -48,20 +48,39 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $past = strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days")));
-        $online = time() - 600;
 
-        $view['userCount'] = User::query()->count();
-        $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count();
-        $view['onlineUserCount'] = User::query()->where('t', '>=', $online)->count();
+        $view['expireDays'] = self::$config['expire_days'];
+        $view['totalUserCount'] = User::query()->count(); // 总用户数
+        $view['enableUserCount'] = User::query()->where('enable', 1)->count(); // 有效用户数
+        $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
+        $view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->count(); // 不活跃用户数
+        $view['onlineUserCount'] = User::query()->where('t', '>=', time() - 600)->count(); // 10分钟内在线用户数
+        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->whereIn('status', [0, 1])->where('enable', 1)->count(); // 临近过期用户数
+
+        // 24小时内流量异常用户
+        $tempUsers = [];
+        $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+        if (!$userTotalTrafficList->isEmpty()) {
+            foreach ($userTotalTrafficList as $vo) {
+                if ($vo->totalTraffic > (self::$config['traffic_ban_value'] * 1024 * 1024 * 1024)) {
+                    $tempUsers[] = $vo->user_id;
+                }
+            }
+        }
+        $view['flowAbnormalUserCount'] = User::query()->whereIn('id', $tempUsers)->count();
+
+
         $view['nodeCount'] = SsNode::query()->count();
+        $view['unnormalNodeCount'] = SsNode::query()->where('status', 0)->count();
+
         $flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
         $view['flowCount'] = flowAutoShow($flowCount);
         $totalFlowCount = SsNodeTrafficDaily::query()->sum('total');
         $view['totalFlowCount'] = flowAutoShow($totalFlowCount);
+
         $view['totalBalance'] = User::query()->sum('balance') / 100;
         $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
         $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount') / 100;
-        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->where('enable', 1)->count();
 
         return Response::view('admin/index', $view);
     }
@@ -76,6 +95,9 @@ class AdminController extends Controller
         $pay_way = $request->get('pay_way');
         $status = $request->get('status');
         $enable = $request->get('enable');
+        $online = $request->get('online');
+        $unActive = $request->get('unActive');
+        $flowAbnormal = $request->get('flowAbnormal');
         $expireWarning = $request->get('expireWarning');
 
         $query = User::query();
@@ -109,7 +131,31 @@ class AdminController extends Controller
 
         // 临近过期提醒
         if ($expireWarning) {
-            $query->where('expire_time', '<=', date('Y-m-d', strtotime("+15 days")));
+            $query->whereIn('status', [0, 1])->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")));
+        }
+
+        // 当前在线
+        if ($online) {
+            $query->where('t', '>=', time() - 600);
+        }
+
+        // 不活跃用户
+        if ($unActive) {
+            $query->where('t', '<=', strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days"))))->where('enable', 1);
+        }
+
+        // 24小时内流量异常用户
+        if ($flowAbnormal) {
+            $tempUsers = [];
+            $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+            if (!$userTotalTrafficList->isEmpty()) {
+                foreach ($userTotalTrafficList as $vo) {
+                    if ($vo->totalTraffic > (self::$config['traffic_ban_value'] * 1024 * 1024 * 1024)) {
+                        $tempUsers[] = $vo->user_id;
+                    }
+                }
+            }
+            $query->whereIn('id', $tempUsers);
         }
 
         $userList = $query->orderBy('enable', 'desc')->orderBy('status', 'desc')->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
@@ -388,7 +434,15 @@ class AdminController extends Controller
     // 节点列表
     public function nodeList(Request $request)
     {
-        $nodeList = SsNode::query()->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
+        $status = $request->input('status');
+
+        $query = SsNode::query();
+
+        if ($status != '') {
+            $query->where('status', intval($status));
+        }
+
+        $nodeList = $query->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 在线人数
             $last_log_time = time() - 600; // 10分钟内

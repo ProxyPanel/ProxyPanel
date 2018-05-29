@@ -11,9 +11,24 @@
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green-soft">
-                                <span data-counter="counterup" data-value="{{$userCount}}"></span>
+                                <span data-counter="counterup" data-value="{{$totalUserCount}}"></span>
                             </h3>
-                            <small>用户</small>
+                            <small>总用户</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?enable=1');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green-soft">
+                                <span data-counter="counterup" data-value="{{$enableUserCount}}"></span>
+                            </h3>
+                            <small>有效用户</small>
                         </div>
                         <div class="icon">
                             <i class="icon-users"></i>
@@ -28,7 +43,7 @@
                             <h3 class="font-green-sharp">
                                 <span data-counter="counterup" data-value="{{$activeUserCount}}">0</span>
                             </h3>
-                            <small>7日内活跃用户</small>
+                            <small>{{$expireDays}}日内活跃用户</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user"></i>
@@ -37,7 +52,22 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList');">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?unActive=1');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-green-sharp">
+                                <span data-counter="counterup" data-value="{{$unActiveUserCount}}">0</span>
+                            </h3>
+                            <small>不活跃用户（超过{{$expireDays}}日未使用）</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?online=1');">
                     <div class="display">
                         <div class="number">
                             <h3 class="font-green-sharp">
@@ -66,6 +96,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?flowAbnormal=1');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-red">
+                                <span data-counter="counterup" data-value="{{$flowAbnormalUserCount}}">0</span>
+                            </h3>
+                            <small>24小时内流量异常</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-user-unfollow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -76,6 +121,21 @@
                                 <span data-counter="counterup" data-value="{{$nodeCount}}"></span>
                             </h3>
                             <small>节点</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-list"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/nodeList?status=0');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-blue-sharp">
+                                <span data-counter="counterup" data-value="{{$unnormalNodeCount}}"></span>
+                            </h3>
+                            <small>维护中的节点</small>
                         </div>
                         <div class="icon">
                             <i class="icon-list"></i>
@@ -109,6 +169,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="dashboard-stat2 bordered">
                     <div class="display">
@@ -124,8 +186,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="dashboard-stat2 bordered">
                     <div class="display">

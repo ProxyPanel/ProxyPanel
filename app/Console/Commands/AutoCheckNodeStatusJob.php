@@ -38,11 +38,11 @@ class AutoCheckNodeStatusJob extends Command
                     continue;
                 }
 
-                $title = "节点宕机警告";
-                $content = "节点**{$node->name}({$node->server})**可能宕机，请及时检查。";
-
                 // 发邮件通知管理员
                 if ($config['is_node_crash_warning']) {
+                    $title = "节点宕机警告";
+                    $content = "节点**{$node->name}({$node->server})**可能宕机，请及时检查。";
+
                     if ($config['crash_warning_email']) {
                         try {
                             Mail::to($config['crash_warning_email'])->send(new nodeCrashWarning($config['website_name'], $node->name, $node->server));
