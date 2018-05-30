@@ -53,7 +53,7 @@ class PaymentController extends Controller
             }
 
             // 计算实际应支付总价
-            $amount = $coupon->type == 2 ? $goods->price * $coupon->discount : $goods->price - $coupon->amount;
+            $amount = $coupon->type == 2 ? $goods->price * $coupon->discount / 10 : $goods->price - $coupon->amount;
             $amount = $amount > 0 ? $amount : 0;
         } else {
             $amount = $goods->price;
