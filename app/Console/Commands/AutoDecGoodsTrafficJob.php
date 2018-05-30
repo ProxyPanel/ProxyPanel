@@ -48,7 +48,7 @@ class AutoDecGoodsTrafficJob extends Command
                     UserLabel::query()->where('user_id', $order->user->id)->delete();
 
                     // 取出用户的全部其他商品并打上对应的标签
-                    $goodsIds = Order::query()->where('user_id', $order->user->id)->where('oid', '<>', $order->oid)->groupBy('goods_id')->pluck('goods_id')->toArray();
+                    $goodsIds = Order::query()->where('user_id', $order->user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->groupBy('goods_id')->pluck('goods_id')->toArray();
                     $goodsLabels = GoodsLabel::query()->whereIn('goods_id', $goodsIds)->groupBy('label_id')->pluck('label_id')->toArray();
 
                     // 合并默认标签
