@@ -828,7 +828,7 @@ class UserController extends Controller
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $goods = Goods::query()->with(['label'])->where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->with(['label'])->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
             if (empty($goods)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
             }
@@ -970,7 +970,7 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：' . $e->getMessage()]);
             }
         } else {
-            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
             if (empty($goods)) {
                 return Redirect::to('user/goodsList');
             }
