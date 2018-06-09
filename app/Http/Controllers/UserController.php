@@ -828,9 +828,23 @@ class UserController extends Controller
         $user = $request->session()->get('user');
 
         if ($request->method() == 'POST') {
-            $goods = Goods::query()->with(['label'])->where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->with(['label'])->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
             if (empty($goods)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
+            }
+
+            // 检查配置是否启用了限购：all-所有商品限购, free-价格为0的商品限购, none-不限购（默认）
+            if (!isset(self::$config['goods_purchase_limit_strategy'])) {
+                self::$config['goods_purchase_limit_strategy'] = 'none';
+            }
+
+            $strategy = self::$config['goods_purchase_limit_strategy'];
+            if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
+                // 判断是否已经购买过该商品
+                $none_expire_good_exist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('is_expire', 0)->exists();
+                if ($none_expire_good_exist) {
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不可重复购买']);
+                }
             }
 
             // 使用优惠券
@@ -970,7 +984,7 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：' . $e->getMessage()]);
             }
         } else {
-            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+            $goods = Goods::query()->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
             if (empty($goods)) {
                 return Redirect::to('user/goodsList');
             }
