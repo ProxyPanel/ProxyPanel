@@ -328,6 +328,7 @@ INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');
 INSERT INTO `config` VALUES ('55', 'website_analytics', '');
 INSERT INTO `config` VALUES ('56', 'website_customer_service', '');
 INSERT INTO `config` VALUES ('57', 'register_ip_limit', 5);
+INSERT INTO `config` VALUES ('58', 'goods_purchase_limit_strategy', 'none');
 
 
 -- ----------------------------

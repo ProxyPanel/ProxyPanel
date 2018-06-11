@@ -292,6 +292,34 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="goods_purchase_limit_strategy" class="col-md-3 control-label">商品限购</label>
+                                                            <div class="col-md-9">
+                                                                <select id="goods_purchase_limit_strategy" class="form-control select2" name="goods_purchase_limit_strategy">
+                                                                    <option value="none"
+                                                                        @if ($goods_purchase_limit_strategy == 'none')
+                                                                        selected
+                                                                        @endif
+                                                                    >不限制</option>
+                                                                    <option value="free"
+                                                                        @if ($goods_purchase_limit_strategy == 'free')
+                                                                        selected
+                                                                        @endif
+                                                                    >仅限免费商品</option>
+                                                                    <option value="all"
+                                                                        @if ($goods_purchase_limit_strategy == 'all')
+                                                                        selected
+                                                                        @endif
+                                                                    >限全部商品</option>
+                                                                </select>
+                                                                <span class="help-block"> 是否限制用户重复购买商品，限制后用户不可重复购买已购买的、尚在有效期的商品 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -1230,6 +1258,17 @@
                     }
                 });
             });
+        });
+
+        $("#goods_purchase_limit_strategy").change(function() {
+            var strategy = $(this).val();
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'goods_purchase_limit_strategy', value: strategy}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            }); 
         });
 
         // 设置注册时默认有效期
