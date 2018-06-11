@@ -34,16 +34,40 @@ class Controller extends BaseController
         return SsConfig::query()->where('type', 1)->get();
     }
 
+    // 默认加密方式
+    public function getDefaultMethod()
+    {
+        $config = SsConfig::query()->where('type', 1)->where('is_default', 1)->first();
+
+        return $config ? $config->name : 'aes-192-ctr';
+    }
+
     // 协议
     public function protocolList()
     {
         return SsConfig::query()->where('type', 2)->get();
     }
 
+    // 默认协议
+    public function getDefaultProtocol()
+    {
+        $config = SsConfig::query()->where('type', 2)->where('is_default', 1)->first();
+
+        return $config ? $config->name : 'origin';
+    }
+
     // 混淆
     public function obfsList()
     {
         return SsConfig::query()->where('type', 3)->get();
+    }
+
+    // 默认混淆
+    public function getDefaultObfs()
+    {
+        $config = SsConfig::query()->where('type', 3)->where('is_default', 1)->first();
+
+        return $config ? $config->name : 'plain';
     }
 
     // 等级

@@ -17,7 +17,7 @@ class EmailLogController extends Controller
     // 邮件发送日志列表
     public function logList(Request $request)
     {
-        $view['list'] = EmailLog::query()->with('user')->orderBy('id', 'desc')->paginate(10);
+        $view['list'] = EmailLog::query()->with('user')->orderBy('id', 'desc')->paginate(15);
 
         return Response::view('emailLog/logList', $view);
     }

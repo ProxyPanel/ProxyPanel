@@ -13,6 +13,16 @@
             <div class="col-md-12">
                 <!-- BEGIN PORTLET-->
                 <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-dark">
+                            <span class="caption-subject bold uppercase"> 【{{$user->username}}】连接配置信息 </span>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <button class="btn sbold blue" onclick="addLabel()"> 添加标签 </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="portlet-body">
                         <div class="table-scrollable table-scrollable-borderless">
                             <table class="table table-hover table-light">
@@ -20,9 +30,10 @@
                                     <tr class="uppercase">
                                         <th style="width: 10%;">#</th>
                                         <th style="width: 15%;">节点</th>
+                                        <th style="width: 10%;">扩展</th>
                                         <th style="width: 15%;">域名</th>
                                         <th style="width: 15%;">IPv4</th>
-                                        <th style="width: 45%;">配置信息</th>
+                                        <th style="width: 35%;">配置信息</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -31,6 +42,8 @@
                                             <td>{{$k + 1}}</td>
                                             <td>
                                                 {{$node->name}}
+                                            </td>
+                                            <td>
                                                 @if($node->compatible) <span class="label label-info">兼</span> @endif
                                                 @if($node->single) <span class="label label-danger">单</span> @endif
                                                 @if($node->ipv6) <span class="label label-danger">IPv6</span> @endif
@@ -39,7 +52,7 @@
                                             <td>{{$node->ip}}</td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
-                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#scheme_{{$node->id}}"> SCHEME </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> SCHEME </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
                                             </td>
                                         </tr>
@@ -72,20 +85,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal fade draggable-modal" id="scheme_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal fade draggable-modal" id="link_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Url Scheme</h4>
+                                            <h4 class="modal-title">Scheme Links - {{$node->name}}</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <textarea class="form-control" rows="7" readonly="readonly">
-                                                {{$node->ssr_scheme}}
-                                                @if ($node->compatible)
-                                                    {{$node->ss_scheme}}
-                                                @endif
-                                            </textarea>
+                                            <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
+                                            <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
+                                            @if($node->ss_scheme)
+                                                <p></p>
+                                                <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
+                                                <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -135,8 +149,7 @@
             var n = function () {
                 @foreach($nodeList as $node)
                     $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
-                    $("#txt_v6_{{$node->id}}").draggable({handle: ".modal-header"});
-                    $("#scheme_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#link_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
                 @endforeach
             };

@@ -97,6 +97,21 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?largeTraffic=1');">
+                    <div class="display">
+                        <div class="number">
+                            <h3 class="font-red">
+                                <span data-counter="counterup" data-value="{{$largeTrafficUserCount}}">0</span>
+                            </h3>
+                            <small>流量大户（超过100G的用户）</small>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-user-unfollow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="dashboard-stat2 bordered" onclick="skip('admin/userList?flowAbnormal=1');">
                     <div class="display">
                         <div class="number">
@@ -175,7 +190,7 @@
                 <div class="dashboard-stat2 bordered">
                     <div class="display">
                         <div class="number">
-                            <h3 class="font-red">
+                            <h3 class="font-green">
                                 $<span data-counter="counterup" data-value="{{$totalBalance}}"></span>
                             </h3>
                             <small>总余额</small>
