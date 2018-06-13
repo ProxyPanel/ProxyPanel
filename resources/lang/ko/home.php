@@ -2,10 +2,10 @@
 
 return [
     'panel'                           => '제어판',
-    'subscribe_address'               => 'Rss구독주소',
+    'subscribe_address'               => 'RSS구독주소',
     'copy_subscribe_address'          => '주소복사',
     'exchange_subscribe'              => '주소변경',
-    'subscribe_warning'               => 'Tips:이 주소는 개인VPN정보가 담긴RSS주소이므로 타인에거 알려수시면 안됩니다',
+    'subscribe_warning'               => '경고: 구독 주소 는 개인적 으로 사용 되 지 말고 이 주소 를 전파 하지 마시오',
     'reset_password_title'            => '비번리셋',
     'system_down'                     => '서비스 점금중',
     'subscribe_baned'                 => '구독주소가 금지되였습니다,관리자에게 문의해주세요',
@@ -53,7 +53,7 @@ return [
     'coupon_code'                     => '충전카드',
     'please_input_coupon'             => '충전 카드 번호를 입력하세요',
     'scan_qrcode'                     => '앱 으로 QR코드를 스켄해주시면 서버가 추가 됩니다',
-    'setting_info'                    => 'SS(R)서버 스팩',
+    'setting_info'                    => '설정 정보',
     'ratio'                           => '정산비율',
     'coupon_not_empty'                => '카드번호가 비였습니다',
     'recharging'                      => '충전중...',
@@ -63,7 +63,7 @@ return [
     // 用户资料
     'submit'                          => '확인',
     'contact'                         => '연락방식',
-    'ssr_setting'                     => 'SSR(R)설정',
+    'ssr_setting'                     => '에이전트 설정',
     'password'                        => '비밀번호',
     'new_password'                    => '새로운 비밀번호',
     'current_password'                => '현재 비밀번호',
@@ -71,7 +71,7 @@ return [
     'connection_password'             => '연결암호',
     'encrpytion'                      => '암호화 방식',
     'protocal'                        => '프로토콜',
-    'obfs'                            => '뒤섞다.',
+    'obfs'                            => '혼동',
 
     // 购买服务
     'service_title'                   => '서버구축',

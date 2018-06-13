@@ -5,7 +5,7 @@ return [
     'subscribe_address'               => 'My Subscribe Address',
     'copy_subscribe_address'          => 'Copy Address',
     'exchange_subscribe'              => 'Exchange Address',
-    'subscribe_warning'               => 'Warning: the subscription address is only for personal use, do not spread the address, otherwise it will lead to abnormal flow of your account.',
+    'subscribe_warning'               => 'Warning: this subscription address is for personal use only. Do not propagate the address.',
     'reset_password_title'            => 'Reset Password',
     'system_down'                     => 'The system is being maintained',
     'subscribe_baned'                 => 'Your subscription function has been banned. Please contact the administrator.',
@@ -22,7 +22,7 @@ return [
     'no_need_invite_codes'            => 'In the open registration system, no invitation code is required',
 
     // 首页
-    'ratio_tips'                      => 'Settlement Ratio: 1 means to settle 100M with 100M, 0.1 means to settle 10M with 100M, and 5 to express 500M with 100M.',
+    'ratio_tips'                      => 'It is recommended that the client that supports the node subscription can quickly synchronize the node information on the client side through the subscription function.',
     'subscribe_button'                => 'Subscribe',
     'account_info'                    => 'Account Info',
     'account_level'                   => 'Level',
@@ -117,7 +117,7 @@ return [
     'invite_code_table_status_un'     => 'Active',
     'invite_code_table_status_yes'    => 'Already Used',
     'invite_code_table_status_expire' => 'Overdue',
-    'invite_code_summary'             => 'total of :total invite codes',
+    'invite_code_summary'             => 'Total of :total invite codes',
 
     // 单据
     'invoice_title'                   => 'My Invoices',
@@ -160,9 +160,9 @@ return [
     'referral_table_date'             => 'Date',
     'referral_table_none'             => 'None Data',
     'referral_table_apply'            => 'Apply',
-    'referral_summary'                => 'total of :total records, total rewards of :amount RMB, minimum withdraw limit of :money RMB.',
+    'referral_summary'                => 'Total rebate :amount RMB (:total times), full :money RMB can apply for withdrawals.',
     'console'                         => 'Console',
     'profile'                         => 'Profile',
-    'logout'                          => 'Log out',
-    'promote'                         => 'Any actived freind you invited would bring you :traffic brandwidth as bonus. Meanwhile, you will get :referral_percent% cash reward every time your invited friends make payments.',
+    'logout'                          => 'Log Out',
+    'promote'                         => 'With your promotion link registration and activation, both of you will receive :traffic traffic awards; when they are consumed, you will receive :referral_percent% of their consumption amount as a reward.',
 ];
