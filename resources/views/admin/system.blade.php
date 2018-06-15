@@ -292,6 +292,34 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="goods_purchase_limit_strategy" class="col-md-3 control-label">商品限购</label>
+                                                            <div class="col-md-9">
+                                                                <select id="goods_purchase_limit_strategy" class="form-control select2" name="goods_purchase_limit_strategy">
+                                                                    <option value="none"
+                                                                        @if ($goods_purchase_limit_strategy == 'none')
+                                                                        selected
+                                                                        @endif
+                                                                    >不限制</option>
+                                                                    <option value="free"
+                                                                        @if ($goods_purchase_limit_strategy == 'free')
+                                                                        selected
+                                                                        @endif
+                                                                    >仅限免费商品</option>
+                                                                    <option value="all"
+                                                                        @if ($goods_purchase_limit_strategy == 'all')
+                                                                        selected
+                                                                        @endif
+                                                                    >限全部商品</option>
+                                                                </select>
+                                                                <span class="help-block"> 是否限制用户重复购买商品，限制后用户不可重复购买已购买的、尚在有效期的商品 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -303,7 +331,7 @@
                                                             <label for="login_add_score" class="col-md-3 control-label">登录加积分</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 登录时将根据积分范围得到积分 </span>
+                                                                <span class="help-block"> 登录时将根据积分范围随机得到积分 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -311,11 +339,12 @@
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="login_add_score_range" value="{{$login_add_score_range}}" id="login_add_score_range" />
+                                                                    <span class="input-group-addon">分钟</span>
                                                                     <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setLoginAddScoreRange()">修改</button>
-                                                                </span>
+                                                                        <button class="btn btn-success" type="button" onclick="setLoginAddScoreRange()">修改</button>
+                                                                    </span>
                                                                 </div>
-                                                                <span class="help-block"> 每隔多久登录才会加积分(单位分钟) </span>
+                                                                <span class="help-block"> 间隔多久登录才会加积分 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -357,7 +386,7 @@
                                                                     <button class="btn btn-success" type="button" onclick="setReferralTraffic()">修改</button>
                                                                 </span>
                                                                 </div>
-                                                                <span class="help-block"> 根据推广链接注册则送多少流量（叠加在默认流量上） </span>
+                                                                <span class="help-block"> 根据推广链接、邀请码注册则赠送相应的流量 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1230,6 +1259,17 @@
                     }
                 });
             });
+        });
+
+        $("#goods_purchase_limit_strategy").change(function() {
+            var strategy = $(this).val();
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'goods_purchase_limit_strategy', value: strategy}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            }); 
         });
 
         // 设置注册时默认有效期

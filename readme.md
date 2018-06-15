@@ -35,7 +35,7 @@ telegram千人讨论群已解散，有问题提issues
 ## 捐赠
 **ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
 
-![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
+![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpg?raw=true)
 
 [VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
 ````

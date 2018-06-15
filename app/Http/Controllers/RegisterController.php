@@ -134,7 +134,17 @@ class RegisterController extends Controller
                 $affUser = User::query()->where('id', $aff)->first();
                 $referral_uid = $affUser ? $aff : 0;
             } else {
-                $referral_uid = 0;
+                // 如果使用邀请码，则将邀请码也列入aff
+                if ($code) {
+                    $inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
+                    if ($inviteCode) {
+                        $referral_uid = $inviteCode->uid;
+                    } else {
+                        $referral_uid = 0;
+                    }
+                } else {
+                    $referral_uid = 0;
+                }
             }
 
             // 最后一个可用端口

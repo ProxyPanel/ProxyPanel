@@ -56,6 +56,7 @@ class AdminController extends Controller
         $view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->count(); // 不活跃用户数
         $view['onlineUserCount'] = User::query()->where('t', '>=', time() - 600)->count(); // 10分钟内在线用户数
         $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->whereIn('status', [0, 1])->where('enable', 1)->count(); // 临近过期用户数
+        $view['largeTrafficUserCount'] = User::query()->whereRaw('(u + d) >= 107374182400')->whereIn('status', [0, 1])->count(); // 流量超过100G的用户
 
         // 24小时内流量异常用户
         $tempUsers = [];
@@ -99,6 +100,7 @@ class AdminController extends Controller
         $unActive = $request->get('unActive');
         $flowAbnormal = $request->get('flowAbnormal');
         $expireWarning = $request->get('expireWarning');
+        $largeTraffic = $request->get('largeTraffic');
 
         $query = User::query();
         if (!empty($username)) {
@@ -127,6 +129,11 @@ class AdminController extends Controller
 
         if ($enable != '') {
             $query->where('enable', intval($enable));
+        }
+
+        // 流量超过100G的
+        if ($largeTraffic) {
+            $query->whereIn('status', [0, 1])->whereRaw('(u + d) >= 107374182400');
         }
 
         // 临近过期提醒
@@ -266,6 +273,9 @@ class AdminController extends Controller
                 $user->username = '批量生成-' . makeRandStr();
                 $user->password = md5(makeRandStr());
                 $user->enable = 1;
+                $user->method = $this->getDefaultMethod();
+                $user->protocol = $this->getDefaultProtocol();
+                $user->obfs = $this->getDefaultObfs();
                 $user->port = $port;
                 $user->passwd = makeRandStr();
                 $user->transfer_enable = toGB(1000);
@@ -1251,6 +1261,7 @@ class AdminController extends Controller
         }
 
         $view['nodeList'] = $nodeList;
+        $view['user'] = $user;
 
         return Response::view('admin/export', $view);
     }

@@ -45,6 +45,16 @@ class PaymentController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：尚有未支付的订单，请先去支付']);
         }
 
+        // 限购控制
+        $strategy = self::$config['goods_purchase_limit_strategy'];
+        if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
+            // 判断是否已经购买过该商品
+            $none_expire_good_exist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('is_expire', 0)->exists();
+            if ($none_expire_good_exist) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品不可重复购买']);
+            }
+        }
+
         // 使用优惠券
         if ($coupon_sn) {
             $coupon = Coupon::query()->where('sn', $coupon_sn)->whereIn('type', [1, 2])->where('is_del', 0)->where('status', 0)->first();

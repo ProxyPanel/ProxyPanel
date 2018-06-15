@@ -448,7 +448,8 @@
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('admin/userList?page=') . Request::get('page')}}';
+                            window.location.reload();
+                            //window.location.href = '{{url('admin/userList?page=') . Request::get('page')}}';
                         }
                     });
                 }

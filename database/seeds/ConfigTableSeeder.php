@@ -65,5 +65,9 @@ class ConfigTableSeeder extends Seeder
         DB::insert("INSERT INTO `config` VALUES ('52', 'youzan_client_secret', '');");
         DB::insert("INSERT INTO `config` VALUES ('53', 'kdt_id', '');");
         DB::insert("INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');");
+        DB::insert("INSERT INTO `config` VALUES ('55', 'website_analytics', '');");
+        DB::insert("INSERT INTO `config` VALUES ('56', 'website_customer_service', '');");
+        DB::insert("INSERT INTO `config` VALUES ('57', 'register_ip_limit', 5);");
+        DB::insert("INSERT INTO `config` VALUES ('58', 'goods_purchase_limit_strategy', 'none');");
     }
 }

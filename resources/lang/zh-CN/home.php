@@ -5,10 +5,10 @@ return [
     'subscribe_address'               => '我的订阅地址',
     'copy_subscribe_address'          => '复制',
     'exchange_subscribe'              => '更换',
-    'subscribe_warning'               => '注意：该订阅地址仅限个人使用，请勿传播该地址，这会导致您的账号流量使用情况异常。',
+    'subscribe_warning'               => '警告：该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量使用情况异常触发自动封号机制。',
     'reset_password_title'            => '重置密码',
     'system_down'                     => '系统维护中',
-    'subscribe_baned'                 => '您的订阅功能被暂时禁用，请联系管理员恢复',
+    'subscribe_baned'                 => '您的订阅功能被禁用，请联系管理员恢复',
 
     // 菜单
     'home'                            => '我的节点',
@@ -19,10 +19,10 @@ return [
     'tickets'                         => '服务单',
     'referrals'                       => '推广返利',
     'free_invite_codes_title'         => '免费邀请码',
-    'no_need_invite_codes'            => '现在无需邀请码，即可注册',
+    'no_need_invite_codes'            => '现在无需邀请码',
 
     // 首页
-    'ratio_tips'                      => '推荐使用支持节点订阅的代理客户端，只需填写一次，即可快捷方便的在客户端设置和同步节点信息。',
+    'ratio_tips'                      => '推荐使用支持节点订阅的客户端，通过订阅功能可以在客户端快速同步节点信息。',
     'subscribe_button'                => '获取订阅地址',
     'account_info'                    => '账号信息',
     'account_level'                   => '等级',
@@ -50,8 +50,8 @@ return [
     'redeem_score'                    => '兑换流量',
     'redeem'                          => '立即兑换',
     'redeem_info'                     => '您有 :score 积分，可兑换 :scoreM 免费流量。',
-    'coupon_code'                     => '优惠券码',
-    'please_input_coupon'             => '请输入优惠券码',
+    'coupon_code'                     => '充值券码',
+    'please_input_coupon'             => '请输入充值券码',
     'scan_qrcode'                     => '请使用客户端扫描二维码',
     'setting_info'                    => '配置信息',
     'ratio'                           => '结算比例',
@@ -90,7 +90,7 @@ return [
     'service_days'                    => '有效期',
     'service_buy_button'              => '购买',
     'day'                             => '天',
-    'coupon'                          => '优惠券',
+    'coupon'                          => '充值券',
     'redeem_coupon'                   => '使用',
     'service_type_1'                  => '流量包',
     'service_type_2'                  => '套餐',
@@ -164,5 +164,5 @@ return [
     'console'                         => '管理中心',
     'profile'                         => '个人设置',
     'logout'                          => '退出登入',
-    'promote'                         => '通过您的推广链接注册并激活，您和新用户都会获得 :traffic 流量奖励；当他们消费时，您将获得他们消费金额的 :referral_percent% 作为奖励。',
+    'promote'                         => '通过您的推广链接注册并激活，你们双方都将获得 :traffic 流量奖励；当他们消费时，您将获得他们消费金额的 :referral_percent% 作为奖励。',
 ];
