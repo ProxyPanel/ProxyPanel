@@ -122,3 +122,13 @@ Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::get('payment/{sn}', 'PaymentController@detail'); // 支付单详情
 
 });
+
+Route::group(['middleware' => ['Muv2']], function (){ //Muv2 for V2ray
+    Route::get('mu/v2/users','Muv2\UserController@index');
+    Route::post('mu/v2/users/{id}/traffic','Muv2\UserController@addTraffic');
+    Route::post('mu/v2/nodes/{id}/online_count','Muv2\NodeController@onlineUserLog');
+    Route::post('mu/v2/nodes/{id}/info','Muv2\NodeController@info');
+    Route::get('mu/v2/nodes/{id}/users','Muv2\NodeController@users');
+    Route::get('mu/v2/nodes/{id}/v2rayUsers','Muv2\NodeController@v2rayUsers');
+    Route::post('mu/v2/nodes/{id}/traffic','Muv2\NodeController@postTraffic');
+});
