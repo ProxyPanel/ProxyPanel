@@ -40,8 +40,10 @@ class NodeController extends Controller
         $user_with_label = UserLabel::query()
             ->whereIn('label_id',$ssr_node_label)->pluck('user_id');
         //提取用户信息
-        $users = User::query()->whereIn('id',$user_with_label)
-            ->where('enable',1)->where('id','<>',self::$config['free_node_users_id'])
+        $userids = User::query()->whereIn('id',$user_with_label)
+            ->where('enable',1)->where('id','<>',self::$config['free_node_users_id'])->pluck('id')->toArray();
+
+        $users = User::query()->where('id','<>',self::$config['free_node_users_id'])
             ->select(
             "id","username","passwd","t","u","d","transfer_enable",
             "port","protocol","obfs","enable","expire_time as expire_time_d","method",
@@ -53,6 +55,12 @@ class NodeController extends Controller
             $user['switch']=1;
             $user['email']=$user['username'];
             $user['expire_time']=strval((new \DateTime($user['expire_time_d']))->getTimestamp());
+            if(in_array($user->id,$userids)){
+                $user->enable = 1;
+            }
+            else{
+                $user->enable = 0;
+            }
             //v2ray用户信息
             $user->v2ray_user = [
                 "uuid" => $user->v2ray_uuid,
@@ -65,9 +73,9 @@ class NodeController extends Controller
         if(self::$config['is_free_node']){
             if(self::$config['free_node_id'] == $node_id){
                 $user = User::query()->whereIn('id',$user_with_label)
-                    ->where('enable',1)->where('id', self::$config['free_node_users_id'])
+                    ->where('id', self::$config['free_node_users_id'])
                     ->select(
-                        "id","username","passwd","t","u","d","transfer_enable",
+                        "id","enable","username","passwd","t","u","d","transfer_enable",
                         "port","protocol","obfs","enable","expire_time as expire_time_d","method",
                         "v2ray_uuid","v2ray_level","v2ray_alter_id")
                     ->first();
