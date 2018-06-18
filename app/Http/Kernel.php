@@ -59,6 +59,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => \App\Http\Middleware\Admin::class,
         'user' => \App\Http\Middleware\User::class,
-        'forbidden' => \App\Http\Middleware\Forbidden::class
+        'forbidden' => \App\Http\Middleware\Forbidden::class,
+        'Muv2' => \App\Http\Middleware\Muv2::class
+
     ];
 }
