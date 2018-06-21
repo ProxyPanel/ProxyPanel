@@ -22,7 +22,7 @@ return [
     'no_need_invite_codes'            => '现在无需邀请码',
 
     // 首页
-    'ratio_tips'                      => '推荐使用支持节点订阅的客户端，通过订阅功能可以在客户端快速同步节点信息。',
+    'ratio_tips'                      => '推荐使用支持节点订阅功能的客户端，通过订阅功能可以在客户端快速同步节点信息。',
     'subscribe_button'                => '获取订阅地址',
     'account_info'                    => '账号信息',
     'account_level'                   => '等级',

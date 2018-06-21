@@ -22,7 +22,7 @@ return [
     'no_need_invite_codes'            => '現在無需邀請碼，即可注册',
 
     // 首页
-    'ratio_tips'                      => '推薦使用支持節點訂閱的代理用戶端，只需填寫一次，即可快捷方便的在用戶端設定和同步節點資訊。',
+    'ratio_tips'                      => '推薦使用支持節點訂閱功能的用戶端，通過訂閱功能可以在用戶端快速同步節點資訊。',
     'subscribe_button'                => '獲取訂閱地址',
     'account_info'                    => '帳號資訊',
     'account_level'                   => '等級',

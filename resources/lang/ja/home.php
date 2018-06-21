@@ -22,7 +22,7 @@ return [
     'no_need_invite_codes'            => 'プラットフォームオープン登録、招待コードなし',
 
     // 首页
-    'ratio_tips'                      => 'ノード購読：プロキシノードを取得して自動アップデートを設定するのは簡単です。',
+    'ratio_tips'                      => 'ノードの購読機能をサポートするクライアントを使用することをお勧めします。',
     'subscribe_button'                => '取得する',
     'account_info'                    => 'アカウント情報',
     'account_level'                   => 'レベル',

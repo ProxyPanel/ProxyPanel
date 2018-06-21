@@ -22,7 +22,7 @@ return [
     'no_need_invite_codes'            => 'In the open registration system, no invitation code is required',
 
     // 首页
-    'ratio_tips'                      => 'It is recommended that the client that supports the node subscription can quickly synchronize the node information on the client side through the subscription function.',
+    'ratio_tips'                      => 'Recommends the use of support node subscription function of the client, through subscription function can quickly synchronize node information in the client.',
     'subscribe_button'                => 'Subscribe',
     'account_info'                    => 'Account Info',
     'account_level'                   => 'Level',
