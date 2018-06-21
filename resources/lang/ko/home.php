@@ -162,5 +162,6 @@ return [
     'console'                         => '관리센트',
     'profile'                         => '개인정보',
     'logout'                          => '로그아웃',
-    'promote'                         => '당신의 홍보주소로 회원가입하실경우 :traffic 트래픽증정，본인도 :traffic 트래픽증정；홍보링크로 가입한횐들이 소비할경우，소비금액의; :referral_percent% 리턴합니다',
+    'promote_link'                    => '보급 링크 등록을 통해 활성화, 양측 모두 :traffic 유량에 장려합니다; 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있는 :referral_percent% 를 장려합니다.',
+    'promote_invite_code'             => '요청을 통해 등록 및 활성화, 양측 모두 :traffic 유량에 장려합니다, 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있습니다 :referral_percent% 를 장려합니다',
 ];

@@ -6,6 +6,13 @@
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="note note-info">
+                    <p>{{trans('home.promote_invite_code', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}</p>
+                </div>
+            </div>
+        </div>
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-4">

@@ -475,6 +475,8 @@ class UserController extends Controller
         $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
+        $view['referral_traffic'] = flowAutoShow(self::$config['referral_traffic'] * 1048576);
+        $view['referral_percent'] = self::$config['referral_percent'];
 
         return Response::view('user/invite', $view);
     }

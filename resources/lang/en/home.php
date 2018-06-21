@@ -164,5 +164,6 @@ return [
     'console'                         => 'Console',
     'profile'                         => 'Profile',
     'logout'                          => 'Log Out',
-    'promote'                         => 'With your promotion link registration and activation, both of you will receive :traffic traffic awards; when they are consumed, you will receive :referral_percent% of their consumption amount as a reward.',
+    'promote_link'                    => 'With your promotion link registration and activation, both of you will receive :traffic traffic awards; when they are consumed, you will receive :referral_percent% of their consumption amount as a reward.',
+    'promote_invite_code'             => 'With your invite code registration and activation, both of you will receive :traffic traffic awards; when they are consumed, you will receive :referral_percent% of their consumption amount as a reward.',
 ];
