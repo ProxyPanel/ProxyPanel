@@ -125,6 +125,7 @@ return [
     'invoice_table_name'              => 'Service',
     'invoice_table_price'             => 'Amount',
     'invoice_table_create_date'       => 'Created On',
+	'invoice_table_expire_at'		  => 'Expiry time',	
     'invoice_table_status'            => 'Status',
     'invoice_table_none'              => 'None Data',
     'invoice_table_closed'            => 'Closed',

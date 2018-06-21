@@ -28,6 +28,7 @@
                                         <th> {{trans('home.invoice_table_name')}} </th>
                                         <th> {{trans('home.invoice_table_price')}} </th>
                                         <th> {{trans('home.invoice_table_create_date')}} </th>
+										<th> {{trans('home.invoice_table_expire_at')}} </th>
                                         <th> {{trans('home.invoice_table_status')}} </th>
                                     </tr>
                                 </thead>
@@ -44,6 +45,7 @@
                                             <td>{{empty($order->goods) ? '【商品已删除】' : $order->goods->name}}</td>
                                             <td>￥{{$order->amount}}</td>
                                             <td>{{$order->created_at}}</td>
+											<td>{{$order->is_expire ? '已过期' : $order->expire_at}}</td>
                                             <td>
                                                 @if(!$order->is_expire)
                                                     @if($order->status == -1)
