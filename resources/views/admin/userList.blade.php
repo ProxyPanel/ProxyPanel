@@ -77,6 +77,8 @@
                                     <th> 用户名 </th>
                                     <th> 端口 </th>
                                     <th> 加密方式 </th>
+                                    <th> 协议 </th>
+                                    <th> 混淆 </th>
                                     <th> 已消耗 </th>
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
@@ -88,7 +90,7 @@
                                 <tbody>
                                     @if ($userList->isEmpty())
                                         <tr>
-                                            <td colspan="10" style="text-align: center;">暂无数据</td>
+                                            <td colspan="12" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach ($userList as $user)
@@ -97,6 +99,8 @@
                                             <td> {{$user->username}} </td>
                                             <td> <span class="label label-danger"> {{$user->port}} </span> </td>
                                             <td> <span class="label label-default"> {{$user->method}} </span> </td>
+                                            <td> <span class="label label-default"> {{$user->protocol}} </span> </td>
+                                            <td> <span class="label label-default"> {{$user->obfs}} </span> </td>
                                             <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
                                             <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
                                             <td class="center">
