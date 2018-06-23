@@ -123,7 +123,7 @@ return [
     'invoice_table_name'              => '서버스',
     'invoice_table_price'             => '금액',
     'invoice_table_create_date'       => '구입일자',
-	'invoice_table_expire_at'		  => '만료 시간',
+    'invoice_table_expire_at'         => '만료 시간',
     'invoice_table_status'            => '상태',
     'invoice_table_none'              => '데이터 없음',
     'invoice_table_closed'            => '닫혔어',

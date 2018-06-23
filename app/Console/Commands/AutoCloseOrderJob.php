@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Models\Coupon;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use Illuminate\Console\Command;
@@ -21,13 +22,21 @@ class AutoCloseOrderJob extends Command
     public function handle()
     {
         // 有赞云超过60分钟未支付则自动关闭，我们这则只给30分钟
-        $paymentList = Payment::query()->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
+        $paymentList = Payment::query()->with(['order'])->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
         if (!$paymentList->isEmpty()) {
             DB::beginTransaction();
             try {
                 foreach ($paymentList as $payment) {
-                    Payment::query()->where('id', $payment->id)->update(['status' => -1]); // 关闭支付单
-                    Order::query()->where('oid', $payment->oid)->update(['status' => -1]); // 关闭订单
+                    // 关闭支付单
+                    Payment::query()->where('id', $payment->id)->update(['status' => -1]);
+
+                    // 关闭订单
+                    Order::query()->where('oid', $payment->oid)->update(['status' => -1]);
+
+                    // 退回优惠券
+                    if ($payment->order->coupon_id) {
+                        Coupon::query()->where('id', $payment->order->coupon_id)->update(['status' => 0]);
+                    }
                 }
 
                 DB::commit();

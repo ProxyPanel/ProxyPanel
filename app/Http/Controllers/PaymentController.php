@@ -117,6 +117,11 @@ class PaymentController extends Controller
             $payment->status = 0;
             $payment->save();
 
+            // 优惠券置为已使用
+            if (!empty($coupon)) {
+                Coupon::query()->where('id', $coupon->id)->update(['status' => 1]);
+            }
+
             DB::commit();
 
             return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建支付单成功']);
