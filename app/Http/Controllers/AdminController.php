@@ -247,7 +247,7 @@ class AdminController extends Controller
         } else {
             // 生成一个可用端口
             $last_user = User::query()->orderBy('id', 'desc')->first();
-            $view['last_port'] = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
+            $view['last_port'] = self::$config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
             $view['is_rand_port'] = self::$config['is_rand_port'];
             $view['method_list'] = $this->methodList();
             $view['protocol_list'] = $this->protocolList();
