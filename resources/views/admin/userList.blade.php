@@ -95,52 +95,52 @@
                                     @else
                                         @foreach ($userList as $user)
                                             <tr class="odd gradeX {{$user->trafficWarning ? 'danger' : ''}}">
-                                            <td> {{$user->id}} </td>
-                                            <td> {{$user->username}} </td>
-                                            <td> <span class="label label-danger"> {{$user->port}} </span> </td>
-                                            <td> <span class="label label-default"> {{$user->method}} </span> </td>
-                                            <td> <span class="label label-default"> {{$user->protocol}} </span> </td>
-                                            <td> <span class="label label-default"> {{$user->obfs}} </span> </td>
-                                            <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
-                                            <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
-                                            <td class="center">
-                                                @if ($user->expireWarning)
-                                                    <span class="label label-warning"> {{$user->expire_time}} </span>
-                                                @else
-                                                    {{$user->expire_time}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($user->status == '1')
-                                                    <span class="label label-info">正常</span>
-                                                @elseif ($user->status == '0')
-                                                    <span class="label label-default">未激活</span>
-                                                @else
-                                                    <span class="label label-danger">禁用</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($user->enable)
-                                                    <span class="label label-info">启用</span>
-                                                @else
-                                                    <span class="label label-danger">禁用</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm green btn-outline" onclick="doExport('{{$user->id}}')">
-                                                    <i class="fa fa-paper-plane-o"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm purple btn-outline" onclick="doMonitor('{{$user->id}}')">
-                                                    <i class="fa fa-area-chart"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">
-                                                    <i class="fa fa-refresh"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                <td> {{$user->id}} </td>
+                                                <td> {{$user->username}} </td>
+                                                <td> <span class="label label-danger"> {{$user->port}} </span> </td>
+                                                <td> <span class="label label-default"> {{$user->method}} </span> </td>
+                                                <td> <span class="label label-default"> {{$user->protocol}} </span> </td>
+                                                <td> <span class="label label-default"> {{$user->obfs}} </span> </td>
+                                                <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
+                                                <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
+                                                <td class="center">
+                                                    @if ($user->expireWarning)
+                                                        <span class="label label-warning"> {{$user->expire_time}} </span>
+                                                    @else
+                                                        {{$user->expire_time}}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($user->status == '1')
+                                                        <span class="label label-info">正常</span>
+                                                    @elseif ($user->status == '0')
+                                                        <span class="label label-default">未激活</span>
+                                                    @else
+                                                        <span class="label label-danger">禁用</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($user->enable)
+                                                        <span class="label label-info">启用</span>
+                                                    @else
+                                                        <span class="label label-danger">禁用</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm green btn-outline" onclick="doExport('{{$user->id}}')">
+                                                        <i class="fa fa-paper-plane-o"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm purple btn-outline" onclick="doMonitor('{{$user->id}}')">
+                                                        <i class="fa fa-area-chart"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     @endif
                                 </tbody>

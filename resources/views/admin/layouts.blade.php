@@ -216,6 +216,27 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item {{in_array(Request::path(), ['marketing/emailList', 'marketing/pushList']) ? 'active open' : ''}}">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="fa fa-send-o"></i>
+                        <span class="title">营销管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item {{in_array(Request::path(), ['marketing/emailList']) ? 'active open' : ''}}">
+                            <a href="{{url('marketing/emailList')}}" class="nav-link ">
+                                <i class="fa fa-inbox"></i>
+                                <span class="title">邮件群发</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['marketing/pushList']) ? 'active open' : ''}}">
+                            <a href="{{url('marketing/pushList')}}" class="nav-link ">
+                                <i class="fa fa-rss"></i>
+                                <span class="title">消息推送</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList', 'payment/callbackList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="fa fa-wrench"></i>

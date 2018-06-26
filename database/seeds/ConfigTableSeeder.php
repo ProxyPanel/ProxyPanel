@@ -69,5 +69,8 @@ class ConfigTableSeeder extends Seeder
         DB::insert("INSERT INTO `config` VALUES ('56', 'website_customer_service', '');");
         DB::insert("INSERT INTO `config` VALUES ('57', 'register_ip_limit', 5);");
         DB::insert("INSERT INTO `config` VALUES ('58', 'goods_purchase_limit_strategy', 'none');");
+        DB::insert("INSERT INTO `config` VALUES ('59', 'is_push_bear', 0);");
+        DB::insert("INSERT INTO `config` VALUES ('60', 'push_bear_send_key', '');");
+        DB::insert("INSERT INTO `config` VALUES ('61', 'push_bear_qrcode', '');");
     }
 }

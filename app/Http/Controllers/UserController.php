@@ -66,6 +66,8 @@ class UserController extends Controller
         $view['login_add_score'] = self::$config['login_add_score'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
+        $view['is_push_bear'] = self::$config['is_push_bear'];
+        $view['push_bear_qrcode'] = self::$config['push_bear_qrcode'];
 
         // 推广返利是否可见
         if (!$request->session()->has('referral_status')) {

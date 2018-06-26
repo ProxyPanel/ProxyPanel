@@ -69,6 +69,18 @@
                 </div>
             </div>
             <div class="col-md-4">
+                @if($is_push_bear && $push_bear_qrcode)
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div style="text-align: center">
+                            <span> 微信扫码订阅，获取本站最新资讯 </span>
+                            <br><br>
+                            <div id="subscribe_qrcode" style="text-align: center;"></div>
+                        </div>
+                    </li>
+                </ul>
+                @endif
+
                 <ul class="list-group">
                     <li class="list-group-item">
                         {{trans('home.account_status')}}：{{$info['enable'] ? trans('home.enabled') : trans('home.disabled') }}
@@ -330,5 +342,10 @@
         function show(txt) {
             layer.msg(txt);
         }
+
+        // 生成消息通道订阅二维码
+        @if($is_push_bear && $push_bear_qrcode)
+            $('#subscribe_qrcode').qrcode({render:"canvas", text:"{{$push_bear_qrcode}}", width:170, height:170});
+        @endif
     </script>
 @endsection

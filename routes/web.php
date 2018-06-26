@@ -91,6 +91,9 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
     Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
     Route::any("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
+    Route::get("marketing/emailList", "MarketingController@emailList"); // 邮件消息列表
+    Route::get("marketing/pushList", "MarketingController@pushList"); // 推送消息列表
+    Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
 });
 
 Route::group(['middleware' => ['forbidden', 'user']], function () {

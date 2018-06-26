@@ -53,7 +53,7 @@ class AdminController extends Controller
         $view['totalUserCount'] = User::query()->count(); // 总用户数
         $view['enableUserCount'] = User::query()->where('enable', 1)->count(); // 有效用户数
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
-        $view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->count(); // 不活跃用户数
+        $view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->where('t', '>', 0)->count(); // 不活跃用户数
         $view['onlineUserCount'] = User::query()->where('t', '>=', time() - 600)->count(); // 10分钟内在线用户数
         $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . self::$config['expire_days'] . " days")))->whereIn('status', [0, 1])->where('enable', 1)->count(); // 临近过期用户数
         $view['largeTrafficUserCount'] = User::query()->whereRaw('(u + d) >= 107374182400')->whereIn('status', [0, 1])->count(); // 流量超过100G的用户
@@ -148,7 +148,7 @@ class AdminController extends Controller
 
         // 不活跃用户
         if ($unActive) {
-            $query->where('t', '<=', strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days"))))->where('enable', 1);
+            $query->where('t', '>', 0)->where('t', '<=', strtotime(date('Y-m-d', strtotime("-" . self::$config['expire_days'] . " days"))))->where('enable', 1);
         }
 
         // 24小时内流量异常用户
