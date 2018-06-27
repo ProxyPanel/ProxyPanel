@@ -282,28 +282,38 @@ class UserController extends Controller
     public function trafficLog(Request $request)
     {
         $user = $request->session()->get('user');
-
-        // 30天内的流量
-        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'desc')->limit(30)->get();
-
+        $trafficDaily = [];
+        $trafficHourly = [];
         $dailyData = [];
-        foreach ($userTrafficDaily as $daily) {
-            $dailyData[] = round($daily->total / (1024 * 1024), 2); // 以M为单位
-        }
-
-        // 24小时内的流量
-        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'desc')->limit(24)->get();
-
         $hourlyData = [];
-        foreach ($userTrafficHourly as $hourly) {
-            $hourlyData[] = round($hourly->total / (1024 * 1024), 2); // 以M为单位
-        }
+      
+      
+        // 节点一个月内的流量
+        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->where('created_at', '>=', date('Y-m',time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+        $dailyTotal = date('d',time())-1;//今天不算，减一
+        $dailyCount = count($userTrafficDaily);
+        for ($x=0; $x<($dailyTotal-$dailyCount); $x++){
+            $dailyData[$x] = 0;
+          }
+        for ($x=($dailyTotal-$dailyCount);$x<$dailyTotal;$x++){
+            $dailyData[$x] = round($userTrafficDaily[$x-($dailyTotal-$dailyCount)] / (1024 * 1024 * 1024), 3);
+          }
+
+         // 节点一天内的流量
+        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', $user['id'])->where('node_id', 0)->where('created_at', '>=', date('Y-m-d',time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+        $hourlyTotal = date('H',time());
+        $hourlyCount = count($userTrafficHourly);
+        for ($x=0; $x<($hourlyTotal-$hourlyCount); $x++){
+            $hourlyData[$x] = 0;
+          }
+        for ($x=($hourlyTotal-$hourlyCount);$x<$hourlyTotal;$x++){
+             $hourlyData[$x] = round($userTrafficHourly[$x-($hourlyTotal-$hourlyCount)] / (1024 * 1024 * 1024), 3);
+          }
 
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
-
         return Response::view('user/trafficLog', $view);
     }
 
