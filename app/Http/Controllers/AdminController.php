@@ -344,7 +344,13 @@ class AdminController extends Controller
             if ($exists) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
             }
-
+          
+            // 校验端口是否已存在
+            $exists = User::query()->where('id', '<>', $id)->where('port', $port)->first();
+            if ($exists) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
+            }
+          
             DB::beginTransaction();
             try {
                 $data = [
@@ -1387,9 +1393,8 @@ class AdminController extends Controller
     // 生成SS端口
     public function makePort(Request $request)
     {
-        $last_user = User::query()->orderBy('id', 'desc')->first();
-        $last_port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
-        echo $last_port;
+        $new_port = self::$config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
+        echo $new_port;
         exit;
     }
 
