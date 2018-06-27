@@ -267,7 +267,7 @@ class AdminController extends Controller
             for ($i = 0; $i < 5; $i++) {
                 // 生成一个可用端口
                 $last_user = User::query()->orderBy('id', 'desc')->first();
-                $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
+                $port = self::$config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
 
                 $user = new User();
                 $user->username = '批量生成-' . makeRandStr();
