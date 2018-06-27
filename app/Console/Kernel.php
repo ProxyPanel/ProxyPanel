@@ -59,9 +59,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoReleasePortJob')->everyMinute();
         $schedule->command('autoReopenUserJob')->everyMinute();
         $schedule->command('autoResetUserTrafficJob')->everyFiveMinutes();
-        $schedule->command('autoStatisticsNodeDailyTrafficJob')->dailyAt('04:30');
+        $schedule->command('autoStatisticsNodeDailyTrafficJob')->dailyAt('23:55');
         $schedule->command('autoStatisticsNodeHourlyTrafficJob')->hourly();
-        $schedule->command('autoStatisticsUserDailyTrafficJob')->dailyAt('03:00');
+        $schedule->command('autoStatisticsUserDailyTrafficJob')->dailyAt('23:50');
         $schedule->command('autoStatisticsUserHourlyTrafficJob')->hourly();
         $schedule->command('userExpireWarningJob')->daily();
         $schedule->command('userTrafficAbnormalWarningJob')->everyThirtyMinutes();
