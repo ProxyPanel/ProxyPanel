@@ -23,7 +23,7 @@ class autoDisableUserJob extends Command
         $userList = User::query()->where('enable', 1)->whereRaw("u + d >= transfer_enable")->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
-                User::query()->where('id', $user->id)->update(['enable' => 0]);
+                User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => -1]);
 
                 // 写入日志
                 $this->log($user->id, '【自动封禁】-流量超限');
