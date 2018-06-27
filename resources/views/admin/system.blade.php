@@ -631,6 +631,13 @@
                                                                 <span class="help-block"> 被禁用的用户端口自动释放，重新启用用户则需要手动分配端口并手动重启一次SSR(R) </span>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <label for="is_ban_status" class="col-md-3 control-label">过期封禁是否禁止账号</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_ban_status) checked @endif id="is_ban_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 被禁用的用户在禁止过期用户时不仅禁止SSR，而且同时禁止账号</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -1077,6 +1084,21 @@
                 var auto_release_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'auto_release_port', value:auto_release_port}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+	
+        // 过期封禁是否禁止账号
+        $('#is_ban_status').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_ban_status = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_ban_status', value:is_ban_status}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();

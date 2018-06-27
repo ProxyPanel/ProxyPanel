@@ -147,9 +147,14 @@ class RegisterController extends Controller
                 }
             }
 
-            // 最后一个可用端口
+            // 获取可用端口
             $last_user = User::query()->orderBy('id', 'desc')->first();
-            $port = self::$config['is_rand_port'] ? $this->getRandPort() : $last_user->port + 1;
+            $port = self::$config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
+            if ($port > self::$config['max_port']) {
+                $request->session()->flash('errorMsg', '用户已满');
+
+                return Redirect::back()->withInput();
+            }
 
             // 默认加密方式、协议、混淆
             $method = SsConfig::query()->where('type', 1)->where('is_default', 1)->first();

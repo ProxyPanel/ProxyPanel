@@ -1,6 +1,7 @@
 INSERT INTO `config` VALUES ('59', 'is_push_bear', 0);
 INSERT INTO `config` VALUES ('60', 'push_bear_send_key', '');
 INSERT INTO `config` VALUES ('61', 'push_bear_qrcode', '');
+INSERT INTO `config` VALUES ('62', 'is_ban_status', 0);
 
 
 CREATE TABLE `marketing` (
