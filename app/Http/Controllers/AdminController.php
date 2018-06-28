@@ -346,7 +346,7 @@ class AdminController extends Controller
             }
           
             // 校验端口是否已存在
-            $exists = User::query()->where('id', '<>', $id)->where('port', $port)->first();
+            $exists = User::query()->where('id', '<>', $id)->where('port','>', 0)->where('port', $port)->first();
             if ($exists) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
             }
