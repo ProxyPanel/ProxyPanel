@@ -19,6 +19,7 @@
                         </div>
                         <div class="actions">
                             <div class="btn-group btn-group-devided">
+                                <button class="btn sbold red" onclick="exportSSJson()"> 导出JSON </button>
                                 <button class="btn sbold blue" onclick="batchAddUsers()"> 批量生成 </button>
                                 <button class="btn sbold blue" onclick="addUser()"> 添加用户 </button>
                             </div>
@@ -169,6 +170,12 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 导出原版json配置
+        function exportSSJson() {
+            layer.msg("成功导出原版SS的用户配置信息，加密方式为系统默认的加密方式");
+            window.location.href = '{{url('admin/exportSSJson')}}';
+        }
+
         // 批量生成账号
         function batchAddUsers() {
             layer.confirm('将自动生成5个账号，确定继续吗？', {icon: 3, title:'警告'}, function(index) {

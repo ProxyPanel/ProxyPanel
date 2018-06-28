@@ -25,8 +25,8 @@ class AutoRegetPortJob extends Command
             $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('port', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
-                  $port = $config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
-                  User::query()->where('id', $user->id)->update(['port' => $port]);
+                    $port = $config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
+                    User::query()->where('id', $user->id)->update(['port' => $port]);
                 }
             }
         }
@@ -45,7 +45,7 @@ class AutoRegetPortJob extends Command
 
         return $data;
     }
-  
+
     // 获取一个随机端口
     public function getRandPort()
     {
@@ -61,7 +61,7 @@ class AutoRegetPortJob extends Command
 
         return $port;
     }
-    
+
     // 获取一个端口
     public function getOnlyPort()
     {

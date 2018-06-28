@@ -344,13 +344,13 @@ class AdminController extends Controller
             if ($exists) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
             }
-          
+
             // 校验端口是否已存在
-            $exists = User::query()->where('id', '<>', $id)->where('port','>', 0)->where('port', $port)->first();
+            $exists = User::query()->where('id', '<>', $id)->where('port', '>', 0)->where('port', $port)->first();
             if ($exists) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
             }
-          
+
             DB::beginTransaction();
             try {
                 $data = [
@@ -708,7 +708,7 @@ class AdminController extends Controller
 
         DB::beginTransaction();
         try {
-            // 删除分组关联、节点标签
+            // 删除分组关联、节点标签、节点相关日志
             SsGroupNode::query()->where('node_id', $id)->delete();
             SsNodeLabel::query()->where('node_id', $id)->delete();
             SsNode::query()->where('id', $id)->delete();
@@ -748,28 +748,27 @@ class AdminController extends Controller
         $hourlyData = [];
 
         // 节点一个月内的流量
-        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m',time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-        $dailyTotal = date('d',time())-1;//今天不算，减一
+        $nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+        $dailyTotal = date('d', time()) - 1;//今天不算，减一
         $dailyCount = count($nodeTrafficDaily);
-        for ($x=0; $x<($dailyTotal-$dailyCount); $x++){
+        for ($x = 0; $x < ($dailyTotal - $dailyCount); $x++) {
             $dailyData[$x] = 0;
-          }
-        for ($x=($dailyTotal-$dailyCount);$x<$dailyTotal;$x++){
-             $dailyData[$x] = round($nodeTrafficDaily[$x-($dailyTotal-$dailyCount)] / (1024 * 1024 * 1024), 3);
-          }
+        }
+        for ($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++) {
+            $dailyData[$x] = round($nodeTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
+        }
 
         // 节点一天内的流量
-        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d',time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-        $hourlyTotal = date('H',time());
+        $nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+        $hourlyTotal = date('H', time());
         $hourlyCount = count($nodeTrafficHourly);
-        for ($x=0; $x<($hourlyTotal-$hourlyCount); $x++){
+        for ($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++) {
             $hourlyData[$x] = 0;
-          }
-        for ($x=($hourlyTotal-$hourlyCount);$x<$hourlyTotal;$x++){
-             $hourlyData[$x] = round($nodeTrafficHourly[$x-($hourlyTotal-$hourlyCount)] / (1024 * 1024 * 1024), 3);
-          }
-    
-      
+        }
+        for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
+            $hourlyData[$x] = round($nodeTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
+        }
+
         $view['trafficDaily'] = [
             'nodeName'  => $node->name,
             'dailyData' => "'" . implode("','", $dailyData) . "'"
@@ -1126,10 +1125,10 @@ class AdminController extends Controller
         }
 
         if (!file_exists($filePath)) {
-            exit('文件不存在');
+            exit('文件不存在，请检查目录权限');
         }
 
-        return Response::download(public_path('downloads/convert.json'));
+        return Response::download($filePath);
     }
 
     // 数据导入
@@ -1290,6 +1289,47 @@ class AdminController extends Controller
         return Response::view('admin/export', $view);
     }
 
+    // 导出原版SS用户配置信息
+    public function exportSSJson(Request $request)
+    {
+        $userList = User::query()->where('port', '>', 0)->get();
+        $defaultMethod = $this->getDefaultMethod();
+
+        $json = '';
+        if (!$userList->isEmpty()) {
+            $tmp = [];
+            foreach ($userList as $key => $user) {
+                $tmp[] = '"' . $user->port . '":"' . $user->passwd . '"';
+            }
+
+            $userPassword = implode(",\n\t\t", $tmp);
+            $json = <<<EOF
+{
+	"server":"0.0.0.0",
+    "local_address":"127.0.0.1",
+    "local_port":1080,
+    "port_password":{
+        {$userPassword}
+    },
+    "timeout":300,
+    "method":"{$defaultMethod}",
+    "fast_open":false
+}
+EOF;
+        }
+
+        // 生成JSON文件
+        $fileName = makeRandStr('16') . '_shadowsocks.json';
+        $filePath = public_path('downloads/' . $fileName);
+        file_put_contents($filePath, $json);
+
+        if (!file_exists($filePath)) {
+            exit('文件生成失败，请检查目录权限');
+        }
+
+        return Response::download($filePath);
+    }
+
     // 修改个人资料
     public function profile(Request $request)
     {
@@ -1349,27 +1389,27 @@ class AdminController extends Controller
             $dailyData = [];
             $hourlyData = [];
 
-          
-        // 节点一个月内的流量
-          $userTrafficDaily = UserTrafficDaily::query()->with(['info'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m',time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-          $dailyTotal = date('d',time())-1;//今天不算，减一
-          $dailyCount = count($userTrafficDaily);
-          for ($x=0; $x<($dailyTotal-$dailyCount); $x++){
-              $dailyData[$x] = 0;
+
+            // 节点一个月内的流量
+            $userTrafficDaily = UserTrafficDaily::query()->with(['info'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+            $dailyTotal = date('d', time()) - 1;//今天不算，减一
+            $dailyCount = count($userTrafficDaily);
+            for ($x = 0; $x < ($dailyTotal - $dailyCount); $x++) {
+                $dailyData[$x] = 0;
             }
-          for ($x=($dailyTotal-$dailyCount);$x<$dailyTotal;$x++){
-               $dailyData[$x] = round($userTrafficDaily[$x-($dailyTotal-$dailyCount)] / (1024 * 1024 * 1024), 3);
+            for ($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++) {
+                $dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
             }
 
-          // 节点一天内的流量
-          $userTrafficHourly = UserTrafficHourly::query()->with(['info'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d',time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-          $hourlyTotal = date('H',time());
-          $hourlyCount = count($userTrafficHourly);
-          for ($x=0; $x<($hourlyTotal-$hourlyCount); $x++){
-              $hourlyData[$x] = 0;
+            // 节点一天内的流量
+            $userTrafficHourly = UserTrafficHourly::query()->with(['info'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+            $hourlyTotal = date('H', time());
+            $hourlyCount = count($userTrafficHourly);
+            for ($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++) {
+                $hourlyData[$x] = 0;
             }
-          for ($x=($hourlyTotal-$hourlyCount);$x<$hourlyTotal;$x++){
-               $hourlyData[$x] = round($userTrafficHourly[$x-($hourlyTotal-$hourlyCount)] / (1024 * 1024 * 1024), 3);
+            for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
+                $hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
             }
 
             $trafficDaily[$node->id] = [

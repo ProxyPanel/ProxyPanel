@@ -103,7 +103,7 @@ class Controller extends BaseController
 
         return $port;
     }
-    
+
     // 获取一个端口
     public function getOnlyPort()
     {
