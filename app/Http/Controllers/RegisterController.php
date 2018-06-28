@@ -252,6 +252,7 @@ class RegisterController extends Controller
             $view['is_captcha'] = self::$config['is_captcha'];
             $view['is_register'] = self::$config['is_register'];
             $view['is_invite_register'] = self::$config['is_invite_register'];
+            $view['is_free_code'] = self::$config['is_free_code'];
             $view['website_analytics'] = self::$config['website_analytics'];
             $view['website_customer_service'] = self::$config['website_customer_service'];
 
