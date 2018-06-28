@@ -215,7 +215,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="port" value="{{$user->port}}" id="port" />
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-success" type="button" onclick="makePort()"> {{$user->port ? '更换' : '生成'}} </button>
+                                                            <button class="btn btn-success" type="button" onclick="makePort()">生成新端口</button>
                                                         </span>
                                                     </div>
                                                 </div>
