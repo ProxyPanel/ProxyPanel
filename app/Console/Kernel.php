@@ -46,6 +46,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('autoReopenUserJob')->everyMinute();
         $schedule->command('autoBanSubscribeJob')->everyThirtyMinutes();
         $schedule->command('autoBanUserJob')->everyTenMinutes();
         $schedule->command('autoCheckNodeStatusJob')->everyMinute();
@@ -58,7 +59,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoExpireInviteJob')->everyThirtyMinutes();
         $schedule->command('autoRemoveDisabledUserLabelsJob')->everyMinute();
         $schedule->command('autoReleasePortJob')->everyMinute();
-        $schedule->command('autoReopenUserJob')->everyMinute();
         $schedule->command('autoRegetPortJob')->everyMinute();
         $schedule->command('autoResetUserTrafficJob')->everyFiveMinutes();
         $schedule->command('autoStatisticsNodeDailyTrafficJob')->dailyAt('23:55');
