@@ -25,7 +25,7 @@ class AutoBanUserJob extends Command
 
         // 封禁24小时内流量异常账号
         if ($config['is_traffic_ban']) {
-            $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
+            $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('ban_time', '>=', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
                     $time = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
