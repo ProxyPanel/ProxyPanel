@@ -19,6 +19,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/userList', 'AdminController@userList'); // 账号列表
     Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
     Route::post('admin/batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
+    Route::get('admin/exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
     Route::any('admin/editUser', 'AdminController@editUser'); // 编辑账号
     Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
     Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表

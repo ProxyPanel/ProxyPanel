@@ -95,7 +95,7 @@
 
         option = {
             title: {
-                text: '今月流量',
+                text: '本月流量',
                 subtext: '单位G'
             },
             tooltip: {
