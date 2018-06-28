@@ -29,7 +29,7 @@ class AutoReopenUserJob extends Command
                 $this->log($user->id, 0, '【自动解封】-封禁到期');
             }
         }
-        User::query()->where('status', '>=', 0)->where('enable', 1)->where('ban_time', -1)->update(['ban_time' => 0]);//重置ban_time
+        User::query()->where('enable', 1)->where('ban_time', -1)->update(['ban_time' => 0]);//重置ban_time
         $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', -1)->whereRaw("u + d < transfer_enable")->get();
         if (!$userList->isEmpty()) {
           foreach ($userList as $user) {
