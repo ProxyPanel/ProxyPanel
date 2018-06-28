@@ -97,8 +97,8 @@ return [
 
     // 流量日志
     'traffic_log_tips'                => '提示：月流量统计不会统计当天，天流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日和每日0时因为没有统计流量，不显示流量)',
-    'traffic_log_30days'              => '最近 30 天的流量使用情况',
-    'traffic_log_24hours'             => '最近 24 小时的流量使用情况',
+    'traffic_log_30days'              => '这个月的流量使用情况',
+    'traffic_log_24hours'             => '今天的流量使用情况',
     'traffic_log_keywords'            => '使用流量',
     'traffic_log_unit'                => '单位 / MB',
     'traffic_log_max'                 => '使用高峰',
