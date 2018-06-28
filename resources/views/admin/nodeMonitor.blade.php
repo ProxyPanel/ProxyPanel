@@ -12,7 +12,7 @@
             <div class="col-md-12">
                 <div class="note note-info">
                     <h3 class="block">{{$nodeName}}<small style="padding-left:10px;">{{$nodeServer}}</small></h3>
-                    <p> 提示：月流量统计不会统计当天，天流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日因为没有统计流量，月流量不显示流量) </p>
+                    <p> 提示：月流量统计不会统计当天，天流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日和每日0时因为没有统计流量，不显示流量) </p>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
 
         option = {
             title: {
-                text: '24小时内流量',
+                text: '今日流量',
                 subtext: '单位G'
             },
             tooltip: {
@@ -93,7 +93,7 @@
 
         option = {
             title: {
-                text: '30日内流量',
+                text: '今月流量',
                 subtext: '单位G'
             },
             tooltip: {
