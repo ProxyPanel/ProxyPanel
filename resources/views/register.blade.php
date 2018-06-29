@@ -95,7 +95,9 @@
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.code')}}</label>
                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
                 </div>
-                <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
+                @if($is_free_code)
+                    <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
+                @endif
             @endif
             @if($is_captcha)
             <div class="form-group" style="margin-bottom:75px;">
