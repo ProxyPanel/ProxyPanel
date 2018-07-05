@@ -412,11 +412,15 @@ class AdminController extends Controller
             if ($user) {
                 $user->transfer_enable = flowToGB($user->transfer_enable);
 
+                // 处理标签
                 $label = [];
                 foreach ($user->label as $vo) {
                     $label[] = $vo->label_id;
                 }
                 $user->labels = $label;
+
+                // 处理用途
+                $user->usage = explode(',', $user->usage);
             }
 
             $view['user'] = $user;

@@ -123,7 +123,7 @@ CREATE TABLE `user` (
   `gender` tinyint(4) NOT NULL DEFAULT '1' COMMENT '性别：0-女、1-男',
   `wechat` varchar(30) DEFAULT '' COMMENT '微信',
   `qq` varchar(20) DEFAULT '' COMMENT 'QQ',
-  `usage` tinyint(4) NOT NULL DEFAULT '4' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
+  `usage` VARCHAR(10) NOT NULL DEFAULT '4' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
   `pay_way` tinyint(4) NOT NULL DEFAULT '0' COMMENT '付费方式：0-免费、1-月付、2-半年付、3-年付',
   `balance` int(11) NOT NULL DEFAULT '0' COMMENT '余额，单位分',
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
