@@ -44,11 +44,11 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-checkbox-inline">
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="1"> 手机
+                                                            <input type="checkbox" name="usage" value="1" checked> 手机
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="2"> 电脑
+                                                            <input type="checkbox" name="usage" value="2" checked> 电脑
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
@@ -56,7 +56,7 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="4" checked> 其他
+                                                            <input type="checkbox" name="usage" value="4"> 平板
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -75,11 +75,15 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="2"> 半年付
+                                                            <input type="radio" name="pay_way" value="2"> 季付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="3"> 年付
+                                                            <input type="radio" name="pay_way" value="3"> 半年付
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="pay_way" value="4"> 年付
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -306,6 +310,7 @@
     <script type="text/javascript">
         // 用户标签选择器
         $('#labels').select2({
+            theme: 'bootstrap',
             placeholder: '设置后则可见相同标签的节点',
             allowClear: true
         });

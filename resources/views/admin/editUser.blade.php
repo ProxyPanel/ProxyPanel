@@ -62,7 +62,7 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="4" {{in_array(4, $user->usage) ? 'checked' : ''}}> 其他
+                                                            <input type="checkbox" name="usage" value="4" {{in_array(4, $user->usage) ? 'checked' : ''}}> 平板
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -77,15 +77,19 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="1" {{$user->pay_way == 1 ? 'checked' : ''}}> 月付
+                                                            <input type="radio" name="pay_way" value="1" {{$user->pay_way == 1 ? 'checked' : ''}}> 季付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="2" {{$user->pay_way == 2 ? 'checked' : ''}}> 半年付
+                                                            <input type="radio" name="pay_way" value="2" {{$user->pay_way == 2 ? 'checked' : ''}}> 月付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="3" {{$user->pay_way == 3 ? 'checked' : ''}}> 年付
+                                                            <input type="radio" name="pay_way" value="3" {{$user->pay_way == 3 ? 'checked' : ''}}> 半年付
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="pay_way" value="4" {{$user->pay_way == 4 ? 'checked' : ''}}> 年付
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -215,7 +219,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="port" value="{{$user->port}}" id="port" />
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-success" type="button" onclick="makePort()">生成新端口</button>
+                                                            <button class="btn btn-success" type="button" onclick="makePort()"> <i class="fa fa-refresh"></i> </button>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -226,7 +230,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="passwd" value="{{$user->passwd}}" id="passwd" />
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-success" type="button" onclick="makePasswd()"> 生成 </button>
+                                                            <button class="btn btn-success" type="button" onclick="makePasswd()"> <i class="fa fa-refresh"></i> </button>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -373,6 +377,7 @@
     <script type="text/javascript">
         // 用户标签选择器
         $('#labels').select2({
+            theme: 'bootstrap',
             placeholder: '设置后则可见相同标签的节点',
             allowClear: true
         });

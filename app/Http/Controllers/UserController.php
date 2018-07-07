@@ -855,7 +855,7 @@ class UserController extends Controller
             $strategy = self::$config['goods_purchase_limit_strategy'];
             if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
                 // 判断是否已经购买过该商品
-                $none_expire_good_exist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('is_expire', 0)->exists();
+                $none_expire_good_exist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('is_expire', 0)->where('status', '>=', 0)->exists();
                 if ($none_expire_good_exist) {
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不可重复购买']);
                 }
