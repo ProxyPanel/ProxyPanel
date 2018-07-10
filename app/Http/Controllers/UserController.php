@@ -87,6 +87,7 @@ class UserController extends Controller
             ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->where('ss_node.status', 1)
             ->groupBy('ss_node.id')
+            ->orderBy('sort', 'desc')
             ->get();
 
         foreach ($nodeList as &$node) {
