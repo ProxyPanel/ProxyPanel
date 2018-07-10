@@ -14,6 +14,7 @@
         "maatwebsite/excel": "~2.1.0",
         "mews/captcha": "^2.1",
         "mews/purifier": "^2.0",
+        "openlss/lib-array2xml": "^0.5.1",
         "overtrue/laravel-lang": "~3.0",
         "paypal/rest-api-sdk-php": "*",
         "youzan/open-sdk": "^1.0"

@@ -45,6 +45,8 @@ class SubscribeController extends Controller
             exit($this->noneNode());
         }
 
+        // TODO：需要加入防探测机制
+
         // 更新访问次数
         $subscribe->increment('times', 1);
 

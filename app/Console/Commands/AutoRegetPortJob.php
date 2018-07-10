@@ -26,6 +26,7 @@ class AutoRegetPortJob extends Command
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
                     $port = $config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
+
                     User::query()->where('id', $user->id)->update(['port' => $port]);
                 }
             }

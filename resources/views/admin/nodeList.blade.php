@@ -39,9 +39,9 @@
                                 <tr>
                                     <th> <span class="node-id"><a href="javascript:showIdTips();">ID</a></span> </th>
                                     <th> 节点名称 </th>
-                                    <th> 域名 </th>
                                     <th> IP </th>
-                                    <th> 负载 </th>
+                                    <th> 绑定域名 </th>
+                                    <th> 状态 </th>
                                     <th> 在线 </th>
                                     <th> <span class="node-flow"><a href="javascript:showFlowTips();">产生流量</a></span> </th>
                                     <th> 流量比例 </th>
@@ -59,8 +59,8 @@
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}" title="维护中">{{$node->name}}</span> </td>
-                                                <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->server}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->ip}}</span> </td>
+                                                <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->server}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->load}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->online_users}}</span> </td>
                                                 <td> {{$node->transfer}} </td>

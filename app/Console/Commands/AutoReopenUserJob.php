@@ -32,6 +32,7 @@ class AutoReopenUserJob extends Command
 
         // SSR(R)被启用说明用户购买了流量
         User::query()->where('enable', 1)->where('ban_time', -1)->update(['ban_time' => 0]); // 重置ban_time
+
         $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', -1)->whereRaw("u + d < transfer_enable")->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {

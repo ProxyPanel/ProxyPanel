@@ -24,8 +24,9 @@ class AutoDecGoodsTrafficJob extends Command
     {
         $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->get();
         if (!$orderList->isEmpty()) {
-            // 用户默认标签
             $config = $this->systemConfig();
+
+            // 用户默认标签
             $defaultLabels = [];
             if ($config['initial_labels_for_user']) {
                 $defaultLabels = explode(',', $config['initial_labels_for_user']);
@@ -53,6 +54,7 @@ class AutoDecGoodsTrafficJob extends Command
 
                     // 合并默认标签
                     $labels = $defaultLabels ? array_merge($goodsLabels, $defaultLabels) : $goodsLabels;
+                    $labels = array_unique($labels); // 去重
                     foreach ($labels as $vo) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $order->user->id;

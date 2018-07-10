@@ -9,7 +9,6 @@ use App\Http\Models\Invite;
 use App\Http\Models\Label;
 use App\Http\Models\Level;
 use App\Http\Models\Order;
-use App\Http\Models\OrderGoods;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
@@ -495,6 +494,18 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv6地址不合法']);
             }
 
+            if ($request->get('server')) {
+                $domain = $request->get('server');
+                $domain = explode('.', $domain);
+                $domainSuffix = end($domain); // 取得域名后缀
+
+                if (!in_array($domainSuffix, \config('domains'))) {
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '绑定域名不合法']);
+                }
+            }
+
+            // TODO：判断是否已存在绑定了相同域名的节点，提示是否要强制替换，或者不提示之前强制将其他节点的绑定域名置为空，然后发起域名绑定请求，或者请求进入队列
+
             DB::beginTransaction();
             try {
                 $ssNode = new SsNode();
@@ -574,90 +585,72 @@ class AdminController extends Controller
         $id = $request->get('id');
 
         if ($request->method() == 'POST') {
-            $name = $request->get('name');
-            $labels = $request->get('labels');
-            $group_id = $request->get('group_id', 0);
-            $country_code = $request->get('country_code', 'un');
-            $server = $request->get('server', '');
-            $ip = $request->get('ip');
-            $ipv6 = $request->get('ipv6');
-            $desc = $request->get('desc', '');
-            $method = $request->get('method');
-            $protocol = $request->get('protocol');
-            $protocol_param = $request->get('protocol_param');
-            $obfs = $request->get('obfs');
-            $obfs_param = $request->get('obfs_param');
-            $traffic_rate = $request->get('traffic_rate');
-            $bandwidth = $request->get('bandwidth');
-            $traffic = $request->get('traffic');
-            $monitor_url = $request->get('monitor_url');
-            $is_subscribe = $request->get('is_subscribe', 1);
-            $compatible = $request->get('compatible');
-            $single = $request->get('single', 0);
-            $single_force = $request->get('single_force');
-            $single_port = $request->get('single_port');
-            $single_passwd = $request->get('single_passwd');
-            $single_method = $request->get('single_method');
-            $single_protocol = $request->get('single_protocol');
-            $single_obfs = $request->get('single_obfs');
-            $sort = $request->get('sort');
-            $status = $request->get('status');
-
-            if (false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            if (false === filter_var($request->get('ip'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv4地址不合法']);
             }
 
-            if ($request->get('ipv6') && false === filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            if ($request->get('ipv6') && false === filter_var($request->get('ipv6'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv6地址不合法']);
+            }
+
+            if ($request->get('server')) {
+                $domain = $request->get('server');
+                $domain = explode('.', $domain);
+                $domainSuffix = end($domain); // 取得域名后缀
+
+                if (!in_array($domainSuffix, \config('domains'))) {
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '绑定域名不合法']);
+                }
             }
 
             DB::beginTransaction();
             try {
                 $data = [
-                    'name'            => $name,
-                    'group_id'        => $group_id,
-                    'country_code'    => $country_code,
-                    'server'          => $server,
-                    'ip'              => $ip,
-                    'ipv6'            => $ipv6,
-                    'desc'            => $desc,
-                    'method'          => $method,
-                    'protocol'        => $protocol,
-                    'protocol_param'  => $protocol_param,
-                    'obfs'            => $obfs,
-                    'obfs_param'      => $obfs_param,
-                    'traffic_rate'    => $traffic_rate,
-                    'bandwidth'       => $bandwidth,
-                    'traffic'         => $traffic,
-                    'monitor_url'     => $monitor_url,
-                    'is_subscribe'    => $is_subscribe,
-                    'compatible'      => $compatible,
-                    'single'          => $single,
-                    'single_force'    => $single ? $single_force : 0,
-                    'single_port'     => $single ? $single_port : '',
-                    'single_passwd'   => $single ? $single_passwd : '',
-                    'single_method'   => $single ? $single_method : '',
-                    'single_protocol' => $single ? $single_protocol : '',
-                    'single_obfs'     => $single ? $single_obfs : '',
-                    'sort'            => $sort,
-                    'status'          => $status
+                    'name'            => $request->get('name'),
+                    'group_id'        => $request->get('group_id', 0),
+                    'country_code'    => $request->get('country_code', 'un'),
+                    'server'          => $request->get('server', ''),
+                    'ip'              => $request->get('ip'),
+                    'ipv6'            => $request->get('ipv6', ''),
+                    'desc'            => $request->get('desc', ''),
+                    'method'          => $request->get('method'),
+                    'protocol'        => $request->get('protocol'),
+                    'protocol_param'  => $request->get('protocol_param'),
+                    'obfs'            => $request->get('obfs'),
+                    'obfs_param'      => $request->get('obfs_param'),
+                    'traffic_rate'    => $request->get('traffic_rate'),
+                    'bandwidth'       => $request->get('bandwidth'),
+                    'traffic'         => $request->get('traffic'),
+                    'monitor_url'     => $request->get('monitor_url'),
+                    'is_subscribe'    => $request->get('is_subscribe', 1),
+                    'compatible'      => $request->get('compatible'),
+                    'single'          => $request->get('single', 0),
+                    'single_force'    => $request->get('single') ? $request->get('single_force') : 0,
+                    'single_port'     => $request->get('single') ? $request->get('single_port') : '',
+                    'single_passwd'   => $request->get('single') ? $request->get('single_passwd') : '',
+                    'single_method'   => $request->get('single') ? $request->get('single_method') : '',
+                    'single_protocol' => $request->get('single') ? $request->get('single_protocol') : '',
+                    'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
+                    'sort'            => $request->get('sort', 0),
+                    'status'          => $request->get('status')
                 ];
 
                 SsNode::query()->where('id', $id)->update($data);
 
                 // 建立分组关联
-                if ($group_id) {
+                if ($request->get('group_id')) {
                     // 先删除该节点所有关联
                     SsGroupNode::query()->where('node_id', $id)->delete();
 
                     // 建立关联
                     $ssGroupNode = new SsGroupNode();
-                    $ssGroupNode->group_id = $group_id;
+                    $ssGroupNode->group_id = $request->get('group_id');
                     $ssGroupNode->node_id = $id;
                     $ssGroupNode->save();
                 }
 
                 // 生成节点标签
+                $labels = $request->get('labels');
                 SsNodeLabel::query()->where('node_id', $id)->delete(); // 删除所有该节点的标签
                 if (!empty($labels)) {
                     foreach ($labels as $label) {

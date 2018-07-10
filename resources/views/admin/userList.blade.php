@@ -46,9 +46,9 @@
                                     <option value="" @if(Request::get('pay_way') == '') selected @endif>付费方式</option>
                                     <option value="0" @if(Request::get('pay_way') == '0') selected @endif>免费</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>月付</option>
-                                    <option value="2" @if(Request::get('pay_way') == '2') selected @endif>半年付</option>
-                                    <option value="3" @if(Request::get('pay_way') == '3') selected @endif>年付</option>
-                                    <option value="4" @if(Request::get('pay_way') == '4') selected @endif>其他</option>
+                                    <option value="2" @if(Request::get('pay_way') == '2') selected @endif>季付</option>
+                                    <option value="3" @if(Request::get('pay_way') == '3') selected @endif>半年付</option>
+                                    <option value="4" @if(Request::get('pay_way') == '4') selected @endif>年付</option>
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
