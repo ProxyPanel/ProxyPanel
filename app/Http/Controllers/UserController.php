@@ -33,6 +33,7 @@ use App\Mail\resetPassword;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
+use Session;
 use Cache;
 use Mail;
 use Log;
@@ -50,7 +51,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $user = User::query()->where('id', $user['id'])->first();
         $user->totalTransfer = flowAutoShow($user->transfer_enable);
@@ -64,14 +65,15 @@ class UserController extends Controller
         $view['wechat_qrcode'] = self::$config['wechat_qrcode'];
         $view['alipay_qrcode'] = self::$config['alipay_qrcode'];
         $view['login_add_score'] = self::$config['login_add_score'];
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['is_push_bear'] = self::$config['is_push_bear'];
         $view['push_bear_qrcode'] = self::$config['push_bear_qrcode'];
 
         // 推广返利是否可见
-        if (!$request->session()->has('referral_status')) {
-            $request->session()->put('referral_status', self::$config['referral_status']);
+        if (!Session::has('referral_status')) {
+            Session::put('referral_status', self::$config['referral_status']);
         }
 
         // 节点列表
@@ -156,6 +158,7 @@ class UserController extends Controller
             return Redirect::to('user');
         }
 
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -165,7 +168,7 @@ class UserController extends Controller
     // 修改个人资料
     public function profile(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         if ($request->method() == 'POST') {
             $old_password = $request->get('old_password');
@@ -184,22 +187,22 @@ class UserController extends Controller
 
                 $user = User::query()->where('id', $user['id'])->first();
                 if ($user->password != $old_password) {
-                    $request->session()->flash('errorMsg', '旧密码错误，请重新输入');
+                    Session::flash('errorMsg', '旧密码错误，请重新输入');
 
                     return Redirect::to('user/profile#tab_1');
                 } else if ($user->password == $new_password) {
-                    $request->session()->flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
+                    Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
                     return Redirect::to('user/profile#tab_1');
                 }
 
                 $ret = User::query()->where('id', $user['id'])->update(['password' => $new_password]);
                 if (!$ret) {
-                    $request->session()->flash('errorMsg', '修改失败');
+                    Session::flash('errorMsg', '修改失败');
 
                     return Redirect::to('user/profile#tab_1');
                 } else {
-                    $request->session()->flash('successMsg', '修改成功');
+                    Session::flash('successMsg', '修改成功');
 
                     return Redirect::to('user/profile#tab_1');
                 }
@@ -208,18 +211,18 @@ class UserController extends Controller
             // 修改联系方式
             if ($wechat || $qq) {
                 if (empty(clean($wechat)) && empty(clean($qq))) {
-                    $request->session()->flash('errorMsg', '修改失败');
+                    Session::flash('errorMsg', '修改失败');
 
                     return Redirect::to('user/profile#tab_2');
                 }
 
                 $ret = User::query()->where('id', $user['id'])->update(['wechat' => $wechat, 'qq' => $qq]);
                 if (!$ret) {
-                    $request->session()->flash('errorMsg', '修改失败');
+                    Session::flash('errorMsg', '修改失败');
 
                     return Redirect::to('user/profile#tab_2');
                 } else {
-                    $request->session()->flash('successMsg', '修改成功');
+                    Session::flash('successMsg', '修改成功');
 
                     return Redirect::to('user/profile#tab_2');
                 }
@@ -228,7 +231,7 @@ class UserController extends Controller
             // 修改SSR(R)设置
             if ($method || $protocol || $obfs) {
                 if (empty($passwd)) {
-                    $request->session()->flash('errorMsg', '密码不能为空');
+                    Session::flash('errorMsg', '密码不能为空');
 
                     return Redirect::to('user/profile#tab_3');
                 }
@@ -238,7 +241,7 @@ class UserController extends Controller
                 $existProtocol = SsConfig::query()->where('type', 2)->where('name', $protocol)->first();
                 $existObfs = SsConfig::query()->where('type', 3)->where('name', $obfs)->first();
                 if (!$existMethod || !$existProtocol || !$existObfs) {
-                    $request->session()->flash('errorMsg', '非法请求');
+                    Session::flash('errorMsg', '非法请求');
 
                     return Redirect::to('user/profile#tab_3');
                 }
@@ -252,16 +255,16 @@ class UserController extends Controller
 
                 $ret = User::query()->where('id', $user['id'])->update($data);
                 if (!$ret) {
-                    $request->session()->flash('errorMsg', '修改失败');
+                    Session::flash('errorMsg', '修改失败');
 
                     return Redirect::to('user/profile#tab_3');
                 } else {
                     // 更新session
                     $user = User::query()->where('id', $user['id'])->first()->toArray();
-                    $request->session()->remove('user');
-                    $request->session()->put('user', $user);
+                    Session::remove('user');
+                    Session::put('user', $user);
 
-                    $request->session()->flash('successMsg', '修改成功');
+                    Session::flash('successMsg', '修改成功');
 
                     return Redirect::to('user/profile#tab_3');
                 }
@@ -272,6 +275,7 @@ class UserController extends Controller
             $view['protocol_list'] = $this->protocolList();
             $view['obfs_list'] = $this->obfsList();
             $view['info'] = User::query()->where('id', $user['id'])->first();
+            $view['website_logo'] = self::$config['website_logo'];
             $view['website_analytics'] = self::$config['website_analytics'];
             $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -282,7 +286,7 @@ class UserController extends Controller
     // 流量日志
     public function trafficLog(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $dailyData = [];
         $hourlyData = [];
@@ -312,6 +316,8 @@ class UserController extends Controller
 
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
+
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -327,6 +333,8 @@ class UserController extends Controller
         }
 
         $view['goodsList'] = $goodsList;
+
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -336,10 +344,12 @@ class UserController extends Controller
     // 工单
     public function ticketList(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
+
         $view['ticketList'] = Ticket::query()->where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
 
         return Response::view('user/ticketList', $view);
@@ -348,9 +358,11 @@ class UserController extends Controller
     // 订单
     public function orderList(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $view['orderList'] = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', $user['id'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
+
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -363,7 +375,7 @@ class UserController extends Controller
         $title = $request->get('title');
         $content = clean($request->get('content'));
 
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         if (empty($title) || empty($content)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '请输入标题和内容']);
@@ -408,7 +420,7 @@ class UserController extends Controller
     {
         $id = intval($request->get('id'));
 
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         if ($request->method() == 'POST') {
             $content = clean($request->get('content'));
@@ -454,6 +466,8 @@ class UserController extends Controller
 
             $view['ticket'] = $ticket;
             $view['replyList'] = TicketReply::query()->where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
+
+            $view['website_logo'] = self::$config['website_logo'];
             $view['website_analytics'] = self::$config['website_analytics'];
             $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -466,7 +480,7 @@ class UserController extends Controller
     {
         $id = $request->get('id');
 
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $ret = Ticket::query()->where('id', $id)->where('user_id', $user['id'])->update(['status' => 2]);
         if ($ret) {
@@ -479,11 +493,12 @@ class UserController extends Controller
     // 邀请码
     public function invite(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
 
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['num'] = self::$config['invite_num'] - $num <= 0 ? 0 : self::$config['invite_num'] - $num; // 还可以生成的邀请码数量
@@ -497,6 +512,7 @@ class UserController extends Controller
     // 公开的邀请码列表
     public function free(Request $request)
     {
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['is_invite_register'] = self::$config['is_invite_register'];
@@ -509,7 +525,7 @@ class UserController extends Controller
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
@@ -536,7 +552,7 @@ class UserController extends Controller
 
             // 是否开启账号激活
             if (!self::$config['is_active_register']) {
-                $request->session()->flash('errorMsg', '系统未开启账号激活功能，请联系管理员');
+                Session::flash('errorMsg', '系统未开启账号激活功能，请联系管理员');
 
                 return Redirect::back()->withInput();
             }
@@ -544,15 +560,15 @@ class UserController extends Controller
             // 查找账号
             $user = User::query()->where('username', $username)->first();
             if (!$user) {
-                $request->session()->flash('errorMsg', '账号不存在，请重试');
+                Session::flash('errorMsg', '账号不存在，请重试');
 
                 return Redirect::back();
             } else if ($user->status < 0) {
-                $request->session()->flash('errorMsg', '账号已禁止登陆，无需激活');
+                Session::flash('errorMsg', '账号已禁止登陆，无需激活');
 
                 return Redirect::back();
             } else if ($user->status > 0) {
-                $request->session()->flash('errorMsg', '账号无需激活');
+                Session::flash('errorMsg', '账号无需激活');
 
                 return Redirect::back();
             }
@@ -562,7 +578,7 @@ class UserController extends Controller
             if (Cache::has('activeUser_' . md5($username))) {
                 $activeTimes = Cache::get('activeUser_' . md5($username));
                 if ($activeTimes >= self::$config['active_times']) {
-                    $request->session()->flash('errorMsg', '同一个账号24小时内只能请求激活' . self::$config['active_times'] . '次，请勿频繁操作');
+                    Session::flash('errorMsg', '同一个账号24小时内只能请求激活' . self::$config['active_times'] . '次，请勿频繁操作');
 
                     return Redirect::back();
                 }
@@ -590,7 +606,7 @@ class UserController extends Controller
             }
 
             Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
-            $request->session()->flash('successMsg', '邮件已发送，请查看邮箱');
+            Session::flash('successMsg', '邮件已发送，请查看邮箱');
 
             return Redirect::back();
         } else {
@@ -611,19 +627,19 @@ class UserController extends Controller
         if (empty($verify)) {
             return Redirect::to('login');
         } else if (empty($verify->user)) {
-            $request->session()->flash('errorMsg', '该链接已失效');
+            Session::flash('errorMsg', '该链接已失效');
 
             return Response::view('user/active');
         } else if ($verify->status == 1) {
-            $request->session()->flash('errorMsg', '该链接已失效');
+            Session::flash('errorMsg', '该链接已失效');
 
             return Response::view('user/active');
         } else if ($verify->user->status != 0) {
-            $request->session()->flash('errorMsg', '该账号无需激活.');
+            Session::flash('errorMsg', '该账号无需激活.');
 
             return Response::view('user/active');
         } else if (time() - strtotime($verify->created_at) >= 1800) {
-            $request->session()->flash('errorMsg', '该链接已过期');
+            Session::flash('errorMsg', '该链接已过期');
 
             // 置为已失效
             $verify->status = 2;
@@ -635,7 +651,7 @@ class UserController extends Controller
         // 更新账号状态
         $ret = User::query()->where('id', $verify->user_id)->update(['status' => 1]);
         if (!$ret) {
-            $request->session()->flash('errorMsg', '账号激活失败');
+            Session::flash('errorMsg', '账号激活失败');
 
             return Redirect::back();
         }
@@ -652,7 +668,7 @@ class UserController extends Controller
             User::query()->where('id', $verify->user->referral_uid)->update(['enable' => 1]);
         }
 
-        $request->session()->flash('successMsg', '账号激活成功');
+        Session::flash('successMsg', '账号激活成功');
 
         return Response::view('user/active');
     }
@@ -665,7 +681,7 @@ class UserController extends Controller
 
             // 是否开启重设密码
             if (!self::$config['is_reset_password']) {
-                $request->session()->flash('errorMsg', '系统未开启重置密码功能，请联系管理员');
+                Session::flash('errorMsg', '系统未开启重置密码功能，请联系管理员');
 
                 return Redirect::back()->withInput();
             }
@@ -673,7 +689,7 @@ class UserController extends Controller
             // 查找账号
             $user = User::query()->where('username', $username)->first();
             if (!$user) {
-                $request->session()->flash('errorMsg', '账号不存在，请重试');
+                Session::flash('errorMsg', '账号不存在，请重试');
 
                 return Redirect::back();
             }
@@ -683,7 +699,7 @@ class UserController extends Controller
             if (Cache::has('resetPassword_' . md5($username))) {
                 $resetTimes = Cache::get('resetPassword_' . md5($username));
                 if ($resetTimes >= self::$config['reset_password_times']) {
-                    $request->session()->flash('errorMsg', '同一个账号24小时内只能重设密码' . self::$config['reset_password_times'] . '次，请勿频繁操作');
+                    Session::flash('errorMsg', '同一个账号24小时内只能重设密码' . self::$config['reset_password_times'] . '次，请勿频繁操作');
 
                     return Redirect::back();
                 }
@@ -711,10 +727,11 @@ class UserController extends Controller
             }
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
-            $request->session()->flash('successMsg', '重置成功，请查看邮箱');
+            Session::flash('successMsg', '重置成功，请查看邮箱');
 
             return Redirect::back();
         } else {
+            $view['website_logo'] = self::$config['website_logo'];
             $view['website_analytics'] = self::$config['website_analytics'];
             $view['website_customer_service'] = self::$config['website_customer_service'];
             $view['is_reset_password'] = self::$config['is_reset_password'];
@@ -733,11 +750,11 @@ class UserController extends Controller
             if (empty($token)) {
                 return Redirect::to('login');
             } else if (empty($password) || empty($repassword)) {
-                $request->session()->flash('errorMsg', '密码不能为空');
+                Session::flash('errorMsg', '密码不能为空');
 
                 return Redirect::back();
             } else if (md5($password) != md5($repassword)) {
-                $request->session()->flash('errorMsg', '两次输入密码不一致，请重新输入');
+                Session::flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back();
             }
@@ -747,15 +764,15 @@ class UserController extends Controller
             if (empty($verify)) {
                 return Redirect::to('login');
             } else if ($verify->status == 1) {
-                $request->session()->flash('errorMsg', '该链接已失效');
+                Session::flash('errorMsg', '该链接已失效');
 
                 return Redirect::back();
             } else if ($verify->user->status < 0) {
-                $request->session()->flash('errorMsg', '账号已被禁用');
+                Session::flash('errorMsg', '账号已被禁用');
 
                 return Redirect::back();
             } else if (md5($password) == $verify->user->password) {
-                $request->session()->flash('errorMsg', '新旧密码一样，请重新输入');
+                Session::flash('errorMsg', '新旧密码一样，请重新输入');
 
                 return Redirect::back();
             }
@@ -763,7 +780,7 @@ class UserController extends Controller
             // 更新密码
             $ret = User::query()->where('id', $verify->user_id)->update(['password' => md5($password)]);
             if (!$ret) {
-                $request->session()->flash('errorMsg', '重设密码失败');
+                Session::flash('errorMsg', '重设密码失败');
 
                 return Redirect::back();
             }
@@ -772,7 +789,7 @@ class UserController extends Controller
             $verify->status = 1;
             $verify->save();
 
-            $request->session()->flash('successMsg', '新密码设置成功，请自行登录');
+            Session::flash('successMsg', '新密码设置成功，请自行登录');
 
             return Redirect::back();
         } else {
@@ -784,7 +801,7 @@ class UserController extends Controller
             if (empty($verify)) {
                 return Redirect::to('login');
             } else if (time() - strtotime($verify->created_at) >= 1800) {
-                $request->session()->flash('errorMsg', '该链接已过期');
+                Session::flash('errorMsg', '该链接已过期');
 
                 // 置为已失效
                 $verify->status = 2;
@@ -840,7 +857,7 @@ class UserController extends Controller
         $goods_id = intval($request->get('goods_id'));
         $coupon_sn = $request->get('coupon_sn');
 
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         if ($request->method() == 'POST') {
             $goods = Goods::query()->with(['label'])->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
@@ -1007,6 +1024,7 @@ class UserController extends Controller
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
             $view['is_youzan'] = self::$config['is_youzan'];
+            $view['website_logo'] = self::$config['website_logo'];
             $view['website_analytics'] = self::$config['website_analytics'];
             $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -1017,7 +1035,7 @@ class UserController extends Controller
     // 积分兑换流量
     public function exchange(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         // 积分满100才可以兑换
         if ($user['score'] < 100) {
@@ -1046,8 +1064,8 @@ class UserController extends Controller
 
             // 更新session
             $user = User::query()->where('id', $user['id'])->first()->toArray();
-            $request->session()->remove('user');
-            $request->session()->put('user', $user);
+            Session::remove('user');
+            Session::put('user', $user);
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '兑换成功']);
         } catch (\Exception $e) {
@@ -1061,8 +1079,9 @@ class UserController extends Controller
     public function referral(Request $request)
     {
         // 生成个人推广链接
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['referral_traffic'] = flowAutoShow(self::$config['referral_traffic'] * 1048576);
@@ -1079,7 +1098,7 @@ class UserController extends Controller
     // 申请提现
     public function extractMoney(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         // 判断是否已存在申请
         $referralApply = ReferralApply::query()->where('user_id', $user['id'])->whereIn('status', [0, 1])->first();
@@ -1116,7 +1135,7 @@ class UserController extends Controller
     // 节点订阅
     public function subscribe(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         // 如果没有唯一码则生成一个
         $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
@@ -1132,6 +1151,7 @@ class UserController extends Controller
             $code = $subscribe->code;
         }
 
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
         $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
@@ -1143,7 +1163,7 @@ class UserController extends Controller
     // 更换订阅地址
     public function exchangeSubscribe(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         DB::beginTransaction();
         try {
@@ -1169,18 +1189,18 @@ class UserController extends Controller
     // 转换成管理员的身份
     public function switchToAdmin(Request $request)
     {
-        if (!$request->session()->has('admin') || !$request->session()->has('user')) {
+        if (!Session::has('admin') || !Session::has('user')) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
         }
 
-        $admin = $request->session()->get('admin');
+        $admin = Session::get('admin');
         $user = User::query()->where('id', $admin['id'])->first();
         if (!$user) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => "非法请求"]);
         }
 
         // 管理员信息重新写入user
-        $request->session()->put('user', $request->session()->get('admin'));
+        Session::put('user', Session::get('admin'));
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
     }
@@ -1188,7 +1208,7 @@ class UserController extends Controller
     // 卡券余额充值
     public function charge(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $coupon_sn = trim($request->get('coupon_sn'));
         if (empty($coupon_sn)) {
@@ -1243,7 +1263,7 @@ class UserController extends Controller
 
     public function switchLang(Request $request, $locale)
     {
-        $request->session()->put("locale", $locale);
+        Session::put("locale", $locale);
 
         return Redirect::back();
     }

@@ -8,6 +8,7 @@ use App\Http\Models\Label;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
+use Session;
 use DB;
 
 /**
@@ -46,28 +47,28 @@ class ShopController extends Controller
             $status = $request->get('status');
 
             if (empty($name) || empty($traffic)) {
-                $request->session()->flash('errorMsg', '请填写完整');
+                Session::flash('errorMsg', '请填写完整');
 
                 return Redirect::back()->withInput();
             }
 
             // 套餐必须有价格
             if ($type == 2 && $price <= 0) {
-                $request->session()->flash('errorMsg', '套餐价格必须大于0');
+                Session::flash('errorMsg', '套餐价格必须大于0');
 
                 return Redirect::back()->withInput();
             }
 
             // 套餐有效天数必须大于90天
             if ($type == 2 && $days < 90) {
-                $request->session()->flash('errorMsg', '套餐有效天数必须不能少于90天');
+                Session::flash('errorMsg', '套餐有效天数必须不能少于90天');
 
                 return Redirect::back()->withInput();
             }
 
             // 流量不能超过1PB
             if ($traffic > 1073741824) {
-                $request->session()->flash('errorMsg', '内含流量不能超过1PB');
+                Session::flash('errorMsg', '内含流量不能超过1PB');
 
                 return Redirect::back()->withInput();
             }
@@ -111,11 +112,11 @@ class ShopController extends Controller
                     }
                 }
 
-                $request->session()->flash('successMsg', '添加成功');
+                Session::flash('successMsg', '添加成功');
 
                 DB::commit();
             } catch (\Exception $e) {
-                $request->session()->flash('errorMsg', '添加失败');
+                Session::flash('errorMsg', '添加失败');
 
                 DB::rollBack();
             }
@@ -142,20 +143,20 @@ class ShopController extends Controller
 
             $goods = Goods::query()->where('id', $id)->first();
             if (!$goods) {
-                $request->session()->flash('errorMsg', '商品不存在');
+                Session::flash('errorMsg', '商品不存在');
 
                 return Redirect::back();
             }
 
             if (empty($name)) {
-                $request->session()->flash('errorMsg', '请填写完整');
+                Session::flash('errorMsg', '请填写完整');
 
                 return Redirect::back()->withInput();
             }
 
             // 套餐必须有价格
             if ($goods->type == 2 && $price <= 0) {
-                $request->session()->flash('errorMsg', '套餐价格必须大于0');
+                Session::flash('errorMsg', '套餐价格必须大于0');
 
                 return Redirect::back()->withInput();
             }
@@ -195,11 +196,11 @@ class ShopController extends Controller
                     }
                 }
 
-                $request->session()->flash('successMsg', '编辑成功');
+                Session::flash('successMsg', '编辑成功');
 
                 DB::commit();
             } catch (\Exception $e) {
-                $request->session()->flash('errorMsg', '编辑失败');
+                Session::flash('errorMsg', '编辑失败');
 
                 DB::rollBack();
             }

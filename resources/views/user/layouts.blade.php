@@ -40,8 +40,11 @@
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
         <div class="page-logo">
-            <a href="{{url('/user')}}">
-                <img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
+            @if($website_logo)
+                <a href="{{url('/user')}}"><img src="{{$website_logo}}" alt="logo" class="logo-default" style="width:110px; height:20px;"/> </a>
+            @else
+                <a href="{{url('/user')}}"><img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
+            @endif
             <div class="menu-toggler sidebar-toggler">
                 <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
             </div>

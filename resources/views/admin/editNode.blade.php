@@ -40,6 +40,7 @@
                                                         <label for="server" class="col-md-3 control-label"> 绑定域名 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="服务器域名地址，填则优先取域名地址">
+                                                            <span class="help-block">如果开启Namesilo且域名是Namesilo上购买的，则会强制更新域名的DNS记录为本节点IP，如果其他节点绑定了该域名则会清空其域名信息</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">

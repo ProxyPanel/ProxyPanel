@@ -12,9 +12,9 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p>如果负载显示宕机，可能是节点宕机或者节点上的SSR(R)服务挂掉了，请重启节点或者SSR(R)服务。</p>
-                    <p>节点宕机是因为所在IDC机房出了问题或者母机超售过载导致，SSR(R)挂掉是因为节点的配置太渣。<a href="https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C" target="_blank" style="color:red;">[VPS推荐]</a></p>
-                    <p>如果还是无法解决，请检查各节点服务器的时间是否同步。<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank" style="color:red;">[时间校准]</a></p>
+                    <p>节点绑定域名推荐使用<a href="https://www.namesilo.com/?rid=326ec20pa" target="_blank">Namesilo</a>，本面板支持自动更新DNS <a href="https://github.com/ssrpanel/SSRPanel/wiki/%E8%B4%AD%E4%B9%B0%E5%9F%9F%E5%90%8D%EF%BC%88%E8%87%AA%E5%B8%A6%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%EF%BC%89" target="_blank" style="color:red;">[购买域名]</a></p>
+                    <p>状态显示为'宕机'：1.SSR(R)进程挂掉；2.服务器真的宕机。<a href="https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C" target="_blank" style="color:red;">[VPS推荐]</a></p>
+                    <p>请务必检查各节点服务器的时间是否同步。<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank" style="color:red;">[时间校准]</a></p>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                                                 <td>
                                                     @if($node->compatible) <span class="label label-info">兼</span> @endif
                                                     @if($node->single) <span class="label label-info">单</span> @endif
-                                                    @if(!$node->is_subscribe) <span class="label label-info"><s>订阅</s></span> @endif
+                                                    @if(!$node->is_subscribe) <span class="label label-info"><s>订</s></span> @endif
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">

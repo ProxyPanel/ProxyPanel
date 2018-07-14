@@ -10,6 +10,7 @@ use App\Http\Models\PaymentCallback;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
+use Session;
 use Log;
 use DB;
 
@@ -27,7 +28,7 @@ class PaymentController extends Controller
     {
         $goods_id = intval($request->get('goods_id'));
         $coupon_sn = $request->get('coupon_sn');
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
         if (!$goods) {
@@ -76,7 +77,7 @@ class PaymentController extends Controller
 
         DB::beginTransaction();
         try {
-            $user = $request->session()->get('user');
+            $user = Session::get('user');
             $orderSn = date('ymdHis') . mt_rand(100000, 999999);
             $sn = makeRandStr(12);
 
@@ -141,7 +142,7 @@ class PaymentController extends Controller
             return Redirect::to('user/goodsList');
         }
 
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         $payment = Payment::query()->with(['order', 'order.goods'])->where('sn', $sn)->where('user_id', $user['id'])->first();
         if (!$payment) {
@@ -150,12 +151,13 @@ class PaymentController extends Controller
 
         $order = Order::query()->where('oid', $payment->oid)->first();
         if (!$order) {
-            $request->session()->flash('errorMsg', '订单不存在');
+            Session::flash('errorMsg', '订单不存在');
 
             return Response::view('payment/' . $sn);
         }
 
         $view['payment'] = $payment;
+        $view['website_logo'] = self::$config['website_logo'];
         $view['website_analytics'] = self::$config['website_analytics'];
         $view['website_customer_service'] = self::$config['website_customer_service'];
 
@@ -171,7 +173,7 @@ class PaymentController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '请求失败']);
         }
 
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
         $payment = Payment::query()->where('sn', $sn)->where('user_id', $user['id'])->first();
         if (!$payment) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败']);

@@ -32,6 +32,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
+use Session;
 use Log;
 use DB;
 
@@ -271,12 +272,13 @@ class AdminController extends Controller
                 $user = new User();
                 $user->username = '批量生成-' . makeRandStr();
                 $user->password = md5(makeRandStr());
+                $user->port = $port;
+                $user->passwd = makeRandStr();
                 $user->enable = 1;
                 $user->method = $this->getDefaultMethod();
                 $user->protocol = $this->getDefaultProtocol();
                 $user->obfs = $this->getDefaultObfs();
-                $user->port = $port;
-                $user->passwd = makeRandStr();
+                $user->usage = 1;
                 $user->transfer_enable = toGB(1000);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
@@ -661,6 +663,9 @@ class AdminController extends Controller
                     }
                 }
 
+                // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS）
+
+
                 DB::commit();
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
@@ -735,7 +740,7 @@ class AdminController extends Controller
 
         $node = SsNode::query()->where('id', $node_id)->orderBy('sort', 'desc')->first();
         if (!$node) {
-            $request->session()->flash('errorMsg', '节点不存在，请重试');
+            Session::flash('errorMsg', '节点不存在，请重试');
 
             return Redirect::back();
         }
@@ -1038,7 +1043,7 @@ class AdminController extends Controller
                     $str = mb_substr($item, 5);
                 }
 
-                $txt .= "\r\n" . $this->base64url_decode($str);
+                $txt .= "\r\n" . base64url_decode($str);
             }
 
             // 生成转换好的JSON文件
@@ -1133,7 +1138,7 @@ class AdminController extends Controller
     {
         if ($request->method() == 'POST') {
             if (!$request->hasFile('uploadFile')) {
-                $request->session()->flash('errorMsg', '请选择要上传的文件');
+                Session::flash('errorMsg', '请选择要上传的文件');
 
                 return Redirect::back();
             }
@@ -1142,13 +1147,13 @@ class AdminController extends Controller
 
             // 只能上传JSON文件
             if ($file->getClientMimeType() != 'application/json' || $file->getClientOriginalExtension() != 'json') {
-                $request->session()->flash('errorMsg', '只允许上传JSON文件');
+                Session::flash('errorMsg', '只允许上传JSON文件');
 
                 return Redirect::back();
             }
 
             if (!$file->isValid()) {
-                $request->session()->flash('errorMsg', '产生未知错误，请重新上传');
+                Session::flash('errorMsg', '产生未知错误，请重新上传');
 
                 return Redirect::back();
             }
@@ -1161,7 +1166,7 @@ class AdminController extends Controller
             $data = file_get_contents($save_path . '/' . $new_name);
             $data = json_decode($data);
             if (!$data) {
-                $request->session()->flash('errorMsg', '内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
+                Session::flash('errorMsg', '内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
 
                 return Redirect::back();
             }
@@ -1205,12 +1210,12 @@ class AdminController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
 
-                $request->session()->flash('errorMsg', '出错了，可能是导入的配置中有端口已经存在了');
+                Session::flash('errorMsg', '出错了，可能是导入的配置中有端口已经存在了');
 
                 return Redirect::back();
             }
 
-            $request->session()->flash('successMsg', '导入成功');
+            Session::flash('successMsg', '导入成功');
 
             return Redirect::back();
         } else {
@@ -1330,7 +1335,7 @@ EOF;
     // 修改个人资料
     public function profile(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         if ($request->method() == 'POST') {
             $old_password = $request->get('old_password');
@@ -1340,22 +1345,22 @@ EOF;
 
             $user = User::query()->where('id', $user['id'])->first();
             if ($user->password != $old_password) {
-                $request->session()->flash('errorMsg', '旧密码错误，请重新输入');
+                Session::flash('errorMsg', '旧密码错误，请重新输入');
 
                 return Redirect::back();
             } else if ($user->password == $new_password) {
-                $request->session()->flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
+                Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
                 return Redirect::back();
             }
 
             $ret = User::query()->where('id', $user['id'])->update(['password' => $new_password]);
             if (!$ret) {
-                $request->session()->flash('errorMsg', '修改失败');
+                Session::flash('errorMsg', '修改失败');
 
                 return Redirect::back();
             } else {
-                $request->session()->flash('successMsg', '修改成功');
+                Session::flash('successMsg', '修改成功');
 
                 return Redirect::back();
             }
@@ -1521,13 +1526,44 @@ EOF;
         $websiteAnalytics = $request->get('website_analytics');
         $websiteCustomerService = $request->get('website_customer_service');
 
+        DB::beginTransaction();
         try {
+            // 首页LOGO
+            if ($request->hasFile('website_home_logo')) {
+                $file = $request->file('website_home_logo');
+                $fileType = $file->getClientOriginalExtension();
+                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                $websiteHomeLogo = $move ? '/upload/image/' . $logoName : '';
+
+                Config::query()->where('name', 'website_home_logo')->update(['value' => $websiteHomeLogo]);
+            }
+
+            // 站内LOGO
+            if ($request->hasFile('website_logo')) {
+                $file = $request->file('website_logo');
+                $fileType = $file->getClientOriginalExtension();
+                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                $websiteLogo = $move ? '/upload/image/' . $logoName : '';
+
+                Config::query()->where('name', 'website_logo')->update(['value' => $websiteLogo]);
+            }
+
             Config::query()->where('name', 'website_analytics')->update(['value' => $websiteAnalytics]);
             Config::query()->where('name', 'website_customer_service')->update(['value' => $websiteCustomerService]);
 
-            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+            Session::flash('successMsg', '更新成功');
+
+            DB::commit();
+
+            return Redirect::back();
         } catch (\Exception $e) {
-            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+            DB::rollBack();
+
+            Session::flash('errorMsg', '更新失败');
+
+            return Redirect::back();
         }
     }
 
@@ -1536,7 +1572,7 @@ EOF;
     {
         $file = storage_path('app/ssserver.log');
         if (!file_exists($file)) {
-            $request->session()->flash('analysisErrorMsg', $file . ' 不存在，请先创建文件');
+            Session::flash('analysisErrorMsg', $file . ' 不存在，请先创建文件');
 
             return Response::view('admin/analysis');
         }
@@ -1867,7 +1903,7 @@ EOF;
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         for ($i = 0; $i < 5; $i++) {
             $obj = new Invite();
@@ -2111,8 +2147,8 @@ EOF;
         }
 
         // 存储当前管理员身份信息，并将当前登录信息改成要切换的用户的身份信息
-        $request->session()->put('admin', $request->session()->get("user"));
-        $request->session()->put('user', $user->toArray());
+        Session::put('admin', Session::get("user"));
+        Session::put('user', $user->toArray());
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
     }

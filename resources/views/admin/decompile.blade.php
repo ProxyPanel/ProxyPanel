@@ -56,7 +56,7 @@
                 return ;
             }
 
-            layer.confirm('确定继续反解析吗？', {icon: 2, title:'警告'}, function(index) {
+            layer.confirm('确定继续反解析吗？', {icon: 3, title:'警告'}, function(index) {
                 $.ajax({
                     type: "POST",
                     url: "{{url('admin/decompile')}}",

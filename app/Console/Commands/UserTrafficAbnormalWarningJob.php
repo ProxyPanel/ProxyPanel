@@ -25,7 +25,7 @@ class UserTrafficAbnormalWarningJob extends Command
         $config = $this->systemConfig();
 
         // 24小时内流量异常用户
-        $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+        $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快查询速度
         if (!$userTotalTrafficList->isEmpty()) {
             foreach ($userTotalTrafficList as $vo) {
                 $user = User::query()->where('id', $vo->user_id)->first();
@@ -34,7 +34,6 @@ class UserTrafficAbnormalWarningJob extends Command
                 if ($vo->totalTraffic > ($config['traffic_ban_value'] * 1024 * 1024 * 1024)) {
                     // 通过ServerChan发微信消息提醒管理员
                     if ($config['is_server_chan'] && $config['server_chan_key'] && Cache::get($cacheKey) <= 3) {
-
                         $traffic = UserTrafficHourly::query()->where('node_id', 0)->where('user_id', $vo->user_id)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")->first();
 
                         $title = "流量异常用户警告";

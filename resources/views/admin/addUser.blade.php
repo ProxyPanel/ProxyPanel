@@ -48,7 +48,7 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="2" checked> 电脑
+                                                            <input type="checkbox" name="usage" value="2"> 电脑
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
@@ -67,7 +67,7 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="0" checked> 免费
+                                                            <input type="radio" name="pay_way" value="0"> 免费
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
@@ -75,7 +75,7 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="2"> 季付
+                                                            <input type="radio" name="pay_way" value="2" checked> 季付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">

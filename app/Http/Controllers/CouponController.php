@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Response;
 use Redirect;
+use Session;
 use DB;
 use Log;
 
@@ -40,13 +41,13 @@ class CouponController extends Controller
             $available_end = $request->get('available_end');
 
             if (empty($num) || (empty($amount) && empty($discount)) || empty($available_start) || empty($available_end)) {
-                $request->session()->flash('errorMsg', '请填写完整');
+                Session::flash('errorMsg', '请填写完整');
 
                 return Redirect::back()->withInput();
             }
 
             if (strtotime($available_start) >= strtotime($available_end)) {
-                $request->session()->flash('errorMsg', '有效期范围错误');
+                Session::flash('errorMsg', '有效期范围错误');
 
                 return Redirect::back()->withInput();
             }
@@ -80,13 +81,13 @@ class CouponController extends Controller
 
                 DB::commit();
 
-                $request->session()->flash('successMsg', '生成成功');
+                Session::flash('successMsg', '生成成功');
             } catch (\Exception $e) {
                 DB::rollBack();
 
                 Log::error('生成优惠券失败：' . $e->getMessage());
 
-                $request->session()->flash('errorMsg', '生成失败：' . $e->getMessage());
+                Session::flash('errorMsg', '生成失败：' . $e->getMessage());
             }
 
             return Redirect::to('coupon/addCoupon');

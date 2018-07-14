@@ -12,6 +12,7 @@ use App\Mail\activeUser;
 use Captcha;
 use Response;
 use Redirect;
+use Session;
 use Cache;
 use Mail;
 
@@ -45,33 +46,33 @@ class RegisterController extends Controller
             $aff = intval($request->get('aff', 0));
 
             // 防止重复提交
-            $session_register_token = $request->session()->get('register_token');
+            $session_register_token = Session::get('register_token');
             if (empty($register_token) || $register_token != $session_register_token) {
-                $request->session()->flash('errorMsg', '请勿重复请求，刷新一下页面再试试');
+                Session::flash('errorMsg', '请勿重复请求，刷新一下页面再试试');
 
                 return Redirect::back()->withInput();
             } else {
-                $request->session()->forget('register_token');
+                Session::forget('register_token');
             }
 
             if (empty($username)) {
-                $request->session()->flash('errorMsg', '请输入用户名');
+                Session::flash('errorMsg', '请输入用户名');
 
                 return Redirect::back()->withInput();
             } else if (empty($password)) {
-                $request->session()->flash('errorMsg', '请输入密码');
+                Session::flash('errorMsg', '请输入密码');
 
                 return Redirect::back()->withInput();
             } else if (empty($repassword)) {
-                $request->session()->flash('errorMsg', '请重新输入密码');
+                Session::flash('errorMsg', '请重新输入密码');
 
                 return Redirect::back()->withInput();
             } else if (md5($password) != md5($repassword)) {
-                $request->session()->flash('errorMsg', '两次输入密码不一致，请重新输入');
+                Session::flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back()->withInput($request->except(['password', 'repassword']));
             } else if (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                $request->session()->flash('errorMsg', '用户名必须是合法邮箱，请重新输入');
+                Session::flash('errorMsg', '用户名必须是合法邮箱，请重新输入');
 
                 return Redirect::back()->withInput();
             }
@@ -79,7 +80,7 @@ class RegisterController extends Controller
             // 是否校验验证码
             if (self::$config['is_captcha']) {
                 if (!Captcha::check($captcha)) {
-                    $request->session()->flash('errorMsg', '验证码错误，请重新输入');
+                    Session::flash('errorMsg', '验证码错误，请重新输入');
 
                     return Redirect::back()->withInput($request->except(['password', 'repassword']));
                 }
@@ -87,7 +88,7 @@ class RegisterController extends Controller
 
             // 是否开启注册
             if (!self::$config['is_register']) {
-                $request->session()->flash('errorMsg', '系统维护暂停注册');
+                Session::flash('errorMsg', '系统维护暂停注册');
 
                 return Redirect::back();
             }
@@ -95,7 +96,7 @@ class RegisterController extends Controller
             // 如果需要邀请注册
             if (self::$config['is_invite_register']) {
                 if (empty($code)) {
-                    $request->session()->flash('errorMsg', '请输入邀请码');
+                    Session::flash('errorMsg', '请输入邀请码');
 
                     return Redirect::back()->withInput();
                 }
@@ -103,7 +104,7 @@ class RegisterController extends Controller
                 // 校验邀请码合法性
                 $code = Invite::query()->where('code', $code)->where('status', 0)->first();
                 if (empty($code)) {
-                    $request->session()->flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
+                    Session::flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
 
                     return Redirect::back()->withInput($request->except(['code']));
                 }
@@ -114,7 +115,7 @@ class RegisterController extends Controller
                 if (Cache::has($cacheKey)) {
                     $registerTimes = Cache::get($cacheKey);
                     if ($registerTimes >= self::$config['register_ip_limit']) {
-                        $request->session()->flash('errorMsg', '系统已开启防刷机制，请勿频繁注册');
+                        Session::flash('errorMsg', '系统已开启防刷机制，请勿频繁注册');
 
                         return Redirect::back()->withInput($request->except(['code']));
                     }
@@ -124,7 +125,7 @@ class RegisterController extends Controller
             // 校验用户名是否已存在
             $exists = User::query()->where('username', $username)->first();
             if ($exists) {
-                $request->session()->flash('errorMsg', '用户名已存在，请更换用户名');
+                Session::flash('errorMsg', '用户名已存在，请更换用户名');
 
                 return Redirect::back()->withInput();
             }
@@ -151,7 +152,7 @@ class RegisterController extends Controller
             $last_user = User::query()->orderBy('id', 'desc')->first();
             $port = self::$config['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
             if ($port > self::$config['max_port']) {
-                $request->session()->flash('errorMsg', '用户已满');
+                Session::flash('errorMsg', '用户已满');
 
                 return Redirect::back()->withInput();
             }
@@ -225,7 +226,7 @@ class RegisterController extends Controller
                     $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
                 }
 
-                $request->session()->flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
+                Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
             } else {
                 // 如果不需要激活，则直接给推荐人加流量
                 if ($referral_uid) {
@@ -235,17 +236,17 @@ class RegisterController extends Controller
                     User::query()->where('id', $referral_uid)->update(['enable' => 1]);
                 }
 
-                $request->session()->flash('regSuccessMsg', '注册成功');
+                Session::flash('regSuccessMsg', '注册成功');
             }
 
             return Redirect::to('login');
         } else {
-            $request->session()->put('register_token', makeRandStr(16));
+            Session::put('register_token', makeRandStr(16));
 
             // 如果第一次打开带返aff，则存储aff，防止再次打开无返利aff
             if (intval($request->get('aff'))) {
-                if (!$request->session()->get('register_aff')) {
-                    $request->session()->put('register_aff', intval($request->get('aff')));
+                if (!Session::get('register_aff')) {
+                    Session::put('register_aff', intval($request->get('aff')));
                 }
             }
 

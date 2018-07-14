@@ -301,7 +301,7 @@ INSERT INTO `config` VALUES ('27', 'reset_traffic', 1);
 INSERT INTO `config` VALUES ('28', 'default_days', 7);
 INSERT INTO `config` VALUES ('29', 'subscribe_max', 3);
 INSERT INTO `config` VALUES ('30', 'min_port', 10000);
-INSERT INTO `config` VALUES ('31', 'max_port', 40000);
+INSERT INTO `config` VALUES ('31', 'max_port', 20000);
 INSERT INTO `config` VALUES ('32', 'is_captcha', 0);
 INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
@@ -333,6 +333,10 @@ INSERT INTO `config` VALUES ('59', 'is_push_bear', 0);
 INSERT INTO `config` VALUES ('60', 'push_bear_send_key', '');
 INSERT INTO `config` VALUES ('61', 'push_bear_qrcode', '');
 INSERT INTO `config` VALUES ('62', 'is_ban_status', 0);
+INSERT INTO `config` VALUES ('63', 'is_namesilo', 0);
+INSERT INTO `config` VALUES ('64', 'namesilo_key', '');
+INSERT INTO `config` VALUES ('65', 'website_logo', '');
+INSERT INTO `config` VALUES ('66', 'website_home_logo', '');
 
 
 -- ----------------------------

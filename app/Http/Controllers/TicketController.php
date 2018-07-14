@@ -9,6 +9,7 @@ use App\Mail\closeTicket;
 use App\Mail\replyTicket;
 use Illuminate\Http\Request;
 use Response;
+use Session;
 use Mail;
 
 /**
@@ -38,7 +39,7 @@ class TicketController extends Controller
     public function replyTicket(Request $request)
     {
         $id = $request->get('id');
-        $user = $request->session()->get('user');
+        $user = Session::get('user');
 
         if ($request->method() == 'POST') {
             $content = clean($request->get('content'));

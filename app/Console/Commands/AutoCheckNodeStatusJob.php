@@ -38,29 +38,27 @@ class AutoCheckNodeStatusJob extends Command
                     continue;
                 }
 
+                $title = "节点宕机警告";
+                $content = "节点**{$node->name}【{$node->server}】({$node->ip})**可能宕机，请及时检查。";
+
                 // 发邮件通知管理员
-                if ($config['is_node_crash_warning']) {
-                    $title = "节点宕机警告";
-                    $content = "节点**{$node->name}({$node->server})**可能宕机，请及时检查。";
-
-                    if ($config['crash_warning_email']) {
-                        try {
-                            Mail::to($config['crash_warning_email'])->send(new nodeCrashWarning($config['website_name'], $node->name, $node->server));
-                            $this->sendEmailLog(1, $title, $content);
-                        } catch (\Exception $e) {
-                            $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
-                        }
+                if ($config['is_node_crash_warning'] && $config['crash_warning_email']) {
+                    try {
+                        Mail::to($config['crash_warning_email'])->send(new nodeCrashWarning($config['website_name'], $node->name, $node->server));
+                        $this->sendEmailLog(1, $title, $content);
+                    } catch (\Exception $e) {
+                        $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
                     }
-
-                    // 通过ServerChan发微信消息提醒管理员
-                    if ($config['is_server_chan'] && $config['server_chan_key']) {
-                        $serverChan = new ServerChan();
-                        $serverChan->send($title, $content);
-                    }
-
-                    // 写入发信缓存
-                    Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 10);
                 }
+
+                // 通过ServerChan发微信消息提醒管理员
+                if ($config['is_server_chan'] && $config['server_chan_key']) {
+                    $serverChan = new ServerChan();
+                    $serverChan->send($title, $content);
+                }
+
+                // 写入发信缓存
+                Cache::put($this->cacheKey . $node->id, $node->name . '(' . $node->server . ')', 10);
             }
         }
 
@@ -69,11 +67,12 @@ class AutoCheckNodeStatusJob extends Command
 
     /**
      * 写入邮件发送日志
-     * @param int $user_id 接收者用户ID
-     * @param string $title 标题
+     *
+     * @param int    $user_id 接收者用户ID
+     * @param string $title   标题
      * @param string $content 内容
-     * @param int $status 投递状态
-     * @param string $error 投递失败时记录的异常信息
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
      */
     private function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
     {
