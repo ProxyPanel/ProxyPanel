@@ -96,11 +96,11 @@ return [
     'service_type_2'                  => '套餐',
 
     // 流量日志
-    'traffic_log_tips'                => '提示：流量統計圖更新會有延遲。按天統計圖在次日更新，按小時統計圖在次小時更新。',
+    'traffic_log_tips'                => '提示：流量統計更新會有延遲。按天統計于次日更新，按小時統計圖于次小時更新。（每月1日不顯示月流量統計數據）',
     'traffic_log_30days'              => '最近 30 天的流量使用情况',
     'traffic_log_24hours'             => '最近 24 小時的流量使用情况',
     'traffic_log_keywords'            => '使用流量',
-    'traffic_log_unit'                => '組織 / MB',
+    'traffic_log_unit'                => '單位 / G',
     'traffic_log_max'                 => '使用高峰',
 
     // 邀请码
@@ -162,6 +162,10 @@ return [
     'referral_table_none'             => '暫無數據',
     'referral_table_apply'            => '提現',
     'referral_summary'                => '合計返利 :amount 元（:total次），滿 :money元 可以申請提現。',
+    'referral_apply_title'            => '提現記錄',
+    'referral_apply_table_amount'     => '提現金額',
+    'referral_apply_table_status'     => '狀態',
+    'referral_apply_table_date'       => '提現日期',
     'console'                         => '管理中心',
     'profile'                         => '個人設置',
     'logout'                          => '登出',

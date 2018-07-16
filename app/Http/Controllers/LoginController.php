@@ -19,13 +19,6 @@ use Cache;
  */
 class LoginController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 登录页
     public function index(Request $request)
     {
@@ -41,7 +34,7 @@ class LoginController extends Controller
             }
 
             // 是否校验验证码
-            if (self::$config['is_captcha']) {
+            if ($this->systemConfig['is_captcha']) {
                 if (!Captcha::check($captcha)) {
                     Session::flash('errorMsg', '验证码错误，请重新输入');
 
@@ -54,11 +47,11 @@ class LoginController extends Controller
                 Session::flash('errorMsg', '用户名或密码错误');
 
                 return Redirect::back()->withInput();
-            } else if ($user->status < 0) {
+            } else if (!$user->is_admin && $user->status < 0) {
                 Session::flash('errorMsg', '账号已禁用');
 
                 return Redirect::back();
-            } else if ($user->status == 0 && self::$config['is_active_register'] && $user->is_admin == 0) {
+            } else if ($user->status == 0 && $this->systemConfig['is_active_register'] && $user->is_admin == 0) {
                 Session::flash('errorMsg', '账号未激活，请先<a href="/activeUser?username=' . $user->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
 
                 return Redirect::back()->withInput();
@@ -77,9 +70,9 @@ class LoginController extends Controller
 
 
             // 登录送积分
-            if (self::$config['login_add_score']) {
+            if ($this->systemConfig['login_add_score']) {
                 if (!Cache::has('loginAddScore_' . md5($username))) {
-                    $score = mt_rand(self::$config['min_rand_score'], self::$config['max_rand_score']);
+                    $score = mt_rand($this->systemConfig['min_rand_score'], $this->systemConfig['max_rand_score']);
                     $ret = User::query()->where('id', $user->id)->increment('score', $score);
                     if ($ret) {
                         $obj = new UserScoreLog();
@@ -92,7 +85,7 @@ class LoginController extends Controller
                         $obj->save();
 
                         // 登录多久后再登录可以获取积分
-                        $ttl = self::$config['login_add_score_range'] ? self::$config['login_add_score_range'] : 1440;
+                        $ttl = $this->systemConfig['login_add_score_range'] ? $this->systemConfig['login_add_score_range'] : 1440;
                         Cache::put('loginAddScore_' . md5($username), '1', $ttl);
 
                         Session::flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量包');
@@ -125,11 +118,11 @@ class LoginController extends Controller
                 }
             }
 
-            $view['is_captcha'] = self::$config['is_captcha'];
-            $view['is_register'] = self::$config['is_register'];
-            $view['website_home_logo'] = self::$config['website_home_logo'];
-            $view['website_analytics'] = self::$config['website_analytics'];
-            $view['website_customer_service'] = self::$config['website_customer_service'];
+            $view['is_captcha'] = $this->systemConfig['is_captcha'];
+            $view['is_register'] = $this->systemConfig['is_register'];
+            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
+            $view['website_analytics'] = $this->systemConfig['website_analytics'];
+            $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
 
             return Response::view('login', $view);
         }

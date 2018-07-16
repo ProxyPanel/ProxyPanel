@@ -16,13 +16,6 @@ use DB;
 
 class PaymentController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 创建支付单
     public function create(Request $request)
     {
@@ -36,7 +29,7 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!self::$config['is_youzan']) {
+        if (!$this->systemConfig['is_youzan']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
 
@@ -47,7 +40,7 @@ class PaymentController extends Controller
         }
 
         // 限购控制
-        $strategy = self::$config['goods_purchase_limit_strategy'];
+        $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
         if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
             // 判断是否已经购买过该商品
             $none_expire_good_exist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('is_expire', 0)->exists();
@@ -125,7 +118,7 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建支付单成功']);
+            return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建支付单成功，正在转到付款页面，请稍后']);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -157,9 +150,9 @@ class PaymentController extends Controller
         }
 
         $view['payment'] = $payment;
-        $view['website_logo'] = self::$config['website_logo'];
-        $view['website_analytics'] = self::$config['website_analytics'];
-        $view['website_customer_service'] = self::$config['website_customer_service'];
+        $view['website_logo'] = $this->systemConfig['website_logo'];
+        $view['website_analytics'] = $this->systemConfig['website_analytics'];
+        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
 
         return Response::view('payment/detail', $view);
     }

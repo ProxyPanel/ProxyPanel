@@ -3,8 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Marketing;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Response;
 use Log;
@@ -12,13 +10,6 @@ use DB;
 
 class MarketingController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 邮件群发消息列表
     public function emailList(Request $request)
     {
@@ -49,7 +40,7 @@ class MarketingController extends Controller
         $title = trim($request->get('title'));
         $content = $request->get('content');
 
-        if (!self::$config['is_push_bear']) {
+        if (!$this->systemConfig['is_push_bear']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '推送失败：请先启用并配置PushBear']);
         }
 
@@ -58,7 +49,7 @@ class MarketingController extends Controller
             $client = new Client();
             $response = $client->request('GET', 'https://pushbear.ftqq.com/sub', [
                 'query' => [
-                    'sendkey' => self::$config['push_bear_send_key'],
+                    'sendkey' => $this->systemConfig['push_bear_send_key'],
                     'text'    => $title,
                     'desp'    => $content
                 ]

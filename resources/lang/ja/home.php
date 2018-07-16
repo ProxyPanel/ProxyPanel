@@ -100,7 +100,7 @@ return [
     'traffic_log_30days'              => '30 日内のデータ通信量消耗',
     'traffic_log_24hours'             => '24 時間内のデータ通信量消耗',
     'traffic_log_keywords'            => 'データ通信量消耗',
-    'traffic_log_unit'                => '単位/M',
+    'traffic_log_unit'                => '単位 / G',
     'traffic_log_max'                 => '最大値',
 
     // 邀请码
@@ -162,6 +162,10 @@ return [
     'referral_table_none'             => 'データなし',
     'referral_table_apply'            => '引き出しを申請する',
     'referral_summary'                => '全部 :total 件の記録があり、合計 :amount のリベートがあり、 :total に達すると現金引き出しを申請することができます。',
+    'referral_apply_title'            => '記録を現す',
+    'referral_apply_table_amount'     => '金額',
+    'referral_apply_table_status'     => '狀態',
+    'referral_apply_table_date'       => '日付',
     'console'                         => '管理センター',
     'profile'                         => '個人設定',
     'logout'                          => 'ログアウト',

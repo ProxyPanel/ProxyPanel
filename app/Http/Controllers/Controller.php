@@ -17,6 +17,13 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public $systemConfig;
+
+    public function __construct()
+    {
+        $this->systemConfig = $this->systemConfig();
+    }
+
     // 生成订阅地址的唯一码
     public function makeSubscribeCode()
     {

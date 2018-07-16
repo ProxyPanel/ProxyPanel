@@ -26,13 +26,6 @@ use DB;
  */
 class YzyController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 接收GET请求
     public function index(Request $request)
     {
@@ -53,7 +46,7 @@ class YzyController extends Controller
 
         // 判断消息是否合法
         $msg = $data['msg'];
-        $sign_string = self::$config['youzan_client_id'] . "" . $msg . "" . self::$config['youzan_client_secret'];
+        $sign_string = $this->systemConfig['youzan_client_id'] . "" . $msg . "" . $this->systemConfig['youzan_client_secret'];
         $sign = md5($sign_string);
         if ($sign != $data['sign']) {
             Log::info('YZY-POST:回调数据签名错误，可能是非法请求');
@@ -184,7 +177,7 @@ class YzyController extends Controller
                         $referralLog->ref_user_id = $order->user->referral_uid;
                         $referralLog->order_id = $order->oid;
                         $referralLog->amount = $order->amount;
-                        $referralLog->ref_amount = $order->amount * self::$config['referral_percent'];
+                        $referralLog->ref_amount = $order->amount * $this->systemConfig['referral_percent'];
                         $referralLog->status = 0;
                         $referralLog->save();
                     }

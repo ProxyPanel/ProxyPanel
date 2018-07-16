@@ -2,33 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Components\Yzy;
 use App\Http\Controllers\Controller;
-use App\Http\Models\Coupon;
-use App\Http\Models\CouponLog;
-use App\Http\Models\Goods;
-use App\Http\Models\GoodsLabel;
-use App\Http\Models\Order;
-use App\Http\Models\Payment;
-use App\Http\Models\PaymentCallback;
-use App\Http\Models\ReferralLog;
 use App\Http\Models\SsNode;
+use App\Http\Models\SsNodeInfo;
+use App\Http\Models\SsNodeLabel;
+use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
+use App\Http\Models\UserTrafficLog;
+use App\Http\V2ray\V2rayGenerator;
 use Illuminate\Http\Request;
+use Response;
 use Log;
 use DB;
 
 class V2rayController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
-    //V2ray 用户
+    // V2ray 用户
     public function users(Request $request)
     {
         $node_id = $request->route('id');
@@ -48,8 +38,8 @@ class V2rayController extends Controller
         $user_with_label = UserLabel::query()->whereIn('label_id', $ssr_node_label)->pluck('user_id');
 
         //提取用户信息
-        $userids = User::query()->whereIn('id', $user_with_label)->where('enable', 1)->where('id', '<>', self::$config['free_node_users_id'])->pluck('id')->toArray();
-        $users = User::query()->where('id', '<>', self::$config['free_node_users_id'])->select(
+        $userids = User::query()->whereIn('id', $user_with_label)->where('enable', 1)->where('id', '<>', $this->systemConfig['free_node_users_id'])->pluck('id')->toArray();
+        $users = User::query()->where('id', '<>', $this->systemConfig['free_node_users_id'])->select(
             "id", "username", "passwd", "t", "u", "d", "transfer_enable",
             "port", "protocol", "obfs", "enable", "expire_time as expire_time_d", "method",
             "v2ray_uuid", "v2ray_level", "v2ray_alter_id")->get();
@@ -68,18 +58,18 @@ class V2rayController extends Controller
 
             //v2ray用户信息
             $user->v2ray_user = [
-                "uuid"     => $user->v2ray_uuid,
-                "email"    => sprintf("%s@sspanel.xyz", $user->v2ray_uuid),
+                "uuid" => $user->v2ray_uuid,
+                "email" => sprintf("%s@sspanel.xyz", $user->v2ray_uuid),
                 "alter_id" => $user->v2ray_alter_id,
-                "level"    => $user->v2ray_level,
+                "level" => $user->v2ray_level,
             ];
 
             array_push($data, $user);
         }
 
-        if (self::$config['is_free_node']) {
-            if (self::$config['free_node_id'] == $node_id) {
-                $user = User::query()->whereIn('id', $user_with_label)->where('id', self::$config['free_node_users_id'])->select(
+        if ($this->systemConfig['is_free_node']) {
+            if ($this->systemConfig['free_node_id'] == $node_id) {
+                $user = User::query()->whereIn('id', $user_with_label)->where('id', $this->systemConfig['free_node_users_id'])->select(
                     "id", "enable", "username", "passwd", "t", "u", "d", "transfer_enable",
                     "port", "protocol", "obfs", "enable", "expire_time as expire_time_d", "method",
                     "v2ray_uuid", "v2ray_level", "v2ray_alter_id")->first();
@@ -91,10 +81,10 @@ class V2rayController extends Controller
 
                 //v2ray用户信息
                 $user->v2ray_user = [
-                    "uuid"     => $user->v2ray_uuid,
-                    "email"    => sprintf("%s@sspanel.xyz", $user->v2ray_uuid),
+                    "uuid" => $user->v2ray_uuid,
+                    "email" => sprintf("%s@sspanel.xyz", $user->v2ray_uuid),
                     "alter_id" => $user->v2ray_alter_id,
-                    "level"    => $user->v2ray_level,
+                    "level" => $user->v2ray_level,
                 ];
 
                 array_push($data, $user);
@@ -112,7 +102,7 @@ class V2rayController extends Controller
         $log->save();
 
         $res = [
-            'msg'  => 'ok',
+            'msg' => 'ok',
             'data' => $data,
         ];
 
@@ -221,7 +211,7 @@ class V2rayController extends Controller
     public function v2rayUsers(Request $request)
     {
         $node = SsNode::query()->where('id', $request->route('id'))->first();
-        $users = User::query()->where('enable', 1)->where('id', '<>', self::$config['free_node_users_id'])->get();
+        $users = User::query()->where('enable', 1)->where('id', '<>', $this->systemConfig['free_node_users_id'])->get();
 
         $v = new V2rayGenerator();
         $v->setPort($node->v2ray_port);
@@ -231,9 +221,9 @@ class V2rayController extends Controller
             $v->addUser($user->v2ray_uuid, $user->v2ray_level, $user->v2ray_alter_id, $email);
         }
 
-        if (self::$config['is_free_node']) {
-            if ($request->route('id') == self::$config['free_node_id']) {
-                $freeuser = User::query()->where('enable', 1)->where('id', self::$config['free_node_users_id'])->first();
+        if ($this->systemConfig['is_free_node']) {
+            if ($request->route('id') == $this->systemConfig['free_node_id']) {
+                $freeuser = User::query()->where('enable', 1)->where('id', $this->systemConfig['free_node_users_id'])->first();
                 $email = sprintf("%s@sspanel.io", $freeuser->v2ray_uuid);
                 $v->addUser($freeuser->v2ray_uuid, $freeuser->v2ray_level, $freeuser->v2ray_alter_id, $email);
             }
@@ -245,16 +235,16 @@ class V2rayController extends Controller
     //用户列表
     public function index()
     {
-        $users= User::query()->where('enable',1)->select(
-            "id","username","passwd","t","u","d","transfer_enable",
-            "port","protocol","obfs","enable","expire_time as expire_time_d","method",
-            "v2ray_uuid","v2ray_level","v2ray_alter_id")->get();
+        $users = User::query()->where('enable', 1)->select(
+            "id", "username", "passwd", "t", "u", "d", "transfer_enable",
+            "port", "protocol", "obfs", "enable", "expire_time as expire_time_d", "method",
+            "v2ray_uuid", "v2ray_level", "v2ray_alter_id")->get();
 
-        foreach($users as $user){
+        foreach ($users as $user) {
             //datetime 转timestamp
-            $user['switch']=1;
-            $user['email']=$user['username'];
-            $user['expire_time']=strval((new \DateTime($user['expire_time_d']))->getTimestamp());
+            $user['switch'] = 1;
+            $user['email'] = $user['username'];
+            $user['expire_time'] = strval((new \DateTime($user['expire_time_d']))->getTimestamp());
         }
 
         $res = [
@@ -286,7 +276,7 @@ class V2rayController extends Controller
                 "msg" => "update failed",
             ];
 
-            return response()->json($res,400);
+            return response()->json($res, 400);
         }
 
         // 写usertrafficlog

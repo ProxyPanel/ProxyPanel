@@ -20,13 +20,6 @@ use Mail;
  */
 class TicketController extends Controller
 {
-    protected static $config;
-
-    public function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 工单列表
     public function ticketList(Request $request)
     {
@@ -63,9 +56,9 @@ class TicketController extends Controller
 
                 // 发通知邮件
                 if (!$user['is_admin']) {
-                    if (self::$config['crash_warning_email']) {
+                    if ($this->systemConfig['crash_warning_email']) {
                         try {
-                            Mail::to(self::$config['crash_warning_email'])->send(new replyTicket(self::$config['website_name'], $title, $content));
+                            Mail::to($this->systemConfig['crash_warning_email'])->send(new replyTicket($this->systemConfig['website_name'], $title, $content));
                             $this->sendEmailLog(1, $title, $content);
                         } catch (\Exception $e) {
                             $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
@@ -73,7 +66,7 @@ class TicketController extends Controller
                     }
                 } else {
                     try {
-                        Mail::to($ticket->user->username)->send(new replyTicket(self::$config['website_name'], $title, $content));
+                        Mail::to($ticket->user->username)->send(new replyTicket($this->systemConfig['website_name'], $title, $content));
                         $this->sendEmailLog($ticket->user_id, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog($ticket->user_id, $title, $content, 0, $e->getMessage());
@@ -81,7 +74,7 @@ class TicketController extends Controller
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
-                if (!$user['is_admin'] && self::$config['is_server_chan'] && self::$config['server_chan_key']) {
+                if (!$user['is_admin'] && $this->systemConfig['is_server_chan'] && $this->systemConfig['server_chan_key']) {
                     $serverChan = new ServerChan();
                     $serverChan->send($title, $content);
                 }
@@ -115,7 +108,7 @@ class TicketController extends Controller
 
         // 发邮件通知用户
         try {
-            Mail::to($ticket->user->username)->send(new closeTicket(self::$config['website_name'], $title, $content));
+            Mail::to($ticket->user->username)->send(new closeTicket($this->systemConfig['website_name'], $title, $content));
             $this->sendEmailLog($ticket->user_id, $title, $content);
         } catch (\Exception $e) {
             $this->sendEmailLog($ticket->user_id, $title, $content, 0, $e->getMessage());

@@ -98,7 +98,7 @@ return [
     'traffic_log_30days'              => '30 일트래픽 사용현황',
     'traffic_log_24hours'             => '24 간트패픽 사용현환',
     'traffic_log_keywords'            => '사용된트래픽',
-    'traffic_log_unit'                => '단위M',
+    'traffic_log_unit'                => '단위 / G',
     'traffic_log_max'                 => '최대치',
 
     // 邀请码
@@ -160,6 +160,10 @@ return [
     'referral_table_none'             => '데이터 없음',
     'referral_table_apply'            => '출금신청 ',
     'referral_summary'                => '총 :total 개기록，합계리턴 :amount 원， :money 원되여야 리턴가능 합니다。',
+    'referral_apply_title'            => '현금 인출 기록',
+    'referral_apply_table_amount'     => '양',
+    'referral_apply_table_status'     => '상태',
+    'referral_apply_table_date'       => '날짜',
     'console'                         => '관리센트',
     'profile'                         => '개인정보',
     'logout'                          => '로그아웃',

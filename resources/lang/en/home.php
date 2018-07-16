@@ -100,7 +100,7 @@ return [
     'traffic_log_30days'              => '30 Days Statistics',
     'traffic_log_24hours'             => '24 Hours Statistics',
     'traffic_log_keywords'            => 'Bandwidth',
-    'traffic_log_unit'                => 'unit: M',
+    'traffic_log_unit'                => 'unit: G',
     'traffic_log_max'                 => 'Max',
 
     // 邀请码
@@ -162,6 +162,10 @@ return [
     'referral_table_none'             => 'None Data',
     'referral_table_apply'            => 'Apply',
     'referral_summary'                => 'Total rebate :amount RMB (:total times), full :money RMB can apply for withdrawals.',
+    'referral_apply_title'            => 'Present Record',
+    'referral_apply_table_amount'     => 'Amount',
+    'referral_apply_table_status'     => 'Status',
+    'referral_apply_table_date'       => 'Date',
     'console'                         => 'Console',
     'profile'                         => 'Profile',
     'logout'                          => 'Log Out',

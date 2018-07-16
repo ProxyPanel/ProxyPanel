@@ -19,13 +19,6 @@ use DB;
  */
 class LoginController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 登录返回订阅信息
     public function login(Request $request)
     {
@@ -82,7 +75,7 @@ class LoginController extends Controller
             $data['user'] = $user;
 
             // 订阅链接
-            $data['link'] = self::$config['subscribe_domain'] ? self::$config['subscribe_domain'] . '/s/' . $code : self::$config['website_url'] . '/s/' . $code;
+            $data['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
 
             DB::commit();
 
