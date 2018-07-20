@@ -9,10 +9,12 @@ use Log;
 
 class Namesilo
 {
+    protected static $host;
     protected static $config;
 
     function __construct()
     {
+        self::$host = 'https://www.namesilo.com/api/';
         self::$config = $this->systemConfig();
     }
 
@@ -77,26 +79,25 @@ class Namesilo
         $params = [
             'version' => 1,
             'type'    => 'xml',
-            //'key'     => self::$config['namesilo_key']
-            'key'     => '12d47532c95c7013b1ecc9a06'
+            'key'     => self::$config['namesilo_key']
         ];
         $query = array_merge($params, $data);
 
         $content = '请求操作：[' . $operation . '] --- 请求数据：[' . http_build_query($query) . ']';
 
         try {
-            $result = $this->curlRequest('https://www.namesilo.com/api/' . $operation . '?' . http_build_query($query));
+            $result = $this->curlRequest(self::$host . $operation . '?' . http_build_query($query));
             $result = XML2Array::createArray($result);
 
             // 出错
             if (empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success') {
-                $this->sendEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $result['namesilo']['reply']['detail']);
+                $this->addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $result['namesilo']['reply']['detail']);
             }
 
             return $result['namesilo']['reply'];
         } catch (\Exception $e) {
             Log::error('CURL请求失败：' . $e->getMessage() . ' --- ' . $e->getLine());
-            $this->sendEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $e->getMessage());
+            $this->addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $e->getMessage());
 
             return false;
         }
@@ -111,7 +112,7 @@ class Namesilo
      * @param int    $status  投递状态
      * @param string $error   投递失败时记录的异常信息
      */
-    private function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
+    private function addEmailLog($user_id, $title, $content, $status = 1, $error = '')
     {
         $emailLogObj = new EmailLog();
         $emailLogObj->user_id = $user_id;
@@ -136,7 +137,7 @@ class Namesilo
     }
 
     // 发起一个CURL请求
-    private function curlRequest($url, $data = null)
+    private function curlRequest($url, $data = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

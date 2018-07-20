@@ -1,47 +1,48 @@
 <?php
 
 
-namespace App\Http\V2ray;
+namespace App\Http\V2Ray;
 
 
-use App\Http\V2ray\EmptyClass;
+use App\Http\V2Ray\EmptyClass;
 
-class V2rayGenerator
+//https://www.v2ray.com/ui_client/service.html
+class Generator
 {
 
     private $arr = [
-        "log" => [
-            "access" => "/var/log/access.log",
-            "error" => "/var/log/error.log",
+        "log"            => [
+            "access"   => "/var/log/access.log",
+            "error"    => "/var/log/error.log",
             "loglevel" => "warning"
         ],
-        "inbound" => [
-            "port" => 8300,
+        "inbound"        => [
+            "port"     => 8300,
             "protocol" => "vmess",
             "settings" => [
                 "clients" => [
                 ]
             ]
         ],
-        "outbound" => [
+        "outbound"       => [
             "protocol" => "freedom",
             // "settings" => ,
         ],
-        "inboundDetour" => [],
+        "inboundDetour"  => [],
         "outboundDetour" => [
             [
                 "protocol" => "blackhole",
                 // "settings" => [],
-                "tag" => "blocked"
+                "tag"      => "blocked"
             ]
         ],
-        "routing" => [
+        "routing"        => [
             "strategy" => "rules",
             "settings" => [
                 "rules" => [
                     [
-                        "type" => "field",
-                        "ip" => [
+                        "type"        => "field",
+                        "ip"          => [
                             "0.0.0.0/8",
                             "10.0.0.0/8",
                             "100.64.0.0/10",
@@ -69,10 +70,10 @@ class V2rayGenerator
     public function addUser($uuid, $level, $alertId, $email)
     {
         $user = [
-            "id" => $uuid,
-            "level" => $level,
+            "id"      => $uuid,
+            "level"   => $level,
             "alterId" => $alertId,
-            "email" => $email
+            "email"   => $email
         ];
         array_push($this->arr["inbound"]['settings']['clients'], $user);
     }

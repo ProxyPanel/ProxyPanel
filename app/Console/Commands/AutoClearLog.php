@@ -2,18 +2,18 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
+use App\Http\Models\Config;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\UserTrafficLog;
-use Illuminate\Console\Command;
-use App\Http\Models\Config;
 use App\Http\Models\UserTrafficHourly;
 use Log;
 
-class AutoClearLogJob extends Command
+class AutoClearLog extends Command
 {
-    protected $signature = 'autoClearLogJob';
+    protected $signature = 'autoClearLog';
     protected $description = '自动清除日志';
 
     public function __construct()

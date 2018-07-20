@@ -18,18 +18,18 @@ class Muv2
      */
     public function handle($request, Closure $next)
     {
-        //验证muKey
+        // 验证mukey
         $muKey = $request->header("Token", '');
-        if ($muKey != $_ENV['MU_KEY']) {
+        if ($muKey != $_ENV['MU_KEY']) { // TODO:改造成每个节点都有一个mukey
             return response()->json([
                 'ret' => 0,
                 'msg' => 'token or source is invalid'
             ], 401);
         }
 
-        //验证ip是否在节点ip列表当中
-        $ssnode = SsNode::query()->where('ip', $_SERVER["REMOTE_ADDR"])->orWhere('ipv6', $_SERVER["REMOTE_ADDR"])->first();
-        if ($ssnode == null && $_SERVER["REMOTE_ADDR"] != '127.0.0.1') {
+        // 验证IP是否在节点IP列表当中
+        $node = SsNode::query()->where('ip', $_SERVER["REMOTE_ADDR"])->orWhere('ipv6', $_SERVER["REMOTE_ADDR"])->first();
+        if (!$node && $_SERVER["REMOTE_ADDR"] != '127.0.0.1') {
             return response()->json([
                 'ret' => 0,
                 'msg' => 'token or source is invalid'

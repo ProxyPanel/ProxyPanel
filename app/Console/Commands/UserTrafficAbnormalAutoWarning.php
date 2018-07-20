@@ -4,15 +4,15 @@ namespace App\Console\Commands;
 
 use App\Components\ServerChan;
 use Illuminate\Console\Command;
+use App\Http\Models\Config;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficHourly;
-use App\Http\Models\Config;
 use Cache;
 use Log;
 
-class UserTrafficAbnormalWarningJob extends Command
+class UserTrafficAbnormalAutoWarning extends Command
 {
-    protected $signature = 'userTrafficAbnormalWarningJob';
+    protected $signature = 'userTrafficAbnormalAutoWarning';
     protected $description = '用户流量异常警告';
 
     public function __construct()

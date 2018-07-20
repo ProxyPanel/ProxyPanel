@@ -3,15 +3,15 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Models\User;
 use App\Http\Models\SsNode;
+use App\Http\Models\User;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficLog;
 use Log;
 
-class AutoStatisticsUserDailyTrafficJob extends Command
+class AutoStatisticsUserDailyTraffic extends Command
 {
-    protected $signature = 'autoStatisticsUserDailyTrafficJob';
+    protected $signature = 'autoStatisticsUserDailyTraffic';
     protected $description = '自动统计用户每日流量';
 
     public function __construct()

@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use App\Http\Models\Config;
 use App\Http\Models\User;
 use App\Http\Models\EmailLog;
-use App\Mail\userTrafficWarning;
+use App\Mail\userExpireWarning;
 use Mail;
 use Log;
 
-class UserTrafficWarningJob extends Command
+class UserExpireAutoWarning extends Command
 {
-    protected $signature = 'userTrafficWarningJob';
-    protected $description = '自动发邮件提醒用户流量超过警告阈值';
+    protected $signature = 'userExpireAutoWarning';
+    protected $description = '用户临近到期自动发邮件提醒';
 
     protected static $config;
 
@@ -26,7 +26,7 @@ class UserTrafficWarningJob extends Command
     {
         $config = $this->systemConfig();
 
-        if ($config['traffic_warning']) {
+        if ($config['expire_warning']) {
             $userList = User::query()->where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
@@ -34,13 +34,13 @@ class UserTrafficWarningJob extends Command
                     continue;
                 }
 
-                $usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
-                if ($usedPercent >= $config['traffic_warning_percent']) {
-                    $title = '流量警告';
-                    $content = '流量已使用：' . $usedPercent . '%，超过设置的流量阈值' . $config['traffic_warning_percent'] . '%';
+                $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
+                if ($lastCanUseDays > 0 && $lastCanUseDays <= $config['expire_days']) {
+                    $title = '账号过期提醒';
+                    $content = '账号还剩' . $lastCanUseDays . '天即将过期';
 
                     try {
-                        Mail::to($user->username)->send(new userTrafficWarning($config['website_name'], $usedPercent));
+                        Mail::to($user->username)->send(new userExpireWarning($config['website_name'], $lastCanUseDays));
                         $this->sendEmailLog($user->id, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());

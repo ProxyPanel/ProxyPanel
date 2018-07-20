@@ -2,17 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\Config;
-use App\Http\Models\GoodsLabel;
-use App\Http\Models\UserLabel;
 use Illuminate\Console\Command;
+use App\Http\Models\Config;
 use App\Http\Models\Order;
 use App\Http\Models\User;
+use App\Http\Models\UserLabel;
+use App\Http\Models\GoodsLabel;
+
 use Log;
 
-class AutoDecGoodsTrafficJob extends Command
+class AutoDecGoodsTraffic extends Command
 {
-    protected $signature = 'autoDecGoodsTrafficJob';
+    protected $signature = 'autoDecGoodsTraffic';
     protected $description = '自动扣减用户到期流量包的流量';
 
     public function __construct()
@@ -22,7 +23,7 @@ class AutoDecGoodsTrafficJob extends Command
 
     public function handle()
     {
-        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->get();
+        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '>=', date('Y-m-d H:i:s'))->get();
         if (!$orderList->isEmpty()) {
             $config = $this->systemConfig();
 
@@ -48,13 +49,14 @@ class AutoDecGoodsTrafficJob extends Command
                     // 删除该商品对应用户的所有标签
                     UserLabel::query()->where('user_id', $order->user->id)->delete();
 
-                    // 取出用户的全部其他商品并打上对应的标签
-                    $goodsIds = Order::query()->where('user_id', $order->user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->groupBy('goods_id')->pluck('goods_id')->toArray();
+                    // 取出用户的其他商品带有的标签
+                    $goodsIds = Order::query()->where('user_id', $order->user->id)->where('oid', '<>', $order->oid)->where('status', 2)->where('is_expire', 0)->groupBy('goods_id')->pluck('goods_id')->toArray();
                     $goodsLabels = GoodsLabel::query()->whereIn('goods_id', $goodsIds)->groupBy('label_id')->pluck('label_id')->toArray();
 
-                    // 合并默认标签
-                    $labels = $defaultLabels ? array_merge($goodsLabels, $defaultLabels) : $goodsLabels;
-                    $labels = array_unique($labels); // 去重
+                    // 标签去重
+                    $labels = array_merge($goodsLabels, $defaultLabels);
+                    $labels = array_unique($labels);
+                    $labels = array_values($labels);
                     foreach ($labels as $vo) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $order->user->id;

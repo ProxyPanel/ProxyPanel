@@ -37,9 +37,9 @@ class ServerChan
 
             $result = json_decode($response->getBody());
             if (!$result->errno) {
-                $this->sendEmailLog(1, '[ServerChan]' . $title, $content);
+                $this->addEmailLog(1, '[ServerChan]' . $title, $content);
             } else {
-                $this->sendEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
+                $this->addEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
             }
         } catch (RequestException $e) {
             Log::error(Psr7\str($e->getRequest()));
@@ -58,7 +58,7 @@ class ServerChan
      * @param int    $status  投递状态
      * @param string $error   投递失败时记录的异常信息
      */
-    private function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
+    private function addEmailLog($user_id, $title, $content, $status = 1, $error = '')
     {
         $emailLogObj = new EmailLog();
         $emailLogObj->user_id = $user_id;

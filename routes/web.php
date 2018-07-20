@@ -127,12 +127,13 @@ Route::group(['middleware' => ['forbidden', 'user', 'affiliate']], function () {
 
 });
 
-Route::group(['middleware' => ['Muv2']], function (){ //Muv2 for V2ray
-    Route::get('mu/v2/users','Muv2\UserController@index');
-    Route::post('mu/v2/users/{id}/traffic','Muv2\UserController@addTraffic');
-    Route::post('mu/v2/nodes/{id}/online_count','Muv2\NodeController@onlineUserLog');
-    Route::post('mu/v2/nodes/{id}/info','Muv2\NodeController@info');
-    Route::get('mu/v2/nodes/{id}/users','Muv2\NodeController@users');
-    Route::get('mu/v2/nodes/{id}/v2rayUsers','Muv2\NodeController@v2rayUsers');
-    Route::post('mu/v2/nodes/{id}/traffic','Muv2\NodeController@postTraffic');
+// V2Ray
+Route::group(['namespaces' => 'Muv2', 'prefix' => 'mu/v2', 'middleware' => ['Muv2']], function () {
+    Route::get('users', 'UserController@index');
+    Route::post('users/{id}/traffic', 'UserController@addTraffic');
+    Route::post('nodes/{id}/online_count', 'NodeController@onlineUserLog');
+    Route::post('nodes/{id}/info', 'NodeController@info');
+    Route::get('nodes/{id}/users', 'NodeController@users');
+    Route::get('nodes/{id}/v2rayUsers', 'NodeController@v2rayUsers');
+    Route::post('nodes/{id}/traffic', 'NodeController@postTraffic');
 });
