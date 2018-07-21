@@ -40,6 +40,8 @@ class AutoJob extends Command
      */
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $config = $this->systemConfig();
 
         // 优惠券到期自动置无效
@@ -167,7 +169,7 @@ class AutoJob extends Command
 
         // 被封禁账号自动释放端口
         if ($config['auto_release_port']) {
-            $userList = User::query()->where('enabled', 0)->where('ban_time', -1)->get();
+            $userList = User::query()->where('enable', 0)->where('ban_time', -1)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
                     if ($user->port) {
@@ -238,7 +240,10 @@ class AutoJob extends Command
             }
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     // 添加用户封禁日志

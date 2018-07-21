@@ -23,6 +23,8 @@ class AutoDecGoodsTraffic extends Command
 
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '>=', date('Y-m-d H:i:s'))->get();
         if (!$orderList->isEmpty()) {
             $config = $this->systemConfig();
@@ -70,7 +72,10 @@ class AutoDecGoodsTraffic extends Command
             }
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     // 系统配置

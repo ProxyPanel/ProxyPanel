@@ -23,6 +23,8 @@ class AutoClearLog extends Command
 
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $config = $this->systemConfig();
 
         if ($config['is_clear_log']) {
@@ -42,7 +44,10 @@ class AutoClearLog extends Command
             SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-60 days')))->delete();
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     // 系统配置

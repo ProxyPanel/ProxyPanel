@@ -22,6 +22,8 @@ class UserTrafficAbnormalAutoWarning extends Command
 
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $config = $this->systemConfig();
 
         // 24小时内流量异常用户
@@ -53,7 +55,10 @@ class UserTrafficAbnormalAutoWarning extends Command
             }
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     // 系统配置

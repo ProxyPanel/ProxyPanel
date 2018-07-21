@@ -20,12 +20,17 @@ class AutoStatisticsNodeHourlyTraffic extends Command
 
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $nodeList = SsNode::query()->where('status', 1)->orderBy('id', 'asc')->get();
         foreach ($nodeList as $node) {
             $this->statisticsByNode($node->id);
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     private function statisticsByNode($node_id)

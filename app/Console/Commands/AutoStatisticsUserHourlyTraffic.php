@@ -21,6 +21,8 @@ class AutoStatisticsUserHourlyTraffic extends Command
 
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
         foreach ($userList as $user) {
             // 统计一次所有节点的总和
@@ -33,7 +35,10 @@ class AutoStatisticsUserHourlyTraffic extends Command
             }
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     private function statisticsByNode($user_id, $node_id = 0)

@@ -24,6 +24,8 @@ class UserExpireAutoWarning extends Command
 
     public function handle()
     {
+        $jobStartTime = microtime(true);
+
         $config = $this->systemConfig();
 
         if ($config['expire_warning']) {
@@ -49,7 +51,10 @@ class UserExpireAutoWarning extends Command
             }
         }
 
-        Log::info('定时任务：' . $this->description);
+        $jobEndTime = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+
+        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
     }
 
     /**
