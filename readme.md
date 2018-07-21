@@ -34,8 +34,8 @@ telegram千人讨论群已解散，有问题提issues，或者进小群讨论（
 199是设定的门槛，因为进群后如果捣乱就踢，这样的成本会拦住较多无聊的捣乱者
 ````
 
-## 有偿催功能开发进度
-![有偿催进度](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/vote.jpg?raw=true)
+## 开发支持金
+![开发支持金](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/vote.jpg?raw=true)
 
 ## 捐赠
 **ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
