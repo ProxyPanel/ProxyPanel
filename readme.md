@@ -35,6 +35,7 @@ telegram千人讨论群已解散，有问题提issues，或者进小群讨论（
 ````
 
 ## 开发支持金
+支持金最高的功能，将再下次版本更新中优先开发。
 ![开发支持金](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/vote.jpg?raw=true)
 
 ## 捐赠
