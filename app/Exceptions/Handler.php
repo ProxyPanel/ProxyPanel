@@ -45,6 +45,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if (\Config::get('app.debug')) {
+            \Log::info("请求导致异常的地址：" . $request->fullUrl());
             return parent::render($request, $exception);
         } else {
             return \Response::view('404');

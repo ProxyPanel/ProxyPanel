@@ -75,7 +75,7 @@ class AutoDecGoodsTraffic extends Command
         $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
 
-        Log::info('定时任务【' . $this->description . '】耗时' . $jobUsedTime . '秒');
+        Log::info('执行定时任务【' . $this->description . '】，耗时' . $jobUsedTime . '秒');
     }
 
     // 系统配置
