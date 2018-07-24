@@ -328,6 +328,7 @@ class AutoJob extends Command
     // TCP检测
     private function tcpCheck($ip)
     {
+        return 0;
         try {
             $tcpCN = $this->curlRequest("https://ipcheck.need.sh/api.php?location=cn&ip={$ip}&type=tcp");
             $tcpUS = $this->curlRequest("https://ipcheck.need.sh/api.php?location=us&ip={$ip}&type=tcp");
