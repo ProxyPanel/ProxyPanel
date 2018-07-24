@@ -5,7 +5,7 @@ return [
     'subscribe_address'               => 'My Subscribe Address',
     'copy_subscribe_address'          => 'Copy Address',
     'exchange_subscribe'              => 'Exchange Address',
-    'subscribe_warning'               => 'Warning: this subscription address is for personal use only. Do not propagate the address.',
+    'subscribe_warning'               => 'Warning: This subscription address is for personal use only. Do not propagate the address.',
     'reset_password_title'            => 'Reset Password',
     'system_down'                     => 'The system is being maintained',
     'subscribe_baned'                 => 'Your subscription function has been banned. Please contact the administrator.',
@@ -49,7 +49,7 @@ return [
     'close'                           => 'Close',
     'redeem_score'                    => 'Redeem for bandwidth',
     'redeem'                          => 'Redeem',
-    'redeem_info'                     => 'You have got :score points and can redeem :scoreM free bandwidth.',
+    'redeem_info'                     => 'You have got :score points and can redeem :score M free bandwidth.',
     'coupon_code'                     => 'Coupon Code',
     'please_input_coupon'             => 'Please input the coupon code',
     'scan_qrcode'                     => 'Scan qrcode with your client',
@@ -96,11 +96,11 @@ return [
     'service_type_2'                  => 'Flow Plans',
 
     // 流量日志
-    'traffic_log_tips'                => 'Tips: The update of the flow chart will be delayed. The chart is updated on the following day, and the hourly chart is updated at the next hour.',
+    'traffic_log_tips'                => 'Tips: The update of the flow chart will be delayed.',
     'traffic_log_30days'              => '30 Days Statistics',
     'traffic_log_24hours'             => '24 Hours Statistics',
     'traffic_log_keywords'            => 'Bandwidth',
-    'traffic_log_unit'                => 'unit: G',
+    'traffic_log_unit'                => 'Unit: G',
     'traffic_log_max'                 => 'Max',
 
     // 邀请码

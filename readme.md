@@ -34,10 +34,6 @@ telegram千人讨论群已解散，有问题提issues，或者进小群讨论（
 199是设定的门槛，因为进群后如果捣乱就踢，这样的成本会拦住较多无聊的捣乱者
 ````
 
-## 开发支持金
-支持金最高的功能，将再下次版本更新中优先开发。
-![开发支持金](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/vote.jpg?raw=true)
-
 ## 捐赠
 **ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
 
@@ -65,13 +61,14 @@ PHP必须开启curl、gd、fileinfo、openssl、mbstring组件
 #### 拉取代码
 ````
 cd /home/wwwroot/
-git clone https://github.com/ssrpanel/ssrpanel.git
+git clone https://github.com/ssrpanel/SSRPanel.git
 ````
 
 #### 安装面板
 ````
-cd ssrpanel/
+cd SSRPanel/
 php composer.phar install
+cp .env.example .env
 php artisan key:generate
 chown -R www:www storage/
 chmod -R 777 storage/
@@ -82,7 +79,7 @@ chmod -R 777 storage/
 ##### 连接数据库
 ````
 1.创建一个utf8mb4的数据库
-2.编辑config/database.php，编辑mysql选项中如下配置值：host、port、database、username、password
+2.编辑 .env 文件，修改 DB_ 开头的值
 ````
 
 ##### 自动部署
@@ -103,7 +100,7 @@ php artisan db:seed --class=UserTableSeeder
 
 ##### 手工部署
 ````
-迁移未经完整测试，存在BUG，可以手动将sql/db.sql导入到创建好的数据库
+注意：迁移未经完整测试，存在BUG（主要是我懒得用），可以手动将sql/db.sql导入到创建好的数据库
 ````
 
 #### 加入NGINX的URL重写规则
@@ -148,27 +145,15 @@ crontab -e -u www
 ## 邮件配置
 ###### SMTP
 ````
-编辑 config\mail.php
-
-请自行配置如下内容
-'driver' => 'smtp',
-'host' => 'smtp.exmail.qq.com',
-'port' => 465,
-'from' => [
-    'address' => 'xxx@qq.com',
-    'name' => 'SSRPanel',
-],
-'encryption' => 'ssl',
-'username' => 'xxx@qq.com',
-'password' => 'xxxxxx',
+编辑 .env 文件，修改 MAIL_ 开头的配置
 ````
 
 ###### Mailgun
 ````
-编辑 config\mail.php
-将 driver 值改为 mailgun
+编辑 .env 文件
+将 MAIL_DRIVER 值改为 mailgun
 
-编辑 config/services.php
+然后编辑 config/services.php
 
 请自行配置如下内容
 'mailgun' => [
@@ -287,6 +272,14 @@ vim user-config.json
 警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
 提示：配置单端口最好先看下这个WIKI，防止才踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
 
+````
+## 代码更新
+````
+进入到SSRPanel目录下
+1.手动更新： git pull
+2.强制更新： sh ./update.sh 
+
+如果你更改了本地文件，手动更新会提示错误需要合并代码（自己搞定），强制更新会直接覆盖你本地所有更改过的文件
 ````
 
 ## 校时

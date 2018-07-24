@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Invite;
-use App\Http\Models\SsConfig;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Http\Models\Verify;
@@ -150,22 +149,18 @@ class RegisterController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            // 默认加密方式、协议、混淆
-            $method = SsConfig::query()->where('type', 1)->where('is_default', 1)->first();
-            $protocol = SsConfig::query()->where('type', 2)->where('is_default', 1)->first();
-            $obfs = SsConfig::query()->where('type', 3)->where('is_default', 1)->first();
+            $transfer_enable = $referral_uid ? ($this->systemConfig['default_traffic'] + $this->systemConfig['referral_traffic']) * 1048576 : $this->systemConfig['default_traffic'] * 1048576;
 
             // 创建新用户
-            $transfer_enable = $referral_uid ? ($this->systemConfig['default_traffic'] + $this->systemConfig['referral_traffic']) * 1048576 : $this->systemConfig['default_traffic'] * 1048576;
             $user = new User();
             $user->username = $username;
             $user->password = md5($password);
             $user->port = $port;
             $user->passwd = makeRandStr();
             $user->transfer_enable = $transfer_enable;
-            $user->method = $method ? $method->name : 'aes-192-ctr';
-            $user->protocol = $protocol ? $protocol->name : 'auth_chain_a';
-            $user->obfs = $obfs ? $obfs->name : 'tls1.2_ticket_auth';
+            $user->method = $this->getDefaultMethod();
+            $user->protocol = $this->getDefaultProtocol();
+            $user->obfs = $this->getDefaultObfs();
             $user->enable_time = date('Y-m-d H:i:s');
             $user->expire_time = date('Y-m-d H:i:s', strtotime("+" . $this->systemConfig['default_days'] . " days"));
             $user->reg_ip = $request->getClientIp();

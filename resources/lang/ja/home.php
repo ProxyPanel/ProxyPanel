@@ -35,7 +35,7 @@ return [
     'account_bandwidth_usage'         => 'データ通信量の使用状況',
     'account_total_traffic'           => 'データ通信量の上限',
     'account_usage_traffic'           => '使用済み',
-    'account_reset_notice'            => '毎月:reset_day日にデータ通信量をリセットする',
+    'account_reset_notice'            => '毎月 :reset_day 日にデータ通信量をリセットする',
     'article_title'                   => '文章',
     'recharge'                        => 'チャージ',
     'enabled'                         => '有効',
@@ -49,7 +49,7 @@ return [
     'close'                           => 'キャンセル',
     'redeem_score'                    => 'データ通信量を兌換する',
     'redeem'                          => '今すぐ兌換',
-    'redeem_info'                     => 'あなたは :score ポイントを持っており、 :scoreM 無料のデータ通信量を利用できます。',
+    'redeem_info'                     => 'あなたは :score ポイントを持っており、 :score M 無料のデータ通信量を利用できます。',
     'coupon_code'                     => 'クーポンコード',
     'please_input_coupon'             => 'クーポンコードを入力してください',
     'scan_qrcode'                     => 'QRコードをスキャンするクライアントを使用してください',
@@ -96,7 +96,7 @@ return [
     'service_type_2'                  => 'コース',
 
     // 流量日志
-    'traffic_log_tips'                => 'ヒント：流量統計図更新は遅延がある。日の統計図を押すと翌日に更新され、時間統計図で次の時間に更新されます。',
+    'traffic_log_tips'                => '注意：データの更新が遅れている',
     'traffic_log_30days'              => '30 日内のデータ通信量消耗',
     'traffic_log_24hours'             => '24 時間内のデータ通信量消耗',
     'traffic_log_keywords'            => 'データ通信量消耗',

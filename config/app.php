@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'SSRPanel',
+    'name' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'env' => 'production',
+    'env' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'debug' => true,
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost',
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Shanghai',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -77,8 +77,7 @@ return [
     |
     */
 
-    'locale' => 'zh-CN',
-    //'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -91,8 +90,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
-    //'fallback_locale' => 'zh-CN',
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'zh-CN'),
 
     /*
     |--------------------------------------------------------------------------
@@ -105,7 +103,7 @@ return [
     |
     */
 
-    'key' => 'base64:6nNq+XYCwjwi/FQ/x9tK40ETErxtRUzLWk8Jny9bRa8=',
+    'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -122,9 +120,9 @@ return [
     |
     */
 
-    'log' => 'daily',
+    'log' => env('APP_LOG', 'single'),
 
-    'log_level' => 'debug',
+    'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
     'log_max_files' => 30,
 

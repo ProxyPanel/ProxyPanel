@@ -185,18 +185,9 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
             }
 
-            // 密码为空时则生成随机密码
-            $password = $request->get('password');
-            if (empty($password)) {
-                $str = makeRandStr();
-                $password = md5($str);
-            } else {
-                $password = md5($password);
-            }
-
             $user = new User();
             $user->username = trim($request->get('username'));
-            $user->password = $password;
+            $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr()); // 密码为空时则生成随机密码
             $user->port = $request->get('port');
             $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
             $user->transfer_enable = toGB($request->get('transfer_enable', 0));
@@ -239,7 +230,6 @@ class AdminController extends Controller
             }
         } else {
             // 生成一个可用端口
-            $last_user = User::query()->orderBy('id', 'desc')->first();
             $view['last_port'] = $this->systemConfig['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
             $view['is_rand_port'] = $this->systemConfig['is_rand_port'];
             $view['method_list'] = $this->methodList();
@@ -259,7 +249,6 @@ class AdminController extends Controller
         try {
             for ($i = 0; $i < 5; $i++) {
                 // 生成一个可用端口
-                $last_user = User::query()->orderBy('id', 'desc')->first();
                 $port = $this->systemConfig['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
 
                 $user = new User();
@@ -379,11 +368,11 @@ class AdminController extends Controller
 
                 User::query()->where('id', $id)->update($data);
 
-                // 先删除该用户所有的标签
-                UserLabel::query()->where('user_id', $id)->delete();
-
-                // 生成用户标签
+                // 重新生成用户标签
                 if (!empty($labels)) {
+                    // 先删除该用户所有的标签
+                    UserLabel::query()->where('user_id', $id)->delete();
+
                     foreach ($labels as $label) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $id;
@@ -433,7 +422,7 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        if ($id == 1) {
+        if ($id === 1) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统管理员不可删除']);
         }
 
@@ -467,7 +456,7 @@ class AdminController extends Controller
             $totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
             $node->transfer = flowAutoShow($totalTraffic);
 
-            // 负载（10分钟以内）
+            // 负载（10分钟以内） TODO:待改造
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             $node->load = empty($node_info) || empty($node_info->load) ? '宕机' : $node_info->load;
         }
@@ -646,8 +635,10 @@ class AdminController extends Controller
 
                 // 生成节点标签
                 $labels = $request->get('labels');
-                SsNodeLabel::query()->where('node_id', $id)->delete(); // 删除所有该节点的标签
                 if (!empty($labels)) {
+                    // 删除所有该节点的标签
+                    SsNodeLabel::query()->where('node_id', $id)->delete();
+
                     foreach ($labels as $label) {
                         $ssNodeLabel = new SsNodeLabel();
                         $ssNodeLabel->node_id = $id;
@@ -704,9 +695,9 @@ class AdminController extends Controller
         DB::beginTransaction();
         try {
             // 删除分组关联、节点标签、节点相关日志
+            SsNode::query()->where('id', $id)->delete();
             SsGroupNode::query()->where('node_id', $id)->delete();
             SsNodeLabel::query()->where('node_id', $id)->delete();
-            SsNode::query()->where('id', $id)->delete();
             SsNodeInfo::query()->where('node_id', $id)->delete();
             SsNodeOnlineLog::query()->where('node_id', $id)->delete();
             SsNodeTrafficDaily::query()->where('node_id', $id)->delete();
@@ -774,8 +765,16 @@ class AdminController extends Controller
             'hourlyData' => "'" . implode("','", $hourlyData) . "'"
         ];
 
+        // 本月天数数据
+        $monthDays = [];
+        $monthHasDays = date("t");
+        for ($i = 1; $i <= $monthHasDays; $i++) {
+            $monthDays[] = $i;
+        }
+
         $view['nodeName'] = $node->name;
         $view['nodeServer'] = $node->server;
+        $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
 
         return Response::view('admin/nodeMonitor', $view);
     }
@@ -1857,7 +1856,7 @@ EOF;
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
 
-    // 设置微信、支付宝二维码
+    // 设置微信、支付宝二维码（已废弃）
     public function setQrcode(Request $request)
     {
         // 微信二维码

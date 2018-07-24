@@ -306,8 +306,16 @@ class UserController extends Controller
             $hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
         }
 
+        // 本月天数数据
+        $monthDays = [];
+        $monthHasDays = date("t");
+        for ($i = 1; $i <= $monthHasDays; $i++) {
+            $monthDays[] = $i;
+        }
+
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
+        $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
 
         $view['website_logo'] = $this->systemConfig['website_logo'];
         $view['website_analytics'] = $this->systemConfig['website_analytics'];
@@ -929,11 +937,7 @@ class UserController extends Controller
                     }
 
                     // 写入日志
-                    $couponLog = new CouponLog();
-                    $couponLog->coupon_id = $coupon->id;
-                    $couponLog->goods_id = $goods_id;
-                    $couponLog->order_id = $order->oid;
-                    $couponLog->save();
+                    $this->addCouponLog($coupon->id, $goods_id, $order->oid, '余额支付订单使用');
                 }
 
                 // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，并移除之前所有套餐的标签
@@ -1237,11 +1241,7 @@ class UserController extends Controller
             $coupon->save();
 
             // 写入卡券日志
-            $couponLog = new CouponLog();
-            $couponLog->coupon_id = $coupon->id;
-            $couponLog->goods_id = 0;
-            $couponLog->order_id = 0;
-            $couponLog->save();
+            $this->addCouponLog($coupon->id, 0, 0, '账户余额充值使用');
 
             DB::commit();
 
@@ -1260,5 +1260,4 @@ class UserController extends Controller
 
         return Redirect::back();
     }
-
 }

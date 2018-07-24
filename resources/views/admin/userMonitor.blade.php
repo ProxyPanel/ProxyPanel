@@ -47,7 +47,7 @@
         option = {
             title: {
                 text: '今日流量',
-                subtext: '单位G'
+                subtext: '单位 / G'
             },
             tooltip: {
                 trigger: 'axis'
@@ -96,7 +96,7 @@
         option = {
             title: {
                 text: '本月流量',
-                subtext: '单位G'
+                subtext: '单位 / G'
             },
             tooltip: {
                 trigger: 'axis'

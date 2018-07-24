@@ -43,8 +43,8 @@ class PaymentController extends Controller
         $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
         if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
             // 判断是否已经购买过该商品
-            $none_expire_good_exist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('is_expire', 0)->exists();
-            if ($none_expire_good_exist) {
+            $noneExpireOrderExist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('status', '>=', 0)->where('is_expire', 0)->exists();
+            if ($noneExpireOrderExist) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品不可重复购买']);
             }
         }
@@ -114,6 +114,8 @@ class PaymentController extends Controller
             // 优惠券置为已使用
             if (!empty($coupon)) {
                 Coupon::query()->where('id', $coupon->id)->update(['status' => 1]);
+
+                $this->addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
             }
 
             DB::commit();

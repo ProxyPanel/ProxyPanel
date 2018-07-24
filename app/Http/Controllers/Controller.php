@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\CouponLog;
 use App\Http\Models\UserSubscribe;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -196,6 +197,24 @@ class Controller extends BaseController
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
+    }
+
+    /**
+     * 添加优惠券操作日志
+     *
+     * @param int    $couponId 优惠券ID
+     * @param int    $goodsId  商品ID
+     * @param int    $orderId  订单ID
+     * @param string $desc     备注
+     */
+    public function addCouponLog($couponId, $goodsId, $orderId, $desc = '')
+    {
+        $couponLog = new CouponLog();
+        $couponLog->coupon_id = $couponId;
+        $couponLog->goods_id = $goodsId;
+        $couponLog->order_id = $orderId;
+        $couponLog->desc = $desc;
+        $couponLog->save();
     }
 
     // 将Base64图片转换为本地图片并保存

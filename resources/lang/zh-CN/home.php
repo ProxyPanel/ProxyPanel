@@ -35,7 +35,7 @@ return [
     'account_bandwidth_usage'         => '已用流量',
     'account_total_traffic'           => '共计',
     'account_usage_traffic'           => '已使用',
-    'account_reset_notice'            => '每月:reset_day日重置',
+    'account_reset_notice'            => '每月 :reset_day 日重置',
     'article_title'                   => '文章',
     'recharge'                        => '充值',
     'enabled'                         => '正常',
@@ -49,7 +49,7 @@ return [
     'close'                           => '取消',
     'redeem_score'                    => '兑换流量',
     'redeem'                          => '立即兑换',
-    'redeem_info'                     => '您有 :score 积分，可兑换 :scoreM 免费流量。',
+    'redeem_info'                     => '您有 :score 积分，可兑换 :score M 免费流量。',
     'coupon_code'                     => '充值券码',
     'please_input_coupon'             => '请输入充值券码',
     'scan_qrcode'                     => '请使用客户端扫描二维码',
@@ -96,7 +96,7 @@ return [
     'service_type_2'                  => '套餐',
 
     // 流量日志
-    'traffic_log_tips'                => '提示：流量统计更新会有延迟。按天统计于次日更新，按小时统计于次小时更新。（每月1日不显示月流量统计数据）',
+    'traffic_log_tips'                => '提示：流量统计更新会有延迟。按天统计于次日更新，按小时统计于次小时更新。',
     'traffic_log_30days'              => '本月流量使用情况',
     'traffic_log_24hours'             => '今日流量使用情况',
     'traffic_log_keywords'            => '使用流量',
