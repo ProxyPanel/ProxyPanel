@@ -46,7 +46,7 @@ class AutoCheckNodeStatus extends Command
         $nodeList = SsNode::query()->where('status', 1)->get();
         foreach ($nodeList as $node) {
             // TCP检测
-            $tcpCheck = $this->tcpCheck($node->ip, $node->ssh_port);
+            $tcpCheck = $this->tcpCheck($node->ip);
             if (false !== $tcpCheck && $tcpCheck) {
                 $content = '节点无异常';
                 if ($tcpCheck === 1) {
@@ -113,11 +113,11 @@ class AutoCheckNodeStatus extends Command
     }
 
     // TCP检测
-    private function tcpCheck($ip, $sshPort)
+    private function tcpCheck($ip)
     {
         try {
             $overseasNode = $this->getRandomServer();
-            $result = $this->curlRequest("https://check-host.net/check-tcp?host={$ip}:{$sshPort}&node=cn1.node.check-host.net&node=" . $overseasNode);
+            $result = $this->curlRequest("https://check-host.net/check-tcp?host={$ip}:22&node=cn1.node.check-host.net&node=" . $overseasNode);
             $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
             if ($result['ok'] != 1) {
                 throw new \Exception("节点探测失败");
