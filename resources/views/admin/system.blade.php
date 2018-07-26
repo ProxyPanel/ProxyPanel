@@ -652,7 +652,7 @@
                                                         <div class="col-md-6">
                                                             <label for="is_ban_status" class="col-md-3 control-label">过期自动封禁</label>
                                                             <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_ban_status) checked @endif id="is_ban_status" data-on-color="danger" data-off-color="danger" data-on-text="仅封禁代理" data-off-text="封禁整个账号">
+                                                                <input type="checkbox" class="make-switch" @if($is_ban_status) checked @endif id="is_ban_status" data-on-color="danger" data-off-color="danger" data-on-text="封禁整个账号" data-off-text="仅封禁代理">
                                                                 <span class="help-block"> (慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录 </span>
                                                             </div>
                                                         </div>
