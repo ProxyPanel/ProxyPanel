@@ -52,7 +52,7 @@ class AutoJob extends Command
         // 自动移除被封禁账号的标签
         $this->removeUserLabels();
 
-        // 解封被临时封禁的账号（ban_time > 0）
+        // 自动解封被封禁的账号
         $this->unblockUsers();
 
         // 端口回收与分配
