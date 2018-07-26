@@ -64,43 +64,22 @@ cd /home/wwwroot/
 git clone https://github.com/ssrpanel/SSRPanel.git
 ````
 
-#### 安装面板
-````
-cd SSRPanel/
-php composer.phar install
-cp .env.example .env
-php artisan key:generate
-chown -R www:www storage/
-chmod -R 777 storage/
-````
-
 #### 配置数据库
-
-##### 连接数据库
 ````
 1.创建一个utf8mb4的数据库
 2.编辑 .env 文件，修改 DB_ 开头的值
+3.导入 sql/db.sql 到数据库
 ````
 
-##### 自动部署
-
-###### 迁移(创建表结构)
+#### 安装面板
 ````
-php artisan migrate
-````
-
-###### 播种(填充数据)
-````
-php artisan db:seed --class=ConfigTableSeeder
-php artisan db:seed --class=CountryTableSeeder
-php artisan db:seed --class=LevelTableSeeder
-php artisan db:seed --class=SsConfigTableSeeder
-php artisan db:seed --class=UserTableSeeder
-````
-
-##### 手工部署
-````
-注意：迁移未经完整测试，存在BUG（主要是我懒得用），可以手动将sql/db.sql导入到创建好的数据库
+cd SSRPanel/
+cp .env.example .env
+（然后修改数据库连接信息）
+php artisan key:generate
+php composer.phar install
+chown -R www:www storage/
+chmod -R 777 storage/
 ````
 
 #### 加入NGINX的URL重写规则
@@ -173,7 +152,7 @@ crontab -e -u www
 
 ## 英文版
 ````
-修改 config/app.php 下的 locale 值为 en
+修改 .env 的 APP_LOCALE 值为 en
 欢迎提交其他语言的语言包，语言包在：resources/lang下
 ````
 
@@ -195,7 +174,7 @@ sh initcfg.sh
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
 ````
 
-###### 一键自动部署(基于SSR3.4)
+###### 一键自动部署(基于SSR3.4)(不推荐，该版本有内存溢出BUG)
 ````
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
 

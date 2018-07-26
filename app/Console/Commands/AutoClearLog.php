@@ -7,6 +7,7 @@ use App\Http\Models\Config;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\SsNodeTrafficHourly;
+use App\Http\Models\UserBanLog;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\UserTrafficHourly;
 use Log;
@@ -42,6 +43,9 @@ class AutoClearLog extends Command
 
             // 自动清除60天以前的节点每小时流量数据日志
             SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-60 days')))->delete();
+
+            // 自动清除30天以前用户封禁日志
+            UserBanLog::query()->where('created_at', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-30 days"))))->delete();
         }
 
         $jobEndTime = microtime(true);

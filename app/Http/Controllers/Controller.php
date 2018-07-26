@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\CouponLog;
+use App\Http\Models\ReferralLog;
+use App\Http\Models\UserBalanceLog;
+use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -186,17 +189,20 @@ class Controller extends BaseController
      * @param string $content 内容
      * @param int    $status  投递状态
      * @param string $error   投递失败时记录的异常信息
+     *
+     * @return int
      */
     public function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
     {
-        $emailLogObj = new EmailLog();
-        $emailLogObj->user_id = $user_id;
-        $emailLogObj->title = $title;
-        $emailLogObj->content = $content;
-        $emailLogObj->status = $status;
-        $emailLogObj->error = $error;
-        $emailLogObj->created_at = date('Y-m-d H:i:s');
-        $emailLogObj->save();
+        $log = new EmailLog();
+        $log->user_id = $user_id;
+        $log->title = $title;
+        $log->content = $content;
+        $log->status = $status;
+        $log->error = $error;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
     }
 
     /**
@@ -206,15 +212,92 @@ class Controller extends BaseController
      * @param int    $goodsId  商品ID
      * @param int    $orderId  订单ID
      * @param string $desc     备注
+     *
+     * @return int
      */
     public function addCouponLog($couponId, $goodsId, $orderId, $desc = '')
     {
-        $couponLog = new CouponLog();
-        $couponLog->coupon_id = $couponId;
-        $couponLog->goods_id = $goodsId;
-        $couponLog->order_id = $orderId;
-        $couponLog->desc = $desc;
-        $couponLog->save();
+        $log = new CouponLog();
+        $log->coupon_id = $couponId;
+        $log->goods_id = $goodsId;
+        $log->order_id = $orderId;
+        $log->desc = $desc;
+
+        return $log->save();
+    }
+
+    /**
+     * 记录余额操作日志
+     *
+     * @param int    $userId 用户ID
+     * @param string $oid    订单ID
+     * @param int    $before 记录前余额
+     * @param int    $after  记录后余额
+     * @param int    $amount 发生金额
+     * @param string $desc   描述
+     *
+     * @return int
+     */
+    public function addUserBalanceLog($userId, $oid, $before, $after, $amount, $desc = '')
+    {
+        $log = new UserBalanceLog();
+        $log->user_id = $userId;
+        $log->order_id = $oid;
+        $log->before = $before;
+        $log->after = $after;
+        $log->amount = $amount;
+        $log->desc = $desc;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
+    }
+
+    /**
+     * 添加返利日志
+     *
+     * @param int $userId    用户ID
+     * @param int $refUserId 返利用户ID
+     * @param int $oid       订单ID
+     * @param int $amount    发生金额
+     * @param int $refAmount 返利金额
+     *
+     * @return int
+     */
+    public function addReferralLog($userId, $refUserId, $oid, $amount, $refAmount)
+    {
+        $log = new ReferralLog();
+        $log->user_id = $userId;
+        $log->ref_user_id = $refUserId;
+        $log->order_id = $oid;
+        $log->amount = $amount;
+        $log->ref_amount = $refAmount;
+        $log->status = 0;
+
+        return $log->save();
+    }
+
+    /**
+     * 添加积分日志
+     *
+     * @param int    $userId 用户ID
+     * @param int    $before 记录前余额
+     * @param int    $after  记录后余额
+     * @param int    $score  发生值
+     * @param string $desc   描述
+     *
+     * @return int
+     */
+    public function addUserScoreLog($userId, $before, $after, $score, $desc = '')
+    {
+        $log = new UserScoreLog();
+        $log->user_id = $userId;
+        $log->before = $before;
+        $log->after = $after;
+        $log->score = $score;
+        $log->desc = $desc;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
     }
 
     // 将Base64图片转换为本地图片并保存

@@ -29,7 +29,7 @@ class UserExpireAutoWarning extends Command
         $config = $this->systemConfig();
 
         if ($config['expire_warning']) {
-            $userList = User::query()->where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
+            $userList = User::query()->where('transfer_enable', '>', 0)->where('status', '>=', 0)->where('enable', 1)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
                 if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {
@@ -39,7 +39,7 @@ class UserExpireAutoWarning extends Command
                 $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
                 if ($lastCanUseDays > 0 && $lastCanUseDays <= $config['expire_days']) {
                     $title = '账号过期提醒';
-                    $content = '账号还剩' . $lastCanUseDays . '天即将过期';
+                    $content = '您的账号还剩' . $lastCanUseDays . '天即将过期。';
 
                     try {
                         Mail::to($user->username)->send(new userExpireWarning($config['website_name'], $lastCanUseDays));

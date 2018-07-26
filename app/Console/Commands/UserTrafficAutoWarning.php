@@ -29,7 +29,7 @@ class UserTrafficAutoWarning extends Command
         $config = $this->systemConfig();
 
         if ($config['traffic_warning']) {
-            $userList = User::query()->where('transfer_enable', '>', 0)->whereIn('status', [0, 1])->where('enable', 1)->get();
+            $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('transfer_enable', '>', 0)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
                 if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {
@@ -38,8 +38,8 @@ class UserTrafficAutoWarning extends Command
 
                 $usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
                 if ($usedPercent >= $config['traffic_warning_percent']) {
-                    $title = '流量警告';
-                    $content = '流量已使用：' . $usedPercent . '%，超过设置的流量阈值' . $config['traffic_warning_percent'] . '%';
+                    $title = '流量提醒';
+                    $content = '流量已使用：' . $usedPercent . '%，请保持关注。';
 
                     try {
                         Mail::to($user->username)->send(new userTrafficWarning($config['website_name'], $usedPercent));

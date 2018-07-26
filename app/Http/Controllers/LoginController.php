@@ -75,14 +75,7 @@ class LoginController extends Controller
                     $score = mt_rand($this->systemConfig['min_rand_score'], $this->systemConfig['max_rand_score']);
                     $ret = User::query()->where('id', $user->id)->increment('score', $score);
                     if ($ret) {
-                        $obj = new UserScoreLog();
-                        $obj->user_id = $user->id;
-                        $obj->before = $user->score;
-                        $obj->after = $user->score + $score;
-                        $obj->score = $score;
-                        $obj->desc = '登录送积分';
-                        $obj->created_at = date('Y-m-d H:i:s');
-                        $obj->save();
+                        $this->addUserScoreLog($user->id, $user->score, $user->score + $score, $score, '登录送积分');
 
                         // 登录多久后再登录可以获取积分
                         $ttl = $this->systemConfig['login_add_score_range'] ? $this->systemConfig['login_add_score_range'] : 1440;

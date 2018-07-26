@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Components\ServerChan;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
-use App\Http\Models\CouponLog;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Invite;
@@ -19,9 +18,7 @@ use App\Http\Models\SsNodeInfo;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
-use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserLabel;
-use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
@@ -919,15 +916,7 @@ class UserController extends Controller
                 User::query()->where('id', $user->id)->decrement('balance', $amount * 100);
 
                 // 记录余额操作日志
-                $userBalanceLog = new UserBalanceLog();
-                $userBalanceLog->user_id = $user->id;
-                $userBalanceLog->order_id = $order->oid;
-                $userBalanceLog->before = $user->balance;
-                $userBalanceLog->after = $user->balance - $amount;
-                $userBalanceLog->amount = -1 * $amount;
-                $userBalanceLog->desc = '购买服务：' . $goods->name;
-                $userBalanceLog->created_at = date('Y-m-d H:i:s');
-                $userBalanceLog->save();
+                $this->addUserBalanceLog($user->id, $order->oid, $user->balance, $user->balance - $amount, -1 * $amount, '购买服务：' . $goods->name);
 
                 // 优惠券置为已使用
                 if (!empty($coupon)) {
@@ -991,14 +980,7 @@ class UserController extends Controller
 
                 // 写入返利日志
                 if ($user->referral_uid) {
-                    $referralLog = new ReferralLog();
-                    $referralLog->user_id = $user->id;
-                    $referralLog->ref_user_id = $user->referral_uid;
-                    $referralLog->order_id = $order->oid;
-                    $referralLog->amount = $amount;
-                    $referralLog->ref_amount = $amount * $this->systemConfig['referral_percent'];
-                    $referralLog->status = 0;
-                    $referralLog->save();
+                    $this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount * $this->systemConfig['referral_percent']);
                 }
 
                 DB::commit();
@@ -1041,17 +1023,10 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             // 写入积分操作日志
-            $userScoreLog = new UserScoreLog();
-            $userScoreLog->user_id = $user['id'];
-            $userScoreLog->before = $user['score'];
-            $userScoreLog->after = 0;
-            $userScoreLog->score = -1 * $user['score'];
-            $userScoreLog->desc = '积分兑换流量';
-            $userScoreLog->created_at = date('Y-m-d H:i:s');
-            $userScoreLog->save();
+            $ret = $this->addUserScoreLog($user['id'], $user['score'], 0, -1 * $user['score'], '积分兑换流量');
 
             // 扣积分加流量
-            if ($userScoreLog->id) {
+            if ($ret) {
                 User::query()->where('id', $user['id'])->update(['score' => 0]);
                 User::query()->where('id', $user['id'])->increment('transfer_enable', $user['score'] * 1048576);
             }
@@ -1222,15 +1197,7 @@ class UserController extends Controller
             $user = User::query()->where('id', $user['id'])->first();
 
             // 写入日志
-            $log = new UserBalanceLog();
-            $log->user_id = $user->id;
-            $log->order_id = 0;
-            $log->before = $user->balance;
-            $log->after = $user->balance + $coupon->amount;
-            $log->amount = $coupon->amount;
-            $log->desc = '用户手动充值 - [充值券：' . $coupon_sn . ']';
-            $log->created_at = date('Y-m-d H:i:s');
-            $log->save();
+            $this->addUserBalanceLog($user->id, 0, $user->balance, $user->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $coupon_sn . ']');
 
             // 余额充值
             $user->balance = $user->balance + $coupon->amount;

@@ -2050,27 +2050,19 @@ EOF;
     public function handleUserBalance(Request $request)
     {
         if ($request->method() == 'POST') {
-            $user_id = $request->get('user_id');
+            $userId = $request->get('user_id');
             $amount = $request->get('amount');
 
-            if (empty($user_id) || empty($amount)) {
+            if (empty($userId) || empty($amount)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值异常']);
             }
 
             DB::beginTransaction();
             try {
-                $user = User::query()->where('id', $user_id)->first();
+                $user = User::query()->where('id', $userId)->first();
 
                 // 写入余额变动日志
-                $userBalanceLog = new UserBalanceLog();
-                $userBalanceLog->user_id = $user_id;
-                $userBalanceLog->order_id = 0;
-                $userBalanceLog->before = $user->balance;
-                $userBalanceLog->after = $user->balance + $amount;
-                $userBalanceLog->amount = $amount;
-                $userBalanceLog->desc = '后台手动充值';
-                $userBalanceLog->created_at = date('Y-m-d H:i:s');
-                $userBalanceLog->save();
+                $this->addUserBalanceLog($userId, 0, $user->balance, $user->balance + $amount, $amount, '后台手动充值');
 
                 // 加减余额
                 if ($amount < 0) {
