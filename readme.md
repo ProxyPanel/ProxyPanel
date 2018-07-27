@@ -22,16 +22,17 @@
 22.中转节点（开发中）
 23.强大的营销管理：PushBear群发消息
 24.telegram机器人（开发中）
-25.防墙监测，节点被墙自动提醒（TCP阻断、Ping失效）（开发中）
+25.防墙监测，节点被墙自动提醒（TCP阻断）
 ````
 
 ## 演示&交流
 ````
 官方站：http://www.ssrpanel.com
 演示站：http://demo.ssrpanel.com （用户名：admin 密码：123456，请勿修改密码）
-telegram订阅频道：https://t.me/ssrpanel
-telegram千人讨论群已解散，有问题提issues，或者进小群讨论（打赏的时候记得留言，我会回复你我的微信号）
-199是设定的门槛，因为进群后如果捣乱就踢，这样的成本会拦住较多无聊的捣乱者
+telegram订阅频道：https://t.me/ssrpanel （获取最新资讯）
+telegram千人讨论群已解散，有问题提issues，或者进小群讨论（打赏的时候记得留言你的微信号，不要打“微信”俩字，会被屏蔽）
+199是设定的门槛，因为进群后如果捣乱就踢，这样的成本会拦住较多无聊的捣乱者、伸手党
+特别讨厌伸手党，一个开源项目，如果你用的不爽可以不用，识趣点别哔哔，如果你想商业化，先掂量一下你愿意掏多少钱买程序？
 ````
 
 ## 捐赠
@@ -55,7 +56,7 @@ MYSQL 5.5 （推荐5.6+）
 内存 1G+ 
 磁盘空间 10G+
 PHP必须开启curl、gd、fileinfo、openssl、mbstring组件
-安装完成后记得编辑config/app.php中 'debug' => true, 改为 false
+安装完成后记得编辑.env中 APP_DEBUG 改为 false
 ````
 
 #### 拉取代码
@@ -75,7 +76,7 @@ git clone https://github.com/ssrpanel/SSRPanel.git
 ````
 cd SSRPanel/
 cp .env.example .env
-（然后修改数据库连接信息）
+（然后 vi .env 修改数据库的连接信息）
 php artisan key:generate
 php composer.phar install
 chown -R www:www storage/
@@ -289,4 +290,7 @@ ntpdate cn.pool.ntp.org
 - [@ToyoDAdoubi](https://github.com/ToyoDAdoubi)
 - [@91yun](https://github.com/91yun)
 - [@Akkariiin](https://github.com/shadowsocksrr)
+- [@tonychanczm](https://github.com/tonychanczm)
+- [ipcheck](https://ipcheck.need.sh)
+- [check-host](https://www.check-host.net)
 

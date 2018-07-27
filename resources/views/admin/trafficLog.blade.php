@@ -57,7 +57,7 @@
                                         @foreach($trafficLogList as $trafficLog)
                                             <tr class="odd gradeX">
                                                 <td> {{$trafficLog->id}} </td>
-                                                <td> <a href="{{url('admin/userList?port=') . $trafficLog->user->port}}" target="_blank"> <span class="label label-info"> {{$trafficLog->user->username}} </span> </a> </td>
+                                                <td> <a href="{{url('admin/userList?username=') . $trafficLog->user->username}}" target="_blank"> <span class="label label-info"> {{$trafficLog->user->username}} </span> </a> </td>
                                                 <td> {{$trafficLog->ssnode->name}} </td>
                                                 <td> {{$trafficLog->rate}} </td>
                                                 <td> {{$trafficLog->u}} </td>

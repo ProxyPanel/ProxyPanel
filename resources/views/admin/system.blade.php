@@ -562,6 +562,13 @@
                                                                 <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”，展示于个人中心 </span>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断探测</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_tcp_check) checked @endif id="is_tcp_check" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 自动检测是否被墙TCP阻断并提醒 </span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </form>
@@ -1044,6 +1051,21 @@
                 var is_push_bear = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_push_bear', value:is_push_bear}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用TCP阻断探测
+        $('#is_tcp_check').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_tcp_check = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_tcp_check', value:is_tcp_check}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();

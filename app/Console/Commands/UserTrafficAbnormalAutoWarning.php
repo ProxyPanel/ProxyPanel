@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 use App\Http\Models\Config;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficHourly;
-use Cache;
 use Log;
 
 class UserTrafficAbnormalAutoWarning extends Command

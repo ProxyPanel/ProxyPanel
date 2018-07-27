@@ -113,28 +113,30 @@ class AutoJob extends Command
     private function blockUsers()
     {
         // 过期用户处理
-        $userList = User::query()->where('status', '>=', 0)->where('expire_time', '<=', date('Y-m-d'))->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 if (self::$config['is_ban_status']) {
                     User::query()->where('id', $user->id)->update([
-                        'u'        => 0,
-                        'd'        => 0,
-                        'enable'   => 0,
-                        'ban_time' => 0,
-                        'status'   => -1
+                        'u'               => 0,
+                        'd'               => 0,
+                        'transfer_enable' => 0,
+                        'enable'          => 0,
+                        'ban_time'        => 0,
+                        'status'          => -1
                     ]);
 
-                    $this->addUserBanLog($user->id, 0, '【封禁账号】-账号已过期');
+                    $this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
                 } else {
                     User::query()->where('id', $user->id)->update([
-                        'u'        => 0,
-                        'd'        => 0,
-                        'enable'   => 0,
-                        'ban_time' => 0
+                        'u'               => 0,
+                        'd'               => 0,
+                        'transfer_enable' => 0,
+                        'enable'          => 0,
+                        'ban_time'        => 0
                     ]);
 
-                    $this->addUserBanLog($user->id, 0, '【封禁代理】-账号已过期');
+                    $this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
                 }
             }
         }
@@ -168,10 +170,10 @@ class AutoJob extends Command
         }
     }
 
-    // 自动移除被封禁账号的标签
+    // 自动移除被封禁代理的账号的标签（临时封禁不移除）
     private function removeUserLabels()
     {
-        $userList = User::query()->where('enable', 0)->get();
+        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 UserLabel::query()->where('user_id', $user->id)->delete();
@@ -183,18 +185,18 @@ class AutoJob extends Command
     private function unblockUsers()
     {
         // 解封被临时封禁的账号
-        $userList = User::query()->where('status', '>=', 0)->where('ban_time', '>', 0)->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', '>', 0)->get();
         foreach ($userList as $user) {
             if ($user->ban_time < time()) {
                 User::query()->where('id', $user->id)->update(['enable' => 1, 'ban_time' => 0]);
 
                 // 写入操作日志
-                $this->addUserBanLog($user->id, 0, '【自动解封】-封禁到期');
+                $this->addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期');
             }
         }
 
         // 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）
-        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', 0)->whereRaw("u + d < transfer_enable")->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', 0)->where('expire_time', '>', date('Y-m-d'))->whereRaw("u + d < transfer_enable")->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 User::query()->where('id', $user->id)->update(['enable' => 1]);

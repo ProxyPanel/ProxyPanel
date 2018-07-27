@@ -30,7 +30,9 @@ class AutoCheckNodeStatus extends Command
         $jobStartTime = microtime(true);
 
         // 监测节点状态
-        $this->checkNodeStatus();
+        if (self::$config['is_tcp_check']) {
+            $this->checkNodeStatus();
+        }
 
         $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
@@ -48,30 +50,32 @@ class AutoCheckNodeStatus extends Command
             // TCP检测
             $tcpCheck = $this->tcpCheck($node->ip);
             if (false !== $tcpCheck && $tcpCheck) {
-                $content = '节点无异常';
                 if ($tcpCheck === 1) {
-                    $content = "节点**{$node->name}【{$node->ip}】**异常：**服务器宕机**";
+                    $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**服务器宕机**", $node->name, $node->server);
                 } else if ($tcpCheck === 2) {
-                    $content = "节点**{$node->name}【{$node->ip}】**异常：**海外不通**";
+                    $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**海外不通**", $node->name, $node->server);
                 } else if ($tcpCheck === 3) {
-                    $content = "节点**{$node->name}【{$node->ip}】**异常：**TCP阻断**";
+                    // 可能是阻断时再检测一次，因为我捐给check-host的服务器性能不太好，有时候check-host连不上，尤其是晚高峰
+                    $tcpCheckByNeed = $this->tcpCheckByNeed($node->ip);
+                    if ($tcpCheckByNeed !== false && $tcpCheckByNeed === 0) {
+                        $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**TCP阻断**", $node->name, $node->server);
+                    }
                 }
-
-                // 通知管理员
-                $this->notifyMaster($title, $content, $node->name, $node->server);
             }
 
             // 10分钟内无节点负载信息且TCP检测认为不是宕机则认为是SSR(R)后端炸了
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             if ($tcpCheck !== 1 && (empty($node_info) || empty($node_info->load))) {
-                // 通知管理员
                 $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**心跳异常**", $node->name, $node->server);
             }
+
+            // 天若有情天亦老，我为长者续一秒
+            sleep(1);
         }
     }
 
     // 获取check-host的节点列表
-    private function getCheckHostServers()
+    private function getServers()
     {
         $cacheKey = 'check_host_servers';
         if (Cache::has($cacheKey)) {
@@ -94,39 +98,34 @@ class AutoCheckNodeStatus extends Command
     }
 
     // 随机获取一个check-host的海外检测节点
-    private function getRandomServer()
+    private function getOverseasNode()
     {
-        $servers = $this->getCheckHostServers();
+        $servers = $this->getServers();
         if (!$servers) {
-            return 'us1.node.check-host.net'; // 没有数据时返回美国节点1，防止异常
+            return 'us1.node.check-host.net'; // 没有数据时返回us1节点，防止异常
         }
 
-        if ($servers) {
-            //$servers = array_except($servers, 'cn1.node.check-host.net');
-            //$randServer = array_rand($servers);
-
-            $offset = array_search('cn1.node.check-host.net', $servers);
-            array_slice($servers, $offset, 1); // 剔除值
-
-            return array_rand($servers); // 取出一个随机值
+        $offset = array_rand($servers);
+        $server = $servers[$offset];
+        if ($server == 'cn1.node.check-host.net') { // 排除cn1节点
+            return $this->getOverseasNode();
         }
+
+        return $server;
     }
 
     // TCP检测
     private function tcpCheck($ip)
     {
         try {
-            $overseasNode = $this->getRandomServer();
+            $overseasNode = $this->getOverseasNode();
             $result = $this->curlRequest("https://check-host.net/check-tcp?host={$ip}:22&node=cn1.node.check-host.net&node=" . $overseasNode);
             $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
             if ($result['ok'] != 1) {
-                throw new \Exception("节点探测失败");
+                throw new \Exception("节点探测接口请求失败");
             }
 
-            // 天若有情天亦老，我为长者续一秒
-            sleep(1);
-
-            // 拿到结果
+            // 获得检测结果
             $result = $this->curlRequest("https://check-host.net/check-result/" . $result['request_id']);
             $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
             if (!$result['cn1.node.check-host.net'] && !$result[$overseasNode]) {
@@ -145,6 +144,19 @@ class AutoCheckNodeStatus extends Command
         }
     }
 
+    // 用ipcheck.need.sh的大陆节点进行TCP检测
+    private function tcpCheckByNeed($ip)
+    {
+        $result = $this->curlRequest("https://ipcheck.need.sh/api.php?location=cn&ip={$ip}&type=tcp");
+        $result = json_decode($result, JSON_OBJECT_AS_ARRAY);
+        if (!$result || $result['result'] == 'success') {
+            \Log::info("注意：ipcheck.need.sh 的TCP阻断检测接口挂了");
+
+            return false;
+        }
+
+        return $result['alive'] ? 1 : 0;
+    }
 
     /**
      * 通知管理员
@@ -248,7 +260,8 @@ class AutoCheckNodeStatus extends Command
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
+            'Accept: application/json', // 请求报头
+            'Content-Type: application/json', // 实体报头
             'Content-Length: ' . strlen($data)
         ]);
 
