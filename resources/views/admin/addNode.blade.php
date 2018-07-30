@@ -20,7 +20,7 @@
                                 <div class="form-body">
                                     <div class="alert alert-danger alert-dismissable">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点后端部署SSR(R)时<code>usermysql.json</code>中的<code>node_id</code>的值
+                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点后端部署SSR(R)时<code>usermysql.json</code>中的<code>node_id</code>的值；更改服务器的SSH端口<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A6%81%E6%AD%A2PING%E3%80%81%E6%94%B9SSH%E7%AB%AF%E5%8F%A3%E5%8F%B7" target="_blank">教程</a>；
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -42,6 +42,13 @@
                                                         <label for="server" class="col-md-3 control-label"> 绑定域名 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="server" id="server" placeholder="服务器域名地址，填则优先取域名地址">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="ssh_port" class="col-md-3 control-label"> SSH端口 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="ssh_port" value="22" id="ssh_port" placeholder="服务器SSH端口" required>
+                                                            <span class="help-block">请务必正确填写此值，否则TCP阻断检测可能报异常</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -354,6 +361,7 @@
             var traffic = $('#traffic').val();
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
+            var ssh_port = $('#ssh_port').val();
             var compatible = $('#compatible').val();
             var single = $('#single').val();
             var single_force = $('#single_force').val();
@@ -369,7 +377,7 @@
                 type: "POST",
                 url: "{{url('admin/addNode')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, ssh_port:ssh_port, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

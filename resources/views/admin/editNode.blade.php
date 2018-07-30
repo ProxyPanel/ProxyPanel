@@ -44,6 +44,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
+                                                        <label for="ssh_port" class="col-md-3 control-label"> SSH端口 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
+                                                            <span class="help-block">请务必正确填写此值，否则TCP阻断检测可能报异常</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="ip" class="col-md-3 control-label"> IPV4地址 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="ip" value="{{$node->ip}}" id="ip" placeholder="服务器IPV4地址" required>
@@ -355,6 +362,7 @@
             var traffic = $('#traffic').val();
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
+            var ssh_port = $('#ssh_port').val();
             var compatible = $('#compatible').val();
             var single = $('#single').val();
             var single_force = $('#single_force').val();
@@ -370,7 +378,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, ssh_port:ssh_port, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

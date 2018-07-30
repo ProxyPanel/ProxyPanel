@@ -470,6 +470,10 @@ class AdminController extends Controller
     public function addNode(Request $request)
     {
         if ($request->isMethod('POST')) {
+            if ($request->get('ssh_port') <= 0 || $request->get('ssh_port') >= 65535) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：SSH端口不合法']);
+            }
+
             if (false === filter_var($request->get('ip'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv4地址不合法']);
             }
@@ -494,7 +498,7 @@ class AdminController extends Controller
             try {
                 $ssNode = new SsNode();
                 $ssNode->name = $request->get('name');
-                $ssNode->group_id = $request->get('group_id', 0);
+                $ssNode->group_id = intval($request->get('group_id', 0));
                 $ssNode->country_code = $request->get('country_code', 'un');
                 $ssNode->server = $request->get('server', '');
                 $ssNode->ip = $request->get('ip');
@@ -509,17 +513,18 @@ class AdminController extends Controller
                 $ssNode->bandwidth = $request->get('bandwidth', 100);
                 $ssNode->traffic = $request->get('traffic', 1000);
                 $ssNode->monitor_url = $request->get('monitor_url', '');
-                $ssNode->is_subscribe = $request->get('is_subscribe', 1);
-                $ssNode->compatible = $request->get('compatible', 0);
-                $ssNode->single = $request->get('single', 0);
+                $ssNode->is_subscribe = intval($request->get('is_subscribe', 1));
+                $ssNode->ssh_port = intval($request->get('ssh_port', 22));
+                $ssNode->compatible = intval($request->get('compatible', 0));
+                $ssNode->single = intval($request->get('single', 0));
                 $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
                 $ssNode->single_port = $request->get('single') ? $request->get('single_port') : '';
                 $ssNode->single_passwd = $request->get('single') ? $request->get('single_passwd') : '';
                 $ssNode->single_method = $request->get('single') ? $request->get('single_method') : '';
                 $ssNode->single_protocol = $request->get('single') ? $request->get('single_protocol') : '';
                 $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
-                $ssNode->sort = $request->get('sort', 0);
-                $ssNode->status = $request->get('status', 1);
+                $ssNode->sort = intval($request->get('sort', 0));
+                $ssNode->status = intval($request->get('status', 1));
                 $ssNode->save();
 
                 // 建立分组关联
@@ -569,12 +574,16 @@ class AdminController extends Controller
         $id = $request->get('id');
 
         if ($request->method() == 'POST') {
+            if ($request->get('ssh_port') <= 0 || $request->get('ssh_port') >= 65535) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：SSH端口不合法']);
+            }
+
             if (false === filter_var($request->get('ip'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv4地址不合法']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：IPv4地址不合法']);
             }
 
             if ($request->get('ipv6') && false === filter_var($request->get('ipv6'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：IPv6地址不合法']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：IPv6地址不合法']);
             }
 
             if ($request->get('server')) {
@@ -591,7 +600,7 @@ class AdminController extends Controller
             try {
                 $data = [
                     'name'            => $request->get('name'),
-                    'group_id'        => $request->get('group_id', 0),
+                    'group_id'        => intval($request->get('group_id', 0)),
                     'country_code'    => $request->get('country_code', 'un'),
                     'server'          => $request->get('server', ''),
                     'ip'              => $request->get('ip'),
@@ -606,17 +615,18 @@ class AdminController extends Controller
                     'bandwidth'       => $request->get('bandwidth'),
                     'traffic'         => $request->get('traffic'),
                     'monitor_url'     => $request->get('monitor_url'),
-                    'is_subscribe'    => $request->get('is_subscribe', 1),
-                    'compatible'      => $request->get('compatible'),
-                    'single'          => $request->get('single', 0),
+                    'is_subscribe'    => intval($request->get('is_subscribe', 1)),
+                    'ssh_port'        => intval($request->get('ssh_port', 22)),
+                    'compatible'      => intval($request->get('compatible')),
+                    'single'          => intval($request->get('single', 0)),
                     'single_force'    => $request->get('single') ? $request->get('single_force') : 0,
                     'single_port'     => $request->get('single') ? $request->get('single_port') : '',
                     'single_passwd'   => $request->get('single') ? $request->get('single_passwd') : '',
                     'single_method'   => $request->get('single') ? $request->get('single_method') : '',
                     'single_protocol' => $request->get('single') ? $request->get('single_protocol') : '',
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
-                    'sort'            => $request->get('sort', 0),
-                    'status'          => $request->get('status')
+                    'sort'            => intval($request->get('sort', 0)),
+                    'status'          => intval($request->get('status'))
                 ];
 
                 SsNode::query()->where('id', $id)->update($data);

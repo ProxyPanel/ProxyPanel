@@ -52,18 +52,19 @@ class UserExpireAutoWarning extends Command
         }
 
         $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
         Log::info('执行定时任务【' . $this->description . '】，耗时' . $jobUsedTime . '秒');
     }
 
     /**
      * 写入邮件发送日志
-     * @param int $user_id 用户ID
-     * @param string $title 标题
+     *
+     * @param int    $user_id 用户ID
+     * @param string $title   标题
      * @param string $content 内容
-     * @param int $status 投递状态
-     * @param string $error 投递失败时记录的异常信息
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
      */
     private function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
     {
@@ -78,7 +79,8 @@ class UserExpireAutoWarning extends Command
     }
 
     // 系统配置
-    private function systemConfig() {
+    private function systemConfig()
+    {
         $config = Config::query()->get();
         $data = [];
         foreach ($config as $vo) {

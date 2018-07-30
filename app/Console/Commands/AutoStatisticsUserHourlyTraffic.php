@@ -36,7 +36,7 @@ class AutoStatisticsUserHourlyTraffic extends Command
         }
 
         $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
         Log::info('执行定时任务【' . $this->description . '】，耗时' . $jobUsedTime . '秒');
     }

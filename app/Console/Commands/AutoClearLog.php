@@ -49,13 +49,14 @@ class AutoClearLog extends Command
         }
 
         $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime) , 4);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
         Log::info('执行定时任务【' . $this->description . '】，耗时' . $jobUsedTime . '秒');
     }
 
     // 系统配置
-    private function systemConfig() {
+    private function systemConfig()
+    {
         $config = Config::query()->get();
         $data = [];
         foreach ($config as $vo) {

@@ -77,8 +77,8 @@ git clone https://github.com/ssrpanel/SSRPanel.git
 cd SSRPanel/
 cp .env.example .env
 （然后 vi .env 修改数据库的连接信息）
-php artisan key:generate
 php composer.phar install
+php artisan key:generate
 chown -R www:www storage/
 chmod -R 777 storage/
 ````
