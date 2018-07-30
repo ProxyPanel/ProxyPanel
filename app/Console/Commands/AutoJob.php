@@ -180,7 +180,7 @@ class AutoJob extends Command
                 User::query()->where('id', $user->id)->update([
                     'u'               => 0,
                     'd'               => 0,
-                    'transfer_enable' => 0,
+                    'transfer_enable' => 0
                 ]);
             }
         }
