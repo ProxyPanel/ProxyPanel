@@ -964,8 +964,12 @@ class UserController extends Controller
                     // 取出现有的标签
                     $userLabels = UserLabel::query()->where('user_id', $user->id)->pluck('label_id')->toArray();
                     $goodsLabels = GoodsLabel::query()->where('goods_id', $goods_id)->pluck('label_id')->toArray();
+                    
+                    // 标签去重
                     $newUserLabels = array_merge($userLabels, $goodsLabels);
-
+                    $newUserLabels = array_unique($newUserLabels);
+                    $newUserLabels = array_values($newUserLabels);
+                    
                     // 删除用户所有标签
                     UserLabel::query()->where('user_id', $user->id)->delete();
 
