@@ -135,10 +135,20 @@ class YzyController extends Controller
 
                     // 写入用户标签
                     if ($goods->label) {
+                        // 用户默认标签
+                        $defaultLabels = [];
+                        if ($this->systemConfig['initial_labels_for_user']) {
+                            $defaultLabels = explode(',', $this->systemConfig['initial_labels_for_user']);
+                        }
+
                         // 取出现有的标签
                         $userLabels = UserLabel::query()->where('user_id', $order->user_id)->pluck('label_id')->toArray();
                         $goodsLabels = GoodsLabel::query()->where('goods_id', $order->goods_id)->pluck('label_id')->toArray();
-                        $newUserLabels = array_merge($userLabels, $goodsLabels);
+
+                        // 标签去重
+                        $newUserLabels = array_merge($userLabels, $goodsLabels, $defaultLabels);
+                        $newUserLabels = array_unique($newUserLabels);
+                        $newUserLabels = array_values($newUserLabels);
 
                         // 删除用户所有标签
                         UserLabel::query()->where('user_id', $order->user_id)->delete();
