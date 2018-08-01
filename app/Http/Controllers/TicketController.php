@@ -36,6 +36,7 @@ class TicketController extends Controller
 
         if ($request->method() == 'POST') {
             $content = clean($request->get('content'));
+            $content = str_replace("eval", "", str_replace("atob", "", $content));
 
             $obj = new TicketReply();
             $obj->ticket_id = $id;

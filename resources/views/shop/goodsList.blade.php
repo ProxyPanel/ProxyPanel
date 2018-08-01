@@ -40,6 +40,7 @@
                                     <th> 内含流量 </th>
                                     <th> 售价 </th>
                                     <!-- <th> 所需积分 </th> -->
+                                    <th> 排序 </th>
                                     <th> 状态 </th>
                                     <th style="text-align: center;"> 操作 </th>
                                 </tr>
@@ -59,6 +60,7 @@
                                             <td> {{$goods->traffic}} </td>
                                             <td> {{$goods->price}}元 </td>
                                             <!-- <td> {{$goods->score}} </td> -->
+                                            <td> {{$goods->sort}} </td>
                                             <td>
                                                 @if($goods->status)
                                                     <span class="label label-success">上架</span>

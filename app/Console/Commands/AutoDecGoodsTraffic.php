@@ -25,7 +25,7 @@ class AutoDecGoodsTraffic extends Command
     {
         $jobStartTime = microtime(true);
 
-        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '>=', date('Y-m-d H:i:s'))->get();
+        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
         if (!$orderList->isEmpty()) {
             $config = $this->systemConfig();
 

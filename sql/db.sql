@@ -452,6 +452,7 @@ CREATE TABLE `goods` (
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品描述',
   `days` int(11) NOT NULL DEFAULT '30' COMMENT '有效期',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-否、1-是',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',

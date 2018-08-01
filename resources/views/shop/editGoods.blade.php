@@ -141,6 +141,13 @@
                                         <span class="help-block"> 到期后会自动从总流量扣减对应的流量 </span>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="sort" class="col-md-3 control-label">排序</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="sort" value="1" id="sort" placeholder="">
+                                        <span class="help-block"> 值越大排越前 </span>
+                                    </div>
+                                </div>
                                 <div class="form-group last">
                                     <label class="control-label col-md-3">状态</label>
                                     <div class="col-md-6">
@@ -184,8 +191,10 @@
     <script type="text/javascript">
         // 用户标签选择器
         $('#labels').select2({
+            theme: 'bootstrap',
             placeholder: '设置后当用户购买此商品则可见相同标签的节点',
-            allowClear: true
+            allowClear: true,
+            width:'100%'
         });
 
         // 有效期

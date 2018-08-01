@@ -319,6 +319,7 @@ class AdminController extends Controller
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = clean($request->get('remark'));
+            $remark = str_replace("eval", "", str_replace("atob", "", $remark));
             $level = $request->get('level');
             $is_admin = $request->get('is_admin');
 
