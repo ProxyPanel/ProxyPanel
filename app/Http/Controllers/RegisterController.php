@@ -233,6 +233,7 @@ class RegisterController extends Controller
 
             $view['is_captcha'] = $this->systemConfig['is_captcha'];
             $view['is_register'] = $this->systemConfig['is_register'];
+            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
             $view['is_invite_register'] = $this->systemConfig['is_invite_register'];
             $view['is_free_code'] = $this->systemConfig['is_free_code'];
             $view['website_analytics'] = $this->systemConfig['website_analytics'];

@@ -112,6 +112,7 @@ class YzyController extends Controller
                             ->where('user_id', $order->user_id)
                             ->where('oid', '<>', $order->oid)
                             ->where('is_expire', 0)
+                            ->where('status', 2)
                             ->get();
 
                         foreach ($existOrderList as $vo) {
