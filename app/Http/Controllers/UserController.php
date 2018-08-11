@@ -729,7 +729,7 @@ class UserController extends Controller
 
             return Redirect::back();
         } else {
-            $view['website_logo'] = $this->systemConfig['website_logo'];
+            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
             $view['website_analytics'] = $this->systemConfig['website_analytics'];
             $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
             $view['is_reset_password'] = $this->systemConfig['is_reset_password'];
@@ -810,7 +810,7 @@ class UserController extends Controller
 
                 return Response::view('user/reset', $view);
             }
-
+            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
             $view['verify'] = $verify;
 
             return Response::view('user/reset', $view);
@@ -934,7 +934,7 @@ class UserController extends Controller
                 if ($goods->type === 2) {
                     $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) {
                         $q->where('type', 2);
-                    })->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->get();
+                    })->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->where('status', 2)->get();
                     foreach ($existOrderList as $vo) {
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
                         User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
