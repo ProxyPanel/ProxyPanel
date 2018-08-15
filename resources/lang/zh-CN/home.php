@@ -2,7 +2,7 @@
 
 return [
     'panel'                           => '控制面板',
-    'subscribe_address'               => '我的订阅地址',
+    'subscribe_address'               => '订阅服务',
     'copy_subscribe_address'          => '复制',
     'exchange_subscribe'              => '更换',
     'subscribe_warning'               => '警告：该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量使用情况异常触发自动封号机制。',
@@ -11,7 +11,7 @@ return [
     'subscribe_baned'                 => '您的订阅功能被禁用，请联系管理员恢复',
 
     // 菜单
-    'home'                            => '我的节点',
+    'home'                            => '个人中心',
     'services'                        => '购买服务',
     'traffic_log'                     => '流量记录',
     'invite_code'                     => '邀请码',
@@ -107,7 +107,7 @@ return [
     'invite_code_make'                => '生成邀请码',
     'invite_code_button'              => '生成',
     'invite_code_tips1'               => '可生成',
-    'invite_code_tips2'               => '个邀请码',
+    'invite_code_tips2'               => '枚邀请码，7日内有效',
     'invite_code_my_codes'            => '我的邀请码',
     'invite_code_table_name'          => '邀请码',
     'invite_code_table_date'          => '有效期',

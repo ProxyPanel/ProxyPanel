@@ -28,25 +28,16 @@
 ## 演示&交流
 ````
 官方站：http://www.ssrpanel.com
-演示站：http://demo.ssrpanel.com （用户名：admin 密码：123456，请勿修改密码）
-telegram订阅频道：https://t.me/ssrpanel （获取最新资讯）
-telegram千人讨论群已解散，有问题提issues，或者进小群讨论（打赏的时候记得留言你的微信号，不要打“微信”俩字，会被屏蔽）
-199是设定的门槛，因为进群后如果捣乱就踢，这样的成本会拦住较多无聊的捣乱者、伸手党
-特别讨厌伸手党，一个开源项目，如果你用的不爽可以不用，识趣点别哔哔，如果你想商业化，先掂量一下你愿意掏多少钱买程序？
+演示站：http://demo.ssrpanel.com
+telegram订阅频道：https://t.me/ssrpanel
 ````
 
 ## 捐赠
-**ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
+**以太坊钱包** : 0x968f797f194fcec05ea571723199748b58de38ba
 
 ![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpg?raw=true)
 
 [VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
-````
-部署面板必须得用到VPS
-强烈推荐使用1G以上内存的KVM架构的VPS
-做节点则只需要512M+内存的KVM即可，但是还是推荐使用1G+内存的KVM
-强烈不建议使用OVZ（OpenVZ），一无法加速二容易崩溃，512M以下内存的容易经常性宕机（低内存KVM也容易宕机）
-````
 
 ## 安装
 #### 环境要求
@@ -117,8 +108,8 @@ service php-fpm restart
 crontab加入如下命令（请自行修改php、ssrpanel路径）：
 * * * * * php /home/wwwroot/SSRPanel/artisan schedule:run >> /dev/null 2>&1
 
-注意运行权限，必须跟ssrpanel项目权限一致，否则出现无权限报错：
-例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的，宝塔自己搞定：
+注意运行权限，必须跟ssrpanel项目权限一致，否则出现各种莫名其妙的错误
+例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
 crontab -e -u www
 ````
 
@@ -128,7 +119,7 @@ crontab -e -u www
 编辑 .env 文件，修改 MAIL_ 开头的配置
 ````
 
-###### Mailgun
+###### 使用Mailgun发邮件
 ````
 编辑 .env 文件
 将 MAIL_DRIVER 值改为 mailgun
@@ -154,20 +145,20 @@ crontab -e -u www
 ## 英文版
 ````
 修改 .env 的 APP_LOCALE 值为 en
-欢迎提交其他语言的语言包，语言包在：resources/lang下
+语言包位于 resources/lang 下，可自行更改
 ````
 
 ## 日志分析（仅支持单机单节点）
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
-cd /home/wwwroot/ssrpanel/storage/app
+cd /home/wwwroot/SSRPanel/storage/app
 ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
 ## SSR(R)部署
-###### 手动部署(基于SSRR)
+###### 手动部署(基于SSRR 3.2.2，推荐)
 ````
 git clone https://github.com/ssrpanel/shadowsocksr.git
 cd shadowsocksr
@@ -192,7 +183,7 @@ git pull
 如果每次更新都会出现数据库文件被覆盖，请先执行一次：
 chmod a+x fix_git.sh && sh fix_git.sh
 
-如果本地自行改了文件，想用回原版代码，请先备份好 config/database.php，然后执行以下命令：
+如果本地自行改了文件，想用回原版代码，请直接执行以下命令：
 chmod a+x update.sh && sh update.sh
 
 如果更新完代码各种错误，请先执行一遍 php composer.phar install
@@ -203,7 +194,7 @@ chmod a+x update.sh && sh update.sh
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
 ````
 
-## 单端口多用户（推荐）
+## 单端口多用户
 ````
 编辑节点的 user-config.json 文件：
 vim user-config.json
@@ -228,7 +219,7 @@ vim user-config.json
     }
 },
 
-保存，然后重启SSR服务。
+保存，然后重启SSR(R)服务。
 客户端设置：
 
 远程端口：80
@@ -250,7 +241,7 @@ vim user-config.json
 经实测，节点后端使用auth_sha1_v4_compatible，可以兼容auth_chain_a
 注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
 警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
-提示：配置单端口最好先看下这个WIKI，防止才踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
+提示：配置单端口最好先看下这个WIKI，防止踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
 
 ````
 ## 代码更新
@@ -280,6 +271,11 @@ ntpdate cn.pool.ntp.org
 1.数据库表字段请务必使用蟒蛇法，严禁使用驼峰法
 2.写完代码最好格式化，该空格一定要空格，该注释一定要注释，便于他人阅读代码
 3.本项目中ajax返回格式都是 {"status":"fail 或者 success", "data":[数据], "message":"文本消息提示语"}
+````
+
+## 收费版
+````
+收费版代码混淆，不开源，具体请知识星球上私信我
 ````
 
 ## 致敬

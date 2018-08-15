@@ -2,7 +2,7 @@
 
 return [
     'panel'                           => '控制台',
-    'subscribe_address'               => '我的訂閱地址',
+    'subscribe_address'               => '訂閱服務',
     'copy_subscribe_address'          => '複製',
     'exchange_subscribe'              => '更換',
     'subscribe_warning'               => '注意：該訂閱地址僅限個人使用，請勿傳播該地址，這會導致您的帳號流量使用情况异常。',
@@ -107,7 +107,7 @@ return [
     'invite_code_make'                => '生成邀請碼',
     'invite_code_button'              => '生成',
     'invite_code_tips1'               => '可生成',
-    'invite_code_tips2'               => '个邀請碼',
+    'invite_code_tips2'               => '枚邀請碼，7日內有效',
     'invite_code_my_codes'            => '我的邀請碼',
     'invite_code_table_name'          => '邀請碼',
     'invite_code_table_date'          => '有效期',

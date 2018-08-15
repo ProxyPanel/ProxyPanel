@@ -30,6 +30,7 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 分组名称 </th>
+                                    <th> 分组级别 </th>
                                     <th style="text-align: center;"> 操作 </th>
                                 </tr>
                                 </thead>
@@ -43,6 +44,7 @@
                                             <tr class="odd gradeX">
                                                 <td> {{$group->id}} </td>
                                                 <td> {{$group->name}} </td>
+                                                <td> {{$group->level}} </td>
                                                 <td style="text-align: center;">
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">
                                                         <i class="fa fa-pencil"></i>

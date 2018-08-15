@@ -29,8 +29,8 @@
                                 <thead>
                                 <tr>
                                     <th> # </th>
-                                    <th> 标题 </th>
                                     <th> 类型 </th>
+                                    <th> 标题 </th>
                                     <th> 排序 </th>
                                     <th> 发布日期 </th>
                                     <th> 操作 </th>
@@ -45,8 +45,8 @@
                                     @foreach($articleList as $article)
                                         <tr class="odd gradeX">
                                             <td> {{$article->id}} </td>
-                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{str_limit($article->title, 80)}} </a> </td>
                                             <td> {{$article->type == '1' ? '文章' : '公告'}} </td>
+                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{str_limit($article->title, 80)}} </a> </td>
                                             <td> {{$article->sort}} </td>
                                             <td> {{$article->created_at}} </td>
                                             <td>

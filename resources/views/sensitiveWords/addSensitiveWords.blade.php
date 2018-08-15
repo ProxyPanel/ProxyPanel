@@ -14,7 +14,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-dark sbold uppercase">添加节点分组</span>
+                            <span class="caption-subject font-dark sbold uppercase">添加敏感词</span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -29,23 +29,10 @@
                         <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">分组名称</label>
+                                    <label class="control-label col-md-3">敏感词</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" name="name" value="" id="name" placeholder="" required>
+                                        <input type="text" class="form-control" name="words" value="" id="words" placeholder="" required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">分组级别</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" name="level" id="level" required>
-                                            @if(!$level_list->isEmpty())
-                                                @foreach($level_list as $level)
-                                                    <option value="{{$level->level}}">{{$level->level_name}}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                        <span class="help-block">暂无用</span>
                                     </div>
                                 </div>
                             </div>
@@ -63,6 +50,24 @@
                 <!-- END PORTLET-->
             </div>
         </div>
+        <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"> {{trans('home.ticket_table_new_button')}} </h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" name="title" id="title" placeholder="{{trans('home.ticket_table_title')}}" class="form-control margin-bottom-20">
+                        <textarea name="content" id="content" placeholder="{{trans('home.ticket_table_new_desc')}}" class="form-control margin-bottom-20" rows="4"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline"> {{trans('home.ticket_table_new_cancel')}} </button>
+                        <button type="button" data-dismiss="modal" class="btn green btn-outline" onclick="addTicket()"> {{trans('home.ticket_table_new_yes')}} </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->
@@ -74,19 +79,18 @@
         // ajax同步提交
         function do_submit() {
             var _token = '{{csrf_token()}}';
-            var name = $('#name').val();
-            var level = $("#level option:selected").val();
+            var words = $('#words').val();
 
             $.ajax({
                 type: "POST",
-                url: "{{url('admin/addGroup')}}",
+                url: "{{url('admin/addSensitiveWords')}}",
                 async: false,
-                data: {_token:_token, name:name, level:level},
+                data: {_token:_token, words:words},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('admin/groupList')}}';
+                            window.location.href = '{{url('admin/sensitiveWordsList')}}';
                         }
                     });
                 }

@@ -95,13 +95,14 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get("marketing/emailList", "MarketingController@emailList"); // 邮件消息列表
     Route::get("marketing/pushList", "MarketingController@pushList"); // 推送消息列表
     Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
+    Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
+    Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
 });
 
 Route::group(['middleware' => ['forbidden', 'user', 'affiliate']], function () {
     Route::any('/', 'UserController@index'); // 用户首页
     Route::any('user', 'UserController@index'); // 用户首页
     Route::any('user/article', 'UserController@article'); // 文章详情
-    Route::get('user/subscribe', 'UserController@subscribe'); // 节点订阅
     Route::post('user/exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
     Route::get('user/goodsList', 'UserController@goodsList'); // 商品列表
     Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志

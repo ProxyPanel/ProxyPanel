@@ -42,7 +42,7 @@
                                         </div>
                                         <div class="timeline-body-head-actions"></div>
                                     </div>
-                                    <div class="timeline-body-content">
+                                    <div class="timeline-body-content" style="word-wrap: break-word;">
                                         <span class="font-grey-cascade"> {!! $ticket->content !!} </span>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                                 </div>
                                                 <div class="timeline-body-head-actions"></div>
                                             </div>
-                                            <div class="timeline-body-content">
+                                            <div class="timeline-body-content" style="word-wrap: break-word;">
                                                 <span class="font-grey-cascade"> {!! $reply->content !!} </span>
                                             </div>
                                         </div>
@@ -85,7 +85,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <script id="editor" type="text/plain" style="padding-bottom:10px;"></script>
-                                    <button class="btn blue" type="button" onclick="replyTicket()"> {{trans('home.ticket_reply_button')}} </button>
+                                    <button type="button" class="btn blue" onclick="replyTicket()"> {{trans('home.ticket_reply_button')}} </button>
                                 </div>
                             </div>
                         @endif

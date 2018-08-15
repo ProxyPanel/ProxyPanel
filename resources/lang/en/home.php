@@ -2,7 +2,7 @@
 
 return [
     'panel'                           => 'Control Panel',
-    'subscribe_address'               => 'My Subscribe Address',
+    'subscribe_address'               => 'Subscription Service',
     'copy_subscribe_address'          => 'Copy Address',
     'exchange_subscribe'              => 'Exchange Address',
     'subscribe_warning'               => 'Warning: This subscription address is for personal use only. Do not propagate the address.',
@@ -107,7 +107,7 @@ return [
     'invite_code_make'                => 'Generate Invite Code',
     'invite_code_button'              => 'Create',
     'invite_code_tips1'               => 'You can generate',
-    'invite_code_tips2'               => 'invite codes.',
+    'invite_code_tips2'               => 'invite codes, effective within 7 days',
     'invite_code_my_codes'            => 'My Invite Codes',
     'invite_code_table_name'          => 'Codes',
     'invite_code_table_date'          => 'Overdue Date',

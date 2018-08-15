@@ -25,7 +25,7 @@
                                 <a href="#tab3" data-toggle="tab"> 混淆 </a>
                             </li>
                             <li @if(Request::get('tab') == '4') class="active" @endif>
-                                <a href="#tab4" data-toggle="tab"> 账号等级 </a>
+                                <a href="#tab4" data-toggle="tab"> 等级 </a>
                             </li>
                             <li @if(Request::get('tab') == '5') class="active" @endif>
                                 <a href="#tab5" data-toggle="tab"> 国家地区 </a>

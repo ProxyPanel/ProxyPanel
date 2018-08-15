@@ -41,7 +41,7 @@
                                             <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_7" data-toggle="tab"> 有赞云设置 </a>
+                                            <a href="#tab_7" data-toggle="tab"> 有赞云支付设置 </a>
                                         </li>
                                         <li>
                                             <a href="#tab_8" data-toggle="tab"> LOGO、客服、统计设置 </a>

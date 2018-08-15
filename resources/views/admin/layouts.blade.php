@@ -236,7 +236,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList', 'payment/callbackList']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/subscribeLog', 'emailLog/logList', 'payment/callbackList', 'sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="fa fa-wrench"></i>
                         <span class="title">工具箱</span>
@@ -289,6 +289,12 @@
                             <a href="{{url('payment/callbackList')}}" class="nav-link">
                                 <i class="fa fa-th"></i>
                                 <span class="title">有赞回调日志</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
+                            <a href="{{url('sensitiveWords/list')}}" class="nav-link">
+                                <i class="fa fa-heartbeat"></i>
+                                <span class="title">敏感词管理</span>
                             </a>
                         </li>
                     </ul>

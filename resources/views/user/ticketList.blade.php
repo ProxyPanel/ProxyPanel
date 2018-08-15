@@ -96,11 +96,6 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 回复工单
-        function reply(id) {
-            window.location.href =  + id;
-        }
-
         // 发起工单
         function addTicket() {
             var title = $("#title").val();

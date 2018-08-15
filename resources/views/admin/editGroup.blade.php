@@ -11,10 +11,10 @@
         <div class="row">
             <div class="col-md-12">
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">编辑节点分组</span>
+                            <span class="caption-subject font-dark sbold uppercase">添加节点分组</span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -26,18 +26,18 @@
                             </div>
                         @endif
                         <!-- BEGIN FORM-->
-                        <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
+                        <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">名称</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">分组名称</label>
+                                    <div class="col-md-4">
                                         <input type="text" class="form-control" name="name" value="{{$group->name}}" id="name" placeholder="" autofocus required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">级别</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">分组级别</label>
+                                    <div class="col-md-4">
                                         <select class="form-control" name="level" id="level" required>
                                             @if(!$level_list->isEmpty())
                                                 @foreach($level_list as $level)
@@ -51,8 +51,8 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn green"> 提 交</button>
+                                    <div class="col-md-offset-3 col-md-4">
+                                        <button type="submit" class="btn green">提交</button>
                                     </div>
                                 </div>
                             </div>

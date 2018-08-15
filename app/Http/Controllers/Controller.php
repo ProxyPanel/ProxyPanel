@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\CouponLog;
 use App\Http\Models\ReferralLog;
+use App\Http\Models\SensitiveWords;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
@@ -298,6 +299,12 @@ class Controller extends BaseController
         $log->created_at = date('Y-m-d H:i:s');
 
         return $log->save();
+    }
+
+    // 获取敏感词
+    public function sensitiveWords()
+    {
+        return SensitiveWords::query()->get()->pluck('words')->toArray();
     }
 
     // 将Base64图片转换为本地图片并保存

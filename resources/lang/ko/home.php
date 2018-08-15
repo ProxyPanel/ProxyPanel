@@ -2,7 +2,7 @@
 
 return [
     'panel'                           => '제어판',
-    'subscribe_address'               => 'RSS구독주소',
+    'subscribe_address'               => '구독 서비스',
     'copy_subscribe_address'          => '주소복사',
     'exchange_subscribe'              => '주소변경',
     'subscribe_warning'               => '경고: 구독 주소 는 개인적 으로 사용 되 지 말고 이 주소 를 전파 하지 마시오',
@@ -105,7 +105,7 @@ return [
     'invite_code_make'                => '초청코드생성',
     'invite_code_button'              => '생성',
     'invite_code_tips1'               => '생성가능',
-    'invite_code_tips2'               => '개 총청코드',
+    'invite_code_tips2'               => '개 총청코드, 7 일내에 유효하다.',
     'invite_code_my_codes'            => '나의 초청코드',
     'invite_code_table_name'          => '초청코드',
     'invite_code_table_date'          => '유효기간',

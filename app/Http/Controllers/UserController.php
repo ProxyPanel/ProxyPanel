@@ -50,7 +50,7 @@ class UserController extends Controller
 
         $view['info'] = $user->toArray();
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
-        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->paginate(5);
+        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->get();
         $view['wechat_qrcode'] = $this->systemConfig['wechat_qrcode'];
         $view['alipay_qrcode'] = $this->systemConfig['alipay_qrcode'];
         $view['login_add_score'] = $this->systemConfig['login_add_score'];
@@ -64,6 +64,23 @@ class UserController extends Controller
         if (!Session::has('referral_status')) {
             Session::put('referral_status', $this->systemConfig['referral_status']);
         }
+
+        // 如果没有唯一码则生成一个
+        $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
+        if (!$subscribe) {
+            $code = $this->makeSubscribeCode();
+
+            $obj = new UserSubscribe();
+            $obj->user_id = $user['id'];
+            $obj->code = $code;
+            $obj->times = 0;
+            $obj->save();
+        } else {
+            $code = $subscribe->code;
+        }
+
+        $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
+        $view['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
 
         // 节点列表
         $userLabelIds = UserLabel::query()->where('user_id', $user['id'])->pluck('label_id');
@@ -89,8 +106,7 @@ class UserController extends Controller
             $obfs_param = $user->obfs_param ? $user->obfs_param : $node->obfs_param;
             $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
-            $ssr_str = '';
-            $ssr_str .= ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
+            $ssr_str = ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
             $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
@@ -103,9 +119,8 @@ class UserController extends Controller
             $ssr_scheme = 'ssr://' . $ssr_str;
 
             // 生成ss scheme
-            $ss_str = '';
-            $ss_str .= $user->method . ':' . $user->passwd . '@';
-            $ss_str .= $node->server . ':' . $user->port;
+            $ss_str = $user->method . ':' . $user->passwd . '@';
+            $ss_str .= ($node->server ? $node->server : $node->ip) . ':' . $user->port;
             $ss_str = base64url_encode($ss_str) . '#' . 'VPN';
             $ss_scheme = 'ss://' . $ss_str;
 
@@ -117,11 +132,12 @@ class UserController extends Controller
             $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
             $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
             $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
+            $txt .= "路由：绕过局域网及中国大陆地址" . "\r\n\r\n";
             $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
             $txt .= "协议参数：" . ($node->single ? $user->port . ':' . $user->passwd : $user->protocol_param) . "\r\n";
             $txt .= "混淆方式：" . ($node->single ? $node->single_obfs : $user->obfs) . "\r\n";
             $txt .= "混淆参数：" . ($user->obfs_param ? $user->obfs_param : $node->obfs_param) . "\r\n";
-            $txt .= "本地端口：1080\r\n路由：绕过局域网及中国大陆地址";
+            $txt .= "本地端口：1080"."\r\n";
 
             $node->txt = $txt;
             $node->ssr_scheme = $ssr_scheme;
@@ -422,6 +438,8 @@ class UserController extends Controller
 
         if ($request->method() == 'POST') {
             $content = clean($request->get('content'));
+            $content = str_replace("eval", "", str_replace("atob", "", $content));
+            $content = substr($content, 0, 300);
 
             $obj = new TicketReply();
             $obj->ticket_id = $id;
@@ -810,6 +828,7 @@ class UserController extends Controller
 
                 return Response::view('user/reset', $view);
             }
+	    
             $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
             $view['verify'] = $verify;
 
@@ -1113,34 +1132,6 @@ class UserController extends Controller
         $obj->save();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
-    }
-
-    // 节点订阅
-    public function subscribe(Request $request)
-    {
-        $user = Session::get('user');
-
-        // 如果没有唯一码则生成一个
-        $subscribe = UserSubscribe::query()->where('user_id', $user['id'])->first();
-        if (!$subscribe) {
-            $code = $this->makeSubscribeCode();
-
-            $obj = new UserSubscribe();
-            $obj->user_id = $user['id'];
-            $obj->code = $code;
-            $obj->times = 0;
-            $obj->save();
-        } else {
-            $code = $subscribe->code;
-        }
-
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-        $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
-        $view['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
-
-        return Response::view('/user/subscribe', $view);
     }
 
     // 更换订阅地址

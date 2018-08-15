@@ -1,7 +1,12 @@
 @extends('user.layouts')
 
 @section('css')
+    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
+        .fancybox > img {
+            width: 75px;
+            height: 75px;
+        }
         .ticker {
             background-color: #fff;
             margin-bottom: 20px;
@@ -31,46 +36,148 @@
         @endif
         <div class="row">
             <div class="col-md-8">
-                <div class="well" style="background-color: #FFF;">
-                    {{trans('home.ratio_tips')}}
-                    <button class="btn btn-sm blue" onclick="subscribe()"> {{trans('home.subscribe_button')}} </button>
-                </div>
-                <div class="row widget-row">
-                    @if(!$nodeList->isEmpty())
-                        @foreach($nodeList as $node)
-                            <div class="col-md-4">
-                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
-                                    <h4 class="widget-thumb-heading">{{$node->name}}</h4>
-                                    <div class="widget-thumb-wrap">
-                                        <div style="float:left;display: inline-block;padding-right:15px;">
-                                            @if($node->country_code)
-                                                <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
-                                            @else
-                                                <img src="{{asset('/assets/images/country/un.png')}}"/>
-                                            @endif
-                                        </div>
-                                        <div class="widget-thumb-body">
-                                            <span class="widget-thumb-subtitle"><a data-toggle="modal" href="#txt_{{$node->id}}">{{$node->server ? $node->server : $node->ip}}</a></span>
-                                            <span class="widget-thumb-body-stat">
-                                                @if($node->online_status)
-                                                    <a class="btn btn-sm green">正常</a>
-                                                @else
-                                                    <a class="btn btn-sm red">宕机</a>
-                                                @endif
-                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
-                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                            </span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet light">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <span class="caption-subject font-blue bold">{{trans('home.subscribe_address')}}</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="mt-clipboard-container" style="padding-top:0px;">
+                                    <div class="alert alert-danger">
+                                        <p> {{trans('home.subscribe_warning')}} </p>
+                                    </div>
+                                    @if($subscribe_status)
+                                        <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
+                                        <a href="javascript:exchangeSubscribe();" class="btn green">
+                                            {{trans('home.exchange_subscribe')}}
+                                        </a>
+                                        <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
+                                            {{trans('home.copy_subscribe_address')}}
+                                        </a>
+                                    @else
+                                        <h3>{{trans('home.subscribe_baned')}}</h3>
+                                    @endif
+
+                                    <div class="tabbable-line">
+                                        <ul class="nav nav-tabs ">
+                                            <li class="active">
+                                                <a href="#tools1" data-toggle="tab"> <i class="fa fa-apple"></i> Mac </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools2" data-toggle="tab"> <i class="fa fa-windows"></i> Windows </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools3" data-toggle="tab"> <i class="fa fa-linux"></i> Linux </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools5" data-toggle="tab"> <i class="fa fa-apple"></i> iOS </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools4" data-toggle="tab"> <i class="fa fa-android"></i> Android </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content" style="font-size:16px;">
+                                            <div class="tab-pane active" id="tools1">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
+                                                    <li> 点击服务器->手动更新订阅，更新您的服务信息 </li>
+                                                    <li> 更新成功后，请在服务器菜单处选择线路，并点击打开ShadowsocksR </li>
+                                                    <li> 单击小飞机，选择PAC自动模式 </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools2">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->订阅->订阅设置，复制黏贴订阅地址 </li>
+                                                    <li> 点击状态栏小飞机，找到模式，选中PAC </li>
+                                                    <li> 点击状态栏小飞机，找到PAC，选中更新PAC为GFWList </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools3">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
+                                                    <li> 更新订阅设置即可 </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools4">
+                                                <ol>
+                                                    <li> 请从站长处获取App Store美区ID </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools5">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
+                                                    <li> 点击服务器->手动更新订阅，更新您的服务信息 </li>
+                                                    <li> 更新成功后，请在服务器菜单处选择线路，并点击打开ShadowsocksR </li>
+                                                    <li> 单击小飞机，选择PAC自动模式 </li>
+                                                </ol>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="row widget-row">
+                    <div class="col-md-12">
+                        <div class="portlet light bordered">
+                            <div class="portlet-body">
+                                <div class="tab-content">
+                                <div class="tab-pane active">
+                                    <div class="mt-comments">
+                                        @if(!$nodeList->isEmpty())
+                                            @foreach($nodeList as $node)
+                                                <div class="mt-comment">
+                                                    <div class="mt-comment-img" style="width:auto;">
+                                                        @if($node->country_code)
+                                                            <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
+                                                        @else
+                                                            <img src="{{asset('/assets/images/country/un.png')}}"/>
+                                                        @endif
+                                                    </div>
+                                                    <div class="mt-comment-body">
+                                                        <div class="mt-comment-info">
+                                                            <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
+                                                            <span class="mt-comment-date">
+                                                                @if(!$node->online_status)
+                                                                    <span class="badge badge-danger">维护中</span>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                        <div class="mt-comment-text"> {{$node->desc}} </div>
+                                                        <div class="mt-comment-details">
+                                                            <span class="mt-comment-status mt-comment-status-pending">流量结算比率：{{$node->traffic_rate}}</span>
+                                                            <ul class="mt-comment-actions" style="display: block;">
+                                                                <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" style="padding-left: 3px;">
                 @if($is_push_bear && $push_bear_qrcode)
-                <ul class="list-group">
+                <ul class="list-group" style="border-radius: 4px;">
                     <li class="list-group-item">
                         <div style="text-align: center">
                             <span> 微信扫码订阅，获取本站最新资讯 </span>
@@ -246,6 +353,8 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script src="/assets/pages/scripts/components-clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
@@ -347,5 +456,20 @@
         @if($is_push_bear && $push_bear_qrcode)
             $('#subscribe_qrcode').qrcode({render:"canvas", text:"{{$push_bear_qrcode}}", width:170, height:170});
         @endif
+
+        // 更换订阅地址
+        function exchangeSubscribe() {
+            layer.confirm('更换订阅地址将导致：<br>1.旧地址立即失效；<br>2.连接密码被更改；', {icon: 7, title:'警告'}, function(index) {
+                $.post("{{url('user/exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function () {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
+
+                layer.close(index);
+            });
+        }
     </script>
 @endsection

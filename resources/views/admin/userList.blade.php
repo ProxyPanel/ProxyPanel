@@ -99,7 +99,7 @@
                                             <tr class="odd gradeX {{$user->trafficWarning ? 'danger' : ''}}">
                                                 <td> {{$user->id}} </td>
                                                 <td> {{$user->username}} </td>
-                                                <td> <span class="label label-danger"> {{$user->port}} </span> </td>
+                                                <td> <span class="label label-danger"> {{$user->port ? $user->port : '未分配'}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->method}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->protocol}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->obfs}} </span> </td>

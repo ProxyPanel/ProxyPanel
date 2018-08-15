@@ -69,6 +69,14 @@ class RegisterController extends Controller
                 return Redirect::back()->withInput();
             }
 
+            // 校验域名邮箱是否在敏感词中
+            $sensitiveWords = $this->sensitiveWords();
+            if (in_array($username, $sensitiveWords)) {
+                Session::flash('errorMsg', '邮箱含有敏感词，请重新输入');
+
+                return Redirect::back()->withInput();
+            }
+
             // 是否校验验证码
             if ($this->systemConfig['is_captcha']) {
                 if (!Captcha::check($captcha)) {
