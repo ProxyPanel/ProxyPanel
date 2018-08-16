@@ -46,7 +46,7 @@ PHP 7.1 （必须）
 MYSQL 5.5 （推荐5.6+）
 内存 1G+ 
 磁盘空间 10G+
-PHP必须开启curl、gd、fileinfo、openssl、mbstring组件
+PHP必须开启zip、xml、curl、gd、gd2、fileinfo、openssl、mbstring组件
 安装完成后记得编辑.env中 APP_DEBUG 改为 false
 ````
 

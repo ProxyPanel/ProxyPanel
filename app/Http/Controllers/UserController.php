@@ -201,6 +201,13 @@ class UserController extends Controller
                     return Redirect::to('user/profile#tab_1');
                 }
 
+                // 演示环境禁止改管理员密码
+                if (env('APP_DEMO') && $user['id'] == 1) {
+                    Session::flash('errorMsg', '演示环境禁止修改管理员密码');
+
+                    return Redirect::to('user/profile#tab_1');
+                }
+
                 $ret = User::query()->where('id', $user['id'])->update(['password' => $new_password]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');

@@ -17,6 +17,7 @@
         "openlss/lib-array2xml": "^0.5.1",
         "overtrue/laravel-lang": "~3.0",
         "paypal/rest-api-sdk-php": "*",
+        "phpoffice/phpspreadsheet": "^1.4",
         "youzan/open-sdk": "^1.0"
     },
     "require-dev": {
@@ -60,5 +61,11 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.laravel-china.org"
+        }
     }
 }

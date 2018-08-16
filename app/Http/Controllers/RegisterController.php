@@ -71,7 +71,8 @@ class RegisterController extends Controller
 
             // 校验域名邮箱是否在敏感词中
             $sensitiveWords = $this->sensitiveWords();
-            if (in_array($username, $sensitiveWords)) {
+            $usernameSuffix = explode('@', $username); // 提取邮箱后缀
+            if (in_array($usernameSuffix, $sensitiveWords)) {
                 Session::flash('errorMsg', '邮箱含有敏感词，请重新输入');
 
                 return Redirect::back()->withInput();

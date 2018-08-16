@@ -113,7 +113,10 @@ class PaymentController extends Controller
 
             // 优惠券置为已使用
             if (!empty($coupon)) {
-                Coupon::query()->where('id', $coupon->id)->update(['status' => 1]);
+                if ($coupon->usage == 1) {
+                    $coupon->status = 1;
+                    $coupon->save();
+                }
 
                 $this->addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
             }
