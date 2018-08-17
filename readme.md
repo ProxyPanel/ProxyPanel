@@ -1,5 +1,5 @@
 
-[![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg)](https://github.com/ssrpanel/SSRPanel)
+[![Github All Releases](https://img.shields.io/github/downloads/ssrpanel/ssrpanel/total.svg)](https://github.com/ssrpanel/SSRPanel)
 
 ## 项目描述
 ````
