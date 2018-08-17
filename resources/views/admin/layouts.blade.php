@@ -293,8 +293,14 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
                             <a href="{{url('sensitiveWords/list')}}" class="nav-link">
-                                <i class="fa fa-heartbeat"></i>
+                                <i class="fa fa-font"></i>
                                 <span class="title">敏感词管理</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
+                            <a href="{{url('logs')}}" class="nav-link" target="_blank">
+                                <i class="fa fa-cubes"></i>
+                                <span class="title">系统日志</span>
                             </a>
                         </li>
                     </ul>

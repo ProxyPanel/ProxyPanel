@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.36 on 2018-08-16 17:31:31.
+ * Generated for Laravel 5.4.36 on 2018-08-17 14:59:56.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -11608,145 +11608,6 @@ namespace Illuminate\Support\Facades {
  
 }
 
-namespace Maatwebsite\Excel\Facades { 
-
-    class Excel {
-        
-        /**
-         * Create a new file
-         *
-         * @param $filename
-         * @param callable|null $callback
-         * @return \Maatwebsite\Excel\LaravelExcelWriter 
-         * @static 
-         */ 
-        public static function create($filename, $callback = null)
-        {
-            return \Maatwebsite\Excel\Excel::create($filename, $callback);
-        }
-        
-        /**
-         * Load an existing file
-         *
-         * @param string $file The file we want to load
-         * @param callback|null $callback
-         * @param string|null $encoding
-         * @param bool $noBasePath
-         * @param callback|null $callbackConfigReader
-         * @return \Maatwebsite\Excel\LaravelExcelReader 
-         * @static 
-         */ 
-        public static function load($file, $callback = null, $encoding = null, $noBasePath = false, $callbackConfigReader = null)
-        {
-            return \Maatwebsite\Excel\Excel::load($file, $callback, $encoding, $noBasePath, $callbackConfigReader);
-        }
-        
-        /**
-         * Set select sheets
-         *
-         * @param $sheets
-         * @return \Maatwebsite\Excel\LaravelExcelReader 
-         * @static 
-         */ 
-        public static function selectSheets($sheets = array())
-        {
-            return \Maatwebsite\Excel\Excel::selectSheets($sheets);
-        }
-        
-        /**
-         * Select sheets by index
-         *
-         * @param array $sheets
-         * @return $this 
-         * @static 
-         */ 
-        public static function selectSheetsByIndex($sheets = array())
-        {
-            return \Maatwebsite\Excel\Excel::selectSheetsByIndex($sheets);
-        }
-        
-        /**
-         * Batch import
-         *
-         * @param $files
-         * @param callback $callback
-         * @return \PHPExcel 
-         * @static 
-         */ 
-        public static function batch($files, $callback)
-        {
-            return \Maatwebsite\Excel\Excel::batch($files, $callback);
-        }
-        
-        /**
-         * Create a new file and share a view
-         *
-         * @param string $view
-         * @param array $data
-         * @param array $mergeData
-         * @return \Maatwebsite\Excel\LaravelExcelWriter 
-         * @static 
-         */ 
-        public static function shareView($view, $data = array(), $mergeData = array())
-        {
-            return \Maatwebsite\Excel\Excel::shareView($view, $data, $mergeData);
-        }
-        
-        /**
-         * Create a new file and load a view
-         *
-         * @param string $view
-         * @param array $data
-         * @param array $mergeData
-         * @return \Maatwebsite\Excel\LaravelExcelWriter 
-         * @static 
-         */ 
-        public static function loadView($view, $data = array(), $mergeData = array())
-        {
-            return \Maatwebsite\Excel\Excel::loadView($view, $data, $mergeData);
-        }
-        
-        /**
-         * Set filters
-         *
-         * @param array $filters
-         * @return \Excel 
-         * @static 
-         */ 
-        public static function registerFilters($filters = array())
-        {
-            return \Maatwebsite\Excel\Excel::registerFilters($filters);
-        }
-        
-        /**
-         * Enable certain filters
-         *
-         * @param string|array $filter
-         * @param bool|false|string $class
-         * @return \Excel 
-         * @static 
-         */ 
-        public static function filter($filter, $class = false)
-        {
-            return \Maatwebsite\Excel\Excel::filter($filter, $class);
-        }
-        
-        /**
-         * Get register, enabled (or both) filters
-         *
-         * @param string|boolean $key [description]
-         * @return array 
-         * @static 
-         */ 
-        public static function getFilters($key = false)
-        {
-            return \Maatwebsite\Excel\Excel::getFilters($key);
-        }
-         
-    }
- 
-}
-
 namespace Mews\Captcha\Facades { 
 
     class Captcha {
@@ -14484,8 +14345,6 @@ namespace  {
     class Validator extends \Illuminate\Support\Facades\Validator {}
 
     class View extends \Illuminate\Support\Facades\View {}
-
-    class Excel extends \Maatwebsite\Excel\Facades\Excel {}
 
     class Captcha extends \Mews\Captcha\Facades\Captcha {}
 

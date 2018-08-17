@@ -28,7 +28,8 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\UserTrafficLog;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -1426,6 +1427,7 @@ EOF;
                 'hourlyData' => "'" . implode("','", $hourlyData) . "'"
             ];
         }
+
         // 本月天数数据
         $monthDays = [];
         $monthHasDays = date("t");
@@ -1932,22 +1934,26 @@ EOF;
     {
         $inviteList = Invite::query()->where('status', 0)->orderBy('id', 'asc')->get();
 
-        $filename = '邀请码' . date('Ymd');
-        Excel::create($filename, function ($excel) use ($inviteList) {
-            $excel->sheet('邀请码', function ($sheet) use ($inviteList) {
-                $sheet->row(1, [
-                    '邀请码', '有效期'
-                ]);
+        $filename = '邀请码' . date('Ymd') . '.xlsx';
 
-                if (!$inviteList->isEmpty()) {
-                    foreach ($inviteList as $k => $vo) {
-                        $sheet->row($k + 2, [
-                            $vo->code, $vo->dateline
-                        ]);
-                    }
-                }
-            });
-        })->export('xls');
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()->setCreator('SSRPanel')->setLastModifiedBy('SSRPanel')->setTitle('邀请码')->setSubject('邀请码')->setDescription('')->setKeywords('')->setCategory('');
+
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('邀请码');
+        $sheet->fromArray(['邀请码', '有效期'], null);
+
+        foreach ($inviteList as $k => $vo) {
+            $sheet->fromArray([$vo->code, $vo->dateline], null, 'A' . ($k + 2));
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
+        //header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
     }
 
     // 提现申请列表

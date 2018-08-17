@@ -11,13 +11,13 @@
         "jenssegers/agent": "^2.5",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
-        "maatwebsite/excel": "~2.1.0",
         "mews/captcha": "^2.1",
         "mews/purifier": "^2.0",
         "openlss/lib-array2xml": "^0.5.1",
         "overtrue/laravel-lang": "~3.0",
         "paypal/rest-api-sdk-php": "*",
         "phpoffice/phpspreadsheet": "^1.4",
+        "rap2hpoutre/laravel-log-viewer": "^0.19.1",
         "youzan/open-sdk": "^1.0"
     },
     "require-dev": {
