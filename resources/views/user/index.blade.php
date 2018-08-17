@@ -73,10 +73,10 @@
                                                 <a href="#tools3" data-toggle="tab"> <i class="fa fa-linux"></i> Linux </a>
                                             </li>
                                             <li>
-                                                <a href="#tools5" data-toggle="tab"> <i class="fa fa-apple"></i> iOS </a>
+                                                <a href="#tools4" data-toggle="tab"> <i class="fa fa-apple"></i> iOS </a>
                                             </li>
                                             <li>
-                                                <a href="#tools4" data-toggle="tab"> <i class="fa fa-android"></i> Android </a>
+                                                <a href="#tools5" data-toggle="tab"> <i class="fa fa-android"></i> Android </a>
                                             </li>
                                         </ul>
                                         <div class="tab-content" style="font-size:16px;">
