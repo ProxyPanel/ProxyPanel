@@ -1,6 +1,4 @@
 
-[![Github All Releases](https://img.shields.io/github/downloads/ssrpanel/ssrpanel/total.svg)](https://github.com/ssrpanel/SSRPanel)
-
 ## 项目描述
 ````
 1.SSR多节点账号管理面板，兼容SS、SSRR，需配合SSR或SSRR版后端使用
