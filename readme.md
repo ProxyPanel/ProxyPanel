@@ -1,13 +1,3 @@
-[![Travis Status][badge_build]][link-travis]
-[![Coverage Status][badge_coverage]][link-scrutinizer]
-[![Scrutinizer Code Quality][badge_quality]][link-scrutinizer]
-[![SensioLabs Insight][badge_insight]][link-insight]
-[![Github Issues][badge_issues]][link-github-issues]
-
-[![Packagist][badge_package]][link-packagist]
-[![Packagist Release][badge_release]][link-packagist]
-[![Packagist Downloads][badge_downloads]][link-packagist]
-
 ## 项目描述
 ````
 1.SSR多节点账号管理面板，兼容SS、SSRR，需配合SSR或SSRR版后端使用
