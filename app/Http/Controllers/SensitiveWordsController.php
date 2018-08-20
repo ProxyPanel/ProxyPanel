@@ -32,7 +32,6 @@ class SensitiveWordsController extends Controller
 
         $obj = new SensitiveWords();
         $obj->words = trim($request->input('words'));
-        $obj->created_at = date('Y-m-d H:i:s');
         $result = $obj->save();
         if ($result) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);

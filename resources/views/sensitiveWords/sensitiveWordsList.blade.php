@@ -20,7 +20,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 敏感词列表 </span>
+                            <span class="caption-subject bold uppercase"> 敏感词列表 </span><small>（用于屏蔽注册邮箱后缀）</small>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
@@ -35,20 +35,18 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 敏感词 </th>
-                                    <th> 创建时间 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($list->isEmpty())
                                     <tr>
-                                        <td colspan="3" style="text-align: center;">暂无数据</td>
+                                        <td colspan="2" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
                                             <td> {{$vo->words}} </td>
-                                            <td> {{$vo->created_at}} </td>
                                         </tr>
                                     @endforeach
                                 @endif

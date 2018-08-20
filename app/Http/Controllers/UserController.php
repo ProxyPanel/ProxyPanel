@@ -15,6 +15,7 @@ use App\Http\Models\ReferralLog;
 use App\Http\Models\SsConfig;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsNodeInfo;
+use App\Http\Models\SsNodeLabel;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
@@ -146,6 +147,9 @@ class UserController extends Controller
             // 节点在线状态
             $nodeInfo = SsNodeInfo::query()->where('node_id', $node->node_id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             $node->online_status = empty($nodeInfo) || empty($nodeInfo->load) ? 0 : 1;
+
+            // 节点标签
+            $node->labels = SsNodeLabel::query()->with('labelInfo')->where('node_id', $node->id)->get();
         }
 
         $view['nodeList'] = $nodeList;

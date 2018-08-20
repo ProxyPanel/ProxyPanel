@@ -106,16 +106,16 @@
                                             </div>
                                             <div class="tab-pane" id="tools4">
                                                 <ol>
-                                                    <li> 请从站长处获取App Store美区ID </li>
+                                                    <li> 请从站长处获取App Store美区ID及教程 </li>
                                                 </ol>
                                             </div>
                                             <div class="tab-pane" id="tools5">
                                                 <ol>
                                                     <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
-                                                    <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
-                                                    <li> 点击服务器->手动更新订阅，更新您的服务信息 </li>
-                                                    <li> 更新成功后，请在服务器菜单处选择线路，并点击打开ShadowsocksR </li>
-                                                    <li> 单击小飞机，选择PAC自动模式 </li>
+                                                    <li> 单击左上角的shadowsocksR进入配置文件页，点击右下角的“+”号，点击“添加/升级SSR订阅”，填入订阅信息并保存 </li>
+                                                    <li> 选中任意一个节点，返回软件首页 </li>
+                                                    <li> 在软件首页处找到“路由”选项，并将其改为“绕过局域网及中国大陆地址” </li>
+                                                    <li> 点击右上角的小飞机图标进行连接，提示是否添加（或创建）VPN连接，点同意（或允许） </li>
                                                 </ol>
                                             </div>
                                         </div>
@@ -130,64 +130,58 @@
                         <div class="portlet light bordered">
                             <div class="portlet-body">
                                 <div class="tab-content">
-                                <div class="tab-pane active">
-                                    <div class="mt-comments">
-                                        @if(!$nodeList->isEmpty())
-                                            @foreach($nodeList as $node)
-                                                <div class="mt-comment">
-                                                    <div class="mt-comment-img" style="width:auto;">
-                                                        @if($node->country_code)
-                                                            <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
-                                                        @else
-                                                            <img src="{{asset('/assets/images/country/un.png')}}"/>
-                                                        @endif
-                                                    </div>
-                                                    <div class="mt-comment-body">
-                                                        <div class="mt-comment-info">
-                                                            <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
-                                                            <span class="mt-comment-date">
-                                                                @if(!$node->online_status)
-                                                                    <span class="badge badge-danger">维护中</span>
-                                                                @endif
-                                                            </span>
+                                    <div class="tab-pane active">
+                                        <div class="mt-comments">
+                                            @if(!$nodeList->isEmpty())
+                                                @foreach($nodeList as $node)
+                                                    <div class="mt-comment">
+                                                        <div class="mt-comment-img" style="width:auto;">
+                                                            @if($node->country_code)
+                                                                <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
+                                                            @else
+                                                                <img src="{{asset('/assets/images/country/un.png')}}"/>
+                                                            @endif
                                                         </div>
-                                                        <div class="mt-comment-text"> {{$node->desc}} </div>
-                                                        <div class="mt-comment-details">
-                                                            <span class="mt-comment-status mt-comment-status-pending">流量结算比率：{{$node->traffic_rate}}</span>
-                                                            <ul class="mt-comment-actions" style="display: block;">
-                                                                <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                                                </li>
-                                                            </ul>
+                                                        <div class="mt-comment-body">
+                                                            <div class="mt-comment-info">
+                                                                <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
+                                                                <span class="mt-comment-date">
+                                                                    @if(!$node->online_status)
+                                                                        <span class="badge badge-danger">维护中</span>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                            <div class="mt-comment-text"> {{$node->desc}} </div>
+                                                            <div class="mt-comment-details">
+                                                                <span class="mt-comment-status mt-comment-status-pending">
+                                                                    @if($node->labels)
+                                                                        @foreach($node->labels as $vo)
+                                                                            <span class="badge badge-info">{{$vo->labelInfo->name}}</span>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </span>
+                                                                <ul class="mt-comment-actions" style="display: block;">
+                                                                    <li>
+                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
+                                                @endforeach
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4" style="padding-left: 3px;">
-                @if($is_push_bear && $push_bear_qrcode)
-                <ul class="list-group" style="border-radius: 4px;">
-                    <li class="list-group-item">
-                        <div style="text-align: center">
-                            <span> 微信扫码订阅，获取本站最新资讯 </span>
-                            <br><br>
-                            <div id="subscribe_qrcode" style="text-align: center;"></div>
-                        </div>
-                    </li>
-                </ul>
-                @endif
-
                 <ul class="list-group">
                     <li class="list-group-item">
                         {{trans('home.account_status')}}：{{$info['enable'] ? trans('home.enabled') : trans('home.disabled') }}
@@ -224,6 +218,18 @@
                         </div>
                     </li>
                 </ul>
+
+                @if($is_push_bear && $push_bear_qrcode)
+                    <ul class="list-group" style="border-radius: 4px;">
+                        <li class="list-group-item">
+                            <div style="text-align: center">
+                                <span> 微信扫码订阅，获取本站最新资讯 </span>
+                                <br><br>
+                                <div id="subscribe_qrcode" style="text-align: center;"></div>
+                            </div>
+                        </li>
+                    </ul>
+                @endif
 
                 <div class="list-group">
                     @if($notice)
