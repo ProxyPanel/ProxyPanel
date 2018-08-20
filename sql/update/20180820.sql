@@ -1,4 +1,6 @@
---
+-- 移除created_at字段
+ALTER TABLE sensitive_words DROP COLUMN created_at;
+
 -- 敏感词：加入常见临时邮箱，用于屏蔽羊毛党
 INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.net');
