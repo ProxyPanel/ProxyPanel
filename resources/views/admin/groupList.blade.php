@@ -44,7 +44,7 @@
                                             <tr class="odd gradeX">
                                                 <td> {{$group->id}} </td>
                                                 <td> {{$group->name}} </td>
-                                                <td> {{$group->level}} </td>
+                                                <td> {{$levelMap[$group->level]}} </td>
                                                 <td style="text-align: center;">
                                                     <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">
                                                         <i class="fa fa-pencil"></i>

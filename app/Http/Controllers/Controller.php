@@ -310,13 +310,13 @@ class Controller extends BaseController
     // 将Base64图片转换为本地图片并保存
     function base64ImageSaver($base64_image_content)
     {
-        //匹配出图片的格式
+        // 匹配出图片的格式
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)) {
             $type = $result[2];
 
             $directory = date('Ymd');
             $path = '/assets/images/qrcode/' . $directory . '/';
-            if (!file_exists(public_path($path))) { //检查是否有该文件夹，如果没有就创建，并给予最高权限
+            if (!file_exists(public_path($path))) { // 检查是否有该文件夹，如果没有就创建，并给予最高权限
                 mkdir(public_path($path), 0755, true);
             }
 

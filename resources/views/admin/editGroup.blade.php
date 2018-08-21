@@ -39,8 +39,8 @@
                                     <label class="control-label col-md-3">分组级别</label>
                                     <div class="col-md-4">
                                         <select class="form-control" name="level" id="level" required>
-                                            @if(!$level_list->isEmpty())
-                                                @foreach($level_list as $level)
+                                            @if(!$levelList->isEmpty())
+                                                @foreach($levelList as $level)
                                                     <option value="{{$level->level}}" {{$group->level == $level->level ? 'selected' : ''}}>{{$level->level_name}}</option>
                                                 @endforeach
                                             @endif

@@ -794,7 +794,7 @@ class AdminController extends Controller
     // 文章列表
     public function articleList(Request $request)
     {
-        $view['articleList'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->paginate(15)->appends($request->except('page'));
+        $view['list'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin/articleList', $view);
     }
@@ -869,12 +869,12 @@ class AdminController extends Controller
     {
         $view['groupList'] = SsGroup::query()->paginate(15)->appends($request->except('page'));
 
-        $level_list = $this->levelList();
-        $level_dict = [];
-        foreach ($level_list as $level) {
-            $level_dict[$level['level']] = $level['level_name'];
+        $levelList = $this->levelList();
+        $levelMap = [];
+        foreach ($levelList as $vo) {
+            $levelMap[$vo['level']] = $vo['level_name'];
         }
-        $view['level_dict'] = $level_dict;
+        $view['levelMap'] = $levelMap;
 
         return Response::view('admin/groupList', $view);
     }
@@ -890,7 +890,7 @@ class AdminController extends Controller
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
         } else {
-            $view['level_list'] = $this->levelList();
+            $view['levelList'] = $this->levelList();
 
             return Response::view('admin/addGroup', $view);
         }
@@ -918,7 +918,7 @@ class AdminController extends Controller
             }
         } else {
             $view['group'] = SsGroup::query()->where('id', $id)->first();
-            $view['level_list'] = $this->levelList();
+            $view['levelList'] = $this->levelList();
 
             return Response::view('admin/editGroup', $view);
         }
@@ -930,8 +930,8 @@ class AdminController extends Controller
         $id = $request->get('id');
 
         // 检查是否该分组下是否有节点
-        $group_node = SsGroupNode::query()->where('group_id', $id)->get();
-        if (!$group_node->isEmpty()) {
+        $ssGroupNodeCount = SsGroupNode::query()->where('group_id', $id)->count();
+        if ($ssGroupNodeCount) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：该分组下有节点关联，请先解除关联']);
         }
 
@@ -1006,6 +1006,7 @@ class AdminController extends Controller
         return Response::view('admin/subscribeLog', $view);
     }
 
+    // 设置用户的订阅的状态
     public function setSubscribeStatus(Request $request)
     {
         $id = $request->get('id');
@@ -1653,32 +1654,32 @@ EOF;
         $level = $request->get('level');
         $level_name = $request->get('level_name');
 
-        if (empty($id)) {
+        if (!$id) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
         }
 
-        if (empty($level)) {
+        if (!$level) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不能为空']);
         }
 
-        if (empty($level_name)) {
+        if (!$level_name) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
         }
 
         $le = Level::query()->where('id', $id)->first();
-        if (empty($le)) {
+        if (!$le) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不存在']);
         }
 
         // 校验该等级下是否存在关联分组
-        $existGroups = SsGroup::query()->where('level', $le->level)->get();
-        if (!$existGroups->isEmpty()) {
+        $ssGroupCount = SsGroup::query()->where('level', $le->level)->count();
+        if ($ssGroupCount) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联分组，请先取消关联']);
         }
 
         // 校验该等级下是否存在关联账号
-        $existUsers = User::query()->where('level', $le->level)->get();
-        if (!$existUsers->isEmpty()) {
+        $userCount = User::query()->where('level', $le->level)->count();
+        if ($userCount) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
         }
 
@@ -1873,34 +1874,6 @@ EOF;
         Config::query()->where('name', 'referral_percent')->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
-    }
-
-    // 设置微信、支付宝二维码（已废弃）
-    public function setQrcode(Request $request)
-    {
-        // 微信二维码
-        if ($request->hasFile('wechat_qrcode')) {
-            $file = $request->file('wechat_qrcode');
-            $type = $file->getClientOriginalExtension();
-            $name = date('YmdHis') . mt_rand(1000, 2000) . '.' . $type;
-            $move = $file->move(base_path() . '/public/upload/image/qrcode/', $name);
-            $wechat_qrcode = $move ? '/upload/image/qrcode/' . $name : '';
-
-            Config::query()->where('name', 'wechat_qrcode')->update(['value' => $wechat_qrcode]);
-        }
-
-        // 支付宝二维码
-        if ($request->hasFile('alipay_qrcode')) {
-            $file = $request->file('alipay_qrcode');
-            $type = $file->getClientOriginalExtension();
-            $name = date('YmdHis') . mt_rand(1000, 2000) . '.' . $type;
-            $move = $file->move(base_path() . '/public/upload/image/qrcode/', $name);
-            $alipay_qrcode = $move ? '/upload/image/qrcode/' . $name : '';
-
-            Config::query()->where('name', 'alipay_qrcode')->update(['value' => $alipay_qrcode]);
-        }
-
-        return Redirect::back();
     }
 
     // 邀请码列表
