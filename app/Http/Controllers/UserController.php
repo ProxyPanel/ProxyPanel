@@ -164,7 +164,7 @@ class UserController extends Controller
 
         $view['info'] = Article::query()->where('is_del', 0)->where('id', $id)->first();
         if (empty($view['info'])) {
-            return Redirect::to('user');
+            return Redirect::to('/');
         }
 
         $view['website_logo'] = $this->systemConfig['website_logo'];
