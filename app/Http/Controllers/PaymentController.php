@@ -25,7 +25,7 @@ class PaymentController extends Controller
 
         $user = Session::get('user');
 
-        $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+        $goods = Goods::query()->where('is_del', 0)->where('status', 1)->where('id', $goods_id)->first();
         if (!$goods) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品或服务已下架']);
         }
@@ -44,7 +44,6 @@ class PaymentController extends Controller
         // 限购控制
         $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
         if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
-            // 判断是否已经购买过该商品
             $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('is_expire', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
             if ($noneExpireOrderExist) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品不可重复购买']);

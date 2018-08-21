@@ -113,7 +113,7 @@ class AutoJob extends Command
     private function blockUsers()
     {
         // 过期用户处理
-        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('expire_time', '<', date('Y-m-d'))->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 if (self::$config['is_ban_status']) {
@@ -175,7 +175,7 @@ class AutoJob extends Command
     // 自动清空过期的账号的标签和流量（临时封禁不移除）
     private function removeUserLabels()
     {
-        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->where('expire_time', '<=', date('Y-m-d'))->get();
+        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->where('expire_time', '<', date('Y-m-d'))->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 UserLabel::query()->where('user_id', $user->id)->delete();

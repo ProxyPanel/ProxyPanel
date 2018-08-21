@@ -124,14 +124,18 @@ class YzyController extends Controller
                     // 把商品的流量加到账号上
                     User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
 
+                    // 计算账号过期时间
+                    if ($order->user->expire_time < date('Y-m-d')) {
+                        $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
+                    } else {
+                        $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($order->user->expire_time)));
+                    }
+
                     // 套餐就改流量重置日，流量包不改
                     if ($goods->type == 2) {
-                        // 将商品的有效期和流量自动重置日期加到账号上
-                        $traffic_reset_day = in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'));
-                        User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($order->user->expire_time))), 'enable' => 1]);
+                        User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => 1, 'expire_time' => $expireTime, 'enable' => 1]);
                     } else {
-                        // 将商品的有效期和流量自动重置日期加到账号上
-                        User::query()->where('id', $order->user_id)->update(['expire_time' => date('Y-m-d', strtotime("+" . $goods->days . " days")), 'enable' => 1]);
+                        User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
                     }
 
                     // 写入用户标签
@@ -147,9 +151,7 @@ class YzyController extends Controller
                         $goodsLabels = GoodsLabel::query()->where('goods_id', $order->goods_id)->pluck('label_id')->toArray();
 
                         // 标签去重
-                        $newUserLabels = array_merge($userLabels, $goodsLabels, $defaultLabels);
-                        $newUserLabels = array_unique($newUserLabels);
-                        $newUserLabels = array_values($newUserLabels);
+                        $newUserLabels = array_values(array_unique(array_merge($userLabels, $goodsLabels, $defaultLabels)));
 
                         // 删除用户所有标签
                         UserLabel::query()->where('user_id', $order->user_id)->delete();
