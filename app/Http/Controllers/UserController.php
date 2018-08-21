@@ -1180,6 +1180,7 @@ class UserController extends Controller
 
         // 管理员信息重新写入user
         Session::put('user', Session::get('admin'));
+        Session::forget('admin');
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
     }

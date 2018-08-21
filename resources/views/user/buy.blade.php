@@ -131,7 +131,7 @@
                 type: "POST",
                 url: "{{url('payment/create')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', id:goods_id, coupon_sn:coupon_sn},
+                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
                 dataType: 'json',
                 beforeSend: function () {
                     index = layer.load(1, {

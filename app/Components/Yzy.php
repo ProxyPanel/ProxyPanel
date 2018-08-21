@@ -8,12 +8,10 @@ use Log;
 
 class Yzy
 {
-    protected static $config;
     protected $accessToken;
 
     function __construct()
     {
-        self::$config = $this->systemConfig();
         $this->accessToken = $this->getAccessToken();
     }
 
@@ -29,9 +27,11 @@ class Yzy
             }
         }
 
-        $keys['kdt_id'] = self::$config['kdt_id'];
+        $config = $this->systemConfig();
 
-        $token = (new \Youzan\Open\Token(self::$config['youzan_client_id'], self::$config['youzan_client_secret']))->getToken('self', $keys);
+        $keys['kdt_id'] = $config['kdt_id'];
+
+        $token = (new \Youzan\Open\Token($config['youzan_client_id'], $config['youzan_client_secret']))->getToken('self', $keys);
 
         if (isset($token['error'])) {
             Log::info('获取有赞云支付access_token失败：' . $token['error_description']);

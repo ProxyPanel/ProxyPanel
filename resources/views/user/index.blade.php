@@ -125,6 +125,8 @@
                         </div>
                     </div>
                 </div>
+
+                @if(!$nodeList->isEmpty())
                 <div class="row widget-row">
                     <div class="col-md-12">
                         <div class="portlet light bordered">
@@ -132,47 +134,45 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active">
                                         <div class="mt-comments">
-                                            @if(!$nodeList->isEmpty())
-                                                @foreach($nodeList as $node)
-                                                    <div class="mt-comment">
-                                                        <div class="mt-comment-img" style="width:auto;">
-                                                            @if($node->country_code)
-                                                                <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
-                                                            @else
-                                                                <img src="{{asset('/assets/images/country/un.png')}}"/>
-                                                            @endif
+                                            @foreach($nodeList as $node)
+                                                <div class="mt-comment">
+                                                    <div class="mt-comment-img" style="width:auto;">
+                                                        @if($node->country_code)
+                                                            <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
+                                                        @else
+                                                            <img src="{{asset('/assets/images/country/un.png')}}"/>
+                                                        @endif
+                                                    </div>
+                                                    <div class="mt-comment-body">
+                                                        <div class="mt-comment-info">
+                                                            <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
+                                                            <span class="mt-comment-date">
+                                                                @if(!$node->online_status)
+                                                                    <span class="badge badge-danger">维护中</span>
+                                                                @endif
+                                                            </span>
                                                         </div>
-                                                        <div class="mt-comment-body">
-                                                            <div class="mt-comment-info">
-                                                                <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
-                                                                <span class="mt-comment-date">
-                                                                    @if(!$node->online_status)
-                                                                        <span class="badge badge-danger">维护中</span>
-                                                                    @endif
-                                                                </span>
-                                                            </div>
-                                                            <div class="mt-comment-text"> {{$node->desc}} </div>
-                                                            <div class="mt-comment-details">
-                                                                <span class="mt-comment-status mt-comment-status-pending">
-                                                                    @if($node->labels)
-                                                                        @foreach($node->labels as $vo)
-                                                                            <span class="badge badge-info">{{$vo->labelInfo->name}}</span>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </span>
-                                                                <ul class="mt-comment-actions" style="display: block;">
-                                                                    <li>
-                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
+                                                        <div class="mt-comment-text"> {{$node->desc}} </div>
+                                                        <div class="mt-comment-details">
+                                                            <span class="mt-comment-status mt-comment-status-pending">
+                                                                @if($node->labels)
+                                                                    @foreach($node->labels as $vo)
+                                                                        <span class="badge badge-info">{{$vo->labelInfo->name}}</span>
+                                                                    @endforeach
+                                                                @endif
+                                                            </span>
+                                                            <ul class="mt-comment-actions" style="display: block;">
+                                                                <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                                                </li>
+                                                            </ul>
                                                         </div>
                                                     </div>
-                                                @endforeach
-                                            @endif
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -180,6 +180,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
             <div class="col-md-4" style="padding-left: 3px;">
                 <ul class="list-group">
