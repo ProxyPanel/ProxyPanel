@@ -198,29 +198,29 @@ class UserController extends Controller
                 if ($user->password != $old_password) {
                     Session::flash('errorMsg', '旧密码错误，请重新输入');
 
-                    return Redirect::to('user/profile#tab_1');
+                    return Redirect::to('profile#tab_1');
                 } else if ($user->password == $new_password) {
                     Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
-                    return Redirect::to('user/profile#tab_1');
+                    return Redirect::to('profile#tab_1');
                 }
 
                 // 演示环境禁止改管理员密码
                 if (env('APP_DEMO') && $user['id'] == 1) {
                     Session::flash('errorMsg', '演示环境禁止修改管理员密码');
 
-                    return Redirect::to('user/profile#tab_1');
+                    return Redirect::to('profile#tab_1');
                 }
 
                 $ret = User::query()->where('id', $user['id'])->update(['password' => $new_password]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
-                    return Redirect::to('user/profile#tab_1');
+                    return Redirect::to('profile#tab_1');
                 } else {
                     Session::flash('successMsg', '修改成功');
 
-                    return Redirect::to('user/profile#tab_1');
+                    return Redirect::to('profile#tab_1');
                 }
             }
 
@@ -229,18 +229,18 @@ class UserController extends Controller
                 if (empty(clean($wechat)) && empty(clean($qq))) {
                     Session::flash('errorMsg', '修改失败');
 
-                    return Redirect::to('user/profile#tab_2');
+                    return Redirect::to('profile#tab_2');
                 }
 
                 $ret = User::query()->where('id', $user['id'])->update(['wechat' => $wechat, 'qq' => $qq]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
-                    return Redirect::to('user/profile#tab_2');
+                    return Redirect::to('profile#tab_2');
                 } else {
                     Session::flash('successMsg', '修改成功');
 
-                    return Redirect::to('user/profile#tab_2');
+                    return Redirect::to('profile#tab_2');
                 }
             }
 
@@ -249,7 +249,7 @@ class UserController extends Controller
                 if (empty($passwd)) {
                     Session::flash('errorMsg', '密码不能为空');
 
-                    return Redirect::to('user/profile#tab_3');
+                    return Redirect::to('profile#tab_3');
                 }
 
                 // 加密方式、协议、混淆必须存在
@@ -259,7 +259,7 @@ class UserController extends Controller
                 if (!$existMethod || !$existProtocol || !$existObfs) {
                     Session::flash('errorMsg', '非法请求');
 
-                    return Redirect::to('user/profile#tab_3');
+                    return Redirect::to('profile#tab_3');
                 }
 
                 $data = [
@@ -273,7 +273,7 @@ class UserController extends Controller
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
-                    return Redirect::to('user/profile#tab_3');
+                    return Redirect::to('profile#tab_3');
                 } else {
                     // 更新session
                     $user = User::query()->where('id', $user['id'])->first()->toArray();
@@ -282,7 +282,7 @@ class UserController extends Controller
 
                     Session::flash('successMsg', '修改成功');
 
-                    return Redirect::to('user/profile#tab_3');
+                    return Redirect::to('profile#tab_3');
                 }
             }
         } else {
@@ -357,7 +357,6 @@ class UserController extends Controller
         }
 
         $view['goodsList'] = $goodsList;
-
         $view['website_logo'] = $this->systemConfig['website_logo'];
         $view['website_analytics'] = $this->systemConfig['website_analytics'];
         $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
@@ -488,7 +487,7 @@ class UserController extends Controller
         } else {
             $ticket = Ticket::query()->where('id', $id)->with('user')->first();
             if (empty($ticket) || $ticket->user_id != $user['id']) {
-                return Redirect::to('user/ticketList');
+                return Redirect::to('tickets');
             }
 
             $view['ticket'] = $ticket;
@@ -880,9 +879,9 @@ class UserController extends Controller
     }
 
     // 购买服务
-    public function addOrder(Request $request)
+    public function buy(Request $request, $id)
     {
-        $goods_id = intval($request->get('goods_id'));
+        $goods_id = intval($id);
         $coupon_sn = $request->get('coupon_sn');
 
         $user = Session::get('user');
@@ -1037,7 +1036,7 @@ class UserController extends Controller
         } else {
             $goods = Goods::query()->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
             if (empty($goods)) {
-                return Redirect::to('user/goodsList');
+                return Redirect::to('services');
             }
 
             $goods->traffic = flowAutoShow($goods->traffic * 1048576);
@@ -1047,7 +1046,7 @@ class UserController extends Controller
             $view['website_analytics'] = $this->systemConfig['website_analytics'];
             $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
 
-            return Response::view('user/addOrder', $view);
+            return Response::view('user/buy', $view);
         }
     }
 
@@ -1234,6 +1233,7 @@ class UserController extends Controller
         }
     }
 
+    // 切换语言
     public function switchLang(Request $request, $locale)
     {
         Session::put("locale", $locale);

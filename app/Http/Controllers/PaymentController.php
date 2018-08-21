@@ -137,14 +137,14 @@ class PaymentController extends Controller
     public function detail(Request $request, $sn)
     {
         if (empty($sn)) {
-            return Redirect::to('user/goodsList');
+            return Redirect::to('services');
         }
 
         $user = Session::get('user');
 
         $payment = Payment::query()->with(['order', 'order.goods'])->where('sn', $sn)->where('user_id', $user['id'])->first();
         if (!$payment) {
-            return Redirect::to('user/goodsList');
+            return Redirect::to('services');
         }
 
         $order = Order::query()->where('oid', $payment->oid)->first();

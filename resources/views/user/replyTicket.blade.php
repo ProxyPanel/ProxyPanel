@@ -139,14 +139,14 @@
         function closeTicket() {
             $.ajax({
                 type: "POST",
-                url: "{{url('user/closeTicket')}}",
+                url: "{{url('closeTicket')}}",
                 async: true,
                 data: {_token:'{{csrf_token()}}', id:'{{$ticket->id}}'},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('user/ticketList')}}';
+                            window.location.href = '{{url('ticketList')}}';
                         }
                     });
                 }
@@ -159,7 +159,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('user/replyTicket')}}",
+                url: "{{url('replyTicket')}}",
                 async: true,
                 data: {_token:'{{csrf_token()}}', id:'{{$ticket->id}}', content:content},
                 dataType: 'json',

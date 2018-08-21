@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\User;
-use App\Http\Models\UserScoreLog;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;

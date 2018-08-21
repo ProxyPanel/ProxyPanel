@@ -79,7 +79,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('user/redeemCoupon')}}",
+                url: "{{url('redeemCoupon')}}",
                 async: false,
                 data: {_token:'{{csrf_token()}}', coupon_sn:coupon_sn},
                 dataType: 'json',
@@ -131,7 +131,7 @@
                 type: "POST",
                 url: "{{url('payment/create')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
+                data: {_token:'{{csrf_token()}}', id:goods_id, coupon_sn:coupon_sn},
                 dataType: 'json',
                 beforeSend: function () {
                     index = layer.load(1, {
@@ -164,9 +164,9 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('user/addOrder')}}",
+                url: "/buy/" + goods_id,
                 async: false,
-                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
+                data: {_token:'{{csrf_token()}}', coupon_sn:coupon_sn},
                 dataType: 'json',
                 beforeSend: function () {
                     index = layer.load(1, {
@@ -176,7 +176,7 @@
                 success: function (ret) {
                     layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('user/orderList')}}';
+                            window.location.href = '{{url('services')}}';
                         } else {
                             layer.close(index);
                         }

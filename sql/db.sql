@@ -58,7 +58,9 @@ CREATE TABLE `ss_node` (
   `status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_group` (`group_id`),
+	INDEX `idx_sub` (`is_subscribe`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点信息表';
 
 
@@ -72,7 +74,7 @@ CREATE TABLE `ss_node_info` (
   `load` varchar(32) NOT NULL COMMENT '负载',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`) USING BTREE
+  INDEX `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
 
 
@@ -85,7 +87,7 @@ CREATE TABLE `ss_node_online_log` (
   `online_user` int(11) NOT NULL COMMENT '在线用户数',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`) USING BTREE
+  INDEX `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
 
 
@@ -97,9 +99,9 @@ CREATE TABLE `ss_node_label` (
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  KEY `idx` (`node_id`,`label_id`),
-  KEY `idx_node_id` (`node_id`),
-  KEY `idx_label_id` (`label_id`)
+  INDEX `idx` (`node_id`,`label_id`),
+  INDEX `idx_node_id` (`node_id`),
+  INDEX `idx_label_id` (`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点标签';
 
 
@@ -145,7 +147,8 @@ CREATE TABLE `user` (
   `remember_token` varchar(256) DEFAULT '',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_search` (`enable`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -196,9 +199,9 @@ CREATE TABLE `user_traffic_log` (
   `traffic` varchar(32) NOT NULL COMMENT '产生流量',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`),
-  KEY `idx_node` (`node_id`),
-  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
+  INDEX `idx_user` (`user_id`),
+  INDEX `idx_node` (`node_id`),
+  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -515,7 +518,8 @@ CREATE TABLE `order` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
-  PRIMARY KEY (`oid`)
+  PRIMARY KEY (`oid`),
+  INDEX `idx_order_search` (`user_id`, `goods_id`, `is_expire`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
 
 
@@ -577,7 +581,7 @@ CREATE TABLE `user_score_log` (
   `desc` varchar(50) DEFAULT '' COMMENT '描述',
   `created_at` datetime DEFAULT NULL COMMENT '创建日期',
   PRIMARY KEY (`id`),
-  KEY `idx` (`user_id`) USING BTREE
+  INDEX `idx` (`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -781,8 +785,8 @@ CREATE TABLE `user_traffic_daily` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`) USING BTREE,
-  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
+  INDEX `idx_user` (`user_id`) USING BTREE,
+  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -800,8 +804,8 @@ CREATE TABLE `user_traffic_hourly` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`) USING BTREE,
-  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
+  INDEX `idx_user` (`user_id`) USING BTREE,
+  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -818,7 +822,7 @@ CREATE TABLE `ss_node_traffic_daily` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`)
+  INDEX `idx_node_id` (`node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -835,7 +839,7 @@ CREATE TABLE `ss_node_traffic_hourly` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`)
+  INDEX `idx_node_id` (`node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -862,9 +866,9 @@ CREATE TABLE `user_label` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  KEY `idx` (`user_id`,`label_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_label_id` (`label_id`)
+  INDEX `idx` (`user_id`,`label_id`),
+  INDEX `idx_user_id` (`user_id`),
+  INDEX `idx_label_id` (`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户标签';
 
 

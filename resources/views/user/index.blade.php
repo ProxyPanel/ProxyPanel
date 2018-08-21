@@ -233,10 +233,10 @@
 
                 <div class="list-group">
                     @if($notice)
-                        <a href="{{url('user/article?id=') . $notice->id}}" class="list-group-item"> {{$notice->title}} </a>
+                        <a href="{{url('article?id=') . $notice->id}}" class="list-group-item"> {{$notice->title}} </a>
                     @endif
                     @foreach($articleList as $k => $article)
-                        <a href="{{url('user/article?id=') . $article->id}}" class="list-group-item"> [{{date('m/d', strtotime($article->created_at))}}] {{str_limit($article->title, 50)}}</a>
+                        <a href="{{url('article?id=') . $article->id}}" class="list-group-item"> [{{date('m/d', strtotime($article->created_at))}}] {{str_limit($article->title, 50)}}</a>
                     @endforeach
                 </div>
             </div>
@@ -379,7 +379,7 @@
             }
 
             $.ajax({
-                url:'{{url('user/charge')}}',
+                url:'{{url('charge')}}',
                 type:"POST",
                 data:{_token:_token, coupon_sn:charge_coupon},
                 beforeSend:function(){
@@ -405,7 +405,7 @@
         function exchange() {
             $.ajax({
                 type: "POST",
-                url: "{{url('user/exchange')}}",
+                url: "{{url('exchange')}}",
                 async: false,
                 data: {_token:'{{csrf_token()}}'},
                 dataType: 'json',
@@ -450,7 +450,7 @@
 
         // 节点订阅
         function subscribe() {
-            window.location.href = '{{url('/user/subscribe')}}';
+            window.location.href = '{{url('subscribe')}}';
         }
 
         // 显示加密、混淆、协议
@@ -466,7 +466,7 @@
         // 更换订阅地址
         function exchangeSubscribe() {
             layer.confirm('更换订阅地址将导致：<br>1.旧地址立即失效；<br>2.连接密码被更改；', {icon: 7, title:'警告'}, function(index) {
-                $.post("{{url('user/exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                $.post("{{url('exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function () {
                         if (ret.status == 'success') {
                             window.location.reload();

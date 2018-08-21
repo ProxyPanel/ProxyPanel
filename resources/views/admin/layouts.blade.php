@@ -64,7 +64,7 @@
                             <img alt="" class="img-circle" src="/assets/images/avatar.png" /> </a>
                         <ul class="dropdown-menu dropdown-menu-default">
                             <li>
-                                <a href="{{url('/user')}}"> <i class="icon-home"></i> 个人中心 </a>
+                                <a href="{{url('/')}}"> <i class="icon-home"></i> 个人中心 </a>
                             </li>
                             <li>
                                 <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人设置 </a>

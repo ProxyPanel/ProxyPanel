@@ -174,7 +174,7 @@
     <script type="text/javascript">
         // 申请提现
         function extractMoney() {
-            $.post("{{url('user/extractMoney')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+            $.post("{{url('extractMoney')}}", {_token:'{{csrf_token()}}'}, function (ret) {
                 layer.msg(ret.message, {time:1000});
             });
         }

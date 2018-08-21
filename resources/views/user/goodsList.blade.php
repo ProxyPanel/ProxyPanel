@@ -79,7 +79,7 @@
 
     <script type="text/javascript">
         function buy(goods_id) {
-            window.location.href = '{{url('user/addOrder?goods_id=')}}' + goods_id;
+            window.location.href = '/buy/' + goods_id;
         }
 
         // 编辑商品

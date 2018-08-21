@@ -46,7 +46,7 @@
                                         <tr class="odd gradeX">
                                             <td> {{$article->id}} </td>
                                             <td> {{$article->type == '1' ? '文章' : '公告'}} </td>
-                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{str_limit($article->title, 80)}} </a> </td>
+                                            <td> <a href="{{url('article?id=' . $article->id)}}" target="_blank"> {{str_limit($article->title, 80)}} </a> </td>
                                             <td> {{$article->sort}} </td>
                                             <td> {{$article->created_at}} </td>
                                             <td>
