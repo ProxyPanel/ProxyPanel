@@ -655,7 +655,7 @@ CREATE TABLE `email_log` (
 -- ----------------------------
 CREATE TABLE `sensitive_words` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词'
+	`words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词',
 	PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='敏感词';
 
