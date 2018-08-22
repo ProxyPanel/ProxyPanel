@@ -141,6 +141,7 @@
                                                     <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">
                                                         <i class="fa fa-refresh"></i>
                                                     </button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="switchToUser('{{$user->id}}')">切</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -247,7 +248,7 @@
 
         // 重置流量
         function resetTraffic(id) {
-            layer.confirm('确定重置该用户流量吗？', {icon: 2, title:'警告'}, function(index) {
+            layer.confirm('确定重置该用户流量吗？', {icon: 7, title:'警告'}, function(index) {
                 $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
@@ -257,6 +258,26 @@
                 });
 
                 layer.close(index);
+            });
+        }
+
+        // 切换用户身份
+        function switchToUser(user_id) {
+            $.ajax({
+                'url': "{{url("/admin/switchToUser")}}",
+                'data': {
+                    'user_id': user_id,
+                    '_token': '{{csrf_token()}}'
+                },
+                'dataType': "json",
+                'type': "POST",
+                success: function (ret) {
+                    layer.msg(ret.message, {time: 1000}, function () {
+                        if (ret.status == 'success') {
+                            window.location.href = "/";
+                        }
+                    });
+                }
             });
         }
     </script>
