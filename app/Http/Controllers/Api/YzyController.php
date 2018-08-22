@@ -17,7 +17,7 @@ use Log;
 use DB;
 
 /**
- * 有赞云支付
+ * 有赞云支付消息推送接收
  * Class YzyController
  *
  * @package App\Http\Controllers
