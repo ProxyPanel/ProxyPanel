@@ -176,7 +176,7 @@ CREATE TABLE `level` (
 
 
 -- ----------------------------
--- Records of `level`
+-- Records of level
 -- ----------------------------
 INSERT INTO `level` VALUES (1, '1', '青铜', '2017-10-26 15:56:52', '2017-10-26 15:38:58');
 INSERT INTO `level` VALUES (2, '2', '白银', '2017-10-26 15:57:30', '2017-10-26 12:37:51');
@@ -661,7 +661,7 @@ CREATE TABLE `sensitive_words` (
 
 
 -- ----------------------------
--- Records of label
+-- Records of sensitive_words
 -- ----------------------------
 INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.net');
