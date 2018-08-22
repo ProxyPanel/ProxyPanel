@@ -1847,15 +1847,22 @@ EOF;
         }
 
         // 如果开启用户邮件重置密码，则先设置网站名称和网址
-        if (($name == 'is_reset_password' || $name == 'is_active_register') && $value == '1') {
+        if (in_array($name, ['is_reset_password', 'is_active_register', 'is_youzan']) && $value == '1') {
             $config = Config::query()->where('name', 'website_name')->first();
             if ($config->value == '') {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：开启重置密码需要先设置【网站名称】']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
             }
 
             $config = Config::query()->where('name', 'website_url')->first();
             if ($config->value == '') {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：开启重置密码需要先设置【网站地址】']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
+            }
+        }
+
+        // 演示环境禁止修改有赞支付
+        if (env('APP_DEMO')) {
+            if (in_array($name, ['youzan_client_id', 'youzan_client_secret', 'kdt_id'])) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '演示环境禁止修改有赞支付配置']);
             }
         }
 
