@@ -67,7 +67,7 @@
                 console.log(ret);
                 if (ret.status == 'success') {
                     layer.msg(ret.message, {time:1500}, function() {
-                        window.location.href = '{{url('user/orderList')}}';
+                        window.location.href = '{{url('invoices')}}';
                     });
                 }
             });
