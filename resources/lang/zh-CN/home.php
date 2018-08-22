@@ -123,6 +123,7 @@ return [
     'invoice_title'                   => '消费记录',
     'invoice_table_id'                => '编号',
     'invoice_table_name'              => '服务',
+    'invoice_table_pay_way'           => '支付方式',
     'invoice_table_price'             => '金额',
     'invoice_table_create_date'       => '购买日期',
     'invoice_table_expire_at'         => '到期时间',
@@ -133,6 +134,7 @@ return [
     'invoice_table_wait_confirm'      => '待确认',
     'invoice_table_wait_active'       => '使用中',
     'invoice_table_expired'           => '已过期',
+    'invoice_table_goods_deleted'     => '[服務已刪除]',
 
     // 工单
     'ticket_title'                    => '我的服务单',

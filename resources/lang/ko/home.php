@@ -121,6 +121,7 @@ return [
     'invoice_title'                   => '거래내역',
     'invoice_table_id'                => '번호',
     'invoice_table_name'              => '서버스',
+    'invoice_table_pay_way'           => '지불 방식',
     'invoice_table_price'             => '금액',
     'invoice_table_create_date'       => '구입일자',
     'invoice_table_expire_at'         => '만료 시간',
@@ -131,6 +132,7 @@ return [
     'invoice_table_wait_confirm'      => '확인중',
     'invoice_table_wait_active'       => '사용중',
     'invoice_table_expired'           => '기간만료',
+    'invoice_table_goods_deleted'     => '[삭제됨]',
 
     // 工
     'ticket_title'                    => '문의 기록',
