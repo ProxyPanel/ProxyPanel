@@ -39,7 +39,7 @@ class ShopController extends Controller
             $name = $request->get('name');
             $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
-            $price = intval($request->get('price', 0));
+            $price = $request->get('price', 0);
             $score = intval($request->get('score', 0));
             $type = intval($request->get('type', 1));
             $days = intval($request->get('days', 90));
@@ -141,7 +141,7 @@ class ShopController extends Controller
             $desc = $request->get('desc');
             $price = $request->get('price', 0);
             $labels = $request->get('labels');
-            $sort = intval($request->get('sort'));
+            $sort = intval($request->get('sort', 0));
             $status = $request->get('status');
 
             $goods = Goods::query()->where('id', $id)->first();
