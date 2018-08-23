@@ -109,7 +109,8 @@ Route::group(['middleware' => ['forbidden', 'user', 'affiliate']], function () {
     Route::post('addTicket', 'UserController@addTicket'); // 快速添加工单
     Route::any('replyTicket', 'UserController@replyTicket'); // 回复工单
     Route::post('closeTicket', 'UserController@closeTicket'); // 关闭工单
-    Route::get('invoices', 'UserController@orderList'); // 订单
+    Route::get('invoices', 'UserController@orderList'); // 订单列表
+    Route::get('invoice/{sn}', 'UserController@orderDetail'); // 订单明细
     Route::any('buy/{id}', 'UserController@buy'); // 购买商品
     Route::post('redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
     Route::get('invite', 'UserController@invite'); // 邀请码

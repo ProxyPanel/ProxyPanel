@@ -176,7 +176,7 @@
                 success: function (ret) {
                     layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('services')}}';
+                            window.location.href = '{{url('invoices')}}';
                         } else {
                             layer.close(index);
                         }

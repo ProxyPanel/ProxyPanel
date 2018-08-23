@@ -42,7 +42,7 @@
                                     @foreach($orderList as $key => $order)
                                         <tr class="odd gradeX">
                                             <td>{{$key + 1}}</td>
-                                            <td>{{$order->order_sn}}</td>
+                                            <td><a href="{{url('invoice/' . $order->order_sn)}}" target="_blank">{{$order->order_sn}}</a></td>
                                             <td>{{empty($order->goods) ? trans('home.invoice_table_goods_deleted') : $order->goods->name}}</td>
                                             <td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
                                             <td>￥{{$order->amount}}</td>

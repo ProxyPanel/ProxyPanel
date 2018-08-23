@@ -392,6 +392,18 @@ class UserController extends Controller
         return Response::view('user/orderList', $view);
     }
 
+    // 订单明细
+    public function orderDetail(Request $request, $sn)
+    {
+        $view['website_logo'] = $this->systemConfig['website_logo'];
+        $view['website_analytics'] = $this->systemConfig['website_analytics'];
+        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+
+        $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
+
+        return Response::view('user/orderDetail', $view);
+    }
+
     // 添加工单
     public function addTicket(Request $request)
     {
