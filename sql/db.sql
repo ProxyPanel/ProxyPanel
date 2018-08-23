@@ -75,7 +75,7 @@ CREATE TABLE `ss_node_info` (
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node_id` (`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点负载信息';
 
 
 -- ----------------------------
@@ -88,7 +88,7 @@ CREATE TABLE `ss_node_online_log` (
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node_id` (`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点在线信息';
 
 
 -- ----------------------------
@@ -110,7 +110,7 @@ CREATE TABLE `ss_node_label` (
 -- ----------------------------
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(128) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '用户名',
+  `username` varchar(128) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT 'SS端口',
   `passwd` varchar(16) NOT NULL DEFAULT '' COMMENT 'SS密码',
@@ -149,7 +149,7 @@ CREATE TABLE `user` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `idx_search` (`enable`, `status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';
 
 
 LOCK TABLES `user` WRITE;
@@ -172,7 +172,7 @@ CREATE TABLE `level` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='等级';
 
 
 -- ----------------------------
@@ -185,6 +185,7 @@ INSERT INTO `level` VALUES (4, '4', '铂金', '2017-10-26 15:41:38', '2017-10-26
 INSERT INTO `level` VALUES (5, '5', '钻石', '2017-10-26 15:41:47', '2017-10-26 15:41:47');
 INSERT INTO `level` VALUES (6, '6', '星耀', '2017-10-26 15:41:56', '2017-10-26 15:41:56');
 INSERT INTO `level` VALUES (7, '7', '王者', '2017-10-26 15:42:02', '2017-10-26 15:42:02');
+
 
 -- ----------------------------
 -- Table structure for `user_traffic_log`
@@ -202,7 +203,7 @@ CREATE TABLE `user_traffic_log` (
   INDEX `idx_user` (`user_id`),
   INDEX `idx_node` (`node_id`),
   INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量日志';
 
 
 -- ----------------------------
@@ -216,7 +217,7 @@ CREATE TABLE `ss_config` (
   `is_default` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否默认：0-不是、1-是',
   `sort` INT(11) NOT NULL DEFAULT '0' COMMENT '排序：值越大排越前',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
+) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用配置';
 
 -- ----------------------------
 -- Records of ss_config
@@ -272,7 +273,7 @@ CREATE TABLE `config` (
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '配置名',
   `value` TEXT NULL COMMENT '配置值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置';
 
 
 -- ----------------------------
@@ -361,7 +362,7 @@ CREATE TABLE `article` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章';
 
 
 -- ----------------------------
@@ -414,7 +415,7 @@ CREATE TABLE `verify` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件地址';
 
 
 -- ----------------------------
@@ -427,7 +428,7 @@ CREATE TABLE `ss_group` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点分组';
 
 
 -- ----------------------------
@@ -461,7 +462,7 @@ CREATE TABLE `goods` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品';
 
 
 -- ----------------------------
@@ -520,7 +521,7 @@ CREATE TABLE `order` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`oid`),
   INDEX `idx_order_search` (`user_id`, `goods_id`, `is_expire`, `status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单';
 
 
 -- ----------------------------
@@ -539,7 +540,7 @@ CREATE TABLE `order_goods` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单商品';
 
 
 -- ----------------------------
@@ -553,7 +554,7 @@ CREATE TABLE `ticket` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单';
 
 
 -- ----------------------------
@@ -566,7 +567,7 @@ CREATE TABLE `ticket_reply` (
   `content` text NOT NULL COMMENT '回复内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单回复';
 
 
 -- ----------------------------
@@ -582,7 +583,7 @@ CREATE TABLE `user_score_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建日期',
   PRIMARY KEY (`id`),
   INDEX `idx` (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户积分变动日志';
 
 
 -- ----------------------------
@@ -598,7 +599,7 @@ CREATE TABLE `user_balance_log` (
   `desc` varchar(255) DEFAULT '' COMMENT '操作描述',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户余额变动日志';
 
 
 -- ----------------------------
@@ -755,7 +756,7 @@ CREATE TABLE `user_subscribe` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅';
 
 
 -- ----------------------------
@@ -768,7 +769,7 @@ CREATE TABLE `user_subscribe_log` (
   `request_time` datetime DEFAULT NULL COMMENT '请求时间',
   `request_header` text COMMENT '请求头部信息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅访问日志';
 
 
 -- ----------------------------
@@ -787,7 +788,7 @@ CREATE TABLE `user_traffic_daily` (
   PRIMARY KEY (`id`),
   INDEX `idx_user` (`user_id`) USING BTREE,
   INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每日流量统计';
 
 
 -- ----------------------------
@@ -806,7 +807,7 @@ CREATE TABLE `user_traffic_hourly` (
   PRIMARY KEY (`id`),
   INDEX `idx_user` (`user_id`) USING BTREE,
   INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每小时流量统计';
 
 
 -- ----------------------------
@@ -823,7 +824,7 @@ CREATE TABLE `ss_node_traffic_daily` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node_id` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点每日流量统计';
 
 
 -- ----------------------------
@@ -840,7 +841,7 @@ CREATE TABLE `ss_node_traffic_hourly` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node_id` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点每小时流量统计';
 
 
 -- ----------------------------
@@ -883,7 +884,7 @@ CREATE TABLE `goods_label` (
   INDEX `idx` (`goods_id`, `label_id`),
   INDEX `idx_goods_id` (`goods_id`),
   INDEX `idx_label_id` (`label_id`)
-) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci' COMMENT='商品标签';
+) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品标签';
 
 
 -- ----------------------------
@@ -894,10 +895,11 @@ CREATE TABLE `country` (
   `country_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `country_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代码',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='国家代码';
+
 
 -- ----------------------------
--- Records of country
+-- Records of `country`
 -- ----------------------------
 INSERT INTO `country` VALUES ('1', '澳大利亚', 'au');
 INSERT INTO `country` VALUES ('2', '巴西', 'br');
@@ -959,6 +961,9 @@ INSERT INTO `country` VALUES ('57', '匈牙利', 'hu');
 INSERT INTO `country` VALUES ('58', '阿根廷', 'ar');
 
 
+-- ----------------------------
+-- Table structure for `payment`
+-- ----------------------------
 CREATE TABLE `payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -975,8 +980,12 @@ CREATE TABLE `payment` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='支付单';
 
+
+-- ----------------------------
+-- Table structure for `payment_callback`
+-- ----------------------------
 CREATE TABLE `payment_callback` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `client_id` varchar(50) DEFAULT NULL,
@@ -994,8 +1003,12 @@ CREATE TABLE `payment_callback` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='有赞云回调日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='有赞云回调日志';
 
+
+-- ----------------------------
+-- Table structure for `marketing`
+-- ----------------------------
 CREATE TABLE `marketing` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type` TINYINT(4) NOT NULL COMMENT '类型：1-邮件群发、2-订阅渠道群发',
@@ -1007,7 +1020,7 @@ CREATE TABLE `marketing` (
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='营销';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

@@ -123,7 +123,7 @@
                         <span class="title">{{trans('home.services')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['invoices']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['invoices']) || Request::segment(1) == 'invoice' ? 'active open' : ''}}">
                     <a href="{{url('invoices')}}" class="nav-link nav-toggle">
                         <i class="icon-wallet"></i>
                         <span class="title">{{trans('home.invoices')}}</span>
