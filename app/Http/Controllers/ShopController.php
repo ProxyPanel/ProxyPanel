@@ -67,9 +67,9 @@ class ShopController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            // 流量不能超过1PB
-            if ($traffic > 1073741824) {
-                Session::flash('errorMsg', '内含流量不能超过1PB');
+            // 流量不能超过10TB
+            if ($traffic > 10240000) {
+                Session::flash('errorMsg', '内含流量不能超过10TB');
 
                 return Redirect::back()->withInput();
             }
