@@ -75,11 +75,11 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="2" checked> 季付
+                                                            <input type="radio" name="pay_way" value="2"> 季付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="3"> 半年付
+                                                            <input type="radio" name="pay_way" value="3" checked> 半年付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
@@ -127,10 +127,16 @@
                                             <div class="form-group">
                                                 <label for="gender" class="col-md-3 control-label">性别</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="gender" id="gender">
-                                                        <option value="1" selected>男</option>
-                                                        <option value="0">女</option>
-                                                    </select>
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="gender" value="1" checked> 男
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="gender" value="0"> 女
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -265,7 +271,7 @@
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" placeholder="" disabled>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -274,7 +280,7 @@
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">单用户限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" placeholder="" disabled>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -334,7 +340,7 @@
             var labels = $('#labels').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
-            var gender = $('#gender').val();
+            var gender = $("input:radio[name='gender']:checked").val();
             var wechat = $('#wechat').val();
             var qq = $('#qq').val();
             var is_admin = $('#is_admin').val();
