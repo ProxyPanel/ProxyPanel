@@ -225,10 +225,16 @@
                                                     <div class="form-group">
                                                         <label for="compatible" class="col-md-3 control-label">兼容SS</label>
                                                         <div class="col-md-8">
-                                                            <select class="form-control" name="compatible" id="compatible">
-                                                                <option value="0" selected>否</option>
-                                                                <option value="1">是</option>
-                                                            </select>
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="compatible" value="1"> 是
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="compatible" value="0" checked> 否
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
                                                             <span class="help-block"> 如果兼容请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
                                                         </div>
                                                     </div>
@@ -362,7 +368,7 @@
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
             var ssh_port = $('#ssh_port').val();
-            var compatible = $('#compatible').val();
+            var compatible = $("input:radio[name='compatible']:checked").val();
             var single = $('#single').val();
             var single_force = $('#single_force').val();
             var single_port = $('#single_port').val();
