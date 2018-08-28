@@ -211,6 +211,9 @@ class AdminController extends Controller
             $user->level = $request->get('level', 1);
             $user->is_admin = $request->get('is_admin', 0);
             $user->reg_ip = $request->getClientIp();
+            $user->referral_uid = 1;
+            $user->traffic_reset_day = 0;
+            $user->status = 1;
             $user->save();
 
             if ($user->id) {
@@ -266,7 +269,9 @@ class AdminController extends Controller
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
                 $user->reg_ip = $request->getClientIp();
-                $user->status = 0;
+                $user->referral_uid = 1;
+                $user->traffic_reset_day = 0;
+                $user->status = 1;
                 $user->save();
 
                 // 初始化默认标签
