@@ -26,7 +26,7 @@
                                             </div>
                                         </div>
                                         <div class="portlet-body">
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
@@ -175,7 +175,7 @@
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <span class="caption-subject font-dark bold">SSR(R)信息</span>
+                                                <span class="caption-subject font-dark bold">代理信息</span>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
@@ -205,7 +205,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="method" class="col-md-3 control-label">加密方式</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="method" id="method">
@@ -234,7 +234,7 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="protocol" class="col-md-3 control-label">协议</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="protocol" id="protocol">
@@ -244,7 +244,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="obfs" class="col-md-3 control-label">混淆</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="obfs" id="obfs">

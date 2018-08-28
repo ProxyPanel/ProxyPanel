@@ -491,7 +491,7 @@
                                                             <label for="is_namesilo" class="col-md-3 control-label">Namesilo</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_namesilo) checked @endif id="is_namesilo" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php" target="_blank">创建API KEY</a>） </span>
+                                                                <span class="help-block"> 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php?rid=326ec20pa" target="_blank">创建API KEY</a>） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">

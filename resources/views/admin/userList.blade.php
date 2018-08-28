@@ -85,7 +85,7 @@
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
                                     <th> 状态 </th>
-                                    <th> SSR(R) </th>
+                                    <th> 代理 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
@@ -123,9 +123,9 @@
                                                 </td>
                                                 <td>
                                                     @if ($user->enable)
-                                                        <span class="label label-info">启用</span>
+                                                        <span class="label label-info"><i class="fa fa-check"></i></span>
                                                     @else
-                                                        <span class="label label-danger">禁用</span>
+                                                        <span class="label label-danger"><i class="fa fa-close"></i></span>
                                                     @endif
                                                 </td>
                                                 <td>
