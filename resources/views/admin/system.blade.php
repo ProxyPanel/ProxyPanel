@@ -72,10 +72,10 @@
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="website_url" value="{{$website_url}}" id="website_url" />
                                                                     <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
-                                                                </span>
+                                                                        <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
+                                                                    </span>
                                                                 </div>
-                                                                <span class="help-block"> 生成重置密码必备，示例：https://www.ssrpanel.com </span>
+                                                                <span class="help-block"> 生成重置密码、有赞云支付必备，示例：https://www.ssrpanel.com </span>
                                                             </div>
                                                         </div>
                                                     </div>
