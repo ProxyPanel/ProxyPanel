@@ -14,6 +14,7 @@ return [
     'home'                            => '我的節點',
     'services'                        => '購買服務',
     'traffic_log'                     => '流量記錄',
+    'help'                            => '援助中心',
     'invite_code'                     => '邀請碼',
     'invoices'                        => '我的帳單',
     'tickets'                         => '服務單',

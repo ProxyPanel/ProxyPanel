@@ -51,7 +51,6 @@ class UserController extends Controller
 
         $view['info'] = $user->toArray();
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
-        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->get();
         $view['wechat_qrcode'] = $this->systemConfig['wechat_qrcode'];
         $view['alipay_qrcode'] = $this->systemConfig['alipay_qrcode'];
         $view['login_add_score'] = $this->systemConfig['login_add_score'];
@@ -399,7 +398,12 @@ class UserController extends Controller
         $view['website_analytics'] = $this->systemConfig['website_analytics'];
         $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
 
-        $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
+        $order = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
+
+        // 处理商品流量信息
+        $order->goods->traffic = flowAutoShow($order->goods->traffic * 1048576);
+
+        $view['order'] = $order;
 
         return Response::view('user/orderDetail', $view);
     }
@@ -1149,6 +1153,17 @@ class UserController extends Controller
         $obj->save();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
+    }
+
+    // 帮助中心
+    public function help(Request $request)
+    {
+        $view['website_logo'] = $this->systemConfig['website_logo'];
+        $view['website_analytics'] = $this->systemConfig['website_analytics'];
+        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(15);
+
+        return Response::view('user/help', $view);
     }
 
     // 更换订阅地址

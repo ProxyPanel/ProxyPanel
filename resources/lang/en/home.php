@@ -14,6 +14,7 @@ return [
     'home'                            => 'Home',
     'services'                        => 'Services',
     'traffic_log'                     => 'Monitor',
+    'help'                            => 'Help',
     'invite_code'                     => 'Invite Code',
     'invoices'                        => 'Invoices',
     'tickets'                         => 'Tickets',

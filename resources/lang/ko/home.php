@@ -14,6 +14,7 @@ return [
     'home'                            => '메인',
     'services'                        => '서버구축',
     'traffic_log'                     => '트래픽',
+    'help'                            => '도와주다',
     'invite_code'                     => '초청코드',
     'invoices'                        => '오더관리',
     'tickets'                         => '고객센트',

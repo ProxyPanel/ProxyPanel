@@ -14,6 +14,7 @@ return [
     'home'                            => 'ノードと情報',
     'services'                        => 'ショップ',
     'traffic_log'                     => '使用記録',
+    'help'                            => '手伝いをする',
     'invite_code'                     => '招待コード',
     'invoices'                        => 'ビル',
     'tickets'                         => 'サポート',
