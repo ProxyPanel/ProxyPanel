@@ -370,7 +370,9 @@ class AdminController extends Controller
                 ];
 
                 if (!empty($password)) {
-                    $data['password'] = md5($password);
+                    if (!(env('APP_DEMO') && $id == 1)) { // 演示环境禁止修改管理员密码
+                        $data['password'] = md5($password);
+                    }
                 }
 
                 User::query()->where('id', $id)->update($data);
