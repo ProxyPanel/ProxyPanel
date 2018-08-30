@@ -63,9 +63,9 @@ class LoginController extends Controller
             if ($request->get('remember')) {
                 $remember_token = makeRandStr(20);
 
-                User::query()->where('id', $user->id)->update(['last_login' => time(), "remember_token" => $remember_token]);
+                User::query()->where('id', $user->id)->update(['last_login' => time(), 'remember_token' => $remember_token]);
             } else {
-                User::query()->where('id', $user->id)->update(['last_login' => time()]);
+                User::query()->where('id', $user->id)->update(['last_login' => time(), 'remember_token' => '']);
             }
 
             // 登录送积分

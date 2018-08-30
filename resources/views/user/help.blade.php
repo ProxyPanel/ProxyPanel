@@ -21,11 +21,6 @@
                     <div class="portlet-body">
                         <div class="table-scrollable table-scrollable-borderless">
                             <table class="table table-hover table-light  order-column">
-                                <thead>
-                                    <tr>
-                                        <th> {{trans('home.ticket_table_title')}} </th>
-                                    </tr>
-                                </thead>
                                 <tbody>
                                 @if($articleList->isEmpty())
                                     <tr>
