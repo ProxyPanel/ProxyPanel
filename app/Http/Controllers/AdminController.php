@@ -209,7 +209,7 @@ class AdminController extends Controller
             $user->expire_time = empty($request->get('expire_time')) ? date('Y-m-d', strtotime("+365 days")) : $request->get('expire_time');
             $user->remark = clean($request->get('remark', ''));
             $user->level = $request->get('level', 1);
-            $user->is_admin = $request->get('is_admin', 0);
+            $user->is_admin = 0;
             $user->reg_ip = $request->getClientIp();
             $user->referral_uid = 1;
             $user->traffic_reset_day = 0;
@@ -304,10 +304,10 @@ class AdminController extends Controller
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
             $password = $request->get('password');
-            $port = $request->get('port');
+            $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
             $transfer_enable = $request->get('transfer_enable');
-            $enable = $request->get('enable');
+            $enable = intval($request->get('enable'));
             $method = $request->get('method');
             $protocol = $request->get('protocol');
             $protocol_param = $request->get('protocol_param', '');
