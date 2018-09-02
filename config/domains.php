@@ -34,5 +34,5 @@ return [
     'neustar', 'ni', 'np', 'nr', 'nyc', 'okinawa', 'pa', 'pg', 'ph', 'pk', 'pn', 'ps', 'py', 'qpon', 'ren', 'rw', 'krd',
     'sd', 'sj', 'sl', 'sohu', 'sr', 'ss', 'sv', 'sz', 'td', 'tg', 'tj', 'tokyo', 'tp', 'trade', 'tt', 'um', 'uno', 'llc',
     'va', 'vi', 'vi', 'vn', 'webcam', 'ye', 'yokohoma', 'ryukyu', 'meet', 'vote', 'lc', 'voto', 'wed', 'zw', 'ooo', 'ltda',
-    'stream', 'wtf', 'observer',
+    'stream', 'wtf', 'observer', 'site',
 ];
