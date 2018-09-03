@@ -42,7 +42,7 @@ class SubscribeController extends Controller
         $subscribe->increment('times', 1);
 
         // 记录每次请求
-        $this->log($subscribe->id, $request->getClientIp(), $request->headers);
+        $this->log($subscribe->id, getClientIp(), $request->headers);
 
         // 获取这个账号可用节点
         $userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');

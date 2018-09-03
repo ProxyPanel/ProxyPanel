@@ -33,7 +33,7 @@ class Muv2
         }
 
         // 验证IP是否在节点IP列表当中
-        $ip = $request->getClientIp();
+        $ip = getClientIp();
         $node = SsNode::query()->where('ip', $ip)->orWhere('ipv6', $ip)->first();
         if (!$node && $ip != '127.0.0.1') {
             return Response::json([

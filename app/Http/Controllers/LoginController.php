@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\QQWry;
 use App\Http\Models\User;
 use App\Http\Models\UserLoginLog;
 use Illuminate\Http\Request;
@@ -86,7 +87,7 @@ class LoginController extends Controller
             }
 
             // 写入登录日志
-            $this->addUserLoginLog($user->id, $request->getClientIp());
+            $this->addUserLoginLog($user->id, getClientIp());
 
             // 重新取出用户信息
             $userInfo = User::query()->where('id', $user->id)->first();
@@ -134,22 +135,22 @@ class LoginController extends Controller
     // 添加用户登录日志
     private function addUserLoginLog($userId, $ip)
     {
-        // 调用淘宝IP接口查询IP信息
-        $ipInfo = $this->getIPInfo($ip);
+        // 解析IP信息
+        $qqwry = new QQWry();
+        $ipInfo = $qqwry->ip($ip);
+        if (!$ipInfo || is_array($ipInfo)) {
+            \Log::warning("获取IP地址信息异常：" . $ip);
+        }
 
         $log = new UserLoginLog();
         $log->user_id = $userId;
         $log->ip = $ip;
-        $log->country = $ipInfo->country;
-        $log->country_id = $ipInfo->country_id;
-        $log->region = $ipInfo->region;
-        $log->region_id = $ipInfo->region_id;
-        $log->city = $ipInfo->city;
-        $log->city_id = $ipInfo->city_id;
-        $log->county = $ipInfo->county;
-        $log->county_id = $ipInfo->county_id;
-        $log->isp = $ipInfo->isp;
-        $log->isp_id = $ipInfo->isp_id;
+        $log->country = $ipInfo['country'];
+        $log->province = $ipInfo['province'];
+        $log->city = $ipInfo['city'];
+        $log->county = $ipInfo['county'];
+        $log->isp = $ipInfo['isp'];
+        $log->area = $ipInfo['area'];
         $log->save();
     }
 

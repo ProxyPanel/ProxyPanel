@@ -157,6 +157,11 @@ ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
+## IP库
+```
+本项目使用的是纯真IP库，如果需要更新IP库文件，请上纯真官网把qqwry.dat下载并覆盖至 storage/qqwrt.dat 文件
+```
+
 ## SSR(R)部署
 ###### 手动部署(基于SSRR 3.2.2，推荐)
 ````
@@ -287,6 +292,7 @@ ntpdate cn.pool.ntp.org
 - [@91yun](https://github.com/91yun)
 - [@Akkariiin](https://github.com/shadowsocksrr)
 - [@tonychanczm](https://github.com/tonychanczm)
-- [ipcheck](https://ipcheck.need.sh)
-- [check-host](https://www.check-host.net)
+- [@ipcheck](https://ipcheck.need.sh)
+- [@check-host](https://www.check-host.net)
+- [@cz88](http://www.cz88.net/index.shtml)
 

@@ -26,7 +26,7 @@ class RegisterController extends Controller
     // 注册页
     public function index(Request $request)
     {
-        $cacheKey = 'register_times_' . md5($request->getClientIp()); // 注册限制缓存key
+        $cacheKey = 'register_times_' . md5(getClientIp()); // 注册限制缓存key
 
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
@@ -172,7 +172,7 @@ class RegisterController extends Controller
             $user->obfs = $this->getDefaultObfs();
             $user->enable_time = date('Y-m-d H:i:s');
             $user->expire_time = date('Y-m-d H:i:s', strtotime("+" . $this->systemConfig['default_days'] . " days"));
-            $user->reg_ip = $request->getClientIp();
+            $user->reg_ip = getClientIp();
             $user->referral_uid = $referral_uid;
             $user->save();
 

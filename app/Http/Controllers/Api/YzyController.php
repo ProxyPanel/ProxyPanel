@@ -27,7 +27,7 @@ class YzyController extends Controller
     // 接收GET请求
     public function index(Request $request)
     {
-        \Log::info("YZY-GET:" . var_export($request->all()) . '[' . $request->getClientIp() . ']');
+        \Log::info("YZY-GET:" . var_export($request->all()) . '[' . getClientIp() . ']');
     }
 
     // 接收POST请求
@@ -38,7 +38,7 @@ class YzyController extends Controller
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
         if (!$data) {
-            Log::info('YZY-POST:回调数据无法解析，可能是非法请求[' . $request->getClientIp() . ']');
+            Log::info('YZY-POST:回调数据无法解析，可能是非法请求[' . getClientIp() . ']');
             exit();
         }
 
@@ -47,7 +47,7 @@ class YzyController extends Controller
         $sign_string = $this->systemConfig['youzan_client_id'] . "" . $msg . "" . $this->systemConfig['youzan_client_secret'];
         $sign = md5($sign_string);
         if ($sign != $data['sign']) {
-            Log::info('YZY-POST:回调数据签名错误，可能是非法请求[' . $request->getClientIp() . ']');
+            Log::info('YZY-POST:回调数据签名错误，可能是非法请求[' . getClientIp() . ']');
             exit();
         } else {
             // 返回请求成功标识给有赞

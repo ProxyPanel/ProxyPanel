@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ccf41f17df4f7e9b6217b36d7d0a8a1",
+    "content-hash": "e9bd00a2f0ae43e05d3039d3261bc76b",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -679,6 +679,64 @@
                 "watermark"
             ],
             "time": "2018-05-29T14:19:03+00:00"
+        },
+        {
+            "name": "itbdw/ip-database",
+            "version": "v2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/itbdw/ip-database.git",
+                "reference": "1b074df1e8092eb0a19abef288b8a47abdba0ae3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/itbdw/ip-database/zipball/1b074df1e8092eb0a19abef288b8a47abdba0ae3",
+                "reference": "1b074df1e8092eb0a19abef288b8a47abdba0ae3",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "itbdw\\Ip\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "itbdw",
+                    "email": "itbudaoweng@gmail.com",
+                    "homepage": "http://github.com/itbdw",
+                    "role": "Developer"
+                },
+                {
+                    "name": "马秉尧"
+                }
+            ],
+            "description": "IP位置数据库（解析为国家、省、市、县、运营商）",
+            "keywords": [
+                "China",
+                "Chinese",
+                "IP",
+                "database",
+                "location",
+                "位置",
+                "地区",
+                "数据库",
+                "纯真"
+            ],
+            "time": "2018-03-25T06:41:36+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",

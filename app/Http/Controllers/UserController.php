@@ -984,9 +984,6 @@ class UserController extends Controller
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
                         User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
                     }
-
-                    // 重置已用流量
-                    User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0]);
                 }
 
                 // 把商品的流量加到账号上
@@ -999,8 +996,12 @@ class UserController extends Controller
                     $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time)));
                 }
 
-                // 更新账号过期时间
-                User::query()->where('id', $user->id)->update(['expire_time' => $expireTime, 'traffic_reset_day' => 1, 'enable' => 1]);
+                // 更新账号过期时间：套餐改流量重置日，重置已用流量
+                if ($goods->type == 2) {
+                    User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'traffic_reset_day' => 1, 'expire_time' => $expireTime, 'enable' => 1]);
+                } else {
+                    User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
+                }
 
                 // 写入用户标签
                 if ($goods->label) {
