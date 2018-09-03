@@ -231,6 +231,14 @@
                         </li>
                     </ul>
                 @endif
+
+                <ul class="list-group">
+                    @foreach($userLoginLog as $log)
+                    <li class="list-group-item">
+                        {{$log->created_at}} | {{$log->ip}} | {{$log->area}} | {{$log->isp}}
+                    </li>
+                    @endforeach
+                </ul>
             </div>
         </div>
         <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">

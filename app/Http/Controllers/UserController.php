@@ -20,6 +20,7 @@ use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
+use App\Http\Models\UserLoginLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
@@ -81,6 +82,9 @@ class UserController extends Controller
 
         $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
         $view['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
+
+        // 近期登录日志
+        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', $user['id'])->limit(10)->get();
 
         // 节点列表
         $userLabelIds = UserLabel::query()->where('user_id', $user['id'])->pluck('label_id');
