@@ -84,7 +84,7 @@ class UserController extends Controller
         $view['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
 
         // 近期登录日志
-        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', $user['id'])->limit(10)->get();
+        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', $user['id'])->orderBy('id', 'desc')->limit(10)->get();
 
         // 节点列表
         $userLabelIds = UserLabel::query()->where('user_id', $user['id'])->pluck('label_id');
