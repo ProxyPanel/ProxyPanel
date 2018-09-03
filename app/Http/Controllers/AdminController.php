@@ -400,7 +400,7 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
             }
         } else {
-            $user = User::query()->with(['label'])->where('id', $id)->first();
+            $user = User::query()->with(['label', 'referral'])->where('id', $id)->first();
             if ($user) {
                 $user->transfer_enable = flowToGB($user->transfer_enable);
 

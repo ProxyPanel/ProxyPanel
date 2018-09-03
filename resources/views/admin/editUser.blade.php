@@ -342,6 +342,13 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <hr>
+                                            <div class="form-group">
+                                                <label for="speed_limit_per_user" class="col-md-3 control-label">邀请人</label>
+                                                <div class="col-md-8">
+                                                    <p class="form-control-static"> {{$user->referral->username}} </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- END SAMPLE FORM PORTLET-->
