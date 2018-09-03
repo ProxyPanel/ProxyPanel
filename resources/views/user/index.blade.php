@@ -235,7 +235,7 @@
                 <ul class="list-group">
                     @foreach($userLoginLog as $log)
                     <li class="list-group-item">
-                        {{$log->created_at}} | {{$log->ip}} | {{$log->area}} | {{$log->isp}}
+                        {{$log->created_at}}&ensp;{{$log->ip}}&ensp;{{$log->area}}&ensp;{{$log->isp}}
                     </li>
                     @endforeach
                 </ul>
