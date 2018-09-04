@@ -268,7 +268,7 @@ class AutoJob extends Command
 
                 DB::commit();
             } catch (\Exception $e) {
-                Log::info('【异常】自动关闭超时未支付订单：' . $e->getMessage());
+                Log::info('【异常】自动关闭超时未支付订单：' . $e);
 
                 DB::rollBack();
             }
