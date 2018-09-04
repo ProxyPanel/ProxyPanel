@@ -47,6 +47,7 @@ class YzyController extends Controller
         $sign_string = $this->systemConfig['youzan_client_id'] . "" . $msg . "" . $this->systemConfig['youzan_client_secret'];
         $sign = md5($sign_string);
         if ($sign != $data['sign']) {
+            Log::info('本地签名：' . $sign_string . ' | 远程签名：' . $data['sign']);
             Log::info('YZY-POST:回调数据签名错误，可能是非法请求[' . getClientIp() . ']');
             exit();
         } else {
