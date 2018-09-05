@@ -138,7 +138,7 @@ class LoginController extends Controller
         // 解析IP信息
         $qqwry = new QQWry();
         $ipInfo = $qqwry->ip($ip);
-        if (!$ipInfo || is_array($ipInfo)) {
+        if (!$ipInfo || !is_array($ipInfo)) {
             \Log::warning("获取IP地址信息异常：" . $ip);
         }
 
