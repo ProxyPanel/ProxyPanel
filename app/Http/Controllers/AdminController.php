@@ -1551,6 +1551,14 @@ EOF;
             if ($request->hasFile('website_home_logo')) {
                 $file = $request->file('website_home_logo');
                 $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back();
+                }
+
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
                 $move = $file->move(base_path() . '/public/upload/image/', $logoName);
                 $websiteHomeLogo = $move ? '/upload/image/' . $logoName : '';
@@ -1562,6 +1570,14 @@ EOF;
             if ($request->hasFile('website_logo')) {
                 $file = $request->file('website_logo');
                 $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back();
+                }
+
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
                 $move = $file->move(base_path() . '/public/upload/image/', $logoName);
                 $websiteLogo = $move ? '/upload/image/' . $logoName : '';
