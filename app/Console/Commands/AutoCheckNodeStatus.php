@@ -9,7 +9,6 @@ use App\Http\Models\EmailLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Mail\nodeCrashWarning;
-use Cache;
 use Mail;
 use Log;
 
@@ -48,7 +47,7 @@ class AutoCheckNodeStatus extends Command
         $nodeList = SsNode::query()->where('status', 1)->get();
         foreach ($nodeList as $node) {
             $tcpCheck = $this->tcpCheck($node->ip);
-            if (false !== $tcpCheck && $tcpCheck > 0) {
+            if (false !== $tcpCheck) {
                 switch ($tcpCheck) {
                     case 1:
                         $text = '服务器宕机';
@@ -64,7 +63,12 @@ class AutoCheckNodeStatus extends Command
                         $text = '正常';
                 }
 
-                $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**", $node->name, $node->server);
+                // 异常才发通知消息
+                if ($tcpCheck > 0) {
+                    $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**", $node->name, $node->server);
+                }
+
+                Log::info("【TCP阻断检测】" . $node->name . ' - ' . $node->ip . ' - ' . $text);
             }
 
             // 10分钟内无节点负载信息且TCP检测认为不是宕机则认为是SSR(R)后端炸了
@@ -72,8 +76,6 @@ class AutoCheckNodeStatus extends Command
             if ($tcpCheck !== 1 && !$nodeTTL) {
                 $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**心跳异常**", $node->name, $node->server);
             }
-
-            Log::info("节点【" . $node->name . "】（" . $node->ip . "）TCP阻断检测完毕");
 
             // 天若有情天亦老，我为长者续一秒
             sleep(1);
@@ -90,19 +92,19 @@ class AutoCheckNodeStatus extends Command
     private function tcpCheck($ip)
     {
         $url = 'https://ipcheck.need.sh/api_v2.php?ip=' . $ip;
-        $result = $this->curlRequest($url);
-        $result = json_decode($result);
-        if (!$result || $result->result != 'success') {
-            \Log::info("【TCP阻断检测】ipcheck.need.sh的TCP阻断检测接口挂了");
+        $ret = $this->curlRequest($url);
+        $ret = json_decode($ret);
+        if (!$ret || $ret->result != 'success') {
+            Log::warning("【TCP阻断检测】ipcheck.need.sh的TCP阻断检测接口挂了");
 
             return false;
         }
 
-        if (!$result->data->inside_gfw->alive && !$result->data->outside_gfw->alive) {
+        if (!$ret->data->inside_gfw->tcp->alive && !$ret->data->outside_gfw->tcp->alive) {
             return 1; // 服务器宕机或者检测接口挂了
-        } elseif ($result->data->inside_gfw->alive && !$result->data->outside_gfw->alive) {
+        } elseif ($ret->data->inside_gfw->tcp->alive && !$ret->data->outside_gfw->tcp->alive) {
             return 2; // 国外访问异常
-        } elseif (!$result->data->inside_gfw->alive && $result->data->outside_gfw->alive) {
+        } elseif (!$ret->data->inside_gfw->tcp->alive && $ret->data->outside_gfw->tcp->alive) {
             return 3; // 被墙
         } else {
             return 0; // 正常
