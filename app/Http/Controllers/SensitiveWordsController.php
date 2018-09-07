@@ -40,4 +40,17 @@ class SensitiveWordsController extends Controller
         }
     }
 
+    // 删除敏感词
+    public function delSensitiveWords(Request $request)
+    {
+        $id = intval($request->get('id'));
+
+        $result = SensitiveWords::query()->where('id', $id)->delete();
+        if ($result) {
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+        } else {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+        }
+    }
+
 }

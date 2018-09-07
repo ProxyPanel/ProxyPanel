@@ -96,6 +96,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
     Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
     Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
+    Route::post("sensitiveWords/del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
 });
 

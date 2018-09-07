@@ -35,18 +35,24 @@
                                 <tr>
                                     <th> # </th>
                                     <th> 敏感词 </th>
+                                    <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($list->isEmpty())
                                     <tr>
-                                        <td colspan="2" style="text-align: center;">暂无数据</td>
+                                        <td colspan="3" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
                                             <td> {{$vo->words}} </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delWord('{{$vo->id}}')">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -113,6 +119,22 @@
             });
 
             layer.close(index);
+        }
+
+        // 删除敏感词
+        function delWord(id)
+        {
+            layer.confirm('确定删除该敏感词？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('sensitiveWords/del')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
+
+                layer.close(index);
+            });
         }
     </script>
 @endsection
