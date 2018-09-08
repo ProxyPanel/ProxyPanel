@@ -32,7 +32,11 @@
 <body class=" login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+    @if($website_home_logo)
+        <a href="javascript:;"> <img src="{{$website_home_logo}}" alt="" style="width:300px; height:90px;"/> </a>
+    @else
+        <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+    @endif
 </div>
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->

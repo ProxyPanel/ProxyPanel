@@ -33,7 +33,7 @@
 <!-- BEGIN LOGO -->
 <div class="logo">
     @if($website_home_logo)
-        <a href="javascript:;"> <img src="{{$website_home_logo}}" alt="" style="width:270px; height:48px;"/> </a>
+        <a href="javascript:;"> <img src="{{$website_home_logo}}" alt="" style="width:300px; height:90px;"/> </a>
     @else
         <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
     @endif

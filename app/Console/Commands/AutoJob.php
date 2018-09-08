@@ -154,7 +154,7 @@ class AutoJob extends Command
                         User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => strtotime(date('Y-m-d H:i:s', strtotime("+" . self::$config['traffic_ban_time'] . " minutes")))]);
 
                         // 写入日志
-                        $this->addUserBanLog($user->id, self::$config['traffic_ban_time'], '【临时封禁代理】-24小时内流量异常');
+                        $this->addUserBanLog($user->id, self::$config['traffic_ban_time'], '【临时封禁代理】-1小时内流量异常');
                     }
                 }
             }

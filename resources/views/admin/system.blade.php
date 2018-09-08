@@ -740,7 +740,7 @@
                                                                     <img src="/assets/images/noimage.png" alt="" />
                                                                 @endif
                                                             </div>
-                                                            <span class="help-block"> 推荐尺寸：270 X 48，透明背景 </span>
+                                                            <span class="help-block"> 推荐尺寸：300 X 90，透明背景 </span>
                                                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
                                                             <div>
                                                                 <span class="btn default btn-file">
@@ -764,7 +764,7 @@
                                                                     <img src="/assets/images/noimage.png" alt="" />
                                                                 @endif
                                                             </div>
-                                                            <span class="help-block"> 推荐尺寸：110 X 20，透明背景 </span>
+                                                            <span class="help-block"> 推荐尺寸：150 X 30，透明背景 </span>
                                                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
                                                             <div>
                                                                 <span class="btn default btn-file">

@@ -1136,7 +1136,8 @@ class UserController extends Controller
 
         // 校验可以提现金额是否超过系统设置的阀值
         $ref_amount = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        if ($ref_amount / 100 < $this->systemConfig['referral_money']) {
+        $ref_amount = $ref_amount / 100;
+        if ($ref_amount < $this->systemConfig['referral_money']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . $this->systemConfig['referral_money'] . '元才可以提现，继续努力吧']);
         }
 

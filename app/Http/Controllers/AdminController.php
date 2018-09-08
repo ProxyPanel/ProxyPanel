@@ -49,12 +49,12 @@ class AdminController extends Controller
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
         $view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->where('t', '>', 0)->count(); // 不活跃用户数
         $view['onlineUserCount'] = User::query()->where('t', '>=', time() - 600)->count(); // 10分钟内在线用户数
-        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<=', date('Y-m-d', strtotime("+" . $this->systemConfig['expire_days'] . " days")))->whereIn('status', [0, 1])->where('enable', 1)->count(); // 临近过期用户数
+        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<', date('Y-m-d', strtotime("+" . $this->systemConfig['expire_days'] . " days")))->whereIn('status', [0, 1])->where('enable', 1)->count(); // 临近过期用户数
         $view['largeTrafficUserCount'] = User::query()->whereRaw('(u + d) >= 107374182400')->whereIn('status', [0, 1])->count(); // 流量超过100G的用户
 
-        // 24小时内流量异常用户
+        // 1小时内流量异常用户
         $tempUsers = [];
-        $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+        $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
         if (!$userTotalTrafficList->isEmpty()) {
             foreach ($userTotalTrafficList as $vo) {
                 if ($vo->totalTraffic > ($this->systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)) {
@@ -145,10 +145,10 @@ class AdminController extends Controller
             $query->where('t', '>', 0)->where('t', '<=', strtotime(date('Y-m-d', strtotime("-" . $this->systemConfig['expire_days'] . " days"))))->where('enable', 1);
         }
 
-        // 24小时内流量异常用户
+        // 1小时内流量异常用户
         if ($flowAbnormal) {
             $tempUsers = [];
-            $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 24 * 60 * 60))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+            $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
             if (!$userTotalTrafficList->isEmpty()) {
                 foreach ($userTotalTrafficList as $vo) {
                     if ($vo->totalTraffic > ($this->systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)) {
@@ -166,7 +166,7 @@ class AdminController extends Controller
             $user->expireWarning = $user->expire_time <= date('Y-m-d', strtotime("+ 30 days")) ? 1 : 0; // 临近过期提醒
 
             // 流量异常警告
-            $time = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
+            $time = date('Y-m-d H:i:s', time() - 3900);
             $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
             $user->trafficWarning = $totalTraffic > ($this->systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024) ? 1 : 0;
         }
