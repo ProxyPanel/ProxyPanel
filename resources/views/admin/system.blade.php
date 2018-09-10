@@ -562,11 +562,27 @@
                                                                 <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”，展示于个人中心 </span>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断探测</label>
+                                                            <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_tcp_check) checked @endif id="is_tcp_check" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 自动检测是否被墙TCP阻断并提醒 </span>
+                                                                <span class="help-block"> 每小时自动检测节点是否被TCP阻断并提醒 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="tcp_check_warning_times" class="col-md-3 control-label">阻断检测提醒</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="tcp_check_warning_times" value="{{$tcp_check_warning_times}}" id="tcp_check_warning_times" placeholder="" />
+                                                                    <span class="input-group-addon">次</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTcpCheckWarningTimes()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 提醒几次后自动下线节点，为0时不限制，不超过12 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1303,6 +1319,24 @@
             var push_bear_qrcode = $("#push_bear_qrcode").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'push_bear_qrcode', value:push_bear_qrcode}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置TCP阻断检测提醒次数
+        function setTcpCheckWarningTimes() {
+            var tcp_check_warning_times = $("#tcp_check_warning_times").val();
+
+            if (tcp_check_warning_times < 0 || tcp_check_warning_times > 12) {
+                layer.msg('只能在0-12之间', {time:1000});
+                return ;
+            }
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'tcp_check_warning_times', value:tcp_check_warning_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
