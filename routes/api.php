@@ -7,4 +7,6 @@ Route::group(['namespace' => 'Api'], function () {
     // 定制客户端
     Route::get('login', 'LoginController@login');
 
+    // PING检测
+    Route::get('ping', 'PingController@ping');
 });

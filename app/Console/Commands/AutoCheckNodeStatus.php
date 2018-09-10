@@ -75,15 +75,19 @@ class AutoCheckNodeStatus extends Command
 
                 // 异常才发通知消息
                 if ($tcpCheck > 0) {
-                    if ($times < self::$config['tcp_check_warning_times']) {
-                        Cache::increment('tcp_check_warning_times_' . $node->id);
+                    if (self::$config['tcp_check_warning_times'] > 0) {
+                        if ($times < self::$config['tcp_check_warning_times']) {
+                            Cache::increment('tcp_check_warning_times_' . $node->id);
 
+                            $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**", $node->name, $node->server);
+                        } elseif ($times >= self::$config['tcp_check_warning_times']) {
+                            Cache::forget('tcp_check_warning_times_' . $node->id);
+                            SsNode::query()->where('id', $node->id)->update(['status' => 0]);
+
+                            $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**，节点自动进入维护状态", $node->name, $node->server);
+                        }
+                    } else {
                         $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**", $node->name, $node->server);
-                    } elseif ($times >= self::$config['tcp_check_warning_times']) {
-                        Cache::forget('tcp_check_warning_times_' . $node->id);
-                        SsNode::query()->where('id', $node->id)->update(['status' => 0]);
-
-                        $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**，节点自动进入维护状态", $node->name, $node->server);
                     }
                 }
 
