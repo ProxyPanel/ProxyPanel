@@ -102,7 +102,7 @@ class LoginController extends Controller
             return Redirect::to('/')->cookie('remember', $remember_token, 36000);
         } else {
             if ($request->cookie("remember")) {
-                $u = User::query()->where("remember_token", $request->cookie("remember"))->first();
+                $u = User::query()->where('status', '>=', 0)->where("remember_token", $request->cookie("remember"))->first();
                 if ($u) {
                     Session::put('user', $u->toArray());
 

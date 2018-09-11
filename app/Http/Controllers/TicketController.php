@@ -97,9 +97,8 @@ class TicketController extends Controller
     public function closeTicket(Request $request)
     {
         $id = $request->get('id');
-        $user = Session::get('user');
 
-        $ticket = Ticket::query()->with(['user'])->where('id', $id)->where('user_id', $user['id'])->first();
+        $ticket = Ticket::query()->with(['user'])->where('id', $id)->first();
         $ticket->status = 2;
         $ret = $ticket->save();
         if (!$ret) {
