@@ -347,6 +347,8 @@ INSERT INTO `config` VALUES ('65', 'website_logo', '');
 INSERT INTO `config` VALUES ('66', 'website_home_logo', '');
 INSERT INTO `config` VALUES ('67', 'is_tcp_check', 0);
 INSERT INTO `config` VALUES ('68', 'tcp_check_warning_times', 3);
+INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
+INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
 
 
 -- ----------------------------
