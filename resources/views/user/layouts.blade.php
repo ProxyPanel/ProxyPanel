@@ -157,7 +157,7 @@
                 @endif
                 <li class="nav-item {{in_array(Request::path(), ['help', 'article']) ? 'active open' : ''}}">
                     <a href="{{url('help')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-bank"></i>
+                        <i class="icon-doc"></i>
                         <span class="title">{{trans('home.help')}}</span>
                     </a>
                 </li>
