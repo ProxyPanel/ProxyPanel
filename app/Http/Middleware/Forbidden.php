@@ -35,7 +35,7 @@ class Forbidden
         $ip = getClientIP();
         $qqwry = new QQWry();
         $ipInfo = $qqwry->ip($ip);
-        if ($ipInfo && is_array($ipInfo) && $ipInfo['country']) {
+        if (is_array($ipInfo) && $ipInfo['country'] != '本机地址' && $ipInfo['country'] != '局域网') {
             $forbidChina = Config::query()->where('name', 'is_forbid_china')->first();
             if ($forbidChina && $forbidChina->value && $ipInfo['country'] == '中国') {
                 Log::info('识别到大陆IP，拒绝访问：' . $ip);
