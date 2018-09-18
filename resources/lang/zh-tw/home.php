@@ -174,4 +174,8 @@ return [
     'logout'                          => '登出',
     'promote_link'                    => '通過您的推廣連結注册並啟動，您和新用戶都會獲得 :traffic 流量獎勵；當他們消費時，您將獲得他們消費金額的 :referral_percent% 作為獎勵。',
     'promote_invite_code'             => '通過您的邀請碼注册並啟動，您和新用戶都會獲得 :traffic 流量獎勵；當他們消費時，您將獲得他們消費金額的 :referral_percent% 作為獎勵。',
+
+    'invite_user_title'               => '邀請記錄',
+    'invite_user_username'            => '用戶名',
+    'invite_user_created_at'          => '註冊時間',
 ];
