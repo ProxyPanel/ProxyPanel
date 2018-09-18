@@ -37,7 +37,7 @@
 <div class="container error-404">
     <h1>403</h1>
     <h2>Request Forbidden</h2>
-    <p> IP or Proxy Forbidden Access </p>
+    <p>IP or Proxy Access Forbidden</p>
 </div>
 <!--[if lt IE 9]>
 <script src="/assets/global/plugins/respond.min.js"></script>

@@ -132,12 +132,14 @@
                                                             <label for="is_forbid_china" class="col-md-3 control-label">阻止大陆访问</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_forbid_china) checked @endif id="is_forbid_china" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 开启后大陆IP禁止访问 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="is_forbid_oversea" class="col-md-3 control-label">阻止海外访问</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_forbid_oversea) checked @endif id="is_forbid_oversea" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 开启后海外IP(含港澳台)禁止访问 </span>
                                                             </div>
                                                         </div>
                                                     </div>
