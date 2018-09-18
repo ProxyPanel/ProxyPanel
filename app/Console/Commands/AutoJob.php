@@ -204,7 +204,7 @@ class AutoJob extends Command
         }
 
         // 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）
-        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', 0)->where('expire_time', '>', date('Y-m-d'))->whereRaw("u + d < transfer_enable")->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', 0)->where('expire_time', '>=', date('Y-m-d'))->whereRaw("u + d < transfer_enable")->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 User::query()->where('id', $user->id)->update(['enable' => 1]);
@@ -237,6 +237,21 @@ class AutoJob extends Command
                 foreach ($userList as $user) {
                     if ($user->port) {
                         User::query()->where('id', $user->id)->update(['port' => 0]);
+                    }
+                }
+            }
+        }
+        
+        // 过期一个月的账户自动释放端口
+        if (self::$config['auto_release_port']) {
+            $userList = User::query()->where('enable', 0)->get();
+            if (!$userList->isEmpty()) {
+                foreach ($userList as $user) {
+                    if ($user->port) {
+                        $overdueDays = floor((strtotime(date('Y-m-d H:i:s')) - strtotime($user->expire_time)) / 86400);
+                        if ($overdueDays > 30) {
+                            User::query()->where('id', $user->id)->update(['port' => 0]);
+                        }
                     }
                 }
             }

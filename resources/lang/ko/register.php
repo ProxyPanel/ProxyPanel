@@ -11,7 +11,7 @@ return [
     'tnc_button'           => '이용약관에 됭의합니다',
     'tnc_link'             => '이용약관',
     'register_alter'       => '서버 점검중입니다',
-    'get_free_code'        => '무료 초청코드 받기',
+    'get_free_code'        => '무료 초대 코드를 받으려면 클릭하십시오.',
     'back'                 => '로그인',
     'submit'               => '가입하기',
     'tnc_title'            => '이용약관에 됭의합니다',

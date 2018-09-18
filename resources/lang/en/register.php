@@ -11,7 +11,7 @@ return [
     'tnc_button'           => 'I have read and agree to obey',
     'tnc_link'             => 'Terms of Service',
     'register_alter'       => 'The system is being maintained',
-    'get_free_code'        => 'Get Free Invite Code',
+    'get_free_code'        => 'Click to get a free invitation code',
     'back'                 => 'Back',
     'submit'               => 'Submit',
     'tnc_title'            => 'I have read and agree to obey',

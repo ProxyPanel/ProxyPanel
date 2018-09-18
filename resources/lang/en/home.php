@@ -7,6 +7,7 @@ return [
     'exchange_subscribe'              => 'Exchange Address',
     'subscribe_warning'               => 'Warning: This subscription address is for personal use only. Do not propagate the address.',
     'reset_password_title'            => 'Reset Password',
+    'username_placeholder'            => 'Please Enter E-mail',
     'system_down'                     => 'The system is being maintained',
     'subscribe_baned'                 => 'Your subscription function has been banned. Please contact the administrator.',
 
@@ -87,7 +88,7 @@ return [
     'service_total_price'             => 'Total Price',
     'service_pay_button'              => 'Pay',
     'services_none'                   => 'None Services',
-    'service_traffic'                 => 'Transfer',
+    'service_traffic'                 => 'Traffic',
     'service_days'                    => 'Term of Validity',
     'service_buy_button'              => 'Order Now',
     'day'                             => 'days',

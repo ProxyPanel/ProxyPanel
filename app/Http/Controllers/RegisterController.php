@@ -223,7 +223,7 @@ class RegisterController extends Controller
                     $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
                 }
 
-                Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，请查看邮箱');
+                Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，如未收到，请查看垃圾邮箱');
             } else {
                 // 如果不需要激活，则直接给推荐人加流量
                 if ($referral_uid) {

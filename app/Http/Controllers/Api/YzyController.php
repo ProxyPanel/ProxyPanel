@@ -126,15 +126,20 @@ class YzyController extends Controller
                     User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
 
                     // 计算账号过期时间
-                    if ($order->user->expire_time < date('Y-m-d')) {
+                    if ($order->user->expire_time < date('Y-m-d', strtotime("+" . $goods->days . " days"))) {
                         $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
                     } else {
-                        $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($order->user->expire_time)));
+                        $expireTime = $order->user->expire_time;
                     }
-
+                    
                     // 套餐就改流量重置日，流量包不改
                     if ($goods->type == 2) {
-                        User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => 1, 'expire_time' => $expireTime, 'enable' => 1]);
+                        if (date('m') == 2 && date('d') == 29) {
+                            $traffic_reset_day = 28;
+                        } else {
+                            $traffic_reset_day = date('d') == 31 ? 30 : abs(date('d'));
+                        }
+                        User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
                     } else {
                         User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
                     }
@@ -177,6 +182,9 @@ class YzyController extends Controller
                         $referralLog->status = 0;
                         $referralLog->save();
                     }
+                    
+                    // 取消重复返利
+                    User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
 
                     DB::commit();
                 } catch (\Exception $e) {

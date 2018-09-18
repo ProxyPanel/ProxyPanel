@@ -7,6 +7,7 @@ return [
     'exchange_subscribe'              => '更换',
     'subscribe_warning'               => '警告：该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量使用情况异常触发自动封号机制。',
     'reset_password_title'            => '重置密码',
+    'username_placeholder'            => '请输入用户名',
     'system_down'                     => '系统维护中',
     'subscribe_baned'                 => '您的订阅功能被禁用，请联系管理员恢复',
 

@@ -49,7 +49,7 @@ class AdminController extends Controller
         $view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
         $view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->where('t', '>', 0)->count(); // 不活跃用户数
         $view['onlineUserCount'] = User::query()->where('t', '>=', time() - 600)->count(); // 10分钟内在线用户数
-        $view['expireWarningUserCount'] = User::query()->where('expire_time', '<', date('Y-m-d', strtotime("+" . $this->systemConfig['expire_days'] . " days")))->whereIn('status', [0, 1])->where('enable', 1)->count(); // 临近过期用户数
+        $view['expireWarningUserCount'] = User::query()->where('expire_time', '>=', date('Y-m-d', strtotime("now")))->where('expire_time', '<=', date('Y-m-d', strtotime("+" . $this->systemConfig['expire_days'] . " days")))->count(); // 临近过期用户数
         $view['largeTrafficUserCount'] = User::query()->whereRaw('(u + d) >= 107374182400')->whereIn('status', [0, 1])->count(); // 流量超过100G的用户
 
         // 1小时内流量异常用户
@@ -132,7 +132,7 @@ class AdminController extends Controller
 
         // 临近过期提醒
         if ($expireWarning) {
-            $query->whereIn('status', [0, 1])->where('expire_time', '<=', date('Y-m-d', strtotime("+" . $this->systemConfig['expire_days'] . " days")));
+            $query->where('expire_time', '>=', date('Y-m-d', strtotime("now")))->where('expire_time', '<=', date('Y-m-d', strtotime("+" . $this->systemConfig['expire_days'] . " days")));
         }
 
         // 当前在线
@@ -163,7 +163,15 @@ class AdminController extends Controller
         foreach ($userList as &$user) {
             $user->transfer_enable = flowAutoShow($user->transfer_enable);
             $user->used_flow = flowAutoShow($user->u + $user->d);
-            $user->expireWarning = $user->expire_time <= date('Y-m-d', strtotime("+ 30 days")) ? 1 : 0; // 临近过期提醒
+            if ($user->expire_time < date('Y-m-d', strtotime("now"))) {
+                $user->expireWarning = -1; // 已过期
+            } elseif ($user->expire_time == date('Y-m-d', strtotime("now"))) {
+                $user->expireWarning = 0; // 今天过期
+            } elseif ($user->expire_time > date('Y-m-d', strtotime("now")) && $user->expire_time <= date('Y-m-d', strtotime("+30 days"))) {
+                $user->expireWarning = 1; // 最近一个月过期
+            } else {
+                $user->expireWarning = 2; // 大于一个月过期
+            }
 
             // 流量异常警告
             $time = date('Y-m-d H:i:s', time() - 3900);
@@ -211,7 +219,7 @@ class AdminController extends Controller
             $user->level = $request->get('level', 1);
             $user->is_admin = 0;
             $user->reg_ip = getClientIp();
-            $user->referral_uid = 1;
+            $user->referral_uid = 0;
             $user->traffic_reset_day = 0;
             $user->status = 1;
             $user->save();
@@ -269,7 +277,7 @@ class AdminController extends Controller
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
                 $user->reg_ip = getClientIp();
-                $user->referral_uid = 1;
+                $user->referral_uid = 0;
                 $user->traffic_reset_day = 0;
                 $user->status = 1;
                 $user->save();

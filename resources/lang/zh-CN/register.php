@@ -11,7 +11,7 @@ return [
     'tnc_button'           => '我已阅读并同意遵守',
     'tnc_link'             => '服务条款',
     'register_alter'       => '系统维护中',
-    'get_free_code'        => '获取免费邀请码',
+    'get_free_code'        => '点击获取免费邀请码',
     'back'                 => '返 回',
     'submit'               => '提 交',
     'tnc_title'            => '我已完整阅读，并承诺遵守',

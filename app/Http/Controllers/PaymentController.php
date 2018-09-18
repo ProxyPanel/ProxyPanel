@@ -43,7 +43,7 @@ class PaymentController extends Controller
 
         // 限购控制
         $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
-        if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
+        if ($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))) {
             $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('is_expire', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
             if ($noneExpireOrderExist) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品不可重复购买']);

@@ -106,8 +106,12 @@
                                                 <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
                                                 <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
                                                 <td class="center">
-                                                    @if ($user->expireWarning)
+                                                    @if ($user->expireWarning == '-1')
+                                                        <span class="label label-danger"> {{$user->expire_time}} </span>
+                                                    @elseif ($user->expireWarning == '0')
                                                         <span class="label label-warning"> {{$user->expire_time}} </span>
+                                                    @elseif ($user->expireWarning == '1')
+                                                        <span class="label label-default"> {{$user->expire_time}} </span>
                                                     @else
                                                         {{$user->expire_time}}
                                                     @endif

@@ -7,11 +7,12 @@ return [
     'exchange_subscribe'              => '주소변경',
     'subscribe_warning'               => '경고: 구독 주소 는 개인적 으로 사용 되 지 말고 이 주소 를 전파 하지 마시오',
     'reset_password_title'            => '비번리셋',
+    'username_placeholder'            => '아이디를 입력하세요',
     'system_down'                     => '서비스 점금중',
     'subscribe_baned'                 => '구독주소가 금지되였습니다,관리자에게 문의해주세요',
 
     // 菜单
-    'home'                            => '메인',
+    'home'                            => '개인 센터',
     'services'                        => '서버구축',
     'traffic_log'                     => '트래픽',
     'help'                            => '도와주다',
@@ -85,7 +86,7 @@ return [
     'service_total_price'             => '합계',
     'service_pay_button'              => '잔액지불',
     'services_none'                   => '내용이 없습니다',
-    'service_traffic'                 => '트래픽 포함',
+    'service_traffic'                 => '함유 흐름',
     'service_days'                    => '휴효기간',
     'service_buy_button'              => '구입',
     'day'                             => '일',

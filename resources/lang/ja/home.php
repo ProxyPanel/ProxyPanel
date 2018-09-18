@@ -7,11 +7,12 @@ return [
     'exchange_subscribe'              => '変更',
     'subscribe_warning'               => '警告：この購読URLは個人用です。このURLは拡散しないでください。それ以外の場合は、アカウントのデータ通信量が異常である可能性があります。',
     'reset_password_title'            => 'パスワードを再設定する',
+    'username_placeholder'            => 'アカウントを入力してください',
     'system_down'                     => 'システムはメンテナンス中です',
     'subscribe_baned'                 => '購読が無効になっています。管理者にお問い合わせください。',
 
     // 菜单
-    'home'                            => 'ノードと情報',
+    'home'                            => 'パーソナルセンター',
     'services'                        => 'ショップ',
     'traffic_log'                     => '使用記録',
     'help'                            => '手伝いをする',
@@ -87,7 +88,7 @@ return [
     'service_total_price'             => '合計',
     'service_pay_button'              => '残額で払う',
     'services_none'                   => '利用可能なサービスはありません',
-    'service_traffic'                 => '月額利用可能',
+    'service_traffic'                 => '流れを含む',
     'service_days'                    => '有効期間',
     'service_buy_button'              => '購入する',
     'day'                             => '日',
