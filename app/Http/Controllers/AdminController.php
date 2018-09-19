@@ -1929,7 +1929,7 @@ EOF;
 
         for ($i = 0; $i < 5; $i++) {
             $obj = new Invite();
-            $obj->uid = $user['id'];
+            $obj->uid = 0;
             $obj->fuid = 0;
             $obj->code = strtoupper(substr(md5(microtime() . makeRandStr()), 8, 12));
             $obj->status = 0;

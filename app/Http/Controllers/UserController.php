@@ -563,7 +563,7 @@ class UserController extends Controller
         $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
         $view['is_invite_register'] = $this->systemConfig['is_invite_register'];
         $view['is_free_code'] = $this->systemConfig['is_free_code'];
-        $view['inviteList'] = Invite::query()->where('uid', 1)->where('status', 0)->paginate();
+        $view['inviteList'] = Invite::query()->where('uid', 0)->where('status', 0)->paginate();
 
         return Response::view('user/free', $view);
     }

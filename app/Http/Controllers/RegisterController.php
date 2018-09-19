@@ -103,8 +103,8 @@ class RegisterController extends Controller
                 }
 
                 // 校验邀请码合法性
-                $code = Invite::query()->where('code', $code)->where('status', 0)->first();
-                if (empty($code)) {
+                $codeEnable = Invite::query()->where('code', $code)->where('status', 0)->first();
+                if (empty($codeEnable)) {
                     Session::flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
 
                     return Redirect::back()->withInput($request->except(['code']));
@@ -132,22 +132,17 @@ class RegisterController extends Controller
             }
 
             // 校验aff对应账号是否存在
-            $aff = $aff ? $aff : $request->cookie('register_aff');
+            $aff = $request->cookie('register_aff') ? $request->cookie('register_aff') : 0;
+            // 优先处理邀请链接
             if ($aff) {
                 $affUser = User::query()->where('id', $aff)->first();
                 $referral_uid = $affUser ? $aff : 0;
-            } else {
+            } elseif($code) {
                 // 如果使用邀请码，则将邀请码也列入aff
-                if ($code) {
-                    $inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
-                    if ($inviteCode) {
-                        $referral_uid = $inviteCode->uid;
-                    } else {
-                        $referral_uid = 0;
-                    }
-                } else {
-                    $referral_uid = 0;
-                }
+                $inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
+                $referral_uid = $inviteCode ? $inviteCode->uid : 0;
+            } else {
+                $referral_uid = 0;
             }
 
             // 获取可用端口
@@ -197,7 +192,7 @@ class RegisterController extends Controller
 
                 // 更新邀请码
                 if ($this->systemConfig['is_invite_register']) {
-                    Invite::query()->where('id', $code->id)->update(['fuid' => $user->id, 'status' => 1]);
+                    Invite::query()->where('id', $inviteCode->id)->update(['fuid' => $user->id, 'status' => 1]);
                 }
             }
 
