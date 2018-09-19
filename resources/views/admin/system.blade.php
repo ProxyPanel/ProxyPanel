@@ -198,7 +198,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setDefaultDays()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 用户注册时默认SSR(R)有效天数 </span>
+                                                                <span class="help-block"> 用户注册时默认账户有效期，为0即当天到期 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
