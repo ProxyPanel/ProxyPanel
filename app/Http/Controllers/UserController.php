@@ -1132,6 +1132,7 @@ class UserController extends Controller
         $view['link'] = $this->systemConfig['website_url'] . '/register?aff=' . $user['id'];
         $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
         $view['referralApplyList'] = ReferralApply::query()->where('user_id', $user['id'])->with('user')->paginate(10);
+        $view['referralUserList'] = User::select(['username','created_at'])->where('referral_uid', $user['id'])->orderBy('id','desc')->paginate(10);
 
         return Response::view('user/referral', $view);
     }

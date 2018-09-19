@@ -173,4 +173,7 @@ return [
     'logout'                          => '로그아웃',
     'promote_link'                    => '보급 링크 등록을 통해 활성화, 양측 모두 :traffic 유량에 장려합니다; 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있는 :referral_percent% 를 장려합니다.',
     'promote_invite_code'             => '요청을 통해 등록 및 활성화, 양측 모두 :traffic 유량에 장려합니다, 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있습니다 :referral_percent% 를 장려합니다',
+    'invite_user_title'               => '초대장',
+    'invite_user_username'            => '사용자 이름',
+    'invite_user_created_at'          => '등록 시간',
 ];

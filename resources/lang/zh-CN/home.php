@@ -175,4 +175,7 @@ return [
     'logout'                          => '退出',
     'promote_link'                    => '通过您的推广链接注册并激活，你们双方都将获得 :traffic 流量奖励；当他们消费时，您将获得他们消费金额的 :referral_percent% 作为奖励。',
     'promote_invite_code'             => '通过您的邀请码注册并激活，你们双方都将获得 :traffic 流量奖励；当他们消费时，您将获得他们消费金额的 :referral_percent% 作为奖励。',
+    'invite_user_title'               => '邀请记录',
+    'invite_user_username'            => '用户名',
+    'invite_user_created_at'          => '注册时间',
 ];

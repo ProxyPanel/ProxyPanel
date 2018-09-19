@@ -39,7 +39,49 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- 邀请记录 -->
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-dark">
+                            <span class="caption-subject bold"> {{trans('home.invite_user_title')}} </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> {{trans('home.invite_user_username')}} </th>
+                                    <th> {{trans('home.invite_user_created_at')}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if($referralUserList->isEmpty())
+                                    <tr>
+                                        <td colspan="6" style="text-align: center;"> {{trans('home.referral_table_none')}} </td>
+                                    </tr>
+                                @else
+                                    @foreach($referralUserList as $key => $vo)
+                                        <tr class="odd gradeX">
+                                            <td> {{$key + 1}} </td>
+                                            <td> {{$vo->username}} </td>
+                                            <td> {{$vo->created_at}} </td>
+                                         </tr>
+                                    @endforeach
+                                @endif
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7 col-sm-7">
+                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                    {{ $referralUserList->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- 推广记录 -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
