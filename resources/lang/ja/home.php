@@ -174,4 +174,8 @@ return [
     'logout'                          => 'ログアウト',
     'promote_link'                    => 'あなたの普及のリンクを通じて登録してアクティブにして、あなたたちの双方はすべて :traffic の流量の奨励を獲得します；彼らが消費する時、あなたは彼らの消費金額の :referral_percent% を獲得することを奨励します。',
     'promote_invite_code'             => 'お客様の招待コードの登録をアクティブにして、あなた達の双方は獲得して :traffic 流量奨励;彼らが消费の時、あなたは獲得して彼らの消費金額の :referral_percent% ご褒美として。',
+
+    'invite_user_title'               => '招待状',
+    'invite_user_username'            => 'ユーザー名',
+    'invite_user_created_at'          => '登録時間',
 ];
