@@ -67,7 +67,7 @@
                                             <td> {{$key + 1}} </td>
                                             <td> {{$vo->username}} </td>
                                             <td> {{$vo->created_at}} </td>
-                                         </tr>
+                                        </tr>
                                     @endforeach
                                 @endif
                                 </tbody>

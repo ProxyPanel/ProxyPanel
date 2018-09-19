@@ -261,8 +261,8 @@ class AutoJob extends Command
     // 自动关闭超时未支付订单
     private function closeOrder()
     {
-        // 自动关闭超时未支付的有赞云订单（有赞云收款二维码超过60分钟自动关闭，我们限制30分钟内必须付款）
-        $paymentList = Payment::query()->with(['order', 'order.coupon'])->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
+        // 自动关闭超时未支付的有赞云订单（有赞云收款二维码超过30分钟自动关闭，我们限制15分钟内必须付款）
+        $paymentList = Payment::query()->with(['order', 'order.coupon'])->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
         if (!$paymentList->isEmpty()) {
             DB::beginTransaction();
             try {
