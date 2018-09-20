@@ -158,7 +158,7 @@ class YzyController extends Controller
             } else {
                 $expireTime = $order->user->expire_time;
             }
-            
+
             // 套餐就改流量重置日，流量包不改
             if ($goods->type == 2) {
                 if (date('m') == 2 && date('d') == 29) {
@@ -211,7 +211,7 @@ class YzyController extends Controller
             }
 
             // 取消重复返利
-            User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);            
+            User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
 
             DB::commit();
         } catch (\Exception $e) {

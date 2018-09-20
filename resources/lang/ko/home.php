@@ -153,7 +153,7 @@ return [
     'ticket_reply_button'             => '답장',
 
     // 推广返利
-    'referral_title'                  => '나의홍보',
+    'referral_title'                  => '수수료',
     'referral_button'                 => '주소사 ',
     'referral_my_link'                => '홍보전용 링크',
     'referral_table_user'             => '소비자',

@@ -51,19 +51,19 @@ class RegisterController extends Controller
                 Session::flash('errorMsg', '请输入用户名');
 
                 return Redirect::back()->withInput();
-            } else if (empty($password)) {
+            } elseif (empty($password)) {
                 Session::flash('errorMsg', '请输入密码');
 
                 return Redirect::back()->withInput();
-            } else if (empty($repassword)) {
+            } elseif (empty($repassword)) {
                 Session::flash('errorMsg', '请重新输入密码');
 
                 return Redirect::back()->withInput();
-            } else if (md5($password) != md5($repassword)) {
+            } elseif (md5($password) != md5($repassword)) {
                 Session::flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back()->withInput($request->except(['password', 'repassword']));
-            } else if (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            } elseif (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
                 Session::flash('errorMsg', '用户名必须是合法邮箱，请重新输入');
 
                 return Redirect::back()->withInput();
@@ -133,12 +133,10 @@ class RegisterController extends Controller
 
             // 校验aff对应账号是否存在
             $aff = $request->cookie('register_aff') ? $request->cookie('register_aff') : 0;
-            // 优先处理邀请链接
-            if ($aff) {
+            if ($aff) { // 优先处理邀请链接
                 $affUser = User::query()->where('id', $aff)->first();
                 $referral_uid = $affUser ? $aff : 0;
-            } elseif($code) {
-                // 如果使用邀请码，则将邀请码也列入aff
+            } elseif ($code) { // 如果使用邀请码，则将邀请码也列入aff
                 $inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
                 $referral_uid = $inviteCode ? $inviteCode->uid : 0;
             } else {

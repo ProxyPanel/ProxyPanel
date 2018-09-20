@@ -48,6 +48,7 @@ class AutoDecGoodsTraffic extends Command
                         User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
                     } else {
                         User::query()->where('id', $order->user_id)->decrement('transfer_enable', $order->goods->traffic * 1048576);
+
                         // 处理已用流量
                         if ($order->user->u + $order->user->d - $order->goods->traffic * 1048576 <= 0) {
                             User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
@@ -55,9 +56,7 @@ class AutoDecGoodsTraffic extends Command
                             // 一般来说d的值远远大于u
                             if ($order->user->d - $order->goods->traffic * 1048576 >= 0) {
                                 User::query()->where('id', $order->user_id)->decrement('d', $order->goods->traffic * 1048576);
-                            }
-                            // 如果d不够减，则减u，然后d置0
-                            else {
+                            } else { // 如果d不够减，则减u，然后d置0
                                 User::query()->where('id', $order->user_id)->decrement('u', $order->goods->traffic * 1048576 - $order->user->d);
                                 User::query()->where('id', $order->user_id)->update(['d' => 0]);
                             }

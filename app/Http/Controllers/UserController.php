@@ -999,7 +999,7 @@ class UserController extends Controller
                 } else {
                     $expireTime = $user->expire_time;
                 }
-                
+
                 // 套餐就改流量重置日，流量包不改
                 if ($goods->type == 2) {
                     if (date('m') == 2 && date('d') == 29) {
@@ -1011,7 +1011,7 @@ class UserController extends Controller
                 } else {
                     User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
                 }
-                
+
                 // 写入用户标签
                 if ($goods->label) {
                     // 用户默认标签
@@ -1043,7 +1043,7 @@ class UserController extends Controller
                 if ($user->referral_uid) {
                     $this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount * $this->systemConfig['referral_percent']);
                 }
-                
+
                 // 取消重复返利
                 User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
 
@@ -1083,7 +1083,7 @@ class UserController extends Controller
         if ($user['score'] < 100) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：满100才可以兑换，请继续累计吧']);
         }
-        
+
         // 账号过期不允许兑换
         if ($user['expire_time'] < date('Y-m-d')) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：账号已过期，请先购买服务吧']);
@@ -1132,7 +1132,7 @@ class UserController extends Controller
         $view['link'] = $this->systemConfig['website_url'] . '/register?aff=' . $user['id'];
         $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
         $view['referralApplyList'] = ReferralApply::query()->where('user_id', $user['id'])->with('user')->paginate(10);
-        $view['referralUserList'] = User::select(['username','created_at'])->where('referral_uid', $user['id'])->orderBy('id','desc')->paginate(10);
+        $view['referralUserList'] = User::select(['username', 'created_at'])->where('referral_uid', $user['id'])->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('user/referral', $view);
     }

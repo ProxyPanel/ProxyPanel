@@ -37,6 +37,7 @@ class UserExpireAutoWarning extends Command
                 if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {
                     continue;
                 }
+
                 // 计算剩余可用时间
                 $lastCanUseDays = ceil(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
                 if ($lastCanUseDays == 0) {

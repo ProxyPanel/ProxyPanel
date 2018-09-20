@@ -39,6 +39,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- 邀请记录 -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
@@ -74,7 +75,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-7 col-sm-7">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $referralUserList->links() }}
                                 </div>
@@ -82,6 +83,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- 推广记录 -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
@@ -193,7 +195,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-7 col-sm-7">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $referralLogList->links() }}
                                 </div>

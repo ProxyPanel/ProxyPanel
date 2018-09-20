@@ -155,7 +155,7 @@ return [
     'ticket_reply_button'             => 'Reply',
 
     // 推广返利
-    'referral_title'                  => 'My Referrals',
+    'referral_title'                  => 'Commissions',
     'referral_button'                 => 'Copy Link',
     'referral_my_link'                => 'My Referral Link',
     'referral_table_user'             => 'Who',

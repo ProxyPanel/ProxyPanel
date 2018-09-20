@@ -42,6 +42,7 @@ class AutoResetUserTraffic extends Command
                         ->where('is_expire', 0)
                         ->orderBy('oid', 'desc')
                         ->first();
+
                     if (!$order) {
                         continue;
                     }

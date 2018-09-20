@@ -155,7 +155,7 @@ return [
     'ticket_reply_button'             => '回復',
 
     // 推广返利
-    'referral_title'                  => '我的推廣',
+    'referral_title'                  => '傭金記錄',
     'referral_button'                 => '複製',
     'referral_my_link'                => '我的推廣連結',
     'referral_table_user'             => '消費者',

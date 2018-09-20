@@ -155,7 +155,7 @@ return [
     'ticket_reply_button'             => '返信',
 
     // 推广返利
-    'referral_title'                  => '私のプロモーション',
+    'referral_title'                  => '口銭',
     'referral_button'                 => 'コピー',
     'referral_my_link'                => '私のプロモーションリンク',
     'referral_table_user'             => '消費者',

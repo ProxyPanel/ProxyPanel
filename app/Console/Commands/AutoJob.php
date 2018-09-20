@@ -218,8 +218,8 @@ class AutoJob extends Command
     // 端口回收与分配
     private function dispatchPort()
     {
-        // 自动分配端口
         if (self::$config['auto_release_port']) {
+            ## 自动分配端口
             $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('port', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
@@ -228,10 +228,8 @@ class AutoJob extends Command
                     User::query()->where('id', $user->id)->update(['port' => $port]);
                 }
             }
-        }
 
-        // 被封禁的账号自动释放端口
-        if (self::$config['auto_release_port']) {
+            ## 被封禁的账号自动释放端口
             $userList = User::query()->where('status', -1)->where('enable', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
@@ -240,10 +238,8 @@ class AutoJob extends Command
                     }
                 }
             }
-        }
-        
-        // 过期一个月的账户自动释放端口
-        if (self::$config['auto_release_port']) {
+
+            ## 过期一个月的账户自动释放端口
             $userList = User::query()->where('enable', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {

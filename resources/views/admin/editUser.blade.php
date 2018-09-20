@@ -346,7 +346,7 @@
                                             <div class="form-group">
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">邀请人</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="referral" value="{{$user->referral ? $user->referral->username : '无邀请人'}}" id="referral" placeholder="" readonly>
+                                                    <p class="form-control-static"> {{$user->referral ? $user->referral->username : '无邀请人'}} </p>
                                                 </div>
                                             </div>
                                         </div>

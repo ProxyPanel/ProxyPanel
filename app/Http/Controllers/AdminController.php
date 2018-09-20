@@ -1925,8 +1925,6 @@ EOF;
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        $user = Session::get('user');
-
         for ($i = 0; $i < 5; $i++) {
             $obj = new Invite();
             $obj->uid = 0;
