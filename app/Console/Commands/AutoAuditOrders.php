@@ -149,14 +149,7 @@ class AutoAuditOrders extends Command
 
                         // 写入返利日志
                         if ($order->user->referral_uid) {
-                            $referralLog = new ReferralLog();
-                            $referralLog->user_id = $order->user_id;
-                            $referralLog->ref_user_id = $order->user->referral_uid;
-                            $referralLog->order_id = $order->oid;
-                            $referralLog->amount = $order->amount;
-                            $referralLog->ref_amount = $order->amount * self::$config['referral_percent'];
-                            $referralLog->status = 0;
-                            $referralLog->save();
+                            $this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount * self::$config['referral_percent']);
                         }
 
                         // 取消重复返利
@@ -183,5 +176,19 @@ class AutoAuditOrders extends Command
         }
 
         return $data;
+    }
+
+    // 添加返利日志
+    public function addReferralLog($userId, $refUserId, $oid, $amount, $refAmount)
+    {
+        $log = new ReferralLog();
+        $log->user_id = $userId;
+        $log->ref_user_id = $refUserId;
+        $log->order_id = $oid;
+        $log->amount = $amount;
+        $log->ref_amount = $refAmount;
+        $log->status = 0;
+
+        return $log->save();
     }
 }

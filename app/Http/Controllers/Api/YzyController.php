@@ -199,14 +199,7 @@ class YzyController extends Controller
 
             // 写入返利日志
             if ($order->user->referral_uid) {
-                $referralLog = new ReferralLog();
-                $referralLog->user_id = $order->user_id;
-                $referralLog->ref_user_id = $order->user->referral_uid;
-                $referralLog->order_id = $order->oid;
-                $referralLog->amount = $order->amount;
-                $referralLog->ref_amount = $order->amount * $this->systemConfig['referral_percent'];
-                $referralLog->status = 0;
-                $referralLog->save();
+                $this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount * $this->systemConfig['referral_percent']);
             }
 
             // 取消重复返利
@@ -281,21 +274,21 @@ class YzyController extends Controller
     // 写入回调请求日志
     private function callbackLog($client_id, $yz_id, $kdt_id, $kdt_name, $mode, $msg, $sendCount, $sign, $status, $test, $type, $version)
     {
-        $paymentCallback = new PaymentCallback();
-        $paymentCallback->client_id = $client_id;
-        $paymentCallback->yz_id = $yz_id;
-        $paymentCallback->kdt_id = $kdt_id;
-        $paymentCallback->kdt_name = $kdt_name;
-        $paymentCallback->mode = $mode;
-        $paymentCallback->msg = urldecode($msg);
-        $paymentCallback->sendCount = $sendCount;
-        $paymentCallback->sign = $sign;
-        $paymentCallback->status = $status;
-        $paymentCallback->test = $test;
-        $paymentCallback->type = $type;
-        $paymentCallback->version = $version;
-        $paymentCallback->save();
+        $obj = new PaymentCallback();
+        $obj->client_id = $client_id;
+        $obj->yz_id = $yz_id;
+        $obj->kdt_id = $kdt_id;
+        $obj->kdt_name = $kdt_name;
+        $obj->mode = $mode;
+        $obj->msg = urldecode($msg);
+        $obj->sendCount = $sendCount;
+        $obj->sign = $sign;
+        $obj->status = $status;
+        $obj->test = $test;
+        $obj->type = $type;
+        $obj->version = $version;
+        $obj->save();
 
-        return $paymentCallback->id;
+        return $obj->id;
     }
 }
