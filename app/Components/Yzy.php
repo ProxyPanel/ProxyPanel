@@ -61,7 +61,15 @@ class Yzy
     {
         $client = new \Youzan\Open\Client($this->accessToken);
 
-        return $client->post('youzan.trade.get', '3.0.0', ['tid' => $tid]);
+        return $client->post('youzan.trade.get', '4.0.0', ['tid' => $tid]);
+    }
+
+    // 通过二维码ID获取已支付的交易信息
+    public function getTradeByQrId($qr_id)
+    {
+        $client = new \Youzan\Open\Client($this->accessToken);
+
+        return $client->post('youzan.trades.qr.get', '3.0.0', ['qr_id' => $qr_id, 'status' => 'TRADE_RECEIVED']);
     }
 
     // 系统配置

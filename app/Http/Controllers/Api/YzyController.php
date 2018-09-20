@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Components\Yzy;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
