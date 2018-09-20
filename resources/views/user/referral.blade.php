@@ -39,7 +39,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 邀请记录 -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
@@ -68,7 +67,6 @@
                                             <td> {{$key + 1}} </td>
                                             <td> {{$vo->username}} </td>
                                             <td> {{$vo->created_at}} </td>
-
                                         </tr>
                                     @endforeach
                                 @endif
@@ -84,7 +82,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 推广记录 -->
                 <div class="portlet light bordered">
                     <div class="portlet-title">

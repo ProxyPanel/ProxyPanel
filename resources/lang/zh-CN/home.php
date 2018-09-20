@@ -7,6 +7,7 @@ return [
     'exchange_subscribe'              => '更换',
     'subscribe_warning'               => '警告：该订阅地址仅限个人使用，请勿传播该地址，否则会导致您的账号流量使用情况异常触发自动封号机制。',
     'reset_password_title'            => '重置密码',
+    'username_placeholder'            => '请输入用户名',
     'system_down'                     => '系统维护中',
     'subscribe_baned'                 => '您的订阅功能被禁用，请联系管理员恢复',
 
@@ -174,7 +175,6 @@ return [
     'logout'                          => '退出',
     'promote_link'                    => '通过您的推广链接注册并激活，你们双方都将获得 :traffic 流量奖励；当他们消费时，您将获得他们消费金额的 :referral_percent% 作为奖励。',
     'promote_invite_code'             => '通过您的邀请码注册并激活，你们双方都将获得 :traffic 流量奖励；当他们消费时，您将获得他们消费金额的 :referral_percent% 作为奖励。',
-
     'invite_user_title'               => '邀请记录',
     'invite_user_username'            => '用户名',
     'invite_user_created_at'          => '注册时间',

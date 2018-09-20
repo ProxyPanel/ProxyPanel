@@ -198,7 +198,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setDefaultDays()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 用户注册时默认SSR(R)有效天数 </span>
+                                                                <span class="help-block"> 用户注册时默认账户有效期，为0即当天到期 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -318,11 +318,21 @@
                                                                             selected
                                                                             @endif
                                                                     >不限制</option>
+                                                                    <option value="package"
+                                                                            @if ($goods_purchase_limit_strategy == 'package')
+                                                                            selected
+                                                                            @endif
+                                                                    >仅限套餐</option>
                                                                     <option value="free"
                                                                             @if ($goods_purchase_limit_strategy == 'free')
                                                                             selected
                                                                             @endif
                                                                     >仅限免费商品</option>
+                                                                    <option value="package&free"
+                                                                            @if ($goods_purchase_limit_strategy == 'package&free')
+                                                                            selected
+                                                                            @endif
+                                                                    >限套餐和免费商品</option>
                                                                     <option value="all"
                                                                             @if ($goods_purchase_limit_strategy == 'all')
                                                                             selected
@@ -685,7 +695,7 @@
                                                             <label for="auto_release_port" class="col-md-3 control-label">端口自动释放</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($auto_release_port) checked @endif id="auto_release_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 被封禁的用户端口自动释放 </span>
+                                                                <span class="help-block"> 被封禁和过期一个月的用户端口自动释放 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">

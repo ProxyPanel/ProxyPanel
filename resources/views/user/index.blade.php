@@ -184,9 +184,15 @@
             </div>
             <div class="col-md-4" style="padding-left: 3px;">
                 <ul class="list-group">
+                    @if($info['enable'])
                     <li class="list-group-item">
-                        {{trans('home.account_status')}}：{{$info['enable'] ? trans('home.enabled') : trans('home.disabled') }}
+                            {{trans('home.account_status')}}：{{trans('home.enabled')}}
+                        </li>
+                    @else
+                        <li class="list-group-item list-group-item-danger">
+                            {{trans('home.account_status')}}：{{trans('home.disabled')}}
                     </li>
+                    @endif
                     @if($login_add_score)
                         <li class="list-group-item">
                             {{trans('home.account_score')}}：{{$info['score']}}
@@ -201,9 +207,15 @@
                             <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">{{trans('home.recharge')}}</a>
                         </span>
                     </li>
+                    @if(date('Y-m-d') > $info['expire_time'])
+                        <li class="list-group-item list-group-item-danger">
+                            {{trans('home.account_expire')}}：{{trans('home.expired')}}
+                        </li>
+                    @else
                     <li class="list-group-item">
-                        {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? trans('home.expired') : $info['expire_time']}}
+                            {{trans('home.account_expire')}}：{{$info['expire_time']}}
                     </li>
+                    @endif
                     <li class="list-group-item">
                         {{trans('home.account_last_usage')}}：{{empty($info['t']) ? trans('home.never_used') : date('Y-m-d H:i:s', $info['t'])}}
                     </li>

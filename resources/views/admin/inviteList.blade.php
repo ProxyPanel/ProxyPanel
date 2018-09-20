@@ -65,7 +65,13 @@
                                                     <td> {{$invite->id}} </td>
                                                     <td> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                     <td> {{$invite->dateline}} </td>
-                                                    <td> {{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}} </td>
+                                                    <td> 
+                                                        @if($invite->uid == '0')
+                                                            {{'系统生成'}}
+                                                        @else
+                                                            {{empty($invite->generator) ? '账号已删除' : $invite->generator->username}}
+                                                        @endif
+                                                    </td>
                                                     <td>
                                                         @if($invite->status == '0')
                                                             <span class="label label-sm label-success"> 未使用 </span>
