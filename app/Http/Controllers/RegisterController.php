@@ -189,7 +189,7 @@ class RegisterController extends Controller
                 }
 
                 // 更新邀请码
-                if ($this->systemConfig['is_invite_register']) {
+                if ($this->systemConfig['is_invite_register'] && $aff == 0) {
                     Invite::query()->where('id', $inviteCode->id)->update(['fuid' => $user->id, 'status' => 1]);
                 }
             }
