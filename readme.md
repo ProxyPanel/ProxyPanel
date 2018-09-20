@@ -18,11 +18,11 @@
 18.订阅防投毒机制
 19.自动释放端口机制，防止端口被大量长期占用
 20.有赞云支付
-21.封特定国家、地区、封IP段（开发中）
+21.可以阻止大陆或者海外访问
 22.中转节点（开发中）
 23.强大的营销管理：PushBear群发消息
 24.telegram机器人（开发中）
-25.防墙监测，节点被墙自动提醒（TCP阻断）
+25.防墙监测，节点被墙自动提醒、自动下线（TCP阻断）
 ````
 
 ## 演示&交流
@@ -31,6 +31,7 @@
 演示站：http://demo.ssrpanel.com
 telegram订阅频道：https://t.me/ssrpanel
 ````
+官网搭建于Azure，由代理商 [@LesHutt](https://t.me/LesHutt) 提供，由需求可以找他买
 
 ## 捐赠
 **以太坊钱包** : 0x968f797f194fcec05ea571723199748b58de38ba
@@ -46,14 +47,14 @@ PHP 7.1 （必须）
 MYSQL 5.5 （推荐5.6+）
 内存 1G+ 
 磁盘空间 10G+
-PHP必须开启zip、xml、curl、gd、gd2、fileinfo、openssl、mbstring组件
+PHP必须开启zip、xml、curl、gd2、fileinfo、openssl、mbstring组件
 安装完成后记得编辑.env中 APP_DEBUG 改为 false
 ````
 
 #### 拉取代码
 ````
 cd /home/wwwroot/
-git clone https://github.com/ssrpanel/SSRPanel.git
+git clone https://github.com/ssrpanel/ssrpanel.git
 ````
 
 #### 配置数据库
@@ -65,13 +66,13 @@ git clone https://github.com/ssrpanel/SSRPanel.git
 
 #### 安装面板
 ````
-cd SSRPanel/
+cd ssrpanel/
 cp .env.example .env
 （然后 vi .env 修改数据库的连接信息）
 php composer.phar install
 php artisan key:generate
 chown -R www:www storage/
-chmod -R 777 storage/
+chmod -R 755 storage/
 ````
 
 #### 加入NGINX的URL重写规则
@@ -106,7 +107,7 @@ service php-fpm restart
 ## 定时任务
 ````
 crontab加入如下命令（请自行修改php、ssrpanel路径）：
-* * * * * php /home/wwwroot/SSRPanel/artisan schedule:run >> /dev/null 2>&1
+* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
 
 注意运行权限，必须跟ssrpanel项目权限一致，否则出现各种莫名其妙的错误
 例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
@@ -152,7 +153,7 @@ crontab -e -u www
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
-cd /home/wwwroot/SSRPanel/storage/app
+cd /home/wwwroot/ssrpanel/storage/app
 ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
@@ -167,7 +168,7 @@ chown www:www ssserver.log
 ````
 git clone https://github.com/ssrpanel/shadowsocksr.git
 cd shadowsocksr
-sh initcfg.sh
+sh ./setup_cymysql2.sh
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
 ````
 
@@ -178,20 +179,6 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpan
 或者使用另一个脚本
 
 wget -N --no-check-certificate https://raw.githubusercontent.com/maxzh0916/Shadowsowcks1Click/master/Shadowsowcks1Click.sh;chmod +x Shadowsowcks1Click.sh;./Shadowsowcks1Click.sh
-````
-
-## 更新代码
-````
-进到ssrpanel目录下执行：
-git pull
-
-如果每次更新都会出现数据库文件被覆盖，请先执行一次：
-chmod a+x fix_git.sh && sh fix_git.sh
-
-如果本地自行改了文件，想用回原版代码，请直接执行以下命令：
-chmod a+x update.sh && sh update.sh
-
-如果更新完代码各种错误，请先执行一遍 php composer.phar install
 ````
 
 ## 网卡流量监控一键脚本（Vnstat）
@@ -256,6 +243,7 @@ vim user-config.json
 2.强制更新： sh ./update.sh 
 
 如果你更改了本地文件，手动更新会提示错误需要合并代码（自己搞定），强制更新会直接覆盖你本地所有更改过的文件
+如果更新完代码各种错误，请先执行一遍 php composer.phar install
 ````
 
 ## 校时
@@ -272,7 +260,7 @@ ntpdate cn.pool.ntp.org
 
 ## 二开规范
 ````
-如果有小伙伴要基于本程序进行二次开发，自行定制，请谨记一下规则（如果愿意提PR我也很欢迎）
+如果有小伙伴要基于本程序进行二次开发，自行定制，请谨记一下规则（欢迎提PR，我会免费拉你入小群的）
 1.数据库表字段请务必使用蟒蛇法，严禁使用驼峰法
 2.写完代码最好格式化，该空格一定要空格，该注释一定要注释，便于他人阅读代码
 3.本项目中ajax返回格式都是 {"status":"fail 或者 success", "data":[数据], "message":"文本消息提示语"}
@@ -293,6 +281,5 @@ ntpdate cn.pool.ntp.org
 - [@Akkariiin](https://github.com/shadowsocksrr)
 - [@tonychanczm](https://github.com/tonychanczm)
 - [@ipcheck](https://ipcheck.need.sh)
-- [@check-host](https://www.check-host.net)
 - [@cz88](http://www.cz88.net/index.shtml)
 
