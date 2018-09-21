@@ -92,7 +92,7 @@
                                                 @else
                                                     @foreach($inviteList as $key => $invite)
                                                         <tr>
-                                                            <td style="width: 50%; text-align: center;"> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
+                                                            <td style="width: 50%; text-align: center;"> <a href="{{url('register?code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                             <td style="width: 50%; text-align: center;"> {{$invite->dateline}} </td>
                                                         </tr>
                                                     @endforeach

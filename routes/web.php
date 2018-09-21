@@ -100,7 +100,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
 });
 
-Route::group(['middleware' => ['forbidden', 'user', 'affiliate']], function () {
+Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::any('/', 'UserController@index'); // 用户首页
     Route::any('article', 'UserController@article'); // 文章详情
     Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
