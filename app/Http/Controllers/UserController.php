@@ -1142,6 +1142,11 @@ class UserController extends Controller
     {
         $user = Session::get('user');
 
+        // 判断账户是否过期
+        if ($user['expire_time'] < date('Y-m-d')) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：账号已过期，请先购买服务吧']);
+        }
+
         // 判断是否已存在申请
         $referralApply = ReferralApply::query()->where('user_id', $user['id'])->whereIn('status', [0, 1])->first();
         if ($referralApply) {
