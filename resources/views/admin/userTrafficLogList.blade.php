@@ -15,7 +15,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 余额变动记录 </span>
+                            <span class="caption-subject bold uppercase"> 流量变动记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -35,9 +35,8 @@
                                     <th> # </th>
                                     <th> 用户名 </th>
                                     <th> 订单ID </th>
-                                    <th> 操作前余额 </th>
-                                    <th> 发生金额 </th>
-                                    <th> 操作后金额 </th>
+                                    <th> 变动前流量 </th>
+                                    <th> 变动后流量 </th>
                                     <th> 描述 </th>
                                     <th> 发生时间 </th>
                                 </tr>
@@ -51,7 +50,7 @@
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
-                                                <td> {!! empty($vo->user) ? '【账号已删除】' : '<a href="/admin/userBalanceLogList?username=' . $vo->user->username . '">' . $vo->user->username . '</a>' !!} </td>
+                                                <td> {!! empty($vo->user) ? '【账号已删除】' : '<a href="/admin/userTrafficLogList?username=' . $vo->user->username . '">' . $vo->user->username . '</a>' !!} </td>
                                                 <td> {{$vo->order_id}} </td>
                                                 <td> {{$vo->before}} </td>
                                                 <td> {{$vo->amount}} </td>
@@ -89,12 +88,12 @@
         function do_search() {
             var username = $("#username").val();
 
-            window.location.href = '{{url('admin/userBalanceLogList')}}' + '?username=' + username;
+            window.location.href = '{{url('admin/userTrafficLogList')}}' + '?username=' + username;
         }
 
         // 重置
         function do_reset() {
-            window.location.href = '{{url('admin/userBalanceLogList')}}';
+            window.location.href = '{{url('admin/userTrafficLogList')}}';
         }
     </script>
 @endsection

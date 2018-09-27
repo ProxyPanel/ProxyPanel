@@ -53,7 +53,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
-                                    <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
+                                    <option value="" @if(Request::get('status') == '') selected @endif>账号状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
@@ -61,7 +61,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="enable" id="enable" onChange="doSearch()">
-                                    <option value="" @if(Request::get('enable') == '') selected @endif>SSR(R)状态</option>
+                                    <option value="" @if(Request::get('enable') == '') selected @endif>代理状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>

@@ -64,18 +64,18 @@ class AutoCheckNodeStatus extends Command
                         $text = '正常';
                 }
 
-                // 已通知次数
-                $cacheKey = 'tcp_check_warning_times_' . $node->id;
-                if (Cache::has($cacheKey)) {
-                    $times = Cache::get($cacheKey);
-                } else {
-                    Cache::put($cacheKey, 1, 725); // 因为每小时检测一次，最多设置提醒12次，12*60=720分钟缓存时效，多5分钟防止异常
-                    $times = 1;
-                }
-
                 // 异常才发通知消息
-                if ($tcpCheck > 0) {
-                    if (self::$config['tcp_check_warning_times'] > 0) {
+                if ($tcpCheck) {
+                    if (self::$config['tcp_check_warning_times']) {
+                        // 已通知次数
+                        $cacheKey = 'tcp_check_warning_times_' . $node->id;
+                        if (Cache::has($cacheKey)) {
+                            $times = Cache::get($cacheKey);
+                        } else {
+                            Cache::put($cacheKey, 1, 725); // 因为每小时检测一次，最多设置提醒12次，12*60=720分钟缓存时效，多5分钟防止异常
+                            $times = 1;
+                        }
+
                         if ($times < self::$config['tcp_check_warning_times']) {
                             Cache::increment('tcp_check_warning_times_' . $node->id);
 

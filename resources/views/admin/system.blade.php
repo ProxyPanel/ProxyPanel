@@ -585,7 +585,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setPushBearQrCode()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”，展示于个人中心 </span>
+                                                                <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6"></div>
@@ -660,7 +660,7 @@
                                                             <label for="is_traffic_ban" class="col-md-3 control-label">异常自动封号</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_traffic_ban) checked @endif id="is_traffic_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 1小时内流量超过异常阈值则自动封号（仅禁用SSR(R)） </span>
+                                                                <span class="help-block"> 1小时内流量超过异常阈值则自动封号（仅禁用代理） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">

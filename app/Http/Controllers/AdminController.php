@@ -28,6 +28,7 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\UserTrafficLog;
+use App\Http\Models\UserTrafficModifyLog;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Http\Request;
@@ -2150,6 +2151,24 @@ EOF;
         $view['list'] = $query->paginate(15);
 
         return Response::view('admin/userBanLogList', $view);
+    }
+
+    // 用户流量变动记录
+    public function userTrafficLogList(Request $request)
+    {
+        $username = trim($request->get('username'));
+
+        $query = UserTrafficModifyLog::query()->with(['user', 'order'])->orderBy('id', 'desc');
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        $view['list'] = $query->paginate(15);
+
+        return Response::view('admin/userTrafficLogList', $view);
     }
 
     // 转换成某个用户的身份
