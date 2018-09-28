@@ -543,7 +543,7 @@ class AdminController extends Controller
                 $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
                 $ssNode->sort = intval($request->get('sort', 0));
                 $ssNode->status = intval($request->get('status', 1));
-                $ssNode->enable_check = intval($request->get('enable_check',1));
+                $ssNode->is_tcp_check = intval($request->get('is_tcp_check',1));
                 $ssNode->save();
 
                 // 建立分组关联
@@ -646,7 +646,7 @@ class AdminController extends Controller
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
                     'sort'            => intval($request->get('sort', 0)),
                     'status'          => intval($request->get('status')),
-                    'enable_check'    => intval($request->get('enable_check'))
+                    'is_tcp_check'    => intval($request->get('is_tcp_check'))
                 ];
 
                 SsNode::query()->where('id', $id)->update($data);

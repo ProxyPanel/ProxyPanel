@@ -122,11 +122,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="enable_check" class="col-md-3 control-label">定时检测</label>
+                                                        <label for="is_tcp_check" class="col-md-3 control-label">定时检测</label>
                                                         <div class="col-md-8">
-                                                            <select class="form-control" name="enable_check" id="enable_check">
-                                                                <option value="1" {{$node->enable_check == '1' ? 'selected' : ''}}>开启</option>
-                                                                <option value="0" {{$node->enable_check == '0' ? 'selected' : ''}}>关闭</option>
+                                                            <select class="form-control" name="is_tcp_check" id="is_tcp_check">
+                                                                <option value="1" {{$node->is_tcp_check == '1' ? 'selected' : ''}}>开启</option>
+                                                                <option value="0" {{$node->is_tcp_check == '0' ? 'selected' : ''}}>关闭</option>
                                                             </select>
                                                             <span class="help-block"> 启用后会定时检测服务器的连通性 </span>
                                                         </div>
@@ -389,13 +389,13 @@
             var single_obfs = $('#single_obfs').val();
             var sort = $('#sort').val();
             var status = $('#status').val();
-            var enable_check = $('#enable_check').val();
+            var is_tcp_check = $('#is_tcp_check').val();
 
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, ssh_port:ssh_port, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status, enable_check:enable_check},
+                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, ssh_port:ssh_port, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status, is_tcp_check:is_tcp_check},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
