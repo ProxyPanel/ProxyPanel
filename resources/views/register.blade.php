@@ -97,7 +97,7 @@
             @if($is_invite_register)
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.code')}}</label>
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" @if($is_invite_register == 2) required @endif />
                 </div>
                 @if($is_free_code)
                     <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
