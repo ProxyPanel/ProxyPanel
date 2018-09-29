@@ -152,22 +152,13 @@
                         <span class="title">订单管理</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle', 'admin/articleLogList']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
+                    <a href="{{url('admin/articleList')}}" class="nav-link">
                         <i class="fa fa-file-word-o"></i>
                         <span class="title">文章管理</span>
-                        <span class="arrow"></span>
                     </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/articleList')}}" class="nav-link ">
-                                <i class="fa fa-file-archive-o"></i>
-                                <span class="title">文章列表</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userTrafficLogList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userTrafficLogList', 'admin/userRebateList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="fa fa-users"></i>
                         <span class="title">用户管理</span>
@@ -190,6 +181,12 @@
                             <a href="{{url('admin/userTrafficLogList')}}" class="nav-link ">
                                 <i class="fa fa-bar-chart"></i>
                                 <span class="title">流量变动记录</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['admin/userRebateList']) ? 'active open' : ''}}">
+                            <a href="{{url('admin/userRebateList')}}" class="nav-link ">
+                                <i class="fa fa-credit-card"></i>
+                                <span class="title">返利流水记录</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
@@ -275,7 +272,7 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/analysis']) ? 'active open' : ''}}">
                             <a href="{{url('admin/analysis')}}" class="nav-link">
-                                <i class="icon-bar-chart"></i>
+                                <i class="fa fa-bar-chart"></i>
                                 <span class="title">日志分析</span>
                             </a>
                         </li>
