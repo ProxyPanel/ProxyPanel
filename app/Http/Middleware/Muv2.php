@@ -4,35 +4,41 @@ namespace App\Http\Middleware;
 
 use App\Http\Models\SsNode;
 use Closure;
+use Response;
 use Redirect;
 
 class Muv2
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
-     *
-     * @return mixed
-     */
     public function handle($request, Closure $next)
     {
-        // 验证mukey
-        $muKey = $request->header("Token", '');
-        if ($muKey != $_ENV['MU_KEY']) { // TODO:改造成每个节点都有一个mukey
-            return response()->json([
+        \Log::info(json_encode($request->header()));
+
+        # v2ray客户端提交参数说明
+        # https://github.com/catpie/musdk-go/blob/master/http.go
+        # 传入参数：
+        # Token:mu_key
+        # ServiceType:5 ---> https://github.com/catpie/musdk-go/blob/master/ret.go
+        # Content-Type:application/json
+
+        //$serviceType = $request->header('ServiceType'); //
+        //$agent = $request->header('user-agent'); // Go-http-client/1.1
+
+        // 验证MU_KEY
+        $token = $request->header("Token", '');
+        if ($token != $_ENV['MU_KEY']) {
+            return Response::json([
                 'ret' => 0,
-                'msg' => 'token or source is invalid'
+                'msg' => 'Invalid Token.'
             ], 401);
         }
 
         // 验证IP是否在节点IP列表当中
-        $node = SsNode::query()->where('ip', $_SERVER["REMOTE_ADDR"])->orWhere('ipv6', $_SERVER["REMOTE_ADDR"])->first();
-        if (!$node && $_SERVER["REMOTE_ADDR"] != '127.0.0.1') {
-            return response()->json([
+        $ip = getClientIp();
+        $node = SsNode::query()->where('ip', $ip)->orWhere('ipv6', $ip)->first();
+        if (!$node && $ip != '127.0.0.1') {
+            return Response::json([
                 'ret' => 0,
-                'msg' => 'token or source is invalid'
+                'msg' => 'Invalid Token.'
             ], 401);
         }
 

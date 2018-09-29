@@ -109,7 +109,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('user/makeInvite')}}",
+                url: "{{url('makeInvite')}}",
                 async: false,
                 data: {_token:_token},
                 dataType: 'json',

@@ -2,18 +2,20 @@
 
 return [
     'panel'                           => '控制台',
-    'subscribe_address'               => '我的訂閱地址',
+    'subscribe_address'               => '訂閱服務',
     'copy_subscribe_address'          => '複製',
     'exchange_subscribe'              => '更換',
     'subscribe_warning'               => '注意：該訂閱地址僅限個人使用，請勿傳播該地址，這會導致您的帳號流量使用情况异常。',
     'reset_password_title'            => '重置密碼',
+    'username_placeholder'            => '請輸入用戶名',
     'system_down'                     => '系統維護中',
     'subscribe_baned'                 => '您的訂閱功能被暫時禁用，請聯系管理員恢復',
 
     // 菜单
-    'home'                            => '我的節點',
+    'home'                            => '個人中心',
     'services'                        => '購買服務',
     'traffic_log'                     => '流量記錄',
+    'help'                            => '援助中心',
     'invite_code'                     => '邀請碼',
     'invoices'                        => '我的帳單',
     'tickets'                         => '服務單',
@@ -86,7 +88,7 @@ return [
     'service_total_price'             => '合計',
     'service_pay_button'              => '餘額支付',
     'services_none'                   => '暫無可用服務',
-    'service_traffic'                 => '内含流量',
+    'service_traffic'                 => '內含流量',
     'service_days'                    => '有效期',
     'service_buy_button'              => '購買',
     'day'                             => '天',
@@ -107,7 +109,7 @@ return [
     'invite_code_make'                => '生成邀請碼',
     'invite_code_button'              => '生成',
     'invite_code_tips1'               => '可生成',
-    'invite_code_tips2'               => '个邀請碼',
+    'invite_code_tips2'               => '枚邀請碼，7日內有效',
     'invite_code_my_codes'            => '我的邀請碼',
     'invite_code_table_name'          => '邀請碼',
     'invite_code_table_date'          => '有效期',
@@ -123,6 +125,7 @@ return [
     'invoice_title'                   => '消費記錄',
     'invoice_table_id'                => '編號',
     'invoice_table_name'              => '服務',
+    'invoice_table_pay_way'           => '支付方式',
     'invoice_table_price'             => '金額',
     'invoice_table_create_date'       => '購買日期',
     'invoice_table_expire_at'         => '到期時間',
@@ -133,6 +136,7 @@ return [
     'invoice_table_wait_confirm'      => '待確認',
     'invoice_table_wait_active'       => '使用中',
     'invoice_table_expired'           => '已過期',
+    'invoice_table_goods_deleted'     => '[服務已刪除]',
 
     // 工单
     'ticket_title'                    => '我的服務單',
@@ -151,7 +155,7 @@ return [
     'ticket_reply_button'             => '回復',
 
     // 推广返利
-    'referral_title'                  => '我的推廣',
+    'referral_title'                  => '傭金記錄',
     'referral_button'                 => '複製',
     'referral_my_link'                => '我的推廣連結',
     'referral_table_user'             => '消費者',
@@ -171,4 +175,7 @@ return [
     'logout'                          => '登出',
     'promote_link'                    => '通過您的推廣連結注册並啟動，您和新用戶都會獲得 :traffic 流量獎勵；當他們消費時，您將獲得他們消費金額的 :referral_percent% 作為獎勵。',
     'promote_invite_code'             => '通過您的邀請碼注册並啟動，您和新用戶都會獲得 :traffic 流量獎勵；當他們消費時，您將獲得他們消費金額的 :referral_percent% 作為獎勵。',
+    'invite_user_title'               => '邀請記錄',
+    'invite_user_username'            => '用戶名',
+    'invite_user_created_at'          => '註冊時間',
 ];

@@ -122,6 +122,16 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label for="is_tcp_check" class="col-md-3 control-label">定时检测</label>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="is_tcp_check" id="is_tcp_check">
+                                                                <option value="1" selected>开启</option>
+                                                                <option value="0">关闭</option>
+                                                            </select>
+                                                            <span class="help-block"> 启用后会定时检测服务器的连通性 </span>
+                                                        </div>
+                                                    </div>
                                                     <hr />
                                                     <div class="form-group">
                                                         <label for="single" class="col-md-3 control-label">单端口</label>
@@ -225,10 +235,16 @@
                                                     <div class="form-group">
                                                         <label for="compatible" class="col-md-3 control-label">兼容SS</label>
                                                         <div class="col-md-8">
-                                                            <select class="form-control" name="compatible" id="compatible">
-                                                                <option value="0" selected>否</option>
-                                                                <option value="1">是</option>
-                                                            </select>
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="compatible" value="1"> 是
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="compatible" value="0" checked> 否
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
                                                             <span class="help-block"> 如果兼容请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
                                                         </div>
                                                     </div>
@@ -362,7 +378,7 @@
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
             var ssh_port = $('#ssh_port').val();
-            var compatible = $('#compatible').val();
+            var compatible = $("input:radio[name='compatible']:checked").val();
             var single = $('#single').val();
             var single_force = $('#single_force').val();
             var single_port = $('#single_port').val();
@@ -372,12 +388,13 @@
             var single_obfs = $('#single_obfs').val();
             var sort = $('#sort').val();
             var status = $('#status').val();
+            var is_tcp_check = $('#is_tcp_check').val();
 
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/addNode')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, ssh_port:ssh_port, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:'{{csrf_token()}}', name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, ssh_port:ssh_port, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status, is_tcp_check:is_tcp_check},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

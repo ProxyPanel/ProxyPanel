@@ -1,6 +1,8 @@
 /node_modules
 /public/upload
-/storage/framework
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
 /storage/logs
 /storage/app/public
 /storage/*.key

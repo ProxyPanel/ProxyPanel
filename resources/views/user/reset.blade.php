@@ -30,109 +30,108 @@
 </head>
 
 <body class=" login">
-<!-- BEGIN LOGO -->
-<div class="logo">
-    <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
-</div>
-<!-- END LOGO -->
-<!-- BEGIN LOGIN -->
-<div class="content">
-    <nav style="padding-bottom: 20px;text-align: center;">
-        @if(app()->getLocale() == 'zh-CN')
-            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
-            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
-            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
-        @elseif(app()->getLocale() == 'zh-tw')
-            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
-            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
-            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
-        @elseif(app()->getLocale() == 'en')
-            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
-            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
-            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
-            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
-        @elseif(app()->getLocale() == 'ko')
-            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
-            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
-            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
-        @elseif(app()->getLocale() == 'ja')
-            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
-            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
-            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
-            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
-        @else
-        @endif
-    </nav>
-    <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
-        @if(Session::get('errorMsg'))
-            <div class="alert alert-danger">
-                <button class="close" data-close="alert"></button>
-                <span> {{Session::get('errorMsg')}} </span>
-            </div>
-        @endif
-        @if(Session::get('successMsg'))
-            <div class="alert alert-success">
-                <button class="close" data-close="alert"></button>
-                <span> {{Session::get('successMsg')}} </span>
-            </div>
-        @endif
-        @if ($verify->status > 0 && empty(Session::get('errorMsg')) && empty(Session::get('successMsg')))
-            <div class="alert alert-danger">
-                <button class="close" data-close="alert"></button>
-                <span> 该链接已失效 </span>
-            </div>
-        @else
-            <div class="form-title">
-                <span class="form-title">设置新密码</span>
-            </div>
-            <div class="form-group">
-                <label class="control-label visible-ie8 visible-ie9">密码</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="" required />
-                <input type="hidden" name="_token" value="{{csrf_token()}}" />
-            </div>
-            <div class="form-group">
-                <label class="control-label visible-ie8 visible-ie9">重复密码</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="重复密码" name="repassword" value="" required />
-            </div>
-        @endif
-        <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">返 回</button>
-            @if ($verify->status == 0)
-                <button type="submit" class="btn red uppercase pull-right">提 交</button>
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+        <nav style="padding-bottom: 20px;text-align: center;">
+            @if(app()->getLocale() == 'zh-CN')
+                <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+                <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+                <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+                <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+            @elseif(app()->getLocale() == 'zh-tw')
+                <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+                <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+                <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+                <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+            @elseif(app()->getLocale() == 'en')
+                <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+                <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+                <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+                <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+            @elseif(app()->getLocale() == 'ko')
+                <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+                <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+                <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+                <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            @elseif(app()->getLocale() == 'ja')
+                <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+                <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+                <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+                <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+            @else
             @endif
-        </div>
-    </form>
-    <!-- END REGISTRATION FORM -->
-</div>
-
-<!-- END LOGIN -->
-<!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script>
-<script src="/assets/global/plugins/ie8.fix.min.js"></script>
-<![endif]-->
-<!-- BEGIN CORE PLUGINS -->
-<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL PLUGINS -->
-<script type="text/javascript">
-    // 登录
-    function login() {
-        window.location.href = '{{url('login')}}';
-    }
-</script>
-<!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
-<!-- END THEME GLOBAL SCRIPTS -->
+        </nav>
+        <!-- BEGIN REGISTRATION FORM -->
+        <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
+            @if(Session::get('errorMsg'))
+                <div class="alert alert-danger">
+                    <button class="close" data-close="alert"></button>
+                    <span> {{Session::get('errorMsg')}} </span>
+                </div>
+            @endif
+            @if(Session::get('successMsg'))
+                <div class="alert alert-success">
+                    <button class="close" data-close="alert"></button>
+                    <span> {{Session::get('successMsg')}} </span>
+                </div>
+            @endif
+            @if ($verify->status > 0 && empty(Session::get('errorMsg')) && empty(Session::get('successMsg')))
+                <div class="alert alert-danger">
+                    <button class="close" data-close="alert"></button>
+                    <span> 该链接已失效 </span>
+                </div>
+            @else
+                <div class="form-title">
+                    <span class="form-title">设置新密码</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label visible-ie8 visible-ie9">密码</label>
+                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="密码" name="password" value="" required />
+                    <input type="hidden" name="_token" value="{{csrf_token()}}" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label visible-ie8 visible-ie9">重复密码</label>
+                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="重复密码" name="repassword" value="" required />
+                </div>
+            @endif
+            <div class="form-actions">
+                <button type="button" class="btn btn-default" onclick="login()">返 回</button>
+                @if ($verify->status == 0)
+                    <button type="submit" class="btn red uppercase pull-right">提 交</button>
+                @endif
+            </div>
+        </form>
+        <!-- END REGISTRATION FORM -->
+    </div>
+    <!-- END LOGIN -->
+    <!--[if lt IE 9]>
+    <script src="/assets/global/plugins/respond.min.js"></script>
+    <script src="/assets/global/plugins/excanvas.min.js"></script>
+    <script src="/assets/global/plugins/ie8.fix.min.js"></script>
+    <![endif]-->
+    <!-- BEGIN CORE PLUGINS -->
+    <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <script type="text/javascript">
+        // 登录
+        function login() {
+            window.location.href = '{{url('login')}}';
+        }
+    </script>
+    <!-- BEGIN THEME GLOBAL SCRIPTS -->
+    <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
+    <!-- END THEME GLOBAL SCRIPTS -->
 </body>
 
 </html>

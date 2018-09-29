@@ -53,7 +53,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
-                                    <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
+                                    <option value="" @if(Request::get('status') == '') selected @endif>账号状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
@@ -61,7 +61,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="enable" id="enable" onChange="doSearch()">
-                                    <option value="" @if(Request::get('enable') == '') selected @endif>SSR(R)状态</option>
+                                    <option value="" @if(Request::get('enable') == '') selected @endif>代理状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>
@@ -85,7 +85,7 @@
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
                                     <th> 状态 </th>
-                                    <th> SSR(R) </th>
+                                    <th> 代理 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
@@ -99,15 +99,19 @@
                                             <tr class="odd gradeX {{$user->trafficWarning ? 'danger' : ''}}">
                                                 <td> {{$user->id}} </td>
                                                 <td> {{$user->username}} </td>
-                                                <td> <span class="label label-danger"> {{$user->port}} </span> </td>
+                                                <td> <span class="label label-danger"> {{$user->port ? $user->port : '未分配'}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->method}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->protocol}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->obfs}} </span> </td>
                                                 <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
                                                 <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
                                                 <td class="center">
-                                                    @if ($user->expireWarning)
+                                                    @if ($user->expireWarning == '-1')
+                                                        <span class="label label-danger"> {{$user->expire_time}} </span>
+                                                    @elseif ($user->expireWarning == '0')
                                                         <span class="label label-warning"> {{$user->expire_time}} </span>
+                                                    @elseif ($user->expireWarning == '1')
+                                                        <span class="label label-default"> {{$user->expire_time}} </span>
                                                     @else
                                                         {{$user->expire_time}}
                                                     @endif
@@ -123,9 +127,9 @@
                                                 </td>
                                                 <td>
                                                     @if ($user->enable)
-                                                        <span class="label label-info">启用</span>
+                                                        <span class="label label-info"><i class="fa fa-check"></i></span>
                                                     @else
-                                                        <span class="label label-danger">禁用</span>
+                                                        <span class="label label-danger"><i class="fa fa-close"></i></span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -141,6 +145,7 @@
                                                     <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">
                                                         <i class="fa fa-refresh"></i>
                                                     </button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="switchToUser('{{$user->id}}')">切</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -247,7 +252,7 @@
 
         // 重置流量
         function resetTraffic(id) {
-            layer.confirm('确定重置该用户流量吗？', {icon: 2, title:'警告'}, function(index) {
+            layer.confirm('确定重置该用户流量吗？', {icon: 7, title:'警告'}, function(index) {
                 $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
@@ -257,6 +262,26 @@
                 });
 
                 layer.close(index);
+            });
+        }
+
+        // 切换用户身份
+        function switchToUser(user_id) {
+            $.ajax({
+                'url': "{{url("/admin/switchToUser")}}",
+                'data': {
+                    'user_id': user_id,
+                    '_token': '{{csrf_token()}}'
+                },
+                'dataType': "json",
+                'type': "POST",
+                success: function (ret) {
+                    layer.msg(ret.message, {time: 1000}, function () {
+                        if (ret.status == 'success') {
+                            window.location.href = "/";
+                        }
+                    });
+                }
             });
         }
     </script>

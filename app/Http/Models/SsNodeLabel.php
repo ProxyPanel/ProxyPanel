@@ -15,4 +15,9 @@ class SsNodeLabel extends Model
     protected $table = 'ss_node_label';
     protected $primaryKey = 'id';
     public $timestamps = false;
+
+    public function labelInfo()
+    {
+        return $this->hasOne(Label::class, 'id', 'label_id');
+    }
 }

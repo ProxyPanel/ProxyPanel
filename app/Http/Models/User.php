@@ -25,6 +25,11 @@ class User extends Model
         return $this->hasMany(UserLabel::class, 'user_id', 'id');
     }
 
+    function referral()
+    {
+        return $this->hasOne(User::class, 'id', 'referral_uid');
+    }
+
     function getBalanceAttribute($value)
     {
         return $value / 100;

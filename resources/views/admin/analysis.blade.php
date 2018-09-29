@@ -15,7 +15,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 日志分析 </span>
+                            <span class="caption-subject bold uppercase"> 日志分析 </span><small>仅适用于单机单节点</small>
                         </div>
                     </div>
                     <div class="portlet-body">

@@ -144,7 +144,7 @@
                                 <div class="form-group">
                                     <label for="sort" class="col-md-3 control-label">排序</label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" name="sort" value="1" id="sort" placeholder="">
+                                        <input type="text" class="form-control" name="sort" value="{{$goods->sort}}" id="sort" placeholder="">
                                         <span class="help-block"> 值越大排越前 </span>
                                     </div>
                                 </div>

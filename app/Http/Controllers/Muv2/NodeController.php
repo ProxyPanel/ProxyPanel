@@ -25,9 +25,7 @@ class NodeController extends Controller
 
         $node = SsNode::query()->where('id', $nodeId)->first(); // 节点是否存在
         if (!$node) {
-            return Response::json([
-                "ret" => 0
-            ], 400);
+            return Response::json(["ret" => 0], 400);
         }
 
         // 找出该节点的标签
@@ -36,8 +34,8 @@ class NodeController extends Controller
         // 找出有相同标签的用户
         $userLabels = UserLabel::query()->whereIn('label_id', $nodeLabels)->pluck('user_id');
 
-        //提取用户信息
-        $userIds = User::query()->where('enable', 1)->whereIn('id', $userLabels)->where('id', '<>', $this->systemConfig['free_node_users_id'])->pluck('id')->toArray();
+        // 提取用户信息
+        $userIds = User::query()->whereIn('status', [0, 1])->where('enable', 1)->whereIn('id', $userLabels)->where('id', '<>', $this->systemConfig['free_node_users_id'])->pluck('id')->toArray();
         $users = User::query()->where('id', '<>', $this->systemConfig['free_node_users_id'])->select(
             "id", "username", "passwd", "t", "u", "d", "transfer_enable",
             "port", "protocol", "obfs", "enable", "expire_time as expire_time_d", "method",
@@ -117,13 +115,13 @@ class NodeController extends Controller
         $log->log_time = time();
 
         if (!$log->save()) {
-            return response()->json([
+            return Response::json([
                 "ret" => 0,
-                "msg" => "update failed",
+                "msg" => "update failed"
             ]);
         }
 
-        return response()->json([
+        return Response::json([
             "ret" => 1,
             "msg" => "ok",
         ]);
@@ -143,13 +141,13 @@ class NodeController extends Controller
         $log->log_time = time();
 
         if (!$log->save()) {
-            return response()->json([
+            return Response::json([
                 "ret" => 0,
                 "msg" => "update failed",
             ]);
         }
 
-        return response()->json([
+        return Response::json([
             "ret" => 1,
             "msg" => "ok",
         ]);
@@ -179,7 +177,7 @@ class NodeController extends Controller
             $this->addUserTrafficLog($vo['user_id'], $nodeId, $vo['u'], $vo['d'], $node->traffic_rate);
         }
 
-        return response()->json([
+        return Response::json([
             'ret' => 1,
             "msg" => "ok",
         ]);

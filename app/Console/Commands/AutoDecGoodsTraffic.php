@@ -8,13 +8,13 @@ use App\Http\Models\Order;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Http\Models\GoodsLabel;
-
 use Log;
+use DB;
 
 class AutoDecGoodsTraffic extends Command
 {
     protected $signature = 'autoDecGoodsTraffic';
-    protected $description = '自动扣减用户到期流量包的流量';
+    protected $description = '自动扣减用户到期商品的流量';
 
     public function __construct()
     {
@@ -25,7 +25,7 @@ class AutoDecGoodsTraffic extends Command
     {
         $jobStartTime = microtime(true);
 
-        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
+        $orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '<', date('Y-m-d H:i:s'))->get();
         if (!$orderList->isEmpty()) {
             $config = $this->systemConfig();
 
@@ -35,17 +35,32 @@ class AutoDecGoodsTraffic extends Command
                 $defaultLabels = explode(',', $config['initial_labels_for_user']);
             }
 
-            foreach ($orderList as $order) {
-                if (empty($order->user) || empty($order->goods)) {
-                    continue;
-                }
+            DB::beginTransaction();
+            try {
+                foreach ($orderList as $order) {
+                    Order::query()->where('oid', $order->oid)->update(['is_expire' => 1]);
 
-                // 到期自动处理
-                if (date("Y-m-d H:i:s") >= $order->expire_at) {
+                    if (empty($order->user) || empty($order->goods)) {
+                        continue;
+                    }
+
                     if ($order->user->transfer_enable - $order->goods->traffic * 1048576 <= 0) {
-                        User::query()->where('id', $order->user_id)->update(['transfer_enable' => 0]);
+                        User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
                     } else {
                         User::query()->where('id', $order->user_id)->decrement('transfer_enable', $order->goods->traffic * 1048576);
+
+                        // 处理已用流量
+                        if ($order->user->u + $order->user->d - $order->goods->traffic * 1048576 <= 0) {
+                            User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
+                        } else {
+                            // 一般来说d的值远远大于u
+                            if ($order->user->d - $order->goods->traffic * 1048576 >= 0) {
+                                User::query()->where('id', $order->user_id)->decrement('d', $order->goods->traffic * 1048576);
+                            } else { // 如果d不够减，则减u，然后d置0
+                                User::query()->where('id', $order->user_id)->decrement('u', $order->goods->traffic * 1048576 - $order->user->d);
+                                User::query()->where('id', $order->user_id)->update(['d' => 0]);
+                            }
+                        }
                     }
 
                     // 删除该商品对应用户的所有标签
@@ -55,20 +70,21 @@ class AutoDecGoodsTraffic extends Command
                     $goodsIds = Order::query()->where('user_id', $order->user->id)->where('oid', '<>', $order->oid)->where('status', 2)->where('is_expire', 0)->groupBy('goods_id')->pluck('goods_id')->toArray();
                     $goodsLabels = GoodsLabel::query()->whereIn('goods_id', $goodsIds)->groupBy('label_id')->pluck('label_id')->toArray();
 
-                    // 标签去重
-                    $labels = array_merge($goodsLabels, $defaultLabels);
-                    $labels = array_unique($labels);
-                    $labels = array_values($labels);
+                    // 生成标签
+                    $labels = array_values(array_unique(array_merge($goodsLabels, $defaultLabels))); // 标签去重
                     foreach ($labels as $vo) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $order->user->id;
                         $userLabel->label_id = $vo;
                         $userLabel->save();
                     }
-
-
-                    Order::query()->where('oid', $order->oid)->update(['is_expire' => 1]);
                 }
+
+                DB::commit();
+            } catch (\Exception $e) {
+                \Log::error($this->description . '：' . $e);
+
+                DB::rollBack();
             }
         }
 

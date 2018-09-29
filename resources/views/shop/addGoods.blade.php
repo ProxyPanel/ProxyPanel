@@ -59,7 +59,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">名称</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" name="name" value="" id="name" placeholder="" required>
+                                        <input type="text" class="form-control" name="name" value="{{Request::old('name')}}" id="name" placeholder="" required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                     </div>
                                 </div>
@@ -86,14 +86,14 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">描述</label>
                                     <div class="col-md-6">
-                                        <textarea class="form-control" rows="2" name="desc" id="desc" placeholder="商品的简单描述"></textarea>
+                                        <textarea class="form-control" rows="2" name="desc" id="desc" placeholder="商品的简单描述">{{Request::old('desc')}}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">售价</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="price" value="" id="price" placeholder="" required>
+                                            <input type="text" class="form-control" name="price" value="{{Request::old('price')}}" id="price" placeholder="" required>
                                             <span class="input-group-addon">元</span>
                                         </div>
                                     </div>
@@ -141,7 +141,7 @@
                                 <div class="form-group">
                                     <label for="sort" class="control-label col-md-3">排序</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" name="sort" value="1" id="sort" placeholder="">
+                                        <input type="text" class="form-control" name="sort" value="{{Request::old('sort')}}" id="sort" placeholder="">
                                         <span class="help-block"> 值越大排越前 </span>
                                     </div>
                                 </div>

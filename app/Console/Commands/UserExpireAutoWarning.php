@@ -7,6 +7,7 @@ use App\Http\Models\Config;
 use App\Http\Models\User;
 use App\Http\Models\EmailLog;
 use App\Mail\userExpireWarning;
+use App\Mail\userExpireWarningToday;
 use Mail;
 use Log;
 
@@ -29,15 +30,27 @@ class UserExpireAutoWarning extends Command
         $config = $this->systemConfig();
 
         if ($config['expire_warning']) {
-            $userList = User::query()->where('transfer_enable', '>', 0)->where('status', '>=', 0)->where('enable', 1)->get();
+            // 只取SSR没被禁用的用户，其他不用管
+            $userList = User::query()->where('enable', 1)->get();
             foreach ($userList as $user) {
                 // 用户名不是邮箱的跳过
                 if (false === filter_var($user->username, FILTER_VALIDATE_EMAIL)) {
                     continue;
                 }
 
-                $lastCanUseDays = floor(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
-                if ($lastCanUseDays > 0 && $lastCanUseDays <= $config['expire_days']) {
+                // 计算剩余可用时间
+                $lastCanUseDays = ceil(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
+                if ($lastCanUseDays == 0) {
+                    $title = '账号过期提醒';
+                    $content = '您的账号将于今天晚上【24:00】过期。';
+
+                    try {
+                        Mail::to($user->username)->send(new userExpireWarningToday($config['website_name']));
+                        $this->sendEmailLog($user->id, $title, $content);
+                    } catch (\Exception $e) {
+                        $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                    }
+                } elseif ($lastCanUseDays > 0 && $lastCanUseDays <= $config['expire_days']) {
                     $title = '账号过期提醒';
                     $content = '您的账号还剩' . $lastCanUseDays . '天即将过期。';
 

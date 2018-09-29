@@ -19,7 +19,7 @@
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <textarea class="form-control" rows="33" name="content" id="content" placeholder="请填入要反解析的SSR(R)链接，一行一条" autofocus></textarea>
+                                <textarea class="form-control" rows="33" name="content" id="content" placeholder="请填入要反解析的ShadowsocksR链接，一行一条" autofocus></textarea>
                             </div>
                             <div class="col-md-6">
                                 <textarea class="form-control" rows="33" name="result" id="result" readonly="readonly"></textarea>

@@ -39,7 +39,7 @@
                                     <th> 发生金额 </th>
                                     <th> 操作后金额 </th>
                                     <th> 描述 </th>
-                                    <th> 操作时间 </th>
+                                    <th> 发生时间 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -51,7 +51,7 @@
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
-                                                <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
+                                                <td> {!! empty($vo->user) ? '【账号已删除】' : '<a href="/admin/userBalanceLogList?username=' . $vo->user->username . '">' . $vo->user->username . '</a>' !!} </td>
                                                 <td> {{$vo->order_id}} </td>
                                                 <td> {{$vo->before}} </td>
                                                 <td> {{$vo->amount}} </td>

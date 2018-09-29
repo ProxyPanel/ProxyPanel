@@ -38,13 +38,11 @@ class SubscribeController extends Controller
             exit($this->noneNode());
         }
 
-        // TODO：需要加入防探测机制
-
         // 更新访问次数
         $subscribe->increment('times', 1);
 
         // 记录每次请求
-        $this->log($subscribe->id, $request->getClientIp(), $request->headers);
+        $this->log($subscribe->id, getClientIp(), $request->headers);
 
         // 获取这个账号可用节点
         $userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');
@@ -82,8 +80,7 @@ class SubscribeController extends Controller
             $protocol_param = $node['single'] ? $user->port . ':' . $user->passwd : $user->protocol_param;
 
             // 生成ssr scheme
-            $ssr_str = '';
-            $ssr_str .= ($node['server'] ? $node['server'] : $node['ip']) . ':' . ($node['single'] ? $node['single_port'] : $user->port);
+            $ssr_str = ($node['server'] ? $node['server'] : $node['ip']) . ':' . ($node['single'] ? $node['single_port'] : $user->port);
             $ssr_str .= ':' . ($node['single'] ? $node['single_protocol'] : $user->protocol) . ':' . ($node['single'] ? $node['single_method'] : $user->method);
             $ssr_str .= ':' . ($node['single'] ? $node['single_obfs'] : $user->obfs) . ':' . ($node['single'] ? base64url_encode($node['single_passwd']) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);

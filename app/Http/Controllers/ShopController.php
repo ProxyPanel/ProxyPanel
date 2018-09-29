@@ -39,7 +39,7 @@ class ShopController extends Controller
             $name = $request->get('name');
             $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
-            $price = intval($request->get('price', 0));
+            $price = $request->get('price', 0);
             $score = intval($request->get('score', 0));
             $type = intval($request->get('type', 1));
             $days = intval($request->get('days', 90));
@@ -67,9 +67,9 @@ class ShopController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            // 流量不能超过1PB
-            if ($traffic > 1073741824) {
-                Session::flash('errorMsg', '内含流量不能超过1PB');
+            // 流量不能超过10TB
+            if ($traffic > 10240000) {
+                Session::flash('errorMsg', '内含流量不能超过10TB');
 
                 return Redirect::back()->withInput();
             }
@@ -79,6 +79,14 @@ class ShopController extends Controller
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
                 $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back()->withInput();
+                }
+
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
                 $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';
@@ -141,7 +149,7 @@ class ShopController extends Controller
             $desc = $request->get('desc');
             $price = $request->get('price', 0);
             $labels = $request->get('labels');
-            $sort = intval($request->get('sort'));
+            $sort = intval($request->get('sort', 0));
             $status = $request->get('status');
 
             $goods = Goods::query()->where('id', $id)->first();
@@ -169,6 +177,14 @@ class ShopController extends Controller
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
                 $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back()->withInput();
+                }
+
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
                 $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';

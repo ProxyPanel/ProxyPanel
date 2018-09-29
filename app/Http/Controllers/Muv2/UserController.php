@@ -7,6 +7,7 @@ use App\Http\Models\SsNode;
 use App\Http\Models\User;
 use App\Http\Models\UserTrafficLog;
 use Illuminate\Http\Request;
+use Response;
 
 class UserController extends Controller
 {
@@ -24,9 +25,7 @@ class UserController extends Controller
             $user['expire_time'] = strval((new \DateTime($user['expire_time_d']))->getTimestamp()); // datetime 转timestamp
         }
 
-        return response()->json([
-            "data" => $users
-        ]);
+        return Response::json(["data" => $users]);
     }
 
     // 更新流量到user表
@@ -45,18 +44,13 @@ class UserController extends Controller
         $user->d = $user->d + ($d * $node->traffic_rate);
 
         if (!$user->save()) {
-            return response()->json([
-                "msg" => "update failed",
-            ], 400);
+            return Response::json(["msg" => "update failed",], 400);
         }
 
         // 记录流量日志
         $this->addUserTrafficLog($userId, $nodeId, $u, $d, $node->traffic_rate);
 
-        return response()->json([
-            'ret' => 1,
-            "msg" => "ok",
-        ]);
+        return Response::json(['ret' => 1, "msg" => "ok",]);
     }
 
     // 写入流量日志

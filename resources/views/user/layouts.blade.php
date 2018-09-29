@@ -41,9 +41,9 @@
         <!-- BEGIN LOGO -->
         <div class="page-logo">
             @if($website_logo)
-                <a href="{{url('/user')}}"><img src="{{$website_logo}}" alt="logo" class="logo-default" style="width:110px; height:20px;"/> </a>
+                <a href="{{url('/')}}"><img src="{{$website_logo}}" alt="logo" class="logo-default" style="width:150px; height:30px;"/> </a>
             @else
-                <a href="{{url('/user')}}"><img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
+                <a href="{{url('/')}}"><img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
             @endif
             <div class="menu-toggler sidebar-toggler">
                 <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
@@ -73,7 +73,7 @@
                                 </li>
                             @endif
                             <li>
-                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i>{{trans('home.profile')}}</a>
+                                <a href="{{url('profile')}}"> <i class="icon-user"></i>{{trans('home.profile')}}</a>
                             </li>
                             <li class="divider"> </li>
                             <li>
@@ -110,51 +110,57 @@
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{in_array(Request::path(), ['/', 'user', 'user/subscribe', 'user/profile', 'user/article']) ? 'active open' : ''}}">
-                    <a href="{{url('user')}}" class="nav-link nav-toggle">
+                <li class="nav-item start {{in_array(Request::path(), ['/', 'subscribe', 'profile']) ? 'active open' : ''}}">
+                    <a href="/" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
                         <span class="title">{{trans('home.home')}}</span>
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) || Request::segment(1) == 'payment' ? 'active open' : ''}}">
-                    <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['services']) || in_array(Request::segment(1), ['buy', 'payment']) ? 'active open' : ''}}">
+                    <a href="{{url('services')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
                         <span class="title">{{trans('home.services')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/orderList']) ? 'active open' : ''}}">
-                    <a href="{{url('user/orderList')}}" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['invoices']) || Request::segment(1) == 'invoice' ? 'active open' : ''}}">
+                    <a href="{{url('invoices')}}" class="nav-link nav-toggle">
                         <i class="icon-wallet"></i>
                         <span class="title">{{trans('home.invoices')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/ticketList', 'user/replyTicket']) ? 'active open' : ''}}">
-                    <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['tickets', 'replyTicket']) ? 'active open' : ''}}">
+                    <a href="{{url('tickets')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
                         <span class="title">{{trans('home.tickets')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
-                    <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}">
+                    <a href="{{url('invite')}}" class="nav-link nav-toggle">
                         <i class="icon-user-follow"></i>
                         <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">
-                    <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['trafficLog']) ? 'active open' : ''}}">
+                    <a href="{{url('trafficLog')}}" class="nav-link nav-toggle">
                         <i class="icon-speedometer"></i>
                         <span class="title">{{trans('home.traffic_log')}}</span>
                     </a>
                 </li>
                 @if(Session::get('referral_status'))
-                <li class="nav-item {{in_array(Request::path(), ['user/referral']) ? 'active open' : ''}}">
-                    <a href="{{url('user/referral')}}" class="nav-link nav-toggle">
+                <li class="nav-item {{in_array(Request::path(), ['referral']) ? 'active open' : ''}}">
+                    <a href="{{url('referral')}}" class="nav-link nav-toggle">
                         <i class="icon-diamond"></i>
                         <span class="title">{{trans('home.referrals')}}</span>
                     </a>
                 </li>
                 @endif
+                <li class="nav-item {{in_array(Request::path(), ['help', 'article']) ? 'active open' : ''}}">
+                    <a href="{{url('help')}}" class="nav-link nav-toggle">
+                        <i class="icon-doc"></i>
+                        <span class="title">{{trans('home.help')}}</span>
+                    </a>
+                </li>
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>
@@ -205,7 +211,7 @@
     <script type="text/javascript">
         $("#return_to_admin").click(function () {
             $.ajax({
-                'url': "{{url("/user/switchToAdmin")}}",
+                'url': "{{url("switchToAdmin")}}",
                 'data': {
                     '_token': "{{csrf_token()}}"
                 },

@@ -42,7 +42,7 @@
                                         </div>
                                         <div class="timeline-body-head-actions"></div>
                                     </div>
-                                    <div class="timeline-body-content">
+                                    <div class="timeline-body-content" style="word-wrap: break-word;">
                                         <span class="font-grey-cascade"> {!! $ticket->content !!} </span>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                                 </div>
                                                 <div class="timeline-body-head-actions"></div>
                                             </div>
-                                            <div class="timeline-body-content">
+                                            <div class="timeline-body-content" style="word-wrap: break-word;">
                                                 <span class="font-grey-cascade"> {!! $reply->content !!} </span>
                                             </div>
                                         </div>

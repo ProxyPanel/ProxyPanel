@@ -2,18 +2,20 @@
 
 return [
     'panel'                           => '제어판',
-    'subscribe_address'               => 'RSS구독주소',
+    'subscribe_address'               => '구독 서비스',
     'copy_subscribe_address'          => '주소복사',
     'exchange_subscribe'              => '주소변경',
     'subscribe_warning'               => '경고: 구독 주소 는 개인적 으로 사용 되 지 말고 이 주소 를 전파 하지 마시오',
     'reset_password_title'            => '비번리셋',
+    'username_placeholder'            => '아이디를 입력하세요',
     'system_down'                     => '서비스 점금중',
     'subscribe_baned'                 => '구독주소가 금지되였습니다,관리자에게 문의해주세요',
 
     // 菜单
-    'home'                            => '메인',
+    'home'                            => '개인 센터',
     'services'                        => '서버구축',
     'traffic_log'                     => '트래픽',
+    'help'                            => '도와주다',
     'invite_code'                     => '초청코드',
     'invoices'                        => '오더관리',
     'tickets'                         => '고객센트',
@@ -84,7 +86,7 @@ return [
     'service_total_price'             => '합계',
     'service_pay_button'              => '잔액지불',
     'services_none'                   => '내용이 없습니다',
-    'service_traffic'                 => '트래픽 포함',
+    'service_traffic'                 => '함유 흐름',
     'service_days'                    => '휴효기간',
     'service_buy_button'              => '구입',
     'day'                             => '일',
@@ -105,7 +107,7 @@ return [
     'invite_code_make'                => '초청코드생성',
     'invite_code_button'              => '생성',
     'invite_code_tips1'               => '생성가능',
-    'invite_code_tips2'               => '개 총청코드',
+    'invite_code_tips2'               => '개 총청코드, 7 일내에 유효하다.',
     'invite_code_my_codes'            => '나의 초청코드',
     'invite_code_table_name'          => '초청코드',
     'invite_code_table_date'          => '유효기간',
@@ -121,6 +123,7 @@ return [
     'invoice_title'                   => '거래내역',
     'invoice_table_id'                => '번호',
     'invoice_table_name'              => '서버스',
+    'invoice_table_pay_way'           => '지불 방식',
     'invoice_table_price'             => '금액',
     'invoice_table_create_date'       => '구입일자',
     'invoice_table_expire_at'         => '만료 시간',
@@ -131,6 +134,7 @@ return [
     'invoice_table_wait_confirm'      => '확인중',
     'invoice_table_wait_active'       => '사용중',
     'invoice_table_expired'           => '기간만료',
+    'invoice_table_goods_deleted'     => '[삭제됨]',
 
     // 工
     'ticket_title'                    => '문의 기록',
@@ -149,7 +153,7 @@ return [
     'ticket_reply_button'             => '답장',
 
     // 推广返利
-    'referral_title'                  => '나의홍보',
+    'referral_title'                  => '수수료',
     'referral_button'                 => '주소사 ',
     'referral_my_link'                => '홍보전용 링크',
     'referral_table_user'             => '소비자',
@@ -169,4 +173,7 @@ return [
     'logout'                          => '로그아웃',
     'promote_link'                    => '보급 링크 등록을 통해 활성화, 양측 모두 :traffic 유량에 장려합니다; 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있는 :referral_percent% 를 장려합니다.',
     'promote_invite_code'             => '요청을 통해 등록 및 활성화, 양측 모두 :traffic 유량에 장려합니다, 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있습니다 :referral_percent% 를 장려합니다',
+    'invite_user_title'               => '초대장',
+    'invite_user_username'            => '사용자 이름',
+    'invite_user_created_at'          => '등록 시간',
 ];

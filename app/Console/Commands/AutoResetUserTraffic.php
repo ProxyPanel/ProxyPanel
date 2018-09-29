@@ -32,25 +32,28 @@ class AutoResetUserTraffic extends Command
                         continue;
                     }
 
-                    // 取出用户最后购买的有效套餐 TODO:需要改掉，不应该是最后购买的套餐
-                    $order = Order::query()->with(['user', 'goods'])->whereHas('goods', function ($q) {
-                        $q->where('type', 2);
-                    })->where('user_id', $user->id)->where('is_expire', 0)->orderBy('oid', 'desc')->first();
+                    // 取出用户最后购买的有效套餐
+                    $order = Order::query()
+                        ->with(['user', 'goods'])
+                        ->whereHas('goods', function ($q) {
+                            $q->where('type', 2);
+                        })
+                        ->where('user_id', $user->id)
+                        ->where('is_expire', 0)
+                        ->orderBy('oid', 'desc')
+                        ->first();
 
                     if (!$order) {
                         continue;
                     }
 
-                    // TODO：需要改掉，改成下一次重置日，每月不定时，类似搬瓦工
+                    $month = abs(date('m'));
                     $today = abs(date('d'));
-                    $reset_days = [$today, 29, 30, 31];
-                    if (in_array($order->user->traffic_reset_day, $reset_days)) {
+                    if ($order->user->traffic_reset_day == $today) {
                         // 跳过本月，防止异常重置
-                        if (date('m') == date('m', strtotime($order->expire_at))) {
+                        if ($month == date('m', strtotime($order->expire_at))) {
                             continue;
-                        }
-
-                        if (date('m') == date('m', strtotime($order->created_at))) {
+                        } elseif ($month == date('m', strtotime($order->created_at))) {
                             continue;
                         }
 

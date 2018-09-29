@@ -14,7 +14,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <span class="caption-subject bold uppercase"> 格式转换 </span>
-                            <small>SS转SSR(R)</small>
+                            <small>Shadowsocks 转 ShadowsocksR</small>
                         </div>
                     </div>
                     <div class="portlet-body">

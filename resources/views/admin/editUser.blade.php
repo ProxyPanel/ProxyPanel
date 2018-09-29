@@ -143,13 +143,37 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="status" class="col-md-3 control-label">状态</label>
+                                                <label for="status" class="col-md-3 control-label">账户状态</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="status" id="status">
-                                                        <option value="1" @if($user->status == '1') selected @endif>正常</option>
-                                                        <option value="0" @if($user->status == '0') selected @endif>未激活</option>
-                                                        <option value="-1" @if($user->status == '-1') selected @endif>禁用</option>
-                                                    </select>
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="status" value="1" {{$user->status == '1' ? 'checked' : ''}}> 正常
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="status" value="0" {{$user->status == '0' ? 'checked' : ''}}> 未激活
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="status" value="-1" {{$user->status == '-1' ? 'checked' : ''}}> 禁用
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="is_admin" class="col-md-3 control-label">管理员</label>
+                                                <div class="col-md-8">
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="is_admin" value="1" {{$user->is_admin == '1' ? 'checked' : ''}}> 是
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="is_admin" value="0" {{$user->is_admin == '0' ? 'checked' : ''}}> 否
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <hr>
@@ -167,10 +191,16 @@
                                             <div class="form-group">
                                                 <label for="gender" class="col-md-3 control-label">性别</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="gender" id="gender">
-                                                        <option value="1" @if($user->gender == '1') selected @endif>男</option>
-                                                        <option value="0" @if($user->gender == '0') selected @endif>女</option>
-                                                    </select>
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="gender" value="1" {{$user->gender == '1' ? 'checked' : ''}}> 男
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="gender" value="0" {{$user->gender == '0' ? 'checked' : ''}}> 女
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -183,15 +213,6 @@
                                                 <label for="qq" class="col-md-3 control-label">QQ</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="qq" value="{{$user->qq}}" id="qq" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="is_admin" class="col-md-3 control-label">管理员</label>
-                                                <div class="col-md-8">
-                                                    <select class="form-control" name="is_admin" id="is_admin">
-                                                        <option value="0" {{$user->is_admin == 0 ? 'selected' : ''}}>否</option>
-                                                        <option value="1" {{$user->is_admin == 1 ? 'selected' : ''}}>是</option>
-                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -209,7 +230,7 @@
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <span class="caption-subject font-dark bold">SSR(R)信息</span>
+                                                <span class="caption-subject font-dark bold">代理信息</span>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
@@ -255,12 +276,18 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="enable" class="col-md-3 control-label">状态</label>
+                                                <label for="enable" class="col-md-3 control-label">代理状态</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="enable" value="{{$user->enable}}" id="enable">
-                                                        <option value="1" {{$user->enable ? 'selected' : ''}}>启用</option>
-                                                        <option value="0" {{$user->enable ? '' : 'selected'}}>禁用</option>
-                                                    </select>
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="enable" value="1" {{$user->enable == '1' ? 'checked' : ''}}> 启用
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="enable" value="0" {{$user->enable == '0' ? 'checked' : ''}}> 禁用
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <hr>
@@ -301,7 +328,7 @@
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="{{$user->speed_limit_per_con}}" id="speed_limit_per_con" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="{{$user->speed_limit_per_con}}" id="speed_limit_per_con" placeholder="" disabled>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -310,9 +337,16 @@
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">单用户限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="{{$user->speed_limit_per_user}}" id="speed_limit_per_user" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="{{$user->speed_limit_per_user}}" id="speed_limit_per_user" placeholder="" disabled>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-group">
+                                                <label for="speed_limit_per_user" class="col-md-3 control-label">邀请人</label>
+                                                <div class="col-md-8">
+                                                    <p class="form-control-static"> {{$user->referral ? $user->referral->username : '无邀请人'}} </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -395,7 +429,7 @@
                 success: function (ret) {
                     layer.msg(ret.message, {time: 1000}, function () {
                         if (ret.status == 'success') {
-                            window.location.href = "/user";
+                            window.location.href = "/";
                         }
                     });
                 }
@@ -421,21 +455,21 @@
             var pay_way = $("input:radio[name='pay_way']:checked").val();
             var balance = $('#balance').val();
             var score = $('#score').val();
-            var status = $('#status').val();
+            var status = $("input:radio[name='status']:checked").val();
             var labels = $('#labels').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
-            var gender = $('#gender').val();
+            var gender = $("input:radio[name='gender']:checked").val();
             var wechat = $('#wechat').val();
             var qq = $('#qq').val();
-            var is_admin = $('#is_admin').val();
+            var is_admin = $("input:radio[name='is_admin']:checked").val();
             var remark = $('#remark').val();
             var level = $("#level option:selected").val();
             var port = $('#port').val();
             var passwd = $('#passwd').val();
             var method = $('#method').val();
             var transfer_enable = $('#transfer_enable').val();
-            var enable = $('#enable').val();
+            var enable = $("input:radio[name='enable']:checked").val();
             var protocol = $('#protocol').val();
             var protocol_param = $('#protocol_param').val();
             var obfs = $('#obfs').val();

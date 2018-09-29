@@ -113,7 +113,7 @@ class AutoJob extends Command
     private function blockUsers()
     {
         // 过期用户处理
-        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('expire_time', '<=', date('Y-m-d'))->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('expire_time', '<', date('Y-m-d'))->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 if (self::$config['is_ban_status']) {
@@ -154,7 +154,7 @@ class AutoJob extends Command
                         User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => strtotime(date('Y-m-d H:i:s', strtotime("+" . self::$config['traffic_ban_time'] . " minutes")))]);
 
                         // 写入日志
-                        $this->addUserBanLog($user->id, self::$config['traffic_ban_time'], '【临时封禁代理】-24小时内流量异常');
+                        $this->addUserBanLog($user->id, self::$config['traffic_ban_time'], '【临时封禁代理】-1小时内流量异常');
                     }
                 }
             }
@@ -175,7 +175,7 @@ class AutoJob extends Command
     // 自动清空过期的账号的标签和流量（临时封禁不移除）
     private function removeUserLabels()
     {
-        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->where('expire_time', '<=', date('Y-m-d'))->get();
+        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->where('expire_time', '<', date('Y-m-d'))->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 UserLabel::query()->where('user_id', $user->id)->delete();
@@ -204,7 +204,7 @@ class AutoJob extends Command
         }
 
         // 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）
-        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', 0)->where('expire_time', '>', date('Y-m-d'))->whereRaw("u + d < transfer_enable")->get();
+        $userList = User::query()->where('status', '>=', 0)->where('enable', 0)->where('ban_time', 0)->where('expire_time', '>=', date('Y-m-d'))->whereRaw("u + d < transfer_enable")->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 User::query()->where('id', $user->id)->update(['enable' => 1]);
@@ -218,8 +218,8 @@ class AutoJob extends Command
     // 端口回收与分配
     private function dispatchPort()
     {
-        // 自动分配端口
         if (self::$config['auto_release_port']) {
+            ## 自动分配端口
             $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('port', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
@@ -228,15 +228,26 @@ class AutoJob extends Command
                     User::query()->where('id', $user->id)->update(['port' => $port]);
                 }
             }
-        }
 
-        // 被封禁的账号自动释放端口
-        if (self::$config['auto_release_port']) {
+            ## 被封禁的账号自动释放端口
             $userList = User::query()->where('status', -1)->where('enable', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
                     if ($user->port) {
                         User::query()->where('id', $user->id)->update(['port' => 0]);
+                    }
+                }
+            }
+
+            ## 过期一个月的账户自动释放端口
+            $userList = User::query()->where('enable', 0)->get();
+            if (!$userList->isEmpty()) {
+                foreach ($userList as $user) {
+                    if ($user->port) {
+                        $overdueDays = floor((strtotime(date('Y-m-d H:i:s')) - strtotime($user->expire_time)) / 86400);
+                        if ($overdueDays > 30) {
+                            User::query()->where('id', $user->id)->update(['port' => 0]);
+                        }
                     }
                 }
             }
@@ -246,8 +257,8 @@ class AutoJob extends Command
     // 自动关闭超时未支付订单
     private function closeOrder()
     {
-        // 自动关闭超时未支付的有赞云订单（有赞云收款二维码超过60分钟自动关闭，我们限制30分钟内必须付款）
-        $paymentList = Payment::query()->with(['order', 'order.coupon'])->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
+        // 自动关闭超时未支付的有赞云订单（有赞云收款二维码超过30分钟自动关闭，我们限制15分钟内必须付款）
+        $paymentList = Payment::query()->with(['order', 'order.coupon'])->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
         if (!$paymentList->isEmpty()) {
             DB::beginTransaction();
             try {
@@ -268,7 +279,7 @@ class AutoJob extends Command
 
                 DB::commit();
             } catch (\Exception $e) {
-                Log::info('【异常】自动关闭超时未支付订单：' . $e->getMessage());
+                Log::info('【异常】自动关闭超时未支付订单：' . $e);
 
                 DB::rollBack();
             }
@@ -324,9 +335,7 @@ class AutoJob extends Command
     // 获取一个随机端口
     public function getRandPort()
     {
-        $config = $this->systemConfig();
-
-        $port = mt_rand($config['min_port'], $config['max_port']);
+        $port = mt_rand(self::$config['min_port'], self::$config['max_port']);
         $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
 
         $exists_port = User::query()->pluck('port')->toArray();
@@ -340,12 +349,10 @@ class AutoJob extends Command
     // 获取一个端口
     public function getOnlyPort()
     {
-        $config = $this->systemConfig();
-
-        $port = $config['min_port'];
+        $port = self::$config['min_port'];
         $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
 
-        $exists_port = User::query()->where('port', '>=', $config['min_port'])->where('port', '<=', $config['max_port'])->pluck('port')->toArray();
+        $exists_port = User::query()->where('port', '>=', self::$config['min_port'])->where('port', '<=', self::$config['max_port'])->pluck('port')->toArray();
         while (in_array($port, $exists_port) || in_array($port, $deny_port)) {
             $port = $port + 1;
         }

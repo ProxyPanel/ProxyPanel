@@ -118,7 +118,7 @@
                             <h3 class="font-red">
                                 <span data-counter="counterup" data-value="{{$flowAbnormalUserCount}}">0</span>
                             </h3>
-                            <small>24小时内流量异常</small>
+                            <small>1小时内流量异常</small>
                         </div>
                         <div class="icon">
                             <i class="icon-user-unfollow"></i>

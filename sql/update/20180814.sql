@@ -1,0 +1,6 @@
+CREATE TABLE `sensitive_words` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词',
+	`created_at` DATETIME NOT NULL COMMENT '创建时间',
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='敏感词';

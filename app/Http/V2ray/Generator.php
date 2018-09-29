@@ -9,7 +9,6 @@ use App\Http\V2Ray\EmptyClass;
 //https://www.v2ray.com/ui_client/service.html
 class Generator
 {
-
     private $arr = [
         "log"            => [
             "access"   => "/var/log/access.log",
@@ -65,7 +64,6 @@ class Generator
             ]
         ]
     ];
-
 
     public function addUser($uuid, $level, $alertId, $email)
     {

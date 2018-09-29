@@ -72,10 +72,10 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/system', 'AdminController@system'); // 系统设置
     Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
     Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
-    Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码（已废弃）
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 余额充值
     Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动日志
+    Route::get('admin/userTrafficLogList', 'AdminController@userTrafficLogList'); // 流量变动记录
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
     Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 生成密码
@@ -95,31 +95,35 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get("marketing/emailList", "MarketingController@emailList"); // 邮件消息列表
     Route::get("marketing/pushList", "MarketingController@pushList"); // 推送消息列表
     Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
+    Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
+    Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
+    Route::post("sensitiveWords/del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
 });
 
-Route::group(['middleware' => ['forbidden', 'user', 'affiliate']], function () {
+Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::any('/', 'UserController@index'); // 用户首页
-    Route::any('user', 'UserController@index'); // 用户首页
-    Route::any('user/article', 'UserController@article'); // 文章详情
-    Route::get('user/subscribe', 'UserController@subscribe'); // 节点订阅
-    Route::post('user/exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
-    Route::get('user/goodsList', 'UserController@goodsList'); // 商品列表
-    Route::get('user/trafficLog', 'UserController@trafficLog'); // 流量日志
-    Route::get('user/ticketList', 'UserController@ticketList'); // 工单
-    Route::post('user/addTicket', 'UserController@addTicket'); // 快速添加工单
-    Route::any('user/replyTicket', 'UserController@replyTicket'); // 回复工单
-    Route::post('user/closeTicket', 'UserController@closeTicket'); // 关闭工单
-    Route::get('user/orderList', 'UserController@orderList'); // 订单
-    Route::any('user/addOrder', 'UserController@addOrder'); // 添加订单
-    Route::post('user/redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
-    Route::get('user/invite', 'UserController@invite'); // 邀请码
-    Route::post('user/makeInvite', 'UserController@makeInvite'); // 生成邀请码
-    Route::any('user/profile', 'UserController@profile'); // 修改个人信息
-    Route::post('user/exchange', 'UserController@exchange'); // 积分兑换流量
-    Route::get('user/referral', 'UserController@referral'); // 推广返利
-    Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
-    Route::post("user/switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
-    Route::post("user/charge", "UserController@charge"); // 卡券余额充值
+    Route::any('article', 'UserController@article'); // 文章详情
+    Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
+    Route::get('services', 'UserController@goodsList'); // 商品列表
+    Route::get('trafficLog', 'UserController@trafficLog'); // 流量日志
+    Route::get('tickets', 'UserController@ticketList'); // 工单
+    Route::post('addTicket', 'UserController@addTicket'); // 快速添加工单
+    Route::any('replyTicket', 'UserController@replyTicket'); // 回复工单
+    Route::post('closeTicket', 'UserController@closeTicket'); // 关闭工单
+    Route::get('invoices', 'UserController@orderList'); // 订单列表
+    Route::get('invoice/{sn}', 'UserController@orderDetail'); // 订单明细
+    Route::any('buy/{id}', 'UserController@buy'); // 购买商品
+    Route::post('redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
+    Route::get('invite', 'UserController@invite'); // 邀请码
+    Route::post('makeInvite', 'UserController@makeInvite'); // 生成邀请码
+    Route::any('profile', 'UserController@profile'); // 修改个人信息
+    Route::post('exchange', 'UserController@exchange'); // 积分兑换流量
+    Route::get('referral', 'UserController@referral'); // 推广返利
+    Route::post('extractMoney', 'UserController@extractMoney'); // 申请提现
+    Route::post("switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
+    Route::post("charge", "UserController@charge"); // 卡券余额充值
+    Route::get("help", "UserController@help"); // 帮助中心
 
     Route::post('payment/create', 'PaymentController@create'); // 创建支付
     Route::get('payment/getStatus', 'PaymentController@getStatus'); // 获取支付单状态
@@ -128,11 +132,11 @@ Route::group(['middleware' => ['forbidden', 'user', 'affiliate']], function () {
 });
 
 // V2Ray
-Route::group(['namespaces' => 'Muv2', 'prefix' => 'mu/v2', 'middleware' => ['Muv2']], function () {
+Route::group(['namespace' => 'Muv2', 'prefix' => 'mu/v2', 'middleware' => ['Muv2']], function () {
     Route::get('users', 'UserController@index');
     Route::post('users/{id}/traffic', 'UserController@addTraffic');
     Route::post('nodes/{id}/online_count', 'NodeController@onlineUserLog');
-    Route::post('nodes/{id}/info', 'NodeController@info');
+    Route::any('nodes/{id}/info', 'NodeController@info');
     Route::get('nodes/{id}/users', 'NodeController@users');
     Route::get('nodes/{id}/v2rayUsers', 'NodeController@v2rayUsers');
     Route::post('nodes/{id}/traffic', 'NodeController@postTraffic');

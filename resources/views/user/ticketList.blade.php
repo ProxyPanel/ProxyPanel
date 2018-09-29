@@ -42,7 +42,7 @@
                                     @foreach($ticketList as $key => $ticket)
                                         <tr class="odd gradeX">
                                             <td> {{$key + 1}} </td>
-                                            <td> <a href="{{url('user/replyTicket?id=') . $ticket->id}}" target="_blank">{{$ticket->title}}</a> </td>
+                                            <td> <a href="{{url('replyTicket?id=') . $ticket->id}}" target="_blank">{{$ticket->title}}</a> </td>
                                             <td>
                                                 @if ($ticket->status == 0)
                                                     <span class="label label-info"> {{trans('home.ticket_table_status_wait')}} </span>
@@ -96,11 +96,6 @@
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 回复工单
-        function reply(id) {
-            window.location.href =  + id;
-        }
-
         // 发起工单
         function addTicket() {
             var title = $("#title").val();
@@ -117,7 +112,7 @@
             }
 
             layer.confirm('确定提交工单？', {icon: 3, title:'警告'}, function(index) {
-                $.post("{{url('user/addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret) {
+                $.post("{{url('addTicket')}}", {_token:'{{csrf_token()}}', title:title, content:content}, function(ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
                             window.location.reload();

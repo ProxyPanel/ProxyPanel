@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Components\Yzy;
@@ -21,9 +22,10 @@ class PaymentController extends Controller
     {
         $goods_id = intval($request->get('goods_id'));
         $coupon_sn = $request->get('coupon_sn');
+
         $user = Session::get('user');
 
-        $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+        $goods = Goods::query()->where('is_del', 0)->where('status', 1)->where('id', $goods_id)->first();
         if (!$goods) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品或服务已下架']);
         }
@@ -34,16 +36,15 @@ class PaymentController extends Controller
         }
 
         // 判断是否存在同个商品的未支付订单
-        $existsOrder = Order::query()->where('goods_id', $goods_id)->where('status', 0)->where('user_id', $user['id'])->first();
+        $existsOrder = Order::query()->where('status', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
         if ($existsOrder) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：尚有未支付的订单，请先去支付']);
         }
 
         // 限购控制
         $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
-        if ($strategy == 'all' || ($strategy == 'free' && $goods->price == 0)) {
-            // 判断是否已经购买过该商品
-            $noneExpireOrderExist = Order::query()->where('user_id', $user['id'])->where('goods_id', $goods_id)->where('status', '>=', 0)->where('is_expire', 0)->exists();
+        if ($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))) {
+            $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('is_expire', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
             if ($noneExpireOrderExist) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品不可重复购买']);
             }
@@ -51,7 +52,7 @@ class PaymentController extends Controller
 
         // 使用优惠券
         if ($coupon_sn) {
-            $coupon = Coupon::query()->where('sn', $coupon_sn)->whereIn('type', [1, 2])->where('is_del', 0)->where('status', 0)->first();
+            $coupon = Coupon::query()->where('status', 0)->where('is_del', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
             if (!$coupon) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：优惠券不存在']);
             }
@@ -63,14 +64,15 @@ class PaymentController extends Controller
             $amount = $goods->price;
         }
 
-        // 如果最后总价格为0，则不允许创建支付单
-        if ($amount <= 0) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：合计价格为0，无需使用在线支付']);
+        // 价格异常判断
+        if ($amount < 0) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：订单总价异常']);
+        } elseif ($amount == 0) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：订单总价为0，无需使用在线支付']);
         }
 
         DB::beginTransaction();
         try {
-            $user = Session::get('user');
             $orderSn = date('ymdHis') . mt_rand(100000, 999999);
             $sn = makeRandStr(12);
 
@@ -113,7 +115,10 @@ class PaymentController extends Controller
 
             // 优惠券置为已使用
             if (!empty($coupon)) {
-                Coupon::query()->where('id', $coupon->id)->update(['status' => 1]);
+                if ($coupon->usage == 1) {
+                    $coupon->status = 1;
+                    $coupon->save();
+                }
 
                 $this->addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
             }
@@ -134,14 +139,14 @@ class PaymentController extends Controller
     public function detail(Request $request, $sn)
     {
         if (empty($sn)) {
-            return Redirect::to('user/goodsList');
+            return Redirect::to('services');
         }
 
         $user = Session::get('user');
 
         $payment = Payment::query()->with(['order', 'order.goods'])->where('sn', $sn)->where('user_id', $user['id'])->first();
         if (!$payment) {
-            return Redirect::to('user/goodsList');
+            return Redirect::to('services');
         }
 
         $order = Order::query()->where('oid', $payment->oid)->first();
@@ -176,7 +181,7 @@ class PaymentController extends Controller
 
         if ($payment->status) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
-        } else if ($payment->status < 0) {
+        } elseif ($payment->status < 0) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等待支付']);

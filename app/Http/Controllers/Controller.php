@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\CouponLog;
 use App\Http\Models\ReferralLog;
+use App\Http\Models\SensitiveWords;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
+use App\Http\Models\UserTrafficModifyLog;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -253,6 +255,29 @@ class Controller extends BaseController
     }
 
     /**
+     * 记录流量变动日志
+     *
+     * @param int    $userId 用户ID
+     * @param string $oid    订单ID
+     * @param int    $before 记录前的值
+     * @param int    $after  记录后的值
+     * @param string $desc   描述
+     *
+     * @return int
+     */
+    public function addUserTrafficModifyLog($userId, $oid, $before, $after, $desc = '')
+    {
+        $log = new UserTrafficModifyLog();
+        $log->user_id = $userId;
+        $log->order_id = $oid;
+        $log->before = $before;
+        $log->after = $after;
+        $log->desc = $desc;
+
+        return $log->save();
+    }
+
+    /**
      * 添加返利日志
      *
      * @param int $userId    用户ID
@@ -300,21 +325,28 @@ class Controller extends BaseController
         return $log->save();
     }
 
+    // 获取敏感词
+    public function sensitiveWords()
+    {
+        return SensitiveWords::query()->get()->pluck('words')->toArray();
+    }
+
     // 将Base64图片转换为本地图片并保存
     function base64ImageSaver($base64_image_content)
     {
-        //匹配出图片的格式
+        // 匹配出图片的格式
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)) {
             $type = $result[2];
 
             $directory = date('Ymd');
             $path = '/assets/images/qrcode/' . $directory . '/';
-            if (!file_exists(public_path($path))) { //检查是否有该文件夹，如果没有就创建，并给予最高权限
-                mkdir(public_path($path), 0700, true);
+            if (!file_exists(public_path($path))) { // 检查是否有该文件夹，如果没有就创建，并给予最高权限
+                mkdir(public_path($path), 0755, true);
             }
 
             $fileName = makeRandStr(18, true) . ".{$type}";
             if (file_put_contents(public_path($path . $fileName), base64_decode(str_replace($result[1], '', $base64_image_content)))) {
+                chmod(public_path($path . $fileName), 0744);
                 return $path . $fileName;
             } else {
                 return '';

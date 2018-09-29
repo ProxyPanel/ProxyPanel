@@ -26,7 +26,7 @@
                                             </div>
                                         </div>
                                         <div class="portlet-body">
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
@@ -75,11 +75,11 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="2" checked> 季付
+                                                            <input type="radio" name="pay_way" value="2"> 季付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="3"> 半年付
+                                                            <input type="radio" name="pay_way" value="3" checked> 半年付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
@@ -127,10 +127,16 @@
                                             <div class="form-group">
                                                 <label for="gender" class="col-md-3 control-label">性别</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="gender" id="gender">
-                                                        <option value="1" selected>男</option>
-                                                        <option value="0">女</option>
-                                                    </select>
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="gender" value="1" checked> 男
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="gender" value="0"> 女
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -143,15 +149,6 @@
                                                 <label for="qq" class="col-md-3 control-label">QQ</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="qq" id="qq" placeholder="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="is_admin" class="col-md-3 control-label">管理员</label>
-                                                <div class="col-md-8">
-                                                    <select class="form-control" name="is_admin" id="is_admin">
-                                                        <option value="0" selected>否</option>
-                                                        <option value="1">是</option>
-                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -169,7 +166,7 @@
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <span class="caption-subject font-dark bold">SSR(R)信息</span>
+                                                <span class="caption-subject font-dark bold">代理信息</span>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
@@ -199,7 +196,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="method" class="col-md-3 control-label">加密方式</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="method" id="method">
@@ -219,16 +216,22 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="enable" class="col-md-3 control-label">状态</label>
+                                                <label for="enable" class="col-md-3 control-label">代理状态</label>
                                                 <div class="col-md-8">
-                                                    <select class="form-control" name="enable" id="enable">
-                                                        <option value="1" selected>启用</option>
-                                                        <option value="0">禁用</option>
-                                                    </select>
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="enable" value="1" checked> 启用
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio">
+                                                            <input type="radio" name="enable" value="0"> 禁用
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <hr>
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="protocol" class="col-md-3 control-label">协议</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="protocol" id="protocol">
@@ -238,7 +241,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group has-error">
+                                            <div class="form-group">
                                                 <label for="obfs" class="col-md-3 control-label">混淆</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="obfs" id="obfs">
@@ -265,7 +268,7 @@
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" placeholder="" disabled>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -274,7 +277,7 @@
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">单用户限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" placeholder="" required>
+                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" placeholder="" disabled>
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -334,17 +337,16 @@
             var labels = $('#labels').val();
             var enable_time = $('#enable_time').val();
             var expire_time = $('#expire_time').val();
-            var gender = $('#gender').val();
+            var gender = $("input:radio[name='gender']:checked").val();
             var wechat = $('#wechat').val();
             var qq = $('#qq').val();
-            var is_admin = $('#is_admin').val();
             var remark = $('#remark').val();
             var level = $("#level option:selected").val();
             var port = $('#port').val();
             var passwd = $('#passwd').val();
             var method = $('#method').val();
             var transfer_enable = $('#transfer_enable').val();
-            var enable = $('#enable').val();
+            var enable = $("input:radio[name='enable']:checked").val();
             var protocol = $('#protocol').val();
             var protocol_param = $('#protocol_param').val();
             var obfs = $('#obfs').val();
@@ -365,7 +367,7 @@
                 type: "POST",
                 url: "{{url('admin/addUser')}}",
                 async: false,
-                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, labels:labels, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, labels:labels, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, remark:remark, level:level, port:port, passwd:passwd, method:method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

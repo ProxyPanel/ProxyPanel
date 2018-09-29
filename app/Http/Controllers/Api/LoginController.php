@@ -24,15 +24,15 @@ class LoginController extends Controller
     {
         $username = trim($request->get('username'));
         $password = trim($request->get('password'));
-        $cacheKey = 'request_times_' . md5($request->getClientIp());
+        $cacheKey = 'request_times_' . md5(getClientIp());
 
-        // 10分钟内请求失败15次，则封IP一小时
+        // 连续请求失败10次，则封IP一小时
         if (Cache::has($cacheKey)) {
             if (Cache::get($cacheKey) >= 15) {
-                return Response::json(['status' => 'fail', 'data' => [], 'message' => '频繁访问失败，禁止访问1小时']);
+                return Response::json(['status' => 'fail', 'data' => [], 'message' => '请求失败超限，禁止访问1小时']);
             }
         } else {
-            Cache::put($cacheKey, 1, 10);
+            Cache::put($cacheKey, 1, 60);
         }
 
         if (!$username || !$password) {
@@ -68,7 +68,7 @@ class LoginController extends Controller
             $subscribe->increment('times', 1);
 
             // 记录每次请求
-            $this->log($subscribe->id, $request->getClientIp(), 'API访问');
+            $this->log($subscribe->id, getClientIp(), 'API访问');
 
             // 处理用户信息
             unset($user->password, $user->remember_token);

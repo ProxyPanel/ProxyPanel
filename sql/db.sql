@@ -43,6 +43,7 @@ CREATE TABLE `ss_node` (
   `monitor_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '监控地址',
   `is_subscribe` TINYINT(4) NULL DEFAULT '1' COMMENT '是否允许用户订阅该节点：0-否、1-是',
   `ssh_port` SMALLINT(6) UNSIGNED NOT NULL DEFAULT '22' COMMENT 'SSH端口',
+  `is_tcp_check` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '是否开启检测: 0-不开启、1-开启',
   `icmp` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'ICMP检测：-2-内外都不通、-1-内不通外通、0-外不通内通、1-内外都通',
   `tcp` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'TCP检测：-2-内外都不通、-1-内不通外通、0-外不通内通、1-内外都通',
   `udp` TINYINT(4) NOT NULL DEFAULT '1' COMMENT 'ICMP检测：-2-内外都不通、-1-内不通外通、0-外不通内通、1-内外都通',
@@ -58,7 +59,9 @@ CREATE TABLE `ss_node` (
   `status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_group` (`group_id`),
+	INDEX `idx_sub` (`is_subscribe`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点信息表';
 
 
@@ -72,8 +75,8 @@ CREATE TABLE `ss_node_info` (
   `load` varchar(32) NOT NULL COMMENT '负载',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点负载信息';
+  INDEX `idx_node_id` (`node_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点负载信息';
 
 
 -- ----------------------------
@@ -85,8 +88,8 @@ CREATE TABLE `ss_node_online_log` (
   `online_user` int(11) NOT NULL COMMENT '在线用户数',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
+  INDEX `idx_node_id` (`node_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点在线信息';
 
 
 -- ----------------------------
@@ -97,9 +100,9 @@ CREATE TABLE `ss_node_label` (
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  KEY `idx` (`node_id`,`label_id`),
-  KEY `idx_node_id` (`node_id`),
-  KEY `idx_label_id` (`label_id`)
+  INDEX `idx` (`node_id`,`label_id`),
+  INDEX `idx_node_id` (`node_id`),
+  INDEX `idx_label_id` (`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点标签';
 
 
@@ -108,7 +111,7 @@ CREATE TABLE `ss_node_label` (
 -- ----------------------------
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(128) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '用户名',
+  `username` varchar(128) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT 'SS端口',
   `passwd` varchar(16) NOT NULL DEFAULT '' COMMENT 'SS密码',
@@ -145,8 +148,9 @@ CREATE TABLE `user` (
   `remember_token` varchar(256) DEFAULT '',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  INDEX `idx_search` (`enable`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';
 
 
 LOCK TABLES `user` WRITE;
@@ -169,19 +173,20 @@ CREATE TABLE `level` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='等级';
 
 
 -- ----------------------------
 -- Records of `level`
 -- ----------------------------
-INSERT INTO `level` VALUES (1, '1', '倔强青铜', '2017-10-26 15:56:52', '2017-10-26 15:38:58');
-INSERT INTO `level` VALUES (2, '2', '秩序白银', '2017-10-26 15:57:30', '2017-10-26 12:37:51');
-INSERT INTO `level` VALUES (3, '3', '荣耀黄金', '2017-10-26 15:41:31', '2017-10-26 15:41:31');
-INSERT INTO `level` VALUES (4, '4', '尊贵铂金', '2017-10-26 15:41:38', '2017-10-26 15:41:38');
-INSERT INTO `level` VALUES (5, '5', '永恒钻石', '2017-10-26 15:41:47', '2017-10-26 15:41:47');
-INSERT INTO `level` VALUES (6, '6', '至尊黑曜', '2017-10-26 15:41:56', '2017-10-26 15:41:56');
-INSERT INTO `level` VALUES (7, '7', '最强王者', '2017-10-26 15:42:02', '2017-10-26 15:42:02');
+INSERT INTO `level` VALUES (1, '1', '青铜', '2017-10-26 15:56:52', '2017-10-26 15:38:58');
+INSERT INTO `level` VALUES (2, '2', '白银', '2017-10-26 15:57:30', '2017-10-26 12:37:51');
+INSERT INTO `level` VALUES (3, '3', '黄金', '2017-10-26 15:41:31', '2017-10-26 15:41:31');
+INSERT INTO `level` VALUES (4, '4', '铂金', '2017-10-26 15:41:38', '2017-10-26 15:41:38');
+INSERT INTO `level` VALUES (5, '5', '钻石', '2017-10-26 15:41:47', '2017-10-26 15:41:47');
+INSERT INTO `level` VALUES (6, '6', '星耀', '2017-10-26 15:41:56', '2017-10-26 15:41:56');
+INSERT INTO `level` VALUES (7, '7', '王者', '2017-10-26 15:42:02', '2017-10-26 15:42:02');
+
 
 -- ----------------------------
 -- Table structure for `user_traffic_log`
@@ -196,10 +201,10 @@ CREATE TABLE `user_traffic_log` (
   `traffic` varchar(32) NOT NULL COMMENT '产生流量',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`),
-  KEY `idx_node` (`node_id`),
-  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  INDEX `idx_user` (`user_id`),
+  INDEX `idx_node` (`node_id`),
+  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量日志';
 
 
 -- ----------------------------
@@ -213,7 +218,7 @@ CREATE TABLE `ss_config` (
   `is_default` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否默认：0-不是、1-是',
   `sort` INT(11) NOT NULL DEFAULT '0' COMMENT '排序：值越大排越前',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
+) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用配置';
 
 -- ----------------------------
 -- Records of ss_config
@@ -269,7 +274,7 @@ CREATE TABLE `config` (
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '配置名',
   `value` TEXT NULL COMMENT '配置值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置';
 
 
 -- ----------------------------
@@ -342,6 +347,9 @@ INSERT INTO `config` VALUES ('64', 'namesilo_key', '');
 INSERT INTO `config` VALUES ('65', 'website_logo', '');
 INSERT INTO `config` VALUES ('66', 'website_home_logo', '');
 INSERT INTO `config` VALUES ('67', 'is_tcp_check', 0);
+INSERT INTO `config` VALUES ('68', 'tcp_check_warning_times', 3);
+INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
+INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
 
 
 -- ----------------------------
@@ -358,7 +366,7 @@ CREATE TABLE `article` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章';
 
 
 -- ----------------------------
@@ -411,7 +419,7 @@ CREATE TABLE `verify` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件地址';
 
 
 -- ----------------------------
@@ -424,7 +432,7 @@ CREATE TABLE `ss_group` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点分组';
 
 
 -- ----------------------------
@@ -458,7 +466,7 @@ CREATE TABLE `goods` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品';
 
 
 -- ----------------------------
@@ -515,8 +523,9 @@ CREATE TABLE `order` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
-  PRIMARY KEY (`oid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
+  PRIMARY KEY (`oid`),
+  INDEX `idx_order_search` (`user_id`, `goods_id`, `is_expire`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单';
 
 
 -- ----------------------------
@@ -535,7 +544,7 @@ CREATE TABLE `order_goods` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单商品';
 
 
 -- ----------------------------
@@ -549,7 +558,7 @@ CREATE TABLE `ticket` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单';
 
 
 -- ----------------------------
@@ -562,7 +571,7 @@ CREATE TABLE `ticket_reply` (
   `content` text NOT NULL COMMENT '回复内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单回复';
 
 
 -- ----------------------------
@@ -577,8 +586,8 @@ CREATE TABLE `user_score_log` (
   `desc` varchar(50) DEFAULT '' COMMENT '描述',
   `created_at` datetime DEFAULT NULL COMMENT '创建日期',
   PRIMARY KEY (`id`),
-  KEY `idx` (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  INDEX `idx` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户积分变动日志';
 
 
 -- ----------------------------
@@ -594,7 +603,23 @@ CREATE TABLE `user_balance_log` (
   `desc` varchar(255) DEFAULT '' COMMENT '操作描述',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户余额变动日志';
+
+
+-- ----------------------------
+-- Table structure for `user_traffic_modify_log`
+-- ----------------------------
+CREATE TABLE `user_traffic_modify_log` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+	`order_id` INT(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
+	`before` INT(11) NOT NULL DEFAULT '0',
+	`after` INT(11) NOT NULL DEFAULT '0',
+	`desc` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '描述',
+	`created_at` DATETIME NOT NULL,
+	`updated_at` DATETIME NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量变动日志';
 
 
 -- ----------------------------
@@ -647,6 +672,131 @@ CREATE TABLE `email_log` (
 
 
 -- ----------------------------
+-- Table structure for `sensitive_words`
+-- ----------------------------
+CREATE TABLE `sensitive_words` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词',
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='敏感词';
+
+
+-- ----------------------------
+-- Records of label
+-- ----------------------------
+INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('1766258.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('3202.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('4057.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('4059.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('a7996.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('bccto.me');
+INSERT INTO `sensitive_words` (`words`) VALUES ('bnuis.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('chaichuang.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('cr219.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('cuirushi.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('dawin.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('jiaxin8736.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('lakqs.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('urltc.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('027168.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('10minutemail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('11163.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('1shivom.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('auoie.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('bareed.ws');
+INSERT INTO `sensitive_words` (`words`) VALUES ('bit-degree.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('cjpeg.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('cool.fr.nf');
+INSERT INTO `sensitive_words` (`words`) VALUES ('courriel.fr.nf');
+INSERT INTO `sensitive_words` (`words`) VALUES ('disbox.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('disbox.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('fidelium10.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('get365.pw');
+INSERT INTO `sensitive_words` (`words`) VALUES ('ggr.la');
+INSERT INTO `sensitive_words` (`words`) VALUES ('grr.la');
+INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.biz');
+INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.de');
+INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamailblock.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('hubii-network.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('hurify1.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('itoup.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('jetable.fr.nf');
+INSERT INTO `sensitive_words` (`words`) VALUES ('jnpayy.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('juyouxi.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mail.bccto.me');
+INSERT INTO `sensitive_words` (`words`) VALUES ('www.bccto.me');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mega.zik.dj');
+INSERT INTO `sensitive_words` (`words`) VALUES ('moakt.co');
+INSERT INTO `sensitive_words` (`words`) VALUES ('moakt.ws');
+INSERT INTO `sensitive_words` (`words`) VALUES ('molms.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('moncourrier.fr.nf');
+INSERT INTO `sensitive_words` (`words`) VALUES ('monemail.fr.nf');
+INSERT INTO `sensitive_words` (`words`) VALUES ('monmail.fr.nf');
+INSERT INTO `sensitive_words` (`words`) VALUES ('nomail.xl.cx');
+INSERT INTO `sensitive_words` (`words`) VALUES ('nospam.ze.tc');
+INSERT INTO `sensitive_words` (`words`) VALUES ('pay-mon.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('poly-swarm.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('sgmh.online');
+INSERT INTO `sensitive_words` (`words`) VALUES ('sharklasers.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('shiftrpg.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('spam4.me');
+INSERT INTO `sensitive_words` (`words`) VALUES ('speed.1s.fr');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tmail.ws');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tmails.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tmpmail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tmpmail.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('travala10.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('yopmail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('yopmail.fr');
+INSERT INTO `sensitive_words` (`words`) VALUES ('yopmail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('yuoia.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('zep-hyr.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('zippiex.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('lrc8.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('1otc.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('emailna.co');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mailinator.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('nbzmr.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('awsoo.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('zhcne.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('0box.eu');
+INSERT INTO `sensitive_words` (`words`) VALUES ('contbay.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('damnthespam.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('kurzepost.de');
+INSERT INTO `sensitive_words` (`words`) VALUES ('objectmail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('proxymail.eu');
+INSERT INTO `sensitive_words` (`words`) VALUES ('rcpt.at');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trash-mail.at');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.at');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.io');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.me');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('wegwerfmail.de');
+INSERT INTO `sensitive_words` (`words`) VALUES ('wegwerfmail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('wegwerfmail.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('nwytg.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('despam.it');
+INSERT INTO `sensitive_words` (`words`) VALUES ('spambox.us');
+INSERT INTO `sensitive_words` (`words`) VALUES ('spam.la');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mytrashmail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mt2014.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mt2015.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('thankyou2010.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trash2009.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mt2009.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('trashymail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tempemail.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('slopsbox.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mailnesia.com');
+
+
+-- ----------------------------
 -- Table structure for `user_subscribe`
 -- ----------------------------
 CREATE TABLE `user_subscribe` (
@@ -660,7 +810,7 @@ CREATE TABLE `user_subscribe` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅';
 
 
 -- ----------------------------
@@ -673,7 +823,7 @@ CREATE TABLE `user_subscribe_log` (
   `request_time` datetime DEFAULT NULL COMMENT '请求时间',
   `request_header` text COMMENT '请求头部信息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅访问日志';
 
 
 -- ----------------------------
@@ -690,9 +840,9 @@ CREATE TABLE `user_traffic_daily` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`) USING BTREE,
-  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  INDEX `idx_user` (`user_id`) USING BTREE,
+  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每日流量统计';
 
 
 -- ----------------------------
@@ -709,9 +859,9 @@ CREATE TABLE `user_traffic_hourly` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`) USING BTREE,
-  KEY `idx_user_node` (`user_id`,`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  INDEX `idx_user` (`user_id`) USING BTREE,
+  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每小时流量统计';
 
 
 -- ----------------------------
@@ -727,8 +877,8 @@ CREATE TABLE `ss_node_traffic_daily` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  INDEX `idx_node_id` (`node_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点每日流量统计';
 
 
 -- ----------------------------
@@ -744,8 +894,8 @@ CREATE TABLE `ss_node_traffic_hourly` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_node_id` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  INDEX `idx_node_id` (`node_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点每小时流量统计';
 
 
 -- ----------------------------
@@ -771,9 +921,9 @@ CREATE TABLE `user_label` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  KEY `idx` (`user_id`,`label_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_label_id` (`label_id`)
+  INDEX `idx` (`user_id`,`label_id`),
+  INDEX `idx_user_id` (`user_id`),
+  INDEX `idx_label_id` (`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户标签';
 
 
@@ -788,7 +938,7 @@ CREATE TABLE `goods_label` (
   INDEX `idx` (`goods_id`, `label_id`),
   INDEX `idx_goods_id` (`goods_id`),
   INDEX `idx_label_id` (`label_id`)
-) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci' COMMENT='商品标签';
+) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品标签';
 
 
 -- ----------------------------
@@ -799,10 +949,11 @@ CREATE TABLE `country` (
   `country_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `country_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代码',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='国家代码';
+
 
 -- ----------------------------
--- Records of country
+-- Records of `country`
 -- ----------------------------
 INSERT INTO `country` VALUES ('1', '澳大利亚', 'au');
 INSERT INTO `country` VALUES ('2', '巴西', 'br');
@@ -864,6 +1015,9 @@ INSERT INTO `country` VALUES ('57', '匈牙利', 'hu');
 INSERT INTO `country` VALUES ('58', '阿根廷', 'ar');
 
 
+-- ----------------------------
+-- Table structure for `payment`
+-- ----------------------------
 CREATE TABLE `payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -880,8 +1034,12 @@ CREATE TABLE `payment` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='支付单';
 
+
+-- ----------------------------
+-- Table structure for `payment_callback`
+-- ----------------------------
 CREATE TABLE `payment_callback` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `client_id` varchar(50) DEFAULT NULL,
@@ -899,8 +1057,12 @@ CREATE TABLE `payment_callback` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='有赞云回调日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='有赞云回调日志';
 
+
+-- ----------------------------
+-- Table structure for `marketing`
+-- ----------------------------
 CREATE TABLE `marketing` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type` TINYINT(4) NOT NULL COMMENT '类型：1-邮件群发、2-订阅渠道群发',
@@ -912,7 +1074,26 @@ CREATE TABLE `marketing` (
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE='utf8mb4_unicode_ci';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='营销';
+
+
+-- ----------------------------
+-- Table structure for `user_login_log`
+-- ----------------------------
+CREATE TABLE `user_login_log` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`user_id` INT(11) NOT NULL DEFAULT '0',
+	`ip` CHAR(20) NOT NULL,
+	`country` CHAR(20) NOT NULL,
+	`province` CHAR(20) NOT NULL,
+	`city` CHAR(20) NOT NULL,
+	`county` CHAR(20) NOT NULL,
+	`isp` CHAR(20) NOT NULL,
+	`area` CHAR(20) NOT NULL,
+	`created_at` DATETIME NOT NULL,
+	`updated_at` DATETIME NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB COLLATE='utf8mb4_general_ci' COMMENT='用户登录日志';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

@@ -41,7 +41,7 @@
                                             <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_7" data-toggle="tab"> 有赞云设置 </a>
+                                            <a href="#tab_7" data-toggle="tab"> 有赞云支付设置 </a>
                                         </li>
                                         <li>
                                             <a href="#tab_8" data-toggle="tab"> LOGO、客服、统计设置 </a>
@@ -72,10 +72,10 @@
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="website_url" value="{{$website_url}}" id="website_url" />
                                                                     <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
-                                                                </span>
+                                                                        <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
+                                                                    </span>
                                                                 </div>
-                                                                <span class="help-block"> 生成重置密码必备，示例：https://www.ssrpanel.com </span>
+                                                                <span class="help-block"> 生成重置密码、有赞云支付必备，示例：https://www.ssrpanel.com </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -124,6 +124,22 @@
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_free_code) checked @endif id="is_free_code" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 关闭后免费邀请码不可见 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_forbid_china" class="col-md-3 control-label">阻止大陆访问</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_forbid_china) checked @endif id="is_forbid_china" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 开启后大陆IP禁止访问 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="is_forbid_oversea" class="col-md-3 control-label">阻止海外访问</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_forbid_oversea) checked @endif id="is_forbid_oversea" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 开启后海外IP(含港澳台)禁止访问 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -182,7 +198,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setDefaultDays()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 用户注册时默认SSR(R)有效天数 </span>
+                                                                <span class="help-block"> 用户注册时默认账户有效期，为0即当天到期 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -302,11 +318,21 @@
                                                                             selected
                                                                             @endif
                                                                     >不限制</option>
+                                                                    <option value="package"
+                                                                            @if ($goods_purchase_limit_strategy == 'package')
+                                                                            selected
+                                                                            @endif
+                                                                    >仅限套餐</option>
                                                                     <option value="free"
                                                                             @if ($goods_purchase_limit_strategy == 'free')
                                                                             selected
                                                                             @endif
                                                                     >仅限免费商品</option>
+                                                                    <option value="package&free"
+                                                                            @if ($goods_purchase_limit_strategy == 'package&free')
+                                                                            selected
+                                                                            @endif
+                                                                    >限套餐和免费商品</option>
                                                                     <option value="all"
                                                                             @if ($goods_purchase_limit_strategy == 'all')
                                                                             selected
@@ -491,7 +517,7 @@
                                                             <label for="is_namesilo" class="col-md-3 control-label">Namesilo</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_namesilo) checked @endif id="is_namesilo" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php" target="_blank">创建API KEY</a>） </span>
+                                                                <span class="help-block"> 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php?rid=326ec20pa" target="_blank">创建API KEY</a>） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -559,14 +585,30 @@
                                                                         <button class="btn btn-success" type="button" onclick="setPushBearQrCode()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”，展示于个人中心 </span>
+                                                                <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_tcp_check) checked @endif id="is_tcp_check" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 每小时自动检测节点是否被TCP阻断并提醒 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断探测</label>
+                                                            <label for="tcp_check_warning_times" class="col-md-3 control-label">阻断检测提醒</label>
                                                             <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_tcp_check) checked @endif id="is_tcp_check" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 自动检测是否被墙TCP阻断并提醒 </span>
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="tcp_check_warning_times" value="{{$tcp_check_warning_times}}" id="tcp_check_warning_times" placeholder="" />
+                                                                    <span class="input-group-addon">次</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTcpCheckWarningTimes()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 提醒几次后自动下线节点，为0时不限制，不超过12 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -618,7 +660,7 @@
                                                             <label for="is_traffic_ban" class="col-md-3 control-label">异常自动封号</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_traffic_ban) checked @endif id="is_traffic_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 1小时内流量超过异常阈值则自动封号（仅禁用SSR(R)） </span>
+                                                                <span class="help-block"> 1小时内流量超过异常阈值则自动封号（仅禁用代理） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -653,7 +695,7 @@
                                                             <label for="auto_release_port" class="col-md-3 control-label">端口自动释放</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($auto_release_port) checked @endif id="auto_release_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 被封禁的用户端口自动释放 </span>
+                                                                <span class="help-block"> 被封禁和过期一个月的用户端口自动释放 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -740,7 +782,7 @@
                                                                     <img src="/assets/images/noimage.png" alt="" />
                                                                 @endif
                                                             </div>
-                                                            <span class="help-block"> 推荐尺寸：270 X 48，透明背景 </span>
+                                                            <span class="help-block"> 推荐尺寸：300 X 90，透明背景 </span>
                                                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
                                                             <div>
                                                                 <span class="btn default btn-file">
@@ -764,7 +806,7 @@
                                                                     <img src="/assets/images/noimage.png" alt="" />
                                                                 @endif
                                                             </div>
-                                                            <span class="help-block"> 推荐尺寸：110 X 20，透明背景 </span>
+                                                            <span class="help-block"> 推荐尺寸：150 X 30，透明背景 </span>
                                                             <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
                                                             <div>
                                                                 <span class="btn default btn-file">
@@ -841,6 +883,36 @@
                 var is_rand_port = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_rand_port', value:is_rand_port}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用屏蔽大陆访问
+        $('#is_forbid_china').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_forbid_china = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_forbid_china', value:is_forbid_china}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用屏蔽海外访问
+        $('#is_forbid_oversea').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_forbid_oversea = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_forbid_oversea', value:is_forbid_oversea}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
@@ -1303,6 +1375,24 @@
             var push_bear_qrcode = $("#push_bear_qrcode").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'push_bear_qrcode', value:push_bear_qrcode}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置TCP阻断检测提醒次数
+        function setTcpCheckWarningTimes() {
+            var tcp_check_warning_times = $("#tcp_check_warning_times").val();
+
+            if (tcp_check_warning_times < 0 || tcp_check_warning_times > 12) {
+                layer.msg('只能在0-12之间', {time:1000});
+                return ;
+            }
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'tcp_check_warning_times', value:tcp_check_warning_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
