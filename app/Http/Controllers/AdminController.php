@@ -2173,6 +2173,33 @@ EOF;
         return Response::view('admin/userTrafficLogList', $view);
     }
 
+    //用户返利流水记录
+    public function userRebateList(Request $request)
+    {
+
+        $username = trim($request->get('username'));
+
+        $ref_username = trim($request->get('ref_username'));
+
+        $query = ReferralLog::query()->with(['user', 'order'])->orderBy('id', 'desc')->orderBy('status', 'asc');
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        if ($ref_username) {
+            $query->whereHas('ref_user', function ($q) use ($ref_username) {
+                $q->where('username', 'like', '%' . $ref_username . '%');
+            });
+        }
+
+        $view['list'] = $query->paginate(15);
+
+        return Response::view('admin/userRebateList', $view);
+    }
+
     // 转换成某个用户的身份
     public function switchToUser(Request $request)
     {

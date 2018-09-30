@@ -99,8 +99,12 @@
                                                         <div class="col-md-6">
                                                             <label for="is_invite_register" class="col-md-3 control-label">邀请注册</label>
                                                             <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_invite_register) checked @endif id="is_invite_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
+                                                              <select id="is_invite_register" class="form-control select2" name="is_invite_register">
+                                                                <option value="0" @if ($is_invite_register == '0') selected @endif>关闭</option>
+                                                                <option value="1" @if ($is_invite_register == '1') selected @endif>可选</option>
+                                                                <option value="2" @if ($is_invite_register == '2') selected @endif>必须</option>
+                                                              </select>
+                                                              <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -876,7 +880,7 @@
                 });
             });
         });
-	
+
         // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
@@ -982,19 +986,17 @@
             }
         });
 
-        // 启用、禁用邀请注册
-        $('#is_invite_register').on({
-            'switchChange.bootstrapSwitch': function(event, state) {
-                var is_invite_register = state ? 1 : 0;
+        // 启用、可选、禁用邀请注册
+        $('#is_invite_register').change(function() {
+            var is_invite_register = $(this).val();
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_invite_register', value:is_invite_register}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
-                        }
-                    });
+                    }
                 });
-            }
+            });
         });
 
         // 启用、禁用用户重置密码
@@ -1251,7 +1253,7 @@
                 });
             }
         });
-	
+
         // 过期封禁是否禁止账号
         $('#is_ban_status').on({
             'switchChange.bootstrapSwitch': function(event, state) {
@@ -1557,7 +1559,7 @@
                         window.location.reload();
                     }
                 });
-            }); 
+            });
         });
 
         // 设置注册时默认有效期

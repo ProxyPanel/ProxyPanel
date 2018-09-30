@@ -20,6 +20,11 @@ class ReferralLog extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
+    function ref_user()
+    {
+        return $this->hasOne(User::class, 'id', 'ref_user_id');
+    }
+
     function order()
     {
         return $this->hasOne(Order::class, 'oid', 'order_id');
