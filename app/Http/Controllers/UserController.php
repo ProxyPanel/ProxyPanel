@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Components\ServerChan;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
@@ -40,6 +41,13 @@ use DB;
 
 class UserController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+
     public function index(Request $request)
     {
         $user = Session::get('user');
@@ -52,18 +60,18 @@ class UserController extends Controller
 
         $view['info'] = $user->toArray();
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
-        $view['wechat_qrcode'] = $this->systemConfig['wechat_qrcode'];
-        $view['alipay_qrcode'] = $this->systemConfig['alipay_qrcode'];
-        $view['login_add_score'] = $this->systemConfig['login_add_score'];
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-        $view['is_push_bear'] = $this->systemConfig['is_push_bear'];
-        $view['push_bear_qrcode'] = $this->systemConfig['push_bear_qrcode'];
+        $view['wechat_qrcode'] = self::$systemConfig['wechat_qrcode'];
+        $view['alipay_qrcode'] = self::$systemConfig['alipay_qrcode'];
+        $view['login_add_score'] = self::$systemConfig['login_add_score'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
+        $view['is_push_bear'] = self::$systemConfig['is_push_bear'];
+        $view['push_bear_qrcode'] = self::$systemConfig['push_bear_qrcode'];
 
         // 推广返利是否可见
         if (!Session::has('referral_status')) {
-            Session::put('referral_status', $this->systemConfig['referral_status']);
+            Session::put('referral_status', self::$systemConfig['referral_status']);
         }
 
         // 如果没有唯一码则生成一个
@@ -81,7 +89,7 @@ class UserController extends Controller
         }
 
         $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
-        $view['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
+        $view['link'] = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] . '/s/' . $code : self::$systemConfig['website_url'] . '/s/' . $code;
 
         // 近期登录日志
         $view['userLoginLog'] = UserLoginLog::query()->where('user_id', $user['id'])->orderBy('id', 'desc')->limit(10)->get();
@@ -91,7 +99,7 @@ class UserController extends Controller
         if (empty($userLabelIds)) {
             $view['nodeList'] = [];
 
-            return Response::view('user/index', $view);
+            return Response::view('user.index', $view);
         }
 
         $nodeList = DB::table('ss_node')
@@ -115,7 +123,7 @@ class UserController extends Controller
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
             $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . base64url_encode($node->name."|".$node->traffic_rate."倍流量消耗");
+            $ssr_str .= '&remarks=' . base64url_encode($node->name . "|" . $node->traffic_rate . "倍流量消耗");
             $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
@@ -157,7 +165,7 @@ class UserController extends Controller
 
         $view['nodeList'] = $nodeList;
 
-        return Response::view('user/index', $view);
+        return Response::view('user.index', $view);
     }
 
     // 公告详情
@@ -170,11 +178,11 @@ class UserController extends Controller
             return Redirect::to('/');
         }
 
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-        return Response::view('user/article', $view);
+        return Response::view('user.article', $view);
     }
 
     // 修改个人资料
@@ -290,15 +298,15 @@ class UserController extends Controller
             }
         } else {
             // 加密方式、协议、混淆
-            $view['method_list'] = $this->methodList();
-            $view['protocol_list'] = $this->protocolList();
-            $view['obfs_list'] = $this->obfsList();
+            $view['method_list'] = Helpers::methodList();
+            $view['protocol_list'] = Helpers::protocolList();
+            $view['obfs_list'] = Helpers::obfsList();
             $view['info'] = User::query()->where('id', $user['id'])->first();
-            $view['website_logo'] = $this->systemConfig['website_logo'];
-            $view['website_analytics'] = $this->systemConfig['website_analytics'];
-            $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+            $view['website_logo'] = self::$systemConfig['website_logo'];
+            $view['website_analytics'] = self::$systemConfig['website_analytics'];
+            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-            return Response::view('user/profile', $view);
+            return Response::view('user.profile', $view);
         }
     }
 
@@ -344,27 +352,22 @@ class UserController extends Controller
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
 
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-        return Response::view('user/trafficLog', $view);
+        return Response::view('user.trafficLog', $view);
     }
 
     // 商品列表
     public function goodsList(Request $request)
     {
-        $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
-        foreach ($goodsList as $goods) {
-            $goods->traffic = flowAutoShow($goods->traffic * 1048576);
-        }
+        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-        $view['goodsList'] = $goodsList;
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-
-        return Response::view('user/goodsList', $view);
+        return Response::view('user.goodsList', $view);
     }
 
     // 工单
@@ -372,13 +375,13 @@ class UserController extends Controller
     {
         $user = Session::get('user');
 
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
         $view['ticketList'] = Ticket::query()->where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
 
-        return Response::view('user/ticketList', $view);
+        return Response::view('user.ticketList', $view);
     }
 
     // 订单
@@ -388,28 +391,22 @@ class UserController extends Controller
 
         $view['orderList'] = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', $user['id'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
 
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-        return Response::view('user/orderList', $view);
+        return Response::view('user.orderList', $view);
     }
 
     // 订单明细
     public function orderDetail(Request $request, $sn)
     {
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
+        $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
 
-        $order = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
-
-        // 处理商品流量信息
-        $order->goods->traffic = flowAutoShow($order->goods->traffic * 1048576);
-
-        $view['order'] = $order;
-
-        return Response::view('user/orderDetail', $view);
+        return Response::view('user.orderDetail', $view);
     }
 
     // 添加工单
@@ -438,9 +435,9 @@ class UserController extends Controller
             $content = "标题：【" . $title . "】<br>内容：" . $content;
 
             // 发邮件通知管理员
-            if ($this->systemConfig['crash_warning_email']) {
+            if (self::$systemConfig['crash_warning_email']) {
                 try {
-                    Mail::to($this->systemConfig['crash_warning_email'])->send(new newTicket($this->systemConfig['website_name'], $emailTitle, $content));
+                    Mail::to(self::$systemConfig['crash_warning_email'])->send(new newTicket(self::$systemConfig['website_name'], $emailTitle, $content));
                     $this->sendEmailLog(1, $emailTitle, $content);
                 } catch (\Exception $e) {
                     $this->sendEmailLog(1, $emailTitle, $content, 0, $e->getMessage());
@@ -448,7 +445,7 @@ class UserController extends Controller
             }
 
             // 通过ServerChan发微信消息提醒管理员
-            if ($this->systemConfig['is_server_chan'] && $this->systemConfig['server_chan_key']) {
+            if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
                 $serverChan = new ServerChan();
                 $serverChan->send($emailTitle, $content);
             }
@@ -471,6 +468,10 @@ class UserController extends Controller
             $content = str_replace("eval", "", str_replace("atob", "", $content));
             $content = substr($content, 0, 300);
 
+            if (empty($content)) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复内容不能为空']);
+            }
+
             $obj = new TicketReply();
             $obj->ticket_id = $id;
             $obj->user_id = $user['id'];
@@ -486,8 +487,8 @@ class UserController extends Controller
 
                 // 发邮件通知管理员
                 try {
-                    if ($this->systemConfig['crash_warning_email']) {
-                        Mail::to($this->systemConfig['crash_warning_email'])->send(new replyTicket($this->systemConfig['website_name'], $title, $content));
+                    if (self::$systemConfig['crash_warning_email']) {
+                        Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
                         $this->sendEmailLog(1, $title, $content);
                     }
                 } catch (\Exception $e) {
@@ -495,7 +496,7 @@ class UserController extends Controller
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
-                if ($this->systemConfig['is_server_chan'] && $this->systemConfig['server_chan_key']) {
+                if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
                     $serverChan = new ServerChan();
                     $serverChan->send($title, $content);
                 }
@@ -513,11 +514,11 @@ class UserController extends Controller
             $view['ticket'] = $ticket;
             $view['replyList'] = TicketReply::query()->where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
 
-            $view['website_logo'] = $this->systemConfig['website_logo'];
-            $view['website_analytics'] = $this->systemConfig['website_analytics'];
-            $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+            $view['website_logo'] = self::$systemConfig['website_logo'];
+            $view['website_analytics'] = self::$systemConfig['website_analytics'];
+            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-            return Response::view('user/replyTicket', $view);
+            return Response::view('user.replyTicket', $view);
         }
     }
 
@@ -544,28 +545,28 @@ class UserController extends Controller
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
 
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-        $view['num'] = $this->systemConfig['invite_num'] - $num <= 0 ? 0 : $this->systemConfig['invite_num'] - $num; // 还可以生成的邀请码数量
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
+        $view['num'] = self::$systemConfig['invite_num'] - $num <= 0 ? 0 : self::$systemConfig['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', $user['id'])->with(['generator', 'user'])->paginate(10); // 邀请码列表
-        $view['referral_traffic'] = flowAutoShow($this->systemConfig['referral_traffic'] * 1048576);
-        $view['referral_percent'] = $this->systemConfig['referral_percent'];
+        $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
+        $view['referral_percent'] = self::$systemConfig['referral_percent'];
 
-        return Response::view('user/invite', $view);
+        return Response::view('user.invite', $view);
     }
 
     // 公开的邀请码列表
     public function free(Request $request)
     {
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-        $view['is_invite_register'] = $this->systemConfig['is_invite_register'];
-        $view['is_free_code'] = $this->systemConfig['is_free_code'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
+        $view['is_invite_register'] = self::$systemConfig['is_invite_register'];
+        $view['is_free_code'] = self::$systemConfig['is_free_code'];
         $view['inviteList'] = Invite::query()->where('uid', 0)->where('status', 0)->paginate();
 
-        return Response::view('user/free', $view);
+        return Response::view('user.free', $view);
     }
 
     // 生成邀请码
@@ -575,8 +576,8 @@ class UserController extends Controller
 
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', $user['id'])->count();
-        if ($num >= $this->systemConfig['invite_num']) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . $this->systemConfig['invite_num'] . '个邀请码']);
+        if ($num >= self::$systemConfig['invite_num']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . self::$systemConfig['invite_num'] . '个邀请码']);
         }
 
         $obj = new Invite();
@@ -597,7 +598,7 @@ class UserController extends Controller
             $username = trim($request->get('username'));
 
             // 是否开启账号激活
-            if (!$this->systemConfig['is_active_register']) {
+            if (!self::$systemConfig['is_active_register']) {
                 Session::flash('errorMsg', '系统未开启账号激活功能，请联系管理员');
 
                 return Redirect::back()->withInput();
@@ -623,15 +624,15 @@ class UserController extends Controller
             $activeTimes = 0;
             if (Cache::has('activeUser_' . md5($username))) {
                 $activeTimes = Cache::get('activeUser_' . md5($username));
-                if ($activeTimes >= $this->systemConfig['active_times']) {
-                    Session::flash('errorMsg', '同一个账号24小时内只能请求激活' . $this->systemConfig['active_times'] . '次，请勿频繁操作');
+                if ($activeTimes >= self::$systemConfig['active_times']) {
+                    Session::flash('errorMsg', '同一个账号24小时内只能请求激活' . self::$systemConfig['active_times'] . '次，请勿频繁操作');
 
                     return Redirect::back();
                 }
             }
 
             // 生成激活账号的地址
-            $token = md5($this->systemConfig['website_name'] . $username . microtime());
+            $token = md5(self::$systemConfig['website_name'] . $username . microtime());
             $verify = new Verify();
             $verify->user_id = $user->id;
             $verify->username = $username;
@@ -640,12 +641,12 @@ class UserController extends Controller
             $verify->save();
 
             // 发送邮件
-            $activeUserUrl = $this->systemConfig['website_url'] . '/active/' . $token;
+            $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
             $title = '重新激活账号';
             $content = '请求地址：' . $activeUserUrl;
 
             try {
-                Mail::to($user->username)->send(new activeUser($this->systemConfig['website_name'], $activeUserUrl));
+                Mail::to($user->username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
                 $this->sendEmailLog($user->id, $title, $content);
             } catch (\Exception $e) {
                 $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
@@ -656,9 +657,9 @@ class UserController extends Controller
 
             return Redirect::back();
         } else {
-            $view['is_active_register'] = $this->systemConfig['is_active_register'];
+            $view['is_active_register'] = self::$systemConfig['is_active_register'];
 
-            return Response::view('user/activeUser', $view);
+            return Response::view('user.activeUser', $view);
         }
     }
 
@@ -675,15 +676,15 @@ class UserController extends Controller
         } elseif (empty($verify->user)) {
             Session::flash('errorMsg', '该链接已失效');
 
-            return Response::view('user/active');
+            return Response::view('user.active');
         } elseif ($verify->status == 1) {
             Session::flash('errorMsg', '该链接已失效');
 
-            return Response::view('user/active');
+            return Response::view('user.active');
         } elseif ($verify->user->status != 0) {
             Session::flash('errorMsg', '该账号无需激活.');
 
-            return Response::view('user/active');
+            return Response::view('user.active');
         } elseif (time() - strtotime($verify->created_at) >= 1800) {
             Session::flash('errorMsg', '该链接已过期');
 
@@ -691,7 +692,7 @@ class UserController extends Controller
             $verify->status = 2;
             $verify->save();
 
-            return Response::view('user/active');
+            return Response::view('user.active');
         }
 
         // 更新账号状态
@@ -708,7 +709,7 @@ class UserController extends Controller
 
         // 账号激活后给邀请人送流量
         if ($verify->user->referral_uid) {
-            $transfer_enable = $this->systemConfig['referral_traffic'] * 1048576;
+            $transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
 
             User::query()->where('id', $verify->user->referral_uid)->increment('transfer_enable', $transfer_enable);
             User::query()->where('id', $verify->user->referral_uid)->update(['enable' => 1]);
@@ -716,7 +717,7 @@ class UserController extends Controller
 
         Session::flash('successMsg', '账号激活成功');
 
-        return Response::view('user/active');
+        return Response::view('user.active');
     }
 
     // 重设密码页
@@ -726,7 +727,7 @@ class UserController extends Controller
             $username = trim($request->get('username'));
 
             // 是否开启重设密码
-            if (!$this->systemConfig['is_reset_password']) {
+            if (!self::$systemConfig['is_reset_password']) {
                 Session::flash('errorMsg', '系统未开启重置密码功能，请联系管理员');
 
                 return Redirect::back()->withInput();
@@ -744,15 +745,15 @@ class UserController extends Controller
             $resetTimes = 0;
             if (Cache::has('resetPassword_' . md5($username))) {
                 $resetTimes = Cache::get('resetPassword_' . md5($username));
-                if ($resetTimes >= $this->systemConfig['reset_password_times']) {
-                    Session::flash('errorMsg', '同一个账号24小时内只能重设密码' . $this->systemConfig['reset_password_times'] . '次，请勿频繁操作');
+                if ($resetTimes >= self::$systemConfig['reset_password_times']) {
+                    Session::flash('errorMsg', '同一个账号24小时内只能重设密码' . self::$systemConfig['reset_password_times'] . '次，请勿频繁操作');
 
                     return Redirect::back();
                 }
             }
 
             // 生成取回密码的地址
-            $token = md5($this->systemConfig['website_name'] . $username . microtime());
+            $token = md5(self::$systemConfig['website_name'] . $username . microtime());
             $verify = new Verify();
             $verify->user_id = $user->id;
             $verify->username = $username;
@@ -761,12 +762,12 @@ class UserController extends Controller
             $verify->save();
 
             // 发送邮件
-            $resetPasswordUrl = $this->systemConfig['website_url'] . '/reset/' . $token;
+            $resetPasswordUrl = self::$systemConfig['website_url'] . '/reset/' . $token;
             $title = '重置密码';
             $content = '请求地址：' . $resetPasswordUrl;
 
             try {
-                Mail::to($user->username)->send(new resetPassword($this->systemConfig['website_name'], $resetPasswordUrl));
+                Mail::to($user->username)->send(new resetPassword(self::$systemConfig['website_name'], $resetPasswordUrl));
                 $this->sendEmailLog($user->id, $title, $content);
             } catch (\Exception $e) {
                 $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
@@ -777,12 +778,12 @@ class UserController extends Controller
 
             return Redirect::back();
         } else {
-            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
-            $view['website_analytics'] = $this->systemConfig['website_analytics'];
-            $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-            $view['is_reset_password'] = $this->systemConfig['is_reset_password'];
+            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
+            $view['website_analytics'] = self::$systemConfig['website_analytics'];
+            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
+            $view['is_reset_password'] = self::$systemConfig['is_reset_password'];
 
-            return Response::view('user/resetPassword', $view);
+            return Response::view('user.resetPassword', $view);
         }
     }
 
@@ -856,13 +857,13 @@ class UserController extends Controller
                 // 重新获取一遍verify
                 $view['verify'] = Verify::query()->where('token', $token)->with('user')->first();
 
-                return Response::view('user/reset', $view);
+                return Response::view('user.reset', $view);
             }
 
-            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
+            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
             $view['verify'] = $verify;
 
-            return Response::view('user/reset', $view);
+            return Response::view('user.reset', $view);
         }
     }
 
@@ -913,7 +914,7 @@ class UserController extends Controller
             }
 
             // 限购控制：all-所有商品限购, free-价格为0的商品限购, none-不限购（默认）
-            $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
+            $strategy = self::$systemConfig['goods_purchase_limit_strategy'];
             if ($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))) {
                 $noneExpireGoodExist = Order::query()->where('status', '>=', 0)->where('is_expire', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
                 if ($noneExpireGoodExist) {
@@ -1016,8 +1017,8 @@ class UserController extends Controller
                 if ($goods->label) {
                     // 用户默认标签
                     $defaultLabels = [];
-                    if ($this->systemConfig['initial_labels_for_user']) {
-                        $defaultLabels = explode(',', $this->systemConfig['initial_labels_for_user']);
+                    if (self::$systemConfig['initial_labels_for_user']) {
+                        $defaultLabels = explode(',', self::$systemConfig['initial_labels_for_user']);
                     }
 
                     // 取出现有的标签
@@ -1041,7 +1042,7 @@ class UserController extends Controller
 
                 // 写入返利日志
                 if ($user->referral_uid) {
-                    $this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount * $this->systemConfig['referral_percent']);
+                    $this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount * self::$systemConfig['referral_percent']);
                 }
 
                 // 取消重复返利
@@ -1063,14 +1064,13 @@ class UserController extends Controller
                 return Redirect::to('services');
             }
 
-            $goods->traffic = flowAutoShow($goods->traffic * 1048576);
             $view['goods'] = $goods;
-            $view['is_youzan'] = $this->systemConfig['is_youzan'];
-            $view['website_logo'] = $this->systemConfig['website_logo'];
-            $view['website_analytics'] = $this->systemConfig['website_analytics'];
-            $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+            $view['is_youzan'] = self::$systemConfig['is_youzan'];
+            $view['website_logo'] = self::$systemConfig['website_logo'];
+            $view['website_analytics'] = self::$systemConfig['website_analytics'];
+            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-            return Response::view('user/buy', $view);
+            return Response::view('user.buy', $view);
         }
     }
 
@@ -1121,20 +1121,20 @@ class UserController extends Controller
         // 生成个人推广链接
         $user = Session::get('user');
 
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
-        $view['referral_traffic'] = flowAutoShow($this->systemConfig['referral_traffic'] * 1048576);
-        $view['referral_percent'] = $this->systemConfig['referral_percent'];
-        $view['referral_money'] = $this->systemConfig['referral_money'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
+        $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
+        $view['referral_percent'] = self::$systemConfig['referral_percent'];
+        $view['referral_money'] = self::$systemConfig['referral_money'];
         $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount') / 100;
         $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount') / 100;
-        $view['link'] = $this->systemConfig['website_url'] . '/register?aff=' . $user['id'];
+        $view['link'] = self::$systemConfig['website_url'] . '/register?aff=' . $user['id'];
         $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
         $view['referralApplyList'] = ReferralApply::query()->where('user_id', $user['id'])->with('user')->paginate(10);
-        $view['referralUserList'] = User::select(['username', 'created_at'])->where('referral_uid', $user['id'])->orderBy('id', 'desc')->paginate(10);
+        $view['referralUserList'] = User::query()->select(['username', 'created_at'])->where('referral_uid', $user['id'])->orderBy('id', 'desc')->paginate(10);
 
-        return Response::view('user/referral', $view);
+        return Response::view('user.referral', $view);
     }
 
     // 申请提现
@@ -1156,8 +1156,8 @@ class UserController extends Controller
         // 校验可以提现金额是否超过系统设置的阀值
         $ref_amount = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
         $ref_amount = $ref_amount / 100;
-        if ($ref_amount < $this->systemConfig['referral_money']) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . $this->systemConfig['referral_money'] . '元才可以提现，继续努力吧']);
+        if ($ref_amount < self::$systemConfig['referral_money']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$systemConfig['referral_money'] . '元才可以提现，继续努力吧']);
         }
 
         // 取出本次申请关联返利日志ID
@@ -1183,12 +1183,12 @@ class UserController extends Controller
     // 帮助中心
     public function help(Request $request)
     {
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(15);
 
-        return Response::view('user/help', $view);
+        return Response::view('user.help', $view);
     }
 
     // 更换订阅地址
@@ -1287,5 +1287,28 @@ class UserController extends Controller
         Session::put("locale", $locale);
 
         return Redirect::back();
+    }
+
+    // 上传文件
+    public function uploadImg(Request $request)
+    {
+        var_dump($_FILES);
+        var_dump($request->all());
+        die;
+        if ($request->hasFile('img')) {
+            $file = $request->file('logo');
+            $fileType = $file->getClientOriginalExtension();
+
+            // 验证文件合法性
+            if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                Session::flash('errorMsg', 'LOGO不合法');
+
+                return Redirect::back()->withInput();
+            }
+
+            $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+            $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
+            $logo = $move ? '/upload/image/goods/' . $logoName : '';
+        }
     }
 }

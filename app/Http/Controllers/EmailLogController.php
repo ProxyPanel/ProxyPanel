@@ -19,7 +19,7 @@ class EmailLogController extends Controller
     {
         $view['list'] = EmailLog::query()->with('user')->orderBy('id', 'desc')->paginate(15);
 
-        return Response::view('emailLog/logList', $view);
+        return Response::view('emailLog.logList', $view);
     }
 
 }

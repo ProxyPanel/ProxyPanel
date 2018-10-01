@@ -10,12 +10,12 @@ use Log;
 class Namesilo
 {
     protected static $host;
-    protected static $config;
+    protected static $systemConfig;
 
     function __construct()
     {
         self::$host = 'https://www.namesilo.com/api/';
-        self::$config = $this->systemConfig();
+        self::$systemConfig = Helpers::systemConfig();
     }
 
     // 列出账号下所有域名
@@ -79,7 +79,7 @@ class Namesilo
         $params = [
             'version' => 1,
             'type'    => 'xml',
-            'key'     => self::$config['namesilo_key']
+            'key'     => self::$systemConfig['namesilo_key']
         ];
         $query = array_merge($params, $data);
 
@@ -122,18 +122,6 @@ class Namesilo
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
-    }
-
-    // 系统配置
-    private function systemConfig()
-    {
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        return $data;
     }
 
     // 发起一个CURL请求

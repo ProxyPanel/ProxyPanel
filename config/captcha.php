@@ -41,6 +41,15 @@ return [
         'blur'      => 2,
         'invert'    => true,
         'contrast'  => -5,
+    ],
+
+    // 自动售号机
+    'seller' => [
+        'length'    => 4,
+        'width'     => 90,
+        'height'    => 34,
+        'quality'   => 90,
+        'lines'     => 4,
     ]
 
 ];

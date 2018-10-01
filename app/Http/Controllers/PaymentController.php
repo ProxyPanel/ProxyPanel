@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Components\Yzy;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
@@ -17,6 +18,13 @@ use DB;
 
 class PaymentController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+
     // 创建支付单
     public function create(Request $request)
     {
@@ -31,7 +39,7 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!$this->systemConfig['is_youzan']) {
+        if (!self::$systemConfig['is_youzan']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
 
@@ -42,7 +50,7 @@ class PaymentController extends Controller
         }
 
         // 限购控制
-        $strategy = $this->systemConfig['goods_purchase_limit_strategy'];
+        $strategy = self::$systemConfig['goods_purchase_limit_strategy'];
         if ($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))) {
             $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('is_expire', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
             if ($noneExpireOrderExist) {
@@ -157,11 +165,11 @@ class PaymentController extends Controller
         }
 
         $view['payment'] = $payment;
-        $view['website_logo'] = $this->systemConfig['website_logo'];
-        $view['website_analytics'] = $this->systemConfig['website_analytics'];
-        $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+        $view['website_logo'] = self::$systemConfig['website_logo'];
+        $view['website_analytics'] = self::$systemConfig['website_analytics'];
+        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-        return Response::view('payment/detail', $view);
+        return Response::view('payment.detail', $view);
     }
 
     // 获取订单支付状态
@@ -201,6 +209,6 @@ class PaymentController extends Controller
 
         $view['list'] = $query->orderBy('id', 'desc')->paginate(10);
 
-        return Response::view('payment/callbackList', $view);
+        return Response::view('payment.callbackList', $view);
     }
 }

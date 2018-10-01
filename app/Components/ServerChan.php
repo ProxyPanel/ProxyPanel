@@ -11,16 +11,17 @@ use Log;
 
 class ServerChan
 {
-    protected static $config;
+    protected static $systemConfig;
 
     function __construct()
     {
-        self::$config = $this->systemConfig();
+        self::$systemConfig = Helpers::systemConfig();
     }
 
     /**
-     * @param string $title 消息标题
+     * @param string $title   消息标题
      * @param string $content 消息内容
+     *
      * @return string
      */
     public function send($title, $content)
@@ -28,7 +29,7 @@ class ServerChan
         $client = new Client();
 
         try {
-            $response = $client->request('GET', 'https://sc.ftqq.com/' . self::$config['server_chan_key'] . '.send', [
+            $response = $client->request('GET', 'https://sc.ftqq.com/' . self::$systemConfig['server_chan_key'] . '.send', [
                 'query' => [
                     'text' => $title,
                     'desp' => $content
@@ -68,17 +69,5 @@ class ServerChan
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
-    }
-
-    // 系统配置
-    private function systemConfig()
-    {
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        return $data;
     }
 }

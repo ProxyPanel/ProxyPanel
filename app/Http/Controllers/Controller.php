@@ -23,13 +23,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public $systemConfig;
-
-    public function __construct()
-    {
-        $this->systemConfig = $this->systemConfig();
-    }
-
     // 生成订阅地址的唯一码
     public function makeSubscribeCode()
     {
@@ -39,98 +32,6 @@ class Controller extends BaseController
         }
 
         return $code;
-    }
-
-    // 加密方式
-    public function methodList()
-    {
-        return SsConfig::query()->where('type', 1)->get();
-    }
-
-    // 默认加密方式
-    public function getDefaultMethod()
-    {
-        $config = SsConfig::query()->where('type', 1)->where('is_default', 1)->first();
-
-        return $config ? $config->name : 'aes-192-ctr';
-    }
-
-    // 协议
-    public function protocolList()
-    {
-        return SsConfig::query()->where('type', 2)->get();
-    }
-
-    // 默认协议
-    public function getDefaultProtocol()
-    {
-        $config = SsConfig::query()->where('type', 2)->where('is_default', 1)->first();
-
-        return $config ? $config->name : 'origin';
-    }
-
-    // 混淆
-    public function obfsList()
-    {
-        return SsConfig::query()->where('type', 3)->get();
-    }
-
-    // 默认混淆
-    public function getDefaultObfs()
-    {
-        $config = SsConfig::query()->where('type', 3)->where('is_default', 1)->first();
-
-        return $config ? $config->name : 'plain';
-    }
-
-    // 等级
-    public function levelList()
-    {
-        return Level::query()->get()->sortBy('level');
-    }
-
-    // 系统配置
-    public function systemConfig()
-    {
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        return $data;
-    }
-
-    // 获取一个随机端口
-    public function getRandPort()
-    {
-        $config = $this->systemConfig();
-
-        $port = mt_rand($config['min_port'], $config['max_port']);
-        $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
-
-        $exists_port = User::query()->pluck('port')->toArray();
-        if (in_array($port, $exists_port) || in_array($port, $deny_port)) {
-            $port = $this->getRandPort();
-        }
-
-        return $port;
-    }
-
-    // 获取一个端口
-    public function getOnlyPort()
-    {
-        $config = $this->systemConfig();
-
-        $port = $config['min_port'];
-        $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
-
-        $exists_port = User::query()->where('port', '>=', $config['min_port'])->pluck('port')->toArray();
-        while (in_array($port, $exists_port) || in_array($port, $deny_port)) {
-            $port = $port + 1;
-        }
-
-        return $port;
     }
 
     // 类似Linux中的tail命令
@@ -347,6 +248,7 @@ class Controller extends BaseController
             $fileName = makeRandStr(18, true) . ".{$type}";
             if (file_put_contents(public_path($path . $fileName), base64_decode(str_replace($result[1], '', $base64_image_content)))) {
                 chmod(public_path($path . $fileName), 0744);
+
                 return $path . $fileName;
             } else {
                 return '';

@@ -19,7 +19,7 @@ class SensitiveWordsController extends Controller
     {
         $view['list'] = SensitiveWords::query()->paginate(15);
 
-        return Response::view('sensitiveWords/sensitiveWordsList', $view);
+        return Response::view('sensitiveWords.sensitiveWordsList', $view);
     }
 
     // 添加敏感词

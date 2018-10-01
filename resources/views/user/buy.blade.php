@@ -23,7 +23,7 @@
                         <tr>
                             <td style="padding: 10px;">
                                 <h2>{{$goods->name}}</h2>
-                                {{trans('home.service_traffic')}} {{$goods->traffic}}
+                                {{trans('home.service_traffic')}} {{$goods->traffic_label}}
                                 <br/>
                                 {{trans('home.service_days')}} {{$goods->days}} {{trans('home.day')}}
                             </td>

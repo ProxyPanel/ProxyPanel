@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Http\Models\Invite;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
@@ -23,6 +24,13 @@ use Mail;
  */
 class RegisterController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+
     // 注册页
     // TODO：改成点击发送验证码按钮，而不是到邮箱里去打开激活链接
     public function index(Request $request)
@@ -49,7 +57,7 @@ class RegisterController extends Controller
             }
 
             // 是否开启注册
-            if (!$this->systemConfig['is_register']) {
+            if (!self::$systemConfig['is_register']) {
                 Session::flash('errorMsg', '系统维护，暂停注册');
 
                 return Redirect::back();
@@ -87,7 +95,7 @@ class RegisterController extends Controller
             }
 
             // 是否校验验证码
-            if ($this->systemConfig['is_captcha']) {
+            if (self::$systemConfig['is_captcha']) {
                 if (!Captcha::check($captcha)) {
                     Session::flash('errorMsg', '验证码错误，请重新输入');
 
@@ -96,7 +104,7 @@ class RegisterController extends Controller
             }
 
             // 如果需要邀请注册
-            if ($this->systemConfig['is_invite_register']) {
+            if (self::$systemConfig['is_invite_register']) {
                 if (empty($code)) {
                     Session::flash('errorMsg', '请输入邀请码');
 
@@ -113,10 +121,10 @@ class RegisterController extends Controller
             }
 
             // 24小时内同IP注册限制
-            if ($this->systemConfig['register_ip_limit']) {
+            if (self::$systemConfig['register_ip_limit']) {
                 if (Cache::has($cacheKey)) {
                     $registerTimes = Cache::get($cacheKey);
-                    if ($registerTimes >= $this->systemConfig['register_ip_limit']) {
+                    if ($registerTimes >= self::$systemConfig['register_ip_limit']) {
                         Session::flash('errorMsg', '系统已开启防刷机制，请勿频繁注册');
 
                         return Redirect::back()->withInput($request->except(['code']));
@@ -133,8 +141,8 @@ class RegisterController extends Controller
             }
 
             // 获取可用端口
-            $port = $this->systemConfig['is_rand_port'] ? $this->getRandPort() : $this->getOnlyPort();
-            if ($port > $this->systemConfig['max_port']) {
+            $port = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
+            if ($port > self::$systemConfig['max_port']) {
                 Session::flash('errorMsg', '用户已满，请联系管理员');
 
                 return Redirect::back()->withInput();
@@ -144,7 +152,7 @@ class RegisterController extends Controller
             $affArr = $this->getAff($code, $aff);
             $referral_uid = $affArr['referral_uid'];
 
-            $transfer_enable = $referral_uid ? ($this->systemConfig['default_traffic'] + $this->systemConfig['referral_traffic']) * 1048576 : $this->systemConfig['default_traffic'] * 1048576;
+            $transfer_enable = $referral_uid ? (self::$systemConfig['default_traffic'] + self::$systemConfig['referral_traffic']) * 1048576 : self::$systemConfig['default_traffic'] * 1048576;
 
             // 创建新用户
             $user = new User();
@@ -153,11 +161,11 @@ class RegisterController extends Controller
             $user->port = $port;
             $user->passwd = makeRandStr();
             $user->transfer_enable = $transfer_enable;
-            $user->method = $this->getDefaultMethod();
-            $user->protocol = $this->getDefaultProtocol();
-            $user->obfs = $this->getDefaultObfs();
+            $user->method = Helpers::getDefaultMethod();
+            $user->protocol = Helpers::getDefaultProtocol();
+            $user->obfs = Helpers::getDefaultObfs();
             $user->enable_time = date('Y-m-d H:i:s');
-            $user->expire_time = date('Y-m-d H:i:s', strtotime("+" . $this->systemConfig['default_days'] . " days"));
+            $user->expire_time = date('Y-m-d H:i:s', strtotime("+" . self::$systemConfig['default_days'] . " days"));
             $user->reg_ip = getClientIp();
             $user->referral_uid = $referral_uid;
             $user->save();
@@ -171,8 +179,8 @@ class RegisterController extends Controller
                 }
 
                 // 初始化默认标签
-                if (strlen($this->systemConfig['initial_labels_for_user'])) {
-                    $labels = explode(',', $this->systemConfig['initial_labels_for_user']);
+                if (strlen(self::$systemConfig['initial_labels_for_user'])) {
+                    $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
                     foreach ($labels as $label) {
                         $userLabel = new UserLabel();
                         $userLabel->user_id = $user->id;
@@ -182,20 +190,20 @@ class RegisterController extends Controller
                 }
 
                 // 更新邀请码
-                if ($this->systemConfig['is_invite_register'] && $affArr['code_id']) {
+                if (self::$systemConfig['is_invite_register'] && $affArr['code_id']) {
                     Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $user->id, 'status' => 1]);
                 }
             }
 
             // 发送邮件
-            if ($this->systemConfig['is_active_register']) {
+            if (self::$systemConfig['is_active_register']) {
                 // 生成激活账号的地址
-                $token = md5($this->systemConfig['website_name'] . $username . microtime());
-                $activeUserUrl = $this->systemConfig['website_url'] . '/active/' . $token;
+                $token = md5(self::$systemConfig['website_name'] . $username . microtime());
+                $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
                 $this->addVerify($user->id, $username, $token);
 
                 try {
-                    Mail::to($username)->send(new activeUser($this->systemConfig['website_name'], $activeUserUrl));
+                    Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
                     $this->sendEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl);
                 } catch (\Exception $e) {
                     $this->sendEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
@@ -205,7 +213,7 @@ class RegisterController extends Controller
             } else {
                 // 如果不需要激活，则直接给推荐人加流量
                 if ($referral_uid) {
-                    $transfer_enable = $this->systemConfig['referral_traffic'] * 1048576;
+                    $transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
 
                     User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
                     User::query()->where('id', $referral_uid)->update(['enable' => 1]);
@@ -218,13 +226,13 @@ class RegisterController extends Controller
         } else {
             Session::put('register_token', makeRandStr(16));
 
-            $view['is_captcha'] = $this->systemConfig['is_captcha'];
-            $view['is_register'] = $this->systemConfig['is_register'];
-            $view['website_home_logo'] = $this->systemConfig['website_home_logo'];
-            $view['is_invite_register'] = $this->systemConfig['is_invite_register'];
-            $view['is_free_code'] = $this->systemConfig['is_free_code'];
-            $view['website_analytics'] = $this->systemConfig['website_analytics'];
-            $view['website_customer_service'] = $this->systemConfig['website_customer_service'];
+            $view['is_captcha'] = self::$systemConfig['is_captcha'];
+            $view['is_register'] = self::$systemConfig['is_register'];
+            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
+            $view['is_invite_register'] = self::$systemConfig['is_invite_register'];
+            $view['is_free_code'] = self::$systemConfig['is_free_code'];
+            $view['website_analytics'] = self::$systemConfig['website_analytics'];
+            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
             return Response::view('register', $view);
         }

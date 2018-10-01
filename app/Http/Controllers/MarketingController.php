@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Http\Models\Marketing;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -10,12 +11,19 @@ use DB;
 
 class MarketingController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+
     // 邮件群发消息列表
     public function emailList(Request $request)
     {
         $view['list'] = Marketing::query()->where('type', 1)->paginate(15);
 
-        return Response::view('marketing/emailList', $view);
+        return Response::view('marketing.emailList', $view);
     }
 
     // 消息通道群发列表
@@ -31,7 +39,7 @@ class MarketingController extends Controller
 
         $view['list'] = $query->paginate(15);
 
-        return Response::view('marketing/pushList', $view);
+        return Response::view('marketing.pushList', $view);
     }
 
     // 添加推送消息
@@ -40,7 +48,7 @@ class MarketingController extends Controller
         $title = trim($request->get('title'));
         $content = $request->get('content');
 
-        if (!$this->systemConfig['is_push_bear']) {
+        if (!self::$systemConfig['is_push_bear']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '推送失败：请先启用并配置PushBear']);
         }
 
@@ -49,7 +57,7 @@ class MarketingController extends Controller
             $client = new Client();
             $response = $client->request('GET', 'https://pushbear.ftqq.com/sub', [
                 'query' => [
-                    'sendkey' => $this->systemConfig['push_bear_send_key'],
+                    'sendkey' => self::$systemConfig['push_bear_send_key'],
                     'text'    => $title,
                     'desp'    => $content
                 ]

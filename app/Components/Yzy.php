@@ -8,11 +8,13 @@ use Log;
 
 class Yzy
 {
-    protected $accessToken;
+    protected static $systemConfig;
+    protected static $accessToken;
 
     function __construct()
     {
-        $this->accessToken = $this->getAccessToken();
+        self::$systemConfig = Helpers::systemConfig();
+        self::$accessToken = $this->getAccessToken();
     }
 
     // 获取accessToken
@@ -27,9 +29,7 @@ class Yzy
             Cache::forget('YZY_TOKEN');
         }
 
-        $config = $this->systemConfig();
-
-        $token = (new \Youzan\Open\Token($config['youzan_client_id'], $config['youzan_client_secret']))->getToken('self', ['kdt_id' => $config['kdt_id']]);
+        $token = (new \Youzan\Open\Token(self::$systemConfig['youzan_client_id'], self::$systemConfig['youzan_client_secret']))->getToken('self', ['kdt_id' => self::$systemConfig['kdt_id']]);
         if (isset($token['error'])) {
             Log::info('获取有赞云支付access_token失败：' . $token['error_description']);
 
@@ -44,7 +44,7 @@ class Yzy
     // 生成收款二维码
     public function createQrCode($goodsName, $price, $orderSn)
     {
-        $client = new \Youzan\Open\Client($this->accessToken);
+        $client = new \Youzan\Open\Client(self::$accessToken);
 
         $params = [
             'qr_name'   => $goodsName, // 商品名
@@ -59,7 +59,7 @@ class Yzy
     // 通过tid获取交易信息
     public function getTradeByTid($tid)
     {
-        $client = new \Youzan\Open\Client($this->accessToken);
+        $client = new \Youzan\Open\Client(self::$accessToken);
 
         return $client->post('youzan.trade.get', '4.0.0', ['tid' => $tid]);
     }
@@ -67,20 +67,8 @@ class Yzy
     // 通过二维码ID获取已支付的交易信息
     public function getTradeByQrId($qr_id)
     {
-        $client = new \Youzan\Open\Client($this->accessToken);
+        $client = new \Youzan\Open\Client(self::$accessToken);
 
         return $client->post('youzan.trades.qr.get', '3.0.0', ['qr_id' => $qr_id, 'status' => 'TRADE_RECEIVED']);
-    }
-
-    // 系统配置
-    private function systemConfig()
-    {
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        return $data;
     }
 }
