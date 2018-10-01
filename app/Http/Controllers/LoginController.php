@@ -146,19 +146,19 @@ class LoginController extends Controller
         // 解析IP信息
         $qqwry = new QQWry();
         $ipInfo = $qqwry->ip($ip);
-        if (!$ipInfo || !is_array($ipInfo) || empty($ipInfo['country'])) {
+        if (!$ipInfo || !is_array($ipInfo)) {
             \Log::warning("获取IP地址信息异常：" . $ip);
         }
 
         $log = new UserLoginLog();
         $log->user_id = $userId;
         $log->ip = $ip;
-        $log->country = $ipInfo['country'];
-        $log->province = $ipInfo['province'];
-        $log->city = $ipInfo['city'];
-        $log->county = $ipInfo['county'];
-        $log->isp = $ipInfo['isp'];
-        $log->area = $ipInfo['area'];
+        $log->country = $ipInfo['country'] ?? '';
+        $log->province = $ipInfo['province'] ?? '';
+        $log->city = $ipInfo['city'] ?? '';
+        $log->county = $ipInfo['county'] ?? '';
+        $log->isp = $ipInfo['isp'] ?? '';
+        $log->area = $ipInfo['area'] ?? '';
         $log->save();
     }
 }
