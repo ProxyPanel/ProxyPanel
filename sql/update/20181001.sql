@@ -24,4 +24,4 @@ ALTER TABLE `goods`
 
 -- 订单表加入邮箱字段
 ALTER TABLE `order`
-`email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '邮箱' AFTER `coupon_id`;
+ADD COLUMN `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '邮箱' AFTER `coupon_id`;
