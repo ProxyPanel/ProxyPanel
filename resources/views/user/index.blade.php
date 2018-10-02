@@ -163,7 +163,7 @@
                                                             </span>
                                                             <ul class="mt-comment-actions" style="display: block;">
                                                                 <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > 查看配置信息 </a>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > {{trans('home.setting_info')}} </a>
                                                                 </li>
                                                                 <li>
                                                                     <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
@@ -274,7 +274,7 @@
                                     <label for="charge_type" class="col-md-4 control-label">{{trans('home.payment_method')}}</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="charge_type" id="charge_type">
-                                            <option value="1" selected>{{trans('home.coupon')}}</option>
+                                            <option value="1" selected>{{trans('home.coupon_code')}}</option>
                                         </select>
                                     </div>
                                 </div>
