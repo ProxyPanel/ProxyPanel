@@ -163,6 +163,9 @@
                                                             </span>
                                                             <ul class="mt-comment-actions" style="display: block;">
                                                                 <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > 查看配置信息 </a>
+                                                                </li>
+                                                                <li>
                                                                     <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
                                                                 </li>
                                                                 <li>
@@ -182,7 +185,9 @@
                 </div>
                 @endif
             </div>
-            <div class="col-md-4" style="padding-left: 3px;">
+            </div>
+            <div class="row">
+            <div class="col-md-4">
                 <ul class="list-group">
                     @if($info['enable'])
                     <li class="list-group-item">
@@ -253,6 +258,7 @@
                 </ul>
             </div>
         </div>
+        
         <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
             <div class="modal-dialog">
                 <div class="modal-content">
