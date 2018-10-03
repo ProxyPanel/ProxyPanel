@@ -102,12 +102,12 @@
             var content = $("#content").val();
 
             if (title == '' || title == undefined) {
-                bootbox.alert('工单标题不能为空');
+                layer.alert('您未填写工单标题', {icon: 2, title:'提示'});
                 return false;
             }
 
             if (content == '' || content == undefined) {
-                bootbox.alert('工单内容不能为空');
+                layer.alert('您未填写工单内容', {icon: 2, title:'提示'});
                 return false;
             }
 
