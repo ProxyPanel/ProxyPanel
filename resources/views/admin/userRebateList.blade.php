@@ -27,8 +27,8 @@
                                 <input type="text" class="col-md-4 form-control input-sm" name="ref_username" value="{{Request::get('ref_username')}}" id="ref_username" placeholder="邀请人" onkeydown="if(event.keyCode==13){do_search();}">
                             </div>
 							<div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch() pla">
-                                    <option value="" @if(Request::get('status') == '')  disabled selected @endif>状态</option>
+                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
+                                    <option value="" @if(Request::get('status') == '')  disabled selected hidden @endif>状态</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>未提现</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>申请中</option>
                                     <option value="2" @if(Request::get('status') == '2') selected @endif>已提现</option>

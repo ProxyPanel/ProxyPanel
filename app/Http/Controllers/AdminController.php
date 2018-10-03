@@ -1014,6 +1014,7 @@ class AdminController extends Controller
     {
         $user_id = $request->get('user_id');
         $username = $request->get('username');
+        $status = $request->get('status');
 
         $query = UserSubscribe::with(['User']);
 
@@ -1025,6 +1026,10 @@ class AdminController extends Controller
             $query->whereHas('user', function ($q) use ($username) {
                 $q->where('username', 'like', '%' . $username . '%');
             });
+        }
+
+        if ($status != '') {
+            $query->where('status', intval($status));
         }
 
         $view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
