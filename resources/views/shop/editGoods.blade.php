@@ -143,9 +143,37 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="sort" class="col-md-3 control-label">排序</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <input type="text" class="form-control" name="sort" value="{{$goods->sort}}" id="sort" placeholder="">
                                         <span class="help-block"> 值越大排越前 </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="color" class="col-md-3 control-label">颜色</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="color" id="color">
+                                            <option value="green" @if($goods->color == 'green') selected @endif>green</option>
+                                            <option value="blue" @if($goods->color == 'blue') selected @endif>blue</option>
+                                            <option value="red" @if($goods->color == 'red') selected @endif>red</option>
+                                            <option value="purple" @if($goods->color == 'purple') selected @endif>purple</option>
+                                            <option value="white" @if($goods->color == 'white') selected @endif>white</option>
+                                            <option value="grey" @if($goods->color == 'grey') selected @endif>grey</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="is_hot" class="col-md-3 control-label">热销</label>
+                                    <div class="col-md-6">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_hot" value="1" {{$goods->is_hot ? 'checked' : ''}}> 是
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_hot" value="0" {{!$goods->is_hot ? 'checked' : ''}}> 否
+                                                <span></span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group last">

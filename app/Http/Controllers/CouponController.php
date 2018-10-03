@@ -25,7 +25,7 @@ class CouponController extends Controller
     {
         $view['couponList'] = Coupon::query()->where('is_del', 0)->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10);
 
-        return Response::view('coupon/couponList', $view);
+        return Response::view('coupon.couponList', $view);
     }
 
     // 添加商品
@@ -101,7 +101,7 @@ class CouponController extends Controller
 
             return Redirect::to('coupon/addCoupon');
         } else {
-            return Response::view('coupon/addCoupon');
+            return Response::view('coupon.addCoupon');
         }
     }
 

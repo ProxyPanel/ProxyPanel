@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Components\Helpers;
 use Illuminate\Console\Command;
 use App\Components\ServerChan;
-use App\Http\Models\Config;
 use App\Http\Models\EmailLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
@@ -17,12 +17,12 @@ class AutoCheckNodeStatus extends Command
 {
     protected $signature = 'autoCheckNodeStatus';
     protected $description = '自动检测节点状态';
-    protected static $config;
+    protected static $systemConfig;
 
     public function __construct()
     {
         parent::__construct();
-        self::$config = $this->systemConfig();
+        self::$systemConfig = Helpers::systemConfig();
     }
 
     public function handle()
@@ -30,7 +30,7 @@ class AutoCheckNodeStatus extends Command
         $jobStartTime = microtime(true);
 
         // 监测节点状态
-        if (self::$config['is_tcp_check']) {
+        if (self::$systemConfig['is_tcp_check']) {
             $this->checkNodes();
         }
 
@@ -45,7 +45,7 @@ class AutoCheckNodeStatus extends Command
     {
         $title = "节点异常警告";
 
-        $nodeList = SsNode::query()->where('status', 1)->where('is_tcp_check',1)->get();
+        $nodeList = SsNode::query()->where('status', 1)->where('is_tcp_check', 1)->get();
         foreach ($nodeList as $node) {
             $tcpCheck = $this->tcpCheck($node->ip);
             if (false !== $tcpCheck) {
@@ -66,7 +66,7 @@ class AutoCheckNodeStatus extends Command
 
                 // 异常才发通知消息
                 if ($tcpCheck) {
-                    if (self::$config['tcp_check_warning_times']) {
+                    if (self::$systemConfig['tcp_check_warning_times']) {
                         // 已通知次数
                         $cacheKey = 'tcp_check_warning_times_' . $node->id;
                         if (Cache::has($cacheKey)) {
@@ -76,11 +76,11 @@ class AutoCheckNodeStatus extends Command
                             $times = 1;
                         }
 
-                        if ($times < self::$config['tcp_check_warning_times']) {
+                        if ($times < self::$systemConfig['tcp_check_warning_times']) {
                             Cache::increment('tcp_check_warning_times_' . $node->id);
 
                             $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**：**" . $text . "**", $node->name, $node->server);
-                        } elseif ($times >= self::$config['tcp_check_warning_times']) {
+                        } elseif ($times >= self::$systemConfig['tcp_check_warning_times']) {
                             Cache::forget('tcp_check_warning_times_' . $node->id);
                             SsNode::query()->where('id', $node->id)->update(['status' => 0]);
 
@@ -158,9 +158,9 @@ class AutoCheckNodeStatus extends Command
      */
     private function notifyMasterByEmail($title, $content, $nodeName, $nodeServer)
     {
-        if (self::$config['is_node_crash_warning'] && self::$config['crash_warning_email']) {
+        if (self::$systemConfig['is_node_crash_warning'] && self::$systemConfig['crash_warning_email']) {
             try {
-                Mail::to(self::$config['crash_warning_email'])->send(new nodeCrashWarning(self::$config['website_name'], $nodeName, $nodeServer));
+                Mail::to(self::$systemConfig['crash_warning_email'])->send(new nodeCrashWarning(self::$systemConfig['website_name'], $nodeName, $nodeServer));
                 $this->addEmailLog(1, $title, $content);
             } catch (\Exception $e) {
                 $this->addEmailLog(1, $title, $content, 0, $e->getMessage());
@@ -176,7 +176,7 @@ class AutoCheckNodeStatus extends Command
      */
     private function notifyMasterByServerchan($title, $content)
     {
-        if (self::$config['is_server_chan'] && self::$config['server_chan_key']) {
+        if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
             $serverChan = new ServerChan();
             $serverChan->send($title, $content);
         }
@@ -201,18 +201,6 @@ class AutoCheckNodeStatus extends Command
         $emailLogObj->error = $error;
         $emailLogObj->created_at = date('Y-m-d H:i:s');
         $emailLogObj->save();
-    }
-
-    // 系统配置
-    private function systemConfig()
-    {
-        $config = Config::query()->get();
-        $data = [];
-        foreach ($config as $vo) {
-            $data[$vo->name] = $vo->value;
-        }
-
-        return $data;
     }
 
     /**

@@ -123,7 +123,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="is_tcp_check" class="col-md-3 control-label">定时检测</label>
+                                                        <label for="is_tcp_check" class="col-md-3 control-label">检测</label>
                                                         <div class="col-md-8">
                                                             <select class="form-control" name="is_tcp_check" id="is_tcp_check">
                                                                 <option value="1" selected>开启</option>

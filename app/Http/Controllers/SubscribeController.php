@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsNode;
 use App\Http\Models\User;
@@ -20,6 +21,13 @@ use DB;
  */
 class SubscribeController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+
     // 获取订阅信息
     public function index(Request $request, $code)
     {
@@ -69,7 +77,7 @@ class SubscribeController extends Controller
         $scheme = '';
         foreach ($nodeList as $key => $node) {
             // 控制显示的节点数
-            if ($this->systemConfig['subscribe_max'] && $key >= $this->systemConfig['subscribe_max']) {
+            if (self::$systemConfig['subscribe_max'] && $key >= self::$systemConfig['subscribe_max']) {
                 break;
             }
 
@@ -85,7 +93,7 @@ class SubscribeController extends Controller
             $ssr_str .= ':' . ($node['single'] ? $node['single_obfs'] : $user->obfs) . ':' . ($node['single'] ? base64url_encode($node['single_passwd']) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
             $ssr_str .= '&protoparam=' . ($node['single'] ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . base64url_encode($node['name']."|".$node['traffic_rate']."倍流量消耗");
+            $ssr_str .= '&remarks=' . base64url_encode($node['name'] . "|" . $node['traffic_rate'] . "倍流量消耗");
             $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';

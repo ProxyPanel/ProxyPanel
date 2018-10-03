@@ -29,4 +29,11 @@ class Goods extends Model
     {
         $this->attributes['price'] = $value * 100;
     }
+
+    public function getTrafficLabelAttribute()
+    {
+        $traffic_label = flowAutoShow($this->attributes['traffic'] * 1048576);
+
+        return $traffic_label;
+    }
 }

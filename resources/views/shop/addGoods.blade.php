@@ -145,6 +145,34 @@
                                         <span class="help-block"> 值越大排越前 </span>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="color" class="col-md-3 control-label">颜色</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="color" id="color">
+                                            <option value="green">green</option>
+                                            <option value="blue">blue</option>
+                                            <option value="red">red</option>
+                                            <option value="purple">purple</option>
+                                            <option value="white">white</option>
+                                            <option value="grey">grey</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="is_hot" class="col-md-3 control-label">热销</label>
+                                    <div class="col-md-6">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_hot" value="1"> 是
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_hot" value="0" checked> 否
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group last">
                                     <label class="control-label col-md-3">状态</label>
                                     <div class="col-md-6">

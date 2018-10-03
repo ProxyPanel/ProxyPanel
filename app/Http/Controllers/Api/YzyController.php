@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
-use App\Http\Models\ReferralLog;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use Illuminate\Http\Request;
@@ -23,6 +23,13 @@ use DB;
  */
 class YzyController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+    
     // 接收GET请求
     public function index(Request $request)
     {
@@ -43,7 +50,7 @@ class YzyController extends Controller
 
         // 判断消息是否合法
         $msg = $data['msg'];
-        $sign_string = $this->systemConfig['youzan_client_id'] . "" . $msg . "" . $this->systemConfig['youzan_client_secret'];
+        $sign_string = self::$systemConfig['youzan_client_id'] . "" . $msg . "" . self::$systemConfig['youzan_client_secret'];
         $sign = md5($sign_string);
         if ($sign != $data['sign']) {
             Log::info('本地签名：' . $sign_string . ' | 远程签名：' . $data['sign']);
@@ -104,7 +111,7 @@ class YzyController extends Controller
     {
         Log::info('【有赞云】回调交易支付');
 
-        $payment = Payment::query()->where('qr_id', $msg['qr_info']['qr_id'])->first();
+        $payment = Payment::query()->with(['order', 'order.goods'])->where('qr_id', $msg['qr_info']['qr_id'])->first();
         if (!$payment) {
             Log::info('【有赞云】回调订单不存在');
             exit();
@@ -118,6 +125,35 @@ class YzyController extends Controller
         // 处理订单
         DB::beginTransaction();
         try {
+            // 如果支付单中没有用户信息则创建一个用户
+            if (!$payment->user_id) {
+                // 生成一个可用端口
+                $port = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
+
+                $user = new User();
+                $user->username = '自动生成-' . $payment->order->email;
+                $user->password = md5(makeRandStr());
+                $user->port = $port;
+                $user->passwd = makeRandStr();
+                $user->enable = 1;
+                $user->method = Helpers::getDefaultMethod();
+                $user->protocol = Helpers::getDefaultProtocol();
+                $user->obfs = Helpers::getDefaultObfs();
+                $user->usage = 1;
+                $user->transfer_enable = toGB(1000);
+                $user->enable_time = date('Y-m-d');
+                $user->expire_time = date('Y-m-d', strtotime("+" . $payment->order->goods->days . " days"));
+                $user->reg_ip = getClientIp();
+                $user->referral_uid = 0;
+                $user->traffic_reset_day = 0;
+                $user->status = 1;
+                $user->save();
+
+                if ($user->id) {
+                    Order::query()->where('oid', $payment->oid)->update(['user_id' => $user->id]);
+                }
+            }
+
             // 更新支付单
             $payment->pay_way = $msg['full_order_info']['order_info']['pay_type_str'] == 'WEIXIN_DAIXIAO' ? 1 : 2; // 1-微信、2-支付宝
             $payment->status = 1;
@@ -174,8 +210,8 @@ class YzyController extends Controller
             if ($goods->label) {
                 // 用户默认标签
                 $defaultLabels = [];
-                if ($this->systemConfig['initial_labels_for_user']) {
-                    $defaultLabels = explode(',', $this->systemConfig['initial_labels_for_user']);
+                if (self::$systemConfig['initial_labels_for_user']) {
+                    $defaultLabels = explode(',', self::$systemConfig['initial_labels_for_user']);
                 }
 
                 // 取出现有的标签
@@ -199,7 +235,7 @@ class YzyController extends Controller
 
             // 写入返利日志
             if ($order->user->referral_uid) {
-                $this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount * $this->systemConfig['referral_percent']);
+                $this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount * self::$systemConfig['referral_percent']);
             }
 
             // 取消重复返利

@@ -100,9 +100,9 @@
                                                             <label for="is_invite_register" class="col-md-3 control-label">邀请注册</label>
                                                             <div class="col-md-9">
                                                               <select id="is_invite_register" class="form-control select2" name="is_invite_register">
-                                                                <option value="0" @if ($is_invite_register == '0') selected @endif>关闭</option>
-                                                                <option value="1" @if ($is_invite_register == '1') selected @endif>可选</option>
-                                                                <option value="2" @if ($is_invite_register == '2') selected @endif>必须</option>
+                                                                <option value="0" @if($is_invite_register == '0') selected @endif>关闭</option>
+                                                                <option value="1" @if($is_invite_register == '1') selected @endif>可选</option>
+                                                                <option value="2" @if($is_invite_register == '2') selected @endif>必须</option>
                                                               </select>
                                                               <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
                                                             </div>

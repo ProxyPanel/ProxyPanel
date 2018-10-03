@@ -13,7 +13,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\AutoAuditOrders::class,
         \App\Console\Commands\AutoJob::class,
         \App\Console\Commands\AutoClearLog::class,
         \App\Console\Commands\AutoDecGoodsTraffic::class,
@@ -37,7 +36,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('autoAuditOrders')->everyMinute();
         $schedule->command('autoJob')->everyMinute();
         $schedule->command('autoClearLog')->everyThirtyMinutes();
         $schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
