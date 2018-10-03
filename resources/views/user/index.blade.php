@@ -185,9 +185,7 @@
                 </div>
                 @endif
             </div>
-            </div>
-            <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" >
                 <ul class="list-group">
                     @if($info['enable'])
                     <li class="list-group-item">
@@ -258,7 +256,6 @@
                 </ul>
             </div>
         </div>
-        
         <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -389,13 +386,11 @@
             var _token = '{{csrf_token()}}';
             var charge_type = $("#charge_type").val();
             var charge_coupon = $("#charge_coupon").val();
-
             if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
                 $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
                 return false;
             }
-
             $.ajax({
                 url:'{{url('charge')}}',
                 type:"POST",
@@ -408,7 +403,6 @@
                         $("#charge_msg").show().html(ret.message);
                         return false;
                     }
-
                     $("#charge_modal").modal("hide");
                     window.location.reload();
                 },
@@ -418,7 +412,6 @@
                 complete:function(){}
             });
         }
-
         // 积分兑换流量
         function exchange() {
             $.ajax({
@@ -435,7 +428,6 @@
                     });
                 }
             });
-
             return false;
         }
     </script>
@@ -448,39 +440,32 @@
                     $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
                 @endforeach
             };
-
             return {
                 init: function () {
                     n()
                 }
             }
         }();
-
         jQuery(document).ready(function () {
             UIModals.init()
         });
-
         // 循环输出节点scheme用于生成二维码
         @foreach ($nodeList as $node)
             $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
             $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
         @endforeach
-
         // 节点订阅
         function subscribe() {
             window.location.href = '{{url('subscribe')}}';
         }
-
         // 显示加密、混淆、协议
         function show(txt) {
             layer.msg(txt);
         }
-
         // 生成消息通道订阅二维码
         @if($is_push_bear && $push_bear_qrcode)
             $('#subscribe_qrcode').qrcode({render:"canvas", text:"{{$push_bear_qrcode}}", width:170, height:170});
         @endif
-
         // 更换订阅地址
         function exchangeSubscribe() {
             layer.confirm('更换订阅地址将导致：<br>1.旧地址立即失效；<br>2.连接密码被更改；', {icon: 7, title:'警告'}, function(index) {
@@ -491,7 +476,6 @@
                         }
                     });
                 });
-
                 layer.close(index);
             });
         }
