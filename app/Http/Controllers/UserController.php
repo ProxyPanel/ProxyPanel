@@ -379,7 +379,7 @@ class UserController extends Controller
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
-        $view['ticketList'] = Ticket::query()->where('user_id', $user['id'])->paginate(10)->appends($request->except('page'));
+        $view['ticketList'] = Ticket::query()->where('user_id', $user['id'])->orderBy('created_at', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('user.ticketList', $view);
     }
@@ -1130,8 +1130,8 @@ class UserController extends Controller
         $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount') / 100;
         $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount') / 100;
         $view['link'] = self::$systemConfig['website_url'] . '/register?aff=' . $user['id'];
-        $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
-        $view['referralApplyList'] = ReferralApply::query()->where('user_id', $user['id'])->with('user')->paginate(10);
+        $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->orderBy('created_at', 'desc')->paginate(10);
+        $view['referralApplyList'] = ReferralApply::query()->where('user_id', $user['id'])->with('user')->orderBy('created_at', 'desc')->paginate(10);
         $view['referralUserList'] = User::query()->select(['username', 'created_at'])->where('referral_uid', $user['id'])->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('user.referral', $view);
