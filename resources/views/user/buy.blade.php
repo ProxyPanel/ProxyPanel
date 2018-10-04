@@ -143,7 +143,7 @@
                         if (ret.status == 'success') {
                             window.location.href = '{{url('payment')}}' + "/" + ret.data;
                         } else {
-                            layer.close(index);
+                            window.location.href = '{{url('invoices')}}';
                         }
                     });
                 }
