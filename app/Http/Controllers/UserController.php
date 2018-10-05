@@ -69,6 +69,7 @@ class UserController extends Controller
         $view['is_push_bear'] = self::$systemConfig['is_push_bear'];
         $view['push_bear_qrcode'] = self::$systemConfig['push_bear_qrcode'];
         $view['articleList'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(1);
+        $view['goodsList'] = Goods::query()->where('type', 3)->where('is_del', 0)->orderBy('price', 'asc')->paginate(20);
         
         // 推广返利是否可见
         if (!Session::has('referral_status')) {
@@ -363,7 +364,7 @@ class UserController extends Controller
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '<=', '2' )->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
         $view['website_logo'] = self::$systemConfig['website_logo'];
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
