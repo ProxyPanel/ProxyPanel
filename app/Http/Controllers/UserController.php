@@ -68,7 +68,7 @@ class UserController extends Controller
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['is_push_bear'] = self::$systemConfig['is_push_bear'];
         $view['push_bear_qrcode'] = self::$systemConfig['push_bear_qrcode'];
-        $view['articleList'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(15);
+        $view['articleList'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(1);
         
         // 推广返利是否可见
         if (!Session::has('referral_status')) {
