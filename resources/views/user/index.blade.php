@@ -39,22 +39,22 @@
                 <div class="row">
                     <div class="col-md-12">
                         @if(!$articleList->isEmpty())
-                        @foreach($articleList as $key => $article)
-                        <div class="portlet light bordered">
-                            <div class="portlet-title tabbable-line">
-                                <div class="caption">
-                                    <i class="icon-directions font-green hide"></i>
-                                    <span class="caption-subject bold font-dark uppercase"> {{$article->title}} </span>
-                                    <span class="caption-helper">发布于：{{$article->created_at}}</span>
+                            @foreach($articleList as $key => $article)
+                                <div class="portlet light bordered">
+                                    <div class="portlet-title tabbable-line">
+                                        <div class="caption">
+                                            <i class="icon-directions font-green hide"></i>
+                                            <span class="caption-subject bold font-dark uppercase"> {{$article->title}} </span>
+                                            <span class="caption-helper">发布于：{{$article->created_at}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="tab-content">
+                                            {!!$article->content!!}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div class="tab-content">
-                                    {!!$article->content!!} 
-                                </div>
-                            </div>
-                        </div> 
-                        @endforeach
+                            @endforeach
                         @endif
                     </div>
                 </div>

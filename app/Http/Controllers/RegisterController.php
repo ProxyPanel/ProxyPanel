@@ -105,7 +105,7 @@ class RegisterController extends Controller
 
             // 如果需要邀请注册
             if (self::$systemConfig['is_invite_register']) {
-                //必须使用邀请码
+                // 必须使用邀请码
                 if (self::$systemConfig['is_invite_register'] == 2 && empty($code)) {
                     Session::flash('errorMsg', '请输入邀请码');
 
