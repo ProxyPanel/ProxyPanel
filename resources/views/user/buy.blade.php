@@ -12,6 +12,23 @@
             <div class="row invoice-body">
                 <div class="col-xs-12 table-responsive">
                     <table class="table table-hover">
+                      @if($goods->type == '3')
+                        <thead>
+                        <tr>
+                            <th class="invoice-title"> {{trans('home.service_name')}} </th>
+                            <th class="invoice-title text-center"> {{trans('home.service_price')}} </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td style="padding: 10px;">
+                                <h2>{{$goods->name}}</h2>
+                                添加帐户余额{{$goods->price}}元
+                            </td>
+                            <td class="text-center"> ￥{{$goods->price}} </td>
+                        </tr>
+                        </tbody>
+                      @else
                         <thead>
                         <tr>
                             <th class="invoice-title"> {{trans('home.service_name')}} </th>
@@ -31,9 +48,12 @@
                             <td class="text-center"> x 1 </td>
                         </tr>
                         </tbody>
+                      	@endif
                     </table>
                 </div>
             </div>
+            @if($goods->type == '3')
+            @else
             <div class="row invoice-subtotal">
                 <div class="col-xs-3">
                     <h2 class="invoice-title"> {{trans('home.service_subtotal_price')}} </h2>
@@ -55,12 +75,15 @@
                     </p>
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-xs-12" style="text-align: right;">
                     @if($is_youzan)
                         <a class="btn btn-lg red hidden-print" onclick="onlinePay()"> {{trans('home.online_pay')}} </a>
                     @endif
+                  	@if($goods->type <= '2')
                     <a class="btn btn-lg blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
+                  	@endif
                 </div>
             </div>
         </div>
@@ -143,7 +166,7 @@
                         if (ret.status == 'success') {
                             window.location.href = '{{url('payment')}}' + "/" + ret.data;
                         } else {
-                            layer.close(index);
+                            window.location.href = '{{url('invoices')}}';
                         }
                     });
                 }
