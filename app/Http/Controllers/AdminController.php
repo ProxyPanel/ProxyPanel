@@ -2191,7 +2191,7 @@ EOF;
     {
         $username = trim($request->get('username'));
         $ref_username = trim($request->get('ref_username'));
-		$status = $request->get('status');
+        $status = $request->get('status');
 
         $query = ReferralLog::query()->with(['user', 'order'])->orderBy('id', 'desc')->orderBy('status', 'asc');
 
@@ -2206,8 +2206,8 @@ EOF;
                 $q->where('username', 'like', '%' . $ref_username . '%');
             });
         }
-		
-		if ($status != '') {
+
+        if ($status != '') {
             $query->where('status', intval($status));
         }
 

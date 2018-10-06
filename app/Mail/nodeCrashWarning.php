@@ -26,8 +26,8 @@ class nodeCrashWarning extends Mailable
     {
         return $this->view('emails.nodeCrashWarning')->subject('节点宕机警告')->with([
             'websiteName' => $this->websiteName,
-            'nodeName' => $this->nodeName,
-            'nodeServer' => $this->nodeServer
+            'nodeName'    => $this->nodeName,
+            'nodeServer'  => $this->nodeServer
         ]);
     }
 }

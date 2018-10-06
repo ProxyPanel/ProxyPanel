@@ -108,15 +108,16 @@ class RegisterController extends Controller
                 //必须使用邀请码
                 if (self::$systemConfig['is_invite_register'] == 2 && empty($code)) {
                     Session::flash('errorMsg', '请输入邀请码');
-					
+
                     return Redirect::back()->withInput();
                 }
+
                 // 校验邀请码合法性
-                if(!empty($code)){
+                if (!empty($code)) {
                     $codeEnable = Invite::query()->where('code', $code)->where('status', 0)->first();
                     if (empty($codeEnable)) {
                         Session::flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
-						
+
                         return Redirect::back()->withInput($request->except(['code']));
                     }
                 }

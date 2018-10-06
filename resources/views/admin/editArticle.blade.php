@@ -29,19 +29,25 @@
                         <form action="{{url('admin/editArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
+                                    <label for="type" class="control-label col-md-1">类型</label>
+                                    <div class="col-md-6">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="1" {{$article->type == '1' ? 'checked' : ''}}> 文章
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="2" {{$article->type == '2' ? 'checked' : ''}}> 公告
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-1">标题</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="title" value="{{$article->title}}" id="title" placeholder="" autofocus required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-1">类型</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" name="type" id="type">
-                                            <option value="1" {{$article->type == '1' ? 'selected' : ''}}>文章</option>
-                                            <option value="2" {{$article->type == '2' ? 'selected' : ''}}>公告</option>
-                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -104,7 +110,7 @@
             var _token = '{{csrf_token()}}';
             var id = '{{$article->id}}';
             var title = $('#title').val();
-            var type = $('#type').val();
+            var type = $("input:radio[name='type']:checked").val();
             var author = $('#author').val();
             var sort = $('#sort').val();
             var content = UE.getEditor('editor').getContent();

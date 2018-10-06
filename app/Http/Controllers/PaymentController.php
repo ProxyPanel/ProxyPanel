@@ -133,13 +133,13 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建支付单成功，正在转到付款页面，请稍后']);
+            return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('创建支付订单失败：' . $e->getMessage());
 
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：' . $e->getMessage()]);
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建订单失败：' . $e->getMessage()]);
         }
     }
 
@@ -184,13 +184,11 @@ class PaymentController extends Controller
         $user = Session::get('user');
         $payment = Payment::query()->where('sn', $sn)->where('user_id', $user['id'])->first();
         if (!$payment) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败']);
-        }
-
-        if ($payment->status) {
+            return Response::json(['status' => 'error', 'data' => '', 'message' => '支付失败']);
+        } elseif ($payment->status > 0) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
         } elseif ($payment->status < 0) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败']);
+            return Response::json(['status' => 'error', 'data' => '', 'message' => '订单超时未支付，已自动关闭']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等待支付']);
         }

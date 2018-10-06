@@ -11,9 +11,11 @@ use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
+use App\Mail\sendUserInfo;
 use Illuminate\Http\Request;
 use Log;
 use DB;
+use Mail;
 
 /**
  * 有赞云支付消息推送接收
@@ -240,6 +242,32 @@ class YzyController extends Controller
 
             // 取消重复返利
             User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
+
+            // 如果order的email值不为空
+            if ($order->email) {
+                $title = '【' . self::$systemConfig['website_name'] . '】您的账号信息';
+                $content = [
+                    'order_sn'      => $order->order_sn,
+                    'goods_name'    => $order->goods->name,
+                    'goods_traffic' => flowAutoShow($order->goods->traffic),
+                    'port'          => $order->user->port,
+                    'passwd'        => $order->user->passwd,
+                    'method'        => $order->user->method,
+                    //'protocol'       => $order->user->protocol,
+                    //'protocol_param' => $order->user->protocol_param,
+                    //'obfs'           => $order->user->obfs,
+                    //'obfs_param'     => $order->user->obfs_param,
+                    'created_at'    => $order->created_at->toDateTimeString(),
+                    'expire_at'     => $order->expire_at
+                ];
+
+                try {
+                    Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
+                    $this->sendEmailLog($order->user_id, $title, json_encode($content));
+                } catch (\Exception $e) {
+                    $this->sendEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
+                }
+            }
 
             DB::commit();
         } catch (\Exception $e) {

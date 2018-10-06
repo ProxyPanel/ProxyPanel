@@ -16,6 +16,7 @@ class PingController extends Controller
         $timeout = $request->input('timeout', 0.5);
 
         if (empty($host)) {
+            echo "<pre>";
             echo "使用方法：";
             echo "<br>";
             echo "GET /api/ping?host=www.baidu.com&port=80&transport=tcp&timeout=0.5";
@@ -29,6 +30,7 @@ class PingController extends Controller
             echo "timeout：检测超时，单位秒，可不传，默认0.5秒，建议不超过3秒";
             echo "<br>";
             echo "成功返回：1，失败返回：0";
+            echo "</pre>";
             exit();
         }
 
@@ -55,11 +57,11 @@ class PingController extends Controller
 
             fclose($fp);
 
-            return $ret;
+            return response()->json(['status' => $ret]);
         } catch (\Exception $e) {
             Log::info($e);
 
-            return 0;
+            return response()->json(['status' => 0]);
         }
     }
 }

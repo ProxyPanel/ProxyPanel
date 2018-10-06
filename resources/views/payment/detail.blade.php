@@ -58,7 +58,7 @@
     <script type="text/javascript">
         // 每2秒查询一次订单状态
         $(document).ready(function(){
-            setInterval("getStatus()", 1000);
+            setInterval("getStatus()", 800);
         });
 
         // 检查支付单状态
@@ -71,6 +71,10 @@
                     layer.msg(ret.message, {time:1500}, function() {
                         window.location.href = '{{url('invoices')}}';
                     });
+                } else if(ret.status == 'error') {
+                    layer.msg(ret.message, {time:1500}, function () {
+                        window.location.href = '{{url('invoices')}}';
+                    })
                 }
             });
         }
