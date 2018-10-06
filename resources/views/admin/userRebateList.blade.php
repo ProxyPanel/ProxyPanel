@@ -26,6 +26,14 @@
                             <div class="col-md-2 col-sm-2">
                                 <input type="text" class="col-md-4 form-control input-sm" name="ref_username" value="{{Request::get('ref_username')}}" id="ref_username" placeholder="邀请人" onkeydown="if(event.keyCode==13){do_search();}">
                             </div>
+							<div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
+                                    <option value="" @if(Request::get('status') == '')  disabled selected hidden @endif>状态</option>
+                                    <option value="0" @if(Request::get('status') == '0') selected @endif>未提现</option>
+                                    <option value="1" @if(Request::get('status') == '1') selected @endif>申请中</option>
+                                    <option value="2" @if(Request::get('status') == '2') selected @endif>已提现</option>
+                                </select>
+                            </div>
                             <div class="col-md-2 col-sm-2">
                                 <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
                                 <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
@@ -56,13 +64,21 @@
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
                                             <td> {!! empty($vo->user) ? '【账号已删除】' : '<a href="/admin/userRebateList?username=' . $vo->user->username . '">' . $vo->user->username . '</a>' !!} </td>
-                                            <td> {!! empty($vo->ref_user) ? '【账号已删除】' : '<a href="/admin/userRebateList?username=' . $vo->ref_user->username . '">' . $vo->ref_user->username . '</a>' !!} </td>
+                                            <td> {!! empty($vo->ref_user) ? '【账号已删除】' : '<a href="/admin/userRebateList?ref_username=' . $vo->ref_user->username . '">' . $vo->ref_user->username . '</a>' !!} </td>
                                             <td> {{$vo->order_id}} </td>
                                             <td> {{$vo->amount}} </td>
                                             <td> {{$vo->ref_amount}} </td>
                                             <td> {{$vo->created_at}} </td>
                                             <td> {{$vo->updated_at}} </td>
-                                            <td> {{$vo->status}} </td>
+                                            <td>
+                                                @if ($vo->status == 1)
+                                                    <span class="label label-sm label-danger">申请中</span>
+                                                @elseif($vo->status == 2)
+                                                    <span class="label label-sm label-default">已提现</span>
+                                                @else
+                                                    <span class="label label-sm label-info">未提现</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -94,8 +110,9 @@
         function do_search() {
             var username = $("#username").val();
             var ref_username = $("#ref_username").val();
+			var status = $("#status option:checked").val();
 
-            window.location.href = '{{url('admin/userRebateList')}}' + '?username=' + username + '&ref_username=' + ref_username;
+            window.location.href = '{{url('admin/userRebateList')}}' + '?username=' + username + '&ref_username=' + ref_username + '&status=' + status;
         }
 
         // 重置

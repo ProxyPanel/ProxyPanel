@@ -27,6 +27,13 @@
                                 <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
+                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
+                                    <option value="" @if(Request::get('status') == '')  disabled selected hidden @endif>状态</option>
+                                    <option value="0" @if(Request::get('status') == '0') selected @endif>禁用</option>
+                                    <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
                                 <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
                                 <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
@@ -101,8 +108,9 @@
         function doSearch() {
             var user_id = $("#user_id").val();
             var username = $("#username").val();
+            var status = $("#status option:checked").val();
 
-            window.location.href = '{{url('admin/subscribeLog')}}' + '?user_id=' + user_id + '&username=' + username;
+            window.location.href = '{{url('admin/subscribeLog')}}' + '?user_id=' + user_id + '&username=' + username + '&status=' + status;
         }
 
         // 重置

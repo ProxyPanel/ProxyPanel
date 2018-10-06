@@ -22,28 +22,28 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="is_expire" id="is_expire" onchange="doSearch()">
-                                    <option value="" @if(Request::get('is_expire') == '') selected @endif>过期</option>
+                                    <option value="" @if(Request::get('is_expire') == '') disabled selected hidden @endif>过期</option>
                                     <option value="0" @if(Request::get('is_expire') == '0') selected @endif>否</option>
                                     <option value="1" @if(Request::get('is_expire') == '1') selected @endif>是</option>
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="is_coupon" id="is_coupon" onchange="doSearch()">
-                                    <option value="" @if(Request::get('is_coupon') == '') selected @endif>使用优惠券</option>
+                                    <option value="" @if(Request::get('is_coupon') == '') disabled selected hidden @endif>使用优惠券</option>
                                     <option value="0" @if(Request::get('is_coupon') == '0') selected @endif>否</option>
                                     <option value="1" @if(Request::get('is_coupon') == '1') selected @endif>是</option>
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="pay_way" id="pay_way" onchange="doSearch()">
-                                    <option value="" @if(Request::get('pay_way') == '') selected @endif>支付方式</option>
+                                    <option value="" @if(Request::get('pay_way') == '') disabled selected hidden @endif>支付方式</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>余额支付</option>
                                     <option value="2" @if(Request::get('pay_way') == '2') selected @endif>有赞云支付</option>
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="status" id="status" onchange="doSearch()">
-                                    <option value="" @if(Request::get('status') == '') selected @endif>订单状态</option>
+                                    <option value="" @if(Request::get('status') == '') disabled selected hidden @endif>订单状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>已关闭</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>待支付</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>已支付待确认</option>

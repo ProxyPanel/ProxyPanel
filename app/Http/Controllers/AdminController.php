@@ -1014,6 +1014,7 @@ class AdminController extends Controller
     {
         $user_id = $request->get('user_id');
         $username = $request->get('username');
+        $status = $request->get('status');
 
         $query = UserSubscribe::with(['User']);
 
@@ -1025,6 +1026,10 @@ class AdminController extends Controller
             $query->whereHas('user', function ($q) use ($username) {
                 $q->where('username', 'like', '%' . $username . '%');
             });
+        }
+
+        if ($status != '') {
+            $query->where('status', intval($status));
         }
 
         $view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
@@ -2186,6 +2191,7 @@ EOF;
     {
         $username = trim($request->get('username'));
         $ref_username = trim($request->get('ref_username'));
+		$status = $request->get('status');
 
         $query = ReferralLog::query()->with(['user', 'order'])->orderBy('id', 'desc')->orderBy('status', 'asc');
 
@@ -2199,6 +2205,10 @@ EOF;
             $query->whereHas('ref_user', function ($q) use ($ref_username) {
                 $q->where('username', 'like', '%' . $ref_username . '%');
             });
+        }
+		
+		if ($status != '') {
+            $query->where('status', intval($status));
         }
 
         $view['list'] = $query->paginate(15);
