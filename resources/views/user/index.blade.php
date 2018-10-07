@@ -293,7 +293,22 @@
                                     <label for="charge_type" class="col-md-4 control-label">{{trans('home.payment_method')}}</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="charge_type" id="charge_type">
-                                            <option value="1" selected>{{trans('home.coupon_code')}}</option>
+                                            <option value="1" selected>{{trans('home.coupon')}}</option>
+                                            <option value="2" selected >{{trans('home.online_pay')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="online_pay" class="col-md-4 control-label">充值金额</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="online_pay" id="online_pay">
+                                            @if($goodsList->isEmpty())
+                                                <option value = "0" >尚未开通在线支付充值</option>
+                                            @else
+                                                @foreach($goodsList as $key => $goods)
+                                                    <option value = "{{$goods->id}}" >充值{{$goods->price}}元</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                 </div>
@@ -406,15 +421,24 @@
         // 充值
         function charge() {
             var _token = '{{csrf_token()}}';
-            var charge_type = $("#charge_type").val();
+            var charge_type = $("#charge_type option:checked").val();
             var charge_coupon = $("#charge_coupon").val();
-
+            var online_pay = $("#online_pay").val();
+            if (charge_type == '2' && (online_pay == '0')) {
+                $("#charge_msg").show().html("本站尚未开通在线支付充值");
+                window.location.href = '/';
+                return false;
+            }
+            if (charge_type == '2') {
+                $("#charge_msg").show().html("正在跳转支付界面");
+                window.location.href = '/buy/' + online_pay;
+                return false;
+            }
             if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
                 $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
                 return false;
             }
-
             $.ajax({
                 url:'{{url('charge')}}',
                 type:"POST",
@@ -427,7 +451,6 @@
                         $("#charge_msg").show().html(ret.message);
                         return false;
                     }
-
                     $("#charge_modal").modal("hide");
                     window.location.reload();
                 },
@@ -437,7 +460,6 @@
                 complete:function(){}
             });
         }
-
         // 积分兑换流量
         function exchange() {
             $.ajax({
