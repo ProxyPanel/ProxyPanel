@@ -293,7 +293,7 @@
                                     <label for="charge_type" class="col-md-4 control-label">{{trans('home.payment_method')}}</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="charge_type" id="charge_type">
-                                            <option value="1" selected>{{trans('home.coupon')}}</option>
+                                            <option value="1" selected>{{trans('home.coupon_code')}}</option>
                                             <option value="2" selected >{{trans('home.online_pay')}}</option>
                                         </select>
                                     </div>
@@ -424,6 +424,7 @@
             var charge_type = $("#charge_type option:checked").val();
             var charge_coupon = $("#charge_coupon").val();
             var online_pay = $("#online_pay").val();
+            
             if (charge_type == '2' && (online_pay == '0')) {
                 $("#charge_msg").show().html("本站尚未开通在线支付充值");
                 window.location.href = '/';
@@ -439,6 +440,7 @@
                 $("#charge_coupon").focus();
                 return false;
             }
+            
             $.ajax({
                 url:'{{url('charge')}}',
                 type:"POST",
@@ -460,6 +462,7 @@
                 complete:function(){}
             });
         }
+        
         // 积分兑换流量
         function exchange() {
             $.ajax({
