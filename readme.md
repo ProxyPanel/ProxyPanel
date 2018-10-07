@@ -31,7 +31,7 @@
 演示站：http://demo.ssrpanel.com
 telegram订阅频道：https://t.me/ssrpanel
 ````
-官网搭建于Azure，由代理商 [@LesHutt](https://t.me/LesHutt) 提供，由需求可以找他买
+官网搭建于Azure，由代理商 [@LesHutt](https://t.me/LesHutt) 提供
 
 ## 捐赠
 **以太坊钱包** : 0x968f797f194fcec05ea571723199748b58de38ba
