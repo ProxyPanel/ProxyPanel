@@ -187,7 +187,9 @@ class YzyController extends Controller
             }
 
             // 把商品的流量加到账号上
+            if ($goods->type <= 2) {
             User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
+            }
 
             // 计算账号过期时间
             if ($order->user->expire_time < date('Y-m-d', strtotime("+" . $goods->days . " days"))) {
@@ -209,6 +211,7 @@ class YzyController extends Controller
             }
 
             // 写入用户标签
+            if ($goods->type <= 2) {
             if ($goods->label) {
                 // 用户默认标签
                 $defaultLabels = [];
@@ -233,6 +236,14 @@ class YzyController extends Controller
                     $obj->label_id = $vo;
                     $obj->save();
                 }
+            }
+            }
+          
+            // 在线充值
+            if ($goods->type == 3) {
+                User::query()->where('id', $order->user_id)->increment('balance', $goods->price * 100);
+            // 余额变动记录日志
+                $this->addUserBalanceLog($order->user_id,  $order->oid, $order->user->balance, $order->user->balance + $goods->price, +$goods->price, '用户在线充值' );
             }
 
             // 写入返利日志
