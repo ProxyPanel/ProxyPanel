@@ -36,28 +36,25 @@
         @endif
         <div class="row">
             <div class="col-md-8">
-                <div class="row">
-                    <div class="col-md-12">
-                        @if(!$articleList->isEmpty())
-                            @foreach($articleList as $key => $article)
-                                <div class="portlet light bordered">
-                                    <div class="portlet-title tabbable-line">
-                                        <div class="caption">
-                                            <i class="icon-directions font-green hide"></i>
-                                            <span class="caption-subject bold font-dark uppercase"> {{$article->title}} </span>
-                                            <span class="caption-helper">发布于：{{$article->created_at}}</span>
-                                        </div>
-                                    </div>
-                                    <div class="portlet-body">
-                                        <div class="tab-content">
-                                            {!!$article->content!!}
-                                        </div>
+                @if($notice)
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title tabbable-line">
+                                    <div class="caption">
+                                        <i class="icon-directions font-green hide"></i>
+                                        <span class="caption-subject font-blue bold"> {{trans('home.announcement')}} </span>
                                     </div>
                                 </div>
-                            @endforeach
-                        @endif
+                                <div class="portlet-body">
+                                    <div class="tab-content">
+                                        {!!$notice->content!!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
                         <div class="portlet light">
@@ -104,7 +101,7 @@
                                         <div class="tab-content" style="font-size:16px;">
                                             <div class="tab-pane active" id="tools1">
                                                 <ol>
-                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> <a href="{{asset('clients/ShadowsocksX-NG.1.8.2.zip')}}" target="_blank">点击此处</a>下载客户端并启动 </li>
                                                     <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
                                                     <li> 点击服务器->手动更新订阅，更新您的服务信息 </li>
                                                     <li> 更新成功后，请在服务器菜单处选择线路，并点击打开ShadowsocksR </li>
@@ -113,7 +110,7 @@
                                             </div>
                                             <div class="tab-pane" id="tools2">
                                                 <ol>
-                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> <a href="{{asset('clients/Shadowsocks-4.1.2.zip')}}" target="_blank">点击此处</a>下载客户端并启动 </li>
                                                     <li> 单击状态栏小飞机，找到服务器->订阅->订阅设置，复制黏贴订阅地址 </li>
                                                     <li> 点击状态栏小飞机，找到模式，选中PAC </li>
                                                     <li> 点击状态栏小飞机，找到PAC，选中更新PAC为GFWList </li>
@@ -121,7 +118,7 @@
                                             </div>
                                             <div class="tab-pane" id="tools3">
                                                 <ol>
-                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> <a href="{{asset('clients/Shadowsocks-qt5-3.0.1.zip')}}" target="_blank">点击此处</a>下载客户端并启动 </li>
                                                     <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
                                                     <li> 更新订阅设置即可 </li>
                                                 </ol>
@@ -133,7 +130,7 @@
                                             </div>
                                             <div class="tab-pane" id="tools5">
                                                 <ol>
-                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> <a href="{{asset('clients/Shadowsocks-universal-4.6.1.apk')}}" target="_blank">点击此处</a>下载客户端并启动 </li>
                                                     <li> 单击左上角的shadowsocksR进入配置文件页，点击右下角的“+”号，点击“添加/升级SSR订阅”，填入订阅信息并保存 </li>
                                                     <li> 选中任意一个节点，返回软件首页 </li>
                                                     <li> 在软件首页处找到“路由”选项，并将其改为“绕过局域网及中国大陆地址” </li>
@@ -421,7 +418,7 @@
         // 充值
         function charge() {
             var _token = '{{csrf_token()}}';
-            var charge_type = $("#charge_type option:checked").val();
+            var charge_type = $("#charge_type").val();
             var charge_coupon = $("#charge_coupon").val();
             var online_pay = $("#online_pay").val();
             
@@ -430,17 +427,19 @@
                 window.location.href = '/';
                 return false;
             }
+
             if (charge_type == '2') {
                 $("#charge_msg").show().html("正在跳转支付界面");
                 window.location.href = '/buy/' + online_pay;
                 return false;
             }
+            
             if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
                 $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
                 return false;
             }
-            
+
             $.ajax({
                 url:'{{url('charge')}}',
                 type:"POST",
@@ -453,6 +452,7 @@
                         $("#charge_msg").show().html(ret.message);
                         return false;
                     }
+
                     $("#charge_modal").modal("hide");
                     window.location.reload();
                 },
@@ -462,7 +462,7 @@
                 complete:function(){}
             });
         }
-        
+
         // 积分兑换流量
         function exchange() {
             $.ajax({
