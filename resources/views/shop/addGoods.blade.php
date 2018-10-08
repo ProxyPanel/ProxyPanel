@@ -52,6 +52,10 @@
                                                 <input type="radio" name="type" value="2"> 套餐
                                                 <span></span>
                                             </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="3"> 充值
+                                                <span></span>
+                                            </label>
                                         </div>
                                         <span class="help-block"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
                                     </div>

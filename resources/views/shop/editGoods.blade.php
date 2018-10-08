@@ -51,6 +51,10 @@
                                                 <input type="radio" name="type" value="2" @if($goods->type == 2) checked @endif disabled> 套餐
                                                 <span></span>
                                             </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="3" @if($goods->type == 3) checked @endif disabled> 充值
+                                                <span></span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
