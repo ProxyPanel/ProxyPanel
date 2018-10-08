@@ -73,7 +73,7 @@ class ShopController extends Controller
             }
 
             // 流量不能超过10TB
-            if ($traffic > 10240000) {
+            if (in_array($type, [1, 2]) && $traffic > 10240000) {
                 Session::flash('errorMsg', '内含流量不能超过10TB');
 
                 return Redirect::back()->withInput();

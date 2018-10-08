@@ -47,7 +47,15 @@
                                                 <span style="color: #000;">{{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}</span>
                                             </td>
                                             <td style="width: 20%; text-align: center;"> {{$goods->desc}} </td>
-                                            <td style="width: 20%; text-align: center;"> {{$goods->type == '1' ? trans('home.service_type_1') : trans('home.service_type_2')}} </td>
+                                            <td style="width: 20%; text-align: center;">
+                                                @if($goods->type == 1)
+                                                    {{trans('home.service_type_1')}}
+                                                @elseif($goods->type == 2)
+                                                    {{trans('home.service_type_2')}}
+                                                @else
+                                                    {{trans('home.service_type_3')}}
+                                                @endif
+                                            </td>
                                             <td style="width: 20%; text-align: center;"> ￥{{$goods->price}} </td>
                                             <td style="width: 20%; text-align: center;">
                                                 <a href="javascript:buy('{{$goods->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>

@@ -23,7 +23,7 @@
                                 <tr>
                                     <td style="padding: 10px;">
                                         <h2>{{$goods->name}}</h2>
-                                        添加帐户余额{{$goods->price}}元
+                                        充值金额：{{$goods->price}}元
                                         </td>
                                     <td class="text-center"> ￥{{$goods->price}} </td>
                                 </tr>

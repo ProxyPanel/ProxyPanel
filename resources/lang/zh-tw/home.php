@@ -96,6 +96,7 @@ return [
     'redeem_coupon'                   => '使用',
     'service_type_1'                  => '流量包',
     'service_type_2'                  => '套餐',
+    'service_type_3'                  => '餘額',
 
     // 流量日志
     'traffic_log_tips'                => '提示：流量統計更新會有延遲。按天統計于次日更新，按小時統計圖于次小時更新。',

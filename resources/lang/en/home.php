@@ -96,6 +96,7 @@ return [
     'redeem_coupon'                   => 'Redeem',
     'service_type_1'                  => 'Flow Packet',
     'service_type_2'                  => 'Flow Plans',
+    'service_type_3'                  => 'Balance',
 
     // 流量日志
     'traffic_log_tips'                => 'Tips: The update of the flow chart will be delayed.',

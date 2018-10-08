@@ -94,6 +94,7 @@ return [
     'redeem_coupon'                   => '사용',
     'service_type_1'                  => '유량용 가방',
     'service_type_2'                  => '세트',
+    'service_type_3'                  => '잔액',
 
     // 流量日志
     'traffic_log_tips'                => '메모:데이터 갱신 지연.',

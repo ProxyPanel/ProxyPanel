@@ -96,6 +96,7 @@ return [
     'redeem_coupon'                   => '使用する',
     'service_type_1'                  => '流量包',
     'service_type_2'                  => 'コース',
+    'service_type_3'                  => '残高',
 
     // 流量日志
     'traffic_log_tips'                => '注意：データの更新が遅れている',
