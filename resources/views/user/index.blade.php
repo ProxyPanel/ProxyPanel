@@ -182,7 +182,7 @@
                                                             </span>
                                                             <ul class="mt-comment-actions" style="display: block;">
                                                                 <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > {{trans('home.setting_info')}} </a>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > <i class="fa fa-paper-plane-o"></i> </a>
                                                                 </li>
                                                                 <li>
                                                                     <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
@@ -309,7 +309,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                <div class="form-group">
+                                <div class="form-group" id="charge_coupon_code">
                                     <label for="charge_coupon" class="col-md-4 control-label"> {{trans('home.coupon_code')}} </label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
@@ -419,8 +419,10 @@
         $("#charge_type").change(function(){
             if ($(this).val() == 2) {
                 $("#charge_balance").show();
+                $("#charge_coupon_code").hide();
             } else {
                 $("#charge_balance").hide();
+                $("#charge_coupon_code").show();
             }
         });
 
