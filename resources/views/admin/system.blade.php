@@ -88,15 +88,6 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="is_active_register" class="col-md-3 control-label">激活账号</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_active_register) checked @endif id="is_active_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后用户需要通过邮件来激活账号 </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6">
                                                             <label for="is_invite_register" class="col-md-3 control-label">邀请注册</label>
                                                             <div class="col-md-9">
                                                                 <select id="is_invite_register" class="form-control select2" name="is_invite_register">
@@ -105,6 +96,15 @@
                                                                     <option value="2" @if($is_invite_register == '2') selected @endif>必须</option>
                                                                 </select>
                                                                 <span class="help-block"> 启用后必须使用邀请码进行注册 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="is_active_register" class="col-md-3 control-label">激活账号</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_active_register) checked @endif id="is_active_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后用户需要通过邮件来激活账号 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
