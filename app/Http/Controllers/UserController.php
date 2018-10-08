@@ -1289,27 +1289,4 @@ class UserController extends Controller
 
         return Redirect::back();
     }
-
-    // 上传文件
-    public function uploadImg(Request $request)
-    {
-        var_dump($_FILES);
-        var_dump($request->all());
-        die;
-        if ($request->hasFile('img')) {
-            $file = $request->file('logo');
-            $fileType = $file->getClientOriginalExtension();
-
-            // 验证文件合法性
-            if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
-                Session::flash('errorMsg', 'LOGO不合法');
-
-                return Redirect::back()->withInput();
-            }
-
-            $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
-            $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
-            $logo = $move ? '/upload/image/goods/' . $logoName : '';
-        }
-    }
 }

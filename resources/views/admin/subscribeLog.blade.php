@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-md-2 col-sm-2">
                                 <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
-                                    <option value="" @if(Request::get('status') == '')  disabled selected hidden @endif>状态</option>
+                                    <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>禁用</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
                                 </select>
