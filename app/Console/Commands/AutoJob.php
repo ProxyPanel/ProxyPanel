@@ -4,9 +4,14 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\Yzy;
+use App\Http\Models\EmailLog;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\ReferralLog;
+use App\Http\Models\SsNode;
+use App\Http\Models\SsNodeLabel;
+use App\Http\Models\UserBalanceLog;
+use App\Mail\sendUserInfo;
 use Illuminate\Console\Command;
 use App\Http\Models\Coupon;
 use App\Http\Models\CouponLog;
@@ -21,6 +26,7 @@ use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficHourly;
 use Log;
 use DB;
+use Mail;
 
 class AutoJob extends Command
 {
@@ -328,82 +334,124 @@ class AutoJob extends Command
                         $order->status = 2;
                         $order->save();
 
-                        // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
                         $goods = Goods::query()->where('id', $order->goods_id)->first();
-                        if ($goods->type == 2) {
-                            $existOrderList = Order::query()
-                                ->with(['goods'])
-                                ->whereHas('goods', function ($q) {
-                                    $q->where('type', 2);
-                                })
-                                ->where('user_id', $order->user_id)
-                                ->where('oid', '<>', $order->oid)
-                                ->where('is_expire', 0)
-                                ->where('status', 2)
-                                ->get();
 
-                            foreach ($existOrderList as $vo) {
-                                Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-                                User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                        // 商品为流量或者套餐
+                        if ($goods->type <= 2) {
+                            // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
+                            if ($goods->type == 2) {
+                                $existOrderList = Order::query()
+                                    ->with(['goods'])
+                                    ->whereHas('goods', function ($q) {
+                                        $q->where('type', 2);
+                                    })
+                                    ->where('user_id', $order->user_id)
+                                    ->where('oid', '<>', $order->oid)
+                                    ->where('is_expire', 0)
+                                    ->where('status', 2)
+                                    ->get();
+
+                                foreach ($existOrderList as $vo) {
+                                    Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                                    User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                                }
                             }
-                        }
 
-                        // 把商品的流量加到账号上
-                        User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
+                            // 把商品的流量加到账号上
+                            User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
 
-                        // 计算账号过期时间
-                        if ($order->user->expire_time < date('Y-m-d', strtotime("+" . $goods->days . " days"))) {
-                            $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
-                        } else {
-                            $expireTime = $order->user->expire_time;
-                        }
-
-                        // 套餐就改流量重置日，流量包不改
-                        if ($goods->type == 2) {
-                            if (date('m') == 2 && date('d') == 29) {
-                                $traffic_reset_day = 28;
+                            // 计算账号过期时间
+                            if ($order->user->expire_time < date('Y-m-d', strtotime("+" . $goods->days . " days"))) {
+                                $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
                             } else {
-                                $traffic_reset_day = date('d') == 31 ? 30 : abs(date('d'));
-                            }
-                            User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
-                        } else {
-                            User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
-                        }
-
-                        // 写入用户标签
-                        if ($goods->label) {
-                            // 用户默认标签
-                            $defaultLabels = [];
-                            if (self::$systemConfig['initial_labels_for_user']) {
-                                $defaultLabels = explode(',', self::$systemConfig['initial_labels_for_user']);
+                                $expireTime = $order->user->expire_time;
                             }
 
-                            // 取出现有的标签
-                            $userLabels = UserLabel::query()->where('user_id', $order->user_id)->pluck('label_id')->toArray();
-                            $goodsLabels = GoodsLabel::query()->where('goods_id', $order->goods_id)->pluck('label_id')->toArray();
+                            // 套餐就改流量重置日，流量包不改
+                            if ($goods->type == 2) {
+                                if (date('m') == 2 && date('d') == 29) {
+                                    $traffic_reset_day = 28;
+                                } else {
+                                    $traffic_reset_day = date('d') == 31 ? 30 : abs(date('d'));
+                                }
+                                User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
+                            } else {
+                                User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
+                            }
 
-                            // 标签去重
-                            $newUserLabels = array_values(array_unique(array_merge($userLabels, $goodsLabels, $defaultLabels)));
+                            // 写入用户标签
+                            if ($goods->label) {
+                                // 用户默认标签
+                                $defaultLabels = [];
+                                if (self::$systemConfig['initial_labels_for_user']) {
+                                    $defaultLabels = explode(',', self::$systemConfig['initial_labels_for_user']);
+                                }
 
-                            // 删除用户所有标签
-                            UserLabel::query()->where('user_id', $order->user_id)->delete();
+                                // 取出现有的标签
+                                $userLabels = UserLabel::query()->where('user_id', $order->user_id)->pluck('label_id')->toArray();
+                                $goodsLabels = GoodsLabel::query()->where('goods_id', $order->goods_id)->pluck('label_id')->toArray();
 
-                            // 生成标签
-                            foreach ($newUserLabels as $vo) {
-                                $obj = new UserLabel();
-                                $obj->user_id = $order->user_id;
-                                $obj->label_id = $vo;
-                                $obj->save();
+                                // 标签去重
+                                $newUserLabels = array_values(array_unique(array_merge($userLabels, $goodsLabels, $defaultLabels)));
+
+                                // 删除用户所有标签
+                                UserLabel::query()->where('user_id', $order->user_id)->delete();
+
+                                // 生成标签
+                                foreach ($newUserLabels as $vo) {
+                                    $obj = new UserLabel();
+                                    $obj->user_id = $order->user_id;
+                                    $obj->label_id = $vo;
+                                    $obj->save();
+                                }
+                            }
+
+                            // 写入返利日志
+                            if ($order->user->referral_uid) {
+                                $this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount * self::$systemConfig['referral_percent']);
+                            }
+
+                            // 取消重复返利
+                            User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
+
+                        } elseif ($goods->type == 3) { // 商品为在线充值
+                            User::query()->where('id', $order->user_id)->increment('balance', $goods->price * 100);
+
+                            // 余额变动记录日志
+                            $this->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance + $goods->price, $goods->price, '用户在线充值');
+                        }
+
+                        // 自动提号机：如果order的email值不为空
+                        if ($order->email) {
+                            $title = '【' . self::$systemConfig['website_name'] . '】您的账号信息';
+                            $content = [
+                                'order_sn'      => $order->order_sn,
+                                'goods_name'    => $order->goods->name,
+                                'goods_traffic' => flowAutoShow($order->goods->traffic),
+                                'port'          => $order->user->port,
+                                'passwd'        => $order->user->passwd,
+                                'method'        => $order->user->method,
+                                //'protocol'       => $order->user->protocol,
+                                //'protocol_param' => $order->user->protocol_param,
+                                //'obfs'           => $order->user->obfs,
+                                //'obfs_param'     => $order->user->obfs_param,
+                                'created_at'    => $order->created_at->toDateTimeString(),
+                                'expire_at'     => $order->expire_at
+                            ];
+
+                            // 获取可用节点列表
+                            $labels = UserLabel::query()->where('user_id', $order->user_id)->get()->pluck('label_id');
+                            $nodeIds = SsNodeLabel::query()->whereIn('label_id', $labels)->get()->pluck('node_id');
+                            $nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
+                            $content['serverList'] = $nodeList;
+
+                            try {
+                                Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
+                                $this->sendEmailLog($order->user_id, $title, json_encode($content));
+                            } catch (\Exception $e) {
+                                $this->sendEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
                             }
                         }
-
-                        // 写入返利日志
-                        if ($order->user->referral_uid) {
-                            $this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount * self::$systemConfig['referral_percent']);
-                        }
-
-                        // 取消重复返利
-                        User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
 
                         DB::commit();
                     } catch (\Exception $e) {
@@ -485,10 +533,10 @@ class AutoJob extends Command
     /**
      * 添加返利日志
      *
-     * @param int $userId 用户ID
+     * @param int $userId    用户ID
      * @param int $refUserId 返利用户ID
-     * @param int $oid 订单ID
-     * @param int $amount 发生金额
+     * @param int $oid       订单ID
+     * @param int $amount    发生金额
      * @param int $refAmount 返利金额
      *
      * @return int
@@ -504,5 +552,52 @@ class AutoJob extends Command
         $log->status = 0;
 
         return $log->save();
+    }
+
+    /**
+     * 记录余额操作日志
+     *
+     * @param int    $userId 用户ID
+     * @param string $oid    订单ID
+     * @param int    $before 记录前余额
+     * @param int    $after  记录后余额
+     * @param int    $amount 发生金额
+     * @param string $desc   描述
+     *
+     * @return int
+     */
+    public function addUserBalanceLog($userId, $oid, $before, $after, $amount, $desc = '')
+    {
+        $log = new UserBalanceLog();
+        $log->user_id = $userId;
+        $log->order_id = $oid;
+        $log->before = $before;
+        $log->after = $after;
+        $log->amount = $amount;
+        $log->desc = $desc;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
+    }
+
+    /**
+     * 添加邮件发送日志
+     *
+     * @param int    $userId  接收者用户ID
+     * @param string $title   标题
+     * @param string $content 内容
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
+     */
+    private function sendEmailLog($userId, $title, $content, $status = 1, $error = '')
+    {
+        $emailLogObj = new EmailLog();
+        $emailLogObj->user_id = $userId;
+        $emailLogObj->title = $title;
+        $emailLogObj->content = $content;
+        $emailLogObj->status = $status;
+        $emailLogObj->error = $error;
+        $emailLogObj->created_at = date('Y-m-d H:i:s');
+        $emailLogObj->save();
     }
 }

@@ -66,7 +66,7 @@
                                                 @endif
                                             </td>
                                             <!-- <td> @if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif </td> -->
-                                            <td> {{$goods->traffic_label}} </td>
+                                            <td> {{$goods->type == 3 ? '' : $goods->traffic_label}} </td>
                                             <td> {{$goods->price}}元 </td>
                                             <!-- <td> {{$goods->score}} </td> -->
                                             <td> {{$goods->sort}} </td>
@@ -148,6 +148,6 @@
                 openEffect: 'elastic',
                 closeEffect: 'elastic'
             })
-        })
+        });
     </script>
 @endsection

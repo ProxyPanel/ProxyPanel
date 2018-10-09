@@ -106,6 +106,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if($goods->type <= 2)
                                 <div class="form-group">
                                     <label class="control-label col-md-3">内含流量</label>
                                     <div class="col-md-6">
@@ -180,6 +181,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                                 <div class="form-group last">
                                     <label class="control-label col-md-3">状态</label>
                                     <div class="col-md-6">
@@ -195,7 +197,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="form-actions">
                                 <div class="row">

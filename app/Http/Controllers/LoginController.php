@@ -146,7 +146,12 @@ class LoginController extends Controller
         // 解析IP信息
         $qqwry = new QQWry();
         $ipInfo = $qqwry->ip($ip);
-        if (!$ipInfo || !is_array($ipInfo)) {
+        if (isset($ipInfo['error'])) {
+            Log::info('无法识别IP，可能是IPv6，尝试解析：' . $ip);
+            $ipInfo = getIPv6($ip);
+        }
+
+        if (empty($ipInfo) || empty($ipInfo['country'])) {
             \Log::warning("获取IP地址信息异常：" . $ip);
         }
 
@@ -157,7 +162,7 @@ class LoginController extends Controller
         $log->province = $ipInfo['province'] ?? '';
         $log->city = $ipInfo['city'] ?? '';
         $log->county = $ipInfo['county'] ?? '';
-        $log->isp = $ipInfo['isp'] ?? '';
+        $log->isp = $ipInfo['isp'] ?? ($ipInfo['organization'] ?? '');
         $log->area = $ipInfo['area'] ?? '';
         $log->save();
     }
