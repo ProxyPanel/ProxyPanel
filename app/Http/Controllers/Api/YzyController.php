@@ -251,7 +251,7 @@ class YzyController extends Controller
                 User::query()->where('id', $order->user_id)->increment('balance', $goods->price * 100);
 
                 // 余额变动记录日志
-                $this->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance + $goods->price, +$goods->price, '用户在线充值');
+                $this->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance + $goods->price, $goods->price, '用户在线充值');
             }
 
             // 自动提号机：如果order的email值不为空

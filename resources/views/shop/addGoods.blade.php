@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                                 <!--
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label class="control-label col-md-3">LOGO</label>
                                     <div class="col-md-6">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label class="control-label col-md-3">内含流量</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
@@ -112,7 +112,7 @@
                                         <span class="help-block"> 提交后不可修改 </span>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label for="labels" class="col-md-3 control-label">标签</label>
                                     <div class="col-md-6">
                                         <select id="labels" class="form-control select2-multiple" name="labels[]" multiple>
@@ -124,7 +124,7 @@
                                     </div>
                                 </div>
                                 <!--
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label class="control-label col-md-3">所需积分</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="score" value="0" id="score" placeholder="" required>
@@ -132,7 +132,7 @@
                                     </div>
                                 </div>
                                 -->
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label class="control-label col-md-3">有效期</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
@@ -142,14 +142,14 @@
                                         <span class="help-block"> 到期后会自动从总流量扣减对应的流量，添加后不可修改 </span>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label for="sort" class="control-label col-md-3">排序</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="sort" value="{{Request::old('sort')}}" id="sort" placeholder="">
                                         <span class="help-block"> 值越大排越前 </span>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label for="color" class="col-md-3 control-label">颜色</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="color" id="color">
@@ -162,7 +162,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group package-money">
                                     <label for="is_hot" class="col-md-3 control-label">热销</label>
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
@@ -233,6 +233,16 @@
                 todayHighlight: true,
                 format: 'yyyy-mm-dd'
             });
+        });
+
+        // 选择商品类型
+        $("input[name='type']").change(function(){
+            var type = $(this).val();
+            if (type == 3) {
+                $(".package-money").hide();
+            } else {
+                $(".package-money").show();
+            }
         });
     </script>
 @endsection

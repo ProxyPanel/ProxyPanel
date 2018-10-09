@@ -141,3 +141,51 @@ if (!function_exists('getClientIP')) {
         return $ip;
     }
 }
+
+// 获取IPv6信息
+if (!function_exists('getIPv6')) {
+    /*
+     * {
+     *     "longitude": 105,
+     *     "latitude": 35,
+     *     "area_code": "0",
+     *     "dma_code": "0",
+     *     "organization": "AS23910 China Next Generation Internet CERNET2",
+     *     "country": "China",
+     *     "ip": "2001:da8:202:10::36",
+     *     "country_code3": "CHN",
+     *     "continent_code": "AS",
+     *     "country_code": "CN"
+     *  }
+     */
+    function getIPv6($ip)
+    {
+        $url = 'https://api.ip.sb/geoip/' . $ip;
+
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 500);
+            // 为保证第三方服务器与微信服务器之间数据传输的安全性，所有微信接口采用https方式调用，必须使用下面2行代码打开ssl安全校验。
+            // 如果在部署过程中代码在此处验证失败，请到 http://curl.haxx.se/ca/cacert.pem 下载新的证书判别文件。
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 0);
+
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $result = json_decode($result, true);
+            if (!is_array($result) || isset($result['code'])) {
+                throw new Exception('解析IPv6信息异常：' . $ip);
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+
+            return [];
+        }
+    }
+}
