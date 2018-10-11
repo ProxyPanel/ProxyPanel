@@ -184,7 +184,7 @@ class YzyController extends Controller
                         ->where('is_expire', 0)
                         ->where('status', 2)
                         ->get();
-                    
+
                     foreach ($existOrderList as $vo) {
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
                         // 先判断，防止手动扣减过流量的用户流量被扣成负数
