@@ -172,7 +172,7 @@ class YzyController extends Controller
 
             // 商品为流量或者套餐
             if ($goods->type <= 2) {
-                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
+                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，重置用户已用流量为0
                 if ($goods->type == 2) {
                     $existOrderList = Order::query()
                         ->with(['goods'])
@@ -187,7 +187,13 @@ class YzyController extends Controller
 
                     foreach ($existOrderList as $vo) {
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-                        User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                        // 先判断，防止手动扣减过流量的用户流量被扣成负数
+                        if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                            User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
+                        } else {
+                            User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
+                            User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                        }
                     }
                 }
 
