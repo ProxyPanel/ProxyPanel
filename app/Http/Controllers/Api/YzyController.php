@@ -144,7 +144,7 @@ class YzyController extends Controller
                 $user->protocol = Helpers::getDefaultProtocol();
                 $user->obfs = Helpers::getDefaultObfs();
                 $user->usage = 1;
-                $user->transfer_enable = toGB(1000);
+                $user->transfer_enable = 1; // 新创建的账号给1，防止定时任务执行时发现u + d >= transfer_enable被判为流量超限而封禁
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+" . $payment->order->goods->days . " days"));
                 $user->reg_ip = getClientIp();
@@ -187,6 +187,7 @@ class YzyController extends Controller
 
                     foreach ($existOrderList as $vo) {
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+
                         // 先判断，防止手动扣减过流量的用户流量被扣成负数
                         if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
                             User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
@@ -262,11 +263,11 @@ class YzyController extends Controller
 
             // 自动提号机：如果order的email值不为空
             if ($order->email) {
-                $title = '【' . self::$systemConfig['website_name'] . '】您的账号信息';
+                $title = '自动发送账号信息';
                 $content = [
                     'order_sn'      => $order->order_sn,
                     'goods_name'    => $order->goods->name,
-                    'goods_traffic' => flowAutoShow($order->goods->traffic),
+                    'goods_traffic' => flowAutoShow($order->goods->traffic * 1048576),
                     'port'          => $order->user->port,
                     'passwd'        => $order->user->passwd,
                     'method'        => $order->user->method,
@@ -281,7 +282,7 @@ class YzyController extends Controller
                 // 获取可用节点列表
                 $labels = UserLabel::query()->where('user_id', $order->user_id)->get()->pluck('label_id');
                 $nodeIds = SsNodeLabel::query()->whereIn('label_id', $labels)->get()->pluck('node_id');
-                $nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
+                $nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get()->toArray();
                 $content['serverList'] = $nodeList;
 
                 try {
