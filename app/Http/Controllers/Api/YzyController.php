@@ -287,9 +287,9 @@ class YzyController extends Controller
 
                 try {
                     Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
-                    $this->sendEmailLog($order->user_id, $title, json_encode($content));
+                    Helpers::addEmailLog($order->user_id, $title, json_encode($content));
                 } catch (\Exception $e) {
-                    $this->sendEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
+                    Helpers::addEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
                 }
             }
 

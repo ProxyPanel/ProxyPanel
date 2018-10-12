@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\Yzy;
-use App\Http\Models\EmailLog;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\ReferralLog;
@@ -14,7 +13,6 @@ use App\Http\Models\UserBalanceLog;
 use App\Mail\sendUserInfo;
 use Illuminate\Console\Command;
 use App\Http\Models\Coupon;
-use App\Http\Models\CouponLog;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
@@ -455,9 +453,9 @@ class AutoJob extends Command
 
                             try {
                                 Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
-                                $this->sendEmailLog($order->user_id, $title, json_encode($content));
+                                Helpers::addEmailLog($order->user_id, $title, json_encode($content));
                             } catch (\Exception $e) {
-                                $this->sendEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
+                                Helpers::addEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
                             }
                         }
 
@@ -491,7 +489,7 @@ class AutoJob extends Command
                     if ($payment->order->coupon_id) {
                         Coupon::query()->where('id', $payment->order->coupon_id)->update(['status' => 0]);
 
-                        $this->addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '订单超时未支付，自动退回');
+                        Helpers::addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '订单超时未支付，自动退回');
                     }
                 }
 
@@ -518,24 +516,6 @@ class AutoJob extends Command
         $log->minutes = $minutes;
         $log->desc = $desc;
         $log->save();
-    }
-
-    /**
-     * 添加优惠券操作日志
-     *
-     * @param int    $couponId 优惠券ID
-     * @param int    $goodsId  商品ID
-     * @param int    $orderId  订单ID
-     * @param string $desc     备注
-     */
-    private function addCouponLog($couponId, $goodsId, $orderId, $desc = '')
-    {
-        $couponLog = new CouponLog();
-        $couponLog->coupon_id = $couponId;
-        $couponLog->goods_id = $goodsId;
-        $couponLog->order_id = $orderId;
-        $couponLog->desc = $desc;
-        $couponLog->save();
     }
 
     /**
@@ -586,26 +566,5 @@ class AutoJob extends Command
         $log->created_at = date('Y-m-d H:i:s');
 
         return $log->save();
-    }
-
-    /**
-     * 添加邮件发送日志
-     *
-     * @param int    $userId  接收者用户ID
-     * @param string $title   标题
-     * @param string $content 内容
-     * @param int    $status  投递状态
-     * @param string $error   投递失败时记录的异常信息
-     */
-    private function sendEmailLog($userId, $title, $content, $status = 1, $error = '')
-    {
-        $emailLogObj = new EmailLog();
-        $emailLogObj->user_id = $userId;
-        $emailLogObj->title = $title;
-        $emailLogObj->content = $content;
-        $emailLogObj->status = $status;
-        $emailLogObj->error = $error;
-        $emailLogObj->created_at = date('Y-m-d H:i:s');
-        $emailLogObj->save();
     }
 }

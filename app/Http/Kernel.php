@@ -38,7 +38,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:200,1', // API请求限制：1分钟内同一个IP限制只能请求200次
             'bindings',
         ],
     ];

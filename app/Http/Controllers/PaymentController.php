@@ -82,14 +82,14 @@ class PaymentController extends Controller
         // 验证账号是否存在有效期更长的套餐
         if ($goods->type == 2) {
             $existOrderList = Order::query()
-                    ->with(['goods'])
-                    ->whereHas('goods', function ($q) {
-                        $q->where('type', 2);
-                    })
-                    ->where('user_id', $user['id'])
-                    ->where('is_expire', 0)
-                    ->where('status', 2)
-                    ->get();
+                ->with(['goods'])
+                ->whereHas('goods', function ($q) {
+                    $q->where('type', 2);
+                })
+                ->where('user_id', $user['id'])
+                ->where('is_expire', 0)
+                ->where('status', 2)
+                ->get();
 
             foreach ($existOrderList as $vo) {
                 if ($vo->goods->days > $goods->days) {
@@ -147,7 +147,7 @@ class PaymentController extends Controller
                     $coupon->save();
                 }
 
-                $this->addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
+                Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
             }
 
             DB::commit();

@@ -19,7 +19,6 @@ class UserTrafficAbnormalAutoWarning extends Command
     {
         parent::__construct();
         self::$systemConfig = Helpers::systemConfig();
-
     }
 
     public function handle()
