@@ -253,17 +253,16 @@ class RegisterController extends Controller
     {
         // 邀请人ID
         $referral_uid = 0;
+        
+        // 邀请码ID
+        $code_id = 0;
 
         // 有邀请码先用邀请码，用谁的邀请码就给谁返利
         if ($code) {
-            $inviteCode = Invite::query()->where('code', $code)->where('uid', '>', 0)->where('status', 0)->first();
+            $inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
             if ($inviteCode) {
                 $referral_uid = $inviteCode->uid;
-
-                return [
-                    'referral_uid' => $referral_uid,
-                    'code_id'      => $inviteCode->id
-                ];
+                $code_id = $inviteCode->id;
             }
         }
 
@@ -282,7 +281,7 @@ class RegisterController extends Controller
 
         return [
             'referral_uid' => $referral_uid,
-            'code_id'      => 0
+            'code_id'      => $code_id
         ];
     }
 
