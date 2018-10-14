@@ -3,6 +3,8 @@
 namespace App\Components;
 
 use App\Http\Models\Config;
+use App\Http\Models\CouponLog;
+use App\Http\Models\EmailLog;
 use App\Http\Models\Level;
 use App\Http\Models\SsConfig;
 use App\Http\Models\User;
@@ -104,5 +106,50 @@ class Helpers
     public static function levelList()
     {
         return Level::query()->get()->sortBy('level');
+    }
+
+    /**
+     * 写入邮件发送日志
+     *
+     * @param int    $user_id 用户ID
+     * @param string $title   标题
+     * @param string $content 内容
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
+     *
+     * @return int
+     */
+    public static function addEmailLog($user_id, $title, $content, $status = 1, $error = '')
+    {
+        $log = new EmailLog();
+        $log->user_id = $user_id;
+        $log->title = $title;
+        $log->content = $content;
+        $log->status = $status;
+        $log->error = $error;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
+    }
+
+    /**
+     * 添加优惠券操作日志
+     *
+     * @param int    $couponId 优惠券ID
+     * @param int    $goodsId  商品ID
+     * @param int    $orderId  订单ID
+     * @param string $desc     备注
+     *
+     * @return int
+     */
+    public static function addCouponLog($couponId, $goodsId, $orderId, $desc = '')
+    {
+        $log = new CouponLog();
+        $log->coupon_id = $couponId;
+        $log->goods_id = $goodsId;
+        $log->order_id = $orderId;
+        $log->desc = $desc;
+
+        return $log->save();
     }
 }

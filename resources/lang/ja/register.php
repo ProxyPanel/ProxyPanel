@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'title'                => '新しいアカウントの登録',

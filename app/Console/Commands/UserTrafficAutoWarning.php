@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Components\Helpers;
 use Illuminate\Console\Command;
 use App\Http\Models\User;
-use App\Http\Models\EmailLog;
 use App\Mail\userTrafficWarning;
 use Mail;
 use Log;
@@ -54,32 +53,11 @@ class UserTrafficAutoWarning extends Command
 
                 try {
                     Mail::to($user->username)->send(new userTrafficWarning(self::$systemConfig['website_name'], $usedPercent));
-                    $this->sendEmailLog($user->id, $title, $content);
+                    Helpers::addEmailLog($user->id, $title, $content);
                 } catch (\Exception $e) {
-                    $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                    Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
                 }
             }
         }
-    }
-
-    /**
-     * 写入邮件发送日志
-     *
-     * @param int    $user_id 用户ID
-     * @param string $title   标题
-     * @param string $content 内容
-     * @param int    $status  投递状态
-     * @param string $error   投递失败时记录的异常信息
-     */
-    private function sendEmailLog($user_id, $title, $content, $status = 1, $error = '')
-    {
-        $emailLogObj = new EmailLog();
-        $emailLogObj->user_id = $user_id;
-        $emailLogObj->title = $title;
-        $emailLogObj->content = $content;
-        $emailLogObj->status = $status;
-        $emailLogObj->error = $error;
-        $emailLogObj->created_at = date('Y-m-d H:i:s');
-        $emailLogObj->save();
     }
 }

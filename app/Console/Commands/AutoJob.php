@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\Yzy;
-use App\Http\Models\EmailLog;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\ReferralLog;
@@ -14,7 +13,6 @@ use App\Http\Models\UserBalanceLog;
 use App\Mail\sendUserInfo;
 use Illuminate\Console\Command;
 use App\Http\Models\Coupon;
-use App\Http\Models\CouponLog;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
@@ -310,7 +308,7 @@ class AutoJob extends Command
                             $user->protocol = Helpers::getDefaultProtocol();
                             $user->obfs = Helpers::getDefaultObfs();
                             $user->usage = 1;
-                            $user->transfer_enable = toGB(1000);
+                            $user->transfer_enable = 1; // 新创建的账号给1，防止定时任务执行时发现u + d >= transfer_enable被判为流量超限而封禁
                             $user->enable_time = date('Y-m-d');
                             $user->expire_time = date('Y-m-d', strtotime("+" . $payment->order->goods->days . " days"));
                             $user->reg_ip = getClientIp();
@@ -338,7 +336,7 @@ class AutoJob extends Command
 
                         // 商品为流量或者套餐
                         if ($goods->type <= 2) {
-                            // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量
+                            // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，重置用户已用流量为0
                             if ($goods->type == 2) {
                                 $existOrderList = Order::query()
                                     ->with(['goods'])
@@ -353,7 +351,14 @@ class AutoJob extends Command
 
                                 foreach ($existOrderList as $vo) {
                                     Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-                                    User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+
+                                    // 先判断，防止手动扣减过流量的用户流量被扣成负数
+                                    if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                                        User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
+                                    } else {
+                                        User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
+                                        User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                                    }
                                 }
                             }
 
@@ -374,6 +379,7 @@ class AutoJob extends Command
                                 } else {
                                     $traffic_reset_day = date('d') == 31 ? 30 : abs(date('d'));
                                 }
+
                                 User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
                             } else {
                                 User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
@@ -427,7 +433,7 @@ class AutoJob extends Command
                             $content = [
                                 'order_sn'      => $order->order_sn,
                                 'goods_name'    => $order->goods->name,
-                                'goods_traffic' => flowAutoShow($order->goods->traffic),
+                                'goods_traffic' => flowAutoShow($order->goods->traffic * 1048576),
                                 'port'          => $order->user->port,
                                 'passwd'        => $order->user->passwd,
                                 'method'        => $order->user->method,
@@ -442,14 +448,14 @@ class AutoJob extends Command
                             // 获取可用节点列表
                             $labels = UserLabel::query()->where('user_id', $order->user_id)->get()->pluck('label_id');
                             $nodeIds = SsNodeLabel::query()->whereIn('label_id', $labels)->get()->pluck('node_id');
-                            $nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
+                            $nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get()->toArray();
                             $content['serverList'] = $nodeList;
 
                             try {
                                 Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
-                                $this->sendEmailLog($order->user_id, $title, json_encode($content));
+                                Helpers::addEmailLog($order->user_id, $title, json_encode($content));
                             } catch (\Exception $e) {
-                                $this->sendEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
+                                Helpers::addEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
                             }
                         }
 
@@ -483,7 +489,7 @@ class AutoJob extends Command
                     if ($payment->order->coupon_id) {
                         Coupon::query()->where('id', $payment->order->coupon_id)->update(['status' => 0]);
 
-                        $this->addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '订单超时未支付，自动退回');
+                        Helpers::addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '订单超时未支付，自动退回');
                     }
                 }
 
@@ -510,24 +516,6 @@ class AutoJob extends Command
         $log->minutes = $minutes;
         $log->desc = $desc;
         $log->save();
-    }
-
-    /**
-     * 添加优惠券操作日志
-     *
-     * @param int    $couponId 优惠券ID
-     * @param int    $goodsId  商品ID
-     * @param int    $orderId  订单ID
-     * @param string $desc     备注
-     */
-    private function addCouponLog($couponId, $goodsId, $orderId, $desc = '')
-    {
-        $couponLog = new CouponLog();
-        $couponLog->coupon_id = $couponId;
-        $couponLog->goods_id = $goodsId;
-        $couponLog->order_id = $orderId;
-        $couponLog->desc = $desc;
-        $couponLog->save();
     }
 
     /**
@@ -578,26 +566,5 @@ class AutoJob extends Command
         $log->created_at = date('Y-m-d H:i:s');
 
         return $log->save();
-    }
-
-    /**
-     * 添加邮件发送日志
-     *
-     * @param int    $userId  接收者用户ID
-     * @param string $title   标题
-     * @param string $content 内容
-     * @param int    $status  投递状态
-     * @param string $error   投递失败时记录的异常信息
-     */
-    private function sendEmailLog($userId, $title, $content, $status = 1, $error = '')
-    {
-        $emailLogObj = new EmailLog();
-        $emailLogObj->user_id = $userId;
-        $emailLogObj->title = $title;
-        $emailLogObj->content = $content;
-        $emailLogObj->status = $status;
-        $emailLogObj->error = $error;
-        $emailLogObj->created_at = date('Y-m-d H:i:s');
-        $emailLogObj->save();
     }
 }

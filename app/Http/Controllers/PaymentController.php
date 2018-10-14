@@ -79,6 +79,25 @@ class PaymentController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：订单总价为0，无需使用在线支付']);
         }
 
+        // 验证账号是否存在有效期更长的套餐
+        if ($goods->type == 2) {
+            $existOrderList = Order::query()
+                ->with(['goods'])
+                ->whereHas('goods', function ($q) {
+                    $q->where('type', 2);
+                })
+                ->where('user_id', $user['id'])
+                ->where('is_expire', 0)
+                ->where('status', 2)
+                ->get();
+
+            foreach ($existOrderList as $vo) {
+                if ($vo->goods->days > $goods->days) {
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您已存在有效期更长的套餐，只能购买流量包']);
+                }
+            }
+        }
+
         DB::beginTransaction();
         try {
             $orderSn = date('ymdHis') . mt_rand(100000, 999999);
@@ -128,7 +147,7 @@ class PaymentController extends Controller
                     $coupon->save();
                 }
 
-                $this->addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
+                Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');
             }
 
             DB::commit();

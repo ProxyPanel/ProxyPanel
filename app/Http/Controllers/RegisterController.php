@@ -207,9 +207,9 @@ class RegisterController extends Controller
 
                 try {
                     Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
-                    $this->sendEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl);
+                    Helpers::addEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl);
                 } catch (\Exception $e) {
-                    $this->sendEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
+                    Helpers::addEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
                 }
 
                 Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，如未收到，请查看垃圾邮箱');
@@ -254,16 +254,15 @@ class RegisterController extends Controller
         // 邀请人ID
         $referral_uid = 0;
 
+        // 邀请码ID
+        $code_id = 0;
+
         // 有邀请码先用邀请码，用谁的邀请码就给谁返利
         if ($code) {
-            $inviteCode = Invite::query()->where('code', $code)->where('uid', '>', 0)->where('status', 0)->first();
+            $inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
             if ($inviteCode) {
                 $referral_uid = $inviteCode->uid;
-
-                return [
-                    'referral_uid' => $referral_uid,
-                    'code_id'      => $inviteCode->id
-                ];
+                $code_id = $inviteCode->id;
             }
         }
 
@@ -282,7 +281,7 @@ class RegisterController extends Controller
 
         return [
             'referral_uid' => $referral_uid,
-            'code_id'      => 0
+            'code_id'      => $code_id
         ];
     }
 

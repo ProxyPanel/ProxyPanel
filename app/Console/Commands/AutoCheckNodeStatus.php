@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Components\Helpers;
 use Illuminate\Console\Command;
 use App\Components\ServerChan;
-use App\Http\Models\EmailLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Mail\nodeCrashWarning;
@@ -141,6 +140,8 @@ class AutoCheckNodeStatus extends Command
      * @param string $content    消息内容
      * @param string $nodeName   节点名称
      * @param string $nodeServer 节点域名
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function notifyMaster($title, $content, $nodeName, $nodeServer)
     {
@@ -161,9 +162,9 @@ class AutoCheckNodeStatus extends Command
         if (self::$systemConfig['is_node_crash_warning'] && self::$systemConfig['crash_warning_email']) {
             try {
                 Mail::to(self::$systemConfig['crash_warning_email'])->send(new nodeCrashWarning(self::$systemConfig['website_name'], $nodeName, $nodeServer));
-                $this->addEmailLog(1, $title, $content);
+                Helpers::addEmailLog(1, $title, $content);
             } catch (\Exception $e) {
-                $this->addEmailLog(1, $title, $content, 0, $e->getMessage());
+                Helpers::addEmailLog(1, $title, $content, 0, $e->getMessage());
             }
         }
     }
@@ -173,6 +174,8 @@ class AutoCheckNodeStatus extends Command
      *
      * @param string $title   消息标题
      * @param string $content 消息内容
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function notifyMasterByServerchan($title, $content)
     {
@@ -180,27 +183,6 @@ class AutoCheckNodeStatus extends Command
             $serverChan = new ServerChan();
             $serverChan->send($title, $content);
         }
-    }
-
-    /**
-     * 添加邮件发送日志
-     *
-     * @param int    $userId  接收者用户ID
-     * @param string $title   标题
-     * @param string $content 内容
-     * @param int    $status  投递状态
-     * @param string $error   投递失败时记录的异常信息
-     */
-    private function addEmailLog($userId, $title, $content, $status = 1, $error = '')
-    {
-        $emailLogObj = new EmailLog();
-        $emailLogObj->user_id = $userId;
-        $emailLogObj->title = $title;
-        $emailLogObj->content = $content;
-        $emailLogObj->status = $status;
-        $emailLogObj->error = $error;
-        $emailLogObj->created_at = date('Y-m-d H:i:s');
-        $emailLogObj->save();
     }
 
     /**

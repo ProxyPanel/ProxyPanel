@@ -124,7 +124,7 @@ class UserController extends Controller
             $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
             $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
             $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
-            $ssr_str .= '&remarks=' . base64url_encode($node->name . "|" . $node->traffic_rate . "倍流量消耗");
+            $ssr_str .= '&remarks=' . base64url_encode($node->name);
             $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
@@ -439,9 +439,9 @@ class UserController extends Controller
             if (self::$systemConfig['crash_warning_email']) {
                 try {
                     Mail::to(self::$systemConfig['crash_warning_email'])->send(new newTicket(self::$systemConfig['website_name'], $emailTitle, $content));
-                    $this->sendEmailLog(1, $emailTitle, $content);
+                    Helpers::addEmailLog(1, $emailTitle, $content);
                 } catch (\Exception $e) {
-                    $this->sendEmailLog(1, $emailTitle, $content, 0, $e->getMessage());
+                    Helpers::addEmailLog(1, $emailTitle, $content, 0, $e->getMessage());
                 }
             }
 
@@ -487,13 +487,13 @@ class UserController extends Controller
                 $content = "标题：【" . $ticket->title . "】<br>用户回复：" . $content;
 
                 // 发邮件通知管理员
-                try {
-                    if (self::$systemConfig['crash_warning_email']) {
+                if (self::$systemConfig['crash_warning_email']) {
+                    try {
                         Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
-                        $this->sendEmailLog(1, $title, $content);
+                        Helpers::addEmailLog(1, $title, $content);
+                    } catch (\Exception $e) {
+                        Helpers::addEmailLog(1, $title, $content, 0, $e->getMessage());
                     }
-                } catch (\Exception $e) {
-                    $this->sendEmailLog(1, $title, $content, 0, $e->getMessage());
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
@@ -648,9 +648,9 @@ class UserController extends Controller
 
             try {
                 Mail::to($user->username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
-                $this->sendEmailLog($user->id, $title, $content);
+                Helpers::addEmailLog($user->id, $title, $content);
             } catch (\Exception $e) {
-                $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
             }
 
             Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
@@ -769,9 +769,9 @@ class UserController extends Controller
 
             try {
                 Mail::to($user->username)->send(new resetPassword(self::$systemConfig['website_name'], $resetPasswordUrl));
-                $this->sendEmailLog($user->id, $title, $content);
+                Helpers::addEmailLog($user->id, $title, $content);
             } catch (\Exception $e) {
-                $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
             }
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
@@ -948,6 +948,25 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
             }
 
+            // 验证账号是否存在有效期更长的套餐
+            if ($goods->type == 2) {
+                $existOrderList = Order::query()
+                    ->with(['goods'])
+                    ->whereHas('goods', function ($q) {
+                        $q->where('type', 2);
+                    })
+                    ->where('user_id', $user['id'])
+                    ->where('is_expire', 0)
+                    ->where('status', 2)
+                    ->get();
+
+                foreach ($existOrderList as $vo) {
+                    if ($vo->goods->days > $goods->days) {
+                        return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您已存在有效期更长的套餐，只能购买流量包']);
+                    }
+                }
+            }
+
             DB::beginTransaction();
             try {
                 // 生成订单
@@ -978,17 +997,32 @@ class UserController extends Controller
                     }
 
                     // 写入日志
-                    $this->addCouponLog($coupon->id, $goods_id, $order->oid, '余额支付订单使用');
+                    Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '余额支付订单使用');
                 }
 
-                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，并移除之前所有套餐的标签
-                if ($goods->type === 2) {
-                    $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) {
-                        $q->where('type', 2);
-                    })->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->where('status', 2)->get();
+                // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，重置用户已用流量为0
+                if ($goods->type == 2) {
+                    $existOrderList = Order::query()
+                        ->with(['goods'])
+                        ->whereHas('goods', function ($q) {
+                            $q->where('type', 2);
+                        })
+                        ->where('user_id', $order->user_id)
+                        ->where('oid', '<>', $order->oid)
+                        ->where('is_expire', 0)
+                        ->where('status', 2)
+                        ->get();
+
                     foreach ($existOrderList as $vo) {
                         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-                        User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+
+                        // 先判断，防止手动扣减过流量的用户流量被扣成负数
+                        if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                            User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
+                        } else {
+                            User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
+                            User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                        }
                     }
                 }
 
@@ -1269,7 +1303,7 @@ class UserController extends Controller
             $coupon->save();
 
             // 写入卡券日志
-            $this->addCouponLog($coupon->id, 0, 0, '账户余额充值使用');
+            Helpers::addCouponLog($coupon->id, 0, 0, '账户余额充值使用');
 
             DB::commit();
 

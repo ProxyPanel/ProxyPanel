@@ -70,9 +70,6 @@
                                         <div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
                                             <table>
                                                 <tr>
-                                                    <td colspan="2" style="text-align: left;">您的账号信息如下</td>
-                                                </tr>
-                                                <tr>
                                                     <td>订单编号</td>
                                                     <td>{{$content['order_sn']}}</td>
                                                 </tr>
@@ -106,11 +103,10 @@
                                                 </tr>
                                                 @if($content['serverList'])
                                                     <tr>
-                                                        <td colspan="2" style="text-align: left;">节点列表</td>
+                                                        <td colspan="2">------------------------------------------</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>节点名称</th>
-                                                        <th>节点地址</th>
+                                                        <td colspan="2" style="text-align: left;">节点列表</td>
                                                     </tr>
                                                     @foreach($content['serverList'] as $vo)
                                                         <tr>

@@ -2,8 +2,6 @@
 
 namespace App\Components;
 
-use App\Http\Models\Config;
-use App\Http\Models\EmailLog;
 use LSS\XML2Array;
 use Log;
 
@@ -91,37 +89,16 @@ class Namesilo
 
             // 出错
             if (empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success') {
-                $this->addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $result['namesilo']['reply']['detail']);
+                Helpers::addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $result['namesilo']['reply']['detail']);
             }
 
             return $result['namesilo']['reply'];
         } catch (\Exception $e) {
             Log::error('CURL请求失败：' . $e->getMessage() . ' --- ' . $e->getLine());
-            $this->addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $e->getMessage());
+            Helpers::addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $e->getMessage());
 
             return false;
         }
-    }
-
-    /**
-     * 写入邮件发送日志
-     *
-     * @param int    $user_id 用户ID
-     * @param string $title   标题
-     * @param string $content 内容
-     * @param int    $status  投递状态
-     * @param string $error   投递失败时记录的异常信息
-     */
-    private function addEmailLog($user_id, $title, $content, $status = 1, $error = '')
-    {
-        $emailLogObj = new EmailLog();
-        $emailLogObj->user_id = $user_id;
-        $emailLogObj->title = $title;
-        $emailLogObj->content = $content;
-        $emailLogObj->status = $status;
-        $emailLogObj->error = $error;
-        $emailLogObj->created_at = date('Y-m-d H:i:s');
-        $emailLogObj->save();
     }
 
     // 发起一个CURL请求
