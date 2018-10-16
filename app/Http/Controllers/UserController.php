@@ -68,6 +68,7 @@ class UserController extends Controller
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['is_push_bear'] = self::$systemConfig['is_push_bear'];
         $view['push_bear_qrcode'] = self::$systemConfig['push_bear_qrcode'];
+        $view['ipa_list'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
         $view['goodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get(); // 余额充值商品，只取10个
 
         // 推广返利是否可见

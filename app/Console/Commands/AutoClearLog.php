@@ -58,7 +58,7 @@ class AutoClearLog extends Command
         SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-60 days')))->delete();
 
         // 自动清除30天以前用户封禁日志
-        UserBanLog::query()->where('created_at', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-30 days"))))->delete();
+        UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-30 days")))->delete();
     }
 
 }

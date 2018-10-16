@@ -125,6 +125,9 @@
                                             </div>
                                             <div class="tab-pane" id="tools4">
                                                 <ol>
+                                                    @if(Agent::is('iPhone') || Agent::is('iPad'))
+                                                        <li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li>
+                                                    @endif
                                                     <li> 请从站长处获取App Store美区ID及教程 </li>
                                                 </ol>
                                             </div>
