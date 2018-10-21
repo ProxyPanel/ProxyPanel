@@ -34,9 +34,7 @@
                                             <div class="form-group">
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="username" value="{{$user->username}}" id="username" placeholder="不填则不变" autofocus required>
-                                                    <input type="hidden" name="id" value="{{$user->id}}">
-                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                    <input type="text" class="form-control" name="username" value="{{$user->username}}" id="username" autofocus required>
                                                 </div>
                                             </div>
                                             <div class="form-group">

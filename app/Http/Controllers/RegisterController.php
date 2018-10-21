@@ -203,7 +203,7 @@ class RegisterController extends Controller
                 // 生成激活账号的地址
                 $token = md5(self::$systemConfig['website_name'] . $username . microtime());
                 $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
-                $this->addVerify($user->id, $username, $token);
+                $this->addVerify($user->id, $token);
 
                 try {
                     Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
@@ -286,11 +286,11 @@ class RegisterController extends Controller
     }
 
     // 写入生成激活账号验证记录
-    private function addVerify($userId, $username, $token)
+    private function addVerify($userId, $token)
     {
         $verify = new Verify();
+        $verify->type = 1;
         $verify->user_id = $userId;
-        $verify->username = $username;
         $verify->token = $token;
         $verify->status = 0;
         $verify->save();

@@ -636,8 +636,8 @@ class UserController extends Controller
             // 生成激活账号的地址
             $token = md5(self::$systemConfig['website_name'] . $username . microtime());
             $verify = new Verify();
+            $verify->type = 1;
             $verify->user_id = $user->id;
-            $verify->username = $username;
             $verify->token = $token;
             $verify->status = 0;
             $verify->save();
@@ -757,8 +757,8 @@ class UserController extends Controller
             // 生成取回密码的地址
             $token = md5(self::$systemConfig['website_name'] . $username . microtime());
             $verify = new Verify();
+            $verify->type = 1;
             $verify->user_id = $user->id;
-            $verify->username = $username;
             $verify->token = $token;
             $verify->status = 0;
             $verify->save();

@@ -412,8 +412,8 @@ INSERT INTO `label` VALUES ('6', '免费体验', '0');
 -- ----------------------------
 CREATE TABLE `verify` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` TINYINT NOT NULL DEFAULT '1' COMMENT '激活类型：1-自行激活、2-管理员激活',
   `user_id` int(11) NOT NULL COMMENT '用户ID',
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '校验token',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -1096,7 +1096,7 @@ CREATE TABLE `user_login_log` (
 	`created_at` DATETIME NOT NULL,
 	`updated_at` DATETIME NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB COLLATE='utf8mb4_general_ci' COMMENT='用户登录日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

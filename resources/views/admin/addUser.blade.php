@@ -30,7 +30,6 @@
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
-                                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
                                                 </div>
                                             </div>
                                             <div class="form-group">
