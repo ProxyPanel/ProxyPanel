@@ -44,9 +44,11 @@
                                     <div class="caption">
                                         <i class="icon-directions font-green hide"></i>
                                         <span class="caption-subject font-blue bold"> {{trans('home.announcement')}} </span>
-                                        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#open">
-                                            展开
-                                        </button>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                            <button type="button" class="btn btn-default btn-circle" data-toggle="collapse" data-target="#open">展开</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="portlet-body">
