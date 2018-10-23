@@ -123,6 +123,7 @@ CREATE TABLE `user` (
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT 'SS端口',
   `passwd` varchar(16) NOT NULL DEFAULT '' COMMENT 'SS密码',
+  `vmess_id` varchar(64) NOT NULL DEFAULT '' COMMENT 'V2ray用户ID',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '1073741824000' COMMENT '可用流量，单位字节，默认1TiB',
   `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
   `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',

@@ -29,3 +29,7 @@ ALTER TABLE `ss_node`
 -- 加入V2ray底层传输安全
 ALTER TABLE `ss_node`
 	ADD COLUMN `v2_tls` TINYINT(4) NOT NULL DEFAULT '0' COMMENT 'V2ray底层传输安全 0 未开启 1 开启' AFTER `v2_path`;
+
+-- 加入VmessId
+ALTER TABLE `user`
+	ADD COLUMN `vmess_id` varchar(64) NOT NULL DEFAULT '' COMMENT 'V2ray用户ID' AFTER `passwd`;
