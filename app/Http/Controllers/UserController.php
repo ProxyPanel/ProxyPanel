@@ -39,14 +39,17 @@ use Mail;
 use Log;
 use DB;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
     protected static $systemConfig;
 
-    function __construct() {
+    function __construct()
+    {
         self::$systemConfig = Helpers::systemConfig();
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $user = Session::get('user');
 
         $user = User::query()->where('id', $user['id'])->first();
@@ -203,7 +206,8 @@ class UserController extends Controller {
     }
 
     // 公告详情
-    public function article(Request $request) {
+    public function article(Request $request)
+    {
         $id = $request->get('id');
 
         $view['info'] = Article::query()->where('is_del', 0)->where('id', $id)->first();
@@ -219,7 +223,8 @@ class UserController extends Controller {
     }
 
     // 修改个人资料
-    public function profile(Request $request) {
+    public function profile(Request $request)
+    {
         $user = Session::get('user');
 
         if ($request->method() == 'POST') {
@@ -306,10 +311,10 @@ class UserController extends Controller {
                 }
 
                 $data = [
-                    'passwd' => $passwd,
-                    'method' => $method,
+                    'passwd'   => $passwd,
+                    'method'   => $method,
                     'protocol' => $protocol,
-                    'obfs' => $obfs
+                    'obfs'     => $obfs
                 ];
 
                 $ret = User::query()->where('id', $user['id'])->update($data);
@@ -343,7 +348,8 @@ class UserController extends Controller {
     }
 
     // 流量日志
-    public function trafficLog(Request $request) {
+    public function trafficLog(Request $request)
+    {
         $user = Session::get('user');
 
         $dailyData = [];
@@ -391,7 +397,8 @@ class UserController extends Controller {
     }
 
     // 商品列表
-    public function goodsList(Request $request) {
+    public function goodsList(Request $request)
+    {
         $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
         $view['website_logo'] = self::$systemConfig['website_logo'];
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
@@ -401,7 +408,8 @@ class UserController extends Controller {
     }
 
     // 工单
-    public function ticketList(Request $request) {
+    public function ticketList(Request $request)
+    {
         $user = Session::get('user');
 
         $view['website_logo'] = self::$systemConfig['website_logo'];
@@ -414,7 +422,8 @@ class UserController extends Controller {
     }
 
     // 订单
-    public function orderList(Request $request) {
+    public function orderList(Request $request)
+    {
         $user = Session::get('user');
 
         $view['orderList'] = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', $user['id'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
@@ -427,7 +436,8 @@ class UserController extends Controller {
     }
 
     // 订单明细
-    public function orderDetail(Request $request, $sn) {
+    public function orderDetail(Request $request, $sn)
+    {
         $view['website_logo'] = self::$systemConfig['website_logo'];
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
@@ -437,7 +447,8 @@ class UserController extends Controller {
     }
 
     // 添加工单
-    public function addTicket(Request $request) {
+    public function addTicket(Request $request)
+    {
         $title = $request->get('title');
         $content = clean($request->get('content'));
         $content = str_replace("eval", "", str_replace("atob", "", $content));
@@ -483,7 +494,8 @@ class UserController extends Controller {
     }
 
     // 回复工单
-    public function replyTicket(Request $request) {
+    public function replyTicket(Request $request)
+    {
         $id = intval($request->get('id'));
 
         $user = Session::get('user');
@@ -548,7 +560,8 @@ class UserController extends Controller {
     }
 
     // 关闭工单
-    public function closeTicket(Request $request) {
+    public function closeTicket(Request $request)
+    {
         $id = $request->get('id');
 
         $user = Session::get('user');
@@ -562,7 +575,8 @@ class UserController extends Controller {
     }
 
     // 邀请码
-    public function invite(Request $request) {
+    public function invite(Request $request)
+    {
         $user = Session::get('user');
 
         // 已生成的邀请码数量
@@ -580,7 +594,8 @@ class UserController extends Controller {
     }
 
     // 公开的邀请码列表
-    public function free(Request $request) {
+    public function free(Request $request)
+    {
         $view['website_logo'] = self::$systemConfig['website_logo'];
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
@@ -592,7 +607,8 @@ class UserController extends Controller {
     }
 
     // 生成邀请码
-    public function makeInvite(Request $request) {
+    public function makeInvite(Request $request)
+    {
         $user = Session::get('user');
 
         // 已生成的邀请码数量
@@ -613,7 +629,8 @@ class UserController extends Controller {
     }
 
     // 激活账号页
-    public function activeUser(Request $request) {
+    public function activeUser(Request $request)
+    {
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
 
@@ -684,7 +701,8 @@ class UserController extends Controller {
     }
 
     // 激活账号
-    public function active(Request $request, $token) {
+    public function active(Request $request, $token)
+    {
         if (empty($token)) {
             return Redirect::to('login');
         }
@@ -740,7 +758,8 @@ class UserController extends Controller {
     }
 
     // 重设密码页
-    public function resetPassword(Request $request) {
+    public function resetPassword(Request $request)
+    {
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
 
@@ -806,7 +825,8 @@ class UserController extends Controller {
     }
 
     // 重设密码
-    public function reset(Request $request, $token) {
+    public function reset(Request $request, $token)
+    {
         if ($request->method() == 'POST') {
             $password = trim($request->get('password'));
             $repassword = trim($request->get('repassword'));
@@ -885,7 +905,8 @@ class UserController extends Controller {
     }
 
     // 使用优惠券
-    public function redeemCoupon(Request $request) {
+    public function redeemCoupon(Request $request)
+    {
         $coupon_sn = $request->get('coupon_sn');
 
         if (empty($coupon_sn)) {
@@ -907,8 +928,8 @@ class UserController extends Controller {
         }
 
         $data = [
-            'type' => $coupon->type,
-            'amount' => $coupon->amount,
+            'type'     => $coupon->type,
+            'amount'   => $coupon->amount,
             'discount' => $coupon->discount
         ];
 
@@ -916,7 +937,8 @@ class UserController extends Controller {
     }
 
     // 购买服务
-    public function buy(Request $request, $id) {
+    public function buy(Request $request, $id)
+    {
         $goods_id = intval($id);
         $coupon_sn = $request->get('coupon_sn');
 
@@ -1124,7 +1146,8 @@ class UserController extends Controller {
     }
 
     // 积分兑换流量
-    public function exchange(Request $request) {
+    public function exchange(Request $request)
+    {
         $user = Session::get('user');
 
         // 积分满100才可以兑换
@@ -1164,7 +1187,8 @@ class UserController extends Controller {
     }
 
     // 推广返利
-    public function referral(Request $request) {
+    public function referral(Request $request)
+    {
         // 生成个人推广链接
         $user = Session::get('user');
 
@@ -1185,7 +1209,8 @@ class UserController extends Controller {
     }
 
     // 申请提现
-    public function extractMoney(Request $request) {
+    public function extractMoney(Request $request)
+    {
         $user = Session::get('user');
 
         // 判断账户是否过期
@@ -1227,7 +1252,8 @@ class UserController extends Controller {
     }
 
     // 帮助中心
-    public function help(Request $request) {
+    public function help(Request $request)
+    {
         $view['website_logo'] = self::$systemConfig['website_logo'];
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
@@ -1237,7 +1263,8 @@ class UserController extends Controller {
     }
 
     // 更换订阅地址
-    public function exchangeSubscribe(Request $request) {
+    public function exchangeSubscribe(Request $request)
+    {
         $user = Session::get('user');
 
         DB::beginTransaction();
@@ -1262,7 +1289,8 @@ class UserController extends Controller {
     }
 
     // 转换成管理员的身份
-    public function switchToAdmin(Request $request) {
+    public function switchToAdmin(Request $request)
+    {
         if (!Session::has('admin') || !Session::has('user')) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
         }
@@ -1281,7 +1309,8 @@ class UserController extends Controller {
     }
 
     // 卡券余额充值
-    public function charge(Request $request) {
+    public function charge(Request $request)
+    {
         $user = Session::get('user');
 
         $coupon_sn = trim($request->get('coupon_sn'));
@@ -1324,7 +1353,8 @@ class UserController extends Controller {
     }
 
     // 切换语言
-    public function switchLang(Request $request, $locale) {
+    public function switchLang(Request $request, $locale)
+    {
         Session::put("locale", $locale);
 
         return Redirect::back();

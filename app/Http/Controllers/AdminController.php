@@ -530,43 +530,41 @@ class AdminController extends Controller
                 $ssNode = new SsNode();
                 $ssNode->type = $request->get('type');
                 $ssNode->name = $request->get('name');
-                $ssNode->group_id = intval($request->get('group_id', 0));
-                $ssNode->country_code = $request->get('country_code', 'un');
-                $ssNode->server = $request->get('server', '');
+                $ssNode->group_id = $request->get('group_id') ? intval($request->get('group_id')) : 0;
+                $ssNode->country_code = $request->get('country_code') ? $request->get('country_code') : 'un';
+                $ssNode->server = $request->get('server') ? $request->get('server') : '';
                 $ssNode->ip = $request->get('ip');
                 $ssNode->ipv6 = $request->get('ipv6');
-                $ssNode->desc = $request->get('desc', '');
+                $ssNode->desc = $request->get('desc') ? $request->get('desc') : '';
                 $ssNode->method = $request->get('method');
                 $ssNode->protocol = $request->get('protocol');
-                $ssNode->protocol_param = $request->get('protocol_param');
-                $ssNode->obfs = $request->get('obfs', '');
-                $ssNode->obfs_param = $request->get('obfs_param', '');
-                $ssNode->traffic_rate = $request->get('traffic_rate', 1);
-                $ssNode->bandwidth = $request->get('bandwidth', 100);
-                $ssNode->traffic = $request->get('traffic', 1000);
-                $ssNode->monitor_url = $request->get('monitor_url', '');
-                $ssNode->is_subscribe = intval($request->get('is_subscribe', 1));
-                $ssNode->ssh_port = intval($request->get('ssh_port', 22));
-                $ssNode->is_tcp_check = intval($request->get('is_tcp_check', 1));
-                $ssNode->compatible = intval($request->get('compatible', 0));
-                $ssNode->single = intval($request->get('single', 0));
+                $ssNode->protocol_param = $request->get('protocol_param') ? $request->get('protocol_param') : '';
+                $ssNode->obfs = $request->get('obfs') ? $request->get('obfs') : '';
+                $ssNode->obfs_param = $request->get('obfs_param') ? $request->get('obfs_param') : '';
+                $ssNode->traffic_rate = $request->get('traffic_rate') ? $request->get('traffic_rate') : 1;
+                $ssNode->bandwidth = $request->get('bandwidth');
+                $ssNode->traffic = $request->get('traffic');
+                $ssNode->monitor_url = $request->get('monitor_url') ? $request->get('monitor_url') : '';
+                $ssNode->is_subscribe = intval($request->get('is_subscribe'));
+                $ssNode->ssh_port = $request->get('ssh_port') ? intval($request->get('ssh_port')) : 22;
+                $ssNode->is_tcp_check = intval($request->get('is_tcp_check'));
+                $ssNode->compatible = intval($request->get('compatible'));
+                $ssNode->single = intval($request->get('single'));
                 $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
                 $ssNode->single_port = $request->get('single') ? $request->get('single_port') : '';
                 $ssNode->single_passwd = $request->get('single') ? $request->get('single_passwd') : '';
                 $ssNode->single_method = $request->get('single') ? $request->get('single_method') : '';
                 $ssNode->single_protocol = $request->get('single') ? $request->get('single_protocol') : '';
                 $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
-                $ssNode->sort = intval($request->get('sort', 0));
-                $ssNode->status = intval($request->get('status', 1));
-
-                $ssNode->v2_alter_id = intval($request->get('v2_alter_id', 16));
-                $ssNode->v2_port = $request->get('v2_port', 32000);
-                $ssNode->v2_net = $request->get('v2_net', 'tcp');
-                $ssNode->v2_type = $request->get('v2_type', 'none');
-                $ssNode->v2_host = $request->get('v2_host', '');
-                $ssNode->v2_path = $request->get('v2_path', '');
-                $ssNode->v2_tls = intval($request->get('v2_tls', 0));
-
+                $ssNode->sort = $request->get('sort') ? intval($request->get('sort')) : 0;
+                $ssNode->status = $request->get('status') ? intval($request->get('status')) : 1;
+                $ssNode->v2_alter_id = $request->get('v2_alter_id') ? intval($request->get('v2_alter_id')) : 16;
+                $ssNode->v2_port = $request->get('v2_port') ? intval($request->get('v2_port')) : 32000;
+                $ssNode->v2_net = $request->get('v2_net') ? $request->get('v2_net') : 'tcp';
+                $ssNode->v2_type = $request->get('v2_type') ? $request->get('v2_type') : 'none';
+                $ssNode->v2_host = $request->get('v2_host') ? $request->get('v2_host') : '';
+                $ssNode->v2_path = $request->get('v2_path') ? $request->get('v2_path') : '';
+                $ssNode->v2_tls = $request->get('v2_tls') ? intval($request->get('v2_tls')) : 0;
                 $ssNode->save();
 
                 // 建立分组关联
@@ -646,12 +644,12 @@ class AdminController extends Controller
             try {
                 $data = [
                     'name'            => $request->get('name'),
-                    'group_id'        => intval($request->get('group_id', 0)),
-                    'country_code'    => $request->get('country_code', 'un'),
-                    'server'          => $request->get('server', ''),
+                    'group_id'        => $request->get('group_id') ? $request->get('group_id') : 0,
+                    'country_code'    => $request->get('country_code'),
+                    'server'          => $request->get('server'),
                     'ip'              => $request->get('ip'),
-                    'ipv6'            => $request->get('ipv6', ''),
-                    'desc'            => $request->get('desc', ''),
+                    'ipv6'            => $request->get('ipv6'),
+                    'desc'            => $request->get('desc'),
                     'method'          => $request->get('method'),
                     'protocol'        => $request->get('protocol'),
                     'protocol_param'  => $request->get('protocol_param'),
@@ -661,28 +659,27 @@ class AdminController extends Controller
                     'bandwidth'       => $request->get('bandwidth'),
                     'traffic'         => $request->get('traffic'),
                     'monitor_url'     => $request->get('monitor_url'),
-                    'is_subscribe'    => intval($request->get('is_subscribe', 1)),
-                    'ssh_port'        => intval($request->get('ssh_port', 22)),
-                    'is_tcp_check'    => intval($request->get('is_tcp_check', 1)),
-                    'compatible'      => intval($request->get('compatible', 1)),
-                    'single'          => intval($request->get('single', 0)),
+                    'is_subscribe'    => intval($request->get('is_subscribe')),
+                    'ssh_port'        => intval($request->get('ssh_port')),
+                    'is_tcp_check'    => intval($request->get('is_tcp_check')),
+                    'compatible'      => intval($request->get('compatible')),
+                    'single'          => intval($request->get('single')),
                     'single_force'    => $request->get('single') ? $request->get('single_force') : 0,
                     'single_port'     => $request->get('single') ? $request->get('single_port') : '',
                     'single_passwd'   => $request->get('single') ? $request->get('single_passwd') : '',
                     'single_method'   => $request->get('single') ? $request->get('single_method') : '',
                     'single_protocol' => $request->get('single') ? $request->get('single_protocol') : '',
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
-                    'sort'            => intval($request->get('sort', 0)),
+                    'sort'            => intval($request->get('sort')),
                     'status'          => intval($request->get('status')),
-                    'type'            => intval($request->get('type', 1)),
-
-                    'v2_alter_id'     => intval($request->get('v2_alter_id', 16)),
-                    'v2_port'         => $request->get('v2_port', 32000),
-                    'v2_net'          => $request->get('v2_net', 'tcp'),
-                    'v2_type'         => $request->get('v2_type', 'none'),
-                    'v2_host'         => $request->get('v2_host', ''),
-                    'v2_path'         => $request->get('v2_path', ''),
-                    'v2_tls'          => intval($request->get('v2_tls', 0))
+                    'type'            => intval($request->get('type')),
+                    'v2_alter_id'     => intval($request->get('v2_alter_id')),
+                    'v2_port'         => $request->get('v2_port'),
+                    'v2_net'          => $request->get('v2_net'),
+                    'v2_type'         => $request->get('v2_type'),
+                    'v2_host'         => $request->get('v2_host'),
+                    'v2_path'         => $request->get('v2_path'),
+                    'v2_tls'          => intval($request->get('v2_tls'))
                 ];
 
                 SsNode::query()->where('id', $id)->update($data);

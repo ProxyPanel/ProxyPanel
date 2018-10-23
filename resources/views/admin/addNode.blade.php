@@ -286,11 +286,11 @@
                                                                     <option value="0" selected>兼容模式</option>
                                                                     <option value="1">严格模式</option>
                                                                 </select>
-                                                                <span class="help-block"> 严格模式：用户的端口无法连接，只能通过以下指定的端口号进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+                                                                <span class="help-block"> 严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group hidden single-setting">
-                                                            <label for="single_port" class="col-md-3 control-label">[单] 端口号</label>
+                                                            <label for="single_port" class="col-md-3 control-label">[单] 端口</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="single_port" value="" id="single_port" placeholder="443">
                                                                 <span class="help-block"> 推荐80或443，后端需要配置 </span>
@@ -350,9 +350,9 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="v2_port" class="col-md-3 control-label">端口号</label>
+                                                            <label for="v2_port" class="col-md-3 control-label">端口</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" name="v2_port" id="v2_port" placeholder="23000">
+                                                                <input type="text" class="form-control" name="v2_port" value="23000" id="v2_port" placeholder="23000">
                                                             </div>
                                                         </div>
                                                         <div class="form-group">

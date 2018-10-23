@@ -28,7 +28,7 @@ CREATE TABLE `ss_node` (
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '服务类型：1-SS、2-V2ray',
   `name` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '名称',
   `group_id` INT(11) NOT NULL DEFAULT '0' COMMENT '所属分组',
-  `country_code` CHAR(5) NULL DEFAULT '' COMMENT '国家代码',
+  `country_code` CHAR(5) NOT NULL DEFAULT 'un' COMMENT '国家代码',
   `server` VARCHAR(128) NULL DEFAULT '' COMMENT '服务器域名地址',
   `ip` CHAR(15) NULL DEFAULT '' COMMENT '服务器IPV4地址',
   `ipv6` CHAR(128) NULL DEFAULT '' COMMENT '服务器IPV6地址',
