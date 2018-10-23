@@ -303,6 +303,7 @@ class AutoJob extends Command
                             $user->password = md5(makeRandStr());
                             $user->port = $port;
                             $user->passwd = makeRandStr();
+                            $user->vmess_id = createGuid();
                             $user->enable = 1;
                             $user->method = Helpers::getDefaultMethod();
                             $user->protocol = Helpers::getDefaultProtocol();

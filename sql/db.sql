@@ -25,6 +25,7 @@
 -- ----------------------------
 CREATE TABLE `ss_node` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '服务类型：1-SS、2-V2ray',
   `name` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '名称',
   `group_id` INT(11) NOT NULL DEFAULT '0' COMMENT '所属分组',
   `country_code` CHAR(5) NULL DEFAULT '' COMMENT '国家代码',
@@ -57,6 +58,13 @@ CREATE TABLE `ss_node` (
   `single_obfs` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '混淆',
   `sort` INT(11) NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
   `status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
+  `v2_alter_id` INT(11) NOT NULL DEFAULT '16' COMMENT 'V2ray额外ID',
+  `v2_port` INT(11) NOT NULL DEFAULT '0' COMMENT 'V2ray端口',
+  `v2_net` VARCHAR(16) NOT NULL DEFAULT 'tcp' COMMENT 'V2ray传输协议',
+  `v2_type` VARCHAR(32) NOT NULL DEFAULT 'none' COMMENT 'V2ray伪装类型',
+  `v2_host` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray伪装的域名',
+  `v2_path` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray WS/H2路径',
+  `v2_tls` TINYINT(4) NOT NULL DEFAULT '0' COMMENT 'V2ray底层传输安全 0 未开启 1 开启',
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),

@@ -281,6 +281,18 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <hr>
+                                            <div class="form-group">
+                                                <label for="vmess_id" class="col-md-3 control-label">VMess用户ID</label>
+                                                <div class="col-md-8">
+                                                    <div class="input-group">
+                                                        <input class="form-control" type="text" name="vmess_id" value="{{$vmess_id}}" id="vmess_id" />
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-success" type="button" onclick="makeVmessId()"> <i class="fa fa-refresh"></i> </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- END SAMPLE FORM PORTLET-->
@@ -352,6 +364,7 @@
             var obfs_param = $('#obfs_param').val();
             var speed_limit_per_con = $('#speed_limit_per_con').val();
             var speed_limit_per_user = $('#speed_limit_per_user').val();
+            var vmess_id = $('#vmess_id').val();
 
             // 用途
             var usage = '';
@@ -366,7 +379,7 @@
                 type: "POST",
                 url: "{{url('admin/addUser')}}",
                 async: false,
-                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, labels:labels, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, remark:remark, level:level, port:port, passwd:passwd, method:method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user},
+                data: {_token:_token, username: username, password:password, usage:usage, pay_way:pay_way, labels:labels, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, remark:remark, level:level, port:port, passwd:passwd, method:method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user, vmess_id:vmess_id},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
@@ -384,6 +397,13 @@
         function makePort() {
             $.get("{{url('admin/makePort')}}",  function(ret) {
                 $("#port").val(ret);
+            });
+        }
+
+        // 生成随机VmessId
+        function makeVmessId() {
+            $.get("{{url('admin/makeVmessId')}}",  function(ret) {
+                $("#vmess_id").val(ret);
             });
         }
 

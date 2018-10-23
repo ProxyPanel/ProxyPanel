@@ -208,6 +208,7 @@ class AdminController extends Controller
             $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr()); // 密码为空时则生成随机密码
             $user->port = $request->get('port');
             $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
+            $user->vmess_id = trim($request->get('vmess_id', createGuid()));
             $user->transfer_enable = toGB($request->get('transfer_enable', 0));
             $user->enable = $request->get('enable', 0);
             $user->method = $request->get('method');
@@ -252,6 +253,7 @@ class AdminController extends Controller
         } else {
             // 生成一个可用端口
             $view['last_port'] = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
+            $view['vmess_id'] = createGuid();
             $view['is_rand_port'] = self::$systemConfig['is_rand_port'];
             $view['method_list'] = Helpers::methodList();
             $view['protocol_list'] = Helpers::protocolList();
@@ -277,6 +279,7 @@ class AdminController extends Controller
                 $user->password = md5(makeRandStr());
                 $user->port = $port;
                 $user->passwd = makeRandStr();
+                $user->vmess_id = createGuid();
                 $user->enable = 1;
                 $user->method = Helpers::getDefaultMethod();
                 $user->protocol = Helpers::getDefaultProtocol();
@@ -323,6 +326,7 @@ class AdminController extends Controller
             $password = $request->get('password');
             $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
+            $vmess_id = $request->get('vmess_id', createGuid());
             $transfer_enable = $request->get('transfer_enable');
             $enable = intval($request->get('enable'));
             $method = $request->get('method');
@@ -364,6 +368,7 @@ class AdminController extends Controller
                     'username'             => $username,
                     'port'                 => $port,
                     'passwd'               => $passwd,
+                    'vmess_id'             => $vmess_id,
                     'transfer_enable'      => toGB($transfer_enable),
                     'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
                     'method'               => $method,
@@ -523,6 +528,7 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $ssNode = new SsNode();
+                $ssNode->type = $request->get('type');
                 $ssNode->name = $request->get('name');
                 $ssNode->group_id = intval($request->get('group_id', 0));
                 $ssNode->country_code = $request->get('country_code', 'un');
@@ -552,6 +558,15 @@ class AdminController extends Controller
                 $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
                 $ssNode->sort = intval($request->get('sort', 0));
                 $ssNode->status = intval($request->get('status', 1));
+
+                $ssNode->v2_alter_id = intval($request->get('v2_alter_id', 16));
+                $ssNode->v2_port = $request->get('v2_port', 32000);
+                $ssNode->v2_net = $request->get('v2_net', 'tcp');
+                $ssNode->v2_type = $request->get('v2_type', 'none');
+                $ssNode->v2_host = $request->get('v2_host', '');
+                $ssNode->v2_path = $request->get('v2_path', '');
+                $ssNode->v2_tls = intval($request->get('v2_tls', 0));
+
                 $ssNode->save();
 
                 // 建立分组关联
@@ -623,6 +638,10 @@ class AdminController extends Controller
                 }
             }
 
+            if ($request->get('v2_alter_id') <= 0 || $request->get('v2_alter_id') >= 65535) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：AlterId不合法']);
+            }
+
             DB::beginTransaction();
             try {
                 $data = [
@@ -655,6 +674,15 @@ class AdminController extends Controller
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
                     'sort'            => intval($request->get('sort', 0)),
                     'status'          => intval($request->get('status')),
+                    'type'            => intval($request->get('type', 1)),
+
+                    'v2_alter_id'     => intval($request->get('v2_alter_id', 16)),
+                    'v2_port'         => $request->get('v2_port', 32000),
+                    'v2_net'          => $request->get('v2_net', 'tcp'),
+                    'v2_type'         => $request->get('v2_type', 'none'),
+                    'v2_host'         => $request->get('v2_host', ''),
+                    'v2_path'         => $request->get('v2_path', ''),
+                    'v2_tls'          => intval($request->get('v2_tls', 0))
                 ];
 
                 SsNode::query()->where('id', $id)->update($data);
@@ -1215,6 +1243,7 @@ class AdminController extends Controller
                     $obj->password = md5('123456');
                     $obj->port = $user->port;
                     $obj->passwd = $user->passwd;
+                    $obj->vmess_id = $user->vmess_id;
                     $obj->transfer_enable = $user->transfer_enable;
                     $obj->u = 0;
                     $obj->d = 0;
@@ -1487,6 +1516,12 @@ EOF;
     public function makePasswd(Request $request)
     {
         exit(makeRandStr());
+    }
+
+    // 生成VmessId
+    public function makeVmessId(Request $request)
+    {
+        exit(createGuid());
     }
 
     // 加密方式、混淆、协议、等级、国家地区
