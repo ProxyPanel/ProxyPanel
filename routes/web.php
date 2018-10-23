@@ -80,6 +80,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
     Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 生成密码
+    Route::get('admin/makeVmessId', 'AdminController@makeVmessId'); // 生成VmessId
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
     Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
     Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品

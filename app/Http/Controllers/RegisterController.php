@@ -163,6 +163,7 @@ class RegisterController extends Controller
             $user->password = md5($password);
             $user->port = $port;
             $user->passwd = makeRandStr();
+            $user->vmess_id = createGuid();
             $user->transfer_enable = $transfer_enable;
             $user->method = Helpers::getDefaultMethod();
             $user->protocol = Helpers::getDefaultProtocol();

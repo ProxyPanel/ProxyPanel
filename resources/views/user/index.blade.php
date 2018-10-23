@@ -193,7 +193,7 @@
                                                                     <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > <i class="fa fa-reorder"></i> </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> @if($node->type == 1)<i class="fa fa-paper-plane"></i>@else<i class="fa">V2</i>@endif </a>
                                                                 </li>
                                                                 <li>
                                                                     <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
@@ -352,6 +352,7 @@
         </div>
 
         @foreach ($nodeList as $node)
+            <!-- 配置文本 -->
             <div class="modal fade draggable-modal" id="txt_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -365,6 +366,7 @@
                     </div>
                 </div>
             </div>
+            <!-- 配置链接 -->
             <div class="modal fade draggable-modal" id="link_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -373,19 +375,28 @@
                             <h4 class="modal-title">{{$node->name}}</h4>
                         </div>
                         <div class="modal-body">
-                            <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
-                            <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
-                            @if($node->ss_scheme)
-                            <p></p>
-                            <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
-                            <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                            @if($node->type == 1)
+                                <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
+                                <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
+                                @if($node->ss_scheme)
+                                    <p></p>
+                                    <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
+                                    <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                                @endif
+                            @else
+                                @if($node->v2_scheme)
+                                    <p></p>
+                                    <textarea class="form-control" rows="3" readonly="readonly">{{$node->v2_scheme}}</textarea>
+                                    <a href="{{$node->v2_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开V2ray</a>
+                                @endif
                             @endif
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- 配置二维码 -->
             <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog @if(!$node->compatible) modal-sm @endif">
+                <div class="modal-dialog @if($node->type == 2 || !$node->compatible) modal-sm @endif">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -393,16 +404,22 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                @if ($node->compatible)
-                                    <div class="col-md-6">
-                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
-                                    </div>
+                                @if ($node->type == 1)
+                                    @if ($node->compatible)
+                                        <div class="col-md-6">
+                                            <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
+                                        </div>
+                                    @else
+                                        <div class="col-md-12">
+                                            <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="col-md-12">
-                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                        <div id="qrcode_v2_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                 @endif
                             </div>
@@ -445,7 +462,7 @@
                 window.location.href = '/buy/' + online_pay;
                 return false;
             }
-            
+
             if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
                 $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
@@ -518,8 +535,14 @@
 
         // 循环输出节点scheme用于生成二维码
         @foreach ($nodeList as $node)
-            $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
-            $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+            @if($node->type == 1)
+                $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
+                @if($node->ss_scheme)
+                    $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+                @endif
+            @else
+                $('#qrcode_v2_img_{{$node->id}}').qrcode("{{$node->v2_scheme}}");
+            @endif
         @endforeach
 
         // 节点订阅
