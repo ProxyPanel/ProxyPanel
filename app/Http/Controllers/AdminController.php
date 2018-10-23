@@ -674,7 +674,7 @@ class AdminController extends Controller
                     'status'          => intval($request->get('status')),
                     'type'            => intval($request->get('type')),
                     'v2_alter_id'     => intval($request->get('v2_alter_id')),
-                    'v2_port'         => $request->get('v2_port'),
+                    'v2_port'         => $request->get('v2_port') ? $request->get('v2_port') : 32000,
                     'v2_net'          => $request->get('v2_net'),
                     'v2_type'         => $request->get('v2_type'),
                     'v2_host'         => $request->get('v2_host'),
