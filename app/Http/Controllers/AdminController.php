@@ -203,35 +203,39 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
             }
 
+            if (!$request->get('usage')) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
+            }
+
             $user = new User();
             $user->username = trim($request->get('username'));
-            $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr()); // 密码为空时则生成随机密码
+            $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr());
             $user->port = $request->get('port');
-            $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
+            $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd');
             $user->vmess_id = trim($request->get('vmess_id', createGuid()));
             $user->transfer_enable = toGB($request->get('transfer_enable', 0));
-            $user->enable = $request->get('enable', 0);
+            $user->enable = intval($request->get('enable', 0));
             $user->method = $request->get('method');
-            $user->protocol = $request->get('protocol', '');
-            $user->protocol_param = $request->get('protocol_param', '');
-            $user->obfs = $request->get('obfs', '');
-            $user->obfs_param = $request->get('obfs_param', '');
-            $user->gender = $request->get('gender', 1);
-            $user->wechat = $request->get('wechat', '');
-            $user->qq = $request->get('qq', '');
-            $user->usage = $request->get('usage', 1);
-            $user->pay_way = $request->get('pay_way', 1);
+            $user->protocol = $request->get('protocol');
+            $user->protocol_param = $request->get('protocol_param') ? $request->get('protocol_param') : '';
+            $user->obfs = $request->get('obfs');
+            $user->obfs_param = $request->get('obfs_param') ? $request->get('obfs_param') : '';
+            $user->gender = $request->get('gender');
+            $user->wechat = $request->get('wechat') ? $request->get('wechat') : '';
+            $user->qq = $request->get('qq') ? $request->get('qq') : '';
+            $user->usage = $request->get('usage');
+            $user->pay_way = $request->get('pay_way');
             $user->balance = 0;
             $user->score = 0;
             $user->enable_time = empty($request->get('enable_time')) ? date('Y-m-d') : $request->get('enable_time');
             $user->expire_time = empty($request->get('expire_time')) ? date('Y-m-d', strtotime("+365 days")) : $request->get('expire_time');
-            $user->remark = clean($request->get('remark', ''));
-            $user->level = $request->get('level', 1);
+            $user->remark = str_replace("eval", "", str_replace("atob", "", $request->get('remark')));
+            $user->level = $request->get('level') ? $request->get('level') : 1;
             $user->is_admin = 0;
             $user->reg_ip = getClientIp();
             $user->referral_uid = 0;
             $user->traffic_reset_day = 0;
-            $user->status = 1;
+            $user->status = $request->get('status') ? $request->get('status') : 1;
             $user->save();
 
             if ($user->id) {
@@ -260,6 +264,7 @@ class AdminController extends Controller
             $view['obfs_list'] = Helpers::obfsList();
             $view['level_list'] = Helpers::levelList();
             $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
+            $view['package_list'] = Package::query()->get();
 
             return Response::view('admin.addUser', $view);
         }
@@ -283,11 +288,14 @@ class AdminController extends Controller
                 $user->enable = 1;
                 $user->method = Helpers::getDefaultMethod();
                 $user->protocol = Helpers::getDefaultProtocol();
+                $user->protocol_param = '';
                 $user->obfs = Helpers::getDefaultObfs();
+                $user->obfs_param = '';
                 $user->usage = 1;
                 $user->transfer_enable = toGB(1000);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
+                $user->remark = '';
                 $user->reg_ip = getClientIp();
                 $user->referral_uid = 0;
                 $user->traffic_reset_day = 0;
@@ -326,14 +334,14 @@ class AdminController extends Controller
             $password = $request->get('password');
             $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
-            $vmess_id = $request->get('vmess_id', createGuid());
+            $vmess_id = $request->get('vmess_id') ? $request->get('vmess_id') : createGuid();
             $transfer_enable = $request->get('transfer_enable');
             $enable = intval($request->get('enable'));
             $method = $request->get('method');
             $protocol = $request->get('protocol');
-            $protocol_param = $request->get('protocol_param', '');
+            $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
-            $obfs_param = $request->get('obfs_param', '');
+            $obfs_param = $request->get('obfs_param');
             $speed_limit_per_con = $request->get('speed_limit_per_con');
             $speed_limit_per_user = $request->get('speed_limit_per_user');
             $gender = $request->get('gender');
@@ -345,8 +353,7 @@ class AdminController extends Controller
             $labels = $request->get('labels');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
-            $remark = clean($request->get('remark'));
-            $remark = str_replace("eval", "", str_replace("atob", "", $remark));
+            $remark = str_replace("eval", "", str_replace("atob", "", $request->get('remark')));
             $level = $request->get('level');
             $is_admin = $request->get('is_admin');
 
@@ -362,6 +369,10 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
             }
 
+            if (!$request->get('usage')) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
+            }
+
             DB::beginTransaction();
             try {
                 $data = [
@@ -370,7 +381,7 @@ class AdminController extends Controller
                     'passwd'               => $passwd,
                     'vmess_id'             => $vmess_id,
                     'transfer_enable'      => toGB($transfer_enable),
-                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
+                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用代理
                     'method'               => $method,
                     'protocol'             => $protocol,
                     'protocol_param'       => $protocol_param,
@@ -643,6 +654,7 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $data = [
+                    'type'            => intval($request->get('type')),
                     'name'            => $request->get('name'),
                     'group_id'        => $request->get('group_id') ? $request->get('group_id') : 0,
                     'country_code'    => $request->get('country_code'),
@@ -672,7 +684,6 @@ class AdminController extends Controller
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
                     'sort'            => intval($request->get('sort')),
                     'status'          => intval($request->get('status')),
-                    'type'            => intval($request->get('type')),
                     'v2_alter_id'     => intval($request->get('v2_alter_id')),
                     'v2_port'         => $request->get('v2_port') ? $request->get('v2_port') : 32000,
                     'v2_net'          => $request->get('v2_net'),
@@ -710,7 +721,7 @@ class AdminController extends Controller
                     }
                 }
 
-                // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS）
+                // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
 
 
                 DB::commit();
@@ -1501,7 +1512,7 @@ EOF;
         return Response::view('admin.userMonitor', $view);
     }
 
-    // 生成SS端口
+    // 生成端口
     public function makePort(Request $request)
     {
         $new_port = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
@@ -1509,7 +1520,7 @@ EOF;
         exit;
     }
 
-    // 生成SS密码
+    // 生成随机密码
     public function makePasswd(Request $request)
     {
         exit(makeRandStr());

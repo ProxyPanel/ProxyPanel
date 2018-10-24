@@ -18,7 +18,6 @@
                         <div class="form-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <!-- BEGIN SAMPLE FORM PORTLET-->
                                     <div class="portlet light bordered">
                                         <div class="portlet-title"  style="width:100%">
                                             <div class="caption" style="width:100%">
@@ -228,10 +227,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- END SAMPLE FORM PORTLET-->
                                 </div>
                                 <div class="col-md-6">
-                                    <!-- BEGIN SAMPLE FORM PORTLET-->
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
@@ -501,7 +498,38 @@
                 type: "POST",
                 url: "{{url('admin/editUser')}}",
                 async: false,
-                data: {_token:_token, id:id, username: username, password:password, usage:usage, pay_way:pay_way, balance:balance, score:score, status:status, labels:labels, enable_time:enable_time, expire_time:expire_time, gender:gender, wechat:wechat, qq:qq, is_admin:is_admin, remark:remark, level:level, port:port, passwd:passwd, method:method, transfer_enable:transfer_enable, enable:enable, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, speed_limit_per_con:speed_limit_per_con, speed_limit_per_user:speed_limit_per_user, vmess_id: vmess_id},
+                data: {
+                    _token:_token,
+                    id:id,
+                    username: username,
+                    password:password,
+                    usage:usage,
+                    pay_way:pay_way,
+                    balance:balance,
+                    score:score,
+                    status:status,
+                    labels:labels,
+                    enable_time:enable_time,
+                    expire_time:expire_time,
+                    gender:gender,
+                    wechat:wechat,
+                    qq:qq,
+                    is_admin:is_admin,
+                    remark:remark,
+                    level:level,
+                    port:port,
+                    passwd:passwd,
+                    method:method,
+                    transfer_enable:transfer_enable,
+                    enable:enable,
+                    protocol:protocol,
+                    protocol_param:protocol_param,
+                    obfs:obfs,
+                    obfs_param:obfs_param,
+                    speed_limit_per_con:speed_limit_per_con,
+                    speed_limit_per_user:speed_limit_per_user,
+                    vmess_id: vmess_id
+                },
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'success') {
@@ -535,7 +563,7 @@
 
         // 生成随机密码
         function makePasswd() {
-            $.get("{{url('admin/makeVmessId')}}",  function(ret) {
+            $.get("{{url('admin/makePasswd')}}",  function(ret) {
                 $("#passwd").val(ret);
             });
         }

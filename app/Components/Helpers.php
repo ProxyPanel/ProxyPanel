@@ -84,7 +84,7 @@ class Helpers
         return $port;
     }
 
-    // SS/SSR加密方式
+    // 加密方式
     public static function methodList()
     {
         return SsConfig::query()->where('type', 1)->get();
