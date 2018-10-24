@@ -264,7 +264,6 @@ class AdminController extends Controller
             $view['obfs_list'] = Helpers::obfsList();
             $view['level_list'] = Helpers::levelList();
             $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
-            $view['package_list'] = Package::query()->get();
 
             return Response::view('admin.addUser', $view);
         }
