@@ -159,19 +159,19 @@ class UserController extends Controller
                 $node->ss_scheme = $node->compatible ? $ss_scheme : ''; // 节点兼容原版才显示
             } else {
                 // 生成v2ray scheme
-                $v2_json = array(
-                    "v" => "2",
-                    "ps" => $node->name,
-                    "add" => $node->server ? $node->server : $node->ip,
+                $v2_json = [
+                    "v"    => "2",
+                    "ps"   => $node->name,
+                    "add"  => $node->server ? $node->server : $node->ip,
                     "port" => $node->v2_port,
-                    "id" => $user->vmess_id,
-                    "aid" => $node->v2_alter_id,
-                    "net" => $node->v2_net,
+                    "id"   => $user->vmess_id,
+                    "aid"  => $node->v2_alter_id,
+                    "net"  => $node->v2_net,
                     "type" => $node->v2_type,
                     "host" => $node->v2_host,
                     "path" => $node->v2_path,
-                    "tls" => $node->v2_tls == 1 ? "tls" : ""
-                );
+                    "tls"  => $node->v2_tls == 1 ? "tls" : ""
+                ];
                 $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json));
 
                 // 生成文本配置信息
@@ -226,8 +226,8 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         if ($request->method() == 'POST') {
-            $old_password = $request->get('old_password');
-            $new_password = $request->get('new_password');
+            $old_password = trim($request->get('old_password'));
+            $new_password = trim($request->get('new_password'));
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
             $passwd = trim($request->get('passwd'));
@@ -237,14 +237,11 @@ class UserController extends Controller
 
             // 修改密码
             if ($old_password && $new_password) {
-                $old_password = Hash::make(trim($old_password));
-                $new_password = Hash::make(trim($new_password));
-
-                if (!Hash::check(Auth::user()->password, $old_password)) {
+                if (!Hash::check($old_password, Auth::user()->password)) {
                     Session::flash('errorMsg', '旧密码错误，请重新输入');
 
                     return Redirect::to('profile#tab_1');
-                } elseif (Hash::check(Auth::user()->password, $new_password)) {
+                } elseif (Hash::check($new_password, Auth::user()->password)) {
                     Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
                     return Redirect::to('profile#tab_1');
@@ -257,7 +254,7 @@ class UserController extends Controller
                     return Redirect::to('profile#tab_1');
                 }
 
-                $ret = User::query()->where('id', Auth::user()->id)->update(['password' => $new_password]);
+                $ret = User::query()->where('id', Auth::user()->id)->update(['password' => Hash::make($new_password)]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 

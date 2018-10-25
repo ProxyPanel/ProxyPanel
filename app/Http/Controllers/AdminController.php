@@ -1409,22 +1409,20 @@ EOF;
     public function profile(Request $request)
     {
         if ($request->method() == 'POST') {
-            $old_password = $request->get('old_password');
-            $new_password = $request->get('new_password');
-            $old_password = Hash::make(trim($old_password));
-            $new_password = Hash::make(trim($new_password));
+            $old_password = trim($request->get('old_password'));
+            $new_password = trim($request->get('new_password'));
 
-            if (!Hash::check(Auth::user()->password, $old_password)) {
+            if (!Hash::check($old_password, Auth::user()->password)) {
                 Session::flash('errorMsg', '旧密码错误，请重新输入');
 
                 return Redirect::back();
-            } elseif (Hash::check(Auth::user()->password, $new_password)) {
+            } elseif (Hash::check($new_password, Auth::user()->password)) {
                 Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
                 return Redirect::back();
             }
 
-            $ret = User::query()->where('id', Auth::user()->id)->update(['password' => $new_password]);
+            $ret = User::query()->where('id', Auth::user()->id)->update(['password' => Hash::make($new_password)]);
             if (!$ret) {
                 Session::flash('errorMsg', '修改失败');
 
