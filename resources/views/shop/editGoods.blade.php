@@ -171,11 +171,15 @@
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
-                                                <input type="radio" name="is_hot" value="1" {{$goods->is_hot ? 'checked' : ''}}> 是
+                                                <input type="radio" name="is_hot" value="2" @if($goods->is_hot == 2) checked @endif> 限购
                                                 <span></span>
                                             </label>
                                             <label class="mt-radio">
-                                                <input type="radio" name="is_hot" value="0" {{!$goods->is_hot ? 'checked' : ''}}> 否
+                                                <input type="radio" name="is_hot" value="1" @if($goods->is_hot == 1) checked @endif> 是
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_hot" value="0" @if($goods->is_hot == 0) checked @endif> 否
                                                 <span></span>
                                             </label>
                                         </div>
