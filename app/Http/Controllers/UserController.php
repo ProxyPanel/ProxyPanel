@@ -958,6 +958,14 @@ class UserController extends Controller
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不可重复购买']);
                 }
             }
+      
+      	    //单个商品限购
+            if ($goods->is_hot == 2) {
+                $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
+                if ($noneExpireOrderExist) {
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：此商品每人限购1次']);
+                }
+            }
 
             // 使用优惠券
             if (!empty($coupon_sn)) {
