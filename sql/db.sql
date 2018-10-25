@@ -25,9 +25,10 @@
 -- ----------------------------
 CREATE TABLE `ss_node` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '服务类型：1-SS、2-V2ray',
   `name` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '名称',
   `group_id` INT(11) NOT NULL DEFAULT '0' COMMENT '所属分组',
-  `country_code` CHAR(5) NULL DEFAULT '' COMMENT '国家代码',
+  `country_code` CHAR(5) NOT NULL DEFAULT 'un' COMMENT '国家代码',
   `server` VARCHAR(128) NULL DEFAULT '' COMMENT '服务器域名地址',
   `ip` CHAR(15) NULL DEFAULT '' COMMENT '服务器IPV4地址',
   `ipv6` CHAR(128) NULL DEFAULT '' COMMENT '服务器IPV6地址',
@@ -57,6 +58,13 @@ CREATE TABLE `ss_node` (
   `single_obfs` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '混淆',
   `sort` INT(11) NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
   `status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
+  `v2_alter_id` INT(11) NOT NULL DEFAULT '16' COMMENT 'V2ray额外ID',
+  `v2_port` INT(11) NOT NULL DEFAULT '0' COMMENT 'V2ray端口',
+  `v2_net` VARCHAR(16) NOT NULL DEFAULT 'tcp' COMMENT 'V2ray传输协议',
+  `v2_type` VARCHAR(32) NOT NULL DEFAULT 'none' COMMENT 'V2ray伪装类型',
+  `v2_host` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray伪装的域名',
+  `v2_path` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray WS/H2路径',
+  `v2_tls` TINYINT(4) NOT NULL DEFAULT '0' COMMENT 'V2ray底层传输安全 0 未开启 1 开启',
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
@@ -115,6 +123,7 @@ CREATE TABLE `user` (
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT 'SS端口',
   `passwd` varchar(16) NOT NULL DEFAULT '' COMMENT 'SS密码',
+  `vmess_id` varchar(64) NOT NULL DEFAULT '' COMMENT 'V2ray用户ID',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '1073741824000' COMMENT '可用流量，单位字节，默认1TiB',
   `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
   `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
@@ -412,8 +421,8 @@ INSERT INTO `label` VALUES ('6', '免费体验', '0');
 -- ----------------------------
 CREATE TABLE `verify` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` TINYINT NOT NULL DEFAULT '1' COMMENT '激活类型：1-自行激活、2-管理员激活',
   `user_id` int(11) NOT NULL COMMENT '用户ID',
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '校验token',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -1096,7 +1105,7 @@ CREATE TABLE `user_login_log` (
 	`created_at` DATETIME NOT NULL,
 	`updated_at` DATETIME NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB COLLATE='utf8mb4_general_ci' COMMENT='用户登录日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

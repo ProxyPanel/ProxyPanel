@@ -9,6 +9,7 @@
 /vendor
 /.idea
 /.vagrant
+/.vscode
 Homestead.json
 Homestead.yaml
 npm-debug.log

@@ -30,7 +30,11 @@ class AutoCheckNodeStatus extends Command
 
         // 监测节点状态
         if (self::$systemConfig['is_tcp_check']) {
-            $this->checkNodes();
+            if (!Cache::has('tcp_check_time')) {
+                $this->checkNodes();
+            } elseif (Cache::get('tcp_check_time') <= time()) {
+                $this->checkNodes();
+            }
         }
 
         $jobEndTime = microtime(true);
@@ -71,7 +75,7 @@ class AutoCheckNodeStatus extends Command
                         if (Cache::has($cacheKey)) {
                             $times = Cache::get($cacheKey);
                         } else {
-                            Cache::put($cacheKey, 1, 725); // 因为每小时检测一次，最多设置提醒12次，12*60=720分钟缓存时效，多5分钟防止异常
+                            Cache::put($cacheKey, 1, 725); // 最多设置提醒12次，12*60=720分钟缓存时效，多5分钟防止异常
                             $times = 1;
                         }
 
@@ -98,10 +102,11 @@ class AutoCheckNodeStatus extends Command
             if ($tcpCheck !== 1 && !$nodeTTL) {
                 $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**心跳异常**", $node->name, $node->server);
             }
-
-            // 天若有情天亦老，我为长者续一秒
-            sleep(1);
         }
+
+        // 随机生成下次检测时间
+        $nextCheckTime = time() + mt_rand(1800, 3600);
+        Cache::put('tcp_check_time', $nextCheckTime, 60);
     }
 
     /**

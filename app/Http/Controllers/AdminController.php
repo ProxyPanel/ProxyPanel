@@ -203,34 +203,39 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
             }
 
+            if (!$request->get('usage')) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
+            }
+
             $user = new User();
             $user->username = trim($request->get('username'));
-            $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr()); // 密码为空时则生成随机密码
+            $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr());
             $user->port = $request->get('port');
-            $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd'); // SS密码为空时生成默认密码
+            $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd');
+            $user->vmess_id = trim($request->get('vmess_id', createGuid()));
             $user->transfer_enable = toGB($request->get('transfer_enable', 0));
-            $user->enable = $request->get('enable', 0);
+            $user->enable = intval($request->get('enable', 0));
             $user->method = $request->get('method');
-            $user->protocol = $request->get('protocol', '');
-            $user->protocol_param = $request->get('protocol_param', '');
-            $user->obfs = $request->get('obfs', '');
-            $user->obfs_param = $request->get('obfs_param', '');
-            $user->gender = $request->get('gender', 1);
-            $user->wechat = $request->get('wechat', '');
-            $user->qq = $request->get('qq', '');
-            $user->usage = $request->get('usage', 1);
-            $user->pay_way = $request->get('pay_way', 1);
+            $user->protocol = $request->get('protocol');
+            $user->protocol_param = $request->get('protocol_param') ? $request->get('protocol_param') : '';
+            $user->obfs = $request->get('obfs');
+            $user->obfs_param = $request->get('obfs_param') ? $request->get('obfs_param') : '';
+            $user->gender = $request->get('gender');
+            $user->wechat = $request->get('wechat') ? $request->get('wechat') : '';
+            $user->qq = $request->get('qq') ? $request->get('qq') : '';
+            $user->usage = $request->get('usage');
+            $user->pay_way = $request->get('pay_way');
             $user->balance = 0;
             $user->score = 0;
             $user->enable_time = empty($request->get('enable_time')) ? date('Y-m-d') : $request->get('enable_time');
             $user->expire_time = empty($request->get('expire_time')) ? date('Y-m-d', strtotime("+365 days")) : $request->get('expire_time');
-            $user->remark = clean($request->get('remark', ''));
-            $user->level = $request->get('level', 1);
+            $user->remark = str_replace("eval", "", str_replace("atob", "", $request->get('remark')));
+            $user->level = $request->get('level') ? $request->get('level') : 1;
             $user->is_admin = 0;
             $user->reg_ip = getClientIp();
             $user->referral_uid = 0;
             $user->traffic_reset_day = 0;
-            $user->status = 1;
+            $user->status = $request->get('status') ? $request->get('status') : 1;
             $user->save();
 
             if ($user->id) {
@@ -252,6 +257,7 @@ class AdminController extends Controller
         } else {
             // 生成一个可用端口
             $view['last_port'] = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
+            $view['vmess_id'] = createGuid();
             $view['is_rand_port'] = self::$systemConfig['is_rand_port'];
             $view['method_list'] = Helpers::methodList();
             $view['protocol_list'] = Helpers::protocolList();
@@ -277,14 +283,18 @@ class AdminController extends Controller
                 $user->password = md5(makeRandStr());
                 $user->port = $port;
                 $user->passwd = makeRandStr();
+                $user->vmess_id = createGuid();
                 $user->enable = 1;
                 $user->method = Helpers::getDefaultMethod();
                 $user->protocol = Helpers::getDefaultProtocol();
+                $user->protocol_param = '';
                 $user->obfs = Helpers::getDefaultObfs();
+                $user->obfs_param = '';
                 $user->usage = 1;
                 $user->transfer_enable = toGB(1000);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
+                $user->remark = '';
                 $user->reg_ip = getClientIp();
                 $user->referral_uid = 0;
                 $user->traffic_reset_day = 0;
@@ -323,13 +333,14 @@ class AdminController extends Controller
             $password = $request->get('password');
             $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
+            $vmess_id = $request->get('vmess_id') ? $request->get('vmess_id') : createGuid();
             $transfer_enable = $request->get('transfer_enable');
             $enable = intval($request->get('enable'));
             $method = $request->get('method');
             $protocol = $request->get('protocol');
-            $protocol_param = $request->get('protocol_param', '');
+            $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
-            $obfs_param = $request->get('obfs_param', '');
+            $obfs_param = $request->get('obfs_param');
             $speed_limit_per_con = $request->get('speed_limit_per_con');
             $speed_limit_per_user = $request->get('speed_limit_per_user');
             $gender = $request->get('gender');
@@ -341,8 +352,7 @@ class AdminController extends Controller
             $labels = $request->get('labels');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
-            $remark = clean($request->get('remark'));
-            $remark = str_replace("eval", "", str_replace("atob", "", $remark));
+            $remark = str_replace("eval", "", str_replace("atob", "", $request->get('remark')));
             $level = $request->get('level');
             $is_admin = $request->get('is_admin');
 
@@ -358,14 +368,19 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
             }
 
+            if (!$request->get('usage')) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
+            }
+
             DB::beginTransaction();
             try {
                 $data = [
                     'username'             => $username,
                     'port'                 => $port,
                     'passwd'               => $passwd,
+                    'vmess_id'             => $vmess_id,
                     'transfer_enable'      => toGB($transfer_enable),
-                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
+                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用代理
                     'method'               => $method,
                     'protocol'             => $protocol,
                     'protocol_param'       => $protocol_param,
@@ -523,35 +538,43 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $ssNode = new SsNode();
+                $ssNode->type = $request->get('type');
                 $ssNode->name = $request->get('name');
-                $ssNode->group_id = intval($request->get('group_id', 0));
-                $ssNode->country_code = $request->get('country_code', 'un');
-                $ssNode->server = $request->get('server', '');
+                $ssNode->group_id = $request->get('group_id') ? intval($request->get('group_id')) : 0;
+                $ssNode->country_code = $request->get('country_code') ? $request->get('country_code') : 'un';
+                $ssNode->server = $request->get('server') ? $request->get('server') : '';
                 $ssNode->ip = $request->get('ip');
                 $ssNode->ipv6 = $request->get('ipv6');
-                $ssNode->desc = $request->get('desc', '');
+                $ssNode->desc = $request->get('desc') ? $request->get('desc') : '';
                 $ssNode->method = $request->get('method');
                 $ssNode->protocol = $request->get('protocol');
-                $ssNode->protocol_param = $request->get('protocol_param');
-                $ssNode->obfs = $request->get('obfs', '');
-                $ssNode->obfs_param = $request->get('obfs_param', '');
-                $ssNode->traffic_rate = $request->get('traffic_rate', 1);
-                $ssNode->bandwidth = $request->get('bandwidth', 100);
-                $ssNode->traffic = $request->get('traffic', 1000);
-                $ssNode->monitor_url = $request->get('monitor_url', '');
-                $ssNode->is_subscribe = intval($request->get('is_subscribe', 1));
-                $ssNode->ssh_port = intval($request->get('ssh_port', 22));
-                $ssNode->is_tcp_check = intval($request->get('is_tcp_check', 1));
-                $ssNode->compatible = intval($request->get('compatible', 0));
-                $ssNode->single = intval($request->get('single', 0));
+                $ssNode->protocol_param = $request->get('protocol_param') ? $request->get('protocol_param') : '';
+                $ssNode->obfs = $request->get('obfs') ? $request->get('obfs') : '';
+                $ssNode->obfs_param = $request->get('obfs_param') ? $request->get('obfs_param') : '';
+                $ssNode->traffic_rate = $request->get('traffic_rate') ? $request->get('traffic_rate') : 1;
+                $ssNode->bandwidth = $request->get('bandwidth');
+                $ssNode->traffic = $request->get('traffic');
+                $ssNode->monitor_url = $request->get('monitor_url') ? $request->get('monitor_url') : '';
+                $ssNode->is_subscribe = intval($request->get('is_subscribe'));
+                $ssNode->ssh_port = $request->get('ssh_port') ? intval($request->get('ssh_port')) : 22;
+                $ssNode->is_tcp_check = intval($request->get('is_tcp_check'));
+                $ssNode->compatible = intval($request->get('compatible'));
+                $ssNode->single = intval($request->get('single'));
                 $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
                 $ssNode->single_port = $request->get('single') ? $request->get('single_port') : '';
                 $ssNode->single_passwd = $request->get('single') ? $request->get('single_passwd') : '';
                 $ssNode->single_method = $request->get('single') ? $request->get('single_method') : '';
                 $ssNode->single_protocol = $request->get('single') ? $request->get('single_protocol') : '';
                 $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
-                $ssNode->sort = intval($request->get('sort', 0));
-                $ssNode->status = intval($request->get('status', 1));
+                $ssNode->sort = $request->get('sort') ? intval($request->get('sort')) : 0;
+                $ssNode->status = $request->get('status') ? intval($request->get('status')) : 1;
+                $ssNode->v2_alter_id = $request->get('v2_alter_id') ? intval($request->get('v2_alter_id')) : 16;
+                $ssNode->v2_port = $request->get('v2_port') ? intval($request->get('v2_port')) : 32000;
+                $ssNode->v2_net = $request->get('v2_net') ? $request->get('v2_net') : 'tcp';
+                $ssNode->v2_type = $request->get('v2_type') ? $request->get('v2_type') : 'none';
+                $ssNode->v2_host = $request->get('v2_host') ? $request->get('v2_host') : '';
+                $ssNode->v2_path = $request->get('v2_path') ? $request->get('v2_path') : '';
+                $ssNode->v2_tls = $request->get('v2_tls') ? intval($request->get('v2_tls')) : 0;
                 $ssNode->save();
 
                 // 建立分组关联
@@ -623,16 +646,21 @@ class AdminController extends Controller
                 }
             }
 
+            if ($request->get('v2_alter_id') <= 0 || $request->get('v2_alter_id') >= 65535) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：AlterId不合法']);
+            }
+
             DB::beginTransaction();
             try {
                 $data = [
+                    'type'            => intval($request->get('type')),
                     'name'            => $request->get('name'),
-                    'group_id'        => intval($request->get('group_id', 0)),
-                    'country_code'    => $request->get('country_code', 'un'),
-                    'server'          => $request->get('server', ''),
+                    'group_id'        => $request->get('group_id') ? $request->get('group_id') : 0,
+                    'country_code'    => $request->get('country_code'),
+                    'server'          => $request->get('server'),
                     'ip'              => $request->get('ip'),
-                    'ipv6'            => $request->get('ipv6', ''),
-                    'desc'            => $request->get('desc', ''),
+                    'ipv6'            => $request->get('ipv6'),
+                    'desc'            => $request->get('desc'),
                     'method'          => $request->get('method'),
                     'protocol'        => $request->get('protocol'),
                     'protocol_param'  => $request->get('protocol_param'),
@@ -642,19 +670,26 @@ class AdminController extends Controller
                     'bandwidth'       => $request->get('bandwidth'),
                     'traffic'         => $request->get('traffic'),
                     'monitor_url'     => $request->get('monitor_url'),
-                    'is_subscribe'    => intval($request->get('is_subscribe', 1)),
-                    'ssh_port'        => intval($request->get('ssh_port', 22)),
-                    'is_tcp_check'    => intval($request->get('is_tcp_check', 1)),
-                    'compatible'      => intval($request->get('compatible', 1)),
-                    'single'          => intval($request->get('single', 0)),
+                    'is_subscribe'    => intval($request->get('is_subscribe')),
+                    'ssh_port'        => intval($request->get('ssh_port')),
+                    'is_tcp_check'    => intval($request->get('is_tcp_check')),
+                    'compatible'      => intval($request->get('compatible')),
+                    'single'          => intval($request->get('single')),
                     'single_force'    => $request->get('single') ? $request->get('single_force') : 0,
                     'single_port'     => $request->get('single') ? $request->get('single_port') : '',
                     'single_passwd'   => $request->get('single') ? $request->get('single_passwd') : '',
                     'single_method'   => $request->get('single') ? $request->get('single_method') : '',
                     'single_protocol' => $request->get('single') ? $request->get('single_protocol') : '',
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
-                    'sort'            => intval($request->get('sort', 0)),
+                    'sort'            => intval($request->get('sort')),
                     'status'          => intval($request->get('status')),
+                    'v2_alter_id'     => intval($request->get('v2_alter_id')),
+                    'v2_port'         => $request->get('v2_port') ? $request->get('v2_port') : 32000,
+                    'v2_net'          => $request->get('v2_net'),
+                    'v2_type'         => $request->get('v2_type'),
+                    'v2_host'         => $request->get('v2_host'),
+                    'v2_path'         => $request->get('v2_path'),
+                    'v2_tls'          => intval($request->get('v2_tls'))
                 ];
 
                 SsNode::query()->where('id', $id)->update($data);
@@ -685,7 +720,7 @@ class AdminController extends Controller
                     }
                 }
 
-                // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS）
+                // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
 
 
                 DB::commit();
@@ -1215,6 +1250,7 @@ class AdminController extends Controller
                     $obj->password = md5('123456');
                     $obj->port = $user->port;
                     $obj->passwd = $user->passwd;
+                    $obj->vmess_id = $user->vmess_id;
                     $obj->transfer_enable = $user->transfer_enable;
                     $obj->u = 0;
                     $obj->d = 0;
@@ -1475,7 +1511,7 @@ EOF;
         return Response::view('admin.userMonitor', $view);
     }
 
-    // 生成SS端口
+    // 生成端口
     public function makePort(Request $request)
     {
         $new_port = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
@@ -1483,10 +1519,16 @@ EOF;
         exit;
     }
 
-    // 生成SS密码
+    // 生成随机密码
     public function makePasswd(Request $request)
     {
         exit(makeRandStr());
+    }
+
+    // 生成VmessId
+    public function makeVmessId(Request $request)
+    {
+        exit(createGuid());
     }
 
     // 加密方式、混淆、协议、等级、国家地区

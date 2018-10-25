@@ -80,6 +80,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
     Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
     Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 生成密码
+    Route::get('admin/makeVmessId', 'AdminController@makeVmessId'); // 生成VmessId
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
     Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
     Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
@@ -144,16 +145,16 @@ Route::group(['namespace' => 'Muv2', 'prefix' => 'mu/v2', 'middleware' => ['Muv2
 });
 
 // 自动提号机
-Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'middleware' => ['forbidden']], function () {
-    Route::get('/', 'IndexController@index');
-    Route::get('buy/{id}', 'IndexController@buy');
-    Route::post('createPayment', 'IndexController@createPayment'); // 创建支付单
-    Route::get('payment/{sn}', 'IndexController@payment'); // 支付单详情
-    Route::post('redeemCoupon', 'IndexController@redeemCoupon'); // 检查优惠券
-    Route::get('order', 'IndexController@order');
-    Route::post('searchOrder', 'IndexController@searchOrder');
-    Route::get('getPaymentStatus', 'IndexController@getPaymentStatus');
-    Route::get('send', 'IndexController@send');
-    Route::post('sendEmail', 'IndexController@sendEmail'); // 邮件重发
-    Route::any('info', 'IndexController@info'); // 余量查询
+Route::group(['prefix' => 'seller', 'middleware' => ['forbidden']], function () {
+    Route::get('/', 'SellerController@index');
+    Route::get('buy/{id}', 'SellerController@buy');
+    Route::post('createPayment', 'SellerController@createPayment'); // 创建支付单
+    Route::get('payment/{sn}', 'SellerController@payment'); // 支付单详情
+    Route::post('redeemCoupon', 'SellerController@redeemCoupon'); // 检查优惠券
+    Route::get('order', 'SellerController@order');
+    Route::post('searchOrder', 'SellerController@searchOrder');
+    Route::get('getPaymentStatus', 'SellerController@getPaymentStatus');
+    Route::get('send', 'SellerController@send');
+    Route::post('sendEmail', 'SellerController@sendEmail'); // 邮件重发
+    Route::any('info', 'SellerController@info'); // 余量查询
 });
