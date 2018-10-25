@@ -32,7 +32,7 @@
                         <!-- END SIDEBAR USERPIC -->
                         <!-- SIDEBAR USER TITLE -->
                         <div class="profile-usertitle">
-                            <div class="profile-usertitle-name"> {{Session::get('user')['username']}} </div>
+                            <div class="profile-usertitle-name"> {{Auth::user()->username}} </div>
                             <div class="profile-usertitle-job"> 管理员 </div>
                         </div>
                         <!-- END SIDEBAR USER TITLE -->

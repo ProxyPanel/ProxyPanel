@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Log;
 use DB;
 use Mail;
+use Hash;
 
 /**
  * 有赞云支付消息推送接收
@@ -136,7 +137,7 @@ class YzyController extends Controller
 
                 $user = new User();
                 $user->username = '自动生成-' . $payment->order->email;
-                $user->password = md5(makeRandStr());
+                $user->password = Hash::make(makeRandStr());
                 $user->port = $port;
                 $user->passwd = makeRandStr();
                 $user->vmess_id = createGuid();

@@ -13,6 +13,7 @@ use Captcha;
 use Session;
 use Cache;
 use Log;
+use Auth;
 
 /**
  * 登录控制器
@@ -36,6 +37,7 @@ class LoginController extends Controller
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
             $captcha = trim($request->get('captcha'));
+            $remember = trim($request->get('remember'));
 
             if (empty($username) || empty($password)) {
                 Session::flash('errorMsg', '请输入用户名和密码');
@@ -52,69 +54,53 @@ class LoginController extends Controller
                 }
             }
 
-            $user = User::query()->where('username', $username)->where('password', md5($password))->first();
-            if (!$user) {
+            if (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
                 Session::flash('errorMsg', '用户名或密码错误');
 
                 return Redirect::back()->withInput();
-            } elseif (!$user->is_admin && $user->status < 0) {
+            } elseif (!Auth::user()->is_admin && Auth::user()->status < 0) {
                 Session::flash('errorMsg', '账号已禁用');
 
                 return Redirect::back();
-            } elseif ($user->status == 0 && self::$systemConfig['is_active_register'] && $user->is_admin == 0) {
-                Session::flash('errorMsg', '账号未激活，请点击<a href="/activeUser?username=' . $user->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
+            } elseif (Auth::user()->status == 0 && self::$systemConfig['is_active_register'] && Auth::user()->is_admin == 0) {
+                Session::flash('errorMsg', '账号未激活，请点击<a href="/activeUser?username=' . Auth::user()->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
 
                 return Redirect::back()->withInput();
-            }
-
-            // 更新登录信息
-            $remember_token = "";
-            if ($request->get('remember')) {
-                $remember_token = makeRandStr(20);
-
-                User::query()->where('id', $user->id)->update(['last_login' => time(), 'remember_token' => $remember_token]);
-            } else {
-                User::query()->where('id', $user->id)->update(['last_login' => time(), 'remember_token' => '']);
             }
 
             // 登录送积分
             if (self::$systemConfig['login_add_score']) {
                 if (!Cache::has('loginAddScore_' . md5($username))) {
                     $score = mt_rand(self::$systemConfig['min_rand_score'], self::$systemConfig['max_rand_score']);
-                    $ret = User::query()->where('id', $user->id)->increment('score', $score);
+                    $ret = User::query()->where('id', Auth::user()->id)->increment('score', $score);
                     if ($ret) {
-                        $this->addUserScoreLog($user->id, $user->score, $user->score + $score, $score, '登录送积分');
+                        $this->addUserScoreLog(Auth::user()->id, Auth::user()->score, Auth::user()->score + $score, $score, '登录送积分');
 
                         // 登录多久后再登录可以获取积分
                         $ttl = self::$systemConfig['login_add_score_range'] ? self::$systemConfig['login_add_score_range'] : 1440;
                         Cache::put('loginAddScore_' . md5($username), '1', $ttl);
 
-                        Session::flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量包');
+                        Session::flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量');
                     }
                 }
             }
 
             // 写入登录日志
-            $this->addUserLoginLog($user->id, getClientIp());
+            $this->addUserLoginLog(Auth::user()->id, getClientIp());
 
-            // 重新取出用户信息
-            $userInfo = User::query()->where('id', $user->id)->first();
-
-            Session::put('user', $userInfo->toArray());
+            // 更新登录信息
+            User::query()->where('id', Auth::user()->id)->update(['last_login' => time()]);
 
             // 根据权限跳转
-            if ($user->is_admin) {
-                return Redirect::to('admin')->cookie('remember', $remember_token, 36000);
+            if (Auth::user()->is_admin) {
+                return Redirect::to('admin');
             }
 
-            return Redirect::to('/')->cookie('remember', $remember_token, 36000);
+            return Redirect::to('/');
         } else {
-            if ($request->cookie("remember")) {
-                $u = User::query()->where('status', '>=', 0)->where("remember_token", $request->cookie("remember"))->first();
-                if ($u) {
-                    Session::put('user', $u->toArray());
-
-                    if ($u->is_admin) {
+            if (Auth::viaRemember()) {
+                if (Auth::check()) {
+                    if (Auth::user()->is_admin) {
                         return Redirect::to('admin');
                     }
 
@@ -135,9 +121,9 @@ class LoginController extends Controller
     // 退出
     public function logout(Request $request)
     {
-        Session::flush();
+        Auth::logout();
 
-        return Redirect::to('login')->cookie('remember', "", 36000);
+        return Redirect::to('login');
     }
 
     // 添加用户登录日志

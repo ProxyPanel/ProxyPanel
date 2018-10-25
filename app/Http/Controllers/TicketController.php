@@ -10,8 +10,8 @@ use App\Mail\closeTicket;
 use App\Mail\replyTicket;
 use Illuminate\Http\Request;
 use Response;
-use Session;
 use Mail;
+use Auth;
 
 /**
  * 工单控制器
@@ -40,7 +40,6 @@ class TicketController extends Controller
     public function replyTicket(Request $request)
     {
         $id = $request->get('id');
-        $user = Session::get('user');
 
         if ($request->method() == 'POST') {
             $content = clean($request->get('content'));
@@ -49,7 +48,7 @@ class TicketController extends Controller
 
             $obj = new TicketReply();
             $obj->ticket_id = $id;
-            $obj->user_id = $user['id'];
+            $obj->user_id = Auth::user()->id;
             $obj->content = $content;
             $obj->created_at = date('Y-m-d H:i:s');
             $obj->save();
@@ -65,7 +64,7 @@ class TicketController extends Controller
                 $content = "标题：" . $ticket->title . "<br>管理员回复：" . $content;
 
                 // 发通知邮件
-                if (!$user['is_admin']) {
+                if (!Auth::user()->is_admin) {
                     if (self::$systemConfig['crash_warning_email']) {
                         try {
                             Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
@@ -84,7 +83,7 @@ class TicketController extends Controller
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
-                if (!$user['is_admin'] && self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
+                if (!Auth::user()->is_admin && self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
                     $serverChan = new ServerChan();
                     $serverChan->send($title, $content);
                 }

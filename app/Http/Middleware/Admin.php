@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Redirect;
+use Auth;
 
 class Admin
 {
@@ -17,8 +18,8 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (!$request->session()->get('user')['is_admin']) {
-            return Redirect::to('login');
+        if (!Auth::user()->is_admin) {
+            return Redirect::to('/');
         }
 
         return $next($request);

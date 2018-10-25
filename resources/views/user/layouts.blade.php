@@ -63,11 +63,11 @@
                     <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
                     <li class="dropdown dropdown-user dropdown-dark">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <span class="username username-hide-on-mobile"> {{Session::get('user')['username']}} </span>
+                            <span class="username username-hide-on-mobile"> {{Auth::user()->username}} </span>
                             <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
                             <img alt="" class="img-circle" src="/assets/images/avatar.png" /> </a>
                         <ul class="dropdown-menu dropdown-menu-default">
-                            @if(Session::get('user')['is_admin'])
+                            @if(Auth::user()->is_admin)
                                 <li>
                                     <a href="{{url('admin')}}"> <i class="icon-settings"></i>{{trans('home.console')}}</a>
                                 </li>
@@ -174,7 +174,7 @@
     @if(Session::get("admin"))
         <div class="portlet light bordered" style="position:fixed;right:20px;bottom:0px;width:270px;">
             <div class="portlet-body text-right">
-                <h5>当前身份：{{Session::get("user")['username']}}</h5>
+                <h5>当前身份：{{Auth::user()->username}}</h5>
                 <button class="btn btn-sm btn-danger" id="return_to_admin"> 返回管理页面 </button>
             </div>
         </div>

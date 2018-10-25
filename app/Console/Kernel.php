@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\UserTrafficAbnormalAutoWarning::class,
         \App\Console\Commands\UserExpireAutoWarning::class,
         \App\Console\Commands\UserTrafficAutoWarning::class,
+        \App\Console\Commands\upgradeUserPassword::class,
     ];
 
     /**
