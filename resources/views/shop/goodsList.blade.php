@@ -71,7 +71,9 @@
                                             <!-- <td> {{$goods->score}} </td> -->
                                             <td> {{$goods->sort}} </td>
                                             <td>
-                                                @if($goods->is_hot)
+                                                @if($goods->is_hot == 2)
+                                                    <span class="label label-info">限购</span>
+                                                @elseif($goods->is_hot == 1)
                                                     <span class="label label-danger">是</span>
                                                 @else
                                                     <span class="label label-default">否</span>
