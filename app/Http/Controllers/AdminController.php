@@ -1414,11 +1414,11 @@ EOF;
             $old_password = Hash::make(trim($old_password));
             $new_password = Hash::make(trim($new_password));
 
-            if (Auth::user()->password != $old_password) {
+            if (!Hash::check(Auth::user()->password, $old_password)) {
                 Session::flash('errorMsg', '旧密码错误，请重新输入');
 
                 return Redirect::back();
-            } elseif (Auth::user()->password == $new_password) {
+            } elseif (Hash::check(Auth::user()->password, $new_password)) {
                 Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
                 return Redirect::back();
