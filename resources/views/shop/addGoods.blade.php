@@ -167,6 +167,10 @@
                                     <div class="col-md-6">
                                         <div class="mt-radio-inline">
                                             <label class="mt-radio">
+                                                <input type="radio" name="is_hot" value="2" > 限购
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
                                                 <input type="radio" name="is_hot" value="1"> 是
                                                 <span></span>
                                             </label>
