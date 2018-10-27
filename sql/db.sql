@@ -1108,6 +1108,20 @@ CREATE TABLE `user_login_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
 
 
+-- ----------------------------
+-- Table structure for `ss_node_ip`
+-- ----------------------------
+CREATE TABLE `ss_node_ip` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `port` int(11) NOT NULL DEFAULT '0' COMMENT '端口',
+  `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：tcp、udp',
+  `ip` text COLLATE utf8mb4_unicode_ci COMMENT '连接IP：每个IP用,号隔开',
+  `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '上报时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
