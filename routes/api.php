@@ -8,5 +8,5 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('login', 'LoginController@login');
 
     // PING检测
-    Route::get('ping', 'PingController@ping')->middleware('admin');
+    Route::get('ping', 'PingController@ping');
 });

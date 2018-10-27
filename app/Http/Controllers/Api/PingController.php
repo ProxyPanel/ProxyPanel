@@ -10,6 +10,7 @@ class PingController extends Controller
 {
     public function ping(Request $request)
     {
+        $token = $request->input('token');
         $host = $request->input('host');
         $port = $request->input('port', 22);
         $transport = $request->input('transport', 'tcp');
@@ -19,7 +20,9 @@ class PingController extends Controller
             echo "<pre>";
             echo "使用方法：";
             echo "<br>";
-            echo "GET /api/ping?host=www.baidu.com&port=80&transport=tcp&timeout=0.5";
+            echo "GET /api/ping?token=toke_value&host=www.baidu.com&port=80&transport=tcp&timeout=0.5";
+            echo "<br>";
+            echo "token：.env下加入API_TOKEN，其值就是token的值";
             echo "<br>";
             echo "host：检测地址，必传，可以是域名、IPv4、IPv6";
             echo "<br>";
@@ -32,6 +35,11 @@ class PingController extends Controller
             echo "成功返回：1，失败返回：0";
             echo "</pre>";
             exit();
+        }
+
+        // 验证TOKEN，防止滥用
+        if (env('API_TOKEN') != $token) {
+            return response()->json(['status' => 0, 'message' => 'token invalid']);
         }
 
         // 如果不是IPv4
@@ -51,17 +59,19 @@ class PingController extends Controller
             if (!$fp) {
                 Log::info("$errstr ($errno)");
                 $ret = 0;
+                $message = 'port close';
             } else {
                 $ret = 1;
+                $message = 'port open';
             }
 
             fclose($fp);
 
-            return response()->json(['status' => $ret]);
+            return response()->json(['status' => $ret, 'message' => $message]);
         } catch (\Exception $e) {
             Log::info($e);
 
-            return response()->json(['status' => 0]);
+            return response()->json(['status' => 0, 'message' => 'port close']);
         }
     }
 }
