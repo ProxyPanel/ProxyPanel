@@ -20,7 +20,7 @@ class upgradeUserVmess extends Command
         $userList = User::query()->get();
         foreach ($userList as $user) {
             if (!isset($user->vmess_id)) {
-                \Log::error("USER表确实vmess_id字段，请先维护数据库字典");
+                \Log::error("USER表缺失vmess_id字段，请先维护数据库字典");
                 break;
             }
 

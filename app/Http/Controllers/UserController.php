@@ -832,7 +832,7 @@ class UserController extends Controller
                 Session::flash('errorMsg', '账号已被禁用');
 
                 return Redirect::back();
-            } elseif (Hash::make($password) == $verify->user->password) {
+            } elseif (Hash::check($password, $verify->user->password)) {
                 Session::flash('errorMsg', '新旧密码一样，请重新输入');
 
                 return Redirect::back();
