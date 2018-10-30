@@ -1952,6 +1952,11 @@ EOF;
             }
         }
 
+        // 如果更改了有赞云任何一个配置，则删除有赞云的授权缓存，防止出现client_id错误
+        if (in_array($name, ['youzan_client_id', 'youzan_client_secret', 'kdt_id'])) {
+            \Cache::forget('YZY_TOKEN');
+        }
+
         // 更新配置
         Config::query()->where('name', $name)->update(['value' => $value]);
 
