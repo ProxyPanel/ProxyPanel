@@ -5,8 +5,8 @@ Route::group(['namespace' => 'Api'], function () {
     Route::resource('yzy', 'YzyController');
 
     // 定制客户端
-    Route::get('login', 'LoginController@login');
+    Route::any('login', 'LoginController@login');
 
     // PING检测
-    Route::get('ping', 'PingController@ping')->middleware('admin');
+    Route::get('ping', 'PingController@ping');
 });

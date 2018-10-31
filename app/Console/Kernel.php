@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\UserTrafficAbnormalAutoWarning::class,
         \App\Console\Commands\UserExpireAutoWarning::class,
         \App\Console\Commands\UserTrafficAutoWarning::class,
+        \App\Console\Commands\upgradeUserPassword::class,
+        \App\Console\Commands\upgradeUserVmess::class,
     ];
 
     /**
@@ -40,7 +42,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoClearLog')->everyThirtyMinutes();
         $schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
         $schedule->command('autoResetUserTraffic')->daily();
-        $schedule->command('autoCheckNodeStatus')->hourly();
+        $schedule->command('autoCheckNodeStatus')->everyMinute();
         $schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
         $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
         $schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');

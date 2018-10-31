@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Cookie;
 use Closure;
-use Redirect;
 
 class Affiliate
 {

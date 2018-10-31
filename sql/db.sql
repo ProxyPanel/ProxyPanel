@@ -166,7 +166,7 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
 INSERT INTO `user` (`id`, `username`, `password`, `port`, `passwd`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `protocol_param`, `obfs`, `obfs_param`, `speed_limit_per_con`, `speed_limit_per_user`, `wechat`, `qq`, `usage`, `pay_way`, `balance`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `created_at`, `updated_at`)
-VALUES (1,'admin','e10adc3949ba59abbe56e057f20f883e',10000,'@123',1073741824000,0,0,0,1,'aes-192-ctr','auth_chain_a','','tls1.2_ticket_auth','',204800,204800,'','',1,3,0.00,NULL,'2099-01-01',NULL,1,'127.0.0.1',NULL,NULL);
+VALUES (1,'admin','$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq',10000,'@123',1073741824000,0,0,0,1,'aes-192-ctr','auth_chain_a','','tls1.2_ticket_auth','',204800,204800,'','',1,3,0.00,NULL,'2099-01-01',NULL,1,'127.0.0.1',NULL,NULL);
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1106,6 +1106,20 @@ CREATE TABLE `user_login_log` (
 	`updated_at` DATETIME NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
+
+
+-- ----------------------------
+-- Table structure for `ss_node_ip`
+-- ----------------------------
+CREATE TABLE `ss_node_ip` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `port` int(11) NOT NULL DEFAULT '0' COMMENT '端口',
+  `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：tcp、udp',
+  `ip` text COLLATE utf8mb4_unicode_ci COMMENT '连接IP：每个IP用,号隔开',
+  `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '上报时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

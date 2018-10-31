@@ -38,6 +38,8 @@ use Response;
 use Session;
 use Log;
 use DB;
+use Auth;
+use Hash;
 
 class AdminController extends Controller
 {
@@ -209,7 +211,7 @@ class AdminController extends Controller
 
             $user = new User();
             $user->username = trim($request->get('username'));
-            $user->password = trim($request->get('password')) ? md5(trim($request->get('password'))) : md5(makeRandStr());
+            $user->password = trim($request->get('password')) ? Hash::make(trim($request->get('password'))) : Hash::make(makeRandStr());
             $user->port = $request->get('port');
             $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd');
             $user->vmess_id = trim($request->get('vmess_id', createGuid()));
@@ -280,7 +282,7 @@ class AdminController extends Controller
 
                 $user = new User();
                 $user->username = '批量生成-' . makeRandStr();
-                $user->password = md5(makeRandStr());
+                $user->password = Hash::make(makeRandStr());
                 $user->port = $port;
                 $user->passwd = makeRandStr();
                 $user->vmess_id = createGuid();
@@ -290,7 +292,7 @@ class AdminController extends Controller
                 $user->protocol_param = '';
                 $user->obfs = Helpers::getDefaultObfs();
                 $user->obfs_param = '';
-                $user->usage = 1;
+                $user->usage = 4;
                 $user->transfer_enable = toGB(1000);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
@@ -403,7 +405,7 @@ class AdminController extends Controller
 
                 if (!empty($password)) {
                     if (!(env('APP_DEMO') && $id == 1)) { // 演示环境禁止修改管理员密码
-                        $data['password'] = md5($password);
+                        $data['password'] = Hash::make($password);
                     }
                 }
 
@@ -1247,7 +1249,7 @@ class AdminController extends Controller
                 foreach ($data as $user) {
                     $obj = new User();
                     $obj->username = $user->user;
-                    $obj->password = md5('123456');
+                    $obj->password = Hash::make('123456');
                     $obj->port = $user->port;
                     $obj->passwd = $user->passwd;
                     $obj->vmess_id = $user->vmess_id;
@@ -1406,26 +1408,21 @@ EOF;
     // 修改个人资料
     public function profile(Request $request)
     {
-        $user = Session::get('user');
-
         if ($request->method() == 'POST') {
-            $old_password = $request->get('old_password');
-            $new_password = $request->get('new_password');
-            $old_password = md5(trim($old_password));
-            $new_password = md5(trim($new_password));
+            $old_password = trim($request->get('old_password'));
+            $new_password = trim($request->get('new_password'));
 
-            $user = User::query()->where('id', $user['id'])->first();
-            if ($user->password != $old_password) {
+            if (!Hash::check($old_password, Auth::user()->password)) {
                 Session::flash('errorMsg', '旧密码错误，请重新输入');
 
                 return Redirect::back();
-            } elseif ($user->password == $new_password) {
+            } elseif (Hash::check($new_password, Auth::user()->password)) {
                 Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
 
                 return Redirect::back();
             }
 
-            $ret = User::query()->where('id', $user['id'])->update(['password' => $new_password]);
+            $ret = User::query()->where('id', Auth::user()->id)->update(['password' => Hash::make($new_password)]);
             if (!$ret) {
                 Session::flash('errorMsg', '修改失败');
 
@@ -1955,6 +1952,11 @@ EOF;
             }
         }
 
+        // 如果更改了有赞云任何一个配置，则删除有赞云的授权缓存，防止出现client_id错误
+        if (in_array($name, ['youzan_client_id', 'youzan_client_secret', 'kdt_id'])) {
+            \Cache::forget('YZY_TOKEN');
+        }
+
         // 更新配置
         Config::query()->where('name', $name)->update(['value' => $value]);
 
@@ -2268,9 +2270,9 @@ EOF;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => "用户不存在"]);
         }
 
-        // 存储当前管理员身份信息，并将当前登录信息改成要切换的用户的身份信息
-        Session::put('admin', Session::get("user"));
-        Session::put('user', $user->toArray());
+        // 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
+        Session::put('admin', Auth::user()->id);
+        Auth::login($user);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
     }

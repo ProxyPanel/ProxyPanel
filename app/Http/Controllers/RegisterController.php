@@ -15,6 +15,7 @@ use Redirect;
 use Session;
 use Cache;
 use Mail;
+use Hash;
 
 /**
  * 注册控制器
@@ -160,7 +161,7 @@ class RegisterController extends Controller
             // 创建新用户
             $user = new User();
             $user->username = $username;
-            $user->password = md5($password);
+            $user->password = Hash::make($password);
             $user->port = $port;
             $user->passwd = makeRandStr();
             $user->vmess_id = createGuid();
@@ -197,6 +198,9 @@ class RegisterController extends Controller
                 if (self::$systemConfig['is_invite_register'] && $affArr['code_id']) {
                     Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $user->id, 'status' => 1]);
                 }
+
+                // 清除邀请人Cookie
+                \Cookie::unqueue('register_aff');
             }
 
             // 发送邮件
@@ -270,7 +274,7 @@ class RegisterController extends Controller
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
         if (!$referral_uid) {
             // 检查一下cookie里有没有aff
-            $cookieAff = \Request::cookie('register_aff') ? \Request::cookie('register_aff') : 0;
+            $cookieAff = \Request::hasCookie('register_aff') ? \Request::cookie('register_aff') : 0;
             if ($cookieAff) {
                 $affUser = User::query()->where('id', $cookieAff)->exists();
                 $referral_uid = $affUser ? $cookieAff : 0;

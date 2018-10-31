@@ -2,7 +2,8 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * 用户信息
@@ -10,8 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Http\Models
  */
-class User extends Model
+class User extends Authenticatable
 {
+    use Notifiable;
     protected $table = 'user';
     protected $primaryKey = 'id';
 

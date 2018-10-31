@@ -1,28 +1,4 @@
 @extends('user.layouts')
-
-@section('css')
-    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        .fancybox > img {
-            width: 75px;
-            height: 75px;
-        }
-        .ticker {
-            background-color: #fff;
-            margin-bottom: 20px;
-            border: 1px solid #e7ecf1!important;
-            border-radius: 4px;
-            -webkit-border-radius: 4px;
-        }
-        .ticker ul {
-            padding: 0;
-        }
-        .ticker li {
-            list-style: none;
-            padding: 15px;
-        }
-    </style>
-@endsection
 @section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->

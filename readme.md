@@ -1,7 +1,7 @@
 ## 项目描述
 ````
 1.SSR多节点账号管理面板，兼容SS、SSRR，需配合SSR或SSRR版后端使用
-2.支持v2ray（开发中）
+2.支持v2ray
 3.开放API，方便自行定制改造客户端
 4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
 5.用户、节点标签化，不同用户可见不同节点
@@ -31,7 +31,7 @@
 演示站：http://demo.ssrpanel.com
 telegram订阅频道：https://t.me/ssrpanel
 ````
-官网搭建于Azure，由代理商 [@LesHutt](https://t.me/LesHutt) 提供
+官网搭建于Azure，由代理商 [@LesHutt](https://t.me/LesHutt) 提供，需要流量机器，价格优惠需要的联系他。
 
 ## 捐赠
 **以太坊钱包** : 0x968f797f194fcec05ea571723199748b58de38ba
@@ -98,6 +98,14 @@ vim /usr/local/php/etc/php.ini
 修改完记得重启NGINX和PHP-FPM
 ````
 
+#### 密码错误
+````
+如果正确安装完成后发现admin无法登陆，请到SSRPanel目录下执行如下命令：
+php artisan upgradeUserPassword
+
+admin的密码将被改为admin
+````
+
 #### 重启NGINX和PHP-FPM
 ````
 service nginx restart
@@ -136,11 +144,8 @@ crontab -e -u www
 
 ###### 发邮件失败处理
 ````
-如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件
-可能会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
-因为smtp发邮件必须用到25,26,465,587这四个端口，逗比的一键脚本会将这些端口一并封禁
-可以编辑iptables，注释掉以下这段（前面加个#号就可以），然后保存并重启iptables
-#-A OUTPUT -p tcp -m multiport --dports 25,26,465,587 -m state --state NEW,ESTABLISHED -j REJECT --reject-with icmp-port-unreachable
+出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
+因为smtp发邮件必须用到25,26,465,587这四个端口，故需要允许这四个端口通信
 ````
 
 ## 英文版
@@ -161,6 +166,7 @@ chown www:www ssserver.log
 ## IP库
 ```
 本项目使用的是纯真IP库，如果需要更新IP库文件，请上纯真官网把qqwry.dat下载并覆盖至 storage/qqwrt.dat 文件
+项目里还自带了IPIP的IP库，但是未使用，有开发能力的请自行测试。
 ```
 
 ## SSR(R)部署
@@ -266,12 +272,8 @@ ntpdate cn.pool.ntp.org
 3.本项目中ajax返回格式都是 {"status":"fail 或者 success", "data":[数据], "message":"文本消息提示语"}
 ````
 
-## 收费版
-````
-收费版代码混淆，不开源，具体请知识星球上私信我
-````
 
-## 致敬
+## 鸣谢
 - [@shadowsocks](https://github.com/shadowsocks)
 - [@breakwa11](https://github.com/breakwa11)
 - [@glzjin](https://github.com/esdeathlove)
@@ -280,6 +282,7 @@ ntpdate cn.pool.ntp.org
 - [@91yun](https://github.com/91yun)
 - [@Akkariiin](https://github.com/shadowsocksrr)
 - [@tonychanczm](https://github.com/tonychanczm)
+- [@aiyahacke](https://github.com/aiyahacke)
 - [@ipcheck](https://ipcheck.need.sh)
 - [@cz88](http://www.cz88.net/index.shtml)
 - [@ip.sb](https://www.ip.sb)

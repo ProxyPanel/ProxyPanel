@@ -9,6 +9,14 @@ use Redirect;
 
 class Muv2
 {
+    /**
+     * 用于支持GO版本V2ray
+     *
+     * @param         $request
+     * @param Closure $next
+     *
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
     public function handle($request, Closure $next)
     {
         \Log::info(json_encode($request->header()));

@@ -351,7 +351,7 @@
                                                         <div class="form-group">
                                                             <label for="v2_port" class="col-md-3 control-label">端口号</label>
                                                             <div class="col-md-8">
-                                                                <input type="text" class="form-control" name="v2_port" value="{{$node->v2_port}}" id="v2_port" placeholder="23000">
+                                                                <input type="text" class="form-control" name="v2_port" value="{{$node->v2_port}}" id="v2_port" placeholder="10087">
                                                             </div>
                                                         </div>
                                                         <div class="form-group">

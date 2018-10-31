@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Redirect;
-use App\Http\Models\User as U;
+use Auth;
 
 class User
 {
@@ -18,16 +18,7 @@ class User
      */
     public function handle($request, Closure $next)
     {
-        if (!$request->session()->has('user')) {
-            if ($request->cookie("remember")) {
-                $u = U::query()->where("remember_token", $request->cookie("remember"))->first();
-                if ($u) {
-                    $request->session()->put('user', $u->toArray());
-
-                    return $next($request);
-                }
-            }
-
+        if (!Auth::check()) {
             return Redirect::to('login');
         }
 
