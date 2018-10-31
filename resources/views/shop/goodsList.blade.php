@@ -42,6 +42,7 @@
                                     <!-- <th> 所需积分 </th> -->
                                     <th> 排序 </th>
                                     <th> 热销 </th>
+                                    <th> 限购 </th>
                                     <th> 状态 </th>
                                     <th style="text-align: center;"> 操作 </th>
                                 </tr>
@@ -71,9 +72,14 @@
                                             <!-- <td> {{$goods->score}} </td> -->
                                             <td> {{$goods->sort}} </td>
                                             <td>
-                                                @if($goods->is_hot == 2)
-                                                    <span class="label label-info">限购</span>
-                                                @elseif($goods->is_hot == 1)
+                                                @if($goods->is_hot)
+                                                    <span class="label label-danger">是</span>
+                                                @else
+                                                    <span class="label label-default">否</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($goods->is_limit)
                                                     <span class="label label-danger">是</span>
                                                 @else
                                                     <span class="label label-default">否</span>
