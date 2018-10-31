@@ -471,6 +471,7 @@ CREATE TABLE `goods` (
   `days` int(11) NOT NULL DEFAULT '30' COMMENT '有效期',
   `color` VARCHAR(50) NOT NULL DEFAULT 'green' COMMENT '商品颜色',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `is_limit` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否限购：0-否、1-是',
   `is_hot` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否热销：0-否、1-是',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-否、1-是',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
