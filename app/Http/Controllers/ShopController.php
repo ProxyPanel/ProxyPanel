@@ -205,15 +205,15 @@ class ShopController extends Controller
             DB::beginTransaction();
             try {
                 $data = [
-                    'name'   => $name,
-                    'desc'   => $desc,
-                    'logo'   => $logo,
-                    'price'  => $price * 100,
-                    'sort'   => $sort,
-                    'color'  => $color,
-                    'is_hot' => $is_hot,
+                    'name'     => $name,
+                    'desc'     => $desc,
+                    'logo'     => $logo,
+                    'price'    => $price * 100,
+                    'sort'     => $sort,
+                    'color'    => $color,
+                    'is_hot'   => $is_hot,
                     'is_limit' => $is_limit,
-                    'status' => $status
+                    'status'   => $status
                 ];
 
                 Goods::query()->where('id', $id)->update($data);

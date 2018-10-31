@@ -158,10 +158,11 @@
         function replyTicket() {
             var content = UE.getEditor('editor').getContent();
 
-            if (content =="" || content == undefined) {
+            if (content == "" || content == undefined) {
                 layer.alert('您未填写工单内容', {icon: 2, title:'提示'});
                 return false;
             }
+
             layer.confirm('确定回复工单？', {icon: 3, title:'提示'}, function(index) {
                 $.post("{{url('ticket/replyTicket')}}",{_token:'{{csrf_token()}}', id:'{{$ticket->id}}', content:content}, function(ret) {
                     layer.msg(ret.message, {time:1000}, function() {
@@ -170,6 +171,7 @@
                         }
                     });
                 });
+
                 layer.close(index);
             });
         }
