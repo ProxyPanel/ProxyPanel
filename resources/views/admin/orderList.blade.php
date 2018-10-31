@@ -60,8 +60,8 @@
                                 <thead>
                                     <tr class="uppercase">
                                         <th> # </th>
-                                        <th> 订单编号 </th>
                                         <th> 操作人 </th>
+                                        <th> 订单编号 </th>
                                         <th> 商品 </th>
                                         <th> 过期时间 </th>
                                         <th> 优惠券 </th>
@@ -81,8 +81,14 @@
                                         @foreach($orderList as $order)
                                             <tr>
                                                 <td> {{$order->oid}} </td>
+                                                <td> 
+                                                    @if(!empty($order->user) )
+                                                        <a href="{{url('admin/userList?username=') . $order->user->username}}" target="_blank"> <span class="label label-info">{{$order->user->username}}</span> </a>
+                                                    @else
+                                                        【账号不存在】
+                                                    @endif
+                                                </td>
                                                 <td> {{$order->order_sn}} </td>
-                                                <td> {{$order->user ? $order->user->username : '【账号不存在】'}} </td>
                                                 <td> {{$order->goods->name}} </td>
                                                 <td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
                                                 <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>

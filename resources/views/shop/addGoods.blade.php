@@ -177,6 +177,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="is_limit" class="col-md-3 control-label">限购</label>
+                                    <div class="col-md-6">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_limit" value="1"> 是
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="is_limit" value="0" checked> 否
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group last">
                                     <label class="control-label col-md-3">状态</label>
                                     <div class="col-md-6">
