@@ -58,7 +58,7 @@ class PaymentController extends Controller
       
       	//单个商品限购
             if ($goods->is_limit == 1) {
-                $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('user_id', $user['id'])->where('goods_id', $goods_id)->exists();
+                $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('user_id', Auth::user()->id)->where('goods_id', $goods_id)->exists();
                 if ($noneExpireOrderExist) {
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：此商品每人限购1次']);
                 }
