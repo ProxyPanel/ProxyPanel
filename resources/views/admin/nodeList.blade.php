@@ -38,7 +38,8 @@
                                 <thead>
                                 <tr>
                                     <th> <span class="node-id"><a href="javascript:showIdTips();">ID</a></span> </th>
-                                    <th> 节点名称 </th>
+                                    <th> 类型 </th>
+                                    <th> 名称 </th>
                                     <th> IP </th>
                                     <th> 绑定域名 </th>
                                     <th> 状态 </th>
@@ -52,12 +53,13 @@
                                 <tbody>
                                     @if($nodeList->isEmpty())
                                         <tr>
-                                            <td colspan="10" style="text-align: center;">暂无数据</td>
+                                            <td colspan="11" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
+                                                <td> {{$node->type == 2 ? 'V2Ray' : 'Shadowsocks(R)'}} </td>
                                                 <td> {{$node->name}} </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->ip}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->server}}</span> </td>

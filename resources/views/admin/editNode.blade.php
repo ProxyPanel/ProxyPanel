@@ -192,15 +192,15 @@
                                                 </div>
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <label for="service" class="col-md-3 control-label">服务类型</label>
+                                                        <label for="service" class="col-md-3 control-label">类型</label>
                                                         <div class="col-md-8">
                                                             <div class="mt-radio-inline">
                                                                 <label class="mt-radio">
-                                                                    <input type="radio" name="service" value="1" @if($node->type == 1) checked @endif> SS/SSR
+                                                                    <input type="radio" name="service" value="1" @if($node->type == 1) checked @endif> Shadowsocks(R)
                                                                     <span></span>
                                                                 </label>
                                                                 <label class="mt-radio">
-                                                                    <input type="radio" name="service" value="2" @if($node->type == 2) checked @endif> V2ray
+                                                                    <input type="radio" name="service" value="2" @if($node->type == 2) checked @endif> V2Ray
                                                                     <span></span>
                                                                 </label>
                                                             </div>
