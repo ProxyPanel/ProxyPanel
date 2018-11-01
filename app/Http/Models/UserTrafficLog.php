@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserTrafficLog
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\SsNode $SsNode
+ * @property-read \App\Http\Models\User $User
+ * @mixin \Eloquent
  */
 class UserTrafficLog extends Model
 {

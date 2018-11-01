@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsUserTrafficDaily
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\SsNode $info
+ * @mixin \Eloquent
  */
 class SsNodeTrafficDaily extends Model
 {

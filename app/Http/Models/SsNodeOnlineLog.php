@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeOnlineLog
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class SsNodeOnlineLog extends Model
 {

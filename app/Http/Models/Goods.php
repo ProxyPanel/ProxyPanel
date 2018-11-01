@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  * Class Goods
  *
  * @package App\Http\Models
+ * @property mixed $price
+ * @property-read mixed $traffic_label
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\GoodsLabel[] $label
+ * @mixin \Eloquent
  */
 class Goods extends Model
 {

@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class Goods
  *
  * @package App\Http\Models
+ * @property mixed $amount
+ * @property mixed $discount
+ * @mixin \Eloquent
  */
 class Coupon extends Model
 {

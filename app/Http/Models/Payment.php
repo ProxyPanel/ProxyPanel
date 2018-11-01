@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class Payment
  *
  * @package App\Http\Models
+ * @property mixed $amount
+ * @property-read mixed $pay_way_label
+ * @property-read mixed $status_label
+ * @property-read \App\Http\Models\Order $order
+ * @property-read \App\Http\Models\User $user
+ * @mixin \Eloquent
  */
 class Payment extends Model
 {

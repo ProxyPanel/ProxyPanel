@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserSubscribeLog
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class UserSubscribeLog extends Model
 {

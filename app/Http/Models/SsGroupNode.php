@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeGroup
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class SsGroupNode extends Model
 {

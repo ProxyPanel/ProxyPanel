@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class Marketing
  *
  * @package App\Http\Models
+ * @property-read mixed $status_label
+ * @mixin \Eloquent
  */
 class Marketing extends Model
 {

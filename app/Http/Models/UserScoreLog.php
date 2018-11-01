@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserScoreLog
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\User $User
+ * @mixin \Eloquent
  */
 class UserScoreLog extends Model
 {

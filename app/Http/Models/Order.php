@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\Model;
  * Class Order
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\Coupon $coupon
+ * @property mixed $amount
+ * @property mixed $origin_amount
+ * @property-read mixed $status_label
+ * @property-read \App\Http\Models\Goods $goods
+ * @property-read \App\Http\Models\Payment $payment
+ * @property-read \App\Http\Models\User $user
+ * @mixin \Eloquent
  */
 class Order extends Model
 {

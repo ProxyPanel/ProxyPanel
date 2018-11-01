@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Country
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class Country extends Model
 {

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserLabel
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\User $user
+ * @mixin \Eloquent
  */
 class UserLabel extends Model
 {

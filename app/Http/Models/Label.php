@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Label
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class Label extends Model
 {

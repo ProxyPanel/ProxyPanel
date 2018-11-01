@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class Invite
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\User $Generator
+ * @property-read \App\Http\Models\User $User
+ * @mixin \Eloquent
  */
 class Invite extends Model
 {

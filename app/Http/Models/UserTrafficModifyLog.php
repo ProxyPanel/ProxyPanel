@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserTrafficModifyLog
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\Order $Order
+ * @property-read \App\Http\Models\User $User
+ * @mixin \Eloquent
  */
 class UserTrafficModifyLog extends Model
 {

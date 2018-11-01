@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class TicketReply
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\User $User
+ * @mixin \Eloquent
  */
 class TicketReply extends Model
 {

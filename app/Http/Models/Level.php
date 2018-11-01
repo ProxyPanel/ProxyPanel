@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Level
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class Level extends Model
 {

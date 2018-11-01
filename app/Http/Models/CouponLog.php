@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Goods
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class CouponLog extends Model
 {

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Config
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class Config extends Model
 {

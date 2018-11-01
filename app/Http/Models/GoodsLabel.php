@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class GoodsLabel
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\Goods $goods
+ * @mixin \Eloquent
  */
 class GoodsLabel extends Model
 {

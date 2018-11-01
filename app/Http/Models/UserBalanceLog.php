@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserBalanceLog
  *
  * @package App\Http\Models
+ * @property-read \App\Http\Models\User $User
+ * @property mixed $after
+ * @property mixed $amount
+ * @property mixed $before
+ * @mixin \Eloquent
  */
 class UserBalanceLog extends Model
 {

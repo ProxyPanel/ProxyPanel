@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class SensitiveWords
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class SensitiveWords extends Model
 {

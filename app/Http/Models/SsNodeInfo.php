@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeInfo
  *
  * @package App\Http\Models
+ * @mixin \Eloquent
  */
 class SsNodeInfo extends Model
 {

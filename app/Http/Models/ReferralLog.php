@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class ReferralLog
  *
  * @package App\Http\Models
+ * @property mixed $amount
+ * @property mixed $ref_amount
+ * @property-read \App\Http\Models\Order $order
+ * @property-read \App\Http\Models\User $ref_user
+ * @property-read \App\Http\Models\User $user
+ * @mixin \Eloquent
  */
 class ReferralLog extends Model
 {
