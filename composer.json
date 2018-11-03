@@ -20,6 +20,7 @@
         "paypal/rest-api-sdk-php": "*",
         "phpoffice/phpspreadsheet": "^1.4",
         "rap2hpoutre/laravel-log-viewer": "^0.19.1",
+        "spatie/laravel-permission": "^2.23",
         "youzan/open-sdk": "^1.0"
     },
     "require-dev": {

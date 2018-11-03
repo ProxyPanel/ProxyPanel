@@ -12,16 +12,18 @@ Route::group(['middleware' => ['forbidden', 'affiliate']], function () {
     Route::any('activeUser', 'UserController@activeUser'); // 激活账号
     Route::get('active/{token}', 'UserController@active'); // 激活账号
     Route::get('free', 'UserController@free'); // 免费邀请码
+    Route::get('makePasswd', 'Controller@makePasswd'); // 生成密码
+    Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
 });
 
 Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin', 'AdminController@index'); // 后台首页
     Route::get('admin/userList', 'AdminController@userList'); // 账号列表
     Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
-    Route::post('admin/batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
-    Route::get('admin/exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
     Route::any('admin/editUser', 'AdminController@editUser'); // 编辑账号
     Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
+    Route::post('admin/batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
+    Route::get('admin/exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
     Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表
     Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
     Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
@@ -41,17 +43,23 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/delLabel', 'AdminController@delLabel'); // 删除标签
     Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
     Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
-    Route::get('admin/orderList', 'AdminController@orderList'); // 订单列表
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
+    Route::get('admin/orderList', 'AdminController@orderList'); // 订单列表
     Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
     Route::get('admin/exportInvite', 'AdminController@exportInvite'); // 导出邀请码
-    Route::get('admin/applyList', 'AdminController@applyList'); // 提现申请管理
-    Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
+    Route::get('admin/applyList', 'AdminController@applyList'); // 提现申请列表
+    Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请详情
     Route::post('admin/setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
-    Route::get('admin/userRebateList', 'AdminController@userRebateList'); // 返利流水
+    Route::any('coupon/couponList', 'CouponController@couponList'); // 优惠券列表
+    Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
+    Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
+    Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
+    Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
+    Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
+    Route::any('shop/editGoods', 'ShopController@editGoods'); // 编辑商品
+    Route::post('shop/delGoods', 'ShopController@delGoods'); // 删除商品
     Route::any('admin/config', 'AdminController@config'); // 配置列表
-    Route::post('admin/setExtend', 'AdminController@setExtend'); // 设置客服、统计代码
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
     Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
     Route::post('admin/addLevel', 'AdminController@addLevel'); // 增加等级
@@ -61,46 +69,37 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/updateCountry', 'AdminController@updateCountry'); // 更新国家/地区
     Route::post('admin/delCountry', 'AdminController@delCountry'); // 删除国家/地区
     Route::post('admin/setDefaultConfig', 'AdminController@setDefaultConfig'); // 设置默认配置
-    Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
-    Route::get('admin/subscribeLog', 'AdminController@subscribeLog'); // 订阅请求日志
-    Route::post('admin/setSubscribeStatus', 'AdminController@setSubscribeStatus'); // 启用禁用用户的订阅
-    Route::any('admin/export', 'AdminController@export'); // 导出配置信息
-    Route::any('admin/convert', 'AdminController@convert'); // 格式转换
-    Route::any('admin/import', 'AdminController@import'); // 数据导入
-    Route::get('admin/userMonitor', 'AdminController@userMonitor'); // 用户流量监控
-    Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
-    Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
     Route::get('admin/system', 'AdminController@system'); // 系统设置
+    Route::post('admin/setExtend', 'AdminController@setExtend'); // 设置客服、统计代码
     Route::post('admin/setConfig', 'AdminController@setConfig'); // 设置某个配置项
-    Route::post('admin/setReferralPercent', 'AdminController@setReferralPercent'); // 设置返利比例
-    Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
-    Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 余额充值
-    Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动日志
+    Route::get('admin/subscribeLog', 'AdminController@subscribeLog'); // 订阅管理
+    Route::post('admin/setSubscribeStatus', 'AdminController@setSubscribeStatus'); // 启用禁用用户的订阅
+    Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动记录
     Route::get('admin/userTrafficLogList', 'AdminController@userTrafficLogList'); // 流量变动记录
+    Route::get('admin/userRebateList', 'AdminController@userRebateList'); // 返利流水记录
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
-    Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
-    Route::get('admin/makePasswd', 'AdminController@makePasswd'); // 生成密码
-    Route::get('admin/makeVmessId', 'AdminController@makeVmessId'); // 生成VmessId
-    Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
-    Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
-    Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
-    Route::any('shop/editGoods', 'ShopController@editGoods'); // 编辑商品
-    Route::post('shop/delGoods', 'ShopController@delGoods'); // 删除商品
-    Route::any('coupon/couponList', 'CouponController@couponList'); // 优惠券列表
-    Route::any('coupon/addCoupon', 'CouponController@addCoupon'); // 添加优惠券
-    Route::post('coupon/delCoupon', 'CouponController@delCoupon'); // 删除优惠券
-    Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
-    Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
+    Route::any('admin/export', 'AdminController@export'); // 导出(查看)配置信息
+    Route::get('admin/userMonitor', 'AdminController@userMonitor'); // 用户流量监控
+    Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
+    Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 用户余额充值
     Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
-    Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
-    Route::any("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
     Route::get("marketing/emailList", "MarketingController@emailList"); // 邮件消息列表
     Route::get("marketing/pushList", "MarketingController@pushList"); // 推送消息列表
     Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
+    Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
+    Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置
+    Route::any('admin/convert', 'AdminController@convert'); // 格式转换
+    Route::any('admin/import', 'AdminController@import'); // 数据导入
+    Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
+    Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
+    Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
+    Route::get("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
     Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
     Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
     Route::post("sensitiveWords/del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
+    Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
+    Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
 });
 
 Route::group(['middleware' => ['forbidden', 'user']], function () {

@@ -38,7 +38,7 @@
         <p><br></p>
         <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
         <p><br></p>
-        <a href="{{url('/')}}" class="btn default"> {{trans('404.csrf_back')}} </a>
+        <a href="{{Request::server('HTTP_REFERER') ?? url('/')}}" class="btn default"> {{trans('404.csrf_back')}} </a>
     </div>
 </div>
 <!--[if lt IE 9]>

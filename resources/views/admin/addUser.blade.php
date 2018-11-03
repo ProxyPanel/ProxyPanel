@@ -449,14 +449,14 @@
 
         // 生成随机VmessId
         function makeVmessId() {
-            $.get("{{url('admin/makeVmessId')}}",  function(ret) {
+            $.get("{{url('makeVmessId')}}",  function(ret) {
                 $("#vmess_id").val(ret);
             });
         }
 
         // 生成随机密码
         function makePasswd() {
-            $.get("{{url('admin/makePasswd')}}",  function(ret) {
+            $.get("{{url('makePasswd')}}",  function(ret) {
                 $("#passwd").val(ret);
             });
         }

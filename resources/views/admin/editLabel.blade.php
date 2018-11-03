@@ -29,14 +29,14 @@
                         <form action="{{url('admin/editLabel')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return doSubmit();">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <label class="control-label col-md-1">标题</label>
+                                    <label class="control-label col-md-3">标题</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="name" value="{{$label->name}}" id="name" placeholder="" autofocus required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-1">排序</label>
+                                    <label class="control-label col-md-3">排序</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="sort" value="{{$label->sort}}" id="sort" required />
                                         <span class="help-block"> 值越高显示时越靠前 </span>
@@ -45,7 +45,7 @@
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-offset-3 col-md-4">
                                         <button type="submit" class="btn green">提 交</button>
                                     </div>
                                 </div>

@@ -15,7 +15,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase">订阅请求日志</span>
+                            <span class="caption-subject bold uppercase">订阅管理</span>
                         </div>
                     </div>
                     <div class="portlet-body">

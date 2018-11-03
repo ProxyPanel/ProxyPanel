@@ -17,6 +17,18 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    // 生成随机密码
+    public function makePasswd()
+    {
+        exit(makeRandStr());
+    }
+
+    // 生成VmessId
+    public function makeVmessId()
+    {
+        exit(createGuid());
+    }
+
     // 生成订阅地址的唯一码
     public function makeSubscribeCode()
     {

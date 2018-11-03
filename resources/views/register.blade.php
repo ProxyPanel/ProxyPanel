@@ -104,11 +104,11 @@
                 @endif
             @endif
             @if($is_captcha)
-            <div class="form-group" style="margin-bottom:75px;">
-                <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
-                <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
-                <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
-            </div>
+                <div class="form-group" style="margin-bottom:75px;">
+                    <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
+                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
+                    <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
+                </div>
             @endif
             <div class="form-group margin-top-20 margin-bottom-20">
                 <label class="mt-checkbox mt-checkbox-outline">

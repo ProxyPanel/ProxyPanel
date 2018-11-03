@@ -170,7 +170,7 @@ class AdminController extends Controller
             $query->whereIn('id', $tempUsers);
         }
 
-        $userList = $query->orderBy('enable', 'desc')->orderBy('status', 'desc')->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
+        $userList = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
         foreach ($userList as &$user) {
             $user->transfer_enable = flowAutoShow($user->transfer_enable);
             $user->used_flow = flowAutoShow($user->u + $user->d);
@@ -1516,18 +1516,6 @@ EOF;
         exit;
     }
 
-    // 生成随机密码
-    public function makePasswd(Request $request)
-    {
-        exit(makeRandStr());
-    }
-
-    // 生成VmessId
-    public function makeVmessId(Request $request)
-    {
-        exit(createGuid());
-    }
-
     // 加密方式、混淆、协议、等级、国家地区
     public function config(Request $request)
     {
@@ -1957,21 +1945,15 @@ EOF;
             \Cache::forget('YZY_TOKEN');
         }
 
+        // 如果是返利比例，则需要除100
+        if (in_array($name, ['referral_percent'])) {
+            $value = intval($value) / 100;
+        }
+
         // 更新配置
         Config::query()->where('name', $name)->update(['value' => $value]);
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-    }
-
-    // 设置返利比例
-    public function setReferralPercent(Request $request)
-    {
-        $value = intval($request->get('value'));
-        $value = $value / 100;
-
-        Config::query()->where('name', 'referral_percent')->update(['value' => $value]);
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '设置成功']);
     }
 
     // 邀请码列表
