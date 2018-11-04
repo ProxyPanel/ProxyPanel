@@ -32,7 +32,11 @@
 <body class=" login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+    @if(\App\Components\Helpers::systemConfig()['website_home_logo'])
+        <a href="javascript:;"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
+    @else
+        <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+    @endif
 </div>
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
@@ -80,7 +84,7 @@
     @endif
     <!-- BEGIN FORGOT PASSWORD FORM -->
     <form class="forget-form" action="{{url('activeUser')}}" method="post" style="display: block;">
-        @if($is_active_register)
+        @if(\App\Components\Helpers::systemConfig()['is_active_register'])
             <div class="form-title">
                 <span class="form-title">{{trans('active.title')}}</span>
             </div>
@@ -95,7 +99,7 @@
         @endif
         <div class="form-actions">
             <button type="button" class="btn btn-default" onclick="login()">{{trans('active.back')}}</button>
-            @if($is_active_register)
+            @if(\App\Components\Helpers::systemConfig()['is_active_register'])
                 <button type="submit" class="btn red uppercase pull-right">{{trans('active.submit')}}</button>
             @endif
         </div>

@@ -60,16 +60,9 @@ class UserController extends Controller
 
         $view['info'] = $user->toArray();
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
-        $view['wechat_qrcode'] = self::$systemConfig['wechat_qrcode'];
-        $view['alipay_qrcode'] = self::$systemConfig['alipay_qrcode'];
-        $view['login_add_score'] = self::$systemConfig['login_add_score'];
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-        $view['is_push_bear'] = self::$systemConfig['is_push_bear'];
-        $view['push_bear_qrcode'] = self::$systemConfig['push_bear_qrcode'];
         $view['ipa_list'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
         $view['goodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get(); // 余额充值商品，只取10个
+        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->limit(10)->get(); // 近期登录日志
 
         // 推广返利是否可见
         if (!Session::has('referral_status')) {
@@ -92,9 +85,6 @@ class UserController extends Controller
 
         $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
         $view['link'] = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] . '/s/' . $code : self::$systemConfig['website_url'] . '/s/' . $code;
-
-        // 近期登录日志
-        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->limit(10)->get();
 
         // 节点列表
         $userLabelIds = UserLabel::query()->where('user_id', Auth::user()->id)->pluck('label_id');
@@ -215,10 +205,6 @@ class UserController extends Controller
             return Redirect::to('/');
         }
 
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
         return Response::view('user.article', $view);
     }
 
@@ -333,9 +319,6 @@ class UserController extends Controller
             $view['protocol_list'] = Helpers::protocolList();
             $view['obfs_list'] = Helpers::obfsList();
             $view['info'] = User::query()->where('id', Auth::user()->id)->first();
-            $view['website_logo'] = self::$systemConfig['website_logo'];
-            $view['website_analytics'] = self::$systemConfig['website_analytics'];
-            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
             return Response::view('user.profile', $view);
         }
@@ -381,10 +364,6 @@ class UserController extends Controller
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
 
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
         return Response::view('user.trafficLog', $view);
     }
 
@@ -392,9 +371,6 @@ class UserController extends Controller
     public function goodsList(Request $request)
     {
         $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
         return Response::view('user.goodsList', $view);
     }
@@ -402,10 +378,6 @@ class UserController extends Controller
     // 工单
     public function ticketList(Request $request)
     {
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
         $view['ticketList'] = Ticket::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('user.ticketList', $view);
@@ -415,9 +387,6 @@ class UserController extends Controller
     public function orderList(Request $request)
     {
         $view['orderList'] = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', Auth::user()->id)->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
         return Response::view('user.orderList', $view);
     }
@@ -425,9 +394,6 @@ class UserController extends Controller
     // 订单明细
     public function orderDetail(Request $request, $sn)
     {
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
 
         return Response::view('user.orderDetail', $view);
@@ -534,10 +500,6 @@ class UserController extends Controller
             $view['ticket'] = $ticket;
             $view['replyList'] = TicketReply::query()->where('ticket_id', $id)->with('user')->orderBy('id', 'asc')->get();
 
-            $view['website_logo'] = self::$systemConfig['website_logo'];
-            $view['website_analytics'] = self::$systemConfig['website_analytics'];
-            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
             return Response::view('user.replyTicket', $view);
         }
     }
@@ -561,9 +523,6 @@ class UserController extends Controller
         // 已生成的邀请码数量
         $num = Invite::query()->where('uid', Auth::user()->id)->count();
 
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['num'] = self::$systemConfig['invite_num'] - $num <= 0 ? 0 : self::$systemConfig['invite_num'] - $num; // 还可以生成的邀请码数量
         $view['inviteList'] = Invite::query()->where('uid', Auth::user()->id)->with(['generator', 'user'])->paginate(10); // 邀请码列表
         $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
@@ -575,11 +534,6 @@ class UserController extends Controller
     // 公开的邀请码列表
     public function free(Request $request)
     {
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-        $view['is_invite_register'] = self::$systemConfig['is_invite_register'];
-        $view['is_free_code'] = self::$systemConfig['is_free_code'];
         $view['inviteList'] = Invite::query()->where('uid', 0)->where('status', 0)->paginate();
 
         return Response::view('user.free', $view);
@@ -671,9 +625,7 @@ class UserController extends Controller
 
             return Redirect::back();
         } else {
-            $view['is_active_register'] = self::$systemConfig['is_active_register'];
-
-            return Response::view('user.activeUser', $view);
+            return Response::view('user.activeUser');
         }
     }
 
@@ -792,12 +744,7 @@ class UserController extends Controller
 
             return Redirect::back();
         } else {
-            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
-            $view['website_analytics'] = self::$systemConfig['website_analytics'];
-            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-            $view['is_reset_password'] = self::$systemConfig['is_reset_password'];
-
-            return Response::view('user.resetPassword', $view);
+            return Response::view('user.resetPassword');
         }
     }
 
@@ -874,7 +821,6 @@ class UserController extends Controller
                 return Response::view('user.reset', $view);
             }
 
-            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
             $view['verify'] = $verify;
 
             return Response::view('user.reset', $view);
@@ -1120,9 +1066,6 @@ class UserController extends Controller
 
             $view['goods'] = $goods;
             $view['is_youzan'] = self::$systemConfig['is_youzan'];
-            $view['website_logo'] = self::$systemConfig['website_logo'];
-            $view['website_analytics'] = self::$systemConfig['website_analytics'];
-            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
 
             return Response::view('user.buy', $view);
         }
@@ -1170,9 +1113,6 @@ class UserController extends Controller
     // 推广返利
     public function referral(Request $request)
     {
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$systemConfig['referral_percent'];
         $view['referral_money'] = self::$systemConfig['referral_money'];
@@ -1230,9 +1170,6 @@ class UserController extends Controller
     // 帮助中心
     public function help(Request $request)
     {
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(15);
 
         return Response::view('user.help', $view);

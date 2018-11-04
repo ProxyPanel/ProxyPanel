@@ -234,15 +234,7 @@ class RegisterController extends Controller
         } else {
             Session::put('register_token', makeRandStr(16));
 
-            $view['is_captcha'] = self::$systemConfig['is_captcha'];
-            $view['is_register'] = self::$systemConfig['is_register'];
-            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
-            $view['is_invite_register'] = self::$systemConfig['is_invite_register'];
-            $view['is_free_code'] = self::$systemConfig['is_free_code'];
-            $view['website_analytics'] = self::$systemConfig['website_analytics'];
-            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
-            return Response::view('register', $view);
+            return Response::view('register');
         }
     }
 

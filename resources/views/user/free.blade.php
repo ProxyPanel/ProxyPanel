@@ -76,8 +76,8 @@
                         <div class="portlet-body">
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-hover table-light">
-                                    @if($is_invite_register)
-                                        @if($is_free_code)
+                                    @if(\App\Components\Helpers::systemConfig()['is_invite_register'])
+                                        @if(\App\Components\Helpers::systemConfig()['is_free_code'])
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;"> {{trans('home.invite_code_table_name')}} </th>
@@ -114,7 +114,7 @@
                                     @endif
                                 </table>
                             </div>
-                            @if($is_invite_register && $is_free_code)
+                            @if(\App\Components\Helpers::systemConfig()['is_invite_register'] && \App\Components\Helpers::systemConfig()['is_free_code'])
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12">
                                         <div class="dataTables_paginate paging_bootstrap_full_number pull-right">

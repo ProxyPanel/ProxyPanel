@@ -108,13 +108,7 @@ class LoginController extends Controller
                 }
             }
 
-            $view['is_captcha'] = self::$systemConfig['is_captcha'];
-            $view['is_register'] = self::$systemConfig['is_register'];
-            $view['website_home_logo'] = self::$systemConfig['website_home_logo'];
-            $view['website_analytics'] = self::$systemConfig['website_analytics'];
-            $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
-            return Response::view('login', $view);
+            return Response::view('login');
         }
     }
 

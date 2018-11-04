@@ -40,8 +40,8 @@
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
         <div class="page-logo">
-            @if($website_logo)
-                <a href="{{url('/')}}"><img src="{{$website_logo}}" alt="logo" class="logo-default" style="width:150px; height:30px;"/> </a>
+            @if(\App\Components\Helpers::systemConfig()['website_logo'])
+                <a href="{{url('/')}}"><img src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" alt="logo" class="logo-default" style="width:150px; height:30px;"/> </a>
             @else
                 <a href="{{url('/')}}"><img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
             @endif
@@ -250,9 +250,9 @@
 </script>
 
 <!-- 统计 -->
-{!! $website_analytics !!}
+{!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
 <!-- 客服 -->
-{!! $website_customer_service !!}
+{!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
 </body>
 
 </html>

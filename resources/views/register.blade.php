@@ -32,8 +32,8 @@
 <body class=" login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    @if($website_home_logo)
-        <a href="javascript:;"> <img src="{{$website_home_logo}}" alt="" style="width:300px; height:90px;"/> </a>
+    @if(\App\Components\Helpers::systemConfig()['website_home_logo'])
+        <a href="javascript:;"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
     @else
         <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
     @endif
@@ -72,7 +72,7 @@
     </nav>
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" action="{{url('register')}}" method="post" style="display: block;">
-        @if($is_register)
+        @if(\App\Components\Helpers::systemConfig()['is_register'])
             @if(Session::get('errorMsg'))
                 <div class="alert alert-danger">
                     <button class="close" data-close="alert"></button>
@@ -94,16 +94,16 @@
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.retype_password')}}</label>
                 <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.retype_password')}}" name="repassword" value="{{Request::old('repassword')}}" required />
             </div>
-            @if($is_invite_register)
+            @if(\App\Components\Helpers::systemConfig()['is_invite_register'])
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.code')}}</label>
-                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" @if($is_invite_register == 2) required @endif />
+                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" @if(\App\Components\Helpers::systemConfig()['is_invite_register'] == 2) required @endif />
                 </div>
-                @if($is_free_code)
+                @if(\App\Components\Helpers::systemConfig()['is_free_code'])
                     <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
                 @endif
             @endif
-            @if($is_captcha)
+            @if(\App\Components\Helpers::systemConfig()['is_captcha'])
                 <div class="form-group" style="margin-bottom:75px;">
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
                     <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
@@ -124,7 +124,7 @@
         @endif
         <div class="form-actions">
             <button type="button" class="btn btn-default" onclick="login()">{{trans('register.back')}}</button>
-            @if($is_register)
+            @if(\App\Components\Helpers::systemConfig()['is_register'])
                 <button type="submit" class="btn red uppercase pull-right">{{trans('register.submit')}}</button>
             @endif
         </div>
@@ -185,9 +185,9 @@
 
 
 <!-- 统计 -->
-{!! $website_analytics !!}
+{!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
 <!-- 客服 -->
-{!! $website_customer_service !!}
+{!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
 </body>
 
 </html>

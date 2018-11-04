@@ -201,7 +201,7 @@
                             {{trans('home.account_status')}}：{{trans('home.disabled')}}
                     </li>
                     @endif
-                    @if($login_add_score)
+                    @if(\App\Components\Helpers::systemConfig()['login_add_score'])
                         <li class="list-group-item">
                             {{trans('home.account_score')}}：{{$info['score']}}
                             <span class="badge badge-info">
@@ -240,7 +240,7 @@
                     </li>
                 </ul>
 
-                @if($is_push_bear && $push_bear_qrcode)
+                @if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
                     <ul class="list-group" style="border-radius: 4px;">
                         <li class="list-group-item">
                             <div style="text-align: center">
@@ -534,8 +534,8 @@
         }
 
         // 生成消息通道订阅二维码
-        @if($is_push_bear && $push_bear_qrcode)
-            $('#subscribe_qrcode').qrcode({render:"canvas", text:"{{$push_bear_qrcode}}", width:170, height:170});
+        @if(\App\Components\Helpers::systemConfig()['push_bear_qrcode'])
+            $('#subscribe_qrcode').qrcode({render:"canvas", text:"{{\App\Components\Helpers::systemConfig()['push_bear_qrcode']}}", width:170, height:170});
         @endif
 
         // 更换订阅地址

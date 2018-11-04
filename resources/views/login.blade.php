@@ -32,8 +32,8 @@
 <body class=" login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    @if($website_home_logo)
-        <a href="javascript:;"> <img src="{{$website_home_logo}}" alt="" style="width:300px; height:90px;"/> </a>
+    @if(\App\Components\Helpers::systemConfig()['website_home_logo'])
+        <a href="javascript:;"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
     @else
         <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
     @endif
@@ -97,7 +97,7 @@
             <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('login.password')}}" name="password" value="{{Request::old('password')}}" />
             <input type="hidden" name="_token" value="{{csrf_token()}}" />
         </div>
-        @if($is_captcha)
+        @if(\App\Components\Helpers::systemConfig()['is_captcha'])
             <div class="form-group" style="margin-bottom:65px;">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('login.captcha')}}</label>
                 <input class="form-control form-control-solid placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('login.captcha')}}" name="captcha" value="" />
@@ -118,7 +118,7 @@
         <div class="form-actions">
             <button type="submit" class="btn red btn-block uppercase">{{trans('login.login')}}</button>
         </div>
-        @if($is_register)
+        @if(\App\Components\Helpers::systemConfig()['is_register'])
             <div class="create-account">
                 <p>
                     <a href="{{url('register')}}" class="btn-primary btn">{{trans('login.register')}}</a>
@@ -154,9 +154,9 @@
 </script>
 
 <!-- 统计 -->
-{!! $website_analytics !!}
+{!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
 <!-- 客服 -->
-{!! $website_customer_service !!}
+{!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
 </body>
 
 </html>

@@ -32,7 +32,11 @@
 <body class=" login">
     <!-- BEGIN LOGO -->
     <div class="logo">
-        <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+        @if(\App\Components\Helpers::systemConfig()['website_home_logo'])
+            <a href="javascript:;"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
+        @else
+            <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+        @endif
     </div>
     <!-- END LOGO -->
     <!-- BEGIN LOGIN -->
@@ -80,7 +84,7 @@
         @endif
         <!-- BEGIN FORGOT PASSWORD FORM -->
         <form class="forget-form" action="{{url('resetPassword')}}" method="post" style="display: block;">
-            @if($is_reset_password)
+            @if(\App\Components\Helpers::systemConfig()['is_reset_password'])
                 <div class="form-title">
                     <span class="form-title">{{trans('home.reset_password_title')}}</span>
                 </div>
@@ -95,7 +99,7 @@
             @endif
             <div class="form-actions">
                 <button type="button" class="btn btn-default" onclick="login()">{{trans('register.back')}}</button>
-                @if($is_reset_password)
+                @if(\App\Components\Helpers::systemConfig()['is_reset_password'])
                     <button type="submit" class="btn red uppercase pull-right">{{trans('register.submit')}}</button>
                 @endif
             </div>
@@ -118,9 +122,9 @@
         }
     </script>
     <!-- 统计 -->
-    {!! $website_analytics !!}
+    {!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
     <!-- 客服 -->
-    {!! $website_customer_service !!}
+    {!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
 </body>
 
 </html>
