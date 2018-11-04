@@ -18,7 +18,7 @@
                                                 <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                                     <h3 style="Margin:0;Margin-bottom:10px;color:inherit;font-family:Helvetica,Arial,sans-serif;font-size:28px;font-weight:400;line-height:1.3;margin:0;margin-bottom:0;padding:0;text-align:left;word-wrap:normal">
                                                         <a href="#" style="Margin:0;color:#40253b;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none" target="_blank">
-                                                            SSRPanel
+                                                            {{\App\Components\Helpers::systemConfig()['website_name']}}
                                                         </a>
                                                     </h3>
                                                 </th>

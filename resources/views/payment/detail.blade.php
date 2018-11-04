@@ -56,7 +56,7 @@
 @section('script')
     <script src="/js/layer/layer.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 每2秒查询一次订单状态
+        // 每800毫秒查询一次订单状态
         $(document).ready(function(){
             setInterval("getStatus()", 800);
         });
