@@ -259,8 +259,6 @@ class AdminController extends Controller
         } else {
             // 生成一个可用端口
             $view['last_port'] = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
-            $view['vmess_id'] = createGuid();
-            $view['is_rand_port'] = self::$systemConfig['is_rand_port'];
             $view['method_list'] = Helpers::methodList();
             $view['protocol_list'] = Helpers::protocolList();
             $view['obfs_list'] = Helpers::obfsList();

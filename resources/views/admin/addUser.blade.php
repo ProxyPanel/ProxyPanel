@@ -191,7 +191,7 @@
                                             <div class="form-group">
                                                 <label for="port" class="col-md-3 control-label">端口</label>
                                                 <div class="col-md-8">
-                                                    @if($is_rand_port)
+                                                    @if(\App\Components\Helpers::systemConfig()['is_rand_port'])
                                                         <div class="input-group">
                                                             <input class="form-control" type="text" name="port" value="{{$last_port}}" id="port" />
                                                             <span class="input-group-btn">
@@ -305,7 +305,7 @@
                                                 <label for="vmess_id" class="col-md-3 control-label">VMess用户ID</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input class="form-control" type="text" name="vmess_id" value="{{$vmess_id}}" id="vmess_id" />
+                                                        <input class="form-control" type="text" name="vmess_id" value="{{createGuid()}}" id="vmess_id" />
                                                         <span class="input-group-btn">
                                                             <button class="btn btn-success" type="button" onclick="makeVmessId()"> <i class="fa fa-refresh"></i> </button>
                                                         </span>
