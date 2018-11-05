@@ -32,8 +32,8 @@
 <body class=" login">
     <!-- BEGIN LOGO -->
     <div class="logo">
-        @if(\App\Components\Helpers::systemConfig()['website_logo'])
-            <a href="{{url('/')}}"> <img src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
+        @if(\App\Components\Helpers::systemConfig()['website_home_logo'])
+            <a href="{{url('/')}}"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
         @else
             <a href="{{url('/')}}"> <img src="/assets/images/home_logo.png" alt="" /> </a>
         @endif

@@ -116,7 +116,7 @@ class AuthController extends Controller
                 }
             }
 
-            return Response::view('auth/login');
+            return Response::view('auth.login');
         }
     }
 
