@@ -8,7 +8,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>{{trans('404.title')}}</title>
+    <title>404</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -34,7 +34,7 @@
 <body class="page-500-full-page">
 <div class="row">
     <div class="col-md-12 page-500">
-        <h3>{{trans('404.title')}}</h3>
+        <h2>Page Not Found</h2>
         <p><br></p>
         <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
         <p><br></p>

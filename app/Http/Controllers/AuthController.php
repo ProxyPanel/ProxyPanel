@@ -423,7 +423,7 @@ class AuthController extends Controller
             }
 
             // 校验账号
-            $verify = Verify::query()->where('token', $token)->with('User')->first();
+            $verify = Verify::query()->where('type', 1)->where('token', $token)->with('User')->first();
             if (empty($verify)) {
                 return Redirect::to('login');
             } elseif ($verify->status == 1) {
@@ -460,7 +460,7 @@ class AuthController extends Controller
                 return Redirect::to('login');
             }
 
-            $verify = Verify::query()->where('token', $token)->with('user')->first();
+            $verify = Verify::query()->where('type', 1)->where('token', $token)->with('user')->first();
             if (empty($verify)) {
                 return Redirect::to('login');
             } elseif (time() - strtotime($verify->created_at) >= 1800) {
@@ -471,7 +471,7 @@ class AuthController extends Controller
                 $verify->save();
 
                 // 重新获取一遍verify
-                $view['verify'] = Verify::query()->where('token', $token)->with('user')->first();
+                $view['verify'] = Verify::query()->where('type', 1)->where('token', $token)->with('user')->first();
 
                 return Response::view('auth.reset', $view);
             }
@@ -559,7 +559,7 @@ class AuthController extends Controller
             return Redirect::to('login');
         }
 
-        $verify = Verify::query()->where('token', $token)->with('user')->first();
+        $verify = Verify::query()->where('type', 1)->where('token', $token)->with('user')->first();
         if (empty($verify)) {
             return Redirect::to('login');
         } elseif (empty($verify->user)) {
