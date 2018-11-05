@@ -3,15 +3,15 @@
 Route::get('s/{code}', 'SubscribeController@index'); // 节点订阅地址
 
 Route::group(['middleware' => ['forbidden', 'affiliate']], function () {
-    Route::get('lang/{locale}', 'UserController@switchLang'); // 语言切换
-    Route::any('login', 'LoginController@index'); // 登录
-    Route::get('logout', 'LoginController@logout'); // 退出
-    Route::any('register', 'RegisterController@index'); // 注册
-    Route::any('resetPassword', 'UserController@resetPassword'); // 重设密码
-    Route::any('reset/{token}', 'UserController@reset'); // 重设密码
-    Route::any('activeUser', 'UserController@activeUser'); // 激活账号
-    Route::get('active/{token}', 'UserController@active'); // 激活账号
-    Route::get('free', 'UserController@free'); // 免费邀请码
+    Route::get('lang/{locale}', 'AuthController@switchLang'); // 语言切换
+    Route::any('login', 'AuthController@login'); // 登录
+    Route::get('logout', 'AuthController@logout'); // 退出
+    Route::any('register', 'AuthController@register'); // 注册
+    Route::any('resetPassword', 'AuthController@resetPassword'); // 重设密码
+    Route::any('reset/{token}', 'AuthController@reset'); // 重设密码
+    Route::any('activeUser', 'AuthController@activeUser'); // 激活账号
+    Route::get('active/{token}', 'AuthController@active'); // 激活账号
+    Route::get('free', 'AuthController@free'); // 免费邀请码
     Route::get('makePasswd', 'Controller@makePasswd'); // 生成密码
     Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
 });
