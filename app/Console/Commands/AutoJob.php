@@ -10,6 +10,7 @@ use App\Http\Models\ReferralLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeLabel;
 use App\Http\Models\UserBalanceLog;
+use App\Http\Models\VerifyCode;
 use App\Mail\sendUserInfo;
 use Illuminate\Console\Command;
 use App\Http\Models\Coupon;
@@ -45,6 +46,9 @@ class AutoJob extends Command
     {
         $jobStartTime = microtime(true);
 
+        // 注册验证码自动置无效
+        $this->expireVerifyCode();
+
         // 优惠券到期自动置无效
         $this->expireCoupon();
 
@@ -76,6 +80,12 @@ class AutoJob extends Command
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
         Log::info('执行定时任务【' . $this->description . '】，耗时' . $jobUsedTime . '秒');
+    }
+
+    // 注册验证码自动置无效
+    private function expireVerifyCode()
+    {
+        VerifyCode::query()->where('status', 0)->where('created_at', '>=', date('Y-m-d H:i:s', strtotime("-10 minutes")))->update(['status' => 2]);
     }
 
     // 优惠券到期自动置无效
@@ -454,9 +464,9 @@ class AutoJob extends Command
 
                             try {
                                 Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
-                                Helpers::addEmailLog($order->user_id, $title, json_encode($content));
+                                Helpers::addEmailLog($order->email, $title, json_encode($content));
                             } catch (\Exception $e) {
-                                Helpers::addEmailLog($order->user_id, $title, json_encode($content), 0, $e->getMessage());
+                                Helpers::addEmailLog($order->email, $title, json_encode($content), 0, $e->getMessage());
                             }
                         }
 

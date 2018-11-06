@@ -68,17 +68,17 @@ class TicketController extends Controller
                     if (self::$systemConfig['crash_warning_email']) {
                         try {
                             Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
-                            Helpers::addEmailLog(1, $title, $content);
+                            Helpers::addServerChanLog($title, $content);
                         } catch (\Exception $e) {
-                            Helpers::addEmailLog(1, $title, $content, 0, $e->getMessage());
+                            Helpers::addServerChanLog($title, $content, 0, $e->getMessage());
                         }
                     }
                 } else {
                     try {
                         Mail::to($ticket->user->username)->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
-                        Helpers::addEmailLog($ticket->user_id, $title, $content);
+                        Helpers::addEmailLog($ticket->user->username, $title, $content);
                     } catch (\Exception $e) {
-                        Helpers::addEmailLog($ticket->user_id, $title, $content, 0, $e->getMessage());
+                        Helpers::addEmailLog($ticket->user->username, $title, $content, 0, $e->getMessage());
                     }
                 }
 
@@ -122,9 +122,9 @@ class TicketController extends Controller
         // 发邮件通知用户
         try {
             Mail::to($ticket->user->username)->send(new closeTicket(self::$systemConfig['website_name'], $title, $content));
-            Helpers::addEmailLog($ticket->user_id, $title, $content);
+            Helpers::addEmailLog($ticket->user->username, $title, $content);
         } catch (\Exception $e) {
-            Helpers::addEmailLog($ticket->user_id, $title, $content, 0, $e->getMessage());
+            Helpers::addEmailLog($ticket->user->username, $title, $content, 0, $e->getMessage());
         }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);

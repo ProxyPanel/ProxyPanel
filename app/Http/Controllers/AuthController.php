@@ -9,8 +9,10 @@ use App\Http\Models\User;
 use App\Http\Models\UserLoginLog;
 use App\Http\Models\UserLabel;
 use App\Http\Models\Verify;
+use App\Http\Models\VerifyCode;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
+use App\Mail\sendVerifyCode;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
@@ -140,6 +142,7 @@ class AuthController extends Controller
             $repassword = trim($request->get('repassword'));
             $captcha = trim($request->get('captcha'));
             $code = trim($request->get('code'));
+            $verify_code = trim($request->get('verify_code'));
             $register_token = $request->get('register_token');
             $aff = intval($request->get('aff', 0));
 
@@ -191,15 +194,6 @@ class AuthController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            // 是否校验验证码
-            if (self::$systemConfig['is_captcha']) {
-                if (!Captcha::check($captcha)) {
-                    Session::flash('errorMsg', '验证码错误，请重新输入');
-
-                    return Redirect::back()->withInput();
-                }
-            }
-
             // 如果需要邀请注册
             if (self::$systemConfig['is_invite_register']) {
                 // 必须使用邀请码
@@ -217,6 +211,31 @@ class AuthController extends Controller
 
                         return Redirect::back()->withInput($request->except(['code']));
                     }
+                }
+            }
+
+            // 如果开启注册发送验证码
+            if (self::$systemConfig['is_verify_register']) {
+                if (!$verify_code) {
+                    Session::flash('errorMsg', '请输入验证码');
+
+                    return Redirect::back()->withInput($request->except(['verify_code']));
+                } else {
+                    $verifyCode = VerifyCode::query()->where('username', $username)->where('code', $verify_code)->where('status', 0)->first();
+                    if (!$verifyCode) {
+                        Session::flash('errorMsg', '验证码不合法，可能已过期，请重试');
+
+                        return Redirect::back()->withInput($request->except(['verify_code']));
+                    }
+
+                    $verifyCode->status = 1;
+                    $verifyCode->save();
+                }
+            } elseif (self::$systemConfig['is_captcha']) { // 是否校验验证码
+                if (!Captcha::check($captcha)) {
+                    Session::flash('errorMsg', '验证码错误，请重新输入');
+
+                    return Redirect::back()->withInput($request->except(['captcha']));
                 }
             }
 
@@ -299,22 +318,7 @@ class AuthController extends Controller
                 \Cookie::unqueue('register_aff');
             }
 
-            // 发送邮件
-            if (self::$systemConfig['is_active_register']) {
-                // 生成激活账号的地址
-                $token = md5(self::$systemConfig['website_name'] . $username . microtime());
-                $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
-                $this->addVerify($user->id, $token);
-
-                try {
-                    Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
-                    Helpers::addEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl);
-                } catch (\Exception $e) {
-                    Helpers::addEmailLog($user->id, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
-                }
-
-                Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，如未收到，请查看垃圾邮箱');
-            } else {
+            if (self::$systemConfig['is_verify_register']) {
                 // 如果不需要激活，则直接给推荐人加流量
                 if ($referral_uid) {
                     $transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
@@ -324,6 +328,33 @@ class AuthController extends Controller
                 }
 
                 Session::flash('regSuccessMsg', '注册成功');
+            } else {
+                // 发送激活邮件
+                if (self::$systemConfig['is_active_register']) {
+                    // 生成激活账号的地址
+                    $token = md5(self::$systemConfig['website_name'] . $username . microtime());
+                    $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
+                    $this->addVerify($user->id, $token);
+
+                    try {
+                        Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
+                        Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl);
+                    } catch (\Exception $e) {
+                        Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
+                    }
+
+                    Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，如未收到，请查看垃圾邮箱');
+                } else {
+                    // 如果不需要激活，则直接给推荐人加流量
+                    if ($referral_uid) {
+                        $transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
+
+                        User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
+                        User::query()->where('id', $referral_uid)->update(['enable' => 1]);
+                    }
+
+                    Session::flash('regSuccessMsg', '注册成功');
+                }
             }
 
             return Redirect::to('login');
@@ -388,10 +419,10 @@ class AuthController extends Controller
             $content = '请求地址：' . $resetPasswordUrl;
 
             try {
-                Mail::to($user->username)->send(new resetPassword(self::$systemConfig['website_name'], $resetPasswordUrl));
-                Helpers::addEmailLog($user->id, $title, $content);
+                Mail::to($username)->send(new resetPassword(self::$systemConfig['website_name'], $resetPasswordUrl));
+                Helpers::addEmailLog($username, $title, $content);
             } catch (\Exception $e) {
-                Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());
             }
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
@@ -537,10 +568,10 @@ class AuthController extends Controller
             $content = '请求地址：' . $activeUserUrl;
 
             try {
-                Mail::to($user->username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
-                Helpers::addEmailLog($user->id, $title, $content);
+                Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
+                Helpers::addEmailLog($username, $title, $content);
             } catch (\Exception $e) {
-                Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());
             }
 
             Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
@@ -607,6 +638,54 @@ class AuthController extends Controller
         Session::flash('successMsg', '账号激活成功');
 
         return Response::view('auth.active');
+    }
+
+    // 发送注册验证码
+    public function sendCode(Request $request)
+    {
+        $username = trim($request->get('username'));
+
+        if (!$username) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '请输入用户名']);
+        }
+
+        // 校验账号合法性
+        if (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名必须是合法邮箱，请重新输入']);
+        }
+
+        $user = User::query()->where('username', $username)->first();
+        if ($user) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户已存在，无需注册，如果忘记密码请找回密码']);
+        }
+
+        // 是否开启注册发送验证码
+        if (!self::$systemConfig['is_verify_register']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统未启用通过验证码注册']);
+        }
+
+        // 防刷机制
+        if (Cache::has('send_verify_code_' . md5(getClientIP()))) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统已开启防刷机制，请勿频繁请求']);
+        }
+
+        // 发送邮件
+        $code = makeRandStr(6, true);
+        $title = '发送注册验证码';
+        $content = '验证码：' . $code;
+
+        try {
+            Mail::to($username)->send(new sendVerifyCode($code));
+            Helpers::addEmailLog($username, $title, $content);
+        } catch (\Exception $e) {
+            Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());
+        }
+
+        $this->addVerifyCode($username, $code);
+
+        Cache::put('send_verify_code_' . md5(getClientIP()), getClientIP(), 1);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '验证码已发送']);
     }
 
     // 公开的邀请码列表
@@ -708,6 +787,16 @@ class AuthController extends Controller
         $verify->type = 1;
         $verify->user_id = $userId;
         $verify->token = $token;
+        $verify->status = 0;
+        $verify->save();
+    }
+
+    // 生成注册验证码
+    private function addVerifyCode($username, $code)
+    {
+        $verify = new VerifyCode();
+        $verify->username = $username;
+        $verify->code = $code;
         $verify->status = 0;
         $verify->save();
     }

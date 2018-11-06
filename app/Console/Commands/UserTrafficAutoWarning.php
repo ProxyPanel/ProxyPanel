@@ -53,9 +53,9 @@ class UserTrafficAutoWarning extends Command
 
                 try {
                     Mail::to($user->username)->send(new userTrafficWarning(self::$systemConfig['website_name'], $usedPercent));
-                    Helpers::addEmailLog($user->id, $title, $content);
+                    Helpers::addEmailLog($user->username, $title, $content);
                 } catch (\Exception $e) {
-                    Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                    Helpers::addEmailLog($user->username, $title, $content, 0, $e->getMessage());
                 }
             }
         }

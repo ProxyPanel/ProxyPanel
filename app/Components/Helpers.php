@@ -109,9 +109,9 @@ class Helpers
     }
 
     /**
-     * 写入邮件发送日志
+     * 添加邮件投递日志
      *
-     * @param int    $user_id 用户ID
+     * @param string $address 收信地址
      * @param string $title   标题
      * @param string $content 内容
      * @param int    $status  投递状态
@@ -119,10 +119,35 @@ class Helpers
      *
      * @return int
      */
-    public static function addEmailLog($user_id, $title, $content, $status = 1, $error = '')
+    public static function addEmailLog($address, $title, $content, $status = 1, $error = '')
     {
         $log = new EmailLog();
-        $log->user_id = $user_id;
+        $log->type = 1;
+        $log->address = $address;
+        $log->title = $title;
+        $log->content = $content;
+        $log->status = $status;
+        $log->error = $error;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
+    }
+
+    /**
+     * 添加serverChan投递日志
+     *
+     * @param string $title   标题
+     * @param string $content 内容
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
+     *
+     * @return int
+     */
+    public static function addServerChanLog($title, $content, $status = 1, $error = '')
+    {
+        $log = new EmailLog();
+        $log->type = 2;
+        $log->address = 'admin';
         $log->title = $title;
         $log->content = $content;
         $log->status = $status;

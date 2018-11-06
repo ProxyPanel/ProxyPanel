@@ -5,7 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 验证
+ * 注册时的验证激活地址
  * Class Verify
  *
  * @package App\Http\Models

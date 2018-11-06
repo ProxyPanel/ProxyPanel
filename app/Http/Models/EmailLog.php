@@ -18,8 +18,4 @@ class EmailLog extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-    function user()
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
 }

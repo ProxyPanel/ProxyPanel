@@ -167,9 +167,9 @@ class AutoCheckNodeStatus extends Command
         if (self::$systemConfig['is_node_crash_warning'] && self::$systemConfig['crash_warning_email']) {
             try {
                 Mail::to(self::$systemConfig['crash_warning_email'])->send(new nodeCrashWarning(self::$systemConfig['website_name'], $nodeName, $nodeServer));
-                Helpers::addEmailLog(1, $title, $content);
+                Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
             } catch (\Exception $e) {
-                Helpers::addEmailLog(1, $title, $content, 0, $e->getMessage());
+                Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
             }
         }
     }

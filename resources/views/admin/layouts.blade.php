@@ -245,7 +245,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'emailLog/logList', 'payment/callbackList', 'sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/emailLog', 'payment/callbackList', 'sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="fa fa-wrench"></i>
                         <span class="title">工具箱</span>
@@ -282,8 +282,8 @@
                                 <span class="title">日志分析</span>
                             </a>
                         </li>
-                        <li class="nav-item {{in_array(Request::path(), ['emailLog/logList']) ? 'active open' : ''}}">
-                            <a href="{{url('emailLog/logList')}}" class="nav-link">
+                        <li class="nav-item {{in_array(Request::path(), ['admin/emailLog']) ? 'active open' : ''}}">
+                            <a href="{{url('admin/emailLog')}}" class="nav-link">
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="title">邮件投递记录</span>
                             </a>

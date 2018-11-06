@@ -39,9 +39,9 @@ class ServerChan
 
             $result = json_decode($response->getBody());
             if (!$result->errno) {
-                Helpers::addEmailLog(1, '[ServerChan]' . $title, $content);
+                Helpers::addServerChanLog($title, $content);
             } else {
-                Helpers::addEmailLog(1, '[ServerChan]' . $title, $content, 0, $result->errmsg);
+                Helpers::addServerChanLog($title, $content, 0, $result->errmsg);
             }
         } catch (RequestException $e) {
             Log::error(Psr7\str($e->getRequest()));

@@ -422,9 +422,9 @@ class UserController extends Controller
             if (self::$systemConfig['crash_warning_email']) {
                 try {
                     Mail::to(self::$systemConfig['crash_warning_email'])->send(new newTicket(self::$systemConfig['website_name'], $emailTitle, $content));
-                    Helpers::addEmailLog(1, $emailTitle, $content);
+                    Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $emailTitle, $content);
                 } catch (\Exception $e) {
-                    Helpers::addEmailLog(1, $emailTitle, $content, 0, $e->getMessage());
+                    Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $emailTitle, $content, 0, $e->getMessage());
                 }
             }
 
@@ -471,9 +471,9 @@ class UserController extends Controller
                 if (self::$systemConfig['crash_warning_email']) {
                     try {
                         Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
-                        Helpers::addEmailLog(1, $title, $content);
+                        Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
                     } catch (\Exception $e) {
-                        Helpers::addEmailLog(1, $title, $content, 0, $e->getMessage());
+                        Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
                     }
                 }
 

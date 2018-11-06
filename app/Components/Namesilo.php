@@ -89,13 +89,13 @@ class Namesilo
 
             // 出错
             if (empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success') {
-                Helpers::addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $result['namesilo']['reply']['detail']);
+                Helpers::addServerChanLog('[Namesilo API] - [' . $operation . ']', $content, 0, $result['namesilo']['reply']['detail']);
             }
 
             return $result['namesilo']['reply'];
         } catch (\Exception $e) {
             Log::error('CURL请求失败：' . $e->getMessage() . ' --- ' . $e->getLine());
-            Helpers::addEmailLog(1, '[Namesilo API] - [' . $operation . ']', $content, 0, $e->getMessage());
+            Helpers::addServerChanLog('[Namesilo API] - [' . $operation . ']', $content, 0, $e->getMessage());
 
             return false;
         }

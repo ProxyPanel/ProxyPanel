@@ -55,9 +55,9 @@ class UserExpireAutoWarning extends Command
 
                 try {
                     Mail::to($user->username)->send(new userExpireWarningToday(self::$systemConfig['website_name']));
-                    Helpers::addEmailLog($user->id, $title, $content);
+                    Helpers::addEmailLog($user->username, $title, $content);
                 } catch (\Exception $e) {
-                    Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                    Helpers::addEmailLog($user->username, $title, $content, 0, $e->getMessage());
                 }
             } elseif ($lastCanUseDays > 0 && $lastCanUseDays <= self::$systemConfig['expire_days']) {
                 $title = '账号过期提醒';
@@ -65,9 +65,9 @@ class UserExpireAutoWarning extends Command
 
                 try {
                     Mail::to($user->username)->send(new userExpireWarning(self::$systemConfig['website_name'], $lastCanUseDays));
-                    Helpers::addEmailLog($user->id, $title, $content);
+                    Helpers::addEmailLog($user->username, $title, $content);
                 } catch (\Exception $e) {
-                    Helpers::addEmailLog($user->id, $title, $content, 0, $e->getMessage());
+                    Helpers::addEmailLog($user->username, $title, $content, 0, $e->getMessage());
                 }
             }
         }

@@ -81,7 +81,7 @@
             @endif
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.username')}}</label>
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.username_placeholder')}}" name="username" value="{{Request::old('username')}}" required />
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.username_placeholder')}}" name="username" id="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="register_token" value="{{Session::get('register_token')}}" />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
                 <input type="hidden" name="aff" value="{{Session::get('register_aff')}}" />
@@ -103,7 +103,13 @@
                     <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
                 @endif
             @endif
-            @if(\App\Components\Helpers::systemConfig()['is_captcha'])
+            @if(\App\Components\Helpers::systemConfig()['is_verify_register'])
+                <div class="form-group" style="margin-bottom:75px;">
+                    <label class="control-label visible-ie8 visible-ie9">验证码</label>
+                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="verify_code" value="" required />
+                    <input type="button" class="btn grey" id="sendCode" value="发送" style="float:right;" onclick="sendVerifyCode()" >
+                </div>
+            @elseif(\App\Components\Helpers::systemConfig()['is_captcha'])
                 <div class="form-group" style="margin-bottom:75px;">
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
                     <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
@@ -170,6 +176,49 @@
 //                });
             }
         });
+    }
+
+    // 发送注册验证码
+    function sendVerifyCode() {
+        var flag = true; // 请求成功与否标记
+        var token = '{{csrf_token()}}';
+        var username = $("#username").val();
+        $.ajax({
+            type: "POST",
+            url: "{{url('sendCode')}}",
+            async: false,
+            data: {_token: token, username: username},
+            dataType: 'json',
+            success: function (ret) {
+                if (ret.status == 'fail') {
+                    layer.msg(ret.message, {time: 1000});
+                    $("#sendCode").attr('disabled', false);
+                    flag = false;
+                } else {
+                    $("#sendCode").attr('disabled', true);
+                    flag = true;
+                }
+            },
+            error: function (ret) {
+                layer.msg('请求异常，请重试', {time: 1000});
+                flag = false;
+            }
+        });
+
+        // 请求成功才开始倒计时
+        if (flag) {
+            // 60秒后重新发送
+            var left_time = 60;
+            var tt = window.setInterval(function () {
+                left_time = left_time - 1;
+                if (left_time <= 0) {
+                    window.clearInterval(tt);
+                    $("#sendCode").attr('disabled', false).val('发送');
+                } else {
+                    $("#sendCode").val(left_time);
+                }
+            }, 1000);
+        }
     }
 </script>
 

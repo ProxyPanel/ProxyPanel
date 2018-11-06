@@ -11,6 +11,7 @@ Route::group(['middleware' => ['forbidden', 'affiliate']], function () {
     Route::any('reset/{token}', 'AuthController@reset'); // 重设密码
     Route::any('activeUser', 'AuthController@activeUser'); // 激活账号
     Route::get('active/{token}', 'AuthController@active'); // 激活账号
+    Route::post('sendCode', 'AuthController@sendCode'); // 发送注册验证码
     Route::get('free', 'AuthController@free'); // 免费邀请码
     Route::get('makePasswd', 'Controller@makePasswd'); // 生成密码
     Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
@@ -92,7 +93,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::any('admin/import', 'AdminController@import'); // 数据导入
     Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
     Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
-    Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
+    Route::get('admin/emailLog', 'AdminController@emailLog'); // 邮件发送日志
     Route::get("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
     Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
     Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词

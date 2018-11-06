@@ -359,6 +359,7 @@ INSERT INTO `config` VALUES ('67', 'is_tcp_check', 0);
 INSERT INTO `config` VALUES ('68', 'tcp_check_warning_times', 3);
 INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
 INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
+INSERT INTO `config` VALUES ('71', 'is_verify_register', 0);
 
 
 -- ----------------------------
@@ -428,7 +429,21 @@ CREATE TABLE `verify` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件地址';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='账号激活邮件地址';
+
+
+-- ----------------------------
+-- Table structure for `verify_code`
+-- ----------------------------
+CREATE TABLE `verify_code` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户邮箱',
+  `code` char(6) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '验证码',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='账号激活验证码';
 
 
 -- ----------------------------
@@ -674,9 +689,10 @@ CREATE TABLE `referral_log` (
 -- ----------------------------
 CREATE TABLE `email_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '接收者ID',
-  `title` varchar(255) DEFAULT '' COMMENT '邮件标题',
-  `content` text COMMENT '邮件内容',
+  `type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：1-邮件、2-serverChan',
+  `address` VARCHAR(255) NOT NULL COMMENT '收信地址',
+  `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `content` TEXT NOT NULL COMMENT '内容',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-发送成功、2-发送失败',
   `error` text COMMENT '发送失败抛出的异常信息',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -688,9 +704,9 @@ CREATE TABLE `email_log` (
 -- Table structure for `sensitive_words`
 -- ----------------------------
 CREATE TABLE `sensitive_words` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词',
-	PRIMARY KEY (`id`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='敏感词';
 
 

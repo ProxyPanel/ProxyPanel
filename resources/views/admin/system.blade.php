@@ -154,6 +154,13 @@
                                                                 <span class="help-block"> 如果是机器人、爬虫、代理访问网站则会抛出403错误 </span>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <label for="is_verify_register" class="col-md-3 control-label">注册校验验证码</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_verify_register) checked @endif id="is_verify_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 注册时需要先通过邮件获取验证码方可注册，‘激活账号’失效 </span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </form>
@@ -931,6 +938,21 @@
                 var is_forbid_robot = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_forbid_robot', value:is_forbid_robot}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用注册校验验证码
+        $('#is_verify_register').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_verify_register = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_verify_register', value:is_verify_register}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();

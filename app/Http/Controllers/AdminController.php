@@ -6,6 +6,7 @@ use App\Components\Helpers;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Country;
+use App\Http\Models\EmailLog;
 use App\Http\Models\Invite;
 use App\Http\Models\Label;
 use App\Http\Models\Level;
@@ -2327,5 +2328,13 @@ EOF;
 
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：' . $e->getMessage()]);
         }
+    }
+
+    // 邮件发送日志列表
+    public function emailLog(Request $request)
+    {
+        $view['list'] = EmailLog::query()->orderBy('id', 'desc')->paginate(15);
+
+        return Response::view('admin.emailLog', $view);
     }
 }

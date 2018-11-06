@@ -27,25 +27,27 @@
                         <div class="table-scrollable table-scrollable-borderless">
                             <table class="table table-hover table-light">
                                 <thead>
-                                <tr>
-                                    <th> # </th>
-                                    <th> 接收者 </th>
-                                    <th> 邮件类型 </th>
-                                    <th> 投递内容 </th>
-                                    <th> 投递时间 </th>
-                                    <th> 投递状态 </th>
-                                </tr>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> 类型 </th>
+                                        <th> 收信地址 </th>
+                                        <th> 标题 </th>
+                                        <th> 内容 </th>
+                                        <th> 投递时间 </th>
+                                        <th> 投递状态 </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                 @if($list->isEmpty())
                                     <tr>
-                                        <td colspan="6" style="text-align: center;">暂无数据</td>
+                                        <td colspan="7" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
-                                            <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
+                                            <td> {{$vo->type == 1 ? 'Email' : 'serverChan'}} </td>
+                                            <td> {{$vo->address}} </td>
                                             <td> {{$vo->title}} </td>
                                             <td> {{$vo->content}} </td>
                                             <td> {{$vo->created_at}} </td>
