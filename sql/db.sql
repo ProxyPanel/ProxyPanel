@@ -437,13 +437,13 @@ CREATE TABLE `verify` (
 -- ----------------------------
 CREATE TABLE `verify_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户邮箱',
-  `code` char(6) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '验证码',
+  `username` varchar(128) NOT NULL COMMENT '用户邮箱',
+  `code` char(6) NOT NULL COMMENT '验证码',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='账号激活验证码';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='注册激活验证码';
 
 
 -- ----------------------------
