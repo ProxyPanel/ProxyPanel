@@ -61,7 +61,6 @@ class Kernel extends HttpKernel
         'user' => \App\Http\Middleware\User::class,
         'forbidden' => \App\Http\Middleware\Forbidden::class,
         'affiliate' => \App\Http\Middleware\Affiliate::class,
-        'Muv2' => \App\Http\Middleware\Muv2::class
 
     ];
 }
