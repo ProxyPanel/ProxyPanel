@@ -290,42 +290,48 @@ class AuthController extends Controller
             $user->referral_uid = $referral_uid;
             $user->save();
 
-            if ($user->id) {
-                // 注册次数+1
-                if (Cache::has($cacheKey)) {
-                    Cache::increment($cacheKey);
-                } else {
-                    Cache::put($cacheKey, 1, 1440); // 24小时
-                }
+            // 注册失败，抛出异常
+            if (!$user->id) {
+                Session::flash('errorMsg', '注册失败，请联系管理员');
 
-                // 初始化默认标签
-                if (strlen(self::$systemConfig['initial_labels_for_user'])) {
-                    $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
-                    foreach ($labels as $label) {
-                        $userLabel = new UserLabel();
-                        $userLabel->user_id = $user->id;
-                        $userLabel->label_id = $label;
-                        $userLabel->save();
-                    }
-                }
-
-                // 更新邀请码
-                if (self::$systemConfig['is_invite_register'] && $affArr['code_id']) {
-                    Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $user->id, 'status' => 1]);
-                }
-
-                // 清除邀请人Cookie
-                \Cookie::unqueue('register_aff');
+                return Redirect::back()->withInput();
             }
 
+            // 注册次数+1
+            if (Cache::has($cacheKey)) {
+                Cache::increment($cacheKey);
+            } else {
+                Cache::put($cacheKey, 1, 1440); // 24小时
+            }
+
+            // 初始化默认标签
+            if (strlen(self::$systemConfig['initial_labels_for_user'])) {
+                $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
+                foreach ($labels as $label) {
+                    $userLabel = new UserLabel();
+                    $userLabel->user_id = $user->id;
+                    $userLabel->label_id = $label;
+                    $userLabel->save();
+                }
+            }
+
+            // 更新邀请码
+            if (self::$systemConfig['is_invite_register'] && $affArr['code_id']) {
+                Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $user->id, 'status' => 1]);
+            }
+
+            // 清除邀请人Cookie
+            \Cookie::unqueue('register_aff');
+
             if (self::$systemConfig['is_verify_register']) {
-                // 如果不需要激活，则直接给推荐人加流量
                 if ($referral_uid) {
                     $transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
 
                     User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
-                    User::query()->where('id', $referral_uid)->update(['enable' => 1]);
+                    User::query()->where('id', $referral_uid)->update(['status' => 1, 'enable' => 1]);
                 }
+
+                User::query()->where('id', $user->id)->update(['status' => 1, 'enable' => 1]);
 
                 Session::flash('regSuccessMsg', '注册成功');
             } else {
@@ -350,8 +356,10 @@ class AuthController extends Controller
                         $transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
 
                         User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
-                        User::query()->where('id', $referral_uid)->update(['enable' => 1]);
+                        User::query()->where('id', $referral_uid)->update(['status' => 1, 'enable' => 1]);
                     }
+
+                    User::query()->where('id', $user->id)->update(['status' => 1, 'enable' => 1]);
 
                     Session::flash('regSuccessMsg', '注册成功');
                 }
