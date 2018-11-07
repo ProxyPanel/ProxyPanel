@@ -369,6 +369,11 @@ class AdminController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
             }
 
+            // 禁止取消默认管理员
+            if ($id == 1 && $is_admin == 0) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统默认管理员不可取消']);
+            }
+
             if (!$request->get('usage')) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
             }
@@ -399,8 +404,12 @@ class AdminController extends Controller
                     'expire_time'          => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
                     'remark'               => $remark,
                     'level'                => $level,
-                    'is_admin'             => $is_admin
                 ];
+
+                // 只有admin才有权限操作管理员属性
+                if (Auth::user()->id == 1) {
+                    $data['is_admin'] = $is_admin;
+                }
 
                 if (!empty($password)) {
                     if (!(env('APP_DEMO') && $id == 1)) { // 演示环境禁止修改管理员密码
