@@ -195,6 +195,7 @@
                     $("#sendCode").attr('disabled', false);
                     flag = false;
                 } else {
+                    layer.alert('验证码已发送至您的邮箱，请稍作等待或查看垃圾箱');
                     $("#sendCode").attr('disabled', true);
                     flag = true;
                 }

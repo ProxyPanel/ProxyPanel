@@ -85,7 +85,7 @@ class AutoJob extends Command
     // 注册验证码自动置无效
     private function expireVerifyCode()
     {
-        VerifyCode::query()->where('status', 0)->where('created_at', '>=', date('Y-m-d H:i:s', strtotime("-10 minutes")))->update(['status' => 2]);
+        VerifyCode::query()->where('status', 0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-10 minutes")))->update(['status' => 2]);
     }
 
     // 优惠券到期自动置无效
@@ -474,7 +474,7 @@ class AutoJob extends Command
                     } catch (\Exception $e) {
                         DB::rollBack();
 
-                        Log::info('【有赞云】审计订单时更新支付单和订单异常：' . $e->getMessage());
+                        Log::info('【有赞云】审计订单时更新支付单和订单异常：' . $e);
                     }
                 }
             }
