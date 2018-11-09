@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
             if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => '身份校验失败']);
             } else {
-                return response()->view('404');
+                return response()->view('error.404');
             }
         }
 
@@ -66,11 +66,11 @@ class Handler extends ExceptionHandler
             if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('404.csrf_title')]);
             } else {
-                return response()->view('csrf');
+                return response()->view('error.csrf');
             }
         }
 
-        return response()->view('404');
+        return response()->view('error.404');
     }
 
     /**

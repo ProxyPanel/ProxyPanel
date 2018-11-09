@@ -27,7 +27,7 @@ class Forbidden
             if (Agent::isRobot()) {
                 Log::info("识别到机器人访问(" . getClientIp() . ")");
 
-                return Response::view('403', [], 403);
+                return Response::view('error.403', [], 403);
             }
         }
 
@@ -51,14 +51,14 @@ class Forbidden
             if ($forbidChina && $forbidChina->value && ($ipInfo['country'] == '中国' || ($isIPv6 && $ipInfo['country'] == 'China'))) {
                 Log::info('识别到大陆IP，拒绝访问：' . $ip);
 
-                return Response::view('403', [], 403);
+                return Response::view('error.403', [], 403);
             }
 
             $forbidOversea = Config::query()->where('name', 'is_forbid_oversea')->first();
             if ($forbidOversea && $forbidOversea->value && ($ipInfo['country'] != '中国' || ($isIPv6 && $ipInfo['country'] != 'China'))) {
                 Log::info('识别到海外IP，拒绝访问：' . $ip . ' - ' . $ipInfo['country']);
 
-                return Response::view('403', [], 403);
+                return Response::view('error.403', [], 403);
             }
         }
 
