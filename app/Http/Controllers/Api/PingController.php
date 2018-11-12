@@ -47,15 +47,12 @@ class PingController extends Controller
             // 如果是IPv6
             if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                 $host = '[' . $host . ']';
-            } else {
-                $host = gethostbyname($host);
             }
         }
 
-        $transport = $transport . '://';
-
         try {
-            $fp = stream_socket_client($transport . $host . ':' . $port, $errno, $errstr, $timeout);
+            $host = gethostbyname($host); // 这里如果挂了，说明服务器的DNS解析不给力，必须换
+            $fp = stream_socket_client($transport . '://' . $host . ':' . $port, $errno, $errstr, $timeout);
             if (!$fp) {
                 Log::info("$errstr ($errno)");
                 $ret = 0;

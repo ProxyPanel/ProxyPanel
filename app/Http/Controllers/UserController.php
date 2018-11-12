@@ -91,11 +91,13 @@ class UserController extends Controller
         }
 
         $nodeList = DB::table('ss_node')
+            ->selectRaw('ss_node.*')
             ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
             ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->where('ss_node.status', 1)
             ->groupBy('ss_node.id')
-            ->orderBy('sort', 'desc')
+            ->orderBy('ss_node.sort', 'desc')
+            ->orderBy('ss_node.id', 'asc')
             ->get();
 
         foreach ($nodeList as &$node) {
@@ -179,7 +181,7 @@ class UserController extends Controller
             }
 
             // 节点在线状态
-            $nodeInfo = SsNodeInfo::query()->where('node_id', $node->node_id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+            $nodeInfo = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             $node->online_status = empty($nodeInfo) || empty($nodeInfo->load) ? 0 : 1;
 
             // 节点标签
