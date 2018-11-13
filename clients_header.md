@@ -8,6 +8,11 @@
    Mozilla/5.0 (Linux; U; Android 4.4.4; zh-cn; MX4 Pro Build/KTU84P) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30
 ```
 
+#### Quantumult
+```
+Quantumult/598 CFNetwork/975.0.3 Darwin/18.2.0
+```
+
 #### Shadowrocket
 ```
    Shadowrocket/516 CFNetwork/893.14.2 Darwin/17.3.0

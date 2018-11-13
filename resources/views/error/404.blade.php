@@ -34,7 +34,7 @@
 <body class="page-500-full-page">
 <div class="row">
     <div class="col-md-12 page-500">
-        <h2>Page Not Found</h2>
+        <h2>{{trans('404.title')}}</h2>
         <p><br></p>
         <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
         <p><br></p>

@@ -36,7 +36,7 @@
         <img src="/assets/pages/media/pages/earth.jpg" class="img-responsive" alt="">
     </div>
     <div class="container error-404">
-        <h2>Request Forbidden</h2>
+        <h2>ACCESS DENIED</h2>
         <p>IP or Proxy Access Forbidden</p>
     </div>
     <!--[if lt IE 9]>

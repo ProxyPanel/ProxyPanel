@@ -36,8 +36,8 @@
         <img src="/assets/pages/media/pages/earth.jpg" class="img-responsive" alt="">
     </div>
     <div class="container error-404">
-        <h2>Request Forbidden</h2>
-        <p>未授权的操作</p>
+        <h2>ACCESS DENIED</h2>
+        <p>Unauthorized</p>
         <p>
             <a href="{{Request::server('HTTP_REFERER') ?? url('/')}}" class="btn red btn-outline"> 返回 </a>
             <br>
