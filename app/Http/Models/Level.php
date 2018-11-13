@@ -15,4 +15,5 @@ class Level extends Model
 {
     protected $table = 'level';
     protected $primaryKey = 'id';
+    public $timestamps = false;
 }

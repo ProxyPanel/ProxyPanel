@@ -1701,8 +1701,8 @@ EOF;
     // 添加等级
     public function addLevel(Request $request)
     {
-        $level = $request->get('level');
-        $level_name = $request->get('level_name');
+        $level = intval($request->get('level'));
+        $level_name = trim($request->get('level_name'));
 
         if (empty($level)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不能为空']);
@@ -1717,12 +1717,12 @@ EOF;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级已存在，请勿重复添加']);
         }
 
-        $level = new Level();
-        $level->level = $level;
-        $level->level_name = $level_name;
-        $level->save();
+        $obj = new Level();
+        $obj->level = $level;
+        $obj->level_name = $level_name;
+        $obj->save();
 
-        if ($level->id) {
+        if ($obj->id) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
@@ -1765,12 +1765,9 @@ EOF;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
         }
 
-        $ret = Level::query()->where('id', $id)->update(['level' => $level, 'level_name' => $level_name]);
-        if ($ret) {
-            return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-        } else {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
-        }
+        Level::query()->where('id', $id)->update(['level' => $level, 'level_name' => $level_name]);
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
     // 删除等级
@@ -1826,12 +1823,12 @@ EOF;
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区名称已存在，请勿重复添加']);
         }
 
-        $country = new Country();
-        $country->country_name = $country_name;
-        $country->country_code = $country_code;
-        $country->save();
+        $obj = new Country();
+        $obj->country_name = $country_name;
+        $obj->country_code = $country_code;
+        $obj->save();
 
-        if ($country->id) {
+        if ($obj->id) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
         } else {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
