@@ -67,7 +67,7 @@ class TicketController extends Controller
                 if (!Auth::user()->is_admin) {
                     if (self::$systemConfig['crash_warning_email']) {
                         try {
-                            Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
+                            Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($title, $content));
                             Helpers::addServerChanLog($title, $content);
                         } catch (\Exception $e) {
                             Helpers::addServerChanLog($title, $content, 0, $e->getMessage());
@@ -75,7 +75,7 @@ class TicketController extends Controller
                     }
                 } else {
                     try {
-                        Mail::to($ticket->user->username)->send(new replyTicket(self::$systemConfig['website_name'], $title, $content));
+                        Mail::to($ticket->user->username)->send(new replyTicket($title, $content));
                         Helpers::addEmailLog($ticket->user->username, $title, $content);
                     } catch (\Exception $e) {
                         Helpers::addEmailLog($ticket->user->username, $title, $content, 0, $e->getMessage());
@@ -121,7 +121,7 @@ class TicketController extends Controller
 
         // 发邮件通知用户
         try {
-            Mail::to($ticket->user->username)->send(new closeTicket(self::$systemConfig['website_name'], $title, $content));
+            Mail::to($ticket->user->username)->send(new closeTicket($title, $content));
             Helpers::addEmailLog($ticket->user->username, $title, $content);
         } catch (\Exception $e) {
             Helpers::addEmailLog($ticket->user->username, $title, $content, 0, $e->getMessage());

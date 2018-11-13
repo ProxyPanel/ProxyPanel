@@ -68,8 +68,7 @@
                                 <tr style="padding:0;text-align:left;vertical-align:top">
                                     <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                         <div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
-                                            <p>这是一封来自 {{$websiteName}} 的节点宕机警告。</p>
-                                            <p>系统监测到节点【{{$nodeName}}】({{$nodeServer}})可能宕机了，请及时检查。</p>
+                                            <p>节点【{{$nodeName}}】({{$nodeServer}})可能宕机，请及时检查。</p>
                                         </div>
                                     </th>
                                     <th class="expander" style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0!important;text-align:left;visibility:hidden;width:0"></th>

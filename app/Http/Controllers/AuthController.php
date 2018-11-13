@@ -343,7 +343,7 @@ class AuthController extends Controller
                     $this->addVerify($user->id, $token);
 
                     try {
-                        Mail::to($username)->send(new activeUser(self::$systemConfig['website_name'], $activeUserUrl));
+                        Mail::to($username)->send(new activeUser($activeUserUrl));
                         Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl);
                     } catch (\Exception $e) {
                         Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
@@ -427,7 +427,7 @@ class AuthController extends Controller
             $content = '请求地址：' . $resetPasswordUrl;
 
             try {
-                Mail::to($username)->send(new resetPassword(self::$systemConfig['website_name'], $resetPasswordUrl));
+                Mail::to($username)->send(new resetPassword($resetPasswordUrl));
                 Helpers::addEmailLog($username, $title, $content);
             } catch (\Exception $e) {
                 Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());

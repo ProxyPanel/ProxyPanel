@@ -1,3 +1,6 @@
 <?php
 
-return '430';
+return [
+    'number' => '443',
+    'name'   => 'Standard'
+];

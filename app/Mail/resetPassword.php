@@ -11,19 +11,16 @@ class resetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $websiteName;
     protected $resetPasswordUrl;
 
-    public function __construct($websiteName, $resetPasswordUrl)
+    public function __construct($resetPasswordUrl)
     {
-        $this->websiteName = $websiteName;
         $this->resetPasswordUrl = $resetPasswordUrl;
     }
 
     public function build()
     {
         return $this->view('emails.resetPassword')->subject('重置密码')->with([
-            'websiteName'      => $this->websiteName,
             'resetPasswordUrl' => $this->resetPasswordUrl
         ]);
     }

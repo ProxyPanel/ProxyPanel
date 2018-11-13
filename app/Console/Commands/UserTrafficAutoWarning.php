@@ -52,7 +52,7 @@ class UserTrafficAutoWarning extends Command
                 $content = '流量已使用：' . $usedPercent . '%，请保持关注。';
 
                 try {
-                    Mail::to($user->username)->send(new userTrafficWarning(self::$systemConfig['website_name'], $usedPercent));
+                    Mail::to($user->username)->send(new userTrafficWarning($usedPercent));
                     Helpers::addEmailLog($user->username, $title, $content);
                 } catch (\Exception $e) {
                     Helpers::addEmailLog($user->username, $title, $content, 0, $e->getMessage());

@@ -11,17 +11,8 @@ class userExpireWarningToday extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $websiteName;
-
-    public function __construct($websiteName)
-    {
-        $this->websiteName = $websiteName;
-    }
-
     public function build()
     {
-        return $this->view('emails.userExpireWarningToday')->subject('账号过期提醒')->with([
-            'websiteName' => $this->websiteName,
-        ]);
+        return $this->view('emails.userExpireWarningToday')->subject('账号过期提醒');
     }
 }
