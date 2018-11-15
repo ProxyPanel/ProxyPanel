@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Components\Helpers;
 use App\Components\QQWry;
 use App\Http\Models\Config;
 use Response;
@@ -31,7 +32,6 @@ class Forbidden
             }
         }
 
-        // 拒绝受限IP访问
         $isIPv6 = false;
         $ip = getClientIP();
         $qqwry = new QQWry();
@@ -42,23 +42,28 @@ class Forbidden
             $ipInfo = getIPv6($ip);
         }
 
+        // 拒绝无IP请求
         if (empty($ipInfo) || empty($ipInfo['country'])) {
-            return $next($request);
+            return Response::view('error.403', [], 403);
         }
 
-        if ($ipInfo['country'] != '本机地址' && $ipInfo['country'] != '局域网') {
-            $forbidChina = Config::query()->where('name', 'is_forbid_china')->first();
-            if ($forbidChina && $forbidChina->value && ($ipInfo['country'] == '中国' || ($isIPv6 && $ipInfo['country'] == 'China'))) {
-                Log::info('识别到大陆IP，拒绝访问：' . $ip);
+        if (!in_array($ipInfo['country'], ['本机地址', '局域网'])) {
+            // 拒绝大陆IP访问
+            if (Helpers::systemConfig()['is_forbid_china']) {
+                if (($ipInfo['country'] == '中国' && !in_array($ipInfo['province'], ['香港', '澳门', '台湾'])) || ($isIPv6 && $ipInfo['country'] == 'China')) {
+                    Log::info('识别到大陆IP，拒绝访问：' . $ip);
 
-                return Response::view('error.403', [], 403);
+                    return Response::view('error.403', [], 403);
+                }
             }
 
-            $forbidOversea = Config::query()->where('name', 'is_forbid_oversea')->first();
-            if ($forbidOversea && $forbidOversea->value && ($ipInfo['country'] != '中国' || ($isIPv6 && $ipInfo['country'] != 'China'))) {
-                Log::info('识别到海外IP，拒绝访问：' . $ip . ' - ' . $ipInfo['country']);
+            // 拒绝非大陆IP访问
+            if (Helpers::systemConfig()['is_forbid_oversea']) {
+                if ($ipInfo['country'] != '中国' || in_array($ipInfo['province'], ['香港', '澳门', '台湾']) || ($isIPv6 && $ipInfo['country'] != 'China')) {
+                    Log::info('识别到海外IP，拒绝访问：' . $ip . ' - ' . $ipInfo['country']);
 
-                return Response::view('error.403', [], 403);
+                    return Response::view('error.403', [], 403);
+                }
             }
         }
 
