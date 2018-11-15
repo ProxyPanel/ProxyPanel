@@ -184,7 +184,7 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> 2017 - 2018 &copy; <a href="https://github.com/ssrpanel/ssrpanel" target="_blank">SSRPanel</a> {{config('version.name')}} </div>
+    <div class="page-footer-inner"> &copy; 2017 - 2019 <a href="https://github.com/ssrpanel/ssrpanel" target="_blank">SSRPanel</a> {{config('version.name')}} </div>
     <div class="scroll-to-top">
         <i class="icon-arrow-up"></i>
     </div>
