@@ -150,7 +150,7 @@
                                                     </div>
                                                     <div class="mt-comment-body">
                                                         <div class="mt-comment-info">
-                                                            <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
+                                                            <span class="mt-comment-author">{{$node->name}}</span>
                                                             <span class="mt-comment-date">
                                                                 @if(!$node->online_status)
                                                                     <span class="badge badge-danger">维护中</span>
