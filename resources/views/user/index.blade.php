@@ -191,76 +191,109 @@
                 @endif
             </div>
             <div class="col-md-4" >
-                <ul class="list-group">
-                    @if($info['enable'])
-                    <li class="list-group-item">
-                            {{trans('home.account_status')}}：{{trans('home.enabled')}}
-                        </li>
-                    @else
-                        <li class="list-group-item list-group-item-danger">
-                            {{trans('home.account_status')}}：{{trans('home.disabled')}}
-                    </li>
-                    @endif
-                    @if(\App\Components\Helpers::systemConfig()['login_add_score'])
-                        <li class="list-group-item">
-                            {{trans('home.account_score')}}：{{$info['score']}}
-                            <span class="badge badge-info">
-                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">{{trans('home.redeem_coupon')}}</a>
-                        </span>
-                        </li>
-                    @endif
-                    <li class="list-group-item">
-                        {{trans('home.account_balance')}}：{{$info['balance']}}
-                        <span class="badge badge-danger">
-                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">{{trans('home.recharge')}}</a>
-                        </span>
-                    </li>
-                    @if(date('Y-m-d') > $info['expire_time'])
-                        <li class="list-group-item list-group-item-danger">
-                            {{trans('home.account_expire')}}：{{trans('home.expired')}}
-                        </li>
-                    @else
-                    <li class="list-group-item">
-                            {{trans('home.account_expire')}}：{{$info['expire_time']}}
-                    </li>
-                    @endif
-                    <li class="list-group-item">
-                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? trans('home.never_used') : date('Y-m-d H:i:s', $info['t'])}}
-                    </li>
-                    <li class="list-group-item">
-                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? trans('home.never_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}}
-                    </li>
-                    <li class="list-group-item">
-                        {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;{{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}}  @endif
-                        <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
-                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
-                                <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="caption-subject font-blue bold">{{trans('home.account_info')}}</span>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                <label class="btn red btn-sm">
+                                    <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
+                                </label>
                             </div>
                         </div>
-                    </li>
-                </ul>
-
-                @if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
-                    <ul class="list-group" style="border-radius: 4px;">
-                        <li class="list-group-item">
-                            <div style="text-align: center">
-                                <span> 微信扫码订阅，获取最新资讯 </span>
-                                <br><br>
-                                <div id="subscribe_qrcode" style="text-align: center;"></div>
+                    </div>
+                    <div class="portlet-body form">
+                        <form role="form">
+                            <div class="form-horizontal" style="margin: 0; padding: 0;">
+                                @if($info['enable'])
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="col-md-3">{{trans('home.account_status')}}：</label>
+                                        <p class="form-control-static"> <span class="label label-success">{{trans('home.enabled')}}</span> </p>
+                                    </div>
+                                @else
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="col-md-3">{{trans('home.account_status')}}：</label>
+                                        <p class="form-control-static"> <span class="label label-danger">{{trans('home.disabled')}}</span> </p>
+                                    </div>
+                                @endif
+                                @if(\App\Components\Helpers::systemConfig()['login_add_score'])
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="col-md-3">{{trans('home.account_score')}}：</label>
+                                        <p class="form-control-static"> <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#000;">{{$info['score']}}</a> </p>
+                                    </div>
+                                @endif
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="col-md-3">{{trans('home.account_balance')}}：</label>
+                                    <p class="form-control-static"> {{$info['balance']}} </p>
+                                </div>
+                                @if(date('Y-m-d') > $info['expire_time'])
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="col-md-3">{{trans('home.account_expire')}}：</label>
+                                        <p class="form-control-static"> {{trans('home.expired')}} </p>
+                                    </div>
+                                @else
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="col-md-3">{{trans('home.account_expire')}}：</label>
+                                        <p class="form-control-static"> {{$info['expire_time']}} </p>
+                                    </div>
+                                @endif
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="col-md-3">{{trans('home.account_last_usage')}}：</label>
+                                    <p class="form-control-static"> {{empty($info['t']) ? trans('home.never_used') : date('Y-m-d H:i:s', $info['t'])}} </p>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="col-md-3">{{trans('home.account_last_login')}}：</label>
+                                    <p class="form-control-static"> {{empty($info['last_login']) ? trans('home.never_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}} </p>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="col-md-3">{{trans('home.account_bandwidth_usage')}}：</label>
+                                    <p class="form-control-static"> {{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;{{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}}  @endif </p>
+                                </div>
                             </div>
-                        </li>
-                    </ul>
+                        </form>
+                    </div>
+                </div>
+                @if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <span class="caption-subject font-blue bold">微信扫码订阅，获取最新资讯</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body form">
+                            <div id="subscribe_qrcode" style="text-align: center;"></div>
+                        </div>
+                    </div>
                 @endif
 
-                <ul class="list-group">
-                    @foreach($userLoginLog as $log)
-                    <li class="list-group-item">
-                        {{$log->created_at}}&ensp;{{$log->ip}}&ensp;{{$log->area}}&ensp;{{$log->isp}}
-                    </li>
-                    @endforeach
-                </ul>
+                <div class="portlet light portlet-fit bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="caption-subject font-blue sbold uppercase">{{trans('home.account_login_log')}}</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body" style="padding: 0 20px;">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
+                                <tbody>
+                                    @foreach($userLoginLog as $log)
+                                        <tr>
+                                            <td> {{$log->created_at}} </td>
+                                            <td> {{$log->ip}} </td>
+                                            <td> {{$log->area}} </td>
+                                            <td> {{$log->isp}} </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
             <div class="modal-dialog">
                 <div class="modal-content">

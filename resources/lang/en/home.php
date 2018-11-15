@@ -38,6 +38,7 @@ return [
     'account_total_traffic'           => 'Total',
     'account_usage_traffic'           => 'Usage',
     'account_reset_notice'            => ' reset bandwidth on day :reset_day of each month',
+    'account_login_log'               => 'Login Log',
     'article_title'                   => 'Article List',
     'recharge'                        => 'Recharge',
     'enabled'                         => 'Normal',

@@ -38,6 +38,7 @@ return [
     'account_total_traffic'           => '총',
     'account_usage_traffic'           => '이미사용',
     'account_reset_notice'            => '매월 :reset_day 일에 트래픽 초기화',
+    'account_login_log'               => '로그인 로그',
     'article_title'                   => '공지사항',
     'recharge'                        => '충전',
     'enabled'                         => '정상',
