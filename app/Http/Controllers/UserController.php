@@ -892,7 +892,7 @@ class UserController extends Controller
     // 帮助中心
     public function help(Request $request)
     {
-        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(15);
+        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
 
         return Response::view('user.help', $view);
     }

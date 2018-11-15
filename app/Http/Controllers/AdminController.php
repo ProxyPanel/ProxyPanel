@@ -878,6 +878,7 @@ class AdminController extends Controller
             $article->title = $request->get('title');
             $article->type = $request->get('type', 1);
             $article->author = $request->get('author');
+            $article->summary = $request->get('summary');
             $article->content = $request->get('content');
             $article->is_del = 0;
             $article->sort = $request->get('sort', 0);
@@ -898,13 +899,15 @@ class AdminController extends Controller
             $title = $request->get('title');
             $type = $request->get('type');
             $author = $request->get('author');
-            $sort = $request->get('sort');
+            $summary = $request->get('summary');
             $content = $request->get('content');
+            $sort = $request->get('sort');
 
             $data = [
                 'title'   => $title,
                 'type'    => $type,
                 'author'  => $author,
+                'summary' => $summary,
                 'content' => $content,
                 'sort'    => $sort
             ];

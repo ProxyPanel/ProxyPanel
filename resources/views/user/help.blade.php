@@ -1,13 +1,6 @@
 @extends('user.layouts')
-
 @section('css')
-    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
-    <style>
-        .fancybox > img {
-            width: 75px;
-            height: 75px;
-        }
-    </style>
+    <link href="/assets/pages/css/search.min.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('title', trans('home.panel'))
 @section('content')
@@ -16,36 +9,34 @@
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <!-- BEGIN EXAMPLE TABLE PORTLET-->
-                <div class="portlet light bordered">
-                    <div class="portlet-body">
-                        <div class="table-scrollable table-scrollable-borderless">
-                            <table class="table table-hover table-light  order-column">
-                                <tbody>
+                <div class="search-page search-content-1">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="search-container bordered">
                                 @if($articleList->isEmpty())
-                                    <tr>
-                                        <td colspan="1">{{trans('home.invoice_table_none')}}</td>
-                                    </tr>
+                                    <p style="text-align:center;">{{trans('home.invoice_table_none')}} </p>
                                 @else
-                                    @foreach($articleList as $key => $article)
-                                        <tr class="odd gradeX">
-                                            <td><a href="{{url('article?id=') . $article->id}}"> [{{date('m/d', strtotime($article->created_at))}}] {{str_limit($article->title, 300)}}</a></td>
-                                        </tr>
-                                    @endforeach
+                                    <ul>
+                                        @foreach($articleList as $key => $article)
+                                            <li class="search-item clearfix">
+                                                <a href="javascriptt:;">
+                                                    <img src="{{asset('assets/images/what.png')}}">
+                                                </a>
+                                                <div class="search-content">
+                                                    <h2 class="search-title">
+                                                        <a href="{{url('article?id=') . $article->id}}">{{str_limit($article->title, 300)}}</a>
+                                                    </h2>
+                                                    <p class="search-desc"> {{$article->summary}} </p>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $articleList->links() }}
-                                </div>
+                                {{ $articleList->links() }}
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->

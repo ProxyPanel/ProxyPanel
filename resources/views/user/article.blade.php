@@ -12,7 +12,6 @@
                         <div class="caption">
                             <i class="icon-directions font-green hide"></i>
                             <span class="caption-subject bold font-dark uppercase"> {{$info->title}} </span>
-                            <span class="caption-helper">发布于：{{$info->created_at}}</span></span>
                         </div>
                     </div>
                     <div class="portlet-body">

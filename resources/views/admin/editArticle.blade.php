@@ -51,6 +51,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label col-md-1">简介</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="summary" value="{{$article->summary}}" id="summary" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-1">作者</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="author" value="{{$article->author}}" id="author" placeholder="" required>
@@ -112,6 +118,7 @@
             var title = $('#title').val();
             var type = $("input:radio[name='type']:checked").val();
             var author = $('#author').val();
+            var summary = $('#summary').val();
             var sort = $('#sort').val();
             var content = UE.getEditor('editor').getContent();
 
@@ -119,7 +126,7 @@
                 type: "POST",
                 url: "{{url('admin/editArticle')}}",
                 async: false,
-                data: {_token:_token, id:id, title: title, type:type, author:author, sort:sort, content:content},
+                data: {_token:_token, id:id, title: title, type:type, author:author, summary:summary, sort:sort, content:content},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
