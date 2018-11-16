@@ -2,7 +2,7 @@
 
 Route::get('s/{code}', 'SubscribeController@index'); // 节点订阅地址
 
-Route::group(['middleware' => ['forbidden', 'affiliate']], function () {
+Route::group(['middleware' => ['isForbidden', 'affiliate']], function () {
     Route::get('lang/{locale}', 'AuthController@switchLang'); // 语言切换
     Route::any('login', 'AuthController@login'); // 登录
     Route::get('logout', 'AuthController@logout'); // 退出
@@ -17,7 +17,7 @@ Route::group(['middleware' => ['forbidden', 'affiliate']], function () {
     Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
 });
 
-Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
+Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function () {
     Route::get('admin', 'AdminController@index'); // 后台首页
     Route::get('admin/userList', 'AdminController@userList'); // 账号列表
     Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
@@ -103,7 +103,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
 });
 
-Route::group(['middleware' => ['forbidden', 'user']], function () {
+Route::group(['middleware' => ['isForbidden', 'isLogin']], function () {
     Route::any('/', 'UserController@index'); // 用户首页
     Route::any('article', 'UserController@article'); // 文章详情
     Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址

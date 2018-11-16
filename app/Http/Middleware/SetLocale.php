@@ -4,12 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Session;
-use Illuminate\Support\Facades\App;
 
 class SetLocale
 {
     /**
-     * Handle an incoming request.
+     * 变更语言
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure                 $next
@@ -19,12 +18,12 @@ class SetLocale
     public function handle($request, Closure $next)
     {
         if (Session::has('locale')) {
-            App::setLocale(Session::get('locale'));
+            app()->setLocale(Session::get('locale'));
         }
 
         if ($request->query('locale')) {
             Session::put('locale', $request->query('locale'));
-            App::setLocale($request->query('locale'));
+            app()->setLocale($request->query('locale'));
         }
 
         return $next($request);

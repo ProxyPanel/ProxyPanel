@@ -4,16 +4,14 @@ namespace App\Http\Middleware;
 
 use App\Components\Helpers;
 use App\Components\QQWry;
-use App\Http\Models\Config;
-use Response;
 use Agent;
 use Log;
 use Closure;
 
-class Forbidden
+class isForbidden
 {
     /**
-     * Handle an incoming request.
+     * 限制机器人、指定IP访问
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure                 $next
@@ -23,19 +21,18 @@ class Forbidden
     public function handle($request, Closure $next)
     {
         // 拒绝机器人访问
-        $config = Config::query()->where('name', 'is_forbid_robot')->first();
-        if ($config && $config->value) {
+        if (Helpers::systemConfig()['is_forbid_robot']) {
             if (Agent::isRobot()) {
                 Log::info("识别到机器人访问(" . getClientIp() . ")");
 
-                return Response::view('error.403', [], 403);
+                return response()->view('error.403', [], 403);
             }
         }
 
         $isIPv6 = false;
         $ip = getClientIP();
-        $qqwry = new QQWry();
-        $ipInfo = $qqwry->ip($ip);
+        $qqWry = new QQWry();
+        $ipInfo = $qqWry->ip($ip);
         if (isset($ipInfo['error'])) {
             $isIPv6 = true;
             Log::info('无法识别IP，可能是IPv6，尝试解析：' . $ip);
@@ -44,7 +41,7 @@ class Forbidden
 
         // 拒绝无IP请求
         if (empty($ipInfo) || empty($ipInfo['country'])) {
-            return Response::view('error.403', [], 403);
+            return response()->view('error.403', [], 403);
         }
 
         if (!in_array($ipInfo['country'], ['本机地址', '局域网'])) {
@@ -53,7 +50,7 @@ class Forbidden
                 if (($ipInfo['country'] == '中国' && !in_array($ipInfo['province'], ['香港', '澳门', '台湾'])) || ($isIPv6 && $ipInfo['country'] == 'China')) {
                     Log::info('识别到大陆IP，拒绝访问：' . $ip);
 
-                    return Response::view('error.403', [], 403);
+                    return response()->view('error.403', [], 403);
                 }
             }
 
@@ -62,7 +59,7 @@ class Forbidden
                 if ($ipInfo['country'] != '中国' || in_array($ipInfo['province'], ['香港', '澳门', '台湾']) || ($isIPv6 && $ipInfo['country'] != 'China')) {
                     Log::info('识别到海外IP，拒绝访问：' . $ip . ' - ' . $ipInfo['country']);
 
-                    return Response::view('error.403', [], 403);
+                    return response()->view('error.403', [], 403);
                 }
             }
         }

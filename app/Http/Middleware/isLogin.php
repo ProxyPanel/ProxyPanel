@@ -4,12 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Redirect;
-use Auth;
 
-class Admin
+class isLogin
 {
     /**
-     * Handle an incoming request.
+     * 校验是否已登录
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure                 $next
@@ -18,8 +17,8 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::user()->is_admin) {
-            return Redirect::to('/');
+        if (auth()->guest()) {
+            return Redirect::to('login');
         }
 
         return $next($request);
