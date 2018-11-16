@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if (\Config::get('app.debug')) {
+        if (config('app.debug')) {
             \Log::info("请求导致异常的地址：" . $request->fullUrl() . "，请求IP：" . $request->getClientIp());
 
             return parent::render($request, $exception);
@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
         // 捕获身份校验异常
         if ($exception instanceof AuthenticationException) {
             if ($request->ajax()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => '身份校验失败']);
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Unauthorized']);
             } else {
                 return response()->view('error.404');
             }

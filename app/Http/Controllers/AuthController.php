@@ -131,7 +131,6 @@ class AuthController extends Controller
     }
 
     // 注册
-    // TODO：改成点击发送验证码按钮，而不是到邮箱里去打开激活链接
     public function register(Request $request)
     {
         $cacheKey = 'register_times_' . md5(getClientIp()); // 注册限制缓存key

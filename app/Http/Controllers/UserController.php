@@ -37,6 +37,13 @@ use DB;
 use Auth;
 use Hash;
 
+/**
+ * 用户控制器
+ *
+ * Class UserController
+ *
+ * @package App\Http\Controllers
+ */
 class UserController extends Controller
 {
     protected static $systemConfig;

@@ -15,6 +15,7 @@ use DB;
 
 /**
  * 订阅控制器
+ *
  * Class SubscribeController
  *
  * @package App\Http\Controllers

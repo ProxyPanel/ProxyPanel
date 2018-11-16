@@ -16,6 +16,13 @@ use Log;
 use DB;
 use Auth;
 
+/**
+ * 支付控制器
+ *
+ * Class PaymentController
+ *
+ * @package App\Http\Controllers
+ */
 class PaymentController extends Controller
 {
     protected static $systemConfig;

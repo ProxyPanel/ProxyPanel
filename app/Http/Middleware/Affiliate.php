@@ -8,7 +8,7 @@ use Closure;
 class Affiliate
 {
     /**
-     * Handle an incoming request.
+     * 返利识别
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure                 $next

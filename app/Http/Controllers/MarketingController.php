@@ -9,6 +9,13 @@ use Response;
 use Log;
 use DB;
 
+/**
+ * 促销控制器
+ *
+ * Class MarketingController
+ *
+ * @package App\Http\Controllers
+ */
 class MarketingController extends Controller
 {
     protected static $systemConfig;

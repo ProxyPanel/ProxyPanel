@@ -14,6 +14,7 @@ use DB;
 
 /**
  * 登录接口
+ *
  * Class LoginController
  *
  * @package App\Http\Controllers

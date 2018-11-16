@@ -14,7 +14,8 @@ use Log;
 
 /**
  * 优惠券控制器
- * Class LoginController
+ *
+ * Class CouponController
  *
  * @package App\Http\Controllers
  */

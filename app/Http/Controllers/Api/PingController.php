@@ -6,6 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Log;
 
+/**
+ * PING检测工具
+ *
+ * Class PingController
+ *
+ * @package App\Http\Controllers\Api
+ */
 class PingController extends Controller
 {
     public function ping(Request $request)

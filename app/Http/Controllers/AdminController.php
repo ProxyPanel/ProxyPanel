@@ -42,6 +42,13 @@ use DB;
 use Auth;
 use Hash;
 
+/**
+ * 管理员控制器
+ *
+ * Class AdminController
+ *
+ * @package App\Http\Controllers
+ */
 class AdminController extends Controller
 {
     protected static $systemConfig;

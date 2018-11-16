@@ -14,7 +14,8 @@ use DB;
 
 /**
  * 商店控制器
- * Class LoginController
+ *
+ * Class ShopController
  *
  * @package App\Http\Controllers
  */

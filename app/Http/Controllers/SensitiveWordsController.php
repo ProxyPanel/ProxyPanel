@@ -8,6 +8,7 @@ use Response;
 
 /**
  * 敏感词管理控制器
+ *
  * Class SensitiveWordsController
  *
  * @package App\Http\Controllers

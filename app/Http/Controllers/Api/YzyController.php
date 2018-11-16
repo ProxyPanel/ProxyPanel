@@ -22,6 +22,7 @@ use Hash;
 
 /**
  * 有赞云支付消息推送接收
+ *
  * Class YzyController
  *
  * @package App\Http\Controllers
