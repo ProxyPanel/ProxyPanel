@@ -209,46 +209,46 @@
                             <div class="form-horizontal" style="margin: 0; padding: 0;">
                                 @if($info['enable'])
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <label class="col-md-3">{{trans('home.account_status')}}：</label>
+                                        <label class="col-md-4">{{trans('home.account_status')}}：</label>
                                         <p class="form-control-static"> <span class="label label-success">{{trans('home.enabled')}}</span> </p>
                                     </div>
                                 @else
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <label class="col-md-3">{{trans('home.account_status')}}：</label>
+                                        <label class="col-md-4">{{trans('home.account_status')}}：</label>
                                         <p class="form-control-static"> <span class="label label-danger">{{trans('home.disabled')}}</span> </p>
                                     </div>
                                 @endif
                                 @if(\App\Components\Helpers::systemConfig()['login_add_score'])
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <label class="col-md-3">{{trans('home.account_score')}}：</label>
+                                        <label class="col-md-4">{{trans('home.account_score')}}：</label>
                                         <p class="form-control-static"> <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#000;">{{$info['score']}}</a> </p>
                                     </div>
                                 @endif
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <label class="col-md-3">{{trans('home.account_balance')}}：</label>
+                                    <label class="col-md-4">{{trans('home.account_balance')}}：</label>
                                     <p class="form-control-static"> {{$info['balance']}} </p>
                                 </div>
                                 @if(date('Y-m-d') > $info['expire_time'])
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <label class="col-md-3">{{trans('home.account_expire')}}：</label>
+                                        <label class="col-md-4">{{trans('home.account_expire')}}：</label>
                                         <p class="form-control-static"> {{trans('home.expired')}} </p>
                                     </div>
                                 @else
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <label class="col-md-3">{{trans('home.account_expire')}}：</label>
+                                        <label class="col-md-4">{{trans('home.account_expire')}}：</label>
                                         <p class="form-control-static"> {{$info['expire_time']}} </p>
                                     </div>
                                 @endif
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <label class="col-md-3">{{trans('home.account_last_usage')}}：</label>
+                                    <label class="col-md-4">{{trans('home.account_last_usage')}}：</label>
                                     <p class="form-control-static"> {{empty($info['t']) ? trans('home.never_used') : date('Y-m-d H:i:s', $info['t'])}} </p>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <label class="col-md-3">{{trans('home.account_last_login')}}：</label>
+                                    <label class="col-md-4">{{trans('home.account_last_login')}}：</label>
                                     <p class="form-control-static"> {{empty($info['last_login']) ? trans('home.never_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}} </p>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <label class="col-md-3">{{trans('home.account_bandwidth_usage')}}：</label>
+                                    <label class="col-md-4">{{trans('home.account_bandwidth_usage')}}：</label>
                                     <p class="form-control-static"> {{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;{{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}}  @endif </p>
                                 </div>
                             </div>
