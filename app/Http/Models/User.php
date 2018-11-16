@@ -13,13 +13,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property mixed $balance
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\UserLabel[] $label
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \App\Http\Models\Package $package
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\Payment[] $payment
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read \App\Http\Models\User $referral
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Http\Models\User permission($permissions)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Http\Models\User role($roles)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

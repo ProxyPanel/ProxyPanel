@@ -37,12 +37,12 @@ class SubscribeController extends Controller
 
         // 校验合法性
         $subscribe = UserSubscribe::query()->with('user')->where('code', $code)->where('status', 1)->first();
-        if (empty($subscribe)) {
+        if (!$subscribe) {
             exit($this->noneNode());
         }
 
         $user = User::query()->where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
-        if (empty($user)) {
+        if (!$user) {
             exit($this->noneNode());
         }
 
@@ -59,12 +59,15 @@ class SubscribeController extends Controller
         }
 
         $nodeList = SsNode::query()
+            ->selectRaw('ss_node.*')
             ->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
             ->where('ss_node.type', 1)
             ->where('ss_node.status', 1)
             ->where('ss_node.is_subscribe', 1)
             ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->groupBy('ss_node.id')
+            ->orderBy('ss_node.sort', 'desc')
+            ->orderBy('ss_node.id', 'asc')
             ->get()
             ->toArray();
         if (empty($nodeList)) {
@@ -72,7 +75,9 @@ class SubscribeController extends Controller
         }
 
         // 打乱数组
-        shuffle($nodeList);
+        if (self::$systemConfig['subscribe_max']) {
+            shuffle($nodeList);
+        }
 
         // 控制客户端最多获取节点数
         $scheme = '';
