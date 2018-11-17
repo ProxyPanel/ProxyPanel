@@ -96,6 +96,11 @@ class AdminController extends Controller
         $view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
         $view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount') / 100;
 
+        $view['totalOrder'] = Order::query()->count();
+        $view['totalOnlinePayOrder'] = Order::query()->where('pay_way', 2)->count();
+        $view['totalSuccessOrder'] = Order::query()->where('status', 2)->count();
+        $view['todaySuccessOrder'] = Order::query()->where('status', 2)->where('created_at', '>=', date('Y-m-d 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'))->count();
+
         return Response::view('admin.index', $view);
     }
 
