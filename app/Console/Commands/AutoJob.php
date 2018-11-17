@@ -149,6 +149,11 @@ class AutoJob extends Command
                     ]);
 
                     $this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
+
+                    // 如果注册就有初始流量，则废除其名下邀请码
+                    if (self::$systemConfig['default_traffic']) {
+                        Invite::query()->where('uid', $user->id)->where('status', 0)->update(['status' => 2]);
+                    }
                 } else {
                     User::query()->where('id', $user->id)->update([
                         'u'                 => 0,
