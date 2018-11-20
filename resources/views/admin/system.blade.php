@@ -1532,6 +1532,13 @@
         // 设置最小端口
         $("#min_port").change(function () {
             var min_port = $(this).val();
+            var max_port = $("#max_port").val();
+
+            // 最大端口必须大于最小端口
+            if (parseInt(max_port) <= parseInt(min_port)) {
+                layer.msg('必须小于最大端口', {time:1000});
+                return ;
+            }
 
             if (parseInt(min_port) < 1000) {
                 layer.msg('最小端口不能小于1000', {time:1000});
