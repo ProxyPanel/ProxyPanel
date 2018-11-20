@@ -31,14 +31,12 @@
     <link rel="shortcut icon" href="{{asset('favicon.ico')}}" /> </head>
 <!-- END HEAD -->
 
-<body class="page-500-full-page">
+<body class="page-404-full-page">
 <div class="row">
-    <div class="col-md-12 page-500">
-        <h2>{{trans('404.title')}}</h2>
+    <div class="col-md-12 page-404">
+        <div class="number font-red"> <img src="{{asset('assets/images/404.png')}}" style="width:500px;" /> </div>
         <p><br></p>
-        <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
-        <p><br></p>
-        <a href="{{Request::server('HTTP_REFERER') ?? url('/')}}" class="btn default"> {{trans('404.back')}} </a>
+        <a href="{{Request::server('HTTP_REFERER') ?? url('/')}}" class="btn btn-danger"> {{trans('404.back')}} </a>
     </div>
 </div>
 <!--[if lt IE 9]>

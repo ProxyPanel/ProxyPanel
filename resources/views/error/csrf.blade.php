@@ -36,7 +36,7 @@
     <div class="col-md-12 page-500">
         <h3>{{trans('404.csrf_title')}}</h3>
         <p><br></p>
-        <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
+        <div class="number font-red"> <img src="{{asset('assets/images/404.png')}}" style="width:500px;" /> </div>
         <p><br></p>
         <a href="{{Request::server('HTTP_REFERER') ?? url('/')}}" class="btn default"> {{trans('404.csrf_back')}} </a>
     </div>
