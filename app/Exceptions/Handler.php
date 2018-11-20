@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
+use ReflectionException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,7 +50,7 @@ class Handler extends ExceptionHandler
         if (config('app.debug')) {
             \Log::info("请求导致异常的地址：" . $request->fullUrl() . "，请求IP：" . $request->getClientIp());
 
-            return parent::render($request, $exception);
+            parent::render($request, $exception);
         }
 
         // 捕获身份校验异常
@@ -67,6 +68,14 @@ class Handler extends ExceptionHandler
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('404.csrf_title')]);
             } else {
                 return response()->view('error.csrf');
+            }
+        }
+
+        if ($exception instanceof ReflectionException) {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
+            } else {
+                return response()->view('error.404');
             }
         }
 
