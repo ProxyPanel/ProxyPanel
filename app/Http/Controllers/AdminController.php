@@ -316,7 +316,7 @@ class AdminController extends Controller
                 }
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->get('transfer_enable', 0)), '后台批量生成用户');
+                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB(1000), '后台批量生成用户');
             }
 
             DB::commit();
@@ -2208,7 +2208,7 @@ EOF;
     {
         $username = trim($request->get('username'));
 
-        $query = UserTrafficModifyLog::query()->with(['user', 'order'])->orderBy('id', 'desc');
+        $query = UserTrafficModifyLog::query()->with(['user', 'order', 'order.goods'])->orderBy('id', 'desc');
 
         if ($username) {
             $query->whereHas('user', function ($q) use ($username) {

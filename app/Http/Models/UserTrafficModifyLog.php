@@ -30,4 +30,14 @@ class UserTrafficModifyLog extends Model
         return $this->hasOne(Order::class, 'oid', 'order_id');
     }
 
+    function getBeforeAttribute($value)
+    {
+        return $this->attributes['before'] = flowAutoShow($value);
+    }
+
+    function getAfterAttribute($value)
+    {
+        return $this->attributes['after'] = flowAutoShow($value);
+    }
+
 }

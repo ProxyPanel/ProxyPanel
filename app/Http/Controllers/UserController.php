@@ -373,11 +373,11 @@ class UserController extends Controller
     }
 
     // 商品列表
-    public function goodsList(Request $request)
+    public function services(Request $request)
     {
         $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
-        return Response::view('user.goodsList', $view);
+        return Response::view('user.services', $view);
     }
 
     // 工单
@@ -389,19 +389,19 @@ class UserController extends Controller
     }
 
     // 订单
-    public function orderList(Request $request)
+    public function invoices(Request $request)
     {
         $view['orderList'] = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', Auth::user()->id)->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
 
-        return Response::view('user.orderList', $view);
+        return Response::view('user.invoices', $view);
     }
 
     // 订单明细
-    public function orderDetail(Request $request, $sn)
+    public function invoiceDetail(Request $request, $sn)
     {
         $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
 
-        return Response::view('user.orderDetail', $view);
+        return Response::view('user.invoiceDetail', $view);
     }
 
     // 添加工单
@@ -712,13 +712,24 @@ class UserController extends Controller
 
                         // 先判断，防止手动扣减过流量的用户流量被扣成负数
                         if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                            // 写入用户流量变动记录
+                            Helpers::addUserTrafficModifyLog($user->id, $order->oid, 0, 0, '[余额支付]用户购买套餐，先扣减之前套餐的流量(扣完)');
+
                             User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
                         } else {
+                            // 写入用户流量变动记录
+                            $user = User::query()->where('id', $user->id)->first(); // 重新取出user信息
+                            Helpers::addUserTrafficModifyLog($user->id, $order->oid, $user->transfer_enable, ($user->transfer_enable - $vo->goods->traffic * 1048576), '[余额支付]用户购买套餐，先扣减之前套餐的流量(未扣完)');
+
                             User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
                             User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
                         }
                     }
                 }
+
+                // 写入用户流量变动记录
+                $user = User::query()->where('id', $user->id)->first(); // 重新取出user信息
+                Helpers::addUserTrafficModifyLog($user->id, $order->oid, $user->transfer_enable, ($user->transfer_enable + $goods->traffic * 1048576), '[余额支付]用户购买商品，加上流量');
 
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);

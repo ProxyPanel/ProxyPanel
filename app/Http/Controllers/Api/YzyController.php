@@ -193,13 +193,24 @@ class YzyController extends Controller
 
                         // 先判断，防止手动扣减过流量的用户流量被扣成负数
                         if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                            // 写入用户流量变动记录
+                            Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, 0, 0, '[在线支付]用户购买套餐，先扣减之前套餐的流量(扣完)');
+
                             User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
                         } else {
+                            // 写入用户流量变动记录
+                            $user = User::query()->where('id', $order->user_id)->first(); // 重新取出user信息
+                            Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, ($user->transfer_enable - $vo->goods->traffic * 1048576), '[在线支付]用户购买套餐，先扣减之前套餐的流量(未扣完)');
+
                             User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
                             User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
                         }
                     }
                 }
+
+                // 写入用户流量变动记录
+                $user = User::query()->where('id', $order->user_id)->first(); // 重新取出user信息
+                Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, ($user->transfer_enable + $goods->traffic * 1048576), '[在线支付]用户购买商品，加上流量');
 
                 // 把商品的流量加到账号上
                 User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
