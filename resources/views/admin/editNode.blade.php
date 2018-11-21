@@ -437,8 +437,10 @@
     <script type="text/javascript">
         // 用户标签选择器
         $('#labels').select2({
+            theme: 'bootstrap',
             placeholder: '设置后则可见相同标签的节点',
-            allowClear: true
+            allowClear: true,
+            width:'100%'
         });
 
         // ajax同步提交
