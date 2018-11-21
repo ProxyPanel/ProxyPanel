@@ -109,9 +109,13 @@
                                             <div class="tab-pane" id="tools4">
                                                 <ol>
                                                     @if(Agent::is('iPhone') || Agent::is('iPad'))
-                                                        <li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li>
+                                                        @if(Agent::is('Safari'))
+                                                            <li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li>
+                                                        @else
+                                                            <li> <a href="javascript:onlineInstallWarning();">点击此处在线安装</a></li>
+                                                        @endif
                                                     @endif
-                                                    <li> 请从站长处获取App Store美区ID及教程 </li>
+                                                    <li> 请从站长处获取App Store账号密码 </li>
                                                 </ol>
                                             </div>
                                             <div class="tab-pane" id="tools5">
@@ -521,6 +525,11 @@
             });
 
             return false;
+        }
+
+        // 在线安装警告提示
+        function onlineInstallWarning() {
+            layer.msg('仅限在Safari浏览器下有效，请使用Safari浏览器打开本页面', {time:1000});
         }
     </script>
 
