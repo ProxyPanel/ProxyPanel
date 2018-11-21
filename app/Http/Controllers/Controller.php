@@ -117,29 +117,6 @@ class Controller extends BaseController
     }
 
     /**
-     * 记录流量变动日志
-     *
-     * @param int    $userId 用户ID
-     * @param string $oid    订单ID
-     * @param int    $before 记录前的值
-     * @param int    $after  记录后的值
-     * @param string $desc   描述
-     *
-     * @return int
-     */
-    public function addUserTrafficModifyLog($userId, $oid, $before, $after, $desc = '')
-    {
-        $log = new UserTrafficModifyLog();
-        $log->user_id = $userId;
-        $log->order_id = $oid;
-        $log->before = $before;
-        $log->after = $after;
-        $log->desc = $desc;
-
-        return $log->save();
-    }
-
-    /**
      * 添加返利日志
      *
      * @param int $userId    用户ID

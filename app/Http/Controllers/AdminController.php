@@ -255,15 +255,10 @@ class AdminController extends Controller
 
             if ($user->id) {
                 // 生成用户标签
-                $labels = $request->get('labels');
-                if (!empty($labels)) {
-                    foreach ($labels as $label) {
-                        $userLabel = new UserLabel();
-                        $userLabel->user_id = $user->id;
-                        $userLabel->label_id = $label;
-                        $userLabel->save();
-                    }
-                }
+                $this->makeUserLabels($user->id, $request->get('labels', []));
+
+                // 写入用户流量变动记录
+                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->get('transfer_enable', 0)), '后台手动添加用户');
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
             } else {
@@ -317,13 +312,11 @@ class AdminController extends Controller
                 // 初始化默认标签
                 if (count(self::$systemConfig['initial_labels_for_user']) > 0) {
                     $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
-                    foreach ($labels as $label) {
-                        $userLabel = new UserLabel();
-                        $userLabel->user_id = $user->id;
-                        $userLabel->label_id = $label;
-                        $userLabel->save();
-                    }
+                    $this->makeUserLabels($user->id, $labels);
                 }
+
+                // 写入用户流量变动记录
+                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->get('transfer_enable', 0)), '后台批量生成用户');
             }
 
             DB::commit();
@@ -339,7 +332,7 @@ class AdminController extends Controller
     // 编辑账号
     public function editUser(Request $request)
     {
-        $id = $request->get('id');
+        $id = intval($request->get('id'));
 
         if ($request->method() == 'POST') {
             $username = trim($request->get('username'));
@@ -362,7 +355,7 @@ class AdminController extends Controller
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
             $status = $request->get('status');
-            $labels = $request->get('labels');
+            $labels = $request->get('labels', []);
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = str_replace("eval", "", str_replace("atob", "", $request->get('remark')));
@@ -389,6 +382,9 @@ class AdminController extends Controller
             if (!$request->get('usage')) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
             }
+
+            // 用户编辑前的信息
+            $user = User::query()->where('id', $id)->first();
 
             DB::beginTransaction();
             try {
@@ -432,17 +428,10 @@ class AdminController extends Controller
                 User::query()->where('id', $id)->update($data);
 
                 // 重新生成用户标签
-                if (!empty($labels)) {
-                    // 先删除该用户所有的标签
-                    UserLabel::query()->where('user_id', $id)->delete();
+                $this->makeUserLabels($id, $labels);
 
-                    foreach ($labels as $label) {
-                        $userLabel = new UserLabel();
-                        $userLabel->user_id = $id;
-                        $userLabel->label_id = $label;
-                        $userLabel->save();
-                    }
-                }
+                // 写入用户流量变动记录
+                Helpers::addUserTrafficModifyLog($id, 0, $user->transfer_enable, toGB($transfer_enable), '后台手动编辑用户');
 
                 DB::commit();
 
@@ -2357,5 +2346,21 @@ EOF;
         $view['list'] = EmailLog::query()->orderBy('id', 'desc')->paginate(15);
 
         return Response::view('admin.emailLog', $view);
+    }
+
+    // 生成用户标签
+    private function makeUserLabels($userId, $labels = [])
+    {
+        if (!empty($labels)) {
+            // 先删除该用户所有的标签
+            UserLabel::query()->where('user_id', $userId)->delete();
+
+            foreach ($labels as $label) {
+                $userLabel = new UserLabel();
+                $userLabel->user_id = $userId;
+                $userLabel->label_id = $label;
+                $userLabel->save();
+            }
+        }
     }
 }
