@@ -21,13 +21,6 @@ use DB;
  */
 class ShopController extends Controller
 {
-    protected static $systemConfig;
-
-    function __construct()
-    {
-        self::$systemConfig = Helpers::systemConfig();
-    }
-
     // 商品列表
     public function goodsList(Request $request)
     {

@@ -4,10 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>系统日志</title>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <style>
         body {
@@ -72,8 +69,7 @@
                         @if ($current_folder == $folder)
                             <div class="list-group folder">
                                 @foreach($folder_files as $file)
-                                    <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}&f={{ \Illuminate\Support\Facades\Crypt::encrypt($folder) }}"
-                                       class="list-group-item @if ($current_file == $file) llv-active @endif">
+                                    <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}&f={{ \Illuminate\Support\Facades\Crypt::encrypt($folder) }}" class="list-group-item @if ($current_file == $file) llv-active @endif">
                                         {{$file}}
                                     </a>
                                 @endforeach
@@ -82,8 +78,7 @@
                     </div>
                 @endforeach
                 @foreach($files as $file)
-                    <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}"
-                       class="list-group-item @if ($current_file == $file) llv-active @endif">
+                    <a href="?l={{ \Illuminate\Support\Facades\Crypt::encrypt($file) }}" class="list-group-item @if ($current_file == $file) llv-active @endif">
                         {{$file}}
                     </a>
                 @endforeach
@@ -114,17 +109,14 @@
                         <tr data-display="stack{{{$key}}}">
                             @if ($standardFormat)
                                 <td class="text-{{{$log['level_class']}}}">
-                                    <span class="fa fa-{{{$log['level_img']}}}"
-                                          aria-hidden="true"></span>&nbsp;&nbsp;{{$log['level']}}
+                                    <span class="fa fa-{{{$log['level_img']}}}" aria-hidden="true"></span>&nbsp;&nbsp;{{$log['level']}}
                                 </td>
                                 <td class="text">{{$log['context']}}</td>
                             @endif
                             <td class="date">{{{$log['date']}}}</td>
                             <td class="text">
                                 @if ($log['stack'])
-                                    <button type="button"
-                                            class="float-right expand btn btn-outline-dark btn-sm mb-2 ml-2"
-                                            data-display="stack{{{$key}}}">
+                                    <button type="button" class="float-right expand btn btn-outline-dark btn-sm mb-2 ml-2" data-display="stack{{{$key}}}">
                                         <span class="fa fa-search"></span>
                                     </button>
                                 @endif
@@ -133,8 +125,7 @@
                                     <br/>{{{$log['in_file']}}}
                                 @endif
                                 @if ($log['stack'])
-                                    <div class="stack" id="stack{{{$key}}}"
-                                         style="display: none; white-space: pre-wrap;">{{{ trim($log['stack']) }}}
+                                    <div class="stack" id="stack{{{$key}}}" style="display: none; white-space: pre-wrap;">{{{ trim($log['stack']) }}}
                                     </div>
                                 @endif
                             </td>
@@ -172,12 +163,8 @@
     </div>
 </div>
 <!-- jQuery for Bootstrap -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <!-- FontAwesome -->
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 <!-- Datatables -->
