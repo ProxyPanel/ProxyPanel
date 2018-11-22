@@ -222,9 +222,6 @@ class UserController extends Controller
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
             $passwd = trim($request->get('passwd'));
-            $method = $request->get('method');
-            $protocol = $request->get('protocol');
-            $obfs = $request->get('obfs');
 
             // 修改密码
             if ($old_password && $new_password) {
@@ -277,52 +274,23 @@ class UserController extends Controller
                 }
             }
 
-            // 修改SSR(R)设置
-            if ($method || $protocol || $obfs) {
-                if (empty($passwd)) {
-                    Session::flash('errorMsg', '密码不能为空');
-
-                    return Redirect::to('profile#tab_3');
-                }
-
-                // 加密方式、协议、混淆必须存在
-                $existMethod = SsConfig::query()->where('type', 1)->where('name', $method)->first();
-                $existProtocol = SsConfig::query()->where('type', 2)->where('name', $protocol)->first();
-                $existObfs = SsConfig::query()->where('type', 3)->where('name', $obfs)->first();
-                if (!$existMethod || !$existProtocol || !$existObfs) {
-                    Session::flash('errorMsg', '非法请求');
-
-                    return Redirect::to('profile#tab_3');
-                }
-
-                $data = [
-                    'passwd'   => $passwd,
-                    'method'   => $method,
-                    'protocol' => $protocol,
-                    'obfs'     => $obfs
-                ];
-
-                $ret = User::query()->where('id', Auth::user()->id)->update($data);
+            // 修改代理密码
+            if ($passwd) {
+                $ret = User::query()->where('id', Auth::user()->id)->update(['passwd' => $passwd]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
                     return Redirect::to('profile#tab_3');
                 } else {
-                    // 更新session
-                    $user = User::query()->where('id', Auth::user()->id)->first()->toArray();
-                    Session::remove('user');
-                    Session::put('user', $user);
-
                     Session::flash('successMsg', '修改成功');
 
                     return Redirect::to('profile#tab_3');
                 }
             }
+
+            Session::flash('errorMsg', '非法请求');
+            return Redirect::to('profile#tab_1');
         } else {
-            // 加密方式、协议、混淆
-            $view['method_list'] = Helpers::methodList();
-            $view['protocol_list'] = Helpers::protocolList();
-            $view['obfs_list'] = Helpers::obfsList();
             $view['info'] = User::query()->where('id', Auth::user()->id)->first();
 
             return Response::view('user.profile', $view);
