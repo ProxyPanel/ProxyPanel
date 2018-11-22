@@ -154,6 +154,9 @@ class AutoJob extends Command
                     if (self::$systemConfig['default_traffic']) {
                         Invite::query()->where('uid', $user->id)->where('status', 0)->update(['status' => 2]);
                     }
+
+                    // 写入用户流量变动记录
+                    Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
                 } else {
                     User::query()->where('id', $user->id)->update([
                         'u'                 => 0,
@@ -165,6 +168,9 @@ class AutoJob extends Command
                     ]);
 
                     $this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
+
+                    // 写入用户流量变动记录
+                    Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
                 }
             }
         }
@@ -211,6 +217,9 @@ class AutoJob extends Command
                     'transfer_enable'   => 0,
                     'traffic_reset_day' => 0
                 ]);
+
+                // 写入用户流量变动记录
+                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]移除过期的账号的标签和流量');
             }
         }
     }
@@ -370,8 +379,14 @@ class AutoJob extends Command
 
                                     // 先判断，防止手动扣减过流量的用户流量被扣成负数
                                     if ($order->user->transfer_enable - $vo->goods->traffic * 1048576 <= 0) {
+                                        // 写入用户流量变动记录
+                                        Helpers::addUserTrafficModifyLog($order->user_id, 0, $order->user->transfer_enable, 0, '[定时任务]审计待支付的订单(扣完)');
+
                                         User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
                                     } else {
+                                        // 写入用户流量变动记录
+                                        Helpers::addUserTrafficModifyLog($order->user_id, 0, $order->user->transfer_enable, ($order->user->transfer_enable - $vo->goods->traffic * 1048576), '[定时任务]审计待支付的订单');
+
                                         User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0]);
                                         User::query()->where('id', $order->user_id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
                                     }

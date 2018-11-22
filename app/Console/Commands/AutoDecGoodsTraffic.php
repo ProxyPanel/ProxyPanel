@@ -57,8 +57,14 @@ class AutoDecGoodsTraffic extends Command
                     }
 
                     if ($order->user->transfer_enable - $order->goods->traffic * 1048576 <= 0) {
+                        // 写入用户流量变动记录
+                        Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $order->user->transfer_enable, 0, '[定时任务]用户所购商品到期，扣减商品对应的流量(扣完并重置)');
+
                         User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
                     } else {
+                        // 写入用户流量变动记录
+                        Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $order->user->transfer_enable, ($order->goods->traffic * 1048576), '[定时任务]用户所购商品到期，扣减商品对应的流量(没扣完)');
+
                         User::query()->where('id', $order->user_id)->decrement('transfer_enable', $order->goods->traffic * 1048576);
 
                         // 处理已用流量
