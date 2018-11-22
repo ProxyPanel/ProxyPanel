@@ -109,7 +109,7 @@
                                             <div class="tab-pane" id="tools4">
                                                 <ol>
                                                     @if(Agent::is('iPhone') || Agent::is('iPad'))
-                                                        @if(Agent::is('Safari'))
+                                                        @if(Agent::isSafari())
                                                             <li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li>
                                                         @else
                                                             <li> <a href="javascript:onlineInstallWarning();">点击此处在线安装</a></li>
