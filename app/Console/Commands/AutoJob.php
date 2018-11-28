@@ -61,9 +61,6 @@ class AutoJob extends Command
         // 封禁账号
         $this->blockUsers();
 
-        // 移除过期的账号的标签和流量
-        $this->removeUserLabels();
-
         // 解封被封禁的账号
         $this->unblockUsers();
 
@@ -172,6 +169,9 @@ class AutoJob extends Command
                     // 写入用户流量变动记录
                     Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
                 }
+
+                // 移除标签
+                UserLabel::query()->where('user_id', $user->id)->delete();
             }
         }
 
@@ -200,26 +200,6 @@ class AutoJob extends Command
 
                 // 写入日志
                 $this->addUserBanLog($user->id, 0, '【封禁代理】-流量已用完');
-            }
-        }
-    }
-
-    // 移除过期的账号的标签和流量（临时封禁不移除）
-    private function removeUserLabels()
-    {
-        $userList = User::query()->where('enable', 0)->where('ban_time', 0)->where('expire_time', '<', date('Y-m-d'))->get();
-        if (!$userList->isEmpty()) {
-            foreach ($userList as $user) {
-                UserLabel::query()->where('user_id', $user->id)->delete();
-                User::query()->where('id', $user->id)->update([
-                    'u'                 => 0,
-                    'd'                 => 0,
-                    'transfer_enable'   => 0,
-                    'traffic_reset_day' => 0
-                ]);
-
-                // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]移除过期的账号的标签和流量');
             }
         }
     }
