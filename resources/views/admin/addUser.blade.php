@@ -29,13 +29,13 @@
                                             <div class="form-group">
                                                 <label for="username" class="col-md-3 control-label">用户名</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
+                                                    <input type="text" class="form-control" name="username" id="username" placeholder="" autocomplete="off" autofocus required />
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="password" class="col-md-3 control-label">密码</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="password" value="" id="password" placeholder="留空则自动生成随机密码">
+                                                    <input type="text" class="form-control" name="password" value="" id="password" placeholder="留空则自动生成随机密码" autocomplete="off" />
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -43,19 +43,19 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-checkbox-inline">
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="1" checked> 手机
+                                                            <input type="checkbox" name="usage" value="1" checked /> 手机
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="2"> 电脑
+                                                            <input type="checkbox" name="usage" value="2" /> 电脑
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="3"> 路由器
+                                                            <input type="checkbox" name="usage" value="3" /> 路由器
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox">
-                                                            <input type="checkbox" name="usage" value="4"> 平板
+                                                            <input type="checkbox" name="usage" value="4" /> 平板
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -66,23 +66,23 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="0"> 免费
+                                                            <input type="radio" name="pay_way" value="0" /> 免费
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="1"> 月付
+                                                            <input type="radio" name="pay_way" value="1" /> 月付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="2"> 季付
+                                                            <input type="radio" name="pay_way" value="2" /> 季付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="3" checked> 半年付
+                                                            <input type="radio" name="pay_way" value="3" checked /> 半年付
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="pay_way" value="4"> 年付
+                                                            <input type="radio" name="pay_way" value="4" /> 年付
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -104,9 +104,9 @@
                                                 <label class="col-md-3 control-label">有效期</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group input-large input-daterange">
-                                                        <input type="text" class="form-control" name="enable_time" id="enable_time">
+                                                        <input type="text" class="form-control" name="enable_time" id="enable_time" autocomplete="off" />
                                                         <span class="input-group-addon"> 至 </span>
-                                                        <input type="text" class="form-control" name="expire_time" id="expire_time">
+                                                        <input type="text" class="form-control" name="expire_time" id="expire_time" autocomplete="off" />
                                                     </div>
                                                     <span class="help-block"> 留空默认为一年 </span>
                                                 </div>
@@ -116,15 +116,15 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="status" value="1" checked> 正常
+                                                            <input type="radio" name="status" value="1" checked /> 正常
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="status" value="0"> 未激活
+                                                            <input type="radio" name="status" value="0" /> 未激活
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="status" value="-1"> 禁用
+                                                            <input type="radio" name="status" value="-1" /> 禁用
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -160,13 +160,13 @@
                                             <div class="form-group">
                                                 <label for="wechat" class="col-md-3 control-label">微信</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="wechat" id="wechat" placeholder="">
+                                                    <input type="text" class="form-control" name="wechat" id="wechat" autocomplete="off" />
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="qq" class="col-md-3 control-label">QQ</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="qq" id="qq" placeholder="">
+                                                    <input type="text" class="form-control" name="qq" id="qq" autocomplete="off" />
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -193,13 +193,13 @@
                                                 <div class="col-md-8">
                                                     @if(\App\Components\Helpers::systemConfig()['is_rand_port'])
                                                         <div class="input-group">
-                                                            <input class="form-control" type="text" name="port" value="{{$last_port}}" id="port" />
+                                                            <input class="form-control" type="text" name="port" value="{{$last_port}}" id="port" autocomplete="off" />
                                                             <span class="input-group-btn">
                                                                 <button class="btn btn-success" type="button" onclick="makePort()"> 生成 </button>
                                                             </span>
                                                         </div>
                                                     @else
-                                                        <input type="text" class="form-control" name="port" value="{{$last_port}}" id="port" placeholder="" aria-required="true" aria-invalid="true" aria-describedby="number-error" required>
+                                                        <input type="text" class="form-control" name="port" value="{{$last_port}}" id="port" autocomplete="off" aria-required="true" aria-invalid="true" aria-describedby="number-error" required />
                                                     @endif
                                                 </div>
                                             </div>
@@ -207,7 +207,7 @@
                                                 <label for="passwd" class="col-md-3 control-label">密码</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input class="form-control" type="text" name="passwd" id="passwd" placeholder="留空则自动生成随机密码" />
+                                                        <input class="form-control" type="text" name="passwd" id="passwd" placeholder="留空则自动生成随机密码" autocomplete="off" />
                                                         <span class="input-group-btn">
                                                             <button class="btn btn-success" type="button" onclick="makePasswd()"> 生成 </button>
                                                         </span>
@@ -228,7 +228,7 @@
                                                 <label for="transfer_enable" class="col-md-3 control-label">可用流量</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="transfer_enable" value="1000" id="transfer_enable" placeholder="" required>
+                                                        <input type="text" class="form-control" name="transfer_enable" value="1000" id="transfer_enable" autocomplete="off" required>
                                                         <span class="input-group-addon">GiB</span>
                                                     </div>
                                                 </div>
@@ -238,11 +238,11 @@
                                                 <div class="col-md-8">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="enable" value="1" checked> 启用
+                                                            <input type="radio" name="enable" value="1" checked /> 启用
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio">
-                                                            <input type="radio" name="enable" value="0"> 禁用
+                                                            <input type="radio" name="enable" value="0" /> 禁用
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -272,7 +272,7 @@
                                             <div class="form-group">
                                                 <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="protocol_param" id="protocol_param" placeholder="节点单端口时无效">
+                                                    <input type="text" class="form-control" name="protocol_param" id="protocol_param" placeholder="节点单端口时无效" autocomplete="off" />
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -286,7 +286,7 @@
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" placeholder="" disabled>
+                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" autocomplete="off" disabled />
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -295,7 +295,7 @@
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">单用户限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" placeholder="" disabled>
+                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" autocomplete="off" disabled />
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -305,7 +305,7 @@
                                                 <label for="vmess_id" class="col-md-3 control-label">VMess用户ID</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input class="form-control" type="text" name="vmess_id" value="{{createGuid()}}" id="vmess_id" />
+                                                        <input class="form-control" type="text" name="vmess_id" value="{{createGuid()}}" id="vmess_id" autocomplete="off" />
                                                         <span class="input-group-btn">
                                                             <button class="btn btn-success" type="button" onclick="makeVmessId()"> <i class="fa fa-refresh"></i> </button>
                                                         </span>
@@ -335,9 +335,8 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/laydate/laydate.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -348,14 +347,14 @@
             allowClear: true
         });
 
-        // 有效期
-        $('.input-daterange input').each(function() {
-            $(this).datepicker({
-                language: 'zh-CN',
-                autoclose: true,
-                todayHighlight: true,
-                format: 'yyyy-mm-dd'
-            });
+        // 有效期-开始
+        laydate.render({
+            elem: '#enable_time'
+        });
+
+        // 有效期-结束
+        laydate.render({
+            elem: '#expire_time'
         });
 
         // ajax同步提交
