@@ -48,7 +48,7 @@ class CouponController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            if (strtotime($available_start) >= strtotime($available_end)) {
+            if (strtotime($available_start) > strtotime($available_end)) {
                 Session::flash('errorMsg', '有效期范围错误');
 
                 return Redirect::back()->withInput();
@@ -83,7 +83,7 @@ class CouponController extends Controller
                     $obj->usage = $usage;
                     $obj->amount = empty($amount) ? 0 : $amount;
                     $obj->discount = empty($discount) ? 0 : $discount;
-                    $obj->available_start = strtotime(date('Y-m-d 0:0:0', strtotime($available_start)));
+                    $obj->available_start = strtotime(date('Y-m-d 00:00:00', strtotime($available_start)));
                     $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($available_end)));
                     $obj->status = 0;
                     $obj->save();

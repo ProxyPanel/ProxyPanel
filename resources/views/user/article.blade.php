@@ -1,6 +1,6 @@
 @extends('user.layouts')
-
-@section('title', trans('home.panel'))
+@section('css')
+@endsection
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -26,7 +26,4 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script type="text/javascript">
-        //
-    </script>
 @endsection

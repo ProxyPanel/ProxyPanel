@@ -1,8 +1,11 @@
 @extends('admin.layouts')
-
 @section('css')
+    <style type="text/css">
+        input,select {
+            margin-bottom: 5px;
+        }
+    </style>
 @endsection
-@section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -17,32 +20,32 @@
                     </div>
                     <div class="portlet-body">
                         <div class="row">
-                            <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="is_expire" id="is_expire" onchange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="is_expire" id="is_expire" onchange="doSearch()">
                                     <option value="" @if(Request::get('is_expire') == '') selected @endif>过期</option>
                                     <option value="0" @if(Request::get('is_expire') == '0') selected @endif>否</option>
                                     <option value="1" @if(Request::get('is_expire') == '1') selected @endif>是</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="is_coupon" id="is_coupon" onchange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="is_coupon" id="is_coupon" onchange="doSearch()">
                                     <option value="" @if(Request::get('is_coupon') == '') selected @endif>使用优惠券</option>
                                     <option value="0" @if(Request::get('is_coupon') == '0') selected @endif>否</option>
                                     <option value="1" @if(Request::get('is_coupon') == '1') selected @endif>是</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="pay_way" id="pay_way" onchange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="pay_way" id="pay_way" onchange="doSearch()">
                                     <option value="" @if(Request::get('pay_way') == '') selected @endif>支付方式</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>余额支付</option>
                                     <option value="2" @if(Request::get('pay_way') == '2') selected @endif>有赞云支付</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="status" id="status" onchange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="status" id="status" onchange="doSearch()">
                                     <option value="" @if(Request::get('status') == '') selected @endif>订单状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>已关闭</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>待支付</option>
@@ -50,9 +53,9 @@
                                     <option value="2" @if(Request::get('status') == '2') selected @endif>已完成</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <button type="button" class="btn blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
                         <div class="table-scrollable table-scrollable-borderless">
@@ -132,8 +135,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/js/layer/layer.js" type="text/javascript"></script>
-
     <script type="text/javascript">
         // 搜索
         function doSearch() {

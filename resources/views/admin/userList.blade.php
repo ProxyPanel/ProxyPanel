@@ -1,10 +1,13 @@
 @extends('admin.layouts')
-
 @section('css')
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        input,select {
+            margin-bottom: 5px;
+        }
+    </style>
 @endsection
-@section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -26,23 +29,21 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="row" style="padding-bottom:5px;">
-                            <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="pay_way" id="pay_way" onChange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="pay_way" id="pay_way" onChange="doSearch()">
                                     <option value="" @if(Request::get('pay_way') == '') selected @endif>付费方式</option>
                                     <option value="0" @if(Request::get('pay_way') == '0') selected @endif>免费</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>月付</option>
@@ -51,24 +52,24 @@
                                     <option value="4" @if(Request::get('pay_way') == '4') selected @endif>年付</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="status" id="status" onChange="doSearch()">
                                     <option value="" @if(Request::get('status') == '') selected @endif>账号状态</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="enable" id="enable" onChange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="enable" id="enable" onChange="doSearch()">
                                     <option value="" @if(Request::get('enable') == '') selected @endif>代理状态</option>
                                     <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
                                     <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <button type="button" class="btn blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
                         <div class="table-scrollable table-scrollable-borderless">
@@ -173,8 +174,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/js/layer/layer.js" type="text/javascript"></script>
-
     <script type="text/javascript">
         // 导出原版json配置
         function exportSSJson() {

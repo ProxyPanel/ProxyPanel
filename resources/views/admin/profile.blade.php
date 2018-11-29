@@ -1,9 +1,7 @@
 @extends('admin.layouts')
-
 @section('css')
     <link href="/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -102,5 +100,4 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-
 @endsection

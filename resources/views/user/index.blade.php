@@ -1,5 +1,6 @@
 @extends('user.layouts')
-@section('title', trans('home.panel'))
+@section('css')
+@endsection
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -367,7 +368,7 @@
             </div>
         </div>
 
-        @foreach ($nodeList as $node)
+        @foreach($nodeList as $node)
             <!-- 配置文本 -->
             <div class="modal fade draggable-modal" id="txt_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
                 <div class="modal-dialog">
@@ -453,7 +454,6 @@
     <script src="/assets/pages/scripts/components-clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 切换充值方式

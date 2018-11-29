@@ -1,9 +1,6 @@
 @extends('user.layouts')
-
 @section('css')
 @endsection
-
-@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">

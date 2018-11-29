@@ -1,9 +1,7 @@
 @extends('user.layouts')
-
 @section('css')
     <link href="/assets/pages/css/invoice-2.min.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -95,9 +93,4 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/js/layer/layer.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
-        //
-    </script>
 @endsection

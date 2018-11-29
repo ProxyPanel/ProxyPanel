@@ -1,5 +1,4 @@
 @extends('user.layouts')
-
 @section('css')
     <link href="/assets/pages/css/pricing.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
@@ -10,7 +9,6 @@
         }
     </style>
 @endsection
-@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -90,7 +88,7 @@
             window.location.href = '/buy/' + goods_id;
         }
 
-        // 编辑商品
+        // 积分兑换商品
         function exchange(id) {
             //
         }
