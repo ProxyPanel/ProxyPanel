@@ -5,10 +5,10 @@ namespace App\Console\Commands;
 use App\Http\Models\User;
 use Illuminate\Console\Command;
 
-class upgradeUserVmess extends Command
+class upgradeUserVmessId extends Command
 {
-    protected $signature = 'upgradeUserVmess';
-    protected $description = '更新用户的Vmess';
+    protected $signature = 'upgradeUserVmessId';
+    protected $description = '重新生成用户的vmess_id字段';
 
     public function __construct()
     {

@@ -26,7 +26,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\UserExpireAutoWarning::class,
         \App\Console\Commands\UserTrafficAutoWarning::class,
         \App\Console\Commands\upgradeUserPassword::class,
-        \App\Console\Commands\upgradeUserVmess::class,
+        \App\Console\Commands\upgradeUserVmessId::class,
+        \App\Console\Commands\AutoReportNode::class,
     ];
 
     /**
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('userTrafficAbnormalAutoWarning')->hourly();
         $schedule->command('userExpireAutoWarning')->dailyAt('20:00');
         $schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
+        $schedule->command('autoReportNode')->dailyAt('09:00');
     }
 
     /**

@@ -421,22 +421,26 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                @if ($node->type == 1)
-                                    @if ($node->compatible)
+                                @if($node->type == 1)
+                                    @if($node->compatible)
                                         <div class="col-md-6">
                                             <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">下载二维码</a></div>
                                         </div>
                                         <div class="col-md-6">
                                             <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
+                                            <div style="text-align: center;"><a id="download_qrcode_ss_img_{{$node->id}}">下载二维码</a></div>
                                         </div>
                                     @else
                                         <div class="col-md-12">
                                             <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">下载二维码</a></div>
                                         </div>
                                     @endif
                                 @else
                                     <div class="col-md-12">
                                         <div id="qrcode_v2_img_{{$node->id}}" style="text-align: center;"></div>
+                                        <div style="text-align: center;"><a id="download_qrcode_v2_img_{{$node->id}}">下载二维码</a></div>
                                     </div>
                                 @endif
                             </div>
@@ -558,11 +562,14 @@
         @foreach ($nodeList as $node)
             @if($node->type == 1)
                 $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
+                $('#download_qrcode_ssr_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ssr_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
                 @if($node->ss_scheme)
                     $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+                    $('#download_qrcode_ss_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ss_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
                 @endif
             @else
                 $('#qrcode_v2_img_{{$node->id}}').qrcode("{{$node->v2_scheme}}");
+                $('#download_qrcode_v2_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_v2_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
             @endif
         @endforeach
 

@@ -91,12 +91,17 @@
                                             <h4 class="modal-title">Scheme Links - {{$node->name}}</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
-                                            <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
-                                            @if($node->ss_scheme)
-                                                <p></p>
-                                                <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
-                                                <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                                            @if($node->type ==1)
+                                                <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
+                                                <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
+                                                @if($node->ss_scheme)
+                                                    <p></p>
+                                                    <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
+                                                    <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                                                @endif
+                                            @else
+                                                <textarea class="form-control" rows="5" readonly="readonly">{{$node->v2_scheme}}</textarea>
+                                                <a href="{{$node->v2_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开V2Ray</a>
                                             @endif
                                         </div>
                                     </div>
@@ -111,16 +116,26 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="row">
-                                                @if ($node->compatible)
-                                                    <div class="col-md-6">
-                                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
-                                                    </div>
+                                                @if($node->type == 1)
+                                                    @if($node->compatible)
+                                                        <div class="col-md-6">
+                                                            <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">下载二维码</a></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
+                                                            <div style="text-align: center;"><a id="download_qrcode_ss_img_{{$node->id}}">下载二维码</a></div>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-md-12">
+                                                            <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">下载二维码</a></div>
+                                                        </div>
+                                                    @endif
                                                 @else
                                                     <div class="col-md-12">
-                                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
+                                                        <div id="qrcode_v2_img_{{$node->id}}" style="text-align: center;"></div>
+                                                        <div style="text-align: center;"><a id="download_qrcode_v2_img_{{$node->id}}">下载二维码</a></div>
                                                     </div>
                                                 @endif
                                             </div>
@@ -165,8 +180,15 @@
 
         // 循环输出节点scheme用于生成二维码
         @foreach ($nodeList as $node)
-            $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
-            $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+            @if($node->type == 1)
+                $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
+                $('#download_qrcode_ssr_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ssr_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
+                $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+                $('#download_qrcode_ss_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ss_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
+            @else
+                $('#qrcode_v2_img_{{$node->id}}').qrcode("{{$node->v2_scheme}}");
+                $('#download_qrcode_v2_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_v2_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
+            @endif
         @endforeach
     </script>
 @endsection
