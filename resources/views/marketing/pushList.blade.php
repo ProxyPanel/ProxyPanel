@@ -26,17 +26,17 @@
                             <i class="fa fa-warning"></i> 仅会推送给关注了您的消息通道的用户 （<a href="{{url('admin/system')}}" target="_blank">设置PushBear</a>）
                         </div>
                         <div class="row">
-                            <div class="col-md-2 col-sm-2">
-                                <select class="form-control input-sm" name="status" id="status" onChange="doSearch()">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="status" id="status" onChange="doSearch()">
                                     <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>待发送</option>
                                     <option value="-1" @if(Request::get('status') == '-1') selected @endif>失败</option>
                                     <option value="1" @if(Request::get('status') == '1') selected @endif>成功</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <button type="button" class="btn blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
                         <div class="table-scrollable table-scrollable-borderless">

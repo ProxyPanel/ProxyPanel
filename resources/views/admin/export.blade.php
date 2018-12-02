@@ -15,11 +15,6 @@
                         <div class="caption font-dark">
                             <span class="caption-subject bold uppercase"> 【{{$user->username}}】连接配置信息 </span>
                         </div>
-                        <div class="actions">
-                            <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addLabel()"> 添加标签 </button>
-                            </div>
-                        </div>
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable table-scrollable-borderless">

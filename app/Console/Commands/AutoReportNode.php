@@ -27,7 +27,7 @@ class AutoReportNode extends Command
 
         if (self::$systemConfig['node_daily_report']) {
             $nodeList = SsNode::query()->where('status', 1)->get();
-            if (!empty($nodeList)) {
+            if (!$nodeList->isEmpty()) {
                 foreach ($nodeList as $node) {
                     $log = SsNodeTrafficDaily::query()
                         ->where('node_id', $node->id)
@@ -36,7 +36,7 @@ class AutoReportNode extends Command
                         ->first();
 
                     if ($log) {
-                        $this->notifyMasterByServerchan('节点使用情况日报', '节点**' . $node->name . '，上行流量：' . flowAutoShow($node->u) . '，下行流量：' . flowAutoShow($node->d) . '，共计：' . $node->traffic . '**');
+                        $this->notifyMasterByServerchan('节点使用情况日报', '节点**' . $node->name . '，上行流量：' . flowAutoShow($log->u) . '，下行流量：' . flowAutoShow($log->d) . '，共计：' . $log->traffic . '**');
                     }
                 }
             }
