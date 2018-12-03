@@ -49,37 +49,33 @@
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
         <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
         <!-- END RESPONSIVE MENU TOGGLER -->
-        <!-- BEGIN PAGE TOP -->
-        <div class="page-top">
-            <!-- BEGIN TOP NAVIGATION MENU -->
-            <div class="top-menu">
-                <ul class="nav navbar-nav pull-right">
-                    <li class="separator hide"> </li>
-                    <!-- BEGIN USER LOGIN DROPDOWN -->
-                    <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                    <li class="dropdown dropdown-user dropdown-dark">
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <span class="username username-hide-on-mobile"> {{Auth::user()->username}} </span>
-                            <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
-                            <img alt="" class="img-circle" src="/assets/images/avatar.png" /> </a>
-                        <ul class="dropdown-menu dropdown-menu-default">
-                            <li>
-                                <a href="{{url('/')}}"> <i class="icon-home"></i> 个人中心 </a>
-                            </li>
-                            <li>
-                                <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人设置 </a>
-                            </li>
-                            <li>
-                                <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- END USER LOGIN DROPDOWN -->
-                </ul>
-            </div>
-            <!-- END TOP NAVIGATION MENU -->
+        <!-- BEGIN TOP NAVIGATION MENU -->
+        <div class="top-menu" style="float:right">
+            <ul class="nav navbar-nav pull-right">
+                <li class="separator hide"> </li>
+                <!-- BEGIN USER LOGIN DROPDOWN -->
+                <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+                <li class="dropdown dropdown-user dropdown-dark">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <span class="username username-hide-on-mobile"> {{Auth::user()->username}} </span>
+                        <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
+                        <img alt="" class="img-circle" src="/assets/images/avatar.png" /> </a>
+                    <ul class="dropdown-menu dropdown-menu-default">
+                        <li>
+                            <a href="{{url('/')}}"> <i class="icon-home"></i> 个人中心 </a>
+                        </li>
+                        <li>
+                            <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人设置 </a>
+                        </li>
+                        <li>
+                            <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- END USER LOGIN DROPDOWN -->
+            </ul>
         </div>
-        <!-- END PAGE TOP -->
+        <!-- END TOP NAVIGATION MENU -->
     </div>
     <!-- END HEADER INNER -->
 </div>
