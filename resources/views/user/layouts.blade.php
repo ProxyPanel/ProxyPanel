@@ -53,10 +53,9 @@
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
         <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
         <!-- END RESPONSIVE MENU TOGGLER -->
-        <!-- BEGIN PAGE TOP -->
-        <div class="page-top">
+
             <!-- BEGIN TOP NAVIGATION MENU -->
-            <div class="top-menu">
+            <div class="top-menu" style="float:right">
                 <ul class="nav navbar-nav pull-right">
                     <li class="separator hide"> </li>
                     <!-- BEGIN USER LOGIN DROPDOWN -->
@@ -85,8 +84,7 @@
                 </ul>
             </div>
             <!-- END TOP NAVIGATION MENU -->
-        </div>
-        <!-- END PAGE TOP -->
+
     </div>
     <!-- END HEADER INNER -->
 </div>
