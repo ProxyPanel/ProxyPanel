@@ -10,6 +10,7 @@ return [
     'username_placeholder'            => 'アカウントを入力してください',
     'system_down'                     => 'システムはメンテナンス中です',
     'subscribe_baned'                 => '購読が無効になっています。管理者にお問い合わせください。',
+    'download'                        => 'ダウンロード',
 
     // 菜单
     'home'                            => 'パーソナルセンター',

@@ -425,22 +425,22 @@
                                     @if($node->compatible)
                                         <div class="col-md-6">
                                             <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
-                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">下载二维码</a></div>
+                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">{{trans('home.download')}}</a></div>
                                         </div>
                                         <div class="col-md-6">
                                             <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
-                                            <div style="text-align: center;"><a id="download_qrcode_ss_img_{{$node->id}}">下载二维码</a></div>
+                                            <div style="text-align: center;"><a id="download_qrcode_ss_img_{{$node->id}}">{{trans('home.download')}}</a></div>
                                         </div>
                                     @else
                                         <div class="col-md-12">
                                             <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
-                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">下载二维码</a></div>
+                                            <div style="text-align: center;"><a id="download_qrcode_ssr_img_{{$node->id}}">{{trans('home.download')}}</a></div>
                                         </div>
                                     @endif
                                 @else
                                     <div class="col-md-12">
                                         <div id="qrcode_v2_img_{{$node->id}}" style="text-align: center;"></div>
-                                        <div style="text-align: center;"><a id="download_qrcode_v2_img_{{$node->id}}">下载二维码</a></div>
+                                        <div style="text-align: center;"><a id="download_qrcode_v2_img_{{$node->id}}">{{trans('home.download')}}</a></div>
                                     </div>
                                 @endif
                             </div>

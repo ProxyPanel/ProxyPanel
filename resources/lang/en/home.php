@@ -10,6 +10,7 @@ return [
     'username_placeholder'            => 'Please Enter E-mail',
     'system_down'                     => 'The system is being maintained',
     'subscribe_baned'                 => 'Your subscription function has been banned. Please contact the administrator.',
+    'download'                        => 'Download',
 
     // 菜单
     'home'                            => 'Home',
