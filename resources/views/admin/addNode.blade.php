@@ -254,11 +254,11 @@
                                                             <div class="col-md-8">
                                                                 <div class="mt-radio-inline">
                                                                     <label class="mt-radio">
-                                                                        <input type="radio" name="compatible" value="1"> 是
+                                                                        <input type="radio" name="compatible" value="1" checked> 是
                                                                         <span></span>
                                                                     </label>
                                                                     <label class="mt-radio">
-                                                                        <input type="radio" name="compatible" value="0" checked> 否
+                                                                        <input type="radio" name="compatible" value="0"> 否
                                                                         <span></span>
                                                                     </label>
                                                                 </div>
