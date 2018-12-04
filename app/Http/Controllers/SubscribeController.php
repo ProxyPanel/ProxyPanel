@@ -59,11 +59,14 @@ class SubscribeController extends Controller
             exit($this->noneNode());
         }
 
-        $nodeList = SsNode::query()
-            ->selectRaw('ss_node.*')
-            ->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id")
-            ->where('ss_node.type', 1)
-            ->where('ss_node.status', 1)
+        $query = SsNode::query()->selectRaw('ss_node.*')->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id");
+
+        // 启用混合订阅时，加入V2Ray节点，未启用时仅下发SSR节点信息
+        if (!self::$systemConfig['mix_subscribe']) {
+            $query->where('ss_node.type', 1);
+        }
+
+        $nodeList = $query->where('ss_node.status', 1)
             ->where('ss_node.is_subscribe', 1)
             ->whereIn('ss_node_label.label_id', $userLabelIds)
             ->groupBy('ss_node.id')
@@ -76,8 +79,10 @@ class SubscribeController extends Controller
         }
 
         // 打乱数组
-        if (self::$systemConfig['subscribe_max']) {
-            shuffle($nodeList);
+        if (self::$systemConfig['rand_subscribe']) {
+            if (self::$systemConfig['subscribe_max']) {
+                shuffle($nodeList);
+            }
         }
 
         // 控制客户端最多获取节点数

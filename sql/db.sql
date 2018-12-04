@@ -359,6 +359,8 @@ INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
 INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
 INSERT INTO `config` VALUES ('71', 'is_verify_register', 0);
 INSERT INTO `config` VALUES ('72', 'node_daily_report', 0);
+INSERT INTO `config` values ('73', 'mix_subscribe', 0);
+INSERT INTO `config` values ('74', 'rand_subscribe', 0);
 
 
 -- ----------------------------

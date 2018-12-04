@@ -25,7 +25,7 @@ class isForbidden
             if (Agent::isRobot()) {
                 Log::info("识别到机器人访问(" . getClientIp() . ")");
 
-                return response()->view('error.403', [], 403);
+                return response()->view('error.404', [], 404);
             }
         }
 

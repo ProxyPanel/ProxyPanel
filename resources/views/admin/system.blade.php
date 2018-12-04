@@ -148,7 +148,7 @@
                                                             <label for="is_forbid_robot" class="col-md-3 control-label">阻止机器人访问</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_forbid_robot) checked @endif id="is_forbid_robot" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 如果是机器人、爬虫、代理访问网站则会抛出403错误 </span>
+                                                                <span class="help-block"> 如果是机器人、爬虫、代理访问网站则会抛出404错误 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -297,6 +297,32 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
+                                                            <label for="initial_labels_for_user" class="col-md-3 control-label">用户初始标签</label>
+                                                            <div class="col-md-9">
+                                                                <select id="initial_labels_for_user" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
+                                                                    @foreach($label_list as $label)
+                                                                        <option value="{{$label->id}}" @if(in_array($label->id, explode(',', $initial_labels_for_user))) selected @endif>{{$label->name}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <span class="help-block"> 注册用户时的初始标签 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="goods_purchase_limit_strategy" class="col-md-3 control-label">商品限购</label>
+                                                            <div class="col-md-9">
+                                                                <select id="goods_purchase_limit_strategy" class="form-control select2" name="goods_purchase_limit_strategy">
+                                                                    <option value="none" @if($goods_purchase_limit_strategy == 'none') selected @endif>不限制</option>
+                                                                    <option value="package" @if($goods_purchase_limit_strategy == 'package') selected @endif>仅限套餐</option>
+                                                                    <option value="free" @if($goods_purchase_limit_strategy == 'free') selected @endif>仅限免费商品</option>
+                                                                    <option value="package&free" @if($goods_purchase_limit_strategy == 'package&free') selected @endif>限套餐和免费商品</option>
+                                                                    <option value="all" @if($goods_purchase_limit_strategy == 'all') selected @endif>限全部商品</option>
+                                                                </select>
+                                                                <span class="help-block"> 是否限制用户重复购买商品，限制后用户不可重复购买已购买的、尚在有效期的商品 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
                                                             <label for="subscribe_domain" class="col-md-3 control-label">节点订阅地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -317,57 +343,23 @@
                                                                         <button class="btn btn-success" type="button" onclick="setSubscribeMax()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
+                                                                <span class="help-block"> 客户端订阅时取得几个节点 </span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="initial_labels_for_user" class="col-md-3 control-label">用户初始标签</label>
+                                                            <label for="mix_subscribe" class="col-md-3 control-label">混合订阅</label>
                                                             <div class="col-md-9">
-                                                                <select id="initial_labels_for_user" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
-                                                                    @foreach($label_list as $label)
-                                                                        <option value="{{$label->id}}"
-                                                                            @if (in_array($label->id, explode(',', $initial_labels_for_user)))
-                                                                            selected
-                                                                            @endif
-                                                                        >{{$label->name}}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                                <span class="help-block"> 注册用户时的初始标签 </span>
+                                                                <input type="checkbox" class="make-switch" @if($mix_subscribe) checked @endif id="mix_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后，订阅信息中将包含V2Ray节点信息（Vmess） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="goods_purchase_limit_strategy" class="col-md-3 control-label">商品限购</label>
+                                                            <label for="rand_subscribe" class="col-md-3 control-label">随机订阅</label>
                                                             <div class="col-md-9">
-                                                                <select id="goods_purchase_limit_strategy" class="form-control select2" name="goods_purchase_limit_strategy">
-                                                                    <option value="none"
-                                                                            @if ($goods_purchase_limit_strategy == 'none')
-                                                                            selected
-                                                                            @endif
-                                                                    >不限制</option>
-                                                                    <option value="package"
-                                                                            @if ($goods_purchase_limit_strategy == 'package')
-                                                                            selected
-                                                                            @endif
-                                                                    >仅限套餐</option>
-                                                                    <option value="free"
-                                                                            @if ($goods_purchase_limit_strategy == 'free')
-                                                                            selected
-                                                                            @endif
-                                                                    >仅限免费商品</option>
-                                                                    <option value="package&free"
-                                                                            @if ($goods_purchase_limit_strategy == 'package&free')
-                                                                            selected
-                                                                            @endif
-                                                                    >限套餐和免费商品</option>
-                                                                    <option value="all"
-                                                                            @if ($goods_purchase_limit_strategy == 'all')
-                                                                            selected
-                                                                            @endif
-                                                                    >限全部商品</option>
-                                                                </select>
-                                                                <span class="help-block"> 是否限制用户重复购买商品，限制后用户不可重复购买已购买的、尚在有效期的商品 </span>
+                                                                <input type="checkbox" class="make-switch" @if($rand_subscribe) checked @endif id="rand_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后，订阅时将随机返回节点信息，否则按节点排序返回 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1136,6 +1128,36 @@
                 var is_namesilo = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_namesilo', value:is_namesilo}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用混合订阅
+        $('#mix_subscribe').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var mix_subscribe = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'mix_subscribe', value:mix_subscribe}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用随机订阅
+        $('#rand_subscribe').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var rand_subscribe = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'rand_subscribe', value:rand_subscribe}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
