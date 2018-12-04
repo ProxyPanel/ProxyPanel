@@ -225,7 +225,7 @@
                                                 <label for="transfer_enable" class="col-md-3 control-label">可用流量</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="transfer_enable" value="1000" id="transfer_enable" autocomplete="off" required>
+                                                        <input type="text" class="form-control" name="transfer_enable" value="1024" id="transfer_enable" autocomplete="off" required>
                                                         <span class="input-group-addon">GiB</span>
                                                     </div>
                                                 </div>

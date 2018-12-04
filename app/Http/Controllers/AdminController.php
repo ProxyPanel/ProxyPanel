@@ -299,7 +299,7 @@ class AdminController extends Controller
                 $user->obfs = Helpers::getDefaultObfs();
                 $user->obfs_param = '';
                 $user->usage = 4;
-                $user->transfer_enable = toGB(1000);
+                $user->transfer_enable = toGB(1024);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
                 $user->remark = '';
@@ -316,7 +316,7 @@ class AdminController extends Controller
                 }
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB(1000), '后台批量生成用户');
+                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB(1024), '后台批量生成用户');
             }
 
             DB::commit();

@@ -113,7 +113,7 @@
         function do_search() {
             var username = $("#username").val();
             var ref_username = $("#ref_username").val();
-	        var status = $("#status option:checked").val();
+            var status = $("#status option:checked").val();
 
             window.location.href = '{{url('admin/userRebateList')}}' + '?username=' + username + '&ref_username=' + ref_username + '&status=' + status;
         }
