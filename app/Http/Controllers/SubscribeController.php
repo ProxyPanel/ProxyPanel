@@ -100,7 +100,7 @@ class SubscribeController extends Controller
             }
 
             // 获取分组名称
-            if ($node->type == 1) {
+            if ($node['type'] == 1) {
                 $group = SsGroup::query()->where('id', $node['group_id'])->first();
 
                 $obfs_param = $user->obfs_param ? $user->obfs_param : $node['obfs_param'];
