@@ -127,16 +127,16 @@ class PaymentController extends Controller
             $order->amount = $amount;
             $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
             $order->is_expire = 0;
-            if($systemConfig['is_youzan']){
+            if(self::$systemConfig['is_youzan']){
                 $order->pay_way = 2;
-            }else if($systemConfig['is_trimepay']){
+            }else if(self::$systemConfig['is_trimepay']){
                 $order->pay_way = 3;
             }
             $order->status = 0;
             $order->save();
 
             // 生成支付单
-            if($systemConfig['is_youzan']){
+            if(self::$systemConfig['is_youzan']){
                 $yzy = new Yzy();
                 $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
                 if (isset($result['error_response'])) {
@@ -144,8 +144,8 @@ class PaymentController extends Controller
 
                     throw new \Exception($result['error_response']['msg']);
                 }
-            }else if($systemConfig['is_trimepay']){
-                $trimepay = new Trimepay($systemConfig['trimepay_appid'], $systemConfig['trimepay_appsecret']);
+            }else if(self::$systemConfig['is_trimepay']){
+                $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
                 $result = $trimepay->pay('WEPAY_QR', $orderSn, $amount);
                 if ($result['code']!==0) {
                     Log::error('【Trimepay】创建二维码失败：' . $result['msg']);
@@ -161,12 +161,12 @@ class PaymentController extends Controller
             $payment->order_sn = $orderSn;
             $payment->pay_way = 1;
             $payment->amount = $amount;
-            if($systemConfig['is_youzan']){
+            if(self::$systemConfig['is_youzan']){
                 $payment->qr_id = $result['response']['qr_id'];
                 $payment->qr_url = $result['response']['qr_url'];
                 $payment->qr_code = $result['response']['qr_code'];
                 $payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
-            }else if($systemConfig['is_trimepay']){
+            }else if(self::$systemConfig['is_trimepay']){
                 $payment->qr_url = $result['data'];
                 $payment->qr_code = 'https://www.zhihu.com/qrcode?url='.$result['data'];
                 $payment->qr_local_url = $this->base64ImageSaver($result['data']);
