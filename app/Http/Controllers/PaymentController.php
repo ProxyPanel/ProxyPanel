@@ -146,7 +146,7 @@ class PaymentController extends Controller
                 }
             }else if(self::$systemConfig['is_trimepay']){
                 $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
-                $result = $trimepay->pay('WEPAY_QR', $orderSn, $amount);
+                $result = $trimepay->pay('WEPAY_QR', $orderSn, $amount, self::$systemConfig['website_url'].'/api/trimepay', self::$systemConfig['website_url']);
                 if ($result['code']!==0) {
                     Log::error('【Trimepay】创建二维码失败：' . $result['msg']);
 
@@ -169,7 +169,7 @@ class PaymentController extends Controller
             }else if(self::$systemConfig['is_trimepay']){
                 $payment->qr_url = $result['data'];
                 $payment->qr_code = 'https://www.zhihu.com/qrcode?url='.$result['data'];
-                $payment->qr_local_url = $this->base64ImageSaver($result['data']);
+                $payment->qr_local_url = 'https://www.zhihu.com/qrcode?url='.$result['data'];
             }
             $payment->status = 0;
             $payment->save();

@@ -1,4 +1,6 @@
 <?php
+namespace App\Components;
+
 class Trimepay {
     private $appId;
     private $appSecret;
@@ -75,7 +77,7 @@ class Trimepay {
             'payType' => $type
         ];
         $signData = $this->prepareSign($payData);
-        $payData['sign'] = $trimepay->sign($signData);
+        $payData['sign'] = $this->sign($signData);
         $response = $this->post($payData);
         return $response;
     }

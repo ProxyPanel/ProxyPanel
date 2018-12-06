@@ -42,14 +42,14 @@ class TrimepayController extends Controller
         \Log::info("【Trimepay】回调接口[POST]：" . var_export($request->all(), true));
 
         $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
+        parse_str($json, $data);
         if (!$data) {
             Log::info('Trimepay-POST:回调数据无法解析，可能是非法请求[' . getClientIp() . ']');
             exit();
         }
 
         // 判断消息是否合法
-        $trimepay = new Trimepay($systemConfig['trimepay_appid'], $systemConfig['trimepay_appsecret']);
+        $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
         $cbData	= [
             'payStatus' 				=> $data['payStatus'],
             'payFee'					=> $data['payFee'],
@@ -64,11 +64,11 @@ class TrimepayController extends Controller
             Log::info('Trimepay-POST:回调数据签名错误，可能是非法请求[' . getClientIp() . ']');
             exit();
         } else {
-            exit('SUCCESS');
+            var_dump('SUCCESS');
         }
         
         switch ($data['payStatus']) {
-            case '1':
+            case 'SUCCESS':
                 $this->tradePaid($data);
                 break;
             default:
