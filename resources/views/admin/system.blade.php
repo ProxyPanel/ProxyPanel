@@ -51,7 +51,7 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="website_name" class="col-md-3 control-label">网站名称</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -63,7 +63,7 @@
                                                                 <span class="help-block"> 发邮件时展示 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="website_url" class="col-md-3 control-label">网站地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -77,14 +77,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_register" class="col-md-3 control-label">用户注册</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_register) checked @endif id="is_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 关闭后无法注册 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_invite_register" class="col-md-3 control-label">邀请注册</label>
                                                             <div class="col-md-9">
                                                                 <select id="is_invite_register" class="form-control select2" name="is_invite_register">
@@ -96,14 +96,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_active_register" class="col-md-3 control-label">激活账号</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_active_register) checked @endif id="is_active_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后用户需要通过邮件来激活账号 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_reset_password" class="col-md-3 control-label">重置密码</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_reset_password) checked @endif id="is_reset_password" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -112,14 +112,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_captcha" class="col-md-3 control-label">验证码</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_captcha) checked @endif id="is_captcha" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后登录、注册需要输入验证码 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_free_code" class="col-md-3 control-label">免费邀请码</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_free_code) checked @endif id="is_free_code" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -128,14 +128,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_forbid_china" class="col-md-3 control-label">阻止大陆访问</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_forbid_china) checked @endif id="is_forbid_china" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 开启后大陆IP禁止访问 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_forbid_oversea" class="col-md-3 control-label">阻止海外访问</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_forbid_oversea) checked @endif id="is_forbid_oversea" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -144,14 +144,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_forbid_robot" class="col-md-3 control-label">阻止机器人访问</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_forbid_robot) checked @endif id="is_forbid_robot" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 如果是机器人、爬虫、代理访问网站则会抛出404错误 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_verify_register" class="col-md-3 control-label">注册校验验证码</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_verify_register) checked @endif id="is_verify_register" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -166,14 +166,14 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_rand_port" class="col-md-3 control-label">随机端口</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_rand_port) checked @endif id="is_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 注册、添加用户时随机生成端口 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label class="col-md-3 control-label">端口范围</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group input-large input-daterange">
@@ -186,14 +186,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_namesilo" class="col-md-3 control-label">Namesilo</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_namesilo) checked @endif id="is_namesilo" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php?rid=326ec20pa" target="_blank">创建API KEY</a>） </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="namesilo_key" class="col-md-3 control-label">Namesilo API KEY</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -209,14 +209,14 @@
                                                     <!--
                                                     <div class="form-group">
                                                         <label for="is_user_rand_port" class="col-md-2 control-label">自定义端口</label>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <input type="checkbox" class="make-switch" @if($is_user_rand_port) checked @endif id="is_user_rand_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                             <span class="help-block"> 用户可以自定义端口 </span>
                                                         </div>
                                                     </div>
                                                     -->
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="default_days" class="col-md-3 control-label">初始有效期</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -229,7 +229,7 @@
                                                                 <span class="help-block"> 用户注册时默认账户有效期，为0即当天到期 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="default_traffic" class="col-md-3 control-label">初始流量</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -244,7 +244,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="invite_num" class="col-md-3 control-label">可生成邀请码数</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -256,7 +256,7 @@
                                                                 <span class="help-block"> 用户可以生成的邀请码数 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="reset_password_times" class="col-md-3 control-label">重置密码次数</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -270,7 +270,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="active_times" class="col-md-3 control-label">激活账号次数</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -282,7 +282,7 @@
                                                                 <span class="help-block"> 24小时内可以通过邮件激活账号次数 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="register_ip_limit" class="col-md-3 control-label">同IP注册限制</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -296,7 +296,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="initial_labels_for_user" class="col-md-3 control-label">用户初始标签</label>
                                                             <div class="col-md-9">
                                                                 <select id="initial_labels_for_user" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
@@ -307,7 +307,7 @@
                                                                 <span class="help-block"> 注册用户时的初始标签 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="goods_purchase_limit_strategy" class="col-md-3 control-label">商品限购</label>
                                                             <div class="col-md-9">
                                                                 <select id="goods_purchase_limit_strategy" class="form-control select2" name="goods_purchase_limit_strategy">
@@ -322,7 +322,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="subscribe_domain" class="col-md-3 control-label">节点订阅地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -334,7 +334,7 @@
                                                                 <span class="help-block"> （推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https:// </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="subscribe_max" class="col-md-3 control-label">订阅节点数</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -348,14 +348,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="mix_subscribe" class="col-md-3 control-label">混合订阅</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($mix_subscribe) checked @endif id="mix_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后，订阅信息中将包含V2Ray节点信息（Vmess） </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="rand_subscribe" class="col-md-3 control-label">随机订阅</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($rand_subscribe) checked @endif id="rand_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -370,14 +370,14 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="login_add_score" class="col-md-3 control-label">登录加积分</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 登录时将根据积分范围随机得到积分 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="login_add_score_range" class="col-md-3 control-label">时间间隔</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -392,7 +392,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label class="col-md-3 control-label">积分范围</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group input-large input-daterange">
@@ -402,7 +402,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -412,14 +412,14 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="referral_status" class="col-md-3 control-label">本功能</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($referral_status) checked @endif id="referral_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 关闭后用户不可见，但是不影响其正常邀请返利 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="referral_traffic" class="col-md-3 control-label">注册送流量</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -434,7 +434,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="referral_percent" class="col-md-3 control-label">返利比例</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -447,7 +447,7 @@
                                                                 <span class="help-block"> 根据推广链接注册的账号每笔消费推广人可以分成的比例 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="referral_money" class="col-md-3 control-label">提现限制</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -468,14 +468,14 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="expire_warning" class="col-md-3 control-label">用户过期警告</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($expire_warning) checked @endif id="expire_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="expire_days" class="col-md-3 control-label">过期警告阈值</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -490,14 +490,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="traffic_warning" class="col-md-3 control-label">用户流量警告</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($traffic_warning) checked @endif id="traffic_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="traffic_warning_percent" class="col-md-3 control-label">流量警告阈值</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -512,14 +512,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_node_crash_warning" class="col-md-3 control-label">节点宕机提醒</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_node_crash_warning) checked @endif id="is_node_crash_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后如果节点宕机则发出提醒邮件 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="crash_warning_email" class="col-md-3 control-label">管理员收信地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -533,14 +533,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_tcp_check) checked @endif id="is_tcp_check" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 每30~60分钟内随机检测节点是否被TCP阻断并提醒 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="tcp_check_warning_times" class="col-md-3 control-label">阻断检测提醒</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -555,14 +555,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_server_chan" class="col-md-3 control-label">ServerChan</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_server_chan) checked @endif id="is_server_chan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 推送节点宕机提醒、用户流量异常警告、节点使用报告（<a href="http://sc.ftqq.com" target="_blank">绑定微信</a>） </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="server_chan_key" class="col-md-3 control-label">SCKEY</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -576,14 +576,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_push_bear" class="col-md-3 control-label">PushBear</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_push_bear) checked @endif id="is_push_bear" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>） </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="push_bear_send_key" class="col-md-3 control-label">PushBear SendKey</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -597,7 +597,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="push_bear_qrcode" class="col-md-3 control-label">PushBear订阅二维码</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -609,7 +609,7 @@
                                                                 <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6"></div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12"></div>
                                                     </div>
                                                 </div>
                                             </form>
@@ -618,14 +618,14 @@
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_clear_log" class="col-md-3 control-label">自动清除日志</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_clear_log) checked @endif id="is_clear_log" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> （推荐）启用后自动清除无用日志 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="reset_traffic" class="col-md-3 control-label">流量自动重置</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($reset_traffic) checked @endif id="reset_traffic" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -634,14 +634,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_subscribe_ban" class="col-md-3 control-label">订阅异常自动封禁</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_subscribe_ban) checked @endif id="is_subscribe_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 启用后用户订阅链接请求超过设定阈值则自动封禁 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="subscribe_ban_times" class="col-md-3 control-label">订阅请求阈值</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -655,14 +655,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_traffic_ban" class="col-md-3 control-label">异常自动封号</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_traffic_ban) checked @endif id="is_traffic_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 1小时内流量超过异常阈值则自动封号（仅禁用代理） </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="traffic_ban_value" class="col-md-3 control-label">流量异常阈值</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -677,7 +677,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="traffic_ban_time" class="col-md-3 control-label">封号时长</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -690,7 +690,7 @@
                                                                 <span class="help-block"> 触发流量异常导致用户被封禁的时长，到期后自动解封 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="auto_release_port" class="col-md-3 control-label">端口自动释放</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($auto_release_port) checked @endif id="auto_release_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -699,14 +699,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_ban_status" class="col-md-3 control-label">过期自动封禁</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_ban_status) checked @endif id="is_ban_status" data-on-color="danger" data-off-color="danger" data-on-text="封禁整个账号" data-off-text="仅封禁代理">
                                                                 <span class="help-block"> (慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录 </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="node_daily_report" class="col-md-3 control-label">节点使用报告</label>
                                                             <div class="col-md-9">
                                                             <input type="checkbox" class="make-switch" @if($node_daily_report) checked @endif id="node_daily_report" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
@@ -729,14 +729,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_youzan" class="col-md-3 control-label">本功能</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_youzan) checked @endif id="is_youzan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
                                                                 <span class="help-block"> 请先到<a href="https://console.youzanyun.com/dashboard">有赞云</a>申请client_id和client_secret并绑定店铺（<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%89%E8%B5%9E%E4%BA%91%E6%94%AF%E4%BB%98" target="_blank">申请教程</a>） </span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="kdt_id" class="col-md-3 control-label">kdt_id</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -750,7 +750,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="youzan_client_id" class="col-md-3 control-label">client_id</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -761,7 +761,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="youzan_client_secret" class="col-md-3 control-label">client_secret</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
@@ -780,63 +780,67 @@
                                             <form action="{{url('admin/setExtend')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" id="setExtend">
                                                 {{csrf_field()}}
                                                 <div class="form-group">
-                                                    <label class="control-label col-md-2">首页LOGO</label>
-                                                    <div class="col-md-8">
-                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                @if ($website_home_logo)
-                                                                    <img src="{{$website_home_logo}}" alt="" />
-                                                                @else
-                                                                    <img src="/assets/images/noimage.png" alt="" />
-                                                                @endif
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label class="control-label col-md-2 col-xs-4">首页LOGO</label>
+                                                        <div class="col-md-8 col-xs-8">
+                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                                    @if ($website_home_logo)
+                                                                        <img src="{{$website_home_logo}}" alt="" />
+                                                                    @else
+                                                                        <img src="/assets/images/noimage.png" alt="" />
+                                                                    @endif
+                                                                </div>
+                                                                <span class="help-block"> 推荐尺寸：300 X 90，透明背景 </span>
+                                                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                                <div>
+                                                                    <span class="btn default btn-file">
+                                                                        <span class="fileinput-new"> 选择 </span>
+                                                                        <span class="fileinput-exists"> 更换 </span>
+                                                                        <input type="file" name="website_home_logo" id="website_home_logo">
+                                                                    </span>
+                                                                    <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                </div>
                                                             </div>
-                                                            <span class="help-block"> 推荐尺寸：300 X 90，透明背景 </span>
-                                                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                            <div>
-                                                                <span class="btn default btn-file">
-                                                                    <span class="fileinput-new"> 选择 </span>
-                                                                    <span class="fileinput-exists"> 更换 </span>
-                                                                    <input type="file" name="website_home_logo" id="website_home_logo">
-                                                                </span>
-                                                                <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label class="control-label col-md-2 col-xs-4">站内LOGO</label>
+                                                        <div class="col-md-8 col-xs-8">
+                                                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                                <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                                                    @if ($website_logo)
+                                                                        <img src="{{$website_logo}}" alt="" />
+                                                                    @else
+                                                                        <img src="/assets/images/noimage.png" alt="" />
+                                                                    @endif
+                                                                </div>
+                                                                <span class="help-block"> 推荐尺寸：150 X 30，透明背景 </span>
+                                                                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
+                                                                <div>
+                                                                    <span class="btn default btn-file">
+                                                                        <span class="fileinput-new"> 选择 </span>
+                                                                        <span class="fileinput-exists"> 更换 </span>
+                                                                        <input type="file" name="website_logo" id="website_logo">
+                                                                    </span>
+                                                                    <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-md-2">站内LOGO</label>
-                                                    <div class="col-md-8">
-                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                @if ($website_logo)
-                                                                    <img src="{{$website_logo}}" alt="" />
-                                                                @else
-                                                                    <img src="/assets/images/noimage.png" alt="" />
-                                                                @endif
-                                                            </div>
-                                                            <span class="help-block"> 推荐尺寸：150 X 30，透明背景 </span>
-                                                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                            <div>
-                                                                <span class="btn default btn-file">
-                                                                    <span class="fileinput-new"> 选择 </span>
-                                                                    <span class="fileinput-exists"> 更换 </span>
-                                                                    <input type="file" name="website_logo" id="website_logo">
-                                                                </span>
-                                                                <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
-                                                            </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label for="website_analytics" class=" control-label col-md-2 col-xs-4">统计代码</label>
+                                                        <div class="col-md-8 col-xs-6">
+                                                            <textarea class="form-control" rows="10" name="website_analytics" id="website_analytics">{{$website_analytics}}</textarea>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="website_analytics" class="col-md-2 control-label">统计代码</label>
-                                                    <div class="col-md-8">
-                                                        <textarea class="form-control" rows="10" name="website_analytics" id="website_analytics">{{$website_analytics}}</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="website_customer_service" class="col-md-2 control-label">客服代码</label>
-                                                    <div class="col-md-8">
-                                                        <textarea class="form-control" rows="10" name="website_customer_service" id="website_customer_service">{{$website_customer_service}}</textarea>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <label for="website_customer_service" class=" control-label col-md-2 col-xs-4">客服代码</label>
+                                                        <div class="col-md-8 col-xs-6">
+                                                            <textarea class="form-control" rows="10" name="website_customer_service" id="website_customer_service">{{$website_customer_service}}</textarea>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
