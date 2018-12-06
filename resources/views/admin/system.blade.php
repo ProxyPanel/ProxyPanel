@@ -359,9 +359,19 @@
                                                             <label for="rand_subscribe" class="col-md-3 control-label">随机订阅</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($rand_subscribe) checked @endif id="rand_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后，订阅时将随机返回节点信息，否则按节点排序返回 </span>
+                                                                <span class="help-block"> 启用后，订阅时将随机返回节点信息，否则按节点排序返回（仅支持Shadowrocket、Quantumult） </span>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="is_custom_subscribe" class="col-md-3 control-label">高级订阅</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_custom_subscribe) checked @endif id="is_custom_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后，订阅信息顶部将显示过期时间、剩余流量 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12"></div>
                                                     </div>
                                                 </div>
                                             </form>
@@ -1162,6 +1172,21 @@
                 var rand_subscribe = state ? 1 : 0;
 
                 $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'rand_subscribe', value:rand_subscribe}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
+        // 启用、禁用自定义订阅
+        $('#is_custom_subscribe').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_custom_subscribe = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_custom_subscribe', value:is_custom_subscribe}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();

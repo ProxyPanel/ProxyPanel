@@ -93,6 +93,12 @@ class SubscribeController extends Controller
                 break;
             }
 
+            // 展示到期时间和剩余流量
+            if (self::$systemConfig['is_custom_subscribe']) {
+                $scheme .= $this->expireDate($user);
+                $scheme .= $this->lastTraffic($user);
+            }
+
             // 获取分组名称
             if ($node->type == 1) {
                 $group = SsGroup::query()->where('id', $node['group_id'])->first();
@@ -128,7 +134,7 @@ class SubscribeController extends Controller
                     "tls"  => $node->v2_tls == 1 ? "tls" : ""
                 ];
 
-                $scheme = 'vmess://' . base64url_encode(json_encode($v2_json));
+                $scheme .= 'vmess://' . base64url_encode(json_encode($v2_json));
             }
         }
 
@@ -150,5 +156,33 @@ class SubscribeController extends Controller
     private function noneNode()
     {
         return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode('无可用节点或账号被封禁或订阅被封禁') . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
+    }
+
+    /**
+     * 过期时间
+     *
+     * @param object $user
+     *
+     * @return string
+     */
+    private function expireDate($user)
+    {
+        $text = '到期时间：' . $user->expire_time;
+
+        return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
+    }
+
+    /**
+     * 剩余流量
+     *
+     * @param object $user
+     *
+     * @return string
+     */
+    private function lastTraffic($user)
+    {
+        $text = '剩余流量：' . flowAutoShow($user->transfer_enable - $user->u - $user->d);
+
+        return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
     }
 }
