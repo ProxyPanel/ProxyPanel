@@ -1418,6 +1418,21 @@
             }
         });
 
+        
+        $('#is_trimepay').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_trimepay = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_trimepay', value:is_trimepay}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
         // 流量异常阈值
         function setTrafficBanValue() {
             var traffic_ban_value = $("#traffic_ban_value").val();
