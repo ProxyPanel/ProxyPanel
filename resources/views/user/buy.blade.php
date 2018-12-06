@@ -75,7 +75,7 @@
             @endif
             <div class="row">
                 <div class="col-xs-12" style="text-align: right;">
-                    @if($is_youzan)
+                    @if($is_youzan || is_trimepay)
                         <a class="btn btn-lg red hidden-print" onclick="onlinePay()"> {{trans('home.online_pay')}} </a>
                     @endif
                   	@if($goods->type <= 2)
