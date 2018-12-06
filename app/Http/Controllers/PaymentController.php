@@ -45,7 +45,7 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!self::$systemConfig['is_youzan']||!self::$systemConfig['is_trimepay']) {
+        if (!self::$systemConfig['is_youzan']&&!self::$systemConfig['is_trimepay']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
 
