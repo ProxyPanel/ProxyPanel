@@ -127,7 +127,11 @@ class PaymentController extends Controller
             $order->amount = $amount;
             $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
             $order->is_expire = 0;
-            $order->pay_way = 2;
+            if($systemConfig['is_youzan']){
+                $order->pay_way = 2;
+            }else if($systemConfig['is_trimepay']){
+                $order->pay_way = 3;
+            }
             $order->status = 0;
             $order->save();
 
