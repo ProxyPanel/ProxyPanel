@@ -122,16 +122,16 @@ class SubscribeController extends Controller
                 // 生成v2ray scheme
                 $v2_json = [
                     "v"    => "2",
-                    "ps"   => $node->name,
-                    "add"  => $node->server ? $node->server : $node->ip,
-                    "port" => $node->v2_port,
-                    "id"   => $user->vmess_id,
-                    "aid"  => $node->v2_alter_id,
-                    "net"  => $node->v2_net,
-                    "type" => $node->v2_type,
-                    "host" => $node->v2_host,
-                    "path" => $node->v2_path,
-                    "tls"  => $node->v2_tls == 1 ? "tls" : ""
+                    "ps"   => $node['name'],
+                    "add"  => $node['server'] ? $node['server'] : $node['ip'],
+                    "port" => $node['v2_port'],
+                    "id"   => $user['vmess_id'],
+                    "aid"  => $node['v2_alter_id'],
+                    "net"  => $node['v2_net'],
+                    "type" => $node['v2_type'],
+                    "host" => $node['v2_host'],
+                    "path" => $node['v2_path'],
+                    "tls"  => $node['v2_tls'] == 1 ? "tls" : ""
                 ];
 
                 $scheme .= 'vmess://' . base64url_encode(json_encode($v2_json));
@@ -169,7 +169,7 @@ class SubscribeController extends Controller
     {
         $text = '到期时间：' . $user->expire_time;
 
-        return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
+        return 'ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n";
     }
 
     /**
@@ -183,6 +183,6 @@ class SubscribeController extends Controller
     {
         $text = '剩余流量：' . flowAutoShow($user->transfer_enable - $user->u - $user->d);
 
-        return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
+        return 'ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n";
     }
 }
