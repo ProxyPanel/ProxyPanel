@@ -87,16 +87,17 @@ class SubscribeController extends Controller
 
         // 控制客户端最多获取节点数
         $scheme = '';
+
+        // 展示到期时间和剩余流量
+        if (self::$systemConfig['is_custom_subscribe']) {
+            $scheme .= $this->expireDate($user);
+            $scheme .= $this->lastTraffic($user);
+        }
+
         foreach ($nodeList as $key => $node) {
             // 控制显示的节点数
             if (self::$systemConfig['subscribe_max'] && $key >= self::$systemConfig['subscribe_max']) {
                 break;
-            }
-
-            // 展示到期时间和剩余流量
-            if (self::$systemConfig['is_custom_subscribe']) {
-                $scheme .= $this->expireDate($user);
-                $scheme .= $this->lastTraffic($user);
             }
 
             // 获取分组名称
