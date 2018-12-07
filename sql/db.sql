@@ -362,6 +362,9 @@ INSERT INTO `config` VALUES ('72', 'node_daily_report', 0);
 INSERT INTO `config` values ('73', 'mix_subscribe', 0);
 INSERT INTO `config` values ('74', 'rand_subscribe', 0);
 INSERT INTO `config` values ('75', 'is_custom_subscribe', 0);
+INSERT INTO `config` values ('76', 'is_trimepay', 0);
+INSERT INTO `config` VALUES ('77', 'trimepay_appid', '');
+INSERT INTO `config` VALUES ('78', 'trimepay_appsecret', '');
 
 
 -- ----------------------------

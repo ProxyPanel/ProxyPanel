@@ -42,6 +42,7 @@
                                     <option value="" @if(Request::get('pay_way') == '') selected @endif>支付方式</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>余额支付</option>
                                     <option value="2" @if(Request::get('pay_way') == '2') selected @endif>有赞云支付</option>
+                                    <option value="2" @if(Request::get('pay_way') == '3') selected @endif>微信支付</option>
                                 </select>
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
@@ -97,7 +98,7 @@
                                                 <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
                                                 <td> ￥{{$order->origin_amount}} </td>
                                                 <td> ￥{{$order->amount}} </td>
-                                                <td> {{$order->pay_way == '1' ? '余额支付' : '有赞云支付'}} </td>
+                                                <td> {{$order->pay_way == '1' ? '余额支付' : $order->pay_way == '2' ? '有赞云支付': '微信支付'}} </td>
                                                 <td>
                                                     @if($order->status == '-1')
                                                         已关闭

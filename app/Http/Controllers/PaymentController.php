@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Components\Yzy;
+use App\Components\Trimepay;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
@@ -44,7 +45,7 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!self::$systemConfig['is_youzan']) {
+        if (!self::$systemConfig['is_youzan']&&!self::$systemConfig['is_trimepay']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
 
@@ -126,17 +127,31 @@ class PaymentController extends Controller
             $order->amount = $amount;
             $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
             $order->is_expire = 0;
-            $order->pay_way = 2;
+            if(self::$systemConfig['is_youzan']){
+                $order->pay_way = 2;
+            }else if(self::$systemConfig['is_trimepay']){
+                $order->pay_way = 3;
+            }
             $order->status = 0;
             $order->save();
 
             // 生成支付单
-            $yzy = new Yzy();
-            $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
-            if (isset($result['error_response'])) {
-                Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
+            if(self::$systemConfig['is_youzan']){
+                $yzy = new Yzy();
+                $result = $yzy->createQrCode($goods->name, $amount * 100, $orderSn);
+                if (isset($result['error_response'])) {
+                    Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
 
-                throw new \Exception($result['error_response']['msg']);
+                    throw new \Exception($result['error_response']['msg']);
+                }
+            }else if(self::$systemConfig['is_trimepay']){
+                $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
+                $result = $trimepay->pay('WEPAY_QR', $orderSn, $amount, self::$systemConfig['website_url'].'/api/trimepay', self::$systemConfig['website_url']);
+                if ($result['code']!==0) {
+                    Log::error('【Trimepay】创建二维码失败：' . $result['msg']);
+
+                    throw new \Exception($result['msg']);
+                }
             }
 
             $payment = new Payment();
@@ -146,10 +161,16 @@ class PaymentController extends Controller
             $payment->order_sn = $orderSn;
             $payment->pay_way = 1;
             $payment->amount = $amount;
-            $payment->qr_id = $result['response']['qr_id'];
-            $payment->qr_url = $result['response']['qr_url'];
-            $payment->qr_code = $result['response']['qr_code'];
-            $payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
+            if(self::$systemConfig['is_youzan']){
+                $payment->qr_id = $result['response']['qr_id'];
+                $payment->qr_url = $result['response']['qr_url'];
+                $payment->qr_code = $result['response']['qr_code'];
+                $payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
+            }else if(self::$systemConfig['is_trimepay']){
+                $payment->qr_url = $result['data'];
+                $payment->qr_code = 'https://www.zhihu.com/qrcode?url='.$result['data'];
+                $payment->qr_local_url = 'https://www.zhihu.com/qrcode?url='.$result['data'];
+            }
             $payment->status = 0;
             $payment->save();
 

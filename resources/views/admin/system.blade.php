@@ -43,6 +43,9 @@
                                         <li>
                                             <a href="#tab_8" data-toggle="tab"> LOGO、客服、统计设置 </a>
                                         </li>
+                                        <li>
+                                            <a href="#tab_9" data-toggle="tab"> Trimepay设置 </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -860,6 +863,45 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="tab-pane" id="tab_9">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="is_trimepay" class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_trimepay) checked @endif id="is_trimepay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 请先到<a href="https://portal.trimepay.com">Trimepay</a>申请app_id和app_secret </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="trimepay_appid" class="col-md-3 control-label">app_id</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="trimepay_appid" value="{{$trimepay_appid}}" id="trimepay_appid" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTrimepayAppId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="trimepay_appsecret" class="col-md-3 control-label">app_secret</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="trimepay_appsecret" value="{{$trimepay_appsecret}}" id="trimepay_appsecret" />
+                                                                    <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setTrimepayAppSecret()">修改</button>
+                                                                </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1376,6 +1418,21 @@
             }
         });
 
+        
+        $('#is_trimepay').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_trimepay = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_trimepay', value:is_trimepay}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'fail') {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }
+        });
+
         // 流量异常阈值
         function setTrafficBanValue() {
             var traffic_ban_value = $("#traffic_ban_value").val();
@@ -1544,6 +1601,31 @@
             var youzan_client_secret = $("#youzan_client_secret").val();
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'youzan_client_secret', value:youzan_client_secret}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        
+        function setTrimepayAppId() {
+            var trimepay_appid = $("#trimepay_appid").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'trimepay_appid', value:trimepay_appid}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        function setTrimepayAppSecret() {
+            var trimepay_appsecret = $("#trimepay_appsecret").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'trimepay_appsecret', value:trimepay_appsecret}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
