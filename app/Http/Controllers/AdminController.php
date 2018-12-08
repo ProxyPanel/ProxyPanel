@@ -1994,6 +1994,22 @@ EOF;
             $value = intval($value) / 100;
         }
 
+        // 用有赞云支付不可用TrimePay支付
+        if (in_array($name, ['is_youzan']) && $name) {
+            $is_trimepay = Config::query()->where('name', 'is_trimepay')->first();
+            if ($is_trimepay->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【TrimePay支付】']);
+            }
+        }
+
+        // 用TrimePay支付不可用有赞云支付
+        if (in_array($name, ['is_trimepay']) && $name) {
+            $is_youzan = Config::query()->where('name', 'is_youzan')->first();
+            if ($is_youzan->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
+            }
+        }
+
         // 更新配置
         Config::query()->where('name', $name)->update(['value' => $value]);
 
