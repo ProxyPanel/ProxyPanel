@@ -151,14 +151,14 @@ class PaymentController extends Controller
             } else if (self::$systemConfig['is_trimepay']) {
                 $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
 
-                if($pay_type==1){
-                    $payMethod='ALIPAY_QR';
-                }else if($pay_type==2){
-                    $payMethod='WEPAY_QR';
+                if ($pay_type == 1) {
+                    $payMethod = 'ALIPAY_QR';
+                } else if ($pay_type == 2) {
+                    $payMethod = 'WEPAY_QR';
                 }
 
-                $result = $trimepay->pay($payMethod, $orderSn, $amount, self::$systemConfig['website_url'].'/api/trimepay', self::$systemConfig['website_url']);
-                if ($result['code']!==0) {
+                $result = $trimepay->pay($payMethod, $orderSn, $amount, self::$systemConfig['website_url'] . '/api/trimepay', self::$systemConfig['website_url']);
+                if ($result['code'] !== 0) {
                     Log::error('【Trimepay】创建二维码失败：' . $result['msg']);
 
                     throw new \Exception($result['msg']);
@@ -196,9 +196,7 @@ class PaymentController extends Controller
             }
 
             DB::commit();
-            if(self::$systemConfig['is_trimepay']){
-                
-            }
+
             return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
         } catch (\Exception $e) {
             DB::rollBack();

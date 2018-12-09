@@ -78,7 +78,7 @@
                     @if($is_youzan)
                         <a class="btn btn-lg red hidden-print" onclick="onlinePay(0)"> {{trans('home.online_pay')}} </a>
                     @elseif($is_trimepay)
-                        <a class="btn btn-lg blue hidden-print" onclick="onlinePay(1)"> 支付宝扫码 </a>
+                        <a class="btn btn-lg green hidden-print" onclick="onlinePay(1)"> 支付宝扫码 </a>
                         <a class="btn btn-lg green hidden-print" onclick="onlinePay(2)"> 微信扫码 </a>
                     @endif
                   	@if($goods->type <= 2)
@@ -143,6 +143,7 @@
         function onlinePay(pay_type) {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
+
             index = layer.load(1, {
                 shade: [0.7,'#CCC']
             });
@@ -151,7 +152,7 @@
                 type: "POST",
                 url: "{{url('payment/create')}}",
                 async: false,
-                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn, pay_type},
+                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn, pay_type:pay_type},
                 dataType: 'json',
                 beforeSend: function () {
                     index = layer.load(1, {

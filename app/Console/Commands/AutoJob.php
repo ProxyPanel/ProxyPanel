@@ -277,7 +277,7 @@ class AutoJob extends Command
          * 当有赞没有正常推送消息或者其他原因导致用户已付款但是订单不生效从而导致用户无法正常加流量、置状态
          * 故需要每分钟请求一次未支付订单，审计一下其支付状态
          */
-        $paymentList = Payment::query()->with(['order', 'user'])->where('status', 0)->get();
+        $paymentList = Payment::query()->with(['order', 'user'])->where('status', 0)->where('qr_id', '>', 0)->get();
         if (!$paymentList->isEmpty()) {
             foreach ($paymentList as $payment) {
                 // 跳过order丢失的订单
@@ -463,7 +463,7 @@ class AutoJob extends Command
                             $content['serverList'] = $nodeList;
 
                             try {
-                                Mail::to($order->email)->send(new sendUserInfo(self::$systemConfig['website_name'], $content));
+                                Mail::to($order->email)->send(new sendUserInfo($content));
                                 Helpers::addEmailLog($order->email, $title, json_encode($content));
                             } catch (\Exception $e) {
                                 Helpers::addEmailLog($order->email, $title, json_encode($content), 0, $e->getMessage());
