@@ -37,7 +37,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="center">
-                                        <img src="{{$payment->qr_local_url}}"/>
+                                        <img src="{{$payment->qr_local_url}}" width=75%/>
                                     </td>
                                 </tr>
                             </table>
