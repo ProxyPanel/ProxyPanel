@@ -40,6 +40,7 @@ class YzyController extends Controller
     public function index(Request $request)
     {
         \Log::info("【有赞云】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
+        exit("【有赞云】接口正常");
     }
 
     // 接收POST请求

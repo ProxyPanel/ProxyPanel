@@ -9,7 +9,6 @@ use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
-use App\Http\Models\PaymentCallback;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeLabel;
 use App\Http\Models\User;
@@ -33,29 +32,30 @@ class TrimepayController extends Controller
     // 接收GET请求
     public function index(Request $request)
     {
-        \Log::info("【Trimepay】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
+        \Log::info("【TrimePay】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
+        exit("【TrimePay】接口正常");
     }
 
     // 接收POST请求
     public function store(Request $request)
     {
-        \Log::info("【Trimepay】回调接口[POST]：" . var_export($request->all(), true));
+        \Log::info("【TrimePay】回调接口[POST]：" . var_export($request->all(), true));
 
         $json = file_get_contents('php://input');
         parse_str($json, $data);
         if (!$data) {
-            Log::info('Trimepay-POST:回调数据无法解析，可能是非法请求[' . getClientIp() . ']');
+            Log::info('TrimePay-POST:回调数据无法解析，可能是非法请求[' . getClientIp() . ']');
             exit();
         }
 
         // 判断消息是否合法
         $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
-        $cbData	= [
-            'payStatus' 				=> $data['payStatus'],
-            'payFee'					=> $data['payFee'],
-            'callbackTradeNo' 			=> $data['callbackTradeNo'],
-            'payType'					=> $data['payType'],
-            'merchantTradeNo'			=> $data['merchantTradeNo']
+        $cbData = [
+            'payStatus'       => $data['payStatus'],
+            'payFee'          => $data['payFee'],
+            'callbackTradeNo' => $data['callbackTradeNo'],
+            'payType'         => $data['payType'],
+            'merchantTradeNo' => $data['merchantTradeNo']
         ];
         $strToSign = $trimepay->prepareSign($cbData);
         $verify_result = $trimepay->verify($strToSign, $data['sign']);
@@ -66,7 +66,7 @@ class TrimepayController extends Controller
         } else {
             var_dump('SUCCESS');
         }
-        
+
         switch ($data['payStatus']) {
             case 'SUCCESS':
                 $this->tradePaid($data);
@@ -284,80 +284,8 @@ class TrimepayController extends Controller
         exit();
     }
 
-    // 创建交易
-    private function tradeCreate($msg)
-    {
-        Log::info('【Trimepay】回调创建交易');
-        exit();
-    }
-
-    // 关闭交易（无视，系统自带15分钟自动关闭未支付订单的定时任务）
-    private function tradeClose($msg)
-    {
-        Log::info('【Trimepay】回调关闭交易');
-
-        exit();
-    }
-
-    // 交易成功
-    private function tradeSuccess($msg)
-    {
-        Log::info('【Trimepay】回调交易成功');
-
-        exit();
-    }
-
-    // 卖家部分发货
-    private function tradePartlySellerShip($msg)
-    {
-        Log::info('【Trimepay】回调卖家部分发货');
-        exit();
-    }
-
-    // 卖家发货
-    private function tradeSellerShip($msg)
-    {
-        Log::info('【Trimepay】回调卖家发货');
-        exit();
-    }
-
-    // 买家付款
-    private function tradeBuyerPay($msg)
-    {
-        Log::info('【Trimepay】回调买家付款');
-        exit();
-    }
-
-    // 卖家修改交易备注
-    private function tradeMemoModified($msg)
-    {
-        Log::info('【Trimepay】回调卖家修改交易备注');
-        exit();
-    }
-
     public function show(Request $request)
     {
         exit('show');
-    }
-
-    // 写入回调请求日志
-    private function callbackLog($client_id, $yz_id, $kdt_id, $kdt_name, $mode, $msg, $sendCount, $sign, $status, $test, $type, $version)
-    {
-        $obj = new PaymentCallback();
-        $obj->client_id = $client_id;
-        $obj->yz_id = $yz_id;
-        $obj->kdt_id = $kdt_id;
-        $obj->kdt_name = $kdt_name;
-        $obj->mode = $mode;
-        $obj->msg = urldecode($msg);
-        $obj->sendCount = $sendCount;
-        $obj->sign = $sign;
-        $obj->status = $status;
-        $obj->test = $test;
-        $obj->type = $type;
-        $obj->version = $version;
-        $obj->save();
-
-        return $obj->id;
     }
 }

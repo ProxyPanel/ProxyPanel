@@ -1979,7 +1979,7 @@ EOF;
 
         // 演示环境禁止修改特定配置项
         if (env('APP_DEMO')) {
-            if (in_array($name, ['website_url', 'push_bear_send_key', 'push_bear_qrcode', 'youzan_client_id', 'youzan_client_secret', 'kdt_id', 'is_forbid_china'])) {
+            if (in_array($name, ['website_url', 'push_bear_send_key', 'push_bear_qrcode', 'youzan_client_id', 'youzan_client_secret', 'kdt_id', 'is_forbid_china', 'trimepay_appid', 'trimepay_appsecret'])) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '演示环境禁止修改该配置']);
             }
         }
@@ -1992,6 +1992,22 @@ EOF;
         // 如果是返利比例，则需要除100
         if (in_array($name, ['referral_percent'])) {
             $value = intval($value) / 100;
+        }
+
+        // 用有赞云支付不可用TrimePay支付
+        if (in_array($name, ['is_youzan']) && $name) {
+            $is_trimepay = Config::query()->where('name', 'is_trimepay')->first();
+            if ($is_trimepay->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【TrimePay支付】']);
+            }
+        }
+
+        // 用TrimePay支付不可用有赞云支付
+        if (in_array($name, ['is_trimepay']) && $name) {
+            $is_youzan = Config::query()->where('name', 'is_youzan')->first();
+            if ($is_youzan->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
+            }
         }
 
         // 更新配置

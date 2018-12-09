@@ -289,6 +289,7 @@ class UserController extends Controller
             }
 
             Session::flash('errorMsg', '非法请求');
+
             return Redirect::to('profile#tab_1');
         } else {
             $view['info'] = User::query()->where('id', Auth::user()->id)->first();
@@ -576,8 +577,8 @@ class UserController extends Controller
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不可重复购买']);
                 }
             }
-      
-      	    // 单个商品限购
+
+            // 单个商品限购
             if ($goods->is_limit == 1) {
                 $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('user_id', Auth::user()->id)->where('goods_id', $goods_id)->exists();
                 if ($noneExpireOrderExist) {
@@ -775,6 +776,7 @@ class UserController extends Controller
             $view['goods'] = $goods;
             $view['is_youzan'] = self::$systemConfig['is_youzan'];
             $view['is_trimepay'] = self::$systemConfig['is_trimepay'];
+
             return Response::view('user.buy', $view);
         }
     }

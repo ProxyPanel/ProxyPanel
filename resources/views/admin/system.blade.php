@@ -38,13 +38,13 @@
                                             <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_7" data-toggle="tab"> 有赞云支付设置 </a>
+                                            <a href="#tab_7" data-toggle="tab"> LOGO、客服、统计设置 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_8" data-toggle="tab"> LOGO、客服、统计设置 </a>
+                                            <a href="#tab_8" data-toggle="tab"> 有赞云支付 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_9" data-toggle="tab"> Trimepay设置 </a>
+                                            <a href="#tab_9" data-toggle="tab"> TrimePay支付 </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -732,64 +732,6 @@
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_7">
-                                            <form action="#" method="post" class="form-horizontal">
-                                                <div class="portlet-body">
-                                                    <div class="form-group">
-                                                        <div class="col-md-12">
-                                                            <div class="alert alert-info" style="text-align: center;">
-                                                                请在<a href="https://console.youzanyun.com/login" target="_blank" style="color: red;">有赞云</a>设置应用的推送网址为：{{$website_url . '/api/yzy'}}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="is_youzan" class="col-md-3 control-label">本功能</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_youzan) checked @endif id="is_youzan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 请先到<a href="https://console.youzanyun.com/dashboard">有赞云</a>申请client_id和client_secret并绑定店铺（<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%89%E8%B5%9E%E4%BA%91%E6%94%AF%E4%BB%98" target="_blank">申请教程</a>） </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="kdt_id" class="col-md-3 control-label">kdt_id</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="kdt_id" value="{{$kdt_id}}" id="kdt_id" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setKdtId()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                                <span class="help-block"> 即：授权店铺id </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="youzan_client_id" class="col-md-3 control-label">client_id</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="youzan_client_id" value="{{$youzan_client_id}}" id="youzan_client_id" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setYouzanClientId()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="youzan_client_secret" class="col-md-3 control-label">client_secret</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="youzan_client_secret" value="{{$youzan_client_secret}}" id="youzan_client_secret" />
-                                                                    <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setYouzanClientSecret()">修改</button>
-                                                                </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="tab-pane" id="tab_8">
                                             <form action="{{url('admin/setExtend')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" id="setExtend">
                                                 {{csrf_field()}}
                                                 <div class="form-group">
@@ -863,6 +805,64 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="tab-pane" id="tab_8">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <div class="alert alert-info" style="text-align: center;">
+                                                                请在<a href="https://console.youzanyun.com/login" target="_blank" style="color: red;"> 有赞云 </a>设置应用的推送网址为：{{$website_url . '/api/yzy'}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="is_youzan" class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_youzan) checked @endif id="is_youzan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 请先到 <a href="https://console.youzanyun.com/dashboard">有赞云</a> 申请client_id和client_secret（<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%89%E8%B5%9E%E4%BA%91%E6%94%AF%E4%BB%98" target="_blank">申请教程</a>） </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="kdt_id" class="col-md-3 control-label">kdt_id</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="kdt_id" value="{{$kdt_id}}" id="kdt_id" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setKdtId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 即：授权店铺id </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="youzan_client_id" class="col-md-3 control-label">client_id</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="youzan_client_id" value="{{$youzan_client_id}}" id="youzan_client_id" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setYouzanClientId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="youzan_client_secret" class="col-md-3 control-label">client_secret</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="youzan_client_secret" value="{{$youzan_client_secret}}" id="youzan_client_secret" />
+                                                                    <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setYouzanClientSecret()">修改</button>
+                                                                </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                         <div class="tab-pane" id="tab_9">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
@@ -871,7 +871,7 @@
                                                             <label for="is_trimepay" class="col-md-3 control-label">本功能</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_trimepay) checked @endif id="is_trimepay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 请先到<a href="https://portal.trimepay.com">Trimepay</a>申请app_id和app_secret </span>
+                                                                <span class="help-block"> 请先到 <a href="https://portal.trimepay.com/#/auth/register/408" target="_blank">TrimePay</a> 申请app_id和app_secret </span>
                                                             </div>
                                                         </div>
                                                     </div>
