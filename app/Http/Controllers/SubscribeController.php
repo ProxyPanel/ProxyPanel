@@ -135,7 +135,7 @@ class SubscribeController extends Controller
                     "tls"  => $node['v2_tls'] == 1 ? "tls" : ""
                 ];
 
-                $scheme .= 'vmess://' . base64url_encode(json_encode($v2_json));
+                $scheme .= 'vmess://' . base64url_encode(json_encode($v2_json)) . "\n";
             }
         }
 
