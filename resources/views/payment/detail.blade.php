@@ -37,7 +37,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="center">
-                                        <img src="{{$payment->qr_local_url}}" width=75%/>
+                                        <img id="qr" src="{{$payment->qr_local_url}}"/>
                                     </td>
                                 </tr>
                             </table>
@@ -74,5 +74,13 @@
                 }
             });
         }
+
+    //qr自适应
+    var w=window.innerWidth;
+    var h=window.innerHeight;
+    x=document.getElementById("qr");
+    if (w<=h)
+      x.setAttribute("width", "75%");
+      else x.setAttribute("height", "75%");
     </script>
 @endsection
