@@ -263,6 +263,14 @@ cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 yum install ntp
 ntpdate cn.pool.ntp.org
 ````
+编辑crontab表，每天时间校准一次。 
+```
+crontab -e 
+```
+编辑内容
+```
+0 0 * * * /usr/sbin/ntpdate cn.pool.ntp.org 
+```
 
 ## 二开规范
 ````
