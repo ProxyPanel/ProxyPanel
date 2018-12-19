@@ -201,7 +201,6 @@ class ShopController extends Controller
                 $data = [
                     'name'     => $name,
                     'desc'     => $desc,
-                    'logo'     => $logo,
                     'price'    => $price * 100,
                     'sort'     => $sort,
                     'color'    => $color,
@@ -209,6 +208,10 @@ class ShopController extends Controller
                     'is_limit' => $is_limit,
                     'status'   => $status
                 ];
+
+                if ($logo) {
+                    $data['logo'] = $logo;
+                }
 
                 Goods::query()->where('id', $id)->update($data);
 

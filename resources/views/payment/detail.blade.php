@@ -75,12 +75,14 @@
             });
         }
 
-    //qr自适应
-    var w=window.innerWidth;
-    var h=window.innerHeight;
-    x=document.getElementById("qr");
-    if (w<=h)
-      x.setAttribute("width", "75%");
-      else x.setAttribute("height", "75%");
+        // 付款二维码自适应
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        x = document.getElementById("qr");
+        if (w <= h) {
+            x.setAttribute("width", "75%");
+        } else {
+            x.setAttribute("height", "75%");
+        }
     </script>
 @endsection

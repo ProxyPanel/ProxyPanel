@@ -75,7 +75,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 生成重置密码、有赞云支付必备，示例：https://www.ssrpanel.com </span>
+                                                                <span class="help-block"> 生成重置密码、有赞云支付、TrimePay支付必备，示例：https://www.ssrpanel.com </span>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -13,6 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // 检测是否强制跳转https
         if (env('REDIRECT_HTTPS', false)) {
             \URL::forceScheme('https');
         }
