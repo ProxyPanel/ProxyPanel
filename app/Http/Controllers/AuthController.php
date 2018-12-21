@@ -661,6 +661,13 @@ class AuthController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名必须是合法邮箱，请重新输入']);
         }
 
+        // 校验域名邮箱是否在敏感词中
+        $sensitiveWords = $this->sensitiveWords();
+        $usernameSuffix = explode('@', $username); // 提取邮箱后缀
+        if (in_array(strtolower($usernameSuffix[1]), $sensitiveWords)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '邮箱含有敏感词，请重新输入']);
+        }
+
         $user = User::query()->where('username', $username)->first();
         if ($user) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户已存在，无需注册，如果忘记密码请找回密码']);

@@ -1,1 +1,0 @@
-ALTER TABLE `article` ADD COLUMN `author` varchar(255) DEFAULT '' COMMENT '作者' AFTER `title`;

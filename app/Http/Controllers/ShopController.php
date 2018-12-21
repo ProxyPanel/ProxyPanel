@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Label;

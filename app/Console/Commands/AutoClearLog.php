@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
+use App\Http\Models\SsNodeIp;
 use Illuminate\Console\Command;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeOnlineLog;
@@ -43,13 +44,13 @@ class AutoClearLog extends Command
     private function clearLog()
     {
         // 自动清除30分钟以前的节点负载信息日志
-        SsNodeInfo::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-30 minutes"))))->delete();
+        SsNodeInfo::query()->where('log_time', '<=', strtotime("-30 minutes"))->delete();
 
         // 自动清除1小时以前的节点在线用户数日志
-        SsNodeOnlineLog::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-60 minutes"))))->delete();
+        SsNodeOnlineLog::query()->where('log_time', '<=', strtotime("-60 minutes"))->delete();
 
         // 自动清除30天以前的用户流量日志
-        UserTrafficLog::query()->where('log_time', '<=', strtotime(date('Y-m-d H:i:s', strtotime("-30 days"))))->delete();
+        UserTrafficLog::query()->where('log_time', '<=', strtotime("-30 days"))->delete();
 
         // 自动清除10天以前的用户每小时流量数据日志
         UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-10 days')))->delete();
@@ -59,6 +60,9 @@ class AutoClearLog extends Command
 
         // 自动清除30天以前用户封禁日志
         UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-30 days")))->delete();
+
+        // 自动清除30天以前用户连接IP
+        SsNodeIp::query()->where('created_at', '<=', strtotime("-30 days"))->delete();
     }
 
 }

@@ -7,7 +7,6 @@ use App\Http\Models\SensitiveWords;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
-use App\Http\Models\UserTrafficModifyLog;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;

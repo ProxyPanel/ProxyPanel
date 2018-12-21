@@ -13,7 +13,6 @@ use App\Http\Models\Level;
 use App\Http\Models\Order;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
-use App\Http\Models\SsConfig;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeLabel;

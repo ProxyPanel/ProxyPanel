@@ -2,7 +2,6 @@
 
 namespace App\Components;
 
-use App\Http\Models\Config;
 use Cache;
 use Log;
 

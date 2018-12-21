@@ -11,7 +11,6 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use Illuminate\Http\Request;
 use Redirect;
-use DB;
 
 /**
  * 订阅控制器

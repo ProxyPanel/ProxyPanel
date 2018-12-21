@@ -208,9 +208,8 @@ CREATE TABLE `user_traffic_log` (
   `traffic` varchar(32) NOT NULL COMMENT '产生流量',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  INDEX `idx_user` (`user_id`),
-  INDEX `idx_node` (`node_id`),
-  INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
+  INDEX `idx_user_node` (`user_id`, `log_time`, `node_id`),
+	INDEX `idx_node_time` (`node_id`, `log_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量日志';
 
 
@@ -1141,7 +1140,9 @@ CREATE TABLE `ss_node_ip` (
   `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：tcp、udp',
   `ip` text COLLATE utf8mb4_unicode_ci COMMENT '连接IP：每个IP用,号隔开',
   `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '上报时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_node` (`node_id`),
+  INDEX `idx_port` (`port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

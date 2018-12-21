@@ -12,7 +12,7 @@ use Log;
 class AutoReportNode extends Command
 {
     protected $signature = 'autoReportNode';
-    protected $description = '自动报告节点使用情况';
+    protected $description = '自动报告节点昨日使用情况';
     protected static $systemConfig;
 
     public function __construct()
@@ -28,6 +28,7 @@ class AutoReportNode extends Command
         if (self::$systemConfig['node_daily_report']) {
             $nodeList = SsNode::query()->where('status', 1)->get();
             if (!$nodeList->isEmpty()) {
+                $msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
                 foreach ($nodeList as $node) {
                     $log = SsNodeTrafficDaily::query()
                         ->where('node_id', $node->id)
@@ -35,10 +36,10 @@ class AutoReportNode extends Command
                         ->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime("-1 day")))
                         ->first();
 
-                    if ($log) {
-                        $this->notifyMasterByServerchan('节点使用情况日报', '节点**' . $node->name . '，上行流量：' . flowAutoShow($log->u) . '，下行流量：' . flowAutoShow($log->d) . '，共计：' . $log->traffic . '**');
-                    }
+                    $msg .= '|' . $node->name . '|' . flowAutoShow($log->u) . '|' . flowAutoShow($log->d) . '|' . $log->traffic . "\r\n";
                 }
+
+                $this->notifyMasterByServerchan('节点日报', $msg);
             }
         }
 
