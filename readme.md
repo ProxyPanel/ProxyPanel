@@ -1,28 +1,27 @@
 ## 项目描述
 ````
 1.SSR多节点账号管理面板，兼容SS、SSRR，需配合SSR或SSRR版后端使用
-2.支持v2ray
-3.开放API，方便自行定制改造客户端
-4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
-5.用户、节点标签化，不同用户可见不同节点
-6.SS配置转SSR(R)配置，轻松一键导入导出SS账号
-7.单机单节点日志分析功能
-8.账号、节点24小时和本月的流量监控
-9.流量异常、节点宕机邮件或ServerChan及时通知
-10.账号临近到期、流量不够会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志等各种强大的定时任务
-11.后台一键添加加密方式、混淆、协议、等级
-12.屏蔽常见爬虫、屏蔽机器人
-14.支持单端口多用户
-15.支持节点订阅功能，可自由更换订阅地址、封禁账号订阅地址、禁止特定型号设备订阅
-17.支持多国语言，自带英日韩繁语言包
-18.订阅防投毒机制
-19.自动释放端口机制，防止端口被大量长期占用
-20.有赞云支付
-21.可以阻止大陆或者海外访问
-22.中转节点（开发中）
-23.强大的营销管理：PushBear群发消息
-24.telegram机器人（开发中）
-25.防墙监测，节点被墙自动提醒、自动下线（TCP阻断）
+2.支持V2Ray
+3.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
+4.用户、节点标签化，不同用户可见不同节点
+5.SS配置转SSR(R)配置，轻松一键导入导出SS账号
+6.单机单节点日志分析功能
+7.账号、节点24小时和本月的流量监控
+8.流量异常、节点宕机邮件或ServerChan及时通知
+9.账号临近到期、流量不够会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志等各种强大的定时任务
+10.后台一键添加加密方式、混淆、协议、等级
+11.屏蔽常见爬虫、屏蔽机器人
+12.支持单端口多用户
+13.支持节点订阅功能，可自由更换订阅地址、封禁账号订阅地址、禁止特定型号设备订阅
+14.支持多国语言，自带英日韩繁语言包
+15.订阅防投毒机制
+16.自动释放端口机制，防止端口被大量长期占用
+17.有赞云支付、TrimePay支付
+18.可以阻止大陆或者海外访问
+19.中转节点（开发中）
+20.强大的营销管理：PushBear群发消息
+21.telegram机器人（开发中）
+22.防墙监测，节点被墙自动提醒、自动下线（TCP阻断）
 ````
 
 ## 演示&交流
@@ -169,28 +168,27 @@ chown www:www ssserver.log
 项目里还自带了IPIP的IP库，但是未使用，有开发能力的请自行测试。
 ```
 
+## HTTPS
+```
+将 .env 文件里的 REDIRECT_HTTPS 值改为true，则全站强制走https
+```
+
 ## SSR(R)部署
-###### 手动部署(基于SSRR 3.2.2，推荐)
+###### 手动部署
+
+- 无上报IP版本：
 ````
-git clone https://github.com/ssrpanel/shadowsocksr.git
+wget https://github.com/ssrpanel/shadowsocksr/archive/V3.2.2.tar.gz
+tar zxvf V3.2.2.tar.gz
 cd shadowsocksr
 sh ./setup_cymysql2.sh
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
 ````
 
-###### 一键自动部署(基于SSR3.4)(不推荐，该版本有内存溢出BUG)
-````
-wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
-
-或者使用另一个脚本
-
-wget -N --no-check-certificate https://raw.githubusercontent.com/maxzh0916/Shadowsowcks1Click/master/Shadowsowcks1Click.sh;chmod +x Shadowsowcks1Click.sh;./Shadowsowcks1Click.sh
-````
-
-## 网卡流量监控一键脚本（Vnstat）
-````
-wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
-````
+- 会上报在线IP版本：
+```
+https://github.com/ssrpanel/shadowsocksr
+```
 
 ## 单端口多用户
 ````
@@ -286,4 +284,6 @@ ntpdate cn.pool.ntp.org
 - [@ipcheck](https://ipcheck.need.sh)
 - [@cz88](http://www.cz88.net/index.shtml)
 - [@ip.sb](https://www.ip.sb)
+- [@aiyahacke](https://github.com/aiyahacke)
+- [@pch18](https://github.com/pch18/shadowsocksr)
 
