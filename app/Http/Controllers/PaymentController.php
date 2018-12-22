@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Components\Yzy;
 use App\Components\Trimepay;
+use App\Components\AlipaySubmit;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
@@ -46,10 +47,9 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!self::$systemConfig['is_youzan'] && !self::$systemConfig['is_trimepay']) {
+        if (!self::$systemConfig['is_youzan'] && !self::$systemConfig['is_trimepay']&& !self::$systemConfig['is_alipay']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
-
         // 判断是否存在同个商品的未支付订单
         $existsOrder = Order::query()->where('status', 0)->where('user_id', Auth::user()->id)->where('goods_id', $goods_id)->exists();
         if ($existsOrder) {
@@ -72,7 +72,7 @@ class PaymentController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：此商品每人限购1次']);
             }
         }
-
+		
         // 使用优惠券
         if ($coupon_sn) {
             $coupon = Coupon::query()->where('status', 0)->where('is_del', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
@@ -93,7 +93,7 @@ class PaymentController extends Controller
         } elseif ($amount == 0) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：订单总价为0，无需使用在线支付']);
         }
-
+		
         // 验证账号是否存在有效期更长的套餐
         if ($goods->type == 2) {
             $existOrderList = Order::query()
@@ -112,7 +112,7 @@ class PaymentController extends Controller
                 }
             }
         }
-
+		
         DB::beginTransaction();
         try {
             $orderSn = date('ymdHis') . mt_rand(100000, 999999);
@@ -123,8 +123,10 @@ class PaymentController extends Controller
                 $pay_way = 2;
             } else if (self::$systemConfig['is_trimepay']) {
                 $pay_way = 3;
+            } else if (self::$systemConfig['is_alipay']) {
+                $pay_way = 4;
             }
-
+			
             // 生成订单
             $order = new Order();
             $order->order_sn = $orderSn;
@@ -163,6 +165,23 @@ class PaymentController extends Controller
 
                     throw new \Exception($result['msg']);
                 }
+            }else if (self::$systemConfig['is_alipay']) {
+				$parameter = array(
+					"service"       => "create_forex_trade",                   //WAP:create_forex_trade_wap ,即时到帐:create_forex_trade
+					"partner"       => self::$systemConfig['alipay_partner'],
+					"notify_url"	=> self::$systemConfig['website_url']."/api/alipay",  //异步回调接口
+					"return_url"	=> self::$systemConfig['website_url'],
+					"out_trade_no"	=> $orderSn,                               //订单号
+					"subject"	=> "Package",                                  //订单名称
+					"total_fee"	=> $amount,                                    //金额
+					"body"	=> "",                                             //商品描述，可为空
+					"currency" => self::$systemConfig['alipay_currency'],      //币种
+					"product_code" => "NEW_OVERSEAS_SELLER",
+					"_input_charset" => "utf-8"
+				);
+				//建立请求
+				$alipaySubmit = new AlipaySubmit(self::$systemConfig['alipay_sign_type'],self::$systemConfig['alipay_partner'],self::$systemConfig['alipay_key'],self::$systemConfig['alipay_private_key']);
+				$result = $alipaySubmit->buildRequestForm($parameter,"post", "确认");
             }
 
             $payment = new Payment();
@@ -181,6 +200,8 @@ class PaymentController extends Controller
                 $payment->qr_url = $result['data'];
                 $payment->qr_code = 'https://www.zhihu.com/qrcode?url=' . $result['data'];
                 $payment->qr_local_url = 'https://www.zhihu.com/qrcode?url=' . $result['data'];
+            }else if (self::$systemConfig['is_alipay']) {
+                $payment->qr_code = $result;
             }
             $payment->status = 0;
             $payment->save();
@@ -196,8 +217,12 @@ class PaymentController extends Controller
             }
 
             DB::commit();
-
-            return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
+			if (self::$systemConfig['is_alipay']) {
+				//alipay返回支付信息
+				return Response::json(['status' => 'success', 'data' => $result, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
+			}else{
+				return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
+			}
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -230,7 +255,7 @@ class PaymentController extends Controller
         $view['website_logo'] = self::$systemConfig['website_logo'];
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-
+		$view['is_alipay'] = self::$systemConfig['is_alipay'];
         return Response::view('payment.detail', $view);
     }
 

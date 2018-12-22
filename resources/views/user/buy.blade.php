@@ -80,6 +80,8 @@
                     @elseif($is_trimepay)
                         <a class="btn btn-lg green hidden-print" onclick="onlinePay(1)"> 支付宝扫码 </a>
                         <a class="btn btn-lg green hidden-print" onclick="onlinePay(2)"> 微信扫码 </a>
+                    @elseif($is_alipay)
+                        <a class="btn btn-lg green hidden-print" onclick="onlinePay(4)"> 支付宝扫码 </a>
                     @endif
                   	@if($goods->type <= 2)
                         <a class="btn btn-lg blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
@@ -160,9 +162,15 @@
                     });
                 },
                 success: function (ret) {
-                    layer.msg(ret.message, {time:1300}, function() {
+					layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('payment')}}' + "/" + ret.data;
+							if(pay_type==4){
+								//如果是alipay支付写入alipay的支付页面
+								document.body.innerHTML += ret.data;
+								document.forms['alipaysubmit'].submit();
+							}else{
+								window.location.href = '{{url('payment')}}' + "/" + ret.data;
+							}
                         } else {
                             window.location.href = '{{url('invoices')}}';
                         }
