@@ -26,6 +26,7 @@ return [
 
     // 首页
     'ratio_tips'                      => '推薦使用支持節點訂閱功能的用戶端，通過訂閱功能可以在用戶端快速同步節點資訊。',
+    'my_node_list'                    => '節點清單',
     'subscribe_button'                => '獲取訂閱地址',
     'account_info'                    => '帳號資訊',
     'account_level'                   => '等級',

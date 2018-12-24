@@ -26,6 +26,7 @@ return [
 
     // 首页
     'ratio_tips'                      => 'ノードの購読機能をサポートするクライアントを使用することをお勧めします。',
+    'my_node_list'                    => 'ノードリスト',
     'subscribe_button'                => '取得する',
     'account_info'                    => 'アカウント情報',
     'account_level'                   => 'レベル',

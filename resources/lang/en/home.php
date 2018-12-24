@@ -26,6 +26,7 @@ return [
 
     // 首页
     'ratio_tips'                      => 'Recommends the use of support node subscription function of the client, through subscription function can quickly synchronize node information in the client.',
+    'my_node_list'                    => 'Node List',
     'subscribe_button'                => 'Subscribe',
     'account_info'                    => 'Account Info',
     'account_level'                   => 'Level',
