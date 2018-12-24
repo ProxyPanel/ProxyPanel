@@ -1979,7 +1979,7 @@ EOF;
 
         // 演示环境禁止修改特定配置项
         if (env('APP_DEMO')) {
-            if (in_array($name, ['website_url', 'push_bear_send_key', 'push_bear_qrcode', 'youzan_client_id', 'youzan_client_secret', 'kdt_id', 'is_forbid_china', 'trimepay_appid', 'trimepay_appsecret'])) {
+            if (in_array($name, ['website_url', 'push_bear_send_key', 'push_bear_qrcode', 'youzan_client_id', 'youzan_client_secret', 'kdt_id', 'is_forbid_china', 'trimepay_appid', 'trimepay_appsecret','alipay_partner','alipay_key','alipay_transport','alipay_sign_type','alipay_private_key','alipay_public_key'])) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '演示环境禁止修改该配置']);
             }
         }
@@ -1994,19 +1994,39 @@ EOF;
             $value = intval($value) / 100;
         }
 
-        // 用有赞云支付不可用TrimePay支付
+        // 用有赞云支付不可用TrimePay支付和AliPay
         if (in_array($name, ['is_youzan']) && $name) {
             $is_trimepay = Config::query()->where('name', 'is_trimepay')->first();
             if ($is_trimepay->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【TrimePay支付】']);
             }
+			$is_alipay = Config::query()->where('name', 'is_alipay')->first();
+            if ($is_alipay->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【AliPay支付】']);
+            }
         }
 
-        // 用TrimePay支付不可用有赞云支付
+        // 用TrimePay支付不可用有赞云支付和AliPay
         if (in_array($name, ['is_trimepay']) && $name) {
             $is_youzan = Config::query()->where('name', 'is_youzan')->first();
             if ($is_youzan->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
+            }
+			$is_alipay = Config::query()->where('name', 'is_alipay')->first();
+            if ($is_alipay->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【AliPay支付】']);
+            }
+        }
+		
+		// 用AliPay支付不可用有赞云支付和TrimePay
+        if (in_array($name, ['is_alipay']) && $name) {
+            $is_youzan = Config::query()->where('name', 'is_youzan')->first();
+            if ($is_youzan->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
+            }
+			$is_trimepay = Config::query()->where('name', 'is_trimepay')->first();
+            if ($is_trimepay->value) {
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【TrimePay支付】']);
             }
         }
 
