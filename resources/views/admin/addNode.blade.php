@@ -372,6 +372,8 @@
                                                                     <option value="srtp">视频通话数据 (SRTP)</option>
                                                                     <option value="utp">BT下载数据 (uTP)</option>
                                                                     <option value="wechat-video">微信视频通话</option>
+                                                                    <option value="dtls">DTLS1.2数据包</option>
+                                                                    <option value="wireguard">WireGuard数据包</option>
                                                                 </select>
                                                             </div>
                                                         </div>

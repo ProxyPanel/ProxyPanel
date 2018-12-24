@@ -2,6 +2,13 @@
 
 namespace App\Components;
 
+/**
+ * Class Trimepay
+ *
+ * @author  deepbwork
+ *
+ * @package App\Components
+ */
 class Trimepay
 {
     private $appId;

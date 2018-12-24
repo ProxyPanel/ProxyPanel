@@ -20,6 +20,13 @@ use DB;
 use Mail;
 use Hash;
 
+/**
+ * Class AlipayController
+ *
+ * @author  wz812180
+ *
+ * @package App\Http\Controllers\Api
+ */
 class AlipayController extends Controller
 {
     protected static $systemConfig;
@@ -40,42 +47,46 @@ class AlipayController extends Controller
     public function store(Request $request)
     {
         \Log::info("【AliPay】回调接口[POST]：" . var_export($request->all(), true));
-		$result = "fail";
-		$alipayNotify = new AlipayNotify(self::$systemConfig['alipay_sign_type'],self::$systemConfig['alipay_partner'],self::$systemConfig['alipay_key'],self::$systemConfig['alipay_private_key'],self::$systemConfig['alipay_public_key'],self::$systemConfig['alipay_transport']);
-		//验证支付宝交易
-		$verify_result = $alipayNotify->verifyNotify();
-		if($verify_result) {//验证成功
-			$result = "success";
-			if($_POST['trade_status'] == 'TRADE_FINISHED'||$_POST['trade_status'] == 'TRADE_SUCCESS') {
-				//商户订单号
-				$data = array();
-				$data['out_trade_no'] = $request->get('out_trade_no');
-				//支付宝交易号
-				$data['trade_no'] = $request->get('trade_no');
-				//交易状态
-				$data['trade_status'] = $request->get('trade_status');
-				//交易金额
-				$data['total_fee'] = $request->get('total_fee');
 
-				$this->tradePaid($data);
-			}else{
-				Log::info('AliPay-POST:交易失败[' . getClientIp() . ']');
-			}
-		}else{
-			Log::info('AliPay-POST:验证失败[' . getClientIp() . ']');
-		}
-		//返回验证结果
-		exit($result);
+        $result = "fail";
+        $alipayNotify = new AlipayNotify(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key'], self::$systemConfig['alipay_public_key'], self::$systemConfig['alipay_transport']);
+
+        // 验证支付宝交易
+        $verify_result = $alipayNotify->verifyNotify();
+        if ($verify_result) { // 验证成功
+            $result = "success";
+            if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
+                // 商户订单号
+                $data = [];
+                $data['out_trade_no'] = $request->get('out_trade_no');
+                // 支付宝交易号
+                $data['trade_no'] = $request->get('trade_no');
+                // 交易状态
+                $data['trade_status'] = $request->get('trade_status');
+                // 交易金额
+                $data['total_fee'] = $request->get('total_fee');
+
+                $this->tradePaid($data);
+            } else {
+                Log::info('AliPay-POST:交易失败[' . getClientIp() . ']');
+            }
+        } else {
+            Log::info('AliPay-POST:验证失败[' . getClientIp() . ']');
+        }
+
+        // 返回验证结果
+        exit($result);
     }
 
     // 交易支付
     private function tradePaid($msg)
     {
-        Log::info('【alipay】回调交易支付');
-		//获取未完成状态的订单防止重复增加时间
+        Log::info('【Alipay】回调交易支付');
+
+        // 获取未完成状态的订单防止重复增加时间
         $payment = Payment::query()->with(['order', 'order.goods'])->where('status', 0)->where('order_sn', $msg['out_trade_no'])->first();
         if (!$payment) {
-            Log::info('【alipay】回调订单不存在');
+            Log::info('【Alipay】回调订单不存在');
             return;
         }
 
@@ -261,7 +272,7 @@ class AlipayController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info('【Trimepay】回调更新支付单和订单异常：' . $e->getMessage());
+            Log::info('【Alipay】回调更新支付单和订单异常：' . $e->getMessage());
         }
     }
 

@@ -164,13 +164,13 @@
                 success: function (ret) {
 					layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
-							if(pay_type==4){
-								//如果是alipay支付写入alipay的支付页面
-								document.body.innerHTML += ret.data;
-								document.forms['alipaysubmit'].submit();
-							}else{
-								window.location.href = '{{url('payment')}}' + "/" + ret.data;
-							}
+                            if (pay_type==4) {
+                                // 如果是Alipay支付写入Alipay的支付页面
+                                document.body.innerHTML += ret.data;
+                                document.forms['alipaysubmit'].submit();
+                            } else {
+                                window.location.href = '{{url('payment')}}' + "/" + ret.data;
+                            }
                         } else {
                             window.location.href = '{{url('invoices')}}';
                         }

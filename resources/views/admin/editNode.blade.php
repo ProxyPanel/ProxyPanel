@@ -371,6 +371,8 @@
                                                                     <option value="srtp" @if($node->v2_type == 'srtp') selected @endif>视频通话数据 (SRTP)</option>
                                                                     <option value="utp" @if($node->v2_type == 'utp') selected @endif>BT下载数据 (uTP)</option>
                                                                     <option value="wechat-video" @if($node->v2_type == 'wechat-video') selected @endif>微信视频通话</option>
+                                                                    <option value="dtls" @if($node->v2_type == 'dtls') selected @endif>DTLS1.2数据包</option>
+                                                                    <option value="wireguard" @if($node->v2_type == 'wireguard') selected @endif>WireGuard数据包</option>
                                                                 </select>
                                                             </div>
                                                         </div>

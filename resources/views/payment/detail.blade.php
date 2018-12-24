@@ -54,16 +54,16 @@
     <script type="text/javascript">
         // 每800毫秒查询一次订单状态
         $(document).ready(function(){
-			//支付宝直接跳转支付
-			 @if($is_alipay)
-				 document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
-				 document.forms['alipaysubmit'].submit();
-			 @endif
+            // 支付宝直接跳转支付
+            @if($is_alipay)
+                document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
+                document.forms['alipaysubmit'].submit();
+            @endif
             setInterval("getStatus()", 800);
         });
 
         // 检查支付单状态
-        function getStatus () {
+        function getStatus() {
             var sn = '{{$payment->sn}}';
 
             $.get("{{url('payment/getStatus')}}", {sn:sn}, function (ret) {
@@ -89,15 +89,11 @@
         } else {
             x.setAttribute("height", "75%");
         }
-		
-		/**
-		 * @function unescapeHTML 还原html脚本 < > & " '
-		 * @param a -
-		 *            字符串
-		 */
-		function unescapeHTML(a){
-			a = "" + a;
-			return a.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#039;/g, "'");
-		}
+
+        // 还原html脚本 < > & " '
+        function unescapeHTML(str) {
+            str = "" + str;
+            return str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#039;/g, "'");
+        }
     </script>
 @endsection
