@@ -134,19 +134,26 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">
-                                                        <i class="fa fa-pencil"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm green btn-outline" onclick="doExport('{{$user->id}}')">
-                                                        <i class="fa fa-paper-plane-o"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm purple btn-outline" onclick="doMonitor('{{$user->id}}')">
-                                                        <i class="fa fa-area-chart"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm green-meadow btn-outline" onclick="resetTraffic('{{$user->id}}')">
-                                                        <i class="fa fa-refresh"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="switchToUser('{{$user->id}}')">切</button>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">编辑</button>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 更多
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="javascript:doExport('{{$user->id}}');"> 配置信息 </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:doMonitor('{{$user->id}}');"> 流量概况 </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:resetTraffic('{{$user->id}}');"> 流量清零 </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:switchToUser('{{$user->id}}');"> 切换身份 </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -49,12 +49,8 @@
                                             <td> {{$label->nodeCount}} </td>
                                             <td> {{$label->sort}} </td>
                                             <td style="text-align: center;">
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editLabel('{{$label->id}}')">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delLabel('{{$label->id}}')">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editLabel('{{$label->id}}')"> 编辑 </button>
+                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delLabel('{{$label->id}}')"> 删除 </button>
                                             </td>
                                         </tr>
                                     @endforeach

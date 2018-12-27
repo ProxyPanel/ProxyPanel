@@ -48,12 +48,8 @@
                                             <td> {{$vo->sort}} </td>
                                             <td> {{$vo->created_at}} </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$vo->id}}')">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$vo->id}}')">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$vo->id}}')"> 编辑 </button>
+                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$vo->id}}')"> 删除 </button>
                                             </td>
                                         </tr>
                                     @endforeach

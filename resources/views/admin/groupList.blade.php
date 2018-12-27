@@ -44,12 +44,8 @@
                                                 <td> {{$group->name}} </td>
                                                 <td> {{$levelMap[$group->level]}} </td>
                                                 <td style="text-align: center;">
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')">
-                                                        <i class="fa fa-pencil"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delGroup('{{$group->id}}')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editGroup('{{$group->id}}')"> 编辑 </button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delGroup('{{$group->id}}')"> 删除 </button>
                                                 </td>
                                             </tr>
                                         @endforeach
