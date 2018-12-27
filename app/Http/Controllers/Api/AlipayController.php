@@ -63,7 +63,7 @@ class AlipayController extends Controller
                 $data['trade_no'] = $request->get('trade_no');
                 // 交易状态
                 $data['trade_status'] = $request->get('trade_status');
-                // 交易金额
+                // 交易金额(这里是按照结算货币汇率的金额，和rmb_fee不相等)
                 $data['total_fee'] = $request->get('total_fee');
 
                 $this->tradePaid($data);

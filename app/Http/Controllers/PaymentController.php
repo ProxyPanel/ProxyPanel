@@ -113,7 +113,7 @@ class PaymentController extends Controller
                 }
             }
         }
-
+		
         DB::beginTransaction();
         try {
             $orderSn = date('ymdHis') . mt_rand(100000, 999999);
@@ -170,17 +170,17 @@ class PaymentController extends Controller
                 $parameter = [
                     "service"        => "create_forex_trade", // WAP:create_forex_trade_wap ,即时到帐:create_forex_trade
                     "partner"        => self::$systemConfig['alipay_partner'],
-                    "notify_url"     => self::$systemConfig['website_url'] . "/api/alipay", // 异步回调接口
+                    "notify_url"     => self::$systemConfig['website_url']."/api/alipay", // 异步回调接口
                     "return_url"     => self::$systemConfig['website_url'],
-                    "out_trade_no"   => $orderSn, // 订单号
+                    "out_trade_no"   => $orderSn,  // 订单号
                     "subject"        => "Package", // 订单名称
-                    "total_fee"      => $amount, // 金额
-                    "body"           => "", // 商品描述，可为空
-                    "currency"       => self::$systemConfig['alipay_currency'], // 币种
+                    //"total_fee"      => $amount, // 金额
+					"rmb_fee"      => $amount,     //使用RMB标价，不再使用总金额
+                    "body"           => "",        // 商品描述，可为空
+                    "currency"       => self::$systemConfig['alipay_currency'], // 结算币种
                     "product_code"   => "NEW_OVERSEAS_SELLER",
                     "_input_charset" => "utf-8"
                 ];
-		
                 // 建立请求
                 $alipaySubmit = new AlipaySubmit(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key']);
                 $result = $alipaySubmit->buildRequestForm($parameter, "post", "确认");
