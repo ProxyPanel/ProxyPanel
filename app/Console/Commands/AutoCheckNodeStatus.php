@@ -120,11 +120,17 @@ class AutoCheckNodeStatus extends Command
      */
     private function tcpCheck($ip)
     {
-        $url = 'https://ipcheck.need.sh/api_v2.php?ip=' . $ip;
-        $ret = $this->curlRequest($url);
-        $ret = json_decode($ret);
-        if (!$ret || $ret->result != 'success') {
-            Log::warning("【TCP阻断检测】ipcheck.need.sh的TCP阻断检测接口挂了");
+        try {
+            $url = 'https://ipcheck.need.sh/api_v2.php?ip=' . $ip;
+            $ret = $this->curlRequest($url);
+            $ret = json_decode($ret);
+            if (!$ret || $ret->result != 'success') {
+                Log::warning("【TCP阻断检测】检测" . $ip . "时，接口返回异常");
+
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::warning("【TCP阻断检测】检测" . $ip . "时，接口请求超时");
 
             return false;
         }
@@ -206,15 +212,15 @@ class AutoCheckNodeStatus extends Command
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 500);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Accept: application/json', // 请求报头
-            'Content-Type: application/json', // 实体报头
-            'Content-Length: ' . strlen($data)
-        ]);
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+//            'Accept: application/json', // 请求报头
+//            'Content-Type: application/json', // 实体报头
+//            'Content-Length: ' . strlen($data)
+//        ]);
 
         // 如果data有数据，则用POST请求
         if ($data) {
