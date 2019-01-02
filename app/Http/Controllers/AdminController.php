@@ -310,7 +310,7 @@ class AdminController extends Controller
                 $user->save();
 
                 // 初始化默认标签
-                if (count(self::$systemConfig['initial_labels_for_user']) > 0) {
+                if (!empty(self::$systemConfig['initial_labels_for_user'])) {
                     $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
                     $this->makeUserLabels($user->id, $labels);
                 }
