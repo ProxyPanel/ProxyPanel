@@ -52,21 +52,27 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @if($trafficLogList->isEmpty())
+                                    @if($list->isEmpty())
                                         <tr>
                                             <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
-                                        @foreach($trafficLogList as $trafficLog)
+                                        @foreach($list as $vo)
                                             <tr class="odd gradeX">
-                                                <td> {{$trafficLog->id}} </td>
-                                                <td> <a href="{{url('admin/userList?username=') . $trafficLog->user->username}}" target="_blank"> <span class="label label-info"> {{$trafficLog->user->username}} </span> </a> </td>
-                                                <td> {{$trafficLog->ssnode->name}} </td>
-                                                <td> {{$trafficLog->rate}} </td>
-                                                <td> {{$trafficLog->u}} </td>
-                                                <td> {{$trafficLog->d}} </td>
-                                                <td> <span class="label label-danger"> {{$trafficLog->traffic}} </span> </td>
-                                                <td> {{$trafficLog->log_time}} </td>
+                                                <td> {{$vo->id}} </td>
+                                                <td>
+                                                    @if(empty($vo->user))
+                                                        【账号已删除】
+                                                    @else
+                                                        <a href="{{url('admin/userList?username=') . $vo->user->username}}" target="_blank"> <span class="label label-info"> {{$vo->user->username}} </span> </a>
+                                                    @endif
+                                                </td>
+                                                <td> {{$vo->ssnode->name}} </td>
+                                                <td> {{$vo->rate}} </td>
+                                                <td> {{$vo->u}} </td>
+                                                <td> {{$vo->d}} </td>
+                                                <td> <span class="label label-danger"> {{$vo->traffic}} </span> </td>
+                                                <td> {{$vo->log_time}} </td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -75,11 +81,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$trafficLogList->total()}} 条记录，合计 {{$totalTraffic}}</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$list->total()}} 条记录，合计 {{$totalTraffic}} </div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $trafficLogList->links() }}
+                                    {{ $list->links() }}
                                 </div>
                             </div>
                         </div>

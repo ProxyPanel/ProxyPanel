@@ -59,7 +59,13 @@
                                         @foreach($applyList as $apply)
                                             <tr>
                                                 <td> {{$apply->id}} </td>
-                                                <td> <a href="{{url('admin/editUser?id=' . $apply->user_id)}}" target="_blank">{{$apply->user->username}}</a> </td>
+                                                <td>
+                                                    @if(empty($apply->user))
+                                                        【账号已删除】
+                                                    @else
+                                                        <a href="{{url('admin/editUser?id=' . $apply->user_id)}}" target="_blank">{{$apply->user->username}}</a>
+                                                    @endif
+                                                </td>
                                                 <td> {{$apply->amount}} </td>
                                                 <td> {{$apply->created_at}} </td>
                                                 <td>

@@ -66,7 +66,7 @@
                                         @foreach($list as $vo)
                                             <tr>
                                                 <td> {{$vo->id}} </td>
-                                                <td> {{$vo->user->username}} </td>
+                                                <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
                                                 <td> {{$vo->order->goods->name}}</td>
                                                 <td> {{$vo->amount}} </td>
                                                 <td> {{$vo->ref_amount}} </td>

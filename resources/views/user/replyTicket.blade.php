@@ -49,7 +49,7 @@
                                 @foreach ($replyList as $reply)
                                     <div class="timeline-item">
                                         <div class="timeline-badge">
-                                            @if ($reply->user->is_admin)
+                                            @if($reply->user->is_admin)
                                                 <img class="timeline-badge-userpic" src="/assets/images/avatar.png">
                                             @else
                                                 <div class="timeline-icon">

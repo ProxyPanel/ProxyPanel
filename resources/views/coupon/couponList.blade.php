@@ -87,7 +87,7 @@
                                             </td>
                                             <td>
                                                 @if($coupon->status != '1')
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')"><i class="fa fa-trash"></i></button>
+                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delCoupon('{{$coupon->id}}')"> 删除 </button>
                                                 @endif
                                             </td>
                                         </tr>

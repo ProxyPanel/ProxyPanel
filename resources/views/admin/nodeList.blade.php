@@ -71,17 +71,19 @@
                                                     @if(!$node->is_subscribe) <span class="label label-info"><s>订</s></span> @endif
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">编辑</button>
                                                     <div class="btn-group">
-                                                        <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 更多
+                                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 操作
                                                             <i class="fa fa-angle-down"></i>
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <a href="javascript:nodeMonitor('{{$node->id}}');"> 流量概况 </a>
+                                                                <a href="javascript:editNode('{{$node->id}}');"> 编辑 </a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:delNode('{{$node->id}}');"> 删除 </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:nodeMonitor('{{$node->id}}');"> 流量概况 </a>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -158,5 +160,14 @@
                 time: 1200
             });
         }
+
+        // 修正table的dropdown
+        $('.table-scrollable').on('show.bs.dropdown', function () {
+            $('.table-scrollable').css( "overflow", "inherit" );
+        });
+
+        $('.table-scrollable').on('hide.bs.dropdown', function () {
+            $('.table-scrollable').css( "overflow", "auto" );
+        });
     </script>
 @endsection

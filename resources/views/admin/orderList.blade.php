@@ -86,10 +86,10 @@
                                             <tr>
                                                 <td> {{$order->oid}} </td>
                                                 <td> 
-                                                    @if(!empty($order->user) )
-                                                        <a href="{{url('admin/userList?username=') . $order->user->username}}" target="_blank"> <span class="label label-info">{{$order->user->username}}</span> </a>
-                                                    @else
+                                                    @if(empty($order->user) )
                                                         【账号不存在】
+                                                    @else
+                                                        <a href="{{url('admin/userList?username=') . $order->user->username}}" target="_blank"> <span class="label label-info">{{$order->user->username}}</span> </a>
                                                     @endif
                                                 </td>
                                                 <td> {{$order->order_sn}} </td>
@@ -100,24 +100,24 @@
                                                 <td> ￥{{$order->amount}} </td>
                                                 <td>
                                                     @if($order->pay_way == '1')
-                                                        余额支付
+                                                        <span class="label label-info"> 余额支付 </span>
                                                     @elseif($order->pay_way == '2')
-                                                        有赞云支付
+                                                        <span class="label label-info"> 有赞云支付 </span>
                                                     @elseif($order->pay_way == '3')
-                                                        TrimePay支付
+                                                        <span class="label label-info"> TrimePay支付 </span>
                                                     @else
-                                                        未知
+                                                        <span class="label label-info"> 未知 </span>
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if($order->status == '-1')
-                                                        已关闭
+                                                        <span class="label label-danger"> 已关闭 </span>
                                                     @elseif ($order->status == '0')
-                                                        待支付
+                                                        <span class="label label-default"> 待支付 </span>
                                                     @elseif ($order->status == '1')
-                                                        已支付待确认
+                                                        <span class="label label-default"> 已支付待确认 </span>
                                                     @else
-                                                        已完成
+                                                        <span class="label label-success"> 已完成 </span>
                                                     @endif
                                                 </td>
                                                 <td> {{$order->created_at}} </td>

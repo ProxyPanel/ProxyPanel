@@ -219,7 +219,7 @@
                                             <div class="form-group">
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">邀请人</label>
                                                 <div class="col-md-8">
-                                                    <p class="form-control-static"> {{$user->referral ? $user->referral->username : '无邀请人'}} </p>
+                                                    <p class="form-control-static"> {{empty($user->referral) ? '无邀请人' : $user->referral->username}} </p>
                                                 </div>
                                             </div>
                                         </div>

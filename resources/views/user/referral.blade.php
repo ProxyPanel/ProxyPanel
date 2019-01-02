@@ -108,7 +108,7 @@
                                         <tr class="odd gradeX">
                                             <td> {{$key + 1}} </td>
                                             <td> {{$referralLog->created_at}} </td>
-                                            <td> {{$referralLog->user->username}} </td>
+                                            <td> {{empty($referralLog->user) ? '【账号已删除】' : $referralLog->user->username}} </td>
                                             <td> ￥{{$referralLog->amount}} </td>
                                             <td> ￥{{$referralLog->ref_amount}} </td>
                                             <td>

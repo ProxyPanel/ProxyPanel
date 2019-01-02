@@ -53,7 +53,13 @@
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
-                                                <td> {!! empty($vo->user) ? '【账号已删除】' : '<a href="/admin/userTrafficLogList?username=' . $vo->user->username . '">' . $vo->user->username . '</a>' !!} </td>
+                                                <td>
+                                                    @if(empty($vo->user))
+                                                        【账号已删除】
+                                                    @else
+                                                        <a href="/admin/userTrafficLogList?username={{$vo->user->username}}"> {{$vo->user->username}} </a>
+                                                    @endif
+                                                </td>
                                                 <td> {{$vo->order_id ? $vo->order->goods->name : ''}} </td>
                                                 <td> <span class="label label-danger"> {{$vo->before}} </span> </td>
                                                 <td> <span class="label label-danger"> {{$vo->after}} </span> </td>

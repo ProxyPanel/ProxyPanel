@@ -49,6 +49,11 @@ class Handler extends ExceptionHandler
     {
         \Log::info("异常请求：" . $request->fullUrl() . "，IP：" . getClientIp());
 
+        // 调试模式下直接返回错误信息
+        if (config('app.debug')) {
+            return parent::render($request, $exception);
+        }
+
         // 捕获身份校验异常
         if ($exception instanceof AuthenticationException) {
             if ($request->ajax()) {

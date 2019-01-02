@@ -26,6 +26,8 @@ use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserBanLog;
 use App\Http\Models\UserLabel;
+use App\Http\Models\UserLoginLog;
+use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
@@ -474,14 +476,28 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        if ($id === 1) {
+        if ($id <= 1) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统管理员不可删除']);
         }
 
-        $user = User::query()->where('id', $id)->delete();
-        if ($user) {
+        DB::beginTransaction();
+        try {
+            User::query()->where('id', $id)->delete();
+            UserSubscribe::query()->where('user_id', $id)->delete();
+            UserBanLog::query()->where('user_id', $id)->delete();
+            UserLabel::query()->where('user_id', $id)->delete();
+            UserScoreLog::query()->where('user_id', $id)->delete();
+            UserBalanceLog::query()->where('user_id', $id)->delete();
+            UserTrafficModifyLog::query()->where('user_id', $id)->delete();
+            UserLoginLog::query()->where('user_id', $id)->delete();
+
+            DB::commit();
+
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-        } else {
+        } catch (\Exception $e) {
+            Log::error($e);
+            DB::rollBack();
+
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
         }
     }
@@ -1046,14 +1062,14 @@ class AdminController extends Controller
         // 已使用流量
         $view['totalTraffic'] = flowAutoShow($query->sum('u') + $query->sum('d'));
 
-        $trafficLogList = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
-        foreach ($trafficLogList as &$trafficLog) {
-            $trafficLog->u = flowAutoShow($trafficLog->u);
-            $trafficLog->d = flowAutoShow($trafficLog->d);
-            $trafficLog->log_time = date('Y-m-d H:i:s', $trafficLog->log_time);
+        $list = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+        foreach ($list as &$vo) {
+            $vo->u = flowAutoShow($vo->u);
+            $vo->d = flowAutoShow($vo->d);
+            $vo->log_time = date('Y-m-d H:i:s', $vo->log_time);
         }
 
-        $view['trafficLogList'] = $trafficLogList;
+        $view['list'] = $list;
 
         return Response::view('admin.trafficLog', $view);
     }

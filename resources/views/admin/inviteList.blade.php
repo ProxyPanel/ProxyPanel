@@ -65,9 +65,9 @@
                                                     <td> {{$invite->dateline}} </td>
                                                     <td> 
                                                         @if($invite->uid == '0')
-                                                            {{'系统生成'}}
+                                                            系统生成
                                                         @else
-                                                            {{empty($invite->generator) ? '账号已删除' : $invite->generator->username}}
+                                                            {{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}}
                                                         @endif
                                                     </td>
                                                     <td>

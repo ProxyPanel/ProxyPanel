@@ -66,8 +66,20 @@
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
-                                            <td> {!! empty($vo->user) ? '【账号已删除】' : '<a href="/admin/userRebateList?username=' . $vo->user->username . '">' . $vo->user->username . '</a>' !!} </td>
-                                            <td> {!! empty($vo->ref_user) ? '【账号已删除】' : '<a href="/admin/userRebateList?ref_username=' . $vo->ref_user->username . '">' . $vo->ref_user->username . '</a>' !!} </td>
+                                            <td>
+                                                @if(empty($vo->user))
+                                                    【账号已删除】
+                                                @else
+                                                    <a href="/admin/userRebateList?username={{$vo->user->username}}"> {{$vo->user->username}} </a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(empty($vo->ref_user))
+                                                    【账号已删除】
+                                                @else
+                                                    <a href="/admin/userRebateList?ref_username={{$vo->ref_user->username}}"> {{$vo->ref_user->username}} </a>
+                                                @endif
+                                            </td>
                                             <td> {{$vo->order_id}} </td>
                                             <td> {{$vo->amount}} </td>
                                             <td> {{$vo->ref_amount}} </td>

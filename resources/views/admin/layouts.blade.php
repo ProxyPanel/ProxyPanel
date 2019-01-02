@@ -181,7 +181,7 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userTrafficLogList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userTrafficLogList')}}" class="nav-link ">
-                                <i class="fa fa-bar-chart"></i>
+                                <i class="fa fa-area-chart"></i>
                                 <span class="title">流量变动记录</span>
                             </a>
                         </li>
@@ -268,7 +268,7 @@
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/trafficLog']) ? 'active open' : ''}}">
                             <a href="{{url('admin/trafficLog')}}" class="nav-link">
-                                <i class="fa fa-bar-chart"></i>
+                                <i class="fa fa-area-chart"></i>
                                 <span class="title">流量日志</span>
                             </a>
                         </li>
@@ -276,6 +276,12 @@
                             <a href="{{url('admin/analysis')}}" class="nav-link">
                                 <i class="fa fa-bar-chart"></i>
                                 <span class="title">日志分析</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
+                            <a href="{{url('sensitiveWords/list')}}" class="nav-link">
+                                <i class="fa fa-font"></i>
+                                <span class="title">敏感词管理</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/emailLog']) ? 'active open' : ''}}">
@@ -287,19 +293,13 @@
                         <li class="nav-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
                             <a href="{{url('payment/callbackList')}}" class="nav-link">
                                 <i class="fa fa-th"></i>
-                                <span class="title">有赞回调日志</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
-                            <a href="{{url('sensitiveWords/list')}}" class="nav-link">
-                                <i class="fa fa-font"></i>
-                                <span class="title">敏感词管理</span>
+                                <span class="title">支付回调日志</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
                             <a href="{{url('logs')}}" class="nav-link" target="_blank">
                                 <i class="fa fa-cubes"></i>
-                                <span class="title">系统日志</span>
+                                <span class="title">系统运行日志</span>
                             </a>
                         </li>
                     </ul>

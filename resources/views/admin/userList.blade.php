@@ -80,8 +80,8 @@
                                     <th> 用户名 </th>
                                     <th> 端口 </th>
                                     <th> 加密方式 </th>
-                                    <th> 协议 </th>
-                                    <th> 混淆 </th>
+                                    <!--<th> 协议 </th>
+                                    <th> 混淆 </th>-->
                                     <th> 已消耗 </th>
                                     <th> 最后使用 </th>
                                     <th> 有效期 </th>
@@ -102,8 +102,8 @@
                                                 <td> {{$user->username}} </td>
                                                 <td> <span class="label label-danger"> {{$user->port ? $user->port : '未分配'}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->method}} </span> </td>
-                                                <td> <span class="label label-default"> {{$user->protocol}} </span> </td>
-                                                <td> <span class="label label-default"> {{$user->obfs}} </span> </td>
+                                                <!--<td> <span class="label label-default"> {{$user->protocol}} </span> </td>
+                                                <td> <span class="label label-default"> {{$user->obfs}} </span> </td>-->
                                                 <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
                                                 <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
                                                 <td class="center">
@@ -118,28 +118,33 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($user->status == '1')
+                                                    @if ($user->status > 0)
                                                         <span class="label label-info">正常</span>
-                                                    @elseif ($user->status == '0')
+                                                    @elseif ($user->status < 0)
+                                                        <span class="label label-danger">禁用</span>
+                                                    @else
                                                         <span class="label label-default">未激活</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($user->enable)
+                                                        <span class="label label-info">启用</span>
                                                     @else
                                                         <span class="label label-danger">禁用</span>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($user->enable)
-                                                        <span class="label label-info"><i class="fa fa-check"></i></span>
-                                                    @else
-                                                        <span class="label label-danger"><i class="fa fa-close"></i></span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editUser('{{$user->id}}')">编辑</button>
                                                     <div class="btn-group">
-                                                        <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 更多
+                                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 操作
                                                             <i class="fa fa-angle-down"></i>
                                                         </a>
                                                         <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="javascript:editUser('{{$user->id}}');"> 编辑 </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:delUser('{{$user->id}}');"> 删除 </a>
+                                                            </li>
                                                             <li>
                                                                 <a href="javascript:doExport('{{$user->id}}');"> 配置信息 </a>
                                                             </li>
@@ -290,5 +295,14 @@
                 }
             });
         }
+
+        // 修正table的dropdown
+        $('.table-scrollable').on('show.bs.dropdown', function () {
+            $('.table-scrollable').css( "overflow", "inherit" );
+        });
+
+        $('.table-scrollable').on('hide.bs.dropdown', function () {
+            $('.table-scrollable').css( "overflow", "auto" );
+        });
     </script>
 @endsection
