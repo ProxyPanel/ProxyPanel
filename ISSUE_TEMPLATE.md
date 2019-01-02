@@ -1,1 +1,0 @@
-请先翻一遍CLOSED的Issues，再翻一边Wiki，然后再来提问
