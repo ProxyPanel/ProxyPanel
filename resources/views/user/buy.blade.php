@@ -77,9 +77,6 @@
                 <div class="col-xs-12" style="text-align: right;">
                     @if($is_youzan)
                         <a class="btn btn-lg red hidden-print" onclick="onlinePay(0)"> {{trans('home.online_pay')}} </a>
-                    @elseif($is_trimepay)
-                        <a class="btn btn-lg green hidden-print" onclick="onlinePay(1)"> 支付宝扫码 </a>
-                        <a class="btn btn-lg green hidden-print" onclick="onlinePay(2)"> 微信扫码 </a>
                     @elseif($is_alipay)
                         <a class="btn btn-lg green hidden-print" onclick="onlinePay(4)"> 支付宝扫码 </a>
                     @endif

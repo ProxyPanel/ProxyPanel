@@ -42,7 +42,6 @@
                                     <option value="" @if(Request::get('pay_way') == '') selected @endif>支付方式</option>
                                     <option value="1" @if(Request::get('pay_way') == '1') selected @endif>余额支付</option>
                                     <option value="2" @if(Request::get('pay_way') == '2') selected @endif>有赞云支付</option>
-                                    <option value="3" @if(Request::get('pay_way') == '3') selected @endif>TrimePay支付</option>
                                 </select>
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
@@ -103,8 +102,6 @@
                                                         <span class="label label-info"> 余额支付 </span>
                                                     @elseif($order->pay_way == '2')
                                                         <span class="label label-info"> 有赞云支付 </span>
-                                                    @elseif($order->pay_way == '3')
-                                                        <span class="label label-info"> TrimePay支付 </span>
                                                     @else
                                                         <span class="label label-info"> 未知 </span>
                                                     @endif

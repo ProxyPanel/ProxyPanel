@@ -43,11 +43,8 @@
                                         <li>
                                             <a href="#tab_8" data-toggle="tab"> 有赞云支付 </a>
                                         </li>
-                                        <li>
-                                            <a href="#tab_9" data-toggle="tab"> TrimePay支付 </a>
-                                        </li>
 										<li>
-                                            <a href="#tab_10" data-toggle="tab"> AliPay </a>
+                                            <a href="#tab_9" data-toggle="tab"> AliPay </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -78,7 +75,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 生成重置密码、有赞云支付、TrimePay支付、AliPay必备，示例：https://www.ssrpanel.com </span>
+                                                                <span class="help-block"> 生成重置密码、有赞云支付、AliPay必备，示例：https://www.ssrpanel.com </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -866,46 +863,7 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab_9">
-                                            <form action="#" method="post" class="form-horizontal">
-                                                <div class="portlet-body">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="is_trimepay" class="col-md-3 control-label">本功能</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_trimepay) checked @endif id="is_trimepay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 请先到 <a href="https://portal.trimepay.com/#/auth/register/408" target="_blank">TrimePay</a> 申请app_id和app_secret </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="trimepay_appid" class="col-md-3 control-label">app_id</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="trimepay_appid" value="{{$trimepay_appid}}" id="trimepay_appid" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setTrimepayAppId()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="trimepay_appsecret" class="col-md-3 control-label">app_secret</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="trimepay_appsecret" value="{{$trimepay_appsecret}}" id="trimepay_appsecret" />
-                                                                    <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setTrimepayAppSecret()">修改</button>
-                                                                </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-										<div class="tab-pane" id="tab_10">
+					<div class="tab-pane" id="tab_9">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
@@ -916,36 +874,36 @@
                                                                 <span class="help-block"> 请先到 <a href="https://global.alipay.com/" target="_blank">AliPay国际</a> 申请partner和key </span>
                                                             </div>
                                                         </div>
-														<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_currency" class="col-md-3 control-label">结算币种</label>
                                                             <div class="col-md-9">
                                                                 <select id="alipay_currency" class="form-control select2" name="alipay_currency">
                                                                     <option value="USD" @if($alipay_currency == 'USD') selected @endif>美元</option>
-																	<option value="HKD" @if($alipay_currency == 'HKD') selected @endif>港币</option>
-																	<option value="JPY" @if($alipay_currency == 'JPY') selected @endif>日元</option>
-																	<option value="EUR" @if($alipay_currency == 'EUR') selected @endif>欧元</option>
+								    <option value="HKD" @if($alipay_currency == 'HKD') selected @endif>港币</option>
+								    <option value="JPY" @if($alipay_currency == 'JPY') selected @endif>日元</option>
+								    <option value="EUR" @if($alipay_currency == 'EUR') selected @endif>欧元</option>
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
-													<div class="form-group">
-														<div class="col-md-6 col-sm-6 col-xs-12">
+						    <div class="form-group">
+						    	<div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_sign_type" class="col-md-3 control-label">加密方式</label>
                                                             <div class="col-md-9">
                                                                 <select id="alipay_sign_type" class="form-control select2" name="alipay_sign_type">
                                                                     <option value="MD5" @if($alipay_sign_type == 'MD5') selected @endif>MD5</option>
-																	<option value="RSA" @if($alipay_sign_type == 'RSA') selected @endif>RSA</option>
+								    <option value="RSA" @if($alipay_sign_type == 'RSA') selected @endif>RSA</option>
                                                                 </select>
                                                             </div>
                                                         </div>
-														<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_transport" class="col-md-3 control-label">启用SSL验证</label>
                                                             <div class="col-md-9">
                                                                 <select id="alipay_transport" class="form-control select2" name="alipay_transport">
                                                                     <option value="http" @if($alipay_transport == 'http') selected @endif>否</option>
-																	<option value="https" @if($alipay_transport == 'https') selected @endif>是</option>
+								    <option value="https" @if($alipay_transport == 'https') selected @endif>是</option>
                                                                 </select>
-																<span class="help-block"> HTTPS站点需启用 </span>
+								<span class="help-block"> HTTPS站点需启用 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -973,7 +931,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-													<div class="form-group">
+						    <div class="form-group">
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_private_key" class="col-md-3 control-label">RSA私钥</label>
                                                             <div class="col-md-9">
@@ -1515,24 +1473,9 @@
                 });
             }
         });
-
-        
-        $('#is_trimepay').on({
-            'switchChange.bootstrapSwitch': function(event, state) {
-                var is_trimepay = state ? 1 : 0;
-
-                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_trimepay', value:is_trimepay}, function (ret) {
-                    layer.msg(ret.message, {time:1000}, function() {
-                        if (ret.status == 'fail') {
-                            window.location.reload();
-                        }
-                    });
-                });
-            }
-        });
 		
-		// 启用、禁用alipay
-		$('#is_alipay').on({
+	// 启用、禁用alipay
+	$('#is_alipay').on({
             'switchChange.bootstrapSwitch': function(event, state) {
                 var is_alipay = state ? 1 : 0;
 
@@ -1722,31 +1665,7 @@
             });
         }
 
-        
-        function setTrimepayAppId() {
-            var trimepay_appid = $("#trimepay_appid").val();
-
-            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'trimepay_appid', value:trimepay_appid}, function (ret) {
-                layer.msg(ret.message, {time:1000}, function() {
-                    if (ret.status == 'fail') {
-                        window.location.reload();
-                    }
-                });
-            });
-        }
-
-        function setTrimepayAppSecret() {
-            var trimepay_appsecret = $("#trimepay_appsecret").val();
-
-            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'trimepay_appsecret', value:trimepay_appsecret}, function (ret) {
-                layer.msg(ret.message, {time:1000}, function() {
-                    if (ret.status == 'fail') {
-                        window.location.reload();
-                    }
-                });
-            });
-        }
-		// 设置alipay加密方式
+	// 设置alipay加密方式
         $('#alipay_sign_type').change(function() {
             var alipay_sign_type = $(this).val();
 

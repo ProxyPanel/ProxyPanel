@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Components\Yzy;
-use App\Components\Trimepay;
 use App\Components\AlipaySubmit;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
@@ -47,7 +46,7 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!self::$systemConfig['is_youzan'] && !self::$systemConfig['is_trimepay'] && !self::$systemConfig['is_alipay']) {
+        if (!self::$systemConfig['is_youzan'] && !self::$systemConfig['is_alipay']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
 
@@ -122,8 +121,6 @@ class PaymentController extends Controller
             // 支付方式
             if (self::$systemConfig['is_youzan']) {
                 $pay_way = 2;
-            } elseif (self::$systemConfig['is_trimepay']) {
-                $pay_way = 3;
             } elseif (self::$systemConfig['is_alipay']) {
                 $pay_way = 4;
             }
@@ -151,21 +148,6 @@ class PaymentController extends Controller
 
                     throw new \Exception($result['error_response']['msg']);
                 }
-            } elseif (self::$systemConfig['is_trimepay']) {
-                $trimepay = new Trimepay(self::$systemConfig['trimepay_appid'], self::$systemConfig['trimepay_appsecret']);
-
-                if ($pay_type == 1) {
-                    $payMethod = 'ALIPAY_QR';
-                } elseif ($pay_type == 2) {
-                    $payMethod = 'WEPAY_QR';
-                }
-
-                $result = $trimepay->pay($payMethod, $orderSn, $amount, self::$systemConfig['website_url'] . '/api/trimepay', self::$systemConfig['website_url']);
-                if ($result['code'] !== 0) {
-                    Log::error('【Trimepay】创建二维码失败：' . $result['msg']);
-
-                    throw new \Exception($result['msg']);
-                }
             } elseif (self::$systemConfig['is_alipay']) {
                 $parameter = [
                     "service"        => "create_forex_trade", // WAP:create_forex_trade_wap ,即时到帐:create_forex_trade
@@ -181,6 +163,7 @@ class PaymentController extends Controller
                     "product_code"   => "NEW_OVERSEAS_SELLER",
                     "_input_charset" => "utf-8"
                 ];
+
                 // 建立请求
                 $alipaySubmit = new AlipaySubmit(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key']);
                 $result = $alipaySubmit->buildRequestForm($parameter, "post", "确认");
@@ -198,10 +181,6 @@ class PaymentController extends Controller
                 $payment->qr_url = $result['response']['qr_url'];
                 $payment->qr_code = $result['response']['qr_code'];
                 $payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
-            } elseif (self::$systemConfig['is_trimepay']) {
-                $payment->qr_url = $result['data'];
-                $payment->qr_code = 'https://www.zhihu.com/qrcode?url=' . $result['data'];
-                $payment->qr_local_url = 'https://www.zhihu.com/qrcode?url=' . $result['data'];
             } elseif (self::$systemConfig['is_alipay']) {
                 $payment->qr_code = $result;
             }
