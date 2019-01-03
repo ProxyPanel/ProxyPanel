@@ -257,7 +257,7 @@ class AdminController extends Controller
 
             if ($user->id) {
                 // 生成用户标签
-                $this->makeUserLabels($user->id, $request->get('labels', []));
+                $this->makeUserLabels($user->id, $request->get('labels'));
 
                 // 写入用户流量变动记录
                 Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->get('transfer_enable', 0)), '后台手动添加用户');
@@ -357,7 +357,7 @@ class AdminController extends Controller
             $usage = $request->get('usage');
             $pay_way = $request->get('pay_way');
             $status = $request->get('status');
-            $labels = $request->get('labels', []);
+            $labels = $request->get('labels');
             $enable_time = $request->get('enable_time');
             $expire_time = $request->get('expire_time');
             $remark = str_replace("eval", "", str_replace("atob", "", $request->get('remark')));
@@ -2439,12 +2439,12 @@ EOF;
     }
 
     // 生成用户标签
-    private function makeUserLabels($userId, $labels = [])
+    private function makeUserLabels($userId, $labels)
     {
-        if (!empty($labels)) {
-            // 先删除该用户所有的标签
-            UserLabel::query()->where('user_id', $userId)->delete();
+        // 先删除该用户所有的标签
+        UserLabel::query()->where('user_id', $userId)->delete();
 
+        if (!empty($labels) && is_array($labels)) {
             foreach ($labels as $label) {
                 $userLabel = new UserLabel();
                 $userLabel->user_id = $userId;
