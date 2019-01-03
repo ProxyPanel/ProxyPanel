@@ -57,13 +57,15 @@ class AutoStatisticsUserHourlyTraffic extends Command
         $total = $u + $d;
         $traffic = flowAutoShow($total);
 
-        $obj = new UserTrafficHourly();
-        $obj->user_id = $user_id;
-        $obj->node_id = $node_id;
-        $obj->u = $u;
-        $obj->d = $d;
-        $obj->total = $total;
-        $obj->traffic = $traffic;
-        $obj->save();
+        if ($total) { // 有数据才记录
+            $obj = new UserTrafficHourly();
+            $obj->user_id = $user_id;
+            $obj->node_id = $node_id;
+            $obj->u = $u;
+            $obj->d = $d;
+            $obj->total = $total;
+            $obj->traffic = $traffic;
+            $obj->save();
+        }
     }
 }

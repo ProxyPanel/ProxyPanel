@@ -108,9 +108,7 @@ CREATE TABLE `ss_node_label` (
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  INDEX `idx` (`node_id`,`label_id`),
-  INDEX `idx_node_id` (`node_id`),
-  INDEX `idx_label_id` (`label_id`)
+  INDEX `idx_node_label` (`node_id`,`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点标签';
 
 
@@ -158,6 +156,7 @@ CREATE TABLE `user` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `unq_username` (`username`),
   INDEX `idx_search` (`enable`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';
 
@@ -208,8 +207,7 @@ CREATE TABLE `user_traffic_log` (
   `traffic` varchar(32) NOT NULL COMMENT '产生流量',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
-  INDEX `idx_user_node` (`user_id`, `log_time`, `node_id`),
-	INDEX `idx_node_time` (`node_id`, `log_time`)
+  INDEX `idx_user_node_time` (`user_id`, `node_id`, `log_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量日志';
 
 
@@ -881,7 +879,6 @@ CREATE TABLE `user_traffic_daily` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  INDEX `idx_user` (`user_id`) USING BTREE,
   INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每日流量统计';
 
@@ -900,7 +897,6 @@ CREATE TABLE `user_traffic_hourly` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  INDEX `idx_user` (`user_id`) USING BTREE,
   INDEX `idx_user_node` (`user_id`,`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每小时流量统计';
 
@@ -962,9 +958,7 @@ CREATE TABLE `user_label` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  INDEX `idx` (`user_id`,`label_id`),
-  INDEX `idx_user_id` (`user_id`),
-  INDEX `idx_label_id` (`label_id`)
+  INDEX `idx_user_label` (`user_id`,`label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户标签';
 
 
@@ -976,9 +970,7 @@ CREATE TABLE `goods_label` (
   `goods_id` INT(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `label_id` INT(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
-  INDEX `idx` (`goods_id`, `label_id`),
-  INDEX `idx_goods_id` (`goods_id`),
-  INDEX `idx_label_id` (`label_id`)
+  INDEX `idx_goods_label` (`goods_id`, `label_id`)
 ) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品标签';
 
 
