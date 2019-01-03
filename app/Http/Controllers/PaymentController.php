@@ -219,6 +219,7 @@ class PaymentController extends Controller
             }
 
             DB::commit();
+	    
             if (self::$systemConfig['is_alipay']) {
                 // Alipay返回支付信息
                 return Response::json(['status' => 'success', 'data' => $result, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
