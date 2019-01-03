@@ -159,67 +159,72 @@
                 </div>
 
                 @if(!$nodeList->isEmpty())
-                <div class="row widget-row">
-                    <div class="col-md-12">
-                        <div class="portlet light bordered">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <span class="caption-subject font-blue bold">{{trans('home.my_node_list')}}</span>
+                    <div class="row widget-row">
+                        <div class="col-md-12">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject font-blue bold">{{trans('home.my_node_list')}}</span>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                            <button class="btn btn-info" id="copy_all_nodes" data-clipboard-text="{{$allNodes}}"> 复制所有节点 </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div class="tab-content">
-                                    <div class="tab-pane active">
-                                        <div class="mt-comments">
-                                            @foreach($nodeList as $node)
-                                                <div class="mt-comment">
-                                                    <div class="mt-comment-img" style="width:auto;">
-                                                        @if($node->country_code)
-                                                            <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
-                                                        @else
-                                                            <img src="{{asset('/assets/images/country/un.png')}}"/>
-                                                        @endif
-                                                    </div>
-                                                    <div class="mt-comment-body">
-                                                        <div class="mt-comment-info">
-                                                            <span class="mt-comment-author">{{$node->name}}</span>
-                                                            <span class="mt-comment-date">
-                                                                @if(!$node->online_status)
-                                                                    <span class="badge badge-danger">维护中</span>
-                                                                @endif
-                                                            </span>
+                                <div class="portlet-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active">
+                                            <div class="mt-comments">
+                                                @foreach($nodeList as $node)
+                                                    <div class="mt-comment">
+                                                        <div class="mt-comment-img" style="width:auto;">
+                                                            @if($node->country_code)
+                                                                <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
+                                                            @else
+                                                                <img src="{{asset('/assets/images/country/un.png')}}"/>
+                                                            @endif
                                                         </div>
-                                                        <div class="mt-comment-text"> {{$node->desc}} </div>
-                                                        <div class="mt-comment-details">
-                                                            <span class="mt-comment-status mt-comment-status-pending">
-                                                                @if($node->labels)
-                                                                    @foreach($node->labels as $vo)
-                                                                        <span class="badge badge-info">{{$vo->labelInfo->name}}</span>
-                                                                    @endforeach
-                                                                @endif
-                                                            </span>
-                                                            <ul class="mt-comment-actions" style="display: block;">
-                                                                <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > <i class="fa fa-reorder"></i> </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> @if($node->type == 1) <i class="fa fa-paper-plane"></i> @else <i class="fa fa-vimeo"></i> @endif </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                                                </li>
-                                                            </ul>
+                                                        <div class="mt-comment-body">
+                                                            <div class="mt-comment-info">
+                                                                <span class="mt-comment-author">{{$node->name}}</span>
+                                                                <span class="mt-comment-date">
+                                                                    @if(!$node->online_status)
+                                                                        <span class="badge badge-danger">维护中</span>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                            <div class="mt-comment-text"> {{$node->desc}} </div>
+                                                            <div class="mt-comment-details">
+                                                                <span class="mt-comment-status mt-comment-status-pending">
+                                                                    @if($node->labels)
+                                                                        @foreach($node->labels as $vo)
+                                                                            <span class="badge badge-info">{{$vo->labelInfo->name}}</span>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </span>
+                                                                <ul class="mt-comment-actions" style="display: block;">
+                                                                    <li>
+                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}" > <i class="fa fa-reorder"></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> @if($node->type == 1) <i class="fa fa-paper-plane"></i> @else <i class="fa fa-vimeo"></i> @endif </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 @endif
             </div>
             <div class="col-md-4" >
@@ -636,5 +641,18 @@
                 layer.close(index);
             });
         }
+    </script>
+
+    <script>
+        var copy_all_nodes = document.getElementById('copy_all_nodes');
+        var clipboard = new Clipboard(copy_all_nodes);
+
+        clipboard.on('success', function(e) {
+            layer.alert("复制成功，通过右键菜单倒入节点链接即可！");
+        });
+
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
     </script>
 @endsection

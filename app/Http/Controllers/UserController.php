@@ -106,6 +106,7 @@ class UserController extends Controller
             ->orderBy('ss_node.id', 'asc')
             ->get();
 
+        $allNodes = ''; // 全部节点SSR链接，用于一键复制所有节点
         foreach ($nodeList as &$node) {
             // 获取分组名称
             $group = SsGroup::query()->where('id', $node->group_id)->first();
@@ -151,6 +152,8 @@ class UserController extends Controller
                 $node->txt = $txt;
                 $node->ssr_scheme = $ssr_scheme;
                 $node->ss_scheme = $node->compatible ? $ss_scheme : ''; // 节点兼容原版才显示
+
+                $allNodes .= $ssr_scheme . '|';
             } else {
                 // 生成v2ray scheme
                 $v2_json = [
@@ -194,6 +197,7 @@ class UserController extends Controller
             $node->labels = SsNodeLabel::query()->with('labelInfo')->where('node_id', $node->id)->get();
         }
 
+        $view['allNodes'] = rtrim($allNodes, "|");
         $view['nodeList'] = $nodeList;
 
         return Response::view('user.index', $view);
