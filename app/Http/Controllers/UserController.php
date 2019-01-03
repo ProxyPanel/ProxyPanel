@@ -64,7 +64,7 @@ class UserController extends Controller
         $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
         $view['ipa_list'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
         $view['goodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get(); // 余额充值商品，只取10个
-        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->limit(10)->get(); // 近期登录日志
+        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->limit(5)->get(); // 近期登录日志
 
         // 推广返利是否可见
         if (!Session::has('referral_status')) {

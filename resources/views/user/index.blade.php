@@ -294,6 +294,7 @@
                         </form>
                     </div>
                 </div>
+
                 @if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
                     <div class="portlet light">
                         <div class="portlet-title">
@@ -329,6 +330,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
