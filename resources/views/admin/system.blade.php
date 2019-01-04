@@ -863,7 +863,7 @@
                                                 </div>
                                             </form>
                                         </div>
-					<div class="tab-pane" id="tab_9">
+                                        <div class="tab-pane" id="tab_9">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">

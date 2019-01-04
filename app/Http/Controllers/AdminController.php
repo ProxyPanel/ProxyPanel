@@ -891,17 +891,42 @@ class AdminController extends Controller
     public function addArticle(Request $request)
     {
         if ($request->method() == 'POST') {
+            // LOGO
+            $logo = '';
+            if ($request->hasFile('logo')) {
+                $file = $request->file('logo');
+                $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back()->withInput();
+                }
+
+                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                $logo = $move ? '/upload/image/' . $logoName : '';
+            }
+
             $article = new Article();
             $article->title = $request->get('title');
             $article->type = $request->get('type', 1);
-            $article->author = $request->get('author');
+            $article->author = '管理员';
             $article->summary = $request->get('summary');
-            $article->content = $request->get('content');
+            $article->logo = $logo;
+            $article->content = $request->get('editorValue');
             $article->is_del = 0;
             $article->sort = $request->get('sort', 0);
             $article->save();
 
-            return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+            if ($article->id) {
+                Session::flash('successMsg', '添加成功');
+            } else {
+                Session::flash('errorMsg', '添加失败');
+            }
+
+            return Redirect::to('admin/articleList');
         } else {
             return Response::view('admin.addArticle');
         }
@@ -915,26 +940,48 @@ class AdminController extends Controller
         if ($request->method() == 'POST') {
             $title = $request->get('title');
             $type = $request->get('type');
-            $author = $request->get('author');
             $summary = $request->get('summary');
-            $content = $request->get('content');
+            $content = $request->get('editorValue');
             $sort = $request->get('sort');
 
+            // 商品LOGO
+            $logo = '';
+            if ($request->hasFile('logo')) {
+                $file = $request->file('logo');
+                $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back()->withInput();
+                }
+
+                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                $logo = $move ? '/upload/image/' . $logoName : '';
+            }
+
             $data = [
-                'title'   => $title,
                 'type'    => $type,
-                'author'  => $author,
+                'title'   => $title,
                 'summary' => $summary,
                 'content' => $content,
                 'sort'    => $sort
             ];
 
+            if ($logo) {
+                $data['logo'] = $logo;
+            }
+
             $ret = Article::query()->where('id', $id)->update($data);
             if ($ret) {
-                return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
+                Session::flash('successMsg', '编辑成功');
             } else {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+                Session::flash('errorMsg', '编辑失败');
             }
+
+            return Redirect::to('admin/editArticle?id=' . $id);
         } else {
             $view['article'] = Article::query()->where('id', $id)->first();
 

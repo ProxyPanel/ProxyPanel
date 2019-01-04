@@ -87,8 +87,8 @@ class ShopController extends Controller
                 }
 
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
-                $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
-                $logo = $move ? '/upload/image/goods/' . $logoName : '';
+                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                $logo = $move ? '/upload/image/' . $logoName : '';
             }
 
             DB::beginTransaction();
@@ -191,8 +191,8 @@ class ShopController extends Controller
                 }
 
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
-                $move = $file->move(base_path() . '/public/upload/image/goods/', $logoName);
-                $logo = $move ? '/upload/image/goods/' . $logoName : '';
+                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                $logo = $move ? '/upload/image/' . $logoName : '';
             }
 
             DB::beginTransaction();

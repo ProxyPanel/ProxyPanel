@@ -376,6 +376,7 @@ CREATE TABLE `article` (
   `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
   `author` varchar(50) DEFAULT '' COMMENT '作者',
   `summary` varchar(255) DEFAULT '' COMMENT '简介',
+  `logo` varchar(255) DEFAULT '' COMMENT 'LOGO',
   `content` text COMMENT '内容',
   `type` tinyint(4) DEFAULT '1' COMMENT '类型：1-文章、2-公告',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',

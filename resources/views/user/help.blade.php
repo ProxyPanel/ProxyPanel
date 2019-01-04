@@ -18,14 +18,18 @@
                                     <ul>
                                         @foreach($articleList as $key => $article)
                                             <li class="search-item clearfix">
-                                                <a href="javascriptt:;">
-                                                    <img src="{{asset('assets/images/what.png')}}">
+                                                <a href="javascript:;">
+                                                    @if($article->logo)
+                                                        <img src="{{url($article->logo)}}" style="max-width: 100px; max-height: 75px;">
+                                                    @else
+                                                        <img src="{{asset('assets/images/noimage.png')}}">
+                                                    @endif
                                                 </a>
                                                 <div class="search-content">
                                                     <h2 class="search-title">
                                                         <a href="{{url('article?id=') . $article->id}}">{{str_limit($article->title, 300)}}</a>
                                                     </h2>
-                                                    <p class="search-desc"> {{$article->summary}} </p>
+                                                    <p class="search-desc" style="font-size: 16px;"> {{$article->summary}} </p>
                                                 </div>
                                             </li>
                                         @endforeach
