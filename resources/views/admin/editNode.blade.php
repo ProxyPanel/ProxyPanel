@@ -26,6 +26,22 @@
                                                 </div>
                                                 <div class="portlet-body">
                                                     <div class="form-group">
+                                                        <label for="is_nat" class="col-md-3 control-label">NAT</label>
+                                                        <div class="col-md-8">
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_nat" value="1" {{$node->is_nat == '1' ? 'checked' : ''}}> 是
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_nat" value="0" {{$node->is_nat == '0' ? 'checked' : ''}}> 否
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                            <span class="help-block"> NAT机需要<a href="https://github.com/ssrpanel/SSRPanel/wiki/NAT-VPS%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B" target="_blank">配置DDNS</a>，不做TCP阻断检测，务必填写域名 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="name" class="col-md-3 control-label"> 节点名称 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="name" value="{{$node->name}}" id="name" placeholder="" autofocus required>
@@ -34,17 +50,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="server" class="col-md-3 control-label"> 绑定域名 </label>
+                                                        <label for="server" class="col-md-3 control-label"> 域名 </label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="服务器域名地址，填则优先取域名地址">
                                                             <span class="help-block">如果开启Namesilo且域名是Namesilo上购买的，则会强制更新域名的DNS记录为本节点IP，如果其他节点绑定了该域名则会清空其域名信息</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="ssh_port" class="col-md-3 control-label"> SSH端口 </label>
-                                                        <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
-                                                            <span class="help-block">请务必正确填写此值，否则TCP阻断检测可能报异常</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -60,7 +69,21 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="status" class="col-md-3 control-label">标签</label>
+                                                        <label for="ssh_port" class="col-md-3 control-label"> SSH端口 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
+                                                            <span class="help-block">请务必正确填写此值，否则TCP阻断检测可能误报</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="traffic_rate" class="col-md-3 control-label"> 流量比例 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="traffic_rate" value="{{$node->traffic_rate}}" value="1.0" id="traffic_rate" placeholder="" required>
+                                                            <span class="help-block"> 举例：0.1用100M结算10M，5用100M结算500M </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="labels" class="col-md-3 control-label">标签</label>
                                                         <div class="col-md-8">
                                                             <select id="labels" class="form-control select2-multiple" name="labels[]" multiple>
                                                                 @foreach($label_list as $label)
@@ -112,20 +135,16 @@
                                                     <div class="form-group">
                                                         <label for="status" class="col-md-3 control-label">状态</label>
                                                         <div class="col-md-8">
-                                                            <select class="form-control" name="status" id="status">
-                                                                <option value="1" {{$node->status == '1' ? 'selected' : ''}}>正常</option>
-                                                                <option value="0" {{$node->status == '0' ? 'selected' : ''}}>维护</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="is_tcp_check" class="col-md-3 control-label">定时检测</label>
-                                                        <div class="col-md-8">
-                                                            <select class="form-control" name="is_tcp_check" id="is_tcp_check">
-                                                                <option value="1" {{$node->is_tcp_check == '1' ? 'selected' : ''}}>开启</option>
-                                                                <option value="0" {{$node->is_tcp_check == '0' ? 'selected' : ''}}>关闭</option>
-                                                            </select>
-                                                            <span class="help-block"> 启用后会定时检测服务器的连通性 </span>
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="status" value="1" {{$node->status == '1' ? 'checked' : ''}}> 正常
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="status" value="0" {{$node->status == '0' ? 'checked' : ''}}> 维护
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -144,12 +163,22 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="traffic_rate" class="col-md-3 control-label"> 流量比例 </label>
+                                                        <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="traffic_rate" value="{{$node->traffic_rate}}" value="1.0" id="traffic_rate" placeholder="" required>
-                                                            <span class="help-block"> 举例：0.1用100M结算10M，5用100M结算500M </span>
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_tcp_check" value="1" {{$node->is_tcp_check == '1' ? 'checked' : ''}}> 开启
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_tcp_check" value="0" {{$node->is_tcp_check == '0' ? 'checked' : ''}}> 关闭
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                            <span class="help-block"> 每30~60分钟随机进行TCP阻断检测 </span>
                                                         </div>
                                                     </div>
+                                                    <!--
                                                     <div class="form-group">
                                                         <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
                                                         <div class="col-md-8">
@@ -175,6 +204,7 @@
                                                             <span class="help-block"> 例如：http://us1.xxx.com/monitor.php </span>
                                                         </div>
                                                     </div>
+                                                    -->
                                                 </div>
                                             </div>
                                             <!-- END SAMPLE FORM PORTLET-->
@@ -463,6 +493,7 @@
             var traffic = $('#traffic').val();
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
+            var is_nat = $("input:radio[name='is_nat']:checked").val();
             var ssh_port = $('#ssh_port').val();
             var compatible = $("input:radio[name='compatible']:checked").val();
             var single = $('#single').val();
@@ -473,7 +504,7 @@
             var single_protocol = $('#single_protocol').val();
             var single_obfs = $('#single_obfs').val();
             var sort = $('#sort').val();
-            var status = $('#status').val();
+            var status = $("input:radio[name='status']:checked").val();
             var is_tcp_check = $('#is_tcp_check').val();
 
             var service = $("input:radio[name='service']:checked").val();
@@ -510,6 +541,7 @@
                     traffic: traffic,
                     monitor_url: monitor_url,
                     is_subscribe: is_subscribe,
+                    is_nat: is_nat,
                     ssh_port: ssh_port,
                     compatible: compatible,
                     single: single,
@@ -556,7 +588,7 @@
             }
         });
 
-        // 设置服务
+        // 设置服务类型
         $("input:radio[name='service']").on('change', function() {
             var service = parseInt($(this).val());
 
@@ -566,6 +598,19 @@
             } else {
                 $(".ssr-setting").addClass('hidden');
                 $(".v2ray-setting").removeClass('hidden');
+            }
+        });
+
+        // 设置是否为NAT
+        $("input:radio[name='is_nat']").on('change', function() {
+            var is_nat = parseInt($(this).val());
+
+            if (is_nat === 1) {
+                $("#ip").val("1.1.1.1").attr("readonly", "readonly");
+                $("#server").attr("required", "required");
+            } else {
+                $("#ip").val("").removeAttr("readonly");
+                $("#server").removeAttr("required");
             }
         });
 

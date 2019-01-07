@@ -39,7 +39,7 @@
                                     <th> 类型 </th>
                                     <th> 名称 </th>
                                     <th> IP </th>
-                                    <th> 绑定域名 </th>
+                                    <th> 域名 </th>
                                     <th> 状态 </th>
                                     <th> 在线 </th>
                                     <th> <span class="node-flow"><a href="javascript:showFlowTips();">产生流量</a></span> </th>
@@ -57,7 +57,10 @@
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
-                                                <td> {{$node->type == 2 ? 'V2Ray' : 'Shadowsocks(R)'}} </td>
+                                                <td>
+                                                    <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->type == 2 ? 'V2Ray' : 'ShadowsocksR'}}</span>
+                                                    <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->is_nat ? 'NAT' : ''}}</span>
+                                                </td>
                                                 <td> {{$node->name}} </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->ip}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->server}}</span> </td>
