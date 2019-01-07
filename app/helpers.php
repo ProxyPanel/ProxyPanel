@@ -125,6 +125,7 @@ if (!function_exists('getClientIP')) {
                 $ip = 'unknown';
             }
         } else {
+            // 绕过CDN获取真实访客IP
             if (getenv('HTTP_X_FORWARDED_FOR')) {
                 $ip = getenv('HTTP_X_FORWARDED_FOR');
             } elseif (getenv('HTTP_CLIENT_ip')) {
