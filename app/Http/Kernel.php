@@ -51,16 +51,16 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'isAdmin' => \App\Http\Middleware\isAdmin::class,
-        'isLogin' => \App\Http\Middleware\isLogin::class,
+        'auth'        => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.basic'  => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings'    => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can'         => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'       => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'    => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'isAdmin'     => \App\Http\Middleware\isAdmin::class,
+        'isLogin'     => \App\Http\Middleware\isLogin::class,
         'isForbidden' => \App\Http\Middleware\isForbidden::class,
-        'affiliate' => \App\Http\Middleware\Affiliate::class,
+        'affiliate'   => \App\Http\Middleware\Affiliate::class,
 
     ];
 }

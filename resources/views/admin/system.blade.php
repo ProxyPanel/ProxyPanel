@@ -874,36 +874,36 @@
                                                                 <span class="help-block"> 请先到 <a href="https://global.alipay.com/" target="_blank">AliPay国际</a> 申请partner和key </span>
                                                             </div>
                                                         </div>
-							<div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_currency" class="col-md-3 control-label">结算币种</label>
                                                             <div class="col-md-9">
                                                                 <select id="alipay_currency" class="form-control select2" name="alipay_currency">
                                                                     <option value="USD" @if($alipay_currency == 'USD') selected @endif>美元</option>
-								    <option value="HKD" @if($alipay_currency == 'HKD') selected @endif>港币</option>
-								    <option value="JPY" @if($alipay_currency == 'JPY') selected @endif>日元</option>
-								    <option value="EUR" @if($alipay_currency == 'EUR') selected @endif>欧元</option>
+                                                                    <option value="HKD" @if($alipay_currency == 'HKD') selected @endif>港币</option>
+                                                                    <option value="JPY" @if($alipay_currency == 'JPY') selected @endif>日元</option>
+                                                                    <option value="EUR" @if($alipay_currency == 'EUR') selected @endif>欧元</option>
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
-						    <div class="form-group">
-						    	<div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_sign_type" class="col-md-3 control-label">加密方式</label>
                                                             <div class="col-md-9">
                                                                 <select id="alipay_sign_type" class="form-control select2" name="alipay_sign_type">
                                                                     <option value="MD5" @if($alipay_sign_type == 'MD5') selected @endif>MD5</option>
-								    <option value="RSA" @if($alipay_sign_type == 'RSA') selected @endif>RSA</option>
+                                                                    <option value="RSA" @if($alipay_sign_type == 'RSA') selected @endif>RSA</option>
                                                                 </select>
                                                             </div>
                                                         </div>
-							<div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_transport" class="col-md-3 control-label">启用SSL验证</label>
                                                             <div class="col-md-9">
                                                                 <select id="alipay_transport" class="form-control select2" name="alipay_transport">
                                                                     <option value="http" @if($alipay_transport == 'http') selected @endif>否</option>
-								    <option value="https" @if($alipay_transport == 'https') selected @endif>是</option>
+                                                                    <option value="https" @if($alipay_transport == 'https') selected @endif>是</option>
                                                                 </select>
-								<span class="help-block"> HTTPS站点需启用 </span>
+                                                                <span class="help-block"> HTTPS站点需启用 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -931,7 +931,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-						    <div class="form-group">
+                                                    <div class="form-group">
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_private_key" class="col-md-3 control-label">RSA私钥</label>
                                                             <div class="col-md-9">
@@ -1474,8 +1474,8 @@
             }
         });
 		
-	// 启用、禁用alipay
-	$('#is_alipay').on({
+        // 启用、禁用alipay
+        $('#is_alipay').on({
             'switchChange.bootstrapSwitch': function(event, state) {
                 var is_alipay = state ? 1 : 0;
 
@@ -1665,7 +1665,7 @@
             });
         }
 
-	// 设置alipay加密方式
+        // 设置alipay加密方式
         $('#alipay_sign_type').change(function() {
             var alipay_sign_type = $(this).val();
 

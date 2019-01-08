@@ -159,7 +159,7 @@
                     });
                 },
                 success: function (ret) {
-					layer.msg(ret.message, {time:1300}, function() {
+                    layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
                             if (pay_type==4) {
                                 // 如果是Alipay支付写入Alipay的支付页面
