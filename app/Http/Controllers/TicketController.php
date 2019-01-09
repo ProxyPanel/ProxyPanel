@@ -69,9 +69,9 @@ class TicketController extends Controller
                     if (self::$systemConfig['crash_warning_email']) {
                         try {
                             Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($title, $content));
-                            Helpers::addServerChanLog($title, $content);
+                            Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
                         } catch (\Exception $e) {
-                            Helpers::addServerChanLog($title, $content, 0, $e->getMessage());
+                            Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
                         }
                     }
                 } else {
@@ -85,8 +85,7 @@ class TicketController extends Controller
 
                 // 通过ServerChan发微信消息提醒管理员
                 if (!Auth::user()->is_admin && self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
-                    $serverChan = new ServerChan();
-                    $serverChan->send($title, $content);
+                    ServerChan::send($title, $content);
                 }
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);

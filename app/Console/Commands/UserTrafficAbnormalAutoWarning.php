@@ -51,8 +51,7 @@ class UserTrafficAbnormalAutoWarning extends Command
 
                     $content = "用户**{$user->username}(ID:{$user->id})**，最近1小时**上行流量：" . flowAutoShow($traffic->totalU) . "，下行流量：" . flowAutoShow($traffic->totalD) . "，共计：" . flowAutoShow($traffic->totalTraffic) . "**。";
 
-                    $serverChan = new ServerChan();
-                    $serverChan->send($title, $content);
+                    ServerChan::send($title, $content);
                 }
             }
         }

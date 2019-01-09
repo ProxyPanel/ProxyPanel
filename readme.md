@@ -43,4 +43,4 @@ Support ShadowsocksR、ShadowsocksRR、V2Ray
 
 ## License
 
-The project is released under the terms of the MIT License.
+SSRPanel is open-sourced software licensed under the MIT license.

@@ -193,8 +193,7 @@ class AutoCheckNodeStatus extends Command
     private function notifyMasterByServerchan($title, $content)
     {
         if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
-            $serverChan = new ServerChan();
-            $serverChan->send($title, $content);
+            ServerChan::send($title, $content);
         }
     }
 

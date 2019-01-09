@@ -2,6 +2,7 @@
 
 namespace App\Components;
 
+use App\Http\Models\EmailLog;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
@@ -25,7 +26,7 @@ class ServerChan
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function send($title, $content)
+    public static function send($title, $content)
     {
         $client = new Client();
 
@@ -39,9 +40,9 @@ class ServerChan
 
             $result = json_decode($response->getBody());
             if (!$result->errno) {
-                Helpers::addServerChanLog($title, $content);
+                self::addlog($title, $content);
             } else {
-                Helpers::addServerChanLog($title, $content, 0, $result->errmsg);
+                self::addlog($title, $content, 0, $result->errmsg);
             }
         } catch (RequestException $e) {
             Log::error(Psr7\str($e->getRequest()));
@@ -49,5 +50,29 @@ class ServerChan
                 Log::error(Psr7\str($e->getResponse()));
             }
         }
+    }
+
+    /**
+     * 添加serverChan投递日志
+     *
+     * @param string $title   标题
+     * @param string $content 内容
+     * @param int    $status  投递状态
+     * @param string $error   投递失败时记录的异常信息
+     *
+     * @return int
+     */
+    private static function addlog($title, $content, $status = 1, $error = '')
+    {
+        $log = new EmailLog();
+        $log->type = 2;
+        $log->address = 'admin';
+        $log->title = $title;
+        $log->content = $content;
+        $log->status = $status;
+        $log->error = $error;
+        $log->created_at = date('Y-m-d H:i:s');
+
+        return $log->save();
     }
 }

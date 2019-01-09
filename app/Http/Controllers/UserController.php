@@ -411,8 +411,7 @@ class UserController extends Controller
 
             // 通过ServerChan发微信消息提醒管理员
             if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
-                $serverChan = new ServerChan();
-                $serverChan->send($emailTitle, $content);
+                ServerChan::send($emailTitle, $content);
             }
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
@@ -460,8 +459,7 @@ class UserController extends Controller
 
                 // 通过ServerChan发微信消息提醒管理员
                 if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
-                    $serverChan = new ServerChan();
-                    $serverChan->send($title, $content);
+                    ServerChan::send($title, $content);
                 }
 
                 return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
