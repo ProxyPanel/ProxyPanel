@@ -20,11 +20,11 @@
         @endif
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">{{trans('login.username')}}</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('login.username')}}" name="username" value="{{Request::old('username')}}" />
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('login.username')}}" name="username" value="{{Request::old('username')}}" required />
         </div>
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">{{trans('login.password')}}</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('login.password')}}" name="password" value="{{Request::old('password')}}" />
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('login.password')}}" name="password" value="{{Request::old('password')}}" required />
             <input type="hidden" name="_token" value="{{csrf_token()}}" />
         </div>
         @if(\App\Components\Helpers::systemConfig()['is_captcha'])

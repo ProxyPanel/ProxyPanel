@@ -328,7 +328,7 @@ class AutoJob extends Command
                         }
 
                         // 更新支付单
-                        $payment->pay_way = $trade['response']['qr_trades']['pay_type'] == 'WXPAY_BIGUNSIGN' ? 1 : 2; // 1-微信、2-支付宝
+                        $payment->pay_way = $trade['response']['pay_type'] == 'WXPAY_BIGUNSIGN' ? 1 : 2; // 1-微信、2-支付宝
                         $payment->status = 1;
                         $payment->save();
 
