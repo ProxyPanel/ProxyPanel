@@ -15,7 +15,6 @@
                         <div class="form-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <!-- BEGIN SAMPLE FORM PORTLET-->
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
@@ -133,7 +132,7 @@
                                                 <div class="col-md-8">
                                                     <select id="labels" class="form-control select2-multiple" name="labels[]" multiple>
                                                         @foreach($label_list as $label)
-                                                            <option value="{{$label->id}}">{{$label->name}}</option>
+                                                            <option value="{{$label->id}}" {{in_array($label->id, $initial_labels) ? 'selected' : ''}}>{{$label->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -174,10 +173,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- END SAMPLE FORM PORTLET-->
                                 </div>
                                 <div class="col-md-6">
-                                    <!-- BEGIN SAMPLE FORM PORTLET-->
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
                                             <div class="caption">
@@ -279,6 +276,7 @@
                                                 </div>
                                             </div>
                                             <hr>
+                                            <!--
                                             <div class="form-group">
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
@@ -298,8 +296,9 @@
                                                 </div>
                                             </div>
                                             <hr>
+                                            -->
                                             <div class="form-group">
-                                                <label for="vmess_id" class="col-md-3 control-label">VMess用户ID</label>
+                                                <label for="vmess_id" class="col-md-3 control-label">VMess UUID</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" name="vmess_id" value="{{createGuid()}}" id="vmess_id" autocomplete="off" />
@@ -307,11 +306,11 @@
                                                             <button class="btn btn-success" type="button" onclick="makeVmessId()"> <i class="fa fa-refresh"></i> </button>
                                                         </span>
                                                     </div>
+                                                    <span class="help-block"> V2Ray的账户ID </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- END SAMPLE FORM PORTLET-->
                                 </div>
                             </div>
                         </div>

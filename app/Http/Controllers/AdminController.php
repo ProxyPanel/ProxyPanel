@@ -229,7 +229,7 @@ class AdminController extends Controller
             $user->password = trim($request->get('password')) ? Hash::make(trim($request->get('password'))) : Hash::make(makeRandStr());
             $user->port = $request->get('port');
             $user->passwd = empty($request->get('passwd')) ? makeRandStr() : $request->get('passwd');
-            $user->vmess_id = trim($request->get('vmess_id', createGuid()));
+            $user->vmess_id = $request->get('vmess_id') ? trim($request->get('vmess_id')) : createGuid();
             $user->transfer_enable = toGB($request->get('transfer_enable', 0));
             $user->enable = intval($request->get('enable', 0));
             $user->method = $request->get('method');
@@ -274,6 +274,7 @@ class AdminController extends Controller
             $view['obfs_list'] = Helpers::obfsList();
             $view['level_list'] = Helpers::levelList();
             $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
+            $view['initial_labels'] = explode(",", Helpers::systemConfig()['initial_labels_for_user']);
 
             return Response::view('admin.addUser', $view);
         }
@@ -300,7 +301,7 @@ class AdminController extends Controller
                 $user->protocol_param = '';
                 $user->obfs = Helpers::getDefaultObfs();
                 $user->obfs_param = '';
-                $user->usage = 4;
+                $user->usage = 1;
                 $user->transfer_enable = toGB(1024);
                 $user->enable_time = date('Y-m-d');
                 $user->expire_time = date('Y-m-d', strtotime("+365 days"));
@@ -341,7 +342,7 @@ class AdminController extends Controller
             $password = $request->get('password');
             $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
-            $vmess_id = $request->get('vmess_id') ? $request->get('vmess_id') : createGuid();
+            $vmess_id = $request->get('vmess_id') ? trim($request->get('vmess_id')) : createGuid();
             $transfer_enable = $request->get('transfer_enable');
             $enable = intval($request->get('enable'));
             $method = $request->get('method');
@@ -349,8 +350,6 @@ class AdminController extends Controller
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
             $obfs_param = $request->get('obfs_param');
-            $speed_limit_per_con = $request->get('speed_limit_per_con');
-            $speed_limit_per_user = $request->get('speed_limit_per_user');
             $gender = $request->get('gender');
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
@@ -391,29 +390,27 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $data = [
-                    'username'             => $username,
-                    'port'                 => $port,
-                    'passwd'               => $passwd,
-                    'vmess_id'             => $vmess_id,
-                    'transfer_enable'      => toGB($transfer_enable),
-                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用代理
-                    'method'               => $method,
-                    'protocol'             => $protocol,
-                    'protocol_param'       => $protocol_param,
-                    'obfs'                 => $obfs,
-                    'obfs_param'           => $obfs_param,
-                    'speed_limit_per_con'  => $speed_limit_per_con,
-                    'speed_limit_per_user' => $speed_limit_per_user,
-                    'gender'               => $gender,
-                    'wechat'               => $wechat,
-                    'qq'                   => $qq,
-                    'usage'                => $usage,
-                    'pay_way'              => $pay_way,
-                    'status'               => $status,
-                    'enable_time'          => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                    'expire_time'          => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
-                    'remark'               => $remark,
-                    'level'                => $level,
+                    'username'        => $username,
+                    'port'            => $port,
+                    'passwd'          => $passwd,
+                    'vmess_id'        => $vmess_id,
+                    'transfer_enable' => toGB($transfer_enable),
+                    'enable'          => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用代理
+                    'method'          => $method,
+                    'protocol'        => $protocol,
+                    'protocol_param'  => $protocol_param,
+                    'obfs'            => $obfs,
+                    'obfs_param'      => $obfs_param,
+                    'gender'          => $gender,
+                    'wechat'          => $wechat,
+                    'qq'              => $qq,
+                    'usage'           => $usage,
+                    'pay_way'         => $pay_way,
+                    'status'          => $status,
+                    'enable_time'     => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                    'expire_time'     => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
+                    'remark'          => $remark,
+                    'level'           => $level,
                 ];
 
                 // 只有admin才有权限操作管理员属性
