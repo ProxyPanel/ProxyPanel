@@ -36,7 +36,11 @@ class AutoReportNode extends Command
                         ->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime("-1 day")))
                         ->first();
 
-                    $msg .= '|' . $node->name . '|' . flowAutoShow($log->u) . '|' . flowAutoShow($log->d) . '|' . $log->traffic . "\r\n";
+                    if ($log) {
+                        $msg .= '|' . $node->name . '|' . flowAutoShow($log->u) . '|' . flowAutoShow($log->d) . '|' . $log->traffic . "\r\n";
+                    } else {
+                        $msg .= '|' . $node->name . '|' . flowAutoShow(0) . '|' . flowAutoShow(0) . "|0B\r\n";
+                    }
                 }
 
                 $this->notifyMasterByServerchan('节点日报', $msg);
