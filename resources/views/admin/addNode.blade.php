@@ -16,7 +16,7 @@
                             <form action="{{url('admin/addNode')}}" method="post" class="form-horizontal" onsubmit="return do_submit();">
                                 <div class="form-body">
                                     <div class="alert alert-danger">
-                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署SSR后端时<code>usermysql.json</code>中的<code>node_id</code>的值；同时也是部署V2Ray后端时的<code>nodeId</code>的值；
+                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署SSR后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
                                         V2Ray GO版节点部署<a href="https://github.com/ssrpanel/SSRPanel/wiki/V2Ray%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B%EF%BC%88Go%E7%89%88%EF%BC%89" target="_blank">教程</a>；
                                         更改服务器的SSH端口<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A6%81%E6%AD%A2PING%E3%80%81%E6%94%B9SSH%E7%AB%AF%E5%8F%A3%E5%8F%B7" target="_blank">教程</a>；
                                     </div>
@@ -412,7 +412,7 @@
                                                             <label for="v2_host" class="col-md-3 control-label">伪装域名</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="v2_host" id="v2_host">
-                                                                <span class="help-block"> 伪装类型为http时多个伪装域名逗号隔开，ws只允许单个 </span>
+                                                                <span class="help-block"> 伪装类型为http时多个伪装域名逗号隔开，WebSocket只允许单个 </span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">

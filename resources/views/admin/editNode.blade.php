@@ -38,7 +38,7 @@
                                                                     <span></span>
                                                                 </label>
                                                             </div>
-                                                            <span class="help-block"> NAT机需要<a href="https://github.com/ssrpanel/SSRPanel/wiki/NAT-VPS%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B" target="_blank">配置DDNS</a>，不做TCP阻断检测，务必填写域名 </span>
+                                                            <span class="help-block"> NAT机需要<a href="https://github.com/ssrpanel/SSRPanel/wiki/NAT-VPS%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B" target="_blank">配置DDNS</a>，TCP阻断检测无效，务必填写域名 </span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -59,7 +59,7 @@
                                                     <div class="form-group">
                                                         <label for="ip" class="col-md-3 control-label"> IPV4地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="ip" value="{{$node->ip}}" id="ip" placeholder="服务器IPV4地址" required>
+                                                            <input type="text" class="form-control" name="ip" value="{{$node->ip}}" id="ip" placeholder="服务器IPV4地址" {{$node->is_nat ? 'readonly=readonly' : ''}} required>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -410,7 +410,7 @@
                                                             <label for="v2_host" class="col-md-3 control-label">伪装域名</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="v2_host" value="{{$node->v2_host}}" id="v2_host">
-                                                                <span class="help-block"> 伪装类型为http时多个伪装域名逗号隔开，ws只允许单个 </span>
+                                                                <span class="help-block"> 伪装类型为http时多个伪装域名逗号隔开，WebSocket只允许单个 </span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">

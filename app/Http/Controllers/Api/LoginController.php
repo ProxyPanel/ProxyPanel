@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Models\User;
+use App\Http\Models\UserLabel;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use Illuminate\Http\Request;
 use Response;
 use Cache;
+use Hash;
 use DB;
 
 /**
@@ -35,6 +37,12 @@ class LoginController extends Controller
         $password = trim($request->get('password'));
         $cacheKey = 'request_times_' . md5(getClientIp());
 
+        if (!$username || !$password) {
+            Cache::increment($cacheKey);
+
+            return Response::json(['status' => 'fail', 'data' => [], 'message' => '请输入用户名和密码']);
+        }
+
         // 连续请求失败15次，则封IP一小时
         if (Cache::has($cacheKey)) {
             if (Cache::get($cacheKey) >= 15) {
@@ -44,17 +52,13 @@ class LoginController extends Controller
             Cache::put($cacheKey, 1, 60);
         }
 
-        if (!$username || !$password) {
-            Cache::increment($cacheKey);
-
-            return Response::json(['status' => 'fail', 'data' => [], 'message' => '账号或密码错误']);
-        }
-
-        $user = User::query()->where('username', $username)->where('password', md5($password))->where('status', '>=', 0)->first();
+        $user = User::query()->where('username', $username)->where('status', '>=', 0)->first();
         if (!$user) {
             Cache::increment($cacheKey);
 
             return Response::json(['status' => 'fail', 'data' => [], 'message' => '账号不存在或已被禁用']);
+        } elseif (!Hash::check($password, $user->password)) {
+            return Response::json(['status' => 'fail', 'data' => [], 'message' => '用户名或密码错误']);
         }
 
         DB::beginTransaction();
@@ -74,17 +78,65 @@ class LoginController extends Controller
             }
 
             // 更新订阅链接访问次数
-            $subscribe->increment('times', 1);
+            //$subscribe->increment('times', 1);
 
             // 记录每次请求
-            $this->log($subscribe->id, getClientIp(), 'API访问');
-
-            // 处理用户信息
-            unset($user->password, $user->reg_ip, $user->remark, $user->usage, $user->remember_token, $user->created_at, $user->updated_at);
-            $data['user'] = $user;
+            //$this->log($subscribe->id, getClientIp(), 'API访问');
 
             // 订阅链接
-            $data['link'] = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] . '/s/' . $code : self::$systemConfig['website_url'] . '/s/' . $code;
+            $url = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url'];
+
+            // 节点列表
+            $userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');
+            if (empty($userLabelIds)) {
+                return Response::json(['status' => 'fail', 'message' => '', 'data' => []]);
+            }
+
+            $nodeList = DB::table('ss_node')
+                ->selectRaw('ss_node.*')
+                ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
+                ->whereIn('ss_node_label.label_id', $userLabelIds)
+                ->where('ss_node.status', 1)
+                ->groupBy('ss_node.id')
+                ->orderBy('ss_node.sort', 'desc')
+                ->orderBy('ss_node.id', 'asc')
+                ->get();
+
+            $c_nodes = collect();
+            foreach ($nodeList as $node) {
+                $temp_node = [
+                    'name'          => $node->name,
+                    'server'        => $node->server,
+                    'server_port'   => $user->port,
+                    'method'        => $user->method,
+                    'obfs'          => $user->obfs,
+                    'flags'         => $url . '/assets/images/country/' . $node->country_code . '.png',
+                    'obfsparam'     => '',
+                    'password'      => $user->passwd,
+                    'group'         => '',
+                    'protocol'      => $user->protocol,
+                    'protoparam'    => '',
+                    'protocolparam' => ''
+                ];
+                $c_nodes = $c_nodes->push($temp_node);
+            }
+
+            $data = [
+                'status'       => 1,
+                'class'        => 0,
+                'level'        => 2,
+                'expire_in'    => $user->expire_time,
+                'text'         => '',
+                'buy_link'     => '',
+                'money'        => '0.00',
+                'sspannelName' => 'ssrpanel',
+                'usedTraffic'  => flowAutoShow($user->u + $user->d),
+                'Traffic'      => flowAutoShow($user->transfer_enable),
+                'all'          => 1,
+                'residue'      => '',
+                'nodes'        => $c_nodes,
+                'link'         => $url . '/s/' . $code
+            ];
 
             DB::commit();
 
