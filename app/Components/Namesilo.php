@@ -2,6 +2,7 @@
 
 namespace App\Components;
 
+use Curl;
 use LSS\XML2Array;
 use Log;
 
@@ -84,7 +85,7 @@ class Namesilo
         $content = '请求操作：[' . $operation . '] --- 请求数据：[' . http_build_query($query) . ']';
 
         try {
-            $result = $this->curlRequest(self::$host . $operation . '?' . http_build_query($query));
+            $result = Curl::send(self::$host . $operation . '?' . http_build_query($query));
             $result = XML2Array::createArray($result);
 
             // 出错
@@ -101,27 +102,5 @@ class Namesilo
 
             return false;
         }
-    }
-
-    // 发起一个CURL请求
-    private function curlRequest($url, $data = [])
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_URL, $url);
-
-        // 如果data有数据，则用POST请求
-        if ($data) {
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        }
-
-        $res = curl_exec($ch);
-        curl_close($ch);
-
-        return $res;
     }
 }

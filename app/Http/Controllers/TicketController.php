@@ -84,7 +84,7 @@ class TicketController extends Controller
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
-                if (!Auth::user()->is_admin && self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
+                if (!Auth::user()->is_admin) {
                     ServerChan::send($title, $content);
                 }
 

@@ -3,9 +3,7 @@
 namespace App\Components;
 
 use App\Http\Models\EmailLog;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\RequestException;
+use Curl;
 use Log;
 
 class ServerChan
@@ -24,30 +22,20 @@ class ServerChan
      * @param string $content 消息内容
      *
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function send($title, $content)
     {
-        $client = new Client();
-
-        try {
-            $response = $client->request('GET', 'https://sc.ftqq.com/' . self::$systemConfig['server_chan_key'] . '.send', [
-                'query' => [
-                    'text' => $title,
-                    'desp' => $content
-                ]
-            ]);
-
-            $result = json_decode($response->getBody());
-            if (!$result->errno) {
-                self::addlog($title, $content);
-            } else {
-                self::addlog($title, $content, 0, $result->errmsg);
-            }
-        } catch (RequestException $e) {
-            Log::error(Psr7\str($e->getRequest()));
-            if ($e->hasResponse()) {
-                Log::error(Psr7\str($e->getResponse()));
+        if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
+            try {
+                $response = Curl::send('https://sc.ftqq.com/' . self::$systemConfig['server_chan_key'] . '.send?text=' . $title . '&desp=' . $content);
+                $result = json_decode($response);
+                if (!$result->errno) {
+                    self::addLog($title, $content);
+                } else {
+                    self::addLog($title, $content, 0, $result->errmsg);
+                }
+            } catch (\Exception $e) {
+                Log::error($e);
             }
         }
     }
@@ -62,7 +50,7 @@ class ServerChan
      *
      * @return int
      */
-    private static function addlog($title, $content, $status = 1, $error = '')
+    private static function addLog($title, $content, $status = 1, $error = '')
     {
         $log = new EmailLog();
         $log->type = 2;

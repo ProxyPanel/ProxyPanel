@@ -159,7 +159,7 @@ class AutoCheckNodeStatus extends Command
     private function notifyMaster($title, $content, $nodeName, $nodeServer)
     {
         $this->notifyMasterByEmail($title, $content, $nodeName, $nodeServer);
-        $this->notifyMasterByServerchan($title, $content);
+        ServerChan::send($title, $content);
     }
 
     /**
@@ -179,21 +179,6 @@ class AutoCheckNodeStatus extends Command
             } catch (\Exception $e) {
                 Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
             }
-        }
-    }
-
-    /**
-     * 通过ServerChan发微信消息提醒管理员
-     *
-     * @param string $title   消息标题
-     * @param string $content 消息内容
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    private function notifyMasterByServerchan($title, $content)
-    {
-        if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
-            ServerChan::send($title, $content);
         }
     }
 
