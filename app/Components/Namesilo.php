@@ -2,7 +2,6 @@
 
 namespace App\Components;
 
-use Curl;
 use LSS\XML2Array;
 use Log;
 

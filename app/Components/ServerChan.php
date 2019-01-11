@@ -3,7 +3,6 @@
 namespace App\Components;
 
 use App\Http\Models\EmailLog;
-use Curl;
 use Log;
 
 class ServerChan
