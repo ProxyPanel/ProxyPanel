@@ -19,7 +19,8 @@ class ServerChan
     {
         if (Helpers::systemConfig()['is_server_chan'] && Helpers::systemConfig()['server_chan_key']) {
             try {
-                $response = Curl::send('https://sc.ftqq.com/' . Helpers::systemConfig()['server_chan_key'] . '.send?text=' . $title . '&desp=' . $content);
+                $url = 'https://sc.ftqq.com/' . Helpers::systemConfig()['server_chan_key'] . '.send?text=' . $title . '&desp=' . urlencode($content);
+                $response = Curl::send($url);
                 $result = json_decode($response);
                 if (!$result->errno) {
                     self::addLog($title, $content);
