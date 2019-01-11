@@ -8,13 +8,6 @@ use Log;
 
 class ServerChan
 {
-    protected static $systemConfig;
-
-    function __construct()
-    {
-        self::$systemConfig = Helpers::systemConfig();
-    }
-
     /**
      * 推送消息
      *
@@ -25,9 +18,9 @@ class ServerChan
      */
     public static function send($title, $content)
     {
-        if (self::$systemConfig['is_server_chan'] && self::$systemConfig['server_chan_key']) {
+        if (Helpers::systemConfig()['is_server_chan'] && Helpers::systemConfig()['server_chan_key']) {
             try {
-                $response = Curl::send('https://sc.ftqq.com/' . self::$systemConfig['server_chan_key'] . '.send?text=' . $title . '&desp=' . $content);
+                $response = Curl::send('https://sc.ftqq.com/' . Helpers::systemConfig()['server_chan_key'] . '.send?text=' . $title . '&desp=' . $content);
                 $result = json_decode($response);
                 if (!$result->errno) {
                     self::addLog($title, $content);
