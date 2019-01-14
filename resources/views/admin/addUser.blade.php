@@ -276,12 +276,11 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                            <!--
                                             <div class="form-group">
                                                 <label for="speed_limit_per_con" class="col-md-3 control-label">单连接限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" autocomplete="off" disabled />
+                                                        <input type="text" class="form-control" name="speed_limit_per_con" value="204800" id="speed_limit_per_con" autocomplete="off" />
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
@@ -290,13 +289,12 @@
                                                 <label for="speed_limit_per_user" class="col-md-3 control-label">单用户限速</label>
                                                 <div class="col-md-8">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" autocomplete="off" disabled />
+                                                        <input type="text" class="form-control" name="speed_limit_per_user" value="204800" id="speed_limit_per_user" autocomplete="off" />
                                                         <span class="input-group-addon">KB</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <hr>
-                                            -->
                                             <div class="form-group">
                                                 <label for="vmess_id" class="col-md-3 control-label">VMess UUID</label>
                                                 <div class="col-md-8">

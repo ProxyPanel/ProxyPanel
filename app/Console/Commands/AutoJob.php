@@ -373,15 +373,15 @@ class AutoJob extends Command
                                 }
                             }
 
-                            // 把商品的流量加到账号上
-                            User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
-
                             // 计算账号过期时间
                             if ($order->user->expire_time < date('Y-m-d', strtotime("+" . $goods->days . " days"))) {
                                 $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
                             } else {
                                 $expireTime = $order->user->expire_time;
                             }
+
+                            // 把商品的流量加到账号上
+                            User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
 
                             // 套餐就改流量重置日，流量包不改
                             if ($goods->type == 2) {

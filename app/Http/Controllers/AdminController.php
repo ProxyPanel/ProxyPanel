@@ -237,7 +237,9 @@ class AdminController extends Controller
             $user->protocol_param = $request->get('protocol_param') ? $request->get('protocol_param') : '';
             $user->obfs = $request->get('obfs');
             $user->obfs_param = $request->get('obfs_param') ? $request->get('obfs_param') : '';
-            $user->gender = $request->get('gender');
+            $user->speed_limit_per_con = intval($request->get('speed_limit_per_con'));
+            $user->speed_limit_per_user = intval($request->get('speed_limit_per_user'));
+            $user->gender = intval($request->get('gender'));
             $user->wechat = $request->get('wechat') ? $request->get('wechat') : '';
             $user->qq = $request->get('qq') ? $request->get('qq') : '';
             $user->usage = $request->get('usage');
@@ -350,7 +352,9 @@ class AdminController extends Controller
             $protocol_param = $request->get('protocol_param');
             $obfs = $request->get('obfs');
             $obfs_param = $request->get('obfs_param');
-            $gender = $request->get('gender');
+            $speed_limit_per_con = intval($request->get('speed_limit_per_con'));
+            $speed_limit_per_user = intval($request->get('speed_limit_per_user'));
+            $gender = intval($request->get('gender'));
             $wechat = $request->get('wechat');
             $qq = $request->get('qq');
             $usage = $request->get('usage');
@@ -390,27 +394,29 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $data = [
-                    'username'        => $username,
-                    'port'            => $port,
-                    'passwd'          => $passwd,
-                    'vmess_id'        => $vmess_id,
-                    'transfer_enable' => toGB($transfer_enable),
-                    'enable'          => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用代理
-                    'method'          => $method,
-                    'protocol'        => $protocol,
-                    'protocol_param'  => $protocol_param,
-                    'obfs'            => $obfs,
-                    'obfs_param'      => $obfs_param,
-                    'gender'          => $gender,
-                    'wechat'          => $wechat,
-                    'qq'              => $qq,
-                    'usage'           => $usage,
-                    'pay_way'         => $pay_way,
-                    'status'          => $status,
-                    'enable_time'     => empty($enable_time) ? date('Y-m-d') : $enable_time,
-                    'expire_time'     => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
-                    'remark'          => $remark,
-                    'level'           => $level,
+                    'username'             => $username,
+                    'port'                 => $port,
+                    'passwd'               => $passwd,
+                    'vmess_id'             => $vmess_id,
+                    'transfer_enable'      => toGB($transfer_enable),
+                    'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用代理
+                    'method'               => $method,
+                    'protocol'             => $protocol,
+                    'protocol_param'       => $protocol_param,
+                    'obfs'                 => $obfs,
+                    'obfs_param'           => $obfs_param,
+                    'speed_limit_per_con'  => $speed_limit_per_con,
+                    'speed_limit_per_user' => $speed_limit_per_user,
+                    'gender'               => $gender,
+                    'wechat'               => $wechat,
+                    'qq'                   => $qq,
+                    'usage'                => $usage,
+                    'pay_way'              => $pay_way,
+                    'status'               => $status,
+                    'enable_time'          => empty($enable_time) ? date('Y-m-d') : $enable_time,
+                    'expire_time'          => empty($expire_time) ? date('Y-m-d', strtotime("+365 days")) : $expire_time,
+                    'remark'               => $remark,
+                    'level'                => $level,
                 ];
 
                 // 只有admin才有权限操作管理员属性
@@ -594,7 +600,8 @@ class AdminController extends Controller
                 $ssNode->sort = $request->get('sort') ? intval($request->get('sort')) : 0;
                 $ssNode->status = $request->get('status') ? intval($request->get('status')) : 1;
                 $ssNode->v2_alter_id = $request->get('v2_alter_id') ? intval($request->get('v2_alter_id')) : 16;
-                $ssNode->v2_port = $request->get('v2_port') ? intval($request->get('v2_port')) : 32000;
+                $ssNode->v2_port = $request->get('v2_port') ? intval($request->get('v2_port')) : 10087;
+                $ssNode->v2_method = $request->get('v2_method') ? $request->get('v2_method') : 'aes-128-gcm';
                 $ssNode->v2_net = $request->get('v2_net') ? $request->get('v2_net') : 'tcp';
                 $ssNode->v2_type = $request->get('v2_type') ? $request->get('v2_type') : 'none';
                 $ssNode->v2_host = $request->get('v2_host') ? $request->get('v2_host') : '';
@@ -709,8 +716,9 @@ class AdminController extends Controller
                     'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
                     'sort'            => intval($request->get('sort')),
                     'status'          => intval($request->get('status')),
-                    'v2_alter_id'     => intval($request->get('v2_alter_id')),
-                    'v2_port'         => $request->get('v2_port') ? $request->get('v2_port') : 32000,
+                    'v2_alter_id'     => $request->get('v2_alter_id') ? intval($request->get('v2_alter_id')) : 16,
+                    'v2_port'         => $request->get('v2_port') ? intval($request->get('v2_port')) : 10087,
+                    'v2_method'       => $request->get('v2_method') ? $request->get('v2_method') : 'aes-128-gcm',
                     'v2_net'          => $request->get('v2_net'),
                     'v2_type'         => $request->get('v2_type'),
                     'v2_host'         => $request->get('v2_host'),

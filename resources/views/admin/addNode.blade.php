@@ -10,16 +10,21 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="tab-pane active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="note note-info">
+                                <p><strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；</p>
+                                <p>V2Ray Go版节点部署 <a href="https://github.com/ssrpanel/SSRPanel/wiki/V2Ray%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B%EF%BC%88Go%E7%89%88%EF%BC%89" target="_blank">教程</a>；</p>
+                                <p>Shadowsocks Go版节点部署 <a href="https://github.com/ssrpanel/SSRPanel/wiki/SS-Go%E7%89%88%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2" target="_blank">教程</a>；</p>
+                                <p>更改服务器的SSH端口 <a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A6%81%E6%AD%A2PING%E3%80%81%E6%94%B9SSH%E7%AB%AF%E5%8F%A3%E5%8F%B7" target="_blank">教程</a>；</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="portlet light bordered">
                         <div class="portlet-body form">
                             <!-- BEGIN FORM-->
                             <form action="{{url('admin/addNode')}}" method="post" class="form-horizontal" onsubmit="return do_submit();">
                                 <div class="form-body">
-                                    <div class="alert alert-danger">
-                                        <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署SSR后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
-                                        V2Ray GO版节点部署<a href="https://github.com/ssrpanel/SSRPanel/wiki/V2Ray%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B%EF%BC%88Go%E7%89%88%EF%BC%89" target="_blank">教程</a>；
-                                        更改服务器的SSH端口<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A6%81%E6%AD%A2PING%E3%80%81%E6%94%B9SSH%E7%AB%AF%E5%8F%A3%E5%8F%B7" target="_blank">教程</a>；
-                                    </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <!-- BEGIN SAMPLE FORM PORTLET-->
@@ -375,12 +380,26 @@
                                                             <label for="v2_alter_id" class="col-md-3 control-label">额外ID</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="v2_alter_id" value="16" id="v2_alter_id" placeholder="16">
+                                                                <span class="help-block"> 后端配置注意保持一致 </span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="v2_port" class="col-md-3 control-label">端口</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="v2_port" value="10087" id="v2_port" placeholder="10087">
+                                                                <span class="help-block"> 后端配置注意保持一致 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="v2_method" class="col-md-3 control-label">加密方式</label>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" name="v2_method" id="v2_method">
+                                                                    <option value="none">none</option>
+                                                                    <option value="aes-128-cfb">aes-128-cfb</option>
+                                                                    <option value="aes-128-gcm" selected>aes-128-gcm</option>
+                                                                    <option value="chacha20-poly1305">chacha20-poly1305</option>
+                                                                </select>
+                                                                <span class="help-block"> 使用WebSocket传输协议时不要使用none </span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
@@ -388,10 +407,11 @@
                                                             <div class="col-md-8">
                                                                 <select class="form-control" name="v2_net" id="v2_net">
                                                                     <option value="tcp" selected>TCP</option>
-                                                                    <option value="kcp">mKCP</option>
-                                                                    <option value="ws">WebSocket</option>
-                                                                    <option value="h2">HTTP/2</option>
+                                                                    <option value="kcp">mKCP（kcp）</option>
+                                                                    <option value="ws">WebSocket（ws）</option>
+                                                                    <option value="h2">HTTP/2（h2）</option>
                                                                 </select>
+                                                                <span class="help-block"> 使用WebSocket传输协议时请启用TLS </span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
@@ -412,11 +432,11 @@
                                                             <label for="v2_host" class="col-md-3 control-label">伪装域名</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="v2_host" id="v2_host">
-                                                                <span class="help-block"> 伪装类型为http时多个伪装域名逗号隔开，WebSocket只允许单个 </span>
+                                                                <span class="help-block"> 伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个 </span>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="v2_path" class="col-md-3 control-label">WS/H2路径</label>
+                                                            <label for="v2_path" class="col-md-3 control-label">ws/h2路径</label>
                                                             <div class="col-md-8">
                                                                 <input type="text" class="form-control" name="v2_path" id="v2_path">
                                                             </div>
@@ -510,6 +530,7 @@
             var service = $("input:radio[name='service']:checked").val();
             var v2_alter_id = $('#v2_alter_id').val();
             var v2_port = $('#v2_port').val();
+            var v2_method = $("#v2_method option:selected").val();
             var v2_net = $('#v2_net').val();
             var v2_type = $('#v2_type').val();
             var v2_host = $('#v2_host').val();
@@ -556,6 +577,7 @@
                     type: service,
                     v2_alter_id: v2_alter_id,
                     v2_port: v2_port,
+                    v2_method: v2_method,
                     v2_net: v2_net,
                     v2_type: v2_type,
                     v2_host: v2_host,
