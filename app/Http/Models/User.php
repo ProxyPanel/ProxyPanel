@@ -33,6 +33,11 @@ class User extends Authenticatable
         return $this->hasMany(UserLabel::class, 'user_id', 'id');
     }
 
+    function subscribe()
+    {
+        return $this->hasOne(UserSubscribe::class, 'user_id', 'id');
+    }
+
     function referral()
     {
         return $this->hasOne(User::class, 'id', 'referral_uid');

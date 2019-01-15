@@ -8,6 +8,7 @@ use App\Http\Models\Invite;
 use App\Http\Models\User;
 use App\Http\Models\UserLoginLog;
 use App\Http\Models\UserLabel;
+use App\Http\Models\UserSubscribe;
 use App\Http\Models\Verify;
 use App\Http\Models\VerifyCode;
 use App\Mail\activeUser;
@@ -25,7 +26,7 @@ use Hash;
 use Log;
 
 /**
- * 验证控制器
+ * 认证控制器
  *
  * Class AuthController
  *
@@ -108,14 +109,12 @@ class AuthController extends Controller
 
             return Redirect::to('/');
         } else {
-            if (Auth::viaRemember()) {
-                if (Auth::check()) {
-                    if (Auth::user()->is_admin) {
-                        return Redirect::to('admin');
-                    }
-
-                    return Redirect::to('/');
+            if (Auth::check()) {
+                if (Auth::user()->is_admin) {
+                    return Redirect::to('admin');
                 }
+
+                return Redirect::to('/');
             }
 
             return Response::view('auth.login');
@@ -295,6 +294,13 @@ class AuthController extends Controller
 
                 return Redirect::back()->withInput();
             }
+
+            // 生成订阅码
+            $subscribe = new UserSubscribe();
+            $subscribe->user_id = $user->id;
+            $subscribe->code = Helpers::makeSubscribeCode();
+            $subscribe->times = 0;
+            $subscribe->save();
 
             // 注册次数+1
             if (Cache::has($cacheKey)) {

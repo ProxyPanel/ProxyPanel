@@ -28,17 +28,6 @@ class Controller extends BaseController
         exit(createGuid());
     }
 
-    // 生成订阅地址的唯一码
-    public function makeSubscribeCode()
-    {
-        $code = makeRandStr(5);
-        if (UserSubscribe::query()->where('code', $code)->exists()) {
-            $code = $this->makeSubscribeCode();
-        }
-
-        return $code;
-    }
-
     // 类似Linux中的tail命令
     public function tail($file, $n, $base = 5)
     {

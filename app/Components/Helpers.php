@@ -8,6 +8,7 @@ use App\Http\Models\EmailLog;
 use App\Http\Models\Level;
 use App\Http\Models\SsConfig;
 use App\Http\Models\User;
+use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficModifyLog;
 
 class Helpers
@@ -107,6 +108,17 @@ class Helpers
     public static function levelList()
     {
         return Level::query()->get()->sortBy('level');
+    }
+
+    // 生成用户的订阅码
+    public static function makeSubscribeCode()
+    {
+        $code = makeRandStr(5);
+        if (UserSubscribe::query()->where('code', $code)->exists()) {
+            $code = self::makeSubscribeCode();
+        }
+
+        return $code;
     }
 
     /**

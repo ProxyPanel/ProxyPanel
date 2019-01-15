@@ -157,6 +157,9 @@
                                                             <li>
                                                                 <a href="javascript:switchToUser('{{$user->id}}');"> 切换身份 </a>
                                                             </li>
+                                                            <li>
+                                                                <a href="javascript:copySubscribe('{{$user->id}}');" id="copySubscribe_{{$user->id}}" data-clipboard-text="{{$user->link}}"> 复制订阅链接 </a>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -186,6 +189,7 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 导出原版json配置
         function exportSSJson() {
@@ -254,6 +258,20 @@
         // 导出配置
         function doExport(id) {
             window.location.href = '{{url('admin/export?id=')}}' + id;
+        }
+
+        // 复制订阅链接
+        function copySubscribe(id) {
+            var copy = document.getElementById('copySubscribe_' + id);
+            var clipboard = new Clipboard(copy);
+
+            clipboard.on('success', function(e) {
+                layer.alert("复制成功");
+            });
+
+            clipboard.on('error', function(e) {
+                console.log(e);
+            });
         }
 
         // 流量监控

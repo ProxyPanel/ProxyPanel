@@ -122,7 +122,7 @@ class AdminController extends Controller
         $expireWarning = $request->get('expireWarning');
         $largeTraffic = $request->get('largeTraffic');
 
-        $query = User::query();
+        $query = User::query()->with(['subscribe']);
         if (!empty($username)) {
             $query->where('username', 'like', '%' . $username . '%');
         }
@@ -203,6 +203,9 @@ class AdminController extends Controller
             $time = date('Y-m-d H:i:s', time() - 3900);
             $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
             $user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024) ? 1 : 0;
+
+            // 订阅地址
+            $user->link = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . $user->subscribe->code;
         }
 
         $view['userList'] = $userList;
@@ -258,6 +261,13 @@ class AdminController extends Controller
             $user->save();
 
             if ($user->id) {
+                // 生成订阅码
+                $subscribe = new UserSubscribe();
+                $subscribe->user_id = $user->id;
+                $subscribe->code = Helpers::makeSubscribeCode();
+                $subscribe->times = 0;
+                $subscribe->save();
+
                 // 生成用户标签
                 $this->makeUserLabels($user->id, $request->get('labels'));
 
@@ -314,14 +324,23 @@ class AdminController extends Controller
                 $user->status = 1;
                 $user->save();
 
-                // 初始化默认标签
-                if (!empty(self::$systemConfig['initial_labels_for_user'])) {
-                    $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
-                    $this->makeUserLabels($user->id, $labels);
-                }
+                if ($user->id) {
+                    // 生成订阅码
+                    $subscribe = new UserSubscribe();
+                    $subscribe->user_id = $user->id;
+                    $subscribe->code = Helpers::makeSubscribeCode();
+                    $subscribe->times = 0;
+                    $subscribe->save();
 
-                // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB(1024), '后台批量生成用户');
+                    // 初始化默认标签
+                    if (!empty(self::$systemConfig['initial_labels_for_user'])) {
+                        $labels = explode(',', self::$systemConfig['initial_labels_for_user']);
+                        $this->makeUserLabels($user->id, $labels);
+                    }
+
+                    // 写入用户流量变动记录
+                    Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB(1024), '后台批量生成用户');
+                }
             }
 
             DB::commit();
@@ -591,12 +610,12 @@ class AdminController extends Controller
                 $ssNode->is_tcp_check = intval($request->get('is_tcp_check'));
                 $ssNode->compatible = intval($request->get('compatible'));
                 $ssNode->single = intval($request->get('single'));
-                $ssNode->single_force = $request->get('single') ? $request->get('single_force') : 0;
-                $ssNode->single_port = $request->get('single') ? $request->get('single_port') : '';
-                $ssNode->single_passwd = $request->get('single') ? $request->get('single_passwd') : '';
-                $ssNode->single_method = $request->get('single') ? $request->get('single_method') : '';
-                $ssNode->single_protocol = $request->get('single') ? $request->get('single_protocol') : '';
-                $ssNode->single_obfs = $request->get('single') ? $request->get('single_obfs') : '';
+                $ssNode->single_force = intval($request->get('single')) ? intval($request->get('single_force')) : 0;
+                $ssNode->single_port = intval($request->get('single')) ? ($request->get('single_port') ? $request->get('single_port') : 443) : '';
+                $ssNode->single_passwd = intval($request->get('single')) ? ($request->get('single_passwd') ? $request->get('single_passwd') : 'password') : '';
+                $ssNode->single_method = intval($request->get('single')) ? $request->get('single_method') : '';
+                $ssNode->single_protocol = intval($request->get('single')) ? $request->get('single_protocol') : '';
+                $ssNode->single_obfs = intval($request->get('single')) ? $request->get('single_obfs') : '';
                 $ssNode->sort = $request->get('sort') ? intval($request->get('sort')) : 0;
                 $ssNode->status = $request->get('status') ? intval($request->get('status')) : 1;
                 $ssNode->v2_alter_id = $request->get('v2_alter_id') ? intval($request->get('v2_alter_id')) : 16;
@@ -708,12 +727,12 @@ class AdminController extends Controller
                     'is_tcp_check'    => intval($request->get('is_tcp_check')),
                     'compatible'      => intval($request->get('compatible')),
                     'single'          => intval($request->get('single')),
-                    'single_force'    => $request->get('single') ? $request->get('single_force') : 0,
-                    'single_port'     => $request->get('single') ? $request->get('single_port') : '',
-                    'single_passwd'   => $request->get('single') ? $request->get('single_passwd') : '',
-                    'single_method'   => $request->get('single') ? $request->get('single_method') : '',
-                    'single_protocol' => $request->get('single') ? $request->get('single_protocol') : '',
-                    'single_obfs'     => $request->get('single') ? $request->get('single_obfs') : '',
+                    'single_force'    => intval($request->get('single')) ? intval($request->get('single_force')) : 0,
+                    'single_port'     => intval($request->get('single')) ? ($request->get('single_port') ? $request->get('single_port') : 443) : '',
+                    'single_passwd'   => intval($request->get('single')) ? ($request->get('single_passwd') ? $request->get('single_passwd') : 'password') : '',
+                    'single_method'   => intval($request->get('single')) ? $request->get('single_method') : '',
+                    'single_protocol' => intval($request->get('single')) ? $request->get('single_protocol') : '',
+                    'single_obfs'     => intval($request->get('single')) ? $request->get('single_obfs') : '',
                     'sort'            => intval($request->get('sort')),
                     'status'          => intval($request->get('status')),
                     'v2_alter_id'     => $request->get('v2_alter_id') ? intval($request->get('v2_alter_id')) : 16,
@@ -741,21 +760,9 @@ class AdminController extends Controller
                 }
 
                 // 生成节点标签
-                $labels = $request->get('labels');
-                if (!empty($labels)) {
-                    // 删除所有该节点的标签
-                    SsNodeLabel::query()->where('node_id', $id)->delete();
-
-                    foreach ($labels as $label) {
-                        $ssNodeLabel = new SsNodeLabel();
-                        $ssNodeLabel->node_id = $id;
-                        $ssNodeLabel->label_id = $label;
-                        $ssNodeLabel->save();
-                    }
-                }
+                $this->makeNodeLabels($id, $request->get('labels'));
 
                 // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
-
 
                 DB::commit();
 
@@ -2481,6 +2488,22 @@ EOF;
                 $userLabel->user_id = $userId;
                 $userLabel->label_id = $label;
                 $userLabel->save();
+            }
+        }
+    }
+
+    // 生成节点标签
+    private function makeNodeLabels($nodeId, $labels)
+    {
+        // 先删除所有该节点的标签
+        SsNodeLabel::query()->where('node_id', $nodeId)->delete();
+
+        if (!empty($labels) && is_array($labels)) {
+            foreach ($labels as $label) {
+                $ssNodeLabel = new SsNodeLabel();
+                $ssNodeLabel->node_id = $nodeId;
+                $ssNodeLabel->label_id = $label;
+                $ssNodeLabel->save();
             }
         }
     }

@@ -65,23 +65,12 @@ class LoginController extends Controller
         try {
             // 如果未生成过订阅链接则生成一个
             $subscribe = UserSubscribe::query()->where('user_id', $user->id)->first();
-            if (!$subscribe) {
-                $code = $this->makeSubscribeCode();
-
-                $subscribe = new UserSubscribe();
-                $subscribe->user_id = $user->id;
-                $subscribe->code = $code;
-                $subscribe->times = 0;
-                $subscribe->save();
-            } else {
-                $code = $subscribe->code;
-            }
 
             // 更新订阅链接访问次数
-            //$subscribe->increment('times', 1);
+            $subscribe->increment('times', 1);
 
             // 记录每次请求
-            //$this->log($subscribe->id, getClientIp(), 'API访问');
+            $this->log($subscribe->id, getClientIp(), 'API访问');
 
             // 订阅链接
             $url = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url'];
@@ -135,7 +124,7 @@ class LoginController extends Controller
                 'all'          => 1,
                 'residue'      => '',
                 'nodes'        => $c_nodes,
-                'link'         => $url . '/s/' . $code
+                'link'         => $url . '/s/' . $subscribe->code
             ];
 
             DB::commit();

@@ -71,22 +71,10 @@ class UserController extends Controller
             Session::put('referral_status', self::$systemConfig['referral_status']);
         }
 
-        // 如果没有唯一码则生成一个
+        // 订阅码
         $subscribe = UserSubscribe::query()->where('user_id', Auth::user()->id)->first();
-        if (!$subscribe) {
-            $code = $this->makeSubscribeCode();
-
-            $obj = new UserSubscribe();
-            $obj->user_id = Auth::user()->id;
-            $obj->code = $code;
-            $obj->times = 0;
-            $obj->save();
-        } else {
-            $code = $subscribe->code;
-        }
-
-        $view['subscribe_status'] = !$subscribe ? 1 : $subscribe->status;
-        $view['link'] = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] . '/s/' . $code : self::$systemConfig['website_url'] . '/s/' . $code;
+        $view['subscribe_status'] = $subscribe->status;
+        $view['link'] = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . $subscribe->code;
 
         // 节点列表
         $userLabelIds = UserLabel::query()->where('user_id', Auth::user()->id)->pluck('label_id');
@@ -885,9 +873,8 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            // 更换订阅地址
-            $code = $this->makeSubscribeCode();
-            UserSubscribe::query()->where('user_id', Auth::user()->id)->update(['code' => $code]);
+            // 更换订阅码
+            UserSubscribe::query()->where('user_id', Auth::user()->id)->update(['code' => Helpers::makeSubscribeCode()]);
 
             // 更换连接密码
             User::query()->where('id', Auth::user()->id)->update(['passwd' => makeRandStr()]);
