@@ -165,13 +165,14 @@ class UserController extends Controller
                     $txt .= "IPv6：" . $node->ipv6 . "\r\n";
                 }
                 $txt .= "端口：" . $node->v2_port . "\r\n";
+                $txt .= "加密方式：" . $node->v2_method . "\r\n";
                 $txt .= "用户ID：" . $user->vmess_id . "\r\n";
                 $txt .= "额外ID：" . $node->v2_alter_id . "\r\n";
                 $txt .= "传输协议：" . $node->v2_net . "\r\n";
                 $txt .= "伪装类型：" . $node->v2_type . "\r\n";
                 $txt .= $node->v2_host ? "伪装域名：" . $node->v2_host . "\r\n" : "";
                 $txt .= $node->v2_path ? "路径：" . $node->v2_path . "\r\n" : "";
-                $txt .= $node->v2_tls == 1 ? "TLS：tls\r\n" : "";
+                $txt .= $node->v2_tls ? "TLS：tls\r\n" : "";
 
                 $node->txt = $txt;
                 $node->v2_scheme = $v2_scheme;

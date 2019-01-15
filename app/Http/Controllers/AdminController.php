@@ -1459,7 +1459,7 @@ class AdminController extends Controller
                     "type" => $node->v2_type,
                     "host" => $node->v2_host,
                     "path" => $node->v2_path,
-                    "tls"  => $node->v2_tls == 1 ? "tls" : ""
+                    "tls"  => $node->v2_tls ? "tls" : ""
                 ];
                 $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json));
 
@@ -1469,6 +1469,7 @@ class AdminController extends Controller
                     $txt .= "IPv6：" . $node->ipv6 . "\r\n";
                 }
                 $txt .= "端口：" . $node->v2_port . "\r\n";
+                $txt .= "加密方式：" . $node->v2_method . "\r\n";
                 $txt .= "用户ID：" . $user->vmess_id . "\r\n";
                 $txt .= "额外ID：" . $node->v2_alter_id . "\r\n";
                 $txt .= "传输协议：" . $node->v2_net . "\r\n";
