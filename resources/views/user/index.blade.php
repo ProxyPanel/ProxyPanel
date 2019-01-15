@@ -643,16 +643,18 @@
         }
     </script>
 
-    <script>
-        var copy_all_nodes = document.getElementById('copy_all_nodes');
-        var clipboard = new Clipboard(copy_all_nodes);
+    @if(!$nodeList->isEmpty())
+        <script type="text/javascript">
+            var copy_all_nodes = document.getElementById('copy_all_nodes');
+            var clipboard = new Clipboard(copy_all_nodes);
 
-        clipboard.on('success', function(e) {
-            layer.alert("复制成功，通过右键菜单倒入节点链接即可！");
-        });
+            clipboard.on('success', function(e) {
+                layer.alert("复制成功，通过右键菜单倒入节点链接即可！");
+            });
 
-        clipboard.on('error', function(e) {
-            console.log(e);
-        });
-    </script>
+            clipboard.on('error', function(e) {
+                console.log(e);
+            });
+        </script>
+    @endif
 @endsection

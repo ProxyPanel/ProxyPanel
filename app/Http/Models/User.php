@@ -10,11 +10,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * Class User
  *
  * @package App\Http\Models
- * @property mixed $balance
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\UserLabel[] $label
+ * @property mixed                                                                                                          $balance
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\UserLabel[]                                     $label
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\Payment[] $payment
- * @property-read \App\Http\Models\User $referral
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\Payment[]                                       $payment
+ * @property-read \App\Http\Models\User                                                                                     $referral
  * @mixin \Eloquent
  */
 class User extends Authenticatable

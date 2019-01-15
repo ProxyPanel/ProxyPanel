@@ -77,6 +77,7 @@
                                 <thead>
                                 <tr>
                                     <th> # </th>
+                                    <th> 订阅码 </th>
                                     <th> 用户名 </th>
                                     <th> 端口 </th>
                                     <th> 加密方式 </th>
@@ -93,12 +94,13 @@
                                 <tbody>
                                     @if ($userList->isEmpty())
                                         <tr>
-                                            <td colspan="12" style="text-align: center;">暂无数据</td>
+                                            <td colspan="13" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach ($userList as $user)
                                             <tr class="odd gradeX {{$user->trafficWarning ? 'danger' : ''}}">
                                                 <td> {{$user->id}} </td>
+                                                <td> <a href="javascript:;" class="copySubscribeLink" data-clipboard-text="{{$user->link}}" title="点击复制订阅链接">{{$user->subscribe->code}}</a> </td>
                                                 <td> {{$user->username}} </td>
                                                 <td> <span class="label label-danger"> {{$user->port ? $user->port : '未分配'}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->method}} </span> </td>
@@ -156,9 +158,6 @@
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:switchToUser('{{$user->id}}');"> 切换身份 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:copySubscribe('{{$user->id}}');" id="copySubscribe_{{$user->id}}" data-clipboard-text="{{$user->link}}"> 复制订阅链接 </a>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -260,20 +259,6 @@
             window.location.href = '{{url('admin/export?id=')}}' + id;
         }
 
-        // 复制订阅链接
-        function copySubscribe(id) {
-            var copy = document.getElementById('copySubscribe_' + id);
-            var clipboard = new Clipboard(copy);
-
-            clipboard.on('success', function(e) {
-                layer.alert("复制成功");
-            });
-
-            clipboard.on('error', function(e) {
-                console.log(e);
-            });
-        }
-
         // 流量监控
         function doMonitor(id) {
             window.location.href = '{{url('admin/userMonitor?id=')}}' + id;
@@ -322,5 +307,15 @@
         $('.table-scrollable').on('hide.bs.dropdown', function () {
             $('.table-scrollable').css( "overflow", "auto" );
         });
+
+        // 复制订阅链接
+        var clipboard = new Clipboard('.copySubscribeLink');
+        clipboard.on('success', function(e) {
+            layer.alert("复制成功");
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+
     </script>
 @endsection
