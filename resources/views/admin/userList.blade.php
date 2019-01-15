@@ -311,7 +311,7 @@
         // 复制订阅链接
         var clipboard = new Clipboard('.copySubscribeLink');
         clipboard.on('success', function(e) {
-            layer.alert("复制成功");
+            layer.alert("成功复制该用户的订阅链接");
         });
         clipboard.on('error', function(e) {
             console.log(e);
