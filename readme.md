@@ -17,11 +17,11 @@ Support ShadowsocksR、ShadowsocksRR、V2Ray
 [VPS Recommend](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
 
 ## Requirements
-- PHP 7.1 +
+- PHP 7.1.3 +
 - Mysql 5.5 +
 - Memory 1G + 
 - Disk 10G +
-- PHP's components: zip、xml、curl、gd2、fileinfo、openssl、mbstring
+- PHP Extensions: ZIP、XML、CURL、GD2、FileInfo、OpenSSL、Mbstring、PDO、Tokenizer、Ctype、JSON、BCMath 
 
 ## Thanks
 - [@shadowsocks](https://github.com/shadowsocks)

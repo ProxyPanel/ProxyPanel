@@ -587,7 +587,7 @@ class AdminController extends Controller
             DB::beginTransaction();
             try {
                 $ssNode = new SsNode();
-                $ssNode->type = $request->get('type');
+                $ssNode->type = intval($request->get('type'));
                 $ssNode->name = $request->get('name');
                 $ssNode->group_id = $request->get('group_id') ? intval($request->get('group_id')) : 0;
                 $ssNode->country_code = $request->get('country_code') ? $request->get('country_code') : 'un';
@@ -608,7 +608,7 @@ class AdminController extends Controller
                 $ssNode->is_nat = intval($request->get('is_nat'));
                 $ssNode->ssh_port = $request->get('ssh_port') ? intval($request->get('ssh_port')) : 22;
                 $ssNode->is_tcp_check = intval($request->get('is_tcp_check'));
-                $ssNode->compatible = intval($request->get('compatible'));
+                $ssNode->compatible = intval($request->get('type')) == 2 ? 0 : (intval($request->get('is_nat')) ? 0 : intval($request->get('compatible')));
                 $ssNode->single = intval($request->get('single'));
                 $ssNode->single_force = intval($request->get('single')) ? intval($request->get('single_force')) : 0;
                 $ssNode->single_port = intval($request->get('single')) ? ($request->get('single_port') ? $request->get('single_port') : 443) : '';
@@ -725,7 +725,7 @@ class AdminController extends Controller
                     'is_nat'          => intval($request->get('is_nat')),
                     'ssh_port'        => intval($request->get('ssh_port')),
                     'is_tcp_check'    => intval($request->get('is_tcp_check')),
-                    'compatible'      => intval($request->get('compatible')),
+                    'compatible'      => intval($request->get('type')) == 2 ? 0 : (intval($request->get('is_nat')) ? 0 : intval($request->get('compatible'))),
                     'single'          => intval($request->get('single')),
                     'single_force'    => intval($request->get('single')) ? intval($request->get('single_force')) : 0,
                     'single_port'     => intval($request->get('single')) ? ($request->get('single_port') ? $request->get('single_port') : 443) : '',
