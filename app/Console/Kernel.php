@@ -13,7 +13,21 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\AutoJob::class,
+        \App\Console\Commands\AutoClearLog::class,
+        \App\Console\Commands\AutoDecGoodsTraffic::class,
+        \App\Console\Commands\AutoResetUserTraffic::class,
+        \App\Console\Commands\AutoCheckNodeStatus::class,
+        \App\Console\Commands\AutoStatisticsNodeDailyTraffic::class,
+        \App\Console\Commands\AutoStatisticsNodeHourlyTraffic::class,
+        \App\Console\Commands\AutoStatisticsUserDailyTraffic::class,
+        \App\Console\Commands\AutoStatisticsUserHourlyTraffic::class,
+        \App\Console\Commands\UserTrafficAbnormalAutoWarning::class,
+        \App\Console\Commands\UserExpireAutoWarning::class,
+        \App\Console\Commands\UserTrafficAutoWarning::class,
+        \App\Console\Commands\upgradeUserPassword::class,
+        \App\Console\Commands\upgradeUserVmessId::class,
+        \App\Console\Commands\AutoReportNode::class,
     ];
 
     /**
