@@ -1,5 +1,7 @@
 /node_modules
 /public/upload
+/public/storage
+/public/hot
 /storage/framework/cache
 /storage/framework/sessions
 /storage/framework/views
@@ -17,3 +19,4 @@ npm-debug.log
 .phpstorm.meta.php
 yarn-error.log
 .env
+.phpunit.result.cache

@@ -14,10 +14,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\TrustProxies::class,
     ];
 
     /**
@@ -38,7 +39,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:200,1', // API请求限制：1分钟内同一个IP限制只能请求200次
+            'throttle:60,1',
             'bindings',
         ],
     ];
@@ -51,16 +52,18 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'        => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.basic'  => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings'    => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can'         => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'       => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle'    => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'isAdmin'     => \App\Http\Middleware\isAdmin::class,
-        'isLogin'     => \App\Http\Middleware\isLogin::class,
-        'isForbidden' => \App\Http\Middleware\isForbidden::class,
-        'affiliate'   => \App\Http\Middleware\Affiliate::class,
+        'auth'          => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.basic'    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings'      => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can'           => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'         => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'signed'        => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle'      => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'isAdmin'       => \App\Http\Middleware\isAdmin::class,
+        'isLogin'       => \App\Http\Middleware\isLogin::class,
+        'isForbidden'   => \App\Http\Middleware\isForbidden::class,
+        'affiliate'     => \App\Http\Middleware\Affiliate::class,
 
     ];
 }
