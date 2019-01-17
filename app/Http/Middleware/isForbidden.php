@@ -31,8 +31,7 @@ class isForbidden
 
         $isIPv6 = false;
         $ip = getClientIP();
-        $qqWry = new QQWry();
-        $ipInfo = $qqWry->ip($ip);
+        $ipInfo = QQWry::ip($ip);
         if (isset($ipInfo['error'])) {
             $isIPv6 = true;
             Log::info('无法识别IP，可能是IPv6，尝试解析：' . $ip);

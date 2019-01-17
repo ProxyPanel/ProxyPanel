@@ -13,7 +13,7 @@ class QQWry
      *
      * @return array
      */
-    public function ip($ip)
+    public static function ip($ip)
     {
         $filePath = storage_path('qqwry.dat');
 

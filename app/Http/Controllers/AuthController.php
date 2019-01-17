@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
+use App\Components\IPIP;
 use App\Components\QQWry;
 use App\Http\Models\Invite;
 use App\Http\Models\User;
@@ -732,9 +733,8 @@ class AuthController extends Controller
      */
     private function addUserLoginLog($userId, $ip)
     {
-        // 解析IP信息
-        $qqwry = new QQWry();
-        $ipInfo = $qqwry->ip($ip);
+        // 通过纯真IP库解析IP信息
+        $ipInfo = QQWry::ip($ip);
         if (isset($ipInfo['error'])) {
             Log::info('无法识别IP，可能是IPv6，尝试解析：' . $ip);
             $ipInfo = getIPv6($ip);
@@ -742,6 +742,14 @@ class AuthController extends Controller
 
         if (empty($ipInfo) || empty($ipInfo['country'])) {
             Log::warning("获取IP地址信息异常：" . $ip);
+        }
+
+        // 判断是否与IPIP的IP库解析出来的信息一致，不一致则用IPIP的信息（因为纯真的非大陆IP正确率低）
+        $ipip = IPIP::ip($ip);
+        if ($ipInfo['country'] != $ipip['country_name']) {
+            $ipInfo['country'] = $ipip['country_name'];
+            $ipInfo['province'] = $ipip['region_name'];
+            $ipInfo['city'] = $ipip['city_name'];
         }
 
         $log = new UserLoginLog();

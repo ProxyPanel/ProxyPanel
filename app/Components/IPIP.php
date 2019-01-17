@@ -2,7 +2,7 @@
 
 namespace App\Components;
 
-use ipip\db\Reader;
+use ipip\db\City;
 
 class IPIP
 {
@@ -11,18 +11,15 @@ class IPIP
      *
      * @param string $ip IPv4
      *
-     * @return \ipip\db\Info|null
-     * @throws \Exception
+     * @return array|null
      */
-    public function ip($ip)
+    public static function ip($ip)
     {
         $filePath = storage_path('ipip.ipdb');
 
-        $db = new Reader($filePath);
-        //$loc = $db->find($ip);
-        //$loc = $db->findMap($ip);
-        $loc = $db->findInfo($ip);
+        $loc = new City($filePath);
+        $result = $loc->findMap($ip, 'CN');
 
-        return $loc;
+        return $result;
     }
 }
