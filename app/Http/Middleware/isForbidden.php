@@ -25,7 +25,7 @@ class isForbidden
             if (Agent::isRobot()) {
                 Log::info("识别到机器人访问(" . getClientIp() . ")");
 
-                return response()->view('error.404', [], 404);
+                return response()->view('auth.error', ['message' => ''], 404);
             }
         }
 
@@ -41,7 +41,7 @@ class isForbidden
 
         // 拒绝无IP请求
         if (empty($ipInfo) || empty($ipInfo['country'])) {
-            return response()->view('error.403', [], 403);
+            return response()->view('auth.error', ['message' => 'IP or Proxy Access Forbidden'], 403);
         }
 
         if (!in_array($ipInfo['country'], ['本机地址', '局域网'])) {
@@ -50,7 +50,7 @@ class isForbidden
                 if (($ipInfo['country'] == '中国' && !in_array($ipInfo['province'], ['香港', '澳门', '台湾'])) || ($isIPv6 && $ipInfo['country'] == 'China')) {
                     Log::info('识别到大陆IP，拒绝访问：' . $ip);
 
-                    return response()->view('error.403', [], 403);
+                    return response()->view('auth.error', ['message' => 'IP or Proxy Access Forbidden'], 403);
                 }
             }
 
@@ -59,7 +59,7 @@ class isForbidden
                 if ($ipInfo['country'] != '中国' || in_array($ipInfo['province'], ['香港', '澳门', '台湾']) || ($isIPv6 && $ipInfo['country'] != 'China')) {
                     Log::info('识别到海外IP，拒绝访问：' . $ip . ' - ' . $ipInfo['country']);
 
-                    return response()->view('error.403', [], 403);
+                    return response()->view('auth.error', ['message' => 'IP or Proxy Access Forbidden'], 403);
                 }
             }
         }

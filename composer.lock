@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b4ad7aadcf9ad1a0a48524529896343",
+    "content-hash": "0f9a76403962ab65ed544a820f7aa986",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1257,16 +1257,16 @@
         },
         {
             "name": "ipip/db",
-            "version": "v0.6",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ipipdotnet/ipdb-php.git",
-                "reference": "f87777301eb886c68dbafb15d6a888bb3003a330"
+                "reference": "af42bf28b37dc76beccd7bbe2b0b0572e21f42cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ipipdotnet/ipdb-php/zipball/f87777301eb886c68dbafb15d6a888bb3003a330",
-                "reference": "f87777301eb886c68dbafb15d6a888bb3003a330",
+                "url": "https://api.github.com/repos/ipipdotnet/ipdb-php/zipball/af42bf28b37dc76beccd7bbe2b0b0572e21f42cf",
+                "reference": "af42bf28b37dc76beccd7bbe2b0b0572e21f42cf",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1305,7 +1305,7 @@
                 "ipdb",
                 "ipip.net"
             ],
-            "time": "2018-08-30T03:32:59+00:00"
+            "time": "2018-11-01T08:07:04+00:00"
         },
         {
             "name": "itbdw/ip-database",
@@ -2724,61 +2724,6 @@
             "time": "2018-07-02T15:55:56+00:00"
         },
         {
-            "name": "paypal/rest-api-sdk-php",
-            "version": "1.14.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paypal/PayPal-PHP-SDK.git",
-                "reference": "72e2f2466975bf128a31e02b15110180f059fc04"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paypal/PayPal-PHP-SDK/zipball/72e2f2466975bf128a31e02b15110180f059fc04",
-                "reference": "72e2f2466975bf128a31e02b15110180f059fc04",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.3.0",
-                "psr/log": "^1.0.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8.35"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PayPal": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "PayPal",
-                    "homepage": "https://github.com/paypal/rest-api-sdk-php/contributors"
-                }
-            ],
-            "description": "PayPal's PHP SDK for REST APIs",
-            "homepage": "http://paypal.github.io/PayPal-PHP-SDK/",
-            "keywords": [
-                "payments",
-                "paypal",
-                "rest",
-                "sdk"
-            ],
-            "time": "2019-01-04T20:04:25+00:00"
-        },
-        {
             "name": "phpoffice/phpspreadsheet",
             "version": "1.6.0",
             "source": {
@@ -3368,16 +3313,16 @@
         },
         {
             "name": "rap2hpoutre/laravel-log-viewer",
-            "version": "v0.19.1",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rap2hpoutre/laravel-log-viewer.git",
-                "reference": "3790892b2b912e7ebaf9ce9868bbe93d542309c7"
+                "reference": "68d1f3be193931214d1fa8ced88eed1e33b0e9ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/3790892b2b912e7ebaf9ce9868bbe93d542309c7",
-                "reference": "3790892b2b912e7ebaf9ce9868bbe93d542309c7",
+                "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/68d1f3be193931214d1fa8ced88eed1e33b0e9ee",
+                "reference": "68d1f3be193931214d1fa8ced88eed1e33b0e9ee",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3389,6 +3334,10 @@
             "require": {
                 "illuminate/support": "4.2.*|5.*",
                 "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.6",
+                "phpunit/phpunit": "^7"
             },
             "type": "laravel-package",
             "extra": {
@@ -3425,7 +3374,7 @@
                 "logging",
                 "lumen"
             ],
-            "time": "2018-07-17T21:31:45+00:00"
+            "time": "2019-01-02T21:10:18+00:00"
         },
         {
             "name": "seld/jsonlint",

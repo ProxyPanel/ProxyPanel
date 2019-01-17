@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
+use ErrorException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
 use ReflectionException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -39,6 +41,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        // 记录异常来源
+        \Log::info('异常来源：' . get_class($exception));
+
         parent::report($exception);
     }
 
@@ -52,11 +57,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        \Log::info("异常请求：" . $request->fullUrl() . "，IP：" . getClientIp());
-
         // 调试模式下直接返回错误信息
         if (config('app.debug')) {
             return parent::render($request, $exception);
+        }
+
+        // 捕获访问异常
+        if ($exception instanceof NotFoundHttpException) {
+            \Log::info("异常请求：" . $request->fullUrl() . "，IP：" . getClientIp());
+
+            if ($request->ajax()) {
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Page Not Found']);
+            } else {
+                return response()->view('auth.error', ['message' => 'Page Not Found']);
+            }
         }
 
         // 捕获身份校验异常
@@ -64,16 +78,16 @@ class Handler extends ExceptionHandler
             if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Unauthorized']);
             } else {
-                return response()->view('error.404');
+                return response()->view('auth.error', ['message' => 'Unauthorized']);
             }
         }
 
         // 捕获CSRF异常
         if ($exception instanceof TokenMismatchException) {
             if ($request->ajax()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('404.csrf_title')]);
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Refresh Page, Try One More Time']);
             } else {
-                return response()->view('error.csrf');
+                return response()->view('auth.error', ['message' => 'Refresh Page, Try One More Time']);
             }
         }
 
@@ -82,10 +96,19 @@ class Handler extends ExceptionHandler
             if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
             } else {
-                return response()->view('error.404');
+                return response()->view('auth.error', ['message' => 'System Error']);
             }
         }
 
-        return response()->view('error.404');
+        // 捕获系统错误异常
+        if ($exception instanceof ErrorException) {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
+            } else {
+                return response()->view('auth.error', ['message' => 'System Error, See <a href="/logs" target="_blank">Logs</a>']);
+            }
+        }
+
+        return parent::render($request, $exception);
     }
 }

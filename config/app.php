@@ -160,13 +160,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Mews\Captcha\CaptchaServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class,
-        Overtrue\LaravelLang\TranslationServiceProvider::class,
-        Mews\Purifier\PurifierServiceProvider::class,
-        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
-
     ],
 
     /*

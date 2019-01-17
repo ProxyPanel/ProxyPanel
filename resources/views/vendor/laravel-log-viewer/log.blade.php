@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>系统日志</title>
+    <title>系统运行日志</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <style>
@@ -54,13 +54,24 @@
         .folder {
             padding-top: 15px;
         }
+
+        .div-scroll {
+            height: 80vh;
+            overflow: hidden auto;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
     </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
         <div class="col sidebar mb-3">
-            <div class="list-group">
+            <h1>系统运行日志</h1>
+            <div class="list-group div-scroll">
                 @foreach($folders as $folder)
                     <div class="list-group-item">
                         <a href="?f={{ \Illuminate\Support\Facades\Crypt::encrypt($folder) }}">
@@ -108,7 +119,7 @@
                     @foreach($logs as $key => $log)
                         <tr data-display="stack{{{$key}}}">
                             @if ($standardFormat)
-                                <td class="text-{{{$log['level_class']}}}">
+                                <td class="nowrap text-{{{$log['level_class']}}}">
                                     <span class="fa fa-{{{$log['level_img']}}}" aria-hidden="true"></span>&nbsp;&nbsp;{{$log['level']}}
                                 </td>
                                 <td class="text">{{$log['context']}}</td>
@@ -137,25 +148,14 @@
             @endif
             <div class="p-3">
                 @if($current_file)
-                    <a href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-                        <span class="fa fa-download"></span> 下载
-                    </a>
+                    <a href="?dl={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}"><span class="fa fa-download"></span> Download file </a>
                     -
-                    <a id="clean-log"
-                       href="?clean={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-                        <span class="fa fa-sync"></span> 清空日志
-                    </a>
+                    <a id="clean-log" href="?clean={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}"><span class="fa fa-sync"></span> Clean file </a>
                     -
-                    <a id="delete-log"
-                       href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-                        <span class="fa fa-trash"></span> 删除日志
-                    </a>
+                    <a id="delete-log" href="?del={{ \Illuminate\Support\Facades\Crypt::encrypt($current_file) }}{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}"><span class="fa fa-trash"></span> Delete file </a>
                     @if(count($files) > 1)
                         -
-                        <a id="delete-all-log"
-                           href="?delall=true{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}">
-                            <span class="fa fa-trash-alt"></span> 删除全部日志
-                        </a>
+                        <a id="delete-all-log" href="?delall=true{{ ($current_folder) ? '&f=' . \Illuminate\Support\Facades\Crypt::encrypt($current_folder) : '' }}"><span class="fa fa-trash-alt"></span> Delete all files </a>
                     @endif
                 @endif
             </div>
