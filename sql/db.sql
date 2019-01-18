@@ -850,6 +850,12 @@ CREATE TABLE `user_subscribe` (
 
 
 -- ----------------------------
+-- Records of `user_subscribe`
+-- ----------------------------
+INSERT INTO `user_subscribe` (`id`, `user_id`, `code`) VALUES ('1', '1', 'SsXa1');
+
+
+-- ----------------------------
 -- Table structure for `user_subscribe_log`
 -- ----------------------------
 CREATE TABLE `user_subscribe_log` (
