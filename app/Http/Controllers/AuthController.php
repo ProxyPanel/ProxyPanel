@@ -733,23 +733,32 @@ class AuthController extends Controller
      */
     private function addUserLoginLog($userId, $ip)
     {
-        // 通过纯真IP库解析IP信息
-        $ipInfo = QQWry::ip($ip);
-        if (isset($ipInfo['error'])) {
-            Log::info('无法识别IP，可能是IPv6，尝试解析：' . $ip);
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            Log::info('识别到IPv6，尝试解析：' . $ip);
             $ipInfo = getIPv6($ip);
+        } else {
+            $ipInfo = QQWry::ip($ip); // 通过纯真IP库解析IPv4信息
+            if (isset($ipInfo['error'])) {
+                Log::info('无法识别IPv4，尝试使用IPIP的IP库解析：' . $ip);
+                $ipip = IPIP::ip($ip);
+                $ipInfo = [
+                    'country'  => $ipip['country_name'],
+                    'province' => $ipip['region_name'],
+                    'city'     => $ipip['city_name']
+                ];
+            } else {
+                // 判断纯真IP库获取的国家信息是否与IPIP的IP库获取的信息一致，不一致则用IPIP的（因为纯真IP库的非大陆IP准确率较低）
+                $ipip = IPIP::ip($ip);
+                if ($ipInfo['country'] != $ipip['country_name']) {
+                    $ipInfo['country'] = $ipip['country_name'];
+                    $ipInfo['province'] = $ipip['region_name'];
+                    $ipInfo['city'] = $ipip['city_name'];
+                }
+            }
         }
 
         if (empty($ipInfo) || empty($ipInfo['country'])) {
-            Log::warning("获取IP地址信息异常：" . $ip);
-        }
-
-        // 判断是否与IPIP的IP库解析出来的信息一致，不一致则用IPIP的信息（因为纯真的非大陆IP正确率低）
-        $ipip = IPIP::ip($ip);
-        if ($ipInfo['country'] != $ipip['country_name']) {
-            $ipInfo['country'] = $ipip['country_name'];
-            $ipInfo['province'] = $ipip['region_name'];
-            $ipInfo['city'] = $ipip['city_name'];
+            Log::warning("获取IP信息异常：" . $ip);
         }
 
         $log = new UserLoginLog();

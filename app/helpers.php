@@ -157,7 +157,20 @@ if (!function_exists('getIPv6')) {
      *     "country_code3": "CHN",
      *     "continent_code": "AS",
      *     "country_code": "CN"
-     *  }
+     * }
+     *
+     * {
+     *     "longitude": 105,
+     *     "latitude": 35,
+     *     "area_code": "0",
+     *     "dma_code": "0",
+     *     "organization": "AS9808 Guangdong Mobile Communication Co.Ltd.",
+     *     "country": "China",
+     *     "ip": "2409:8a74:487:1f30:5178:e5a5:1f36:3525",
+     *     "country_code3": "CHN",
+     *     "continent_code": "AS",
+     *     "country_code": "CN"
+     * }
      */
     function getIPv6($ip)
     {
@@ -177,7 +190,7 @@ if (!function_exists('getIPv6')) {
 
             $result = json_decode($result, true);
             if (!is_array($result) || isset($result['code'])) {
-                throw new Exception('解析IPv6信息异常：' . $ip);
+                throw new Exception('解析IPv6异常：' . $ip);
             }
 
             return $result;
