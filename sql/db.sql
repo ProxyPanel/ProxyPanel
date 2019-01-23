@@ -78,7 +78,7 @@ CREATE TABLE `ss_node` (
 CREATE TABLE `ss_node_info` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `uptime` float NOT NULL COMMENT '更新时间',
+  `uptime` float NOT NULL COMMENT '在线时长',
   `load` varchar(32) NOT NULL COMMENT '负载',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
@@ -1139,13 +1139,35 @@ CREATE TABLE `ss_node_ip` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT '端口',
-  `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：tcp、udp',
+  `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：all、tcp、udp',
   `ip` text COLLATE utf8mb4_unicode_ci COMMENT '连接IP：每个IP用,号隔开',
   `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '上报时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node` (`node_id`),
   INDEX `idx_port` (`port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- ----------------------------
+-- Table structure for `rule`
+-- ----------------------------
+CREATE TABLE `rule` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`type` CHAR(10) NOT NULL DEFAULT 'domain' COMMENT '类型：domain-域名（单一非通配）、ipv4-IPv4地址、ipv6-IPv6地址、reg-正则表达式',
+	`regular` VARCHAR(255) NOT NULL COMMENT '规则：域名、IP、正则表达式',
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='规则表';
+
+
+-- ----------------------------
+-- Table structure for `ss_node_deny`
+-- ----------------------------
+CREATE TABLE `ss_node_deny` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`node_id` INT(11) NOT NULL DEFAULT '0',
+	`rule_id` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='节点访问规则关联表';
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
