@@ -34,7 +34,7 @@
                                         <tr>
                                             <td>{{$k + 1}}</td>
                                             <td>
-                                                {{$node->name}}
+                                                <a href="{{url('admin/editNode?id=') . $node->id}}" target="_blank"> {{$node->name}} </a>
                                             </td>
                                             <td>
                                                 @if($node->compatible) <span class="label label-info">兼</span> @endif
@@ -178,8 +178,10 @@
             @if($node->type == 1)
                 $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
                 $('#download_qrcode_ssr_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ssr_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
-                $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
-                $('#download_qrcode_ss_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ss_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
+                @if($node->compatible)
+                    $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
+                    $('#download_qrcode_ss_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_ss_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
+                @endif
             @else
                 $('#qrcode_v2_img_{{$node->id}}').qrcode("{{$node->v2_scheme}}");
                 $('#download_qrcode_v2_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_v2_img_{{$node->id}} canvas')[0].toDataURL("image/png")})

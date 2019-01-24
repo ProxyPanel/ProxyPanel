@@ -78,8 +78,8 @@ CREATE TABLE `ss_node` (
 CREATE TABLE `ss_node_info` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `uptime` float NOT NULL COMMENT '在线时长',
-  `load` varchar(32) NOT NULL COMMENT '负载',
+  `uptime` int(11) NOT NULL COMMENT '在线时长',
+  `load` varchar(64) NOT NULL COMMENT '负载',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node_id` (`node_id`) USING BTREE
