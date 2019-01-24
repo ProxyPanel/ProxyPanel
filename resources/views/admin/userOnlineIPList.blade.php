@@ -100,12 +100,14 @@
                                                             <thead>
                                                             <tr>
                                                                 <th> 时间 </th>
+                                                                <th> 节点 </th>
                                                                 <th> 类型 </th>
                                                                 <th> IP </th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <td>{{date('Y-m-d H:i:s', $vo->created_at)}}</td>
+                                                                <td>{{$vo->node->name}}</td>
                                                                 <td>{{$vo->type}}</td>
                                                                 <td>{{$vo->ip}}</td>
                                                             </tbody>
