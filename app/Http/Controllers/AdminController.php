@@ -541,7 +541,6 @@ class AdminController extends Controller
             $last_log_time = time() - 600; // 10分钟内
             $online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
-            $node->uptime = empty($online_log) ? 0 : seconds2time($online_log->uptime);
 
             // 已产生流量
             $totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
@@ -550,6 +549,7 @@ class AdminController extends Controller
             // 负载（10分钟以内）
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
             $node->load = empty($node_info) || empty($node_info->load) ? '宕机' : $node_info->load;
+            $node->uptime = empty($online_log) ? 0 : seconds2time($node_info->uptime);
         }
 
         $view['nodeList'] = $nodeList;
