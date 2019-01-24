@@ -110,12 +110,12 @@ if (!function_exists('seconds2time')) {
         $hour = floor(($seconds % (3600 * 24)) / 3600);
         $minute = floor((($seconds % (3600 * 24)) % 3600) / 60);
         if ($day > 0) {
-            echo $day . '天' . $hour . '小时' . $minute . '分';
+            return $day . '天' . $hour . '小时' . $minute . '分';
         } else {
             if ($hour != 0) {
-                echo $hour . '小时' . $minute . '分';
+                return $hour . '小时' . $minute . '分';
             } else {
-                echo $minute . '分';
+                return $minute . '分';
             }
         }
     }

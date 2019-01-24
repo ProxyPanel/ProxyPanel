@@ -541,6 +541,7 @@ class AdminController extends Controller
             $last_log_time = time() - 600; // 10分钟内
             $online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
+            $node->uptime = empty($online_log) ? 0 : seconds2time($online_log->uptime);
 
             // 已产生流量
             $totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
