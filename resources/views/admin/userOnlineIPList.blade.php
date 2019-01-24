@@ -95,7 +95,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if($user->onlineIPList)
+                                                    @if(!$user->onlineIPList->isEmpty())
                                                         <table class="table table-hover table-light">
                                                             <thead>
                                                             <tr>
@@ -108,10 +108,10 @@
                                                             <tbody>
                                                             @foreach($user->onlineIPList as $vo)
                                                                 <tr>
-                                                                        <td>{{$vo->created_at}}</td>
-                                                                        <td>{{$vo->node->name}}</td>
-                                                                        <td>{{$vo->type}}</td>
-                                                                        <td>{{$vo->ip}}</td>
+                                                                    <td>{{$vo->created_at}}</td>
+                                                                    <td>{{$vo->node->name}}</td>
+                                                                    <td>{{$vo->type}}</td>
+                                                                    <td>{{$vo->ip}}</td>
                                                                 </tr>
                                                             @endforeach
                                                             </tbody>
