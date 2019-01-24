@@ -109,7 +109,7 @@
                                                             @foreach($user->onlineIPList as $vo)
                                                                 <tr>
                                                                     <td>{{$vo->created_at}}</td>
-                                                                    <td>{{$vo->node->name}}</td>
+                                                                    <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
                                                                     <td>{{$vo->type}}</td>
                                                                     <td>{{$vo->ip}}</td>
                                                                 </tr>
@@ -157,15 +157,5 @@
 
             window.location.href = '{{url('admin/userOnlineIPList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&status=' + status + '&enable=' + enable;
         }
-
-        // 修正table的dropdown
-        $('.table-scrollable').on('show.bs.dropdown', function () {
-            $('.table-scrollable').css( "overflow", "inherit" );
-        });
-
-        $('.table-scrollable').on('hide.bs.dropdown', function () {
-            $('.table-scrollable').css( "overflow", "auto" );
-        });
-
     </script>
 @endsection

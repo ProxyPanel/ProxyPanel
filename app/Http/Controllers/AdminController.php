@@ -608,6 +608,7 @@ class AdminController extends Controller
                 $ssNode->monitor_url = $request->get('monitor_url') ? $request->get('monitor_url') : '';
                 $ssNode->is_subscribe = intval($request->get('is_subscribe'));
                 $ssNode->is_nat = intval($request->get('is_nat'));
+                $ssNode->is_udp = intval($request->get('is_udp'));
                 $ssNode->ssh_port = $request->get('ssh_port') ? intval($request->get('ssh_port')) : 22;
                 $ssNode->is_tcp_check = intval($request->get('is_tcp_check'));
                 $ssNode->compatible = intval($request->get('type')) == 2 ? 0 : (intval($request->get('is_nat')) ? 0 : intval($request->get('compatible')));
@@ -725,6 +726,7 @@ class AdminController extends Controller
                     'monitor_url'     => $request->get('monitor_url') ? $request->get('monitor_url') : '',
                     'is_subscribe'    => intval($request->get('is_subscribe')),
                     'is_nat'          => intval($request->get('is_nat')),
+                    'is_udp'          => intval($request->get('is_udp')),
                     'ssh_port'        => intval($request->get('ssh_port')),
                     'is_tcp_check'    => intval($request->get('is_tcp_check')),
                     'compatible'      => intval($request->get('type')) == 2 ? 0 : (intval($request->get('is_nat')) ? 0 : intval($request->get('compatible'))),
@@ -2387,7 +2389,10 @@ EOF;
     {
         $username = trim($request->get('username'));
         $status = $request->get('status');
-        $port = $request->get('port');
+        $port = intval($request->get('port'));
+        $wechat = trim($request->get('wechat'));
+        $qq = trim($request->get('qq'));
+        $enable = intval($request->get('enable'));
 
         $query = User::query();
 
@@ -2399,14 +2404,27 @@ EOF;
             $query->where('status', intval($status));
         }
 
-        if ($port) {
+        if (!empty($wechat)) {
+            $query->where('wechat', 'like', '%' . $wechat . '%');
+        }
+
+        if (!empty($qq)) {
+            $query->where('qq', 'like', '%' . $qq . '%');
+        }
+
+        if (!empty($port)) {
             $query->where('port', intval($port));
+        }
+
+        if ($enable != '') {
+            $query->where('enable', intval($enable));
         }
 
         $userList = $query->paginate(15);
         if (!$userList->isEmpty()) {
             foreach ($userList as &$user) {
-                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('port', $user->port)->where('type', 'tcp')->orderBy('id', 'desc')->limit(5)->get();
+                // 最近10条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
+                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('port', $user->port)->where('type', 'tcp')->orderBy('id', 'desc')->limit(10)->get();
             }
         }
 

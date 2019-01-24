@@ -171,6 +171,22 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label for="is_udp" class="col-md-3 control-label">UDP</label>
+                                                    <div class="col-md-8">
+                                                        <div class="mt-radio-inline">
+                                                            <label class="mt-radio">
+                                                                <input type="radio" name="is_udp" value="1" {{$node->is_udp ? 'checked' : ''}}> 允许
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="mt-radio">
+                                                                <input type="radio" name="is_udp" value="0" {{!$node->is_udp ? 'checked' : ''}}> 不允许
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                        <span class="help-block"> 禁止UDP，则无法用于加速游戏 </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
                                                     <div class="col-md-8">
                                                         <div class="mt-radio-inline">
@@ -513,6 +529,7 @@
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
             var is_nat = $("input:radio[name='is_nat']:checked").val();
+            var is_udp = $("input:radio[name='is_udp']:checked").val();
             var ssh_port = $('#ssh_port').val();
             var compatible = $("input:radio[name='compatible']:checked").val();
             var single = $("input:radio[name='single']:checked").val();
@@ -562,6 +579,7 @@
                     monitor_url: monitor_url,
                     is_subscribe: is_subscribe,
                     is_nat: is_nat,
+                    is_udp: is_udp,
                     ssh_port: ssh_port,
                     compatible: compatible,
                     single: single,
