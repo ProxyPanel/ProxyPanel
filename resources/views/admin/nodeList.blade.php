@@ -40,6 +40,7 @@
                                     <th> 名称 </th>
                                     <th> IP </th>
                                     <th> 域名 </th>
+                                    <th> 存活 </th>
                                     <th> 状态 </th>
                                     <th> 在线 </th>
                                     <th> <span class="node-flow"><a href="javascript:showFlowTips();">产生流量</a></span> </th>
@@ -69,6 +70,7 @@
                                                     @endif
                                                 </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->server}}</span> </td>
+                                                <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{seconds2time($node->uptime)}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->load}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->online_users}}</span> </td>
                                                 <td> {{$node->transfer}} </td>

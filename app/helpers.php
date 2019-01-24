@@ -102,6 +102,25 @@ if (!function_exists('formatBytes')) {
     }
 }
 
+// 秒转时间
+if (!function_exists('seconds2time')) {
+    function seconds2time($seconds)
+    {
+        $day = floor($seconds / (3600 * 24));
+        $hour = floor(($seconds % (3600 * 24)) / 3600);
+        $minute = floor((($seconds % (3600 * 24)) % 3600) / 60);
+        if ($day > 0) {
+            echo $day . '天' . $hour . '小时' . $minute . '分';
+        } else {
+            if ($hour != 0) {
+                echo $hour . '小时' . $minute . '分';
+            } else {
+                echo $minute . '分';
+            }
+        }
+    }
+}
+
 // 获取访客真实IP
 if (!function_exists('getClientIP')) {
     function getClientIP()
