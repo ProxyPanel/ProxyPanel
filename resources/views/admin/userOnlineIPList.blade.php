@@ -1,0 +1,166 @@
+@extends('admin.layouts')
+@section('css')
+    <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        input,select {
+            margin-bottom: 5px;
+        }
+    </style>
+@endsection
+@section('content')
+    <!-- BEGIN CONTENT BODY -->
+    <div class="page-content" style="padding-top:0;">
+        <!-- BEGIN PAGE BASE CONTENT -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-dark">
+                            <span class="caption-subject bold uppercase"> 用户在线IP列表 </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="status" id="status" onChange="doSearch()">
+                                    <option value="" @if(Request::get('status') == '') selected @endif>账号状态</option>
+                                    <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
+                                    <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
+                                    <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="enable" id="enable" onChange="doSearch()">
+                                    <option value="" @if(Request::get('enable') == '') selected @endif>代理状态</option>
+                                    <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
+                                    <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <button type="button" class="btn blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn grey" onclick="doReset();">重置</button>
+                            </div>
+                        </div>
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> 用户名 </th>
+                                        <th> 端口 </th>
+                                        <th> 状态 </th>
+                                        <th> 代理 </th>
+                                        <th> 连接IP </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($userList->isEmpty())
+                                        <tr>
+                                            <td colspan="13" style="text-align: center;">暂无数据</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($userList as $user)
+                                            <tr class="odd gradeX">
+                                                <td> {{$user->id}} </td>
+                                                <td> {{$user->username}} </td>
+                                                <td> {{$user->port}} </td>
+                                                <td>
+                                                    @if ($user->status > 0)
+                                                        <span class="label label-info">正常</span>
+                                                    @elseif ($user->status < 0)
+                                                        <span class="label label-danger">禁用</span>
+                                                    @else
+                                                        <span class="label label-default">未激活</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($user->enable)
+                                                        <span class="label label-info">启用</span>
+                                                    @else
+                                                        <span class="label label-danger">禁用</span>
+                                                    @endif
+                                                </td>
+                                                @if($user->onlineIPList)
+                                                    @foreach($user->onlineIPList as $vo)
+                                                        <table class="table table-hover table-light">
+                                                            <thead>
+                                                            <tr>
+                                                                <th> 时间 </th>
+                                                                <th> 类型 </th>
+                                                                <th> IP </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <td>{{date('Y-m-d H:i:s', $vo->created_at)}}</td>
+                                                                <td>{{$vo->type}}</td>
+                                                                <td>{{$vo->ip}}</td>
+                                                            </tbody>
+                                                        </table>
+                                                    @endforeach
+                                                @endif
+                                                <td></td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$userList->total()}} 个账号</div>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                    {{ $userList->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END EXAMPLE TABLE PORTLET-->
+            </div>
+        </div>
+        <!-- END PAGE BASE CONTENT -->
+    </div>
+    <!-- END CONTENT BODY -->
+@endsection
+@section('script')
+    <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        // 搜索
+        function doSearch() {
+            var username = $("#username").val();
+            var wechat = $("#wechat").val();
+            var qq = $("#qq").val();
+            var port = $("#port").val();
+            var status = $("#status option:checked").val();
+            var enable = $("#enable option:checked").val();
+
+            window.location.href = '{{url('admin/userOnlineIPList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&status=' + status + '&enable=' + enable;
+        }
+
+        // 修正table的dropdown
+        $('.table-scrollable').on('show.bs.dropdown', function () {
+            $('.table-scrollable').css( "overflow", "inherit" );
+        });
+
+        $('.table-scrollable').on('hide.bs.dropdown', function () {
+            $('.table-scrollable').css( "overflow", "auto" );
+        });
+
+    </script>
+@endsection

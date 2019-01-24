@@ -79,6 +79,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::get('admin/userTrafficLogList', 'AdminController@userTrafficLogList'); // 流量变动记录
     Route::get('admin/userRebateList', 'AdminController@userRebateList'); // 返利流水记录
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
+    Route::get('admin/userOnlineIPList', 'AdminController@userOnlineIPList'); // 用户在线IP记录
     Route::any('admin/export', 'AdminController@export'); // 导出(查看)配置信息
     Route::get('admin/userMonitor', 'AdminController@userMonitor'); // 用户流量监控
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量

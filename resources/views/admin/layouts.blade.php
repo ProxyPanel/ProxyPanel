@@ -154,7 +154,7 @@
                         <span class="title">文章管理</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userTrafficLogList', 'admin/userRebateList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor', 'admin/subscribeLog']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userTrafficLogList', 'admin/userRebateList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor', 'admin/subscribeLog', 'admin/userOnlineIPList']) ? 'active open' : ''}}">
                     <a href="javascript:;" class="nav-link nav-toggle">
                         <i class="fa fa-users"></i>
                         <span class="title">用户管理</span>
@@ -171,6 +171,12 @@
                             <a href="{{url('admin/subscribeLog')}}" class="nav-link">
                                 <i class="icon-list"></i>
                                 <span class="title">订阅管理</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['admin/userOnlineIPList']) ? 'active open' : ''}}">
+                            <a href="{{url('admin/userOnlineIPList')}}" class="nav-link">
+                                <i class="icon-list"></i>
+                                <span class="title">用户在线IP</span>
                             </a>
                         </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userBalanceLogList']) ? 'active open' : ''}}">

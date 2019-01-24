@@ -18,6 +18,7 @@ use App\Http\Models\SsGroup;
 use App\Http\Models\SsGroupNode;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
+use App\Http\Models\SsNodeIp;
 use App\Http\Models\SsNodeLabel;
 use App\Http\Models\SsNodeOnlineLog;
 use App\Http\Models\SsNodeTrafficDaily;
@@ -2379,6 +2380,40 @@ EOF;
         $view['list'] = $query->paginate(15);
 
         return Response::view('admin.userRebateList', $view);
+    }
+
+    // 用户在线IP记录
+    public function userOnlineIPList(Request $request)
+    {
+        $username = trim($request->get('username'));
+        $status = $request->get('status');
+        $port = $request->get('port');
+
+        $query = User::query();
+
+        if ($username) {
+            $query->where('username', 'like', '%' . $username . '%');
+        }
+
+        if ($status != '') {
+            $query->where('status', intval($status));
+        }
+
+        if ($port) {
+            $query->where('port', intval($port));
+        }
+
+        $userList = $query->paginate(15);
+        if (!$userList->isEmpty()) {
+            foreach ($userList as &$user) {
+                $onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('port', $user->port)->orderBy('id', 'desc')->get();
+                $user->onlineIPList = $onlineIPList;
+            }
+        }
+
+        $view['userList'] = $userList;
+
+        return Response::view('admin.userOnlineIPList', $view);
     }
 
     // 转换成某个用户的身份
