@@ -106,7 +106,7 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <td>{{$vo->created_at ? date('Y-m-d H:i:s', $vo->created_at) : ''}}</td>
+                                                                <td>{{date('Y-m-d H:i:s', intval($vo->created_at))}}</td>
                                                                 <td>{{$vo->node->name}}</td>
                                                                 <td>{{$vo->type}}</td>
                                                                 <td>{{$vo->ip}}</td>
