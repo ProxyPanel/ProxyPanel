@@ -2406,8 +2406,7 @@ EOF;
         $userList = $query->paginate(15);
         if (!$userList->isEmpty()) {
             foreach ($userList as &$user) {
-                $onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('port', $user->port)->orderBy('id', 'desc')->get();
-                $user->onlineIPList = $onlineIPList;
+                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('port', $user->port)->orderBy('id', 'desc')->limit(5)->get();
             }
         }
 
