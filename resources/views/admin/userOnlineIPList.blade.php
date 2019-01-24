@@ -96,24 +96,26 @@
                                                 </td>
                                                 <td>
                                                     @if($user->onlineIPList)
-                                                        @foreach($user->onlineIPList as $vo)
-                                                            <table class="table table-hover table-light">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th> 时间 </th>
-                                                                        <th> 节点 </th>
-                                                                        <th> 类型 </th>
-                                                                        <th> IP </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <td>{{$vo->created_at}}</td>
-                                                                    <td>{{$vo->node->name}}</td>
-                                                                    <td>{{$vo->type}}</td>
-                                                                    <td>{{$vo->ip}}</td>
-                                                                </tbody>
-                                                            </table>
-                                                        @endforeach
+                                                        <table class="table table-hover table-light">
+                                                            <thead>
+                                                            <tr>
+                                                                <th> 时间 </th>
+                                                                <th> 节点 </th>
+                                                                <th> 类型 </th>
+                                                                <th> IP </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            @foreach($user->onlineIPList as $vo)
+                                                                <tr>
+                                                                        <td>{{$vo->created_at}}</td>
+                                                                        <td>{{$vo->node->name}}</td>
+                                                                        <td>{{$vo->type}}</td>
+                                                                        <td>{{$vo->ip}}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                            </tbody>
+                                                        </table>
                                                     @endif
                                                 </td>
                                             </tr>
