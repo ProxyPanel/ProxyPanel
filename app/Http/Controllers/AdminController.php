@@ -539,8 +539,7 @@ class AdminController extends Controller
         $nodeList = $query->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
         foreach ($nodeList as &$node) {
             // 在线人数
-            $last_log_time = time() - 600; // 10分钟内
-            $online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', $last_log_time)->orderBy('id', 'desc')->first();
+            $online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-5 minutes"))->orderBy('id', 'desc')->first();
             $node->online_users = empty($online_log) ? 0 : $online_log->online_user;
 
             // 已产生流量
@@ -2226,7 +2225,7 @@ EOF;
             $query->where('status', $status);
         }
 
-        $view['orderList'] = $query->paginate(15);
+        $view['orderList'] = $query->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.orderList', $view);
     }
@@ -2313,7 +2312,7 @@ EOF;
             });
         }
 
-        $view['list'] = $query->paginate(15);
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.userBalanceLogList', $view);
     }
@@ -2331,7 +2330,7 @@ EOF;
             });
         }
 
-        $view['list'] = $query->paginate(15);
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.userBanLogList', $view);
     }
@@ -2349,7 +2348,7 @@ EOF;
             });
         }
 
-        $view['list'] = $query->paginate(15);
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.userTrafficLogList', $view);
     }
@@ -2379,7 +2378,7 @@ EOF;
             $query->where('status', intval($status));
         }
 
-        $view['list'] = $query->paginate(15);
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.userRebateList', $view);
     }
@@ -2420,11 +2419,11 @@ EOF;
             $query->where('enable', intval($enable));
         }
 
-        $userList = $query->paginate(15);
+        $userList = $query->paginate(15)->appends($request->except('page'));
         if (!$userList->isEmpty()) {
             foreach ($userList as &$user) {
                 // 最近10条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('port', $user->port)->where('type', 'tcp')->orderBy('id', 'desc')->limit(10)->get();
+                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('port', $user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(10)->get();
             }
         }
 
@@ -2453,7 +2452,7 @@ EOF;
     // 标签列表
     public function labelList(Request $request)
     {
-        $labelList = Label::query()->paginate(15);
+        $labelList = Label::query()->paginate(15)->appends($request->except('page'));
         foreach ($labelList as $label) {
             $label->userCount = UserLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
             $label->nodeCount = SsNodeLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
@@ -2525,7 +2524,7 @@ EOF;
     // 邮件发送日志列表
     public function emailLog(Request $request)
     {
-        $view['list'] = EmailLog::query()->orderBy('id', 'desc')->paginate(15);
+        $view['list'] = EmailLog::query()->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.emailLog', $view);
     }

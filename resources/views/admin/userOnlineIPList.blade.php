@@ -18,7 +18,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 用户在线IP列表 </span>
+                            <span class="caption-subject bold uppercase"> 用户在线IP列表<small>（最近10分钟）</small> </span>
                         </div>
                     </div>
                     <div class="portlet-body">

@@ -1522,16 +1522,16 @@
         },
         {
             "name": "jenssegers/agent",
-            "version": "v2.6.2",
+            "version": "v2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/agent.git",
-                "reference": "41cd1fd6200a9b0d70db75133ee23064c9965980"
+                "reference": "bcb895395e460478e101f41cdab139c48dc721ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jenssegers/agent/zipball/41cd1fd6200a9b0d70db75133ee23064c9965980",
-                "reference": "41cd1fd6200a9b0d70db75133ee23064c9965980",
+                "url": "https://api.github.com/repos/jenssegers/agent/zipball/bcb895395e460478e101f41cdab139c48dc721ce",
+                "reference": "bcb895395e460478e101f41cdab139c48dc721ce",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1593,7 +1593,7 @@
                 "user agent",
                 "useragent"
             ],
-            "time": "2019-01-06T12:37:04+00:00"
+            "time": "2019-01-19T21:32:55+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2150,16 +2150,16 @@
         },
         {
             "name": "mews/captcha",
-            "version": "2.2.4",
+            "version": "2.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mewebstudio/captcha.git",
-                "reference": "df9cc9a2f80b2aa17c68daa8f3b35f43fe28e8aa"
+                "reference": "44ed8d66aa6f27443ff51bbf48a5b28cb958d75f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mewebstudio/captcha/zipball/df9cc9a2f80b2aa17c68daa8f3b35f43fe28e8aa",
-                "reference": "df9cc9a2f80b2aa17c68daa8f3b35f43fe28e8aa",
+                "url": "https://api.github.com/repos/mewebstudio/captcha/zipball/44ed8d66aa6f27443ff51bbf48a5b28cb958d75f",
+                "reference": "44ed8d66aa6f27443ff51bbf48a5b28cb958d75f",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2219,7 +2219,7 @@
                 "laravel5 Captcha",
                 "laravel5 Security"
             ],
-            "time": "2018-11-15T00:54:41+00:00"
+            "time": "2019-01-21T08:00:11+00:00"
         },
         {
             "name": "mews/purifier",
@@ -2617,16 +2617,16 @@
         },
         {
             "name": "overtrue/laravel-lang",
-            "version": "3.0.14",
+            "version": "3.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/laravel-lang.git",
-                "reference": "95888a0a9a5b048ba52de57fc01a098f23292b2d"
+                "reference": "555007487344fca450342b0dd19a6ae3bac237e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/overtrue/laravel-lang/zipball/95888a0a9a5b048ba52de57fc01a098f23292b2d",
-                "reference": "95888a0a9a5b048ba52de57fc01a098f23292b2d",
+                "url": "https://api.github.com/repos/overtrue/laravel-lang/zipball/555007487344fca450342b0dd19a6ae3bac237e2",
+                "reference": "555007487344fca450342b0dd19a6ae3bac237e2",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2636,7 +2636,8 @@
                 ]
             },
             "require": {
-                "caouecs/laravel-lang": "~3.0"
+                "caouecs/laravel-lang": "~3.0",
+                "symfony/process": "^3.0|^4.0"
             },
             "type": "library",
             "extra": {
@@ -2670,7 +2671,7 @@
                 "laravel",
                 "overtrue"
             ],
-            "time": "2019-01-13T14:37:42+00:00"
+            "time": "2019-01-22T07:10:12+00:00"
         },
         {
             "name": "paragonie/random_compat",
