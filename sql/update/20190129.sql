@@ -9,5 +9,5 @@ CREATE TABLE `device` (
 ) COMMENT='设备型号表' ENGINE=MyISAM;
 
 INSERT INTO `device` VALUES ('1', '1', '1', 'Quantumult', 1);
-INSERT INTO `device` VALUES ('1', '1', '1', 'Shadowrocket', 1);
-INSERT INTO `device` VALUES ('1', '1', '1', 'ShadowsocksX-NG-R', 1);
+INSERT INTO `device` VALUES ('2', '1', '1', 'Shadowrocket', 1);
+INSERT INTO `device` VALUES ('3', '1', '1', 'ShadowsocksX-NG-R', 1);
