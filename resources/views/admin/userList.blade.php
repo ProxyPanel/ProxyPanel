@@ -31,6 +31,9 @@
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="id" value="{{Request::get('id')}}" id="id" placeholder="用户ID" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
                                 <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
@@ -238,6 +241,7 @@
 
         // 搜索
         function doSearch() {
+            var id = $("#id").val();
             var username = $("#username").val();
             var wechat = $("#wechat").val();
             var qq = $("#qq").val();
@@ -246,7 +250,7 @@
             var status = $("#status option:checked").val();
             var enable = $("#enable option:checked").val();
 
-            window.location.href = '{{url('admin/userList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&status=' + status + '&enable=' + enable;
+            window.location.href = '{{url('admin/userList')}}' + '?id=' + id +'&username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&status=' + status + '&enable=' + enable;
         }
 
         // 重置
