@@ -980,7 +980,6 @@
         // 注册的默认标签
         $('#initial_labels_for_user').select2({
             theme: 'bootstrap',
-            placeholder: '设置后则可见相同标签的节点',
             allowClear: true,
             width:'100%'
         }).change(function () {

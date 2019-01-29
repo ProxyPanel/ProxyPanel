@@ -77,7 +77,7 @@
                                             <tr class="odd gradeX">
                                                 <td> {{$user->id}} </td>
                                                 <td> {{$user->username}} </td>
-                                                <td> {{$user->port}} </td>
+                                                <td> <span class="label label-danger"> {{$user->port}} </span> </td>
                                                 <td>
                                                     @if ($user->status > 0)
                                                         <span class="label label-info">正常</span>

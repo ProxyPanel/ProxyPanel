@@ -26,13 +26,18 @@ class SensitiveWordsController extends Controller
     // 添加敏感词
     public function addSensitiveWords(Request $request)
     {
-        $sensitiveWords = SensitiveWords::query()->where('words', trim($request->input('words')))->first();
-        if ($sensitiveWords) {
+        $words = trim($request->input('words'));
+
+        if (empty($words)) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：请填写敏感词']);
+        }
+
+        if (SensitiveWords::query()->where('words', $words)->exists()) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：敏感词已存在']);
         }
 
         $obj = new SensitiveWords();
-        $obj->words = trim(strtolower($request->input('words')));
+        $obj->words = strtolower($words);
         $result = $obj->save();
         if ($result) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);

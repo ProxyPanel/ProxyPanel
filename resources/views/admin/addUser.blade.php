@@ -223,7 +223,7 @@
                                                 <div class="col-md-8">
                                                     <div class="input-group">
                                                         <input type="text" class="form-control" name="transfer_enable" value="1024" id="transfer_enable" autocomplete="off" required>
-                                                        <span class="input-group-addon">GiB</span>
+                                                        <span class="input-group-addon">GB</span>
                                                     </div>
                                                 </div>
                                             </div>
