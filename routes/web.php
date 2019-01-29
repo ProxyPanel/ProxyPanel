@@ -1,6 +1,6 @@
 <?php
 
-Route::get('s/{code}', 'SubscribeController@index'); // 节点订阅地址
+Route::get('s/{code}', 'SubscribeController@getSubscribeByCode'); // 节点订阅地址
 
 Route::group(['middleware' => ['isForbidden', 'affiliate']], function () {
     Route::get('lang/{locale}', 'AuthController@switchLang'); // 语言切换

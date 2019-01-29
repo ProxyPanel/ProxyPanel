@@ -346,7 +346,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setSubscribeMax()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 客户端订阅时取得几个节点 </span>
+                                                                <span class="help-block"> 客户端订阅时取得几个节点，为0时返回全部节点 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -355,14 +355,14 @@
                                                             <label for="mix_subscribe" class="col-md-3 control-label">混合订阅</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($mix_subscribe) checked @endif id="mix_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后，订阅信息中将包含V2Ray节点信息（Vmess） </span>
+                                                                <span class="help-block"> 启用后，订阅信息中将包含V2Ray节点信息（仅支持Shadowrocket、Quantumult、v2rayN） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="rand_subscribe" class="col-md-3 control-label">随机订阅</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($rand_subscribe) checked @endif id="rand_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后，订阅时将随机返回节点信息，否则按节点排序返回（仅支持Shadowrocket、Quantumult） </span>
+                                                                <span class="help-block"> 启用后，订阅时将随机返回节点信息，否则按节点排序返回 </span>
                                                             </div>
                                                         </div>
                                                     </div>

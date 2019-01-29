@@ -123,20 +123,20 @@ class SubscribeController extends Controller
         return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
-    // 获取订阅信息
-    public function index(Request $request, $code)
+    // 通过订阅码获取订阅信息
+    public function getSubscribeByCode(Request $request, $code)
     {
         if (empty($code)) {
             return Redirect::to('login');
         }
 
         // 校验合法性
-        $subscribe = UserSubscribe::query()->with('user')->where('code', $code)->where('status', 1)->first();
+        $subscribe = UserSubscribe::query()->with('user')->where('status', 1)->where('code', $code)->first();
         if (!$subscribe) {
             exit($this->noneNode());
         }
 
-        $user = User::query()->where('id', $subscribe->user_id)->whereIn('status', [0, 1])->where('enable', 1)->first();
+        $user = User::query()->whereIn('status', [0, 1])->where('enable', 1)->where('id', $subscribe->user_id)->first();
         if (!$user) {
             exit($this->noneNode());
         }
@@ -160,23 +160,14 @@ class SubscribeController extends Controller
             $query->where('ss_node.type', 1);
         }
 
-        $nodeList = $query->where('ss_node.status', 1)
-            ->where('ss_node.is_subscribe', 1)
-            ->whereIn('ss_node_label.label_id', $userLabelIds)
-            ->groupBy('ss_node.id')
-            ->orderBy('ss_node.sort', 'desc')
-            ->orderBy('ss_node.id', 'asc')
-            ->get()
-            ->toArray();
+        $nodeList = $query->where('ss_node.status', 1)->where('ss_node.is_subscribe', 1)->whereIn('ss_node_label.label_id', $userLabelIds)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get()->toArray();
         if (empty($nodeList)) {
             exit($this->noneNode());
         }
 
         // 打乱数组
         if (self::$systemConfig['rand_subscribe']) {
-            if (self::$systemConfig['subscribe_max']) {
-                shuffle($nodeList);
-            }
+            shuffle($nodeList);
         }
 
         // 控制客户端最多获取节点数
@@ -226,7 +217,7 @@ class SubscribeController extends Controller
                     "type" => $node['v2_type'],
                     "host" => $node['v2_host'],
                     "path" => $node['v2_path'],
-                    "tls"  => $node['v2_tls'] == 1 ? "tls" : ""
+                    "tls"  => $node['v2_tls'] ? "tls" : ""
                 ];
 
                 $scheme .= 'vmess://' . base64url_encode(json_encode($v2_json)) . "\n";
@@ -250,7 +241,7 @@ class SubscribeController extends Controller
     // 抛出无可用的节点信息，用于兼容防止客户端订阅失败
     private function noneNode()
     {
-        return base64url_encode('ssr://' . base64url_encode('8.8.8.8:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode('无可用节点或账号被封禁或订阅被封禁') . '&group=' . base64url_encode('VPN') . '&udpport=0&uot=0') . "\n");
+        return base64url_encode('ssr://' . base64url_encode('1.1.1.1:8888:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode('无可用节点或账号被封禁或订阅被封禁') . '&group=' . base64url_encode('错误') . '&udpport=0&uot=0') . "\n");
     }
 
     /**
