@@ -242,7 +242,7 @@
                                                     <div class="col-md-8">
                                                         <div class="mt-radio-inline">
                                                             <label class="mt-radio">
-                                                                <input type="radio" name="service" value="1" checked> ShadowsocksR
+                                                                <input type="radio" name="service" value="1" checked> Shadowsocks(R)
                                                                 <span></span>
                                                             </label>
                                                             <label class="mt-radio">

@@ -78,7 +78,6 @@ class Order extends Model
             case 0:
             default:
                 $status_label = '待支付';
-                break;
         }
 
         return $status_label;

@@ -59,7 +59,7 @@
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
                                                 <td>
-                                                    <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->type == 2 ? 'V2Ray' : 'ShadowsocksR'}}</span>
+                                                    <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->type == 2 ? 'V2Ray' : 'Shadowsocks(R)'}}</span>
                                                 </td>
                                                 <td> {{$node->name}} </td>
                                                 <td>

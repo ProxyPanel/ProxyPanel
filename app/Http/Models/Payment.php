@@ -53,7 +53,6 @@ class Payment extends Model
             case 0:
             default:
                 $status_label = '等待支付';
-                break;
         }
 
         return $status_label;
@@ -69,7 +68,6 @@ class Payment extends Model
             case 2:
             default:
                 $pay_way_label = '支付宝';
-                break;
         }
 
         return $pay_way_label;

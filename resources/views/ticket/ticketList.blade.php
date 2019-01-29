@@ -40,7 +40,7 @@
                                                 @if(empty($ticket->user))
                                                     【账号已删除】
                                                 @else
-                                                    <a href="{{url('admin/userList?username=' . $ticket->user->username)}}" target="_blank">{{$ticket->user->username}}</a> </td>
+                                                    <a href="{{url('admin/userList?id=' . $ticket->user->id)}}" target="_blank">{{$ticket->user->username}}</a> </td>
                                                 @endif
                                             <td> <a href="{{url('ticket/replyTicket?id=') . $ticket->id}}" target="_blank">{{$ticket->title}}</a> </td>
                                             <td style="text-align: center;">

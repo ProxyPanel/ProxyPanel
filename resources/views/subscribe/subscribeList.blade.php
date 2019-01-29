@@ -18,7 +18,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase">订阅管理</span>
+                            <span class="caption-subject bold uppercase">订阅码列表</span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -46,8 +46,8 @@
                                 <thead>
                                 <tr>
                                     <th> # </th>
+                                    <th> 订阅码 </th>
                                     <th> 用户 </th>
-                                    <th> 识别码 </th>
                                     <th> 请求次数 </th>
                                     <th> 最后请求时间 </th>
                                     <th> 封禁时间 </th>
@@ -64,18 +64,24 @@
                                         @foreach($subscribeList as $subscribe)
                                             <tr class="odd gradeX">
                                                 <td> {{$subscribe->id}} </td>
-                                                <td> {{empty($subscribe->user) ? '【账号已删除】' : $subscribe->user->username}} </td>
-                                                <td> {{$subscribe->code}} </td>
-                                                <td> {{$subscribe->times}} </td>
+                                                <td> <span class="label label-danger"> {{$subscribe->code}} </span> </td>
+                                                <td>
+                                                    @if(empty($subscribe->user))
+                                                        【账号已删除】
+                                                    @else
+                                                        <a href="{{url('admin/userList?id=' . $subscribe->user->id)}}">{{$subscribe->user->username}}</a>
+                                                    @endif
+                                                </td>
+                                                <td> <span class="label label-danger"> {{$subscribe->times}} </span> </td>
                                                 <td> {{$subscribe->updated_at}} </td>
                                                 <td> {{$subscribe->ban_time > 0 ? date('Y-m-d H:i:s') : ''}} </td>
                                                 <td> {{$subscribe->ban_desc}} </td>
                                                 <td>
                                                     @if($subscribe->status == 0)
-                                                        <button type="button" class="btn btn-sm green btn-outline" onclick="setStatus('{{$subscribe->id}}', 1)">启用</button>
+                                                        <button type="button" class="btn btn-sm green btn-outline" onclick="setSubscribeStatus('{{$subscribe->id}}', 1)">启用</button>
                                                     @endif
                                                     @if($subscribe->status == 1)
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="setStatus('{{$subscribe->id}}', 0)">禁用</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="setSubscribeStatus('{{$subscribe->id}}', 0)">禁用</button>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -111,17 +117,17 @@
             var username = $("#username").val();
             var status = $("#status option:checked").val();
 
-            window.location.href = '{{url('admin/subscribeLog')}}' + '?user_id=' + user_id + '&username=' + username + '&status=' + status;
+            window.location.href = '{{url('subscribe/subscribeList')}}' + '?user_id=' + user_id + '&username=' + username + '&status=' + status;
         }
 
         // 重置
         function doReset() {
-            window.location.href = '{{url('admin/subscribeLog')}}';
+            window.location.href = '{{url('subscribe/subscribeList')}}';
         }
 
         // 启用禁用用户的订阅
-        function setStatus(id, status) {
-            $.post("{{url('admin/setSubscribeStatus')}}", {_token:'{{csrf_token()}}', id:id, status:status}, function(ret) {
+        function setSubscribeStatus(id, status) {
+            $.post("{{url('subscribe/setSubscribeStatus')}}", {_token:'{{csrf_token()}}', id:id, status:status}, function(ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     window.location.reload();
                 });

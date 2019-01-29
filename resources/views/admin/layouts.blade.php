@@ -167,12 +167,6 @@
                                 <span class="title">用户列表</span>
                             </a>
                         </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/subscribeLog']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/subscribeLog')}}" class="nav-link">
-                                <i class="icon-list"></i>
-                                <span class="title">订阅管理</span>
-                            </a>
-                        </li>
                         <li class="nav-item {{in_array(Request::path(), ['admin/userOnlineIPList']) ? 'active open' : ''}}">
                             <a href="{{url('admin/userOnlineIPList')}}" class="nav-link">
                                 <i class="icon-list"></i>
@@ -201,6 +195,27 @@
                             <a href="{{url('admin/userBanLogList')}}" class="nav-link ">
                                 <i class="fa fa-user-times"></i>
                                 <span class="title">用户封禁记录</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {{in_array(Request::path(), ['subscribe/subscribeList', 'subscribe/deviceList']) ? 'active open' : ''}}">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="fa fa-list-alt"></i>
+                        <span class="title">订阅管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item {{in_array(Request::path(), ['subscribe/subscribeList']) ? 'active open' : ''}}">
+                            <a href="{{url('subscribe/subscribeList')}}" class="nav-link">
+                                <i class="icon-list"></i>
+                                <span class="title">订阅码列表</span>
+                            </a>
+                        </li>
+                        <li class="nav-item {{in_array(Request::path(), ['subscribe/deviceList']) ? 'active open' : ''}}">
+                            <a href="{{url('subscribe/deviceList')}}" class="nav-link ">
+                                <i class="fa fa-list"></i>
+                                <span class="title">订阅设备列表</span>
                             </a>
                         </li>
                     </ul>

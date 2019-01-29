@@ -1171,6 +1171,26 @@ CREATE TABLE `ss_node_deny` (
 ) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='节点访问规则关联表';
 
 
+-- ----------------------------
+-- Table structure for `device`
+-- ----------------------------
+CREATE TABLE `device` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：1-Shadowsocks(R)、2-V2Ray',
+	`platform` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '所属平台：0-其他、1-iOS、2-Android、3-Mac、4-Windows、5-Linux',
+	`name` VARCHAR(50) NOT NULL COMMENT '设备名称',
+	`status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁止订阅、1-允许订阅',
+	PRIMARY KEY (`id`)
+) COMMENT='设备型号表' ENGINE=MyISAM;
+
+
+-- ----------------------------
+-- Records of `device`
+-- ----------------------------
+INSERT INTO `device` VALUES ('1', '1', '1', 'Quantumult', 1);
+INSERT INTO `device` VALUES ('1', '1', '1', 'Shadowrocket', 1);
+INSERT INTO `device` VALUES ('1', '1', '1', 'ShadowsocksX-NG-R', 1);
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -110,13 +110,14 @@ class AdminController extends Controller
     // 用户列表
     public function userList(Request $request)
     {
-        $username = $request->get('username');
-        $wechat = $request->get('wechat');
-        $qq = $request->get('qq');
-        $port = $request->get('port');
-        $pay_way = $request->get('pay_way');
-        $status = $request->get('status');
-        $enable = $request->get('enable');
+        $id = intval($request->get('id'));
+        $username = trim($request->get('username'));
+        $wechat = trim($request->get('wechat'));
+        $qq = trim($request->get('qq'));
+        $port = intval($request->get('port'));
+        $pay_way = intval($request->get('pay_way'));
+        $status = intval($request->get('status'));
+        $enable = intval($request->get('enable'));
         $online = $request->get('online');
         $unActive = $request->get('unActive');
         $flowAbnormal = $request->get('flowAbnormal');
@@ -124,6 +125,10 @@ class AdminController extends Controller
         $largeTraffic = $request->get('largeTraffic');
 
         $query = User::query()->with(['subscribe']);
+        if (!empty($id)) {
+            $query->where('id', $id);
+        }
+
         if (!empty($username)) {
             $query->where('username', 'like', '%' . $username . '%');
         }
@@ -136,20 +141,20 @@ class AdminController extends Controller
             $query->where('qq', 'like', '%' . $qq . '%');
         }
 
-        if (!empty($port)) {
-            $query->where('port', intval($port));
+        if ($port != '') {
+            $query->where('port', $port);
         }
 
         if ($pay_way != '') {
-            $query->where('pay_way', intval($pay_way));
+            $query->where('pay_way', $pay_way);
         }
 
         if ($status != '') {
-            $query->where('status', intval($status));
+            $query->where('status', $status);
         }
 
         if ($enable != '') {
-            $query->where('enable', intval($enable));
+            $query->where('enable', $enable);
         }
 
         // 流量超过100G的
@@ -1136,53 +1141,6 @@ class AdminController extends Controller
         $view['list'] = $list;
 
         return Response::view('admin.trafficLog', $view);
-    }
-
-    // 订阅请求日志
-    public function subscribeLog(Request $request)
-    {
-        $user_id = $request->get('user_id');
-        $username = $request->get('username');
-        $status = $request->get('status');
-
-        $query = UserSubscribe::with(['User']);
-
-        if (!empty($user_id)) {
-            $query->where('user_id', $user_id);
-        }
-
-        if (!empty($username)) {
-            $query->whereHas('user', function ($q) use ($username) {
-                $q->where('username', 'like', '%' . $username . '%');
-            });
-        }
-
-        if ($status != '') {
-            $query->where('status', intval($status));
-        }
-
-        $view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
-
-        return Response::view('admin.subscribeLog', $view);
-    }
-
-    // 设置用户的订阅的状态
-    public function setSubscribeStatus(Request $request)
-    {
-        $id = $request->get('id');
-        $status = $request->get('status', 0);
-
-        if (empty($id)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
-        }
-
-        if ($status) {
-            UserSubscribe::query()->where('id', $id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
-        } else {
-            UserSubscribe::query()->where('id', $id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
-        }
-
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
     }
 
     // SS(R)链接反解析
