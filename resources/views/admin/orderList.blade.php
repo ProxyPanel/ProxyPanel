@@ -104,6 +104,10 @@
                                                         <span class="label label-info"> 余额支付 </span>
                                                     @elseif($order->pay_way == '2')
                                                         <span class="label label-info"> 有赞云支付 </span>
+                                                    @elseif($order->pay_way == '4')
+                                                        <span class="label label-info"> 支付宝国际 </span>
+                                                    @elseif($order->pay_way == '5')
+                                                        <span class="label label-info"> 支付宝当面付 </span>
                                                     @else
                                                         <span class="label label-info"> 未知 </span>
                                                     @endif
