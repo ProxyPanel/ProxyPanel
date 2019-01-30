@@ -2318,7 +2318,7 @@ EOF;
         $ref_username = trim($request->get('ref_username'));
         $status = $request->get('status');
 
-        $query = ReferralLog::query()->with(['user', 'order'])->orderBy('id', 'desc')->orderBy('status', 'asc');
+        $query = ReferralLog::query()->with(['user', 'order'])->orderBy('status', 'asc')->orderBy('id', 'desc');
 
         if ($username) {
             $query->whereHas('user', function ($q) use ($username) {

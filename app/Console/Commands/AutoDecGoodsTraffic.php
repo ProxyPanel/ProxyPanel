@@ -50,7 +50,23 @@ class AutoDecGoodsTraffic extends Command
             DB::beginTransaction();
             try {
                 foreach ($orderList as $order) {
+                    // 先过期本订单
                     Order::query()->where('oid', $order->oid)->update(['is_expire' => 1]);
+
+                    // 再检查该订单对应用户是否还有套餐（非流量包）存在
+                    $haveOrder = Order::query()
+                        ->with(['user', 'goods'])
+                        ->where('is_expire', 0)
+                        ->where('user_id', $order->user_id)
+                        ->whereHas('goods', function ($q) {
+                            $q->where('type', 2);
+                        })
+                        ->orderBy('oid', 'desc')
+                        ->first();
+                    if (!$haveOrder) {
+                        // 如果不存在有效套餐（非流量包），则清空用户重置日
+                        User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => 0]);
+                    }
 
                     if (empty($order->user) || empty($order->goods)) {
                         continue;

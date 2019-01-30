@@ -38,7 +38,7 @@ class AutoResetUserTraffic extends Command
     // 重置用户流量
     private function resetUserTraffic()
     {
-        $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
+        $userList = User::query()->where('status', '>=', 0)->where('expire_time', '>=', date('Y-m-d'))->get();
         if (!$userList->isEmpty()) {
             foreach ($userList as $user) {
                 if (!$user->traffic_reset_day) {

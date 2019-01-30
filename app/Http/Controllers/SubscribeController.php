@@ -199,7 +199,7 @@ class SubscribeController extends Controller
                 $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
                 $ssr_str .= '&protoparam=' . ($node['single'] ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
                 $ssr_str .= '&remarks=' . base64url_encode($node['name']);
-                $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
+                $ssr_str .= '&group=' . base64url_encode(empty($group) ? '默认' : $group->name);
                 $ssr_str .= '&udpport=0';
                 $ssr_str .= '&uot=0';
                 $ssr_str = base64url_encode($ssr_str);
