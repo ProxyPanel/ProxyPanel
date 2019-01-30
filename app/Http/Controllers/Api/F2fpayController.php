@@ -19,6 +19,8 @@ use Log;
 use DB;
 use Mail;
 use Hash;
+use Payment\Client\Query;
+use Payment\Common\PayException;
 
 /**
  * Class F2fpayController
@@ -39,20 +41,39 @@ class F2fpayController extends Controller
     // 接收GET请求
     public function index(Request $request)
     {
-        \Log::info("【AliPay】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
-        exit("【AliPay】接口正常");
+        \Log::info("【F2fPay】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
+        exit("【F2fPay】接口正常");
     }
 
     // 接收POST请求
     public function store(Request $request)
     {
-        \Log::info("【AliPay】回调接口[POST]：" . var_export($request->all(), true));
+        \Log::info("【F2fPay】回调接口[POST]：" . var_export($request->all(), true));
 
         $result = "fail";
-        $alipayNotify = new AlipayNotify(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key'], self::$systemConfig['alipay_public_key'], self::$systemConfig['alipay_transport']);
 
-        // 验证支付宝交易
-        $verify_result = $alipayNotify->verifyNotify();
+        try {
+            $verify_result = Query::run('ali_charge', [
+                'use_sandbox'     => false,
+                "partner"         => self::$systemConfig['f2fpay_app_id'],
+                'app_id'          => self::$systemConfig['f2fpay_app_id'],
+                'sign_type'       => 'RSA2',
+                'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
+                'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
+                'notify_url'      => self::$systemConfig['website_url'] . "/api/f2fpay", // 异步回调接口
+                'return_url'      => self::$systemConfig['website_url'],
+                'return_raw'      => false
+            ], [
+                'out_trade_no' => $request->get('out_trade_no'),
+                'trade_no'     => "123456",
+            ]);
+
+            \Log::info("【F2fPay】回调验证查询：" . var_export($verify_result, true));
+        } catch (PayException $e) {
+            \Log::info("【F2fPay】回调验证查询出错：" . var_export($e->errorMessage(), true));
+            exit($result);
+        }
+
         if ($verify_result) { // 验证成功
             $result = "success";
             if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
@@ -64,7 +85,7 @@ class F2fpayController extends Controller
                 // 交易状态
                 $data['trade_status'] = $request->get('trade_status');
                 // 交易金额(这里是按照结算货币汇率的金额，和rmb_fee不相等)
-                $data['total_fee'] = $request->get('total_fee');
+                $data['total_amount'] = $request->get('total_amount');
 
                 $this->tradePaid($data);
             } else {
