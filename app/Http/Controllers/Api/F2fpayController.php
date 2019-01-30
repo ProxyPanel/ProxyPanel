@@ -21,9 +21,9 @@ use Mail;
 use Hash;
 
 /**
- * Class AlipayController
+ * Class F2fpayController
  *
- * @author  wz812180
+ * @author  heron
  *
  * @package App\Http\Controllers\Api
  */
