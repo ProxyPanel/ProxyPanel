@@ -8,7 +8,7 @@
         <div class="portlet light bordered">
             <div class="portlet-body">
                 <div class="alert alert-info" style="text-align: center;">
-                    请使用<strong style="color:red;">支付宝、微信</strong>扫描如下二维码
+                    请使用<strong style="color:red;">支付宝@if($is_youzan==1)、微信@endif</strong>扫描如下二维码
                 </div>
                 <div class="row" style="text-align: center; font-size: 1.05em;">
                     <div class="col-md-12">
