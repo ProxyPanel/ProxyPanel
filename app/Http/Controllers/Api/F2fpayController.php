@@ -65,7 +65,7 @@ class F2fpayController extends Controller
                 'return_raw'      => false
             ], [
                 'out_trade_no' => $request->get('out_trade_no'),
-                'trade_no'     => "123456",
+                'trade_no'     => $request->get('trade_no'),
             ]);
 
             \Log::info("【F2fPay】回调验证查询：" . var_export($verify_result, true));
@@ -74,7 +74,7 @@ class F2fpayController extends Controller
             exit($result);
         }
 
-        if ($verify_result) { // 验证成功
+        if ($verify_result['is_success'] == 'T') { // 验证成功
             $result = "success";
             if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
                 // 商户订单号
