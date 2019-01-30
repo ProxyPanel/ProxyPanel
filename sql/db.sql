@@ -1188,8 +1188,8 @@ CREATE TABLE `device` (
 -- Records of `device`
 -- ----------------------------
 INSERT INTO `device` VALUES ('1', '1', '1', 'Quantumult', 1);
-INSERT INTO `device` VALUES ('1', '1', '1', 'Shadowrocket', 1);
-INSERT INTO `device` VALUES ('1', '1', '1', 'ShadowsocksX-NG-R', 1);
+INSERT INTO `device` VALUES ('2', '1', '1', 'Shadowrocket', 1);
+INSERT INTO `device` VALUES ('3', '1', '1', 'ShadowsocksX-NG-R', 1);
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
