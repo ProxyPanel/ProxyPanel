@@ -593,6 +593,7 @@ CREATE TABLE `ticket` (
   `content` text NOT NULL COMMENT '内容',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单';
 
@@ -606,6 +607,7 @@ CREATE TABLE `ticket_reply` (
   `user_id` int(11) NOT NULL COMMENT '回复人ID',
   `content` text NOT NULL COMMENT '回复内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单回复';
 

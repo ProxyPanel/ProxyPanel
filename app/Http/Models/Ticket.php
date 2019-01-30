@@ -16,7 +16,6 @@ class Ticket extends Model
 {
     protected $table = 'ticket';
     protected $primaryKey = 'id';
-    public $timestamps = false;
 
     public function User()
     {
