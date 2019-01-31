@@ -2494,7 +2494,7 @@ EOF;
         $username = $request->get('username');
         $port = $request->get('port');
 
-        $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-10 minutes"));
+        $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp');
 
         if ($ip) {
             $query->where('ip', 'like', '%' . $ip . '%');
@@ -2512,7 +2512,7 @@ EOF;
             });
         }
 
-        $list = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+        $list = $query->groupBy('port')->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
 
         $view['list'] = $list;
 
