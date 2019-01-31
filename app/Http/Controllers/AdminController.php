@@ -2487,7 +2487,7 @@ EOF;
         return Response::view('admin.emailLog', $view);
     }
 
-    // 在线IP监控
+    // 在线IP监控（实时）
     public function onlineIPMonitor(Request $request)
     {
         $ip = trim($request->get('ip'));
@@ -2495,7 +2495,7 @@ EOF;
         $port = intval($request->get('port'));
         $nodeId = intval($request->get('nodeId'));
 
-        $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp');
+        $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-120 seconds"));
 
         if ($ip) {
             $query->where('ip', 'like', '%' . $ip . '%');

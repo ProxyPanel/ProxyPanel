@@ -27,7 +27,7 @@
                                 <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="ip" value="{{Request::get('ip')}}" id="ip" placeholder="IP" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
                                 <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
