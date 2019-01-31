@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
+use App\Components\IPIP;
+use App\Components\QQWry;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Country;
@@ -2520,6 +2522,21 @@ EOF;
         }
 
         $list = $query->groupBy('port')->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+
+        foreach ($list as $vo) {
+            $ipInfo = QQWry::ip($vo->ip);
+            if (isset($ipInfo['error'])) {
+                // 用IPIP的库再试一下
+                $ipip = IPIP::ip($vo->ip);
+                $ipInfo = [
+                    'country'  => $ipip['country_name'],
+                    'province' => $ipip['region_name'],
+                    'city'     => $ipip['city_name']
+                ];
+            }
+
+            $vo->ipInfo = $ipInfo['country'] . ' ' . $ipInfo['province'] . ' ' . $ipInfo['city'];
+        }
 
         $view['list'] = $list;
         $view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();

@@ -55,12 +55,13 @@
                                         <th> 节点 </th>
                                         <th> 用户 </th>
                                         <th> IP </th>
+                                        <th> 归属地 </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if ($list->isEmpty())
                                         <tr>
-                                            <td colspan="6" style="text-align: center;">暂无数据</td>
+                                            <td colspan="7" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($list as $vo)
@@ -71,6 +72,7 @@
                                                 <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
                                                 <td>{{$vo->user ? $vo->user->username : '【用户已删除】'}}</td>
                                                 <td>{{$vo->ip}}</td>
+                                                <td>{{$vo->ipInfo}}</td>
                                             </tr>
                                         @endforeach
                                     @endif
