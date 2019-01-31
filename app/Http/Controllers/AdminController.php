@@ -2490,10 +2490,10 @@ EOF;
     // 在线IP监控
     public function onlineIPMonitor(Request $request)
     {
-        $ip = $request->get('ip');
-        $username = $request->get('username');
-        $port = $request->get('port');
-        $nodeId = $request->get('nodeId');
+        $ip = trim($request->get('ip'));
+        $username = trim($request->get('username'));
+        $port = intval($request->get('port'));
+        $nodeId = intval($request->get('nodeId'));
 
         $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp');
 
