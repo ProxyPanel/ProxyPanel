@@ -18,13 +18,19 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 在线IP监控<small>（最近10分钟）</small> </span>
+                            <span class="caption-subject bold uppercase"> 在线IP监控<small>（实时）</small> </span>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-3 col-sm-4 col-xs-12">
                                 <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="ip" value="{{Request::get('ip')}}" id="ip" placeholder="IP" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
                                 <button type="button" class="btn blue" onclick="doSearch();">查询</button>
@@ -37,23 +43,25 @@
                                     <tr>
                                         <th> # </th>
                                         <th> 时间 </th>
-                                        <th> 节点 </th>
                                         <th> 类型 </th>
+                                        <th> 节点 </th>
+                                        <th> 用户 </th>
                                         <th> IP </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if ($list->isEmpty())
                                         <tr>
-                                            <td colspan="5" style="text-align: center;">暂无数据</td>
+                                            <td colspan="6" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($list as $vo)
                                             <tr>
                                                 <td>{{$vo->id}}</td>
                                                 <td>{{$vo->created_at}}</td>
-                                                <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
                                                 <td>{{$vo->type}}</td>
+                                                <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
+                                                <td>{{$vo->user ? $vo->user->username : '【用户已删除】'}}</td>
                                                 <td>{{$vo->ip}}</td>
                                             </tr>
                                         @endforeach
@@ -86,8 +94,10 @@
         // 搜索
         function doSearch() {
             var ip = $("#ip").val();
+            var username = $("#username").val();
+            var port = $("#port").val();
 
-            window.location.href = '{{url('admin/onlineIPMonitor')}}' + '?ip=' + ip;
+            window.location.href = '{{url('admin/onlineIPMonitor')}}' + '?ip=' + ip + '&username=' + username + '&port=' + port;
         }
 
         // 重置

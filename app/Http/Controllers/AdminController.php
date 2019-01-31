@@ -2491,13 +2491,27 @@ EOF;
     public function onlineIPMonitor(Request $request)
     {
         $ip = $request->get('ip');
+        $username = $request->get('username');
+        $port = $request->get('port');
 
         $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-10 minutes"));
 
         if ($ip) {
             $query->where('ip', 'like', '%' . $ip . '%');
         }
-        
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        if ($port) {
+            $query->whereHas('user', function ($q) use ($port) {
+                $q->where('port', $port);
+            });
+        }
+
         $list = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
 
         $view['list'] = $list;
