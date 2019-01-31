@@ -33,6 +33,14 @@
                                 <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="nodeId" id="nodeId" onChange="doSearch()">
+                                    <option value="" @if(Request::get('nodeId') == '') selected @endif>选择节点</option>
+                                    @foreach($nodeList as $node)
+                                        <option value="{{$node->id}}" @if(Request::get('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
                                 <button type="button" class="btn blue" onclick="doSearch();">查询</button>
                                 <button type="button" class="btn grey" onclick="doReset();">重置</button>
                             </div>
@@ -96,8 +104,9 @@
             var ip = $("#ip").val();
             var username = $("#username").val();
             var port = $("#port").val();
+            var nodeId = $("#nodeId option:checked").val();
 
-            window.location.href = '{{url('admin/onlineIPMonitor')}}' + '?ip=' + ip + '&username=' + username + '&port=' + port;
+            window.location.href = '{{url('admin/onlineIPMonitor')}}' + '?ip=' + ip + '&username=' + username + '&port=' + port + '&nodeId=' + nodeId;
         }
 
         // 重置

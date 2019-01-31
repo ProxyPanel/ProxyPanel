@@ -2493,6 +2493,7 @@ EOF;
         $ip = $request->get('ip');
         $username = $request->get('username');
         $port = $request->get('port');
+        $nodeId = $request->get('nodeId');
 
         $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp');
 
@@ -2512,9 +2513,16 @@ EOF;
             });
         }
 
+        if ($nodeId) {
+            $query->whereHas('node', function ($q) use ($nodeId) {
+                $q->where('id', $nodeId);
+            });
+        }
+
         $list = $query->groupBy('port')->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
 
         $view['list'] = $list;
+        $view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
         return Response::view('admin.onlineIPMonitor', $view);
     }
