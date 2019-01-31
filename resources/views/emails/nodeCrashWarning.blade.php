@@ -47,7 +47,7 @@
                                                 <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                                     <h6 style="Margin:0;Margin-bottom:10px;color:#f3f3f3;font-family:Helvetica,Arial,sans-serif;font-size:18px;font-weight:400;line-height:1.3;margin:0;margin-bottom:8px;margin-top:8px;padding:0;text-align:left;word-wrap:normal">
                                                         <a href="#" style="Margin:0;color:#f3f3f3;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none" target="_blank">
-                                                            节点宕机警告
+                                                            节点离线警告
                                                         </a>
                                                     </h6>
                                                 </th>
@@ -68,7 +68,7 @@
                                 <tr style="padding:0;text-align:left;vertical-align:top">
                                     <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                         <div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
-                                            <p>节点【{{$nodeName}}】({{$nodeServer}})可能宕机，请及时检查。</p>
+                                            <p>节点【{{$nodeName}}】({{$nodeServer}})离线，请及时检查。</p>
                                         </div>
                                     </th>
                                     <th class="expander" style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0!important;text-align:left;visibility:hidden;width:0"></th>

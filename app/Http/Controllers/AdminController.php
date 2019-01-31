@@ -553,7 +553,7 @@ class AdminController extends Controller
 
             // 负载（10分钟以内）
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-            $node->load = empty($node_info) || empty($node_info->load) ? '宕机' : $node_info->load;
+            $node->load = empty($node_info) || empty($node_info->load) ? '离线' : $node_info->load;
             $node->uptime = empty($online_log) ? 0 : seconds2time($node_info->uptime);
         }
 
@@ -2485,6 +2485,24 @@ EOF;
         $view['list'] = EmailLog::query()->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.emailLog', $view);
+    }
+
+    // 在线IP监控
+    public function onlineIPMonitor(Request $request)
+    {
+        $ip = $request->get('ip');
+
+        $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-10 minutes"));
+
+        if ($ip) {
+            $query->where('ip', 'like', '%' . $ip . '%');
+        }
+        
+        $list = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+
+        $view['list'] = $list;
+
+        return Response::view('admin.onlineIPMonitor', $view);
     }
 
     // 生成用户标签

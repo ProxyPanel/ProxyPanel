@@ -22,7 +22,7 @@ class nodeCrashWarning extends Mailable
 
     public function build()
     {
-        return $this->view('emails.nodeCrashWarning')->subject('节点宕机警告')->with([
+        return $this->view('emails.nodeCrashWarning')->subject('节点离线警告')->with([
             'nodeName'   => $this->nodeName,
             'nodeServer' => $this->nodeServer
         ]);

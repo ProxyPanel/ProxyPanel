@@ -98,12 +98,12 @@
                                                     @if(!$user->onlineIPList->isEmpty())
                                                         <table class="table table-hover table-light">
                                                             <thead>
-                                                            <tr>
-                                                                <th> 时间 </th>
-                                                                <th> 节点 </th>
-                                                                <th> 类型 </th>
-                                                                <th> IP </th>
-                                                            </tr>
+                                                                <tr>
+                                                                    <th> 时间 </th>
+                                                                    <th> 节点 </th>
+                                                                    <th> 类型 </th>
+                                                                    <th> IP </th>
+                                                                </tr>
                                                             </thead>
                                                             <tbody>
                                                             @foreach($user->onlineIPList as $vo)
@@ -156,6 +156,11 @@
             var enable = $("#enable option:checked").val();
 
             window.location.href = '{{url('admin/userOnlineIPList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&status=' + status + '&enable=' + enable;
+        }
+
+        // 重置
+        function doReset() {
+            window.location.href = '{{url('admin/userOnlineIPList')}}';
         }
     </script>
 @endsection
