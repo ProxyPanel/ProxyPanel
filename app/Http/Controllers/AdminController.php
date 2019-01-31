@@ -2524,6 +2524,11 @@ EOF;
         $list = $query->groupBy('port')->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
 
         foreach ($list as $vo) {
+            // 跳过上报多IP的
+            if (strpos($vo->ip, ',') !== false) {
+                continue;
+            }
+
             $ipInfo = QQWry::ip($vo->ip);
             if (isset($ipInfo['error'])) {
                 // 用IPIP的库再试一下
