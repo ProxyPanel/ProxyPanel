@@ -118,8 +118,8 @@ class AdminController extends Controller
         $qq = trim($request->get('qq'));
         $port = intval($request->get('port'));
         $pay_way = intval($request->get('pay_way'));
-        $status = intval($request->get('status'));
-        $enable = intval($request->get('enable'));
+        $status = $request->get('status');
+        $enable = $request->get('enable');
         $online = $request->get('online');
         $unActive = $request->get('unActive');
         $flowAbnormal = $request->get('flowAbnormal');
@@ -152,11 +152,11 @@ class AdminController extends Controller
         }
 
         if ($status != '') {
-            $query->where('status', $status);
+            $query->where('status', intval($status));
         }
 
         if ($enable != '') {
-            $query->where('enable', $enable);
+            $query->where('enable', intval($enable));
         }
 
         // 流量超过100G的
@@ -1110,24 +1110,29 @@ class AdminController extends Controller
     {
         $port = $request->get('port');
         $user_id = $request->get('user_id');
-        $username = $request->get('username');
+        $username = trim($request->get('username'));
+        $nodeId = intval($request->get('nodeId'));
 
-        $query = UserTrafficLog::with(['User', 'SsNode']);
+        $query = UserTrafficLog::query()->with(['user', 'node']);
 
-        if (!empty($port)) {
+        if ($port) {
             $query->whereHas('user', function ($q) use ($port) {
                 $q->where('port', $port);
             });
         }
 
-        if (!empty($user_id)) {
-            $query->where('user_id', $user_id);
+        if ($user_id) {
+            $query->where('user_id', intval($user_id));
         }
 
-        if (!empty($username)) {
+        if ($username) {
             $query->whereHas('user', function ($q) use ($username) {
                 $q->where('username', 'like', '%' . $username . '%');
             });
+        }
+
+        if ($nodeId) {
+            $query->where('node_id', $nodeId);
         }
 
         // 已使用流量
@@ -1141,6 +1146,7 @@ class AdminController extends Controller
         }
 
         $view['list'] = $list;
+        $view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
         return Response::view('admin.trafficLog', $view);
     }
