@@ -70,8 +70,8 @@ class AutoClearLog extends Command
         // 自动清除30天以前用户封禁日志
         UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
 
-        // 自动清除1个月以前用户连接IP
-        SsNodeIp::query()->where('created_at', '<=', strtotime("-1 month"))->delete();
+        // 自动清除3天前用户连接IP
+        SsNodeIp::query()->where('created_at', '<=', strtotime("-3 days"))->delete();
 
         // 自动清除3个月以前用户登陆日志
         UserLoginLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-3 month")))->delete();
