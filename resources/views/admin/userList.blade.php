@@ -83,6 +83,7 @@
                                     <th> 订阅码 </th>
                                     <th> 用户名 </th>
                                     <th> 端口 </th>
+                                    <th> 连接密码 </th>
                                     <th> 加密方式 </th>
                                     <!--<th> 协议 </th>
                                     <th> 混淆 </th>-->
@@ -97,7 +98,7 @@
                                 <tbody>
                                     @if ($userList->isEmpty())
                                         <tr>
-                                            <td colspan="13" style="text-align: center;">暂无数据</td>
+                                            <td colspan="14" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach ($userList as $user)
@@ -106,6 +107,7 @@
                                                 <td> <a href="javascript:;" class="copySubscribeLink" data-clipboard-text="{{$user->link}}" title="点击复制订阅链接">{{$user->subscribe->code}}</a> </td>
                                                 <td> {{$user->username}} </td>
                                                 <td> <span class="label label-danger"> {{$user->port ? $user->port : '未分配'}} </span> </td>
+                                                <td> <span class="label label-default"> {{$user->passwd}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->method}} </span> </td>
                                                 <!--<td> <span class="label label-default"> {{$user->protocol}} </span> </td>
                                                 <td> <span class="label label-default"> {{$user->obfs}} </span> </td>-->
