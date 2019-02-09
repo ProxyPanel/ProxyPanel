@@ -91,6 +91,7 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 校验优惠券是否可用
         function redeemCoupon() {
@@ -133,6 +134,8 @@
                         $("#coupon_sn").parent().addClass('has-error');
                         $("#coupon_sn").parent().remove('.input-group-addon');
                         $("#coupon_sn").parent().prepend('<span class="input-group-addon"><i class="fa fa-remove fa-fw"></i></span>');
+
+                        layer.msg(ret.message);
                     }
                 }
             });

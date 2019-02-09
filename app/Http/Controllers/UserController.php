@@ -527,11 +527,13 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已使用，请换一个试试']);
         } elseif ($coupon->status == 2) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已失效，请换一个试试']);
-        } elseif ($coupon->available_start > time() || $coupon->available_end < time()) {
+        } elseif ($coupon->available_end < time()) {
             $coupon->status = 2;
             $coupon->save();
 
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已失效，请换一个试试']);
+        } elseif ($coupon->available_start > time()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券尚不可用，请换一个试试']);
         }
 
         $data = [
