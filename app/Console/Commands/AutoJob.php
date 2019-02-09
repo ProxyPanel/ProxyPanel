@@ -185,6 +185,11 @@ class AutoJob extends Command
             $userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('ban_time', 0)->get();
             if (!$userList->isEmpty()) {
                 foreach ($userList as $user) {
+                    // 对管理员豁免
+                    if ($user->is_admin) {
+                        continue;
+                    }
+
                     // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
                     $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))->sum('total');
                     if ($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)) {
