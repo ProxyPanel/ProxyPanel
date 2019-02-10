@@ -70,14 +70,25 @@ class AuthController extends Controller
                 Session::flash('errorMsg', '用户名或密码错误');
 
                 return Redirect::back()->withInput();
-            } elseif (!Auth::user()->is_admin && Auth::user()->status < 0) {
-                Session::flash('errorMsg', '账号已禁用');
+            }
 
-                return Redirect::back();
-            } elseif (Auth::user()->status == 0 && self::$systemConfig['is_active_register'] && Auth::user()->is_admin == 0) {
-                Session::flash('errorMsg', '账号未激活，请点击<a href="/activeUser?username=' . Auth::user()->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
+            // 只校验普通用户
+            if (!Auth::user()->is_admin) {
+                if (Auth::user()->status < 0) {
+                    Session::flash('errorMsg', '账号已禁用');
 
-                return Redirect::back()->withInput();
+                    Auth::logout(); // 强制退出会话，因为Auth::attempt的时候会产生会话
+
+                    return Redirect::back()->withInput();
+                }
+
+                if (Auth::user()->status == 0 && self::$systemConfig['is_active_register']) {
+                    Session::flash('errorMsg', '账号未激活，请点击<a href="/activeUser?username=' . Auth::user()->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
+
+                    Auth::logout(); // 强制退出会话，因为Auth::attempt的时候会产生会话
+
+                    return Redirect::back()->withInput();
+                }
             }
 
             // 登录送积分
