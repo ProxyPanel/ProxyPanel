@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class userTrafficWarning extends Mailable
+class userTrafficWarning extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

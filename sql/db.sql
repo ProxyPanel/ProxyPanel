@@ -833,6 +833,12 @@ INSERT INTO `sensitive_words` (`words`) VALUES ('trashymail.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('tempemail.net');
 INSERT INTO `sensitive_words` (`words`) VALUES ('slopsbox.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('mailnesia.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('ezehe.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tempail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('newairmail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('temp-mail.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('linshiyouxiang.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('zwoho.com');
 
 
 -- ----------------------------
@@ -1148,7 +1154,7 @@ CREATE TABLE `ss_node_ip` (
   PRIMARY KEY (`id`),
   INDEX `idx_node` (`node_id`),
   INDEX `idx_port` (`port`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='在线IP';
 
 
 -- ----------------------------
@@ -1159,7 +1165,7 @@ CREATE TABLE `rule` (
 	`type` CHAR(10) NOT NULL DEFAULT 'domain' COMMENT '类型：domain-域名（单一非通配）、ipv4-IPv4地址、ipv6-IPv6地址、reg-正则表达式',
 	`regular` VARCHAR(255) NOT NULL COMMENT '规则：域名、IP、正则表达式',
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='规则表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='规则表';
 
 
 -- ----------------------------
@@ -1170,7 +1176,7 @@ CREATE TABLE `ss_node_deny` (
 	`node_id` INT(11) NOT NULL DEFAULT '0',
 	`rule_id` INT(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='节点访问规则关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点访问规则关联表';
 
 
 -- ----------------------------
@@ -1184,7 +1190,7 @@ CREATE TABLE `device` (
 	`status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁止订阅、1-允许订阅',
 	`header` VARCHAR(100) NOT NULL COMMENT '请求时头部的识别特征码',
 	PRIMARY KEY (`id`)
-) COMMENT='设备型号表' ENGINE=MyISAM;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备型号表';
 
 
 -- ----------------------------
@@ -1213,6 +1219,48 @@ INSERT INTO `device` (`id`, `type`, `platform`, `name`, `status`, `header`) VALU
 	(20, 2, 2, 'V2RayNG', 1, 'V2RayNG'),
 	(21, 2, 2, 'ShadowsocksR', 1, 'okhttp'),
 	(22, 2, 2, 'SSRR', 1, 'okhttp');
+
+
+-- ----------------------------
+-- Records of `failed_jobs`
+-- ----------------------------
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='失败任务';
+
+
+-- ----------------------------
+-- Records of `jobs`
+-- ----------------------------
+CREATE TABLE `jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `jobs_queue_index` (`queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务';
+
+
+-- ----------------------------
+-- Records of `migrations`
+-- ----------------------------
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='迁移';
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

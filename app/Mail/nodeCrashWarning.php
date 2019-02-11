@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class nodeCrashWarning extends Mailable
+class nodeCrashWarning extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

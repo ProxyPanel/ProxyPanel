@@ -52,8 +52,8 @@ class AutoClearLog extends Command
         // 自动清除1小时以前的节点在线用户数日志
         SsNodeOnlineLog::query()->where('log_time', '<=', strtotime("-1 hour"))->delete();
 
-        // 自动清除1个月以前的用户流量日志
-        UserTrafficLog::query()->where('log_time', '<=', strtotime("-1 month"))->delete();
+        // 自动清除7天以前的用户流量日志
+        UserTrafficLog::query()->where('log_time', '<=', strtotime("-7 days"))->delete();
 
         // 自动清除10天以前的用户每小时流量数据日志
         UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-10 days')))->delete();
