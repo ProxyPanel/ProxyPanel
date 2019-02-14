@@ -10,6 +10,7 @@ use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\SsNodeTrafficDaily;
 use App\Http\Models\UserBanLog;
 use App\Http\Models\UserLoginLog;
+use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\UserTrafficHourly;
@@ -75,6 +76,9 @@ class AutoClearLog extends Command
 
         // 自动清除3个月以前用户登陆日志
         UserLoginLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-3 month")))->delete();
+
+        // 自动清除1个月前的用户订阅记录
+        UserSubscribeLog::query()->where('request_time', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
     }
 
 }
