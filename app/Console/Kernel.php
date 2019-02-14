@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\UserExpireAutoWarning::class,
         \App\Console\Commands\UserTrafficAutoWarning::class,
         \App\Console\Commands\upgradeUserPassword::class,
+        \App\Console\Commands\upgradeUserSpeedLimit::class,
+        \App\Console\Commands\upgradeUserSubscribe::class,
         \App\Console\Commands\upgradeUserVmessId::class,
         \App\Console\Commands\AutoReportNode::class,
     ];

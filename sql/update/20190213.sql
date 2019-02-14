@@ -7,3 +7,7 @@ ALTER TABLE `user`
 -- 优化数据库，防止暴库
 ALTER TABLE `user_subscribe_log`
 	ADD INDEX `sid` (`sid`);
+
+ALTER TABLE `user_subscribe`
+	ADD INDEX `user_id` (`user_id`, `status`),
+	ADD INDEX `code` (`code`);
