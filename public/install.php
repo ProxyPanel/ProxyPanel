@@ -101,7 +101,7 @@ $exampleConfigFile = ROOT_PATH . '.env.example';
 $lockFile = ROOT_PATH . '.env';
 if (is_file($lockFile)) {
     $errInfo = "当前已经安装{$sitename}，如果需要重新安装，请手动移除.env文件";
-} else if (version_compare(PHP_VERSION, '7.1.0', '<')) {
+} else if (version_compare(PHP_VERSION, '7.1.3', '<')) {
     $errInfo = "当前版本(" . PHP_VERSION . ")过低，请使用PHP7.1以上版本";
 } else if (!is_file($exampleConfigFile)) {
     $errInfo = "缺失标准配置文件.env.example";
@@ -183,7 +183,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("当前数据库不支持innodb存储引擎，请开启后再重新尝试安装");
         }
 
-        $pdo->query("CREATE DATABASE IF NOT EXISTS `{$DB_DATABASE}` CHARACTER SET utf8 COLLATE utf8_general_ci;");
+        $pdo->query("CREATE DATABASE IF NOT EXISTS `{$DB_DATABASE}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 
         $pdo->query("USE `{$DB_DATABASE}`");
 
