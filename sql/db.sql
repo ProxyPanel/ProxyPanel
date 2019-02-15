@@ -367,6 +367,10 @@ INSERT INTO `config` VALUES ('80', 'alipay_private_key', '');
 INSERT INTO `config` VALUES ('81', 'alipay_public_key', '');
 INSERT INTO `config` VALUES ('82', 'alipay_transport', 'http');
 INSERT INTO `config` VALUES ('83', 'alipay_currency', 'USD');
+INSERT INTO `config` values ('84', 'is_f2fpay', 0);
+INSERT INTO `config` VALUES ('85', 'f2fpay_app_id', '');
+INSERT INTO `config` VALUES ('86', 'f2fpay_private_key', '');
+INSERT INTO `config` VALUES ('87', 'f2fpay_public_key', '');
 
 -- ----------------------------
 -- Table structure for `article`

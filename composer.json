@@ -21,6 +21,7 @@
         "phpoffice/phpspreadsheet": "^1.6",
         "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^1.0",
+        "riverslei/payment": "*",
         "spatie/laravel-permission": "^2.29",
         "youzan/open-sdk": "^1.0"
     },

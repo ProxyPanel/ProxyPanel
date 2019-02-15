@@ -11,6 +11,7 @@ use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
 use Illuminate\Http\Request;
+use Payment\Client\Charge;
 use Response;
 use Redirect;
 use Log;
@@ -46,7 +47,7 @@ class PaymentController extends Controller
         }
 
         // 判断是否开启有赞云支付
-        if (!self::$systemConfig['is_youzan'] && !self::$systemConfig['is_alipay']) {
+        if (!self::$systemConfig['is_youzan'] && !self::$systemConfig['is_alipay'] && !self::$systemConfig['is_f2fpay']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：系统并未开启在线支付功能']);
         }
 
@@ -123,6 +124,8 @@ class PaymentController extends Controller
                 $pay_way = 2;
             } elseif (self::$systemConfig['is_alipay']) {
                 $pay_way = 4;
+            } elseif (self::$systemConfig['is_f2fpay']) {
+                $pay_way = 5;
             }
 
             // 生成订单
@@ -167,6 +170,23 @@ class PaymentController extends Controller
                 // 建立请求
                 $alipaySubmit = new AlipaySubmit(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key']);
                 $result = $alipaySubmit->buildRequestForm($parameter, "post", "确认");
+            } elseif (self::$systemConfig['is_f2fpay']) {
+                $result = Charge::run("ali_qr", [
+                    'use_sandbox'     => false,
+                    "partner"         => self::$systemConfig['f2fpay_app_id'],
+                    'app_id'          => self::$systemConfig['f2fpay_app_id'],
+                    'sign_type'       => 'RSA2',
+                    'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
+                    'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
+                    'notify_url'      => self::$systemConfig['website_url'] . "/api/f2fpay", // 异步回调接口
+                    'return_url'      => self::$systemConfig['website_url'],
+                    'return_raw'      => false
+                ], [
+                    'body'     => '',
+                    'subject'  => '充值/购买',
+                    'order_no' => $orderSn,
+                    'amount'   => $amount,
+                ]);
             }
 
             $payment = new Payment();
@@ -183,6 +203,10 @@ class PaymentController extends Controller
                 $payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
             } elseif (self::$systemConfig['is_alipay']) {
                 $payment->qr_code = $result;
+            } elseif (self::$systemConfig['is_f2fpay']) {
+                $payment->qr_code = $result;
+                $payment->qr_url = 'http://qr.liantu.com/api.php?text=' . $result . '&bg=ffffff&fg=1eabfc&pt=1c73bd&m=0&w=400&el=1&inpt=1eabfc';
+                $payment->qr_local_url = $payment->qr_url;
             }
             $payment->status = 0;
             $payment->save();
@@ -198,7 +222,7 @@ class PaymentController extends Controller
             }
 
             DB::commit();
-	    
+
             if (self::$systemConfig['is_alipay']) {
                 // Alipay返回支付信息
                 return Response::json(['status' => 'success', 'data' => $result, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
@@ -238,6 +262,8 @@ class PaymentController extends Controller
         $view['website_analytics'] = self::$systemConfig['website_analytics'];
         $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
         $view['is_alipay'] = self::$systemConfig['is_alipay'];
+        $view['is_f2fpay'] = self::$systemConfig['is_f2fpay'];
+        $view['is_youzan'] = self::$systemConfig['is_youzan'];
 
         return Response::view('payment.detail', $view);
     }

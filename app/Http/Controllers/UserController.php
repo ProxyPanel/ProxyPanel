@@ -764,6 +764,7 @@ class UserController extends Controller
             $view['goods'] = $goods;
             $view['is_youzan'] = self::$systemConfig['is_youzan'];
             $view['is_alipay'] = self::$systemConfig['is_alipay'];
+            $view['is_f2fpay'] = self::$systemConfig['is_f2fpay'];
 
             return Response::view('user.buy', $view);
         }

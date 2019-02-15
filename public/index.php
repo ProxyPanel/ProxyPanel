@@ -7,6 +7,13 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
+// 判断是否安装SSRPanel
+if (!is_file(__DIR__.'/../.env'))
+{
+    header("location:./install.php");
+    exit;
+}
+
 define('LARAVEL_START', microtime(true));
 
 /*
