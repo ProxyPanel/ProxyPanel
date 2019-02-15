@@ -36,21 +36,6 @@
                                 <input type="text" class="col-md-4 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
-                                <select class="form-control" name="status" id="status" onChange="doSearch()">
-                                    <option value="" @if(Request::get('status') == '') selected @endif>账号状态</option>
-                                    <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
-                                    <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
-                                    <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <select class="form-control" name="enable" id="enable" onChange="doSearch()">
-                                    <option value="" @if(Request::get('enable') == '') selected @endif>代理状态</option>
-                                    <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
-                                    <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
                                 <button type="button" class="btn blue" onclick="doSearch();">查询</button>
                                 <button type="button" class="btn grey" onclick="doReset();">重置</button>
                             </div>
@@ -70,7 +55,7 @@
                                 <tbody>
                                     @if ($userList->isEmpty())
                                         <tr>
-                                            <td colspan="13" style="text-align: center;">暂无数据</td>
+                                            <td colspan="5" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach ($userList as $user)
@@ -111,7 +96,7 @@
                                                                     <td>{{$vo->created_at}}</td>
                                                                     <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
                                                                     <td>{{$vo->type}}</td>
-                                                                    <td>{{$vo->ip}}</td>
+                                                                    <td><a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a></td>
                                                                 </tr>
                                                             @endforeach
                                                             </tbody>
@@ -152,10 +137,8 @@
             var wechat = $("#wechat").val();
             var qq = $("#qq").val();
             var port = $("#port").val();
-            var status = $("#status option:checked").val();
-            var enable = $("#enable option:checked").val();
 
-            window.location.href = '{{url('admin/userOnlineIPList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&status=' + status + '&enable=' + enable;
+            window.location.href = '{{url('admin/userOnlineIPList')}}' + '?username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port;
         }
 
         // 重置

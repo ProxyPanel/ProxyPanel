@@ -24,6 +24,9 @@
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="id" value="{{Request::get('id')}}" id="id" placeholder="用户ID" onkeydown="if(event.keyCode==13){doSearch();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
                                 <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="ip" value="{{Request::get('ip')}}" id="ip" placeholder="IP" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
@@ -71,7 +74,7 @@
                                                 <td>{{$vo->type}}</td>
                                                 <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
                                                 <td>{{$vo->user ? $vo->user->username : '【用户已删除】'}}</td>
-                                                <td>{{$vo->ip}}</td>
+                                                <td><a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a></td>
                                                 <td>{{$vo->ipInfo}}</td>
                                             </tr>
                                         @endforeach
@@ -103,12 +106,13 @@
     <script type="text/javascript">
         // 搜索
         function doSearch() {
+            var id = $("#id").val();
             var ip = $("#ip").val();
             var username = $("#username").val();
             var port = $("#port").val();
             var nodeId = $("#nodeId option:checked").val();
 
-            window.location.href = '{{url('admin/onlineIPMonitor')}}' + '?ip=' + ip + '&username=' + username + '&port=' + port + '&nodeId=' + nodeId;
+            window.location.href = '{{url('admin/onlineIPMonitor')}}' + '?id=' + id + '&ip=' + ip + '&username=' + username + '&port=' + port + '&nodeId=' + nodeId;
         }
 
         // 重置

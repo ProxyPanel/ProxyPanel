@@ -36,8 +36,8 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_config_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <table class="table table-hover table-light table-checkable">
                                         <thead>
                                             <tr>
                                                 <th style="width: 50%;"> 名称 </th>
@@ -74,8 +74,8 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_config_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <table class="table table-hover table-light table-checkable">
                                         <thead>
                                             <tr>
                                                 <th style="width: 50%;"> 名称 </th>
@@ -112,8 +112,8 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_config_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <table class="table table-hover table-light table-checkable">
                                         <thead>
                                         <tr>
                                             <th style="width: 50%;"> 名称 </th>
@@ -150,8 +150,8 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_level_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <table class="table table-hover table-light table-checkable">
                                         <thead>
                                             <tr>
                                                 <th style="width: 35%;"> 等级 </th>
@@ -188,8 +188,8 @@
                                         <button class="btn sbold blue" data-toggle="modal" data-target="#add_country_modal"> 新增 <i class="fa fa-plus"></i> </button>
                                     </div>
                                 </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <div class="table-scrollable table-scrollable-borderless">
+                                    <table class="table table-hover table-light table-checkable">
                                         <thead>
                                             <tr>
                                                 <th style="width: 20%;"> 图标 </th>

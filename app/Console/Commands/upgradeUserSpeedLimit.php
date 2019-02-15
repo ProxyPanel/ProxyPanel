@@ -28,7 +28,7 @@ class upgradeUserSpeedLimit extends Command
             ];
 
             User::query()->where('id', $user->id)->update($data);
-            Log::info('---用户[ID：' . $user->id . ' - ' . $user->username . ']的限速字段值被重置为10M---');
+            Log::info('---用户[ID：' . $user->id . ' - ' . $user->username . ']的限速字段值被重置为10G---');
         }
 
         Log::info('----------------------------【重置用户限速字段】结束----------------------------');

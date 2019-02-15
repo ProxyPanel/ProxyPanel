@@ -159,6 +159,9 @@
                                                                 <a href="javascript:doMonitor('{{$user->id}}');"> 流量概况 </a>
                                                             </li>
                                                             <li>
+                                                                <a href="javascript:ipMonitor('{{$user->id}}');"> 在线巡查 </a>
+                                                            </li>
+                                                            <li>
                                                                 <a href="javascript:resetTraffic('{{$user->id}}');"> 流量清零 </a>
                                                             </li>
                                                             <li>
@@ -223,7 +226,7 @@
 
         // 编辑账号
         function editUser(id) {
-            window.location.href = '{{url('admin/editUser?id=')}}' + id + '&page=' + '{{Request::get('page', 1)}}';
+            window.location.href = '{{url('admin/editUser?id=')}}' + id;
         }
 
         // 删除账号
@@ -268,6 +271,10 @@
         // 流量监控
         function doMonitor(id) {
             window.location.href = '{{url('admin/userMonitor?id=')}}' + id;
+        }
+
+        function ipMonitor(id) {
+            window.location.href = '{{url('admin/onlineIPMonitor?id=')}}' + id;
         }
 
         // 重置流量

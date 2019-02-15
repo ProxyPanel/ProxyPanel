@@ -65,8 +65,8 @@ CREATE TABLE `ss_node` (
   `v2_host` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray伪装的域名',
   `v2_path` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray WS/H2路径',
   `v2_tls` TINYINT(4) NOT NULL DEFAULT '0' COMMENT 'V2ray底层传输安全 0 未开启 1 开启',
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `idx_group` (`group_id`),
 	INDEX `idx_sub` (`is_subscribe`)
@@ -132,8 +132,8 @@ CREATE TABLE `user` (
   `protocol_param` varchar(255) DEFAULT '' COMMENT '协议参数',
   `obfs` varchar(30) NOT NULL DEFAULT 'plain' COMMENT '混淆',
   `obfs_param` varchar(255) DEFAULT '' COMMENT '混淆参数',
-  `speed_limit_per_con` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单连接限速，默认10M，为0表示不限速，单位Byte',
-  `speed_limit_per_user` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单用户限速，默认10M，为0表示不限速，单位Byte',
+  `speed_limit_per_con` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单连接限速，默认10G，为0表示不限速，单位Byte',
+  `speed_limit_per_user` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单用户限速，默认10G，为0表示不限速，单位Byte',
   `gender` tinyint(4) NOT NULL DEFAULT '1' COMMENT '性别：0-女、1-男',
   `wechat` varchar(30) DEFAULT '' COMMENT '微信',
   `qq` varchar(20) DEFAULT '' COMMENT 'QQ',
@@ -648,14 +648,14 @@ CREATE TABLE `user_balance_log` (
 -- Table structure for `user_traffic_modify_log`
 -- ----------------------------
 CREATE TABLE `user_traffic_modify_log` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-	`order_id` INT(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
-	`before` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '操作前流量',
-	`after` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '操作后流量',
-	`desc` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '描述',
-	`created_at` DATETIME NOT NULL,
-	`updated_at` DATETIME NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+	`order_id` int(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
+	`before` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作前流量',
+	`after` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作后流量',
+	`desc` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
+	`created_at` datetime NOT NULL,
+	`updated_at` datetime NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量变动日志';
 
@@ -706,6 +706,7 @@ CREATE TABLE `email_log` (
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-发送成功、2-发送失败',
   `error` text COMMENT '发送失败抛出的异常信息',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件投递记录';
 
@@ -839,6 +840,7 @@ INSERT INTO `sensitive_words` (`words`) VALUES ('newairmail.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('temp-mail.org');
 INSERT INTO `sensitive_words` (`words`) VALUES ('linshiyouxiang.net');
 INSERT INTO `sensitive_words` (`words`) VALUES ('zwoho.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mailboxy.fun');
 
 
 -- ----------------------------
@@ -1119,8 +1121,8 @@ CREATE TABLE `marketing` (
   `content` TEXT NOT NULL COMMENT '内容' COLLATE 'utf8mb4_unicode_ci',
   `error` VARCHAR(255) NULL COMMENT '错误信息' COLLATE 'utf8mb4_unicode_ci',
   `status` TINYINT(4) NOT NULL COMMENT '状态：-1-失败、0-待发送、1-成功',
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='营销';
 
@@ -1138,8 +1140,8 @@ CREATE TABLE `user_login_log` (
 	`county` CHAR(20) NOT NULL,
 	`isp` CHAR(20) NOT NULL,
 	`area` CHAR(20) NOT NULL,
-	`created_at` DATETIME NOT NULL,
-	`updated_at` DATETIME NOT NULL,
+	`created_at` datetime NOT NULL,
+	`updated_at` datetime NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
 

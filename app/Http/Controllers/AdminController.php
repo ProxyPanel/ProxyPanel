@@ -2353,20 +2353,14 @@ EOF;
     public function userOnlineIPList(Request $request)
     {
         $username = trim($request->get('username'));
-        $status = $request->get('status');
         $port = intval($request->get('port'));
         $wechat = trim($request->get('wechat'));
         $qq = trim($request->get('qq'));
-        $enable = intval($request->get('enable'));
 
-        $query = User::query();
+        $query = User::query()->where('status', '>=', 0)->where('enable', 1);
 
         if ($username) {
             $query->where('username', 'like', '%' . $username . '%');
-        }
-
-        if ($status != '') {
-            $query->where('status', intval($status));
         }
 
         if (!empty($wechat)) {
@@ -2377,19 +2371,15 @@ EOF;
             $query->where('qq', 'like', '%' . $qq . '%');
         }
 
-        if (!empty($port)) {
-            $query->where('port', intval($port));
-        }
-
-        if ($enable != '') {
-            $query->where('enable', intval($enable));
+        if ($port) {
+            $query->where('port', $port);
         }
 
         $userList = $query->paginate(15)->appends($request->except('page'));
         if (!$userList->isEmpty()) {
             foreach ($userList as &$user) {
-                // 最近10条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('port', $user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(10)->get();
+                // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
+                $user->onlineIPList = SsNodeIp::query()->with(['node'])->where('type', 'tcp')->where('port', $user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(5)->get();
             }
         }
 
@@ -2502,11 +2492,12 @@ EOF;
         $username = trim($request->get('username'));
         $port = intval($request->get('port'));
         $nodeId = intval($request->get('nodeId'));
+        $userId = intval($request->get('id'));
 
         $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-120 seconds"));
 
         if ($ip) {
-            $query->where('ip', 'like', '%' . $ip . '%');
+            $query->where('ip', $ip);
         }
 
         if ($username) {
@@ -2524,6 +2515,12 @@ EOF;
         if ($nodeId) {
             $query->whereHas('node', function ($q) use ($nodeId) {
                 $q->where('id', $nodeId);
+            });
+        }
+
+        if ($userId) {
+            $query->whereHas('user', function ($q) use ($userId) {
+                $q->where('id', $userId);
             });
         }
 
