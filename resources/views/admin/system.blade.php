@@ -726,15 +726,10 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="is_node_crash_warning"
-                                                                   class="col-md-3 control-label">节点宕机提醒</label>
+                                                            <label for="is_node_crash_warning" class="col-md-3 control-label">节点离线提醒</label>
                                                             <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch"
-                                                                       @if($is_node_crash_warning) checked
-                                                                       @endif id="is_node_crash_warning"
-                                                                       data-on-color="success" data-off-color="danger"
-                                                                       data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后如果节点宕机则发出提醒邮件 </span>
+                                                                <input type="checkbox" class="make-switch" @if($is_node_crash_warning) checked @endif id="is_node_crash_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 启用后如果节点离线则发出提醒邮件 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -752,7 +747,7 @@
                                                                                 onclick="setCrashWarningEmail()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 填写此值则节点宕机、用户回复工单都会自动提醒 </span>
+                                                                <span class="help-block"> 填写此值则节点离线、用户回复工单都会自动提醒 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -791,13 +786,8 @@
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_server_chan" class="col-md-3 control-label">ServerChan</label>
                                                             <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch"
-                                                                       @if($is_server_chan) checked
-                                                                       @endif id="is_server_chan"
-                                                                       data-on-color="success" data-off-color="danger"
-                                                                       data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 推送节点宕机提醒、用户流量异常警告、节点使用报告（<a
-                                                                            href="http://sc.ftqq.com" target="_blank">绑定微信</a>） </span>
+                                                                <input type="checkbox" class="make-switch" @if($is_server_chan) checked @endif id="is_server_chan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="http://sc.ftqq.com" target="_blank">绑定微信</a>） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -1727,7 +1717,7 @@
             }
         });
 
-        // 启用、禁用节点宕机发件提醒管理员
+        // 启用、禁用节点离线发件提醒管理员
         $('#is_node_crash_warning').on({
             'switchChange.bootstrapSwitch': function (event, state) {
                 var is_node_crash_warning = state ? 1 : 0;
@@ -1746,7 +1736,7 @@
             }
         });
 
-        // 启用、禁用节点宕机发ServerChan微信消息提醒
+        // 启用、禁用节点离线发ServerChan微信消息提醒
         $('#is_server_chan').on({
             'switchChange.bootstrapSwitch': function (event, state) {
                 var is_server_chan = state ? 1 : 0;
@@ -2151,7 +2141,7 @@
             });
         }
 
-        // 设置节点宕机警告收件地址
+        // 设置节点离线警告收件地址
         function setCrashWarningEmail() {
             var crash_warning_email = $("#crash_warning_email").val();
 

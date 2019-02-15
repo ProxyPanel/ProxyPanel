@@ -11,10 +11,16 @@
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="note note-info">
+                            <p>1.禁止设备订阅功能是根据客户端订阅时请求头信息做判断，禁用相应设备订阅时返回错误信息</p>
+                            <p>以下请求头信息不全或者错误，请各位自行检测，提到Issues</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
@@ -46,9 +52,10 @@
                                 <thead>
                                 <tr>
                                     <th> # </th>
+                                    <th> 名称 </th>
                                     <th> 类型 </th>
                                     <th> 平台 </th>
-                                    <th> 名称 </th>
+                                    <th> 请求头 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
@@ -61,9 +68,10 @@
                                         @foreach($deviceList as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
+                                                <td> {{$vo->name}} </td>
                                                 <td> {!! $vo->type_label !!} </td>
                                                 <td> {!! $vo->platform_label !!} </td>
-                                                <td> {{$vo->name}} </td>
+                                                <td> {{$vo->header}} </td>
                                                 <td>
                                                     @if($vo->status == 0)
                                                         <button type="button" class="btn btn-sm green btn-outline" onclick="setDeviceStatus('{{$vo->id}}', 1)">启用</button>
@@ -90,10 +98,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
             </div>
         </div>
-        <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->
 @endsection

@@ -18,7 +18,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 流量日志</span>
+                            <span class="caption-subject bold uppercase"> 流量日志 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -31,6 +31,14 @@
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
                                 <input type="text" class="col-md-4 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <select class="form-control" name="nodeId" id="nodeId" onChange="doSearch()">
+                                    <option value="" @if(Request::get('nodeId') == '') selected @endif>选择节点</option>
+                                    @foreach($nodeList as $node)
+                                        <option value="{{$node->id}}" @if(Request::get('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
                                 <button type="button" class="btn blue" onclick="do_search();">查询</button>
@@ -67,7 +75,7 @@
                                                         <a href="{{url('admin/userList?id=') . $vo->user->id}}" target="_blank"> <span class="label label-info"> {{$vo->user->username}} </span> </a>
                                                     @endif
                                                 </td>
-                                                <td> {{$vo->ssnode->name}} </td>
+                                                <td> {{$vo->node->name}} </td>
                                                 <td> {{$vo->rate}} </td>
                                                 <td> {{$vo->u}} </td>
                                                 <td> {{$vo->d}} </td>
@@ -105,8 +113,9 @@
             var port = $("#port").val();
             var user_id = $("#user_id").val();
             var username = $("#username").val();
+            var nodeId = $("#nodeId option:checked").val();
 
-            window.location.href = '{{url('admin/trafficLog')}}' + '?port=' + port + '&user_id=' + user_id + '&username=' + username;
+            window.location.href = '{{url('admin/trafficLog')}}' + '?port=' + port + '&user_id=' + user_id + '&username=' + username + '&nodeId=' + nodeId;
         }
 
         // 重置

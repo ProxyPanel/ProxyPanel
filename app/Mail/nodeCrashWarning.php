@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class nodeCrashWarning extends Mailable
+class nodeCrashWarning extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -22,7 +22,7 @@ class nodeCrashWarning extends Mailable
 
     public function build()
     {
-        return $this->view('emails.nodeCrashWarning')->subject('节点宕机警告')->with([
+        return $this->view('emails.nodeCrashWarning')->subject('节点离线警告')->with([
             'nodeName'   => $this->nodeName,
             'nodeServer' => $this->nodeServer
         ]);

@@ -51,7 +51,6 @@ class TicketController extends Controller
             $obj->ticket_id = $id;
             $obj->user_id = Auth::user()->id;
             $obj->content = $content;
-            $obj->created_at = date('Y-m-d H:i:s');
             $obj->save();
 
             if ($obj->id) {

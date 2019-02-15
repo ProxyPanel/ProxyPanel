@@ -16,6 +16,5 @@ class EmailLog extends Model
 {
     protected $table = 'email_log';
     protected $primaryKey = 'id';
-    public $timestamps = false;
 
 }

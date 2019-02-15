@@ -65,8 +65,8 @@ CREATE TABLE `ss_node` (
   `v2_host` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray伪装的域名',
   `v2_path` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'V2ray WS/H2路径',
   `v2_tls` TINYINT(4) NOT NULL DEFAULT '0' COMMENT 'V2ray底层传输安全 0 未开启 1 开启',
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `idx_group` (`group_id`),
 	INDEX `idx_sub` (`is_subscribe`)
@@ -132,8 +132,8 @@ CREATE TABLE `user` (
   `protocol_param` varchar(255) DEFAULT '' COMMENT '协议参数',
   `obfs` varchar(30) NOT NULL DEFAULT 'plain' COMMENT '混淆',
   `obfs_param` varchar(255) DEFAULT '' COMMENT '混淆参数',
-  `speed_limit_per_con` int(255) NOT NULL DEFAULT '204800' COMMENT '单连接限速，默认200M，单位KB',
-  `speed_limit_per_user` int(255) NOT NULL DEFAULT '204800' COMMENT '单用户限速，默认200M，单位KB',
+  `speed_limit_per_con` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单连接限速，默认10G，为0表示不限速，单位Byte',
+  `speed_limit_per_user` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单用户限速，默认10G，为0表示不限速，单位Byte',
   `gender` tinyint(4) NOT NULL DEFAULT '1' COMMENT '性别：0-女、1-男',
   `wechat` varchar(30) DEFAULT '' COMMENT '微信',
   `qq` varchar(20) DEFAULT '' COMMENT 'QQ',
@@ -597,6 +597,7 @@ CREATE TABLE `ticket` (
   `content` text NOT NULL COMMENT '内容',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单';
 
@@ -610,6 +611,7 @@ CREATE TABLE `ticket_reply` (
   `user_id` int(11) NOT NULL COMMENT '回复人ID',
   `content` text NOT NULL COMMENT '回复内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单回复';
 
@@ -650,14 +652,14 @@ CREATE TABLE `user_balance_log` (
 -- Table structure for `user_traffic_modify_log`
 -- ----------------------------
 CREATE TABLE `user_traffic_modify_log` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-	`order_id` INT(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
-	`before` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '操作前流量',
-	`after` BIGINT(20) NOT NULL DEFAULT '0' COMMENT '操作后流量',
-	`desc` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '描述',
-	`created_at` DATETIME NOT NULL,
-	`updated_at` DATETIME NOT NULL,
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+	`order_id` int(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
+	`before` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作前流量',
+	`after` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作后流量',
+	`desc` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
+	`created_at` datetime NOT NULL,
+	`updated_at` datetime NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量变动日志';
 
@@ -708,6 +710,7 @@ CREATE TABLE `email_log` (
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-发送成功、2-发送失败',
   `error` text COMMENT '发送失败抛出的异常信息',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件投递记录';
 
@@ -835,6 +838,13 @@ INSERT INTO `sensitive_words` (`words`) VALUES ('trashymail.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('tempemail.net');
 INSERT INTO `sensitive_words` (`words`) VALUES ('slopsbox.com');
 INSERT INTO `sensitive_words` (`words`) VALUES ('mailnesia.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('ezehe.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('tempail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('newairmail.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('temp-mail.org');
+INSERT INTO `sensitive_words` (`words`) VALUES ('linshiyouxiang.net');
+INSERT INTO `sensitive_words` (`words`) VALUES ('zwoho.com');
+INSERT INTO `sensitive_words` (`words`) VALUES ('mailboxy.fun');
 
 
 -- ----------------------------
@@ -850,7 +860,9 @@ CREATE TABLE `user_subscribe` (
   `ban_desc` varchar(50) NOT NULL DEFAULT '' COMMENT '封禁理由',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `user_id` (`user_id`, `status`),
+	INDEX `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅';
 
 
@@ -869,7 +881,8 @@ CREATE TABLE `user_subscribe_log` (
   `request_ip` varchar(20) DEFAULT NULL COMMENT '请求IP',
   `request_time` datetime DEFAULT NULL COMMENT '请求时间',
   `request_header` text COMMENT '请求头部信息',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `sid` (`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅访问日志';
 
 
@@ -1112,8 +1125,8 @@ CREATE TABLE `marketing` (
   `content` TEXT NOT NULL COMMENT '内容' COLLATE 'utf8mb4_unicode_ci',
   `error` VARCHAR(255) NULL COMMENT '错误信息' COLLATE 'utf8mb4_unicode_ci',
   `status` TINYINT(4) NOT NULL COMMENT '状态：-1-失败、0-待发送、1-成功',
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='营销';
 
@@ -1131,8 +1144,8 @@ CREATE TABLE `user_login_log` (
 	`county` CHAR(20) NOT NULL,
 	`isp` CHAR(20) NOT NULL,
 	`area` CHAR(20) NOT NULL,
-	`created_at` DATETIME NOT NULL,
-	`updated_at` DATETIME NOT NULL,
+	`created_at` datetime NOT NULL,
+	`updated_at` datetime NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
 
@@ -1150,7 +1163,7 @@ CREATE TABLE `ss_node_ip` (
   PRIMARY KEY (`id`),
   INDEX `idx_node` (`node_id`),
   INDEX `idx_port` (`port`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='在线IP';
 
 
 -- ----------------------------
@@ -1161,7 +1174,7 @@ CREATE TABLE `rule` (
 	`type` CHAR(10) NOT NULL DEFAULT 'domain' COMMENT '类型：domain-域名（单一非通配）、ipv4-IPv4地址、ipv6-IPv6地址、reg-正则表达式',
 	`regular` VARCHAR(255) NOT NULL COMMENT '规则：域名、IP、正则表达式',
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='规则表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='规则表';
 
 
 -- ----------------------------
@@ -1172,7 +1185,7 @@ CREATE TABLE `ss_node_deny` (
 	`node_id` INT(11) NOT NULL DEFAULT '0',
 	`rule_id` INT(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM COLLATE='utf8_general_ci' COMMENT='节点访问规则关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点访问规则关联表';
 
 
 -- ----------------------------
@@ -1180,20 +1193,83 @@ CREATE TABLE `ss_node_deny` (
 -- ----------------------------
 CREATE TABLE `device` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：1-Shadowsocks(R)、2-V2Ray',
+	`type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：0-兼容、1-Shadowsocks(R)、2-V2Ray',
 	`platform` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '所属平台：0-其他、1-iOS、2-Android、3-Mac、4-Windows、5-Linux',
 	`name` VARCHAR(50) NOT NULL COMMENT '设备名称',
 	`status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁止订阅、1-允许订阅',
+	`header` VARCHAR(100) NOT NULL COMMENT '请求时头部的识别特征码',
 	PRIMARY KEY (`id`)
-) COMMENT='设备型号表' ENGINE=MyISAM;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备型号表';
 
 
 -- ----------------------------
 -- Records of `device`
 -- ----------------------------
-INSERT INTO `device` VALUES ('1', '1', '1', 'Quantumult', 1);
-INSERT INTO `device` VALUES ('2', '1', '1', 'Shadowrocket', 1);
-INSERT INTO `device` VALUES ('3', '1', '1', 'ShadowsocksX-NG-R', 1);
+INSERT INTO `device` (`id`, `type`, `platform`, `name`, `status`, `header`) VALUES
+	(1, 1, 1, 'Quantumult', 1, 'Quantumult'),
+	(2, 1, 1, 'Shadowrocket', 1, 'Shadowrocket'),
+	(3, 1, 3, 'ShadowsocksX-NG-R', 1, 'ShadowsocksX-NG-R'),
+	(4, 1, 1, 'Pepi', 1, 'Pepi'),
+	(5, 1, 1, 'Potatso 2', 1, 'Potatso'),
+	(6, 1, 1, 'Potatso Lite', 1, 'Potatso'),
+	(7, 1, 4, 'ShadowsocksR', 1, 'ShadowsocksR'),
+	(8, 2, 4, 'V2RayW', 1, 'V2RayW'),
+	(9, 2, 4, 'V2RayN', 1, 'V2RayN'),
+	(10, 2, 4, 'V2RayS', 1, 'V2RayS'),
+	(11, 2, 4, 'Clash for Windows', 1, 'Clash'),
+	(12, 2, 3, 'V2RayX', 1, 'V2RayX'),
+	(13, 2, 3, 'V2RayU', 1, 'V2RayU'),
+	(14, 2, 3, 'V2RayC', 1, 'V2RayC'),
+	(15, 2, 3, 'ClashX', 1, 'ClashX'),
+	(16, 2, 1, 'Kitsunebi', 1, 'Kitsunebi'),
+	(17, 2, 1, 'Kitsunebi Lite', 1, 'Kitsunebi'),
+	(18, 2, 1, 'i2Ray', 1, 'i2Ray'),
+	(19, 2, 2, 'BifrostV', 1, 'BifrostV'),
+	(20, 2, 2, 'V2RayNG', 1, 'V2RayNG'),
+	(21, 2, 2, 'ShadowsocksR', 1, 'okhttp'),
+	(22, 2, 2, 'SSRR', 1, 'okhttp');
+
+
+-- ----------------------------
+-- Records of `failed_jobs`
+-- ----------------------------
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='失败任务';
+
+
+-- ----------------------------
+-- Records of `jobs`
+-- ----------------------------
+CREATE TABLE `jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `jobs_queue_index` (`queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务';
+
+
+-- ----------------------------
+-- Records of `migrations`
+-- ----------------------------
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='迁移';
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

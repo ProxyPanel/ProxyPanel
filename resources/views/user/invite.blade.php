@@ -71,7 +71,7 @@
                                                             <span class="label label-sm label-default"> {{trans('home.invite_code_table_status_expire')}} </span>
                                                         @endif
                                                     </td>
-                                                    <td> {{empty($invite->user) ? '【账号已删除】' : $invite->user->username}} </td>
+                                                    <td> {{empty($invite->user) ? ($invite->status == 1 ? '【账号已删除】' : '') : $invite->user->username}} </td>
                                                 </tr>
                                             @endforeach
                                         @endif

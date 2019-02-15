@@ -52,7 +52,6 @@ class ServerChan
         $log->content = $content;
         $log->status = $status;
         $log->error = $error;
-        $log->created_at = date('Y-m-d H:i:s');
 
         return $log->save();
     }

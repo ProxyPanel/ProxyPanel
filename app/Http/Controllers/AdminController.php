@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
+use App\Components\IPIP;
+use App\Components\QQWry;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Country;
@@ -116,8 +118,8 @@ class AdminController extends Controller
         $qq = trim($request->get('qq'));
         $port = intval($request->get('port'));
         $pay_way = intval($request->get('pay_way'));
-        $status = intval($request->get('status'));
-        $enable = intval($request->get('enable'));
+        $status = $request->get('status');
+        $enable = $request->get('enable');
         $online = $request->get('online');
         $unActive = $request->get('unActive');
         $flowAbnormal = $request->get('flowAbnormal');
@@ -150,11 +152,11 @@ class AdminController extends Controller
         }
 
         if ($status != '') {
-            $query->where('status', $status);
+            $query->where('status', intval($status));
         }
 
         if ($enable != '') {
-            $query->where('enable', $enable);
+            $query->where('enable', intval($enable));
         }
 
         // 流量超过100G的
@@ -553,8 +555,8 @@ class AdminController extends Controller
 
             // 负载（10分钟以内）
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-            $node->load = empty($node_info) || empty($node_info->load) ? '宕机' : $node_info->load;
-            $node->uptime = empty($online_log) ? 0 : seconds2time($node_info->uptime);
+            $node->load = empty($node_info) || empty($node_info->load) ? '离线' : $node_info->load;
+            $node->uptime = empty($node_info) ? 0 : seconds2time($node_info->uptime);
         }
 
         $view['nodeList'] = $nodeList;
@@ -1108,24 +1110,29 @@ class AdminController extends Controller
     {
         $port = $request->get('port');
         $user_id = $request->get('user_id');
-        $username = $request->get('username');
+        $username = trim($request->get('username'));
+        $nodeId = intval($request->get('nodeId'));
 
-        $query = UserTrafficLog::with(['User', 'SsNode']);
+        $query = UserTrafficLog::query()->with(['user', 'node']);
 
-        if (!empty($port)) {
+        if ($port) {
             $query->whereHas('user', function ($q) use ($port) {
                 $q->where('port', $port);
             });
         }
 
-        if (!empty($user_id)) {
-            $query->where('user_id', $user_id);
+        if ($user_id) {
+            $query->where('user_id', intval($user_id));
         }
 
-        if (!empty($username)) {
+        if ($username) {
             $query->whereHas('user', function ($q) use ($username) {
                 $q->where('username', 'like', '%' . $username . '%');
             });
+        }
+
+        if ($nodeId) {
+            $query->where('node_id', $nodeId);
         }
 
         // 已使用流量
@@ -1139,6 +1146,7 @@ class AdminController extends Controller
         }
 
         $view['list'] = $list;
+        $view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
         return Response::view('admin.trafficLog', $view);
     }
@@ -2365,20 +2373,14 @@ EOF;
     public function userOnlineIPList(Request $request)
     {
         $username = trim($request->get('username'));
-        $status = $request->get('status');
         $port = intval($request->get('port'));
         $wechat = trim($request->get('wechat'));
         $qq = trim($request->get('qq'));
-        $enable = intval($request->get('enable'));
 
-        $query = User::query();
+        $query = User::query()->where('status', '>=', 0)->where('enable', 1);
 
         if ($username) {
             $query->where('username', 'like', '%' . $username . '%');
-        }
-
-        if ($status != '') {
-            $query->where('status', intval($status));
         }
 
         if (!empty($wechat)) {
@@ -2389,19 +2391,15 @@ EOF;
             $query->where('qq', 'like', '%' . $qq . '%');
         }
 
-        if (!empty($port)) {
-            $query->where('port', intval($port));
-        }
-
-        if ($enable != '') {
-            $query->where('enable', intval($enable));
+        if ($port) {
+            $query->where('port', $port);
         }
 
         $userList = $query->paginate(15)->appends($request->except('page'));
         if (!$userList->isEmpty()) {
             foreach ($userList as &$user) {
-                // 最近10条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-                $user->onlineIPList = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('port', $user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(10)->get();
+                // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
+                $user->onlineIPList = SsNodeIp::query()->with(['node'])->where('type', 'tcp')->where('port', $user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(5)->get();
             }
         }
 
@@ -2505,6 +2503,73 @@ EOF;
         $view['list'] = EmailLog::query()->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.emailLog', $view);
+    }
+
+    // 在线IP监控（实时）
+    public function onlineIPMonitor(Request $request)
+    {
+        $ip = trim($request->get('ip'));
+        $username = trim($request->get('username'));
+        $port = intval($request->get('port'));
+        $nodeId = intval($request->get('nodeId'));
+        $userId = intval($request->get('id'));
+
+        $query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-120 seconds"));
+
+        if ($ip) {
+            $query->where('ip', $ip);
+        }
+
+        if ($username) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        if ($port) {
+            $query->whereHas('user', function ($q) use ($port) {
+                $q->where('port', $port);
+            });
+        }
+
+        if ($nodeId) {
+            $query->whereHas('node', function ($q) use ($nodeId) {
+                $q->where('id', $nodeId);
+            });
+        }
+
+        if ($userId) {
+            $query->whereHas('user', function ($q) use ($userId) {
+                $q->where('id', $userId);
+            });
+        }
+
+        $list = $query->groupBy('port')->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+
+        foreach ($list as $vo) {
+            // 跳过上报多IP的
+            if (strpos($vo->ip, ',') !== false) {
+                continue;
+            }
+
+            $ipInfo = QQWry::ip($vo->ip);
+            if (isset($ipInfo['error'])) {
+                // 用IPIP的库再试一下
+                $ipip = IPIP::ip($vo->ip);
+                $ipInfo = [
+                    'country'  => $ipip['country_name'],
+                    'province' => $ipip['region_name'],
+                    'city'     => $ipip['city_name']
+                ];
+            }
+
+            $vo->ipInfo = $ipInfo['country'] . ' ' . $ipInfo['province'] . ' ' . $ipInfo['city'];
+        }
+
+        $view['list'] = $list;
+        $view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
+
+        return Response::view('admin.onlineIPMonitor', $view);
     }
 
     // 生成用户标签

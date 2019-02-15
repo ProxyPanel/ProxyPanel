@@ -21,13 +21,13 @@ class Device extends Model
     {
         switch ($this->attributes['type']) {
             case 1:
-                $type_label = '<span class="label label-info"> Shadowsocks(R) </span>';
+                $type_label = '<span class="label label-danger"> Shadowsocks(R) </span>';
                 break;
             case 2:
-                $type_label = '<span class="label label-info"> V2Ray </span>';
+                $type_label = '<span class="label label-danger"> V2Ray </span>';
                 break;
             default:
-                $type_label = '<span class="label label-info"> 其他 </span>';
+                $type_label = '<span class="label label-default"> 其他 </span>';
         }
 
         return $type_label;
@@ -37,19 +37,19 @@ class Device extends Model
     {
         switch ($this->attributes['platform']) {
             case 1:
-                $platform_label = '<i class="fa fa-apple"></i>';
+                $platform_label = '<i class="fa fa-apple"></i> iOS';
                 break;
             case 2:
-                $platform_label = '<i class="fa fa-android"></i>';
+                $platform_label = '<i class="fa fa-android"></i> Android';
                 break;
             case 3:
-                $platform_label = '<i class="fa fa-apple"></i>';
+                $platform_label = '<i class="fa fa-apple"></i> Mac';
                 break;
             case 4:
-                $platform_label = '<i class="fa fa-windows"></i>';
+                $platform_label = '<i class="fa fa-windows"></i> Windows';
                 break;
             case 5:
-                $platform_label = '<i class="fa fa-linux"></i>';
+                $platform_label = '<i class="fa fa-linux"></i> Linux';
                 break;
             case 0:
             default:
