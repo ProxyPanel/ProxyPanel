@@ -28,3 +28,4 @@ INSERT INTO `device` (`id`, `type`, `platform`, `name`, `status`, `header`) VALU
 	(20, 2, 2, 'V2RayNG', 1, 'V2RayNG'),
 	(21, 2, 2, 'ShadowsocksR', 1, 'okhttp'),
 	(22, 2, 2, 'SSRR', 1, 'okhttp');
+

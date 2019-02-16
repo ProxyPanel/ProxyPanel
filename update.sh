@@ -7,4 +7,4 @@ php composer.phar dumpautoload
 php artisan key:generate
 php artisan view:clear
 php artisan cache:clear
-chown -R www:www storage
+chown -R www:www ./

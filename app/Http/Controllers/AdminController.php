@@ -2002,7 +2002,7 @@ EOF;
         $name = trim($request->get('name'));
         $value = trim($request->get('value'));
 
-        if ($name == '') {
+        if (!$name) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：请求参数异常']);
         }
 
@@ -2012,7 +2012,7 @@ EOF;
         }
 
         // 如果开启用户邮件重置密码，则先设置网站名称和网址
-        if (in_array($name, ['is_reset_password', 'is_active_register', 'is_youzan']) && $value == '1') {
+        if (in_array($name, ['is_reset_password', 'is_active_register']) && $value == '1') {
             $config = Config::query()->where('name', 'website_name')->first();
             if ($config->value == '') {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
@@ -2041,36 +2041,39 @@ EOF;
             $value = intval($value) / 100;
         }
 
-        // 用有赞云支付不可用AliPay和当面付
-        if (in_array($name, ['is_youzan']) && $name) {
+        // 用有赞云支付则不可用支付宝国际和支付宝当面付
+        if (in_array($name, ['is_youzan'])) {
             $is_alipay = Config::query()->where('name', 'is_alipay')->first();
             if ($is_alipay->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝国际支付】']);
             }
+
             $is_f2fpay = Config::query()->where('name', 'is_f2fpay')->first();
             if ($is_f2fpay->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝当面付】']);
             }
         }
 
-        // 用AliPay支付不可用有赞云支付和当面付
-        if (in_array($name, ['is_alipay']) && $name) {
+        // 用支付国际则不可用有赞云支付和支付宝当面付
+        if (in_array($name, ['is_alipay'])) {
             $is_youzan = Config::query()->where('name', 'is_youzan')->first();
             if ($is_youzan->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
             }
+
             $is_f2fpay = Config::query()->where('name', 'is_f2fpay')->first();
             if ($is_f2fpay->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝当面付】']);
             }
         }
 
-        // 用当面不可用有赞云支付和Alipay支付
-        if (in_array($name, ['is_f2fpay']) && $name) {
+        // 用支付宝当面则不可用有赞云支付和支付宝国际
+        if (in_array($name, ['is_f2fpay'])) {
             $is_youzan = Config::query()->where('name', 'is_youzan')->first();
             if ($is_youzan->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
             }
+
             $is_alipay = Config::query()->where('name', 'is_alipay')->first();
             if ($is_alipay->value) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝国际支付】']);
