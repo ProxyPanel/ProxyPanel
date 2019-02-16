@@ -103,11 +103,11 @@ $lockFile = ROOT_PATH . '.env';
 if (is_file($lockFile)) {
     $errInfo = "当前已经安装{$sitename}，如果需要重新安装，请手动移除.env文件";
 } elseif (version_compare(PHP_VERSION, '7.1.3', '<')) {
-    $errInfo = "当前版本(" . PHP_VERSION . ")过低，请使用PHP7.1以上版本";
+    $errInfo = "当前PHP版本(" . PHP_VERSION . ")过低，请使用PHP7.1.3及以上版本";
 } elseif (!is_file($exampleConfigFile)) {
     $errInfo = "缺失标准配置文件.env.example";
 } elseif (!extension_loaded("PDO")) {
-    $errInfo = "当前未开启PDO，无法进行安装";
+    $errInfo = "当前PHP环境未启用PDO组件，无法进行安装";
 } elseif (!is_really_writable(ROOT_PATH)) {
     $open_basedir = ini_get('open_basedir');
     if ($open_basedir) {
@@ -123,7 +123,7 @@ if (is_file($lockFile)) {
     $dirArr = [];
     foreach ($checkDirs as $k => $v) {
         if (!is_dir(ROOT_PATH . $v)) {
-            $errInfo = '根目录仅包含核心代码，请在根目录执行php composer.phar install安装依赖';
+            $errInfo = '请先在' . $sitename . '根目录下执行 php composer.phar install 安装依赖';
             break;
         }
     }
@@ -351,9 +351,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
 <div class="container">
-    <h1>
-        <img src="./assets/images/home_logo.png"/></img>
-    </h1>
     <h2>开始安装 <?php echo $sitename; ?></h2>
     <div>
 
