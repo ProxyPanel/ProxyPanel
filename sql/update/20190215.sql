@@ -2,7 +2,7 @@
 ALTER TABLE `email_log`
 	ADD COLUMN `updated_at` DATETIME NULL DEFAULT NULL COMMENT '最后更新时间' AFTER `created_at`;
 
--- 加入F2F pay
+-- 加入支付宝当面付
 INSERT INTO `config` values ('84', 'is_f2fpay', 0);
 INSERT INTO `config` VALUES ('85', 'f2fpay_app_id', '');
 INSERT INTO `config` VALUES ('86', 'f2fpay_private_key', '');

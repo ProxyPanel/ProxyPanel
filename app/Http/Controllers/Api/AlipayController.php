@@ -39,14 +39,14 @@ class AlipayController extends Controller
     // 接收GET请求
     public function index(Request $request)
     {
-        \Log::info("【AliPay】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
-        exit("【AliPay】接口正常");
+        \Log::info("【支付宝国际】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
+        exit("【支付宝国际】接口正常");
     }
 
     // 接收POST请求
     public function store(Request $request)
     {
-        \Log::info("【AliPay】回调接口[POST]：" . var_export($request->all(), true));
+        \Log::info("【支付宝国际】回调接口[POST]：" . var_export($request->all(), true));
 
         $result = "fail";
         $alipayNotify = new AlipayNotify(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key'], self::$systemConfig['alipay_public_key'], self::$systemConfig['alipay_transport']);
@@ -81,12 +81,12 @@ class AlipayController extends Controller
     // 交易支付
     private function tradePaid($msg)
     {
-        Log::info('【Alipay】回调交易支付');
+        Log::info('【支付宝国际】回调交易支付');
 
         // 获取未完成状态的订单防止重复增加时间
         $payment = Payment::query()->with(['order', 'order.goods'])->where('status', 0)->where('order_sn', $msg['out_trade_no'])->first();
         if (!$payment) {
-            Log::info('【Alipay】回调订单不存在');
+            Log::info('【支付宝国际】回调订单不存在');
             return;
         }
 
@@ -272,7 +272,7 @@ class AlipayController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info('【Alipay】回调更新支付单和订单异常：' . $e->getMessage());
+            Log::info('【支付宝国际】回调更新支付单和订单异常：' . $e->getMessage());
         }
     }
 

@@ -3,6 +3,7 @@
  * SSRPanel安装程序
  *
  * 安装完成后建议删除此文件
+ *
  * @author Heron
  */
 
@@ -35,7 +36,7 @@ function is_really_writable($file)
 }
 
 // 写配置文件
-function write_ini_file($assoc_arr, $path, $has_sections = FALSE)
+function write_ini_file($assoc_arr, $path, $has_sections = false)
 {
     $content = "";
     if ($has_sections) {
@@ -46,7 +47,7 @@ function write_ini_file($assoc_arr, $path, $has_sections = FALSE)
                     for ($i = 0; $i < count($elem2); $i++) {
                         $content .= $key2 . "[] = \"" . $elem2[$i] . "\"\n";
                     }
-                } else if ($elem2 == "")
+                } elseif ($elem2 == "")
                     $content .= $key2 . " = \n";
                 else
                     $content .= $key2 . " = \"" . $elem2 . "\"\n";
@@ -56,12 +57,12 @@ function write_ini_file($assoc_arr, $path, $has_sections = FALSE)
         foreach ($assoc_arr as $key => $elem) {
             if (is_array($elem)) {
                 for ($i = 0; $i < count($elem); $i++) {
-                    $content .= $key2 . "[] = \"" . $elem[$i] . "\"\n";
+                    $content .= $key . "[] = \"" . $elem[$i] . "\"\n";
                 }
-            } else if ($elem == "")
-                $content .= $key2 . " = \n";
+            } elseif ($elem == "")
+                $content .= $key . " = \n";
             else
-                $content .= $key2 . " = \"" . $elem . "\"\n";
+                $content .= $key . " = \"" . $elem . "\"\n";
         }
     }
 
@@ -77,37 +78,37 @@ function write_ini_file($assoc_arr, $path, $has_sections = FALSE)
 
 $sitename = "SSRPanel";
 
-$link = array(
+$link = [
     'github'   => "https://github.com/ssrpanel/SSRPanel",
     'wiki'     => 'https://github.com/ssrpanel/SSRPanel/wiki',
     'telegram' => 'https://t.me/ssrpanel',
-);
+];
 
 // 检测目录是否存在
 $checkDirs = [
     'vendor',
 ];
 
-//错误信息
+// 错误信息
 $errInfo = '';
 
-//数据库配置文件
+// 数据库配置文件
 $ConfigFile = ROOT_PATH . '.env';
 
-//数据库标准配置文件
+// 数据库标准配置文件
 $exampleConfigFile = ROOT_PATH . '.env.example';
 
 // 锁定的文件
 $lockFile = ROOT_PATH . '.env';
 if (is_file($lockFile)) {
     $errInfo = "当前已经安装{$sitename}，如果需要重新安装，请手动移除.env文件";
-} else if (version_compare(PHP_VERSION, '7.1.3', '<')) {
+} elseif (version_compare(PHP_VERSION, '7.1.3', '<')) {
     $errInfo = "当前版本(" . PHP_VERSION . ")过低，请使用PHP7.1以上版本";
-} else if (!is_file($exampleConfigFile)) {
+} elseif (!is_file($exampleConfigFile)) {
     $errInfo = "缺失标准配置文件.env.example";
-} else if (!extension_loaded("PDO")) {
+} elseif (!extension_loaded("PDO")) {
     $errInfo = "当前未开启PDO，无法进行安装";
-} else if (!is_really_writable(ROOT_PATH)) {
+} elseif (!is_really_writable(ROOT_PATH)) {
     $open_basedir = ini_get('open_basedir');
     if ($open_basedir) {
         $dirArr = explode(PATH_SEPARATOR, $open_basedir);
@@ -127,12 +128,14 @@ if (is_file($lockFile)) {
         }
     }
 }
+
 // 当前是POST请求
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($errInfo) {
         echo $errInfo;
         exit;
     }
+
     $err = '';
     $APP_KEY = md5(time() . mt_rand(1, 1000000));
     $DB_HOST = isset($_POST['mysqlHost']) ? $_POST['mysqlHost'] : '127.0.0.1';
@@ -166,17 +169,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 //        exit;
 //    }
     try {
-        //检测能否读取安装文件
+        // 检测能否读取安装文件
         $sql = @file_get_contents(INSTALL_PATH . 'db.sql');
         if (!$sql) {
             throw new Exception("无法读取所需的sql/db.sql，请检查是否有读权限");
         }
-        $pdo = new PDO("mysql:host={$DB_HOST};port={$DB_PORT}", $DB_USERNAME, $DB_PASSWORD, array(
+        $pdo = new PDO("mysql:host={$DB_HOST};port={$DB_PORT}", $DB_USERNAME, $DB_PASSWORD, [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-        ));
+        ]);
 
-        //检测是否支持innodb存储引擎
+        // 检测是否支持innodb存储引擎
         $pdoStatement = $pdo->query("SHOW VARIABLES LIKE 'innodb_version'");
         $result = $pdoStatement->fetch();
         if (!$result) {
@@ -200,7 +203,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         };
         $config = preg_replace_callback("/(APP_KEY|DB_HOST|DB_DATABASE|DB_USERNAME|DB_PASSWORD|DB_PORT)=(.*)(\s+)/", $callback, $config);
 
-        //检测能否成功写入数据库配置
+        // 检测能否成功写入数据库配置
         $result = @file_put_contents($ConfigFile, $config);
         if (!$result) {
             throw new Exception("无法写入数据库信息到.env文件，请检查是否有写权限");
@@ -349,15 +352,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 <div class="container">
     <h1>
-        <img src="./assets/images/home_logo.png"/>
-        </img>
+        <img src="./assets/images/home_logo.png"/></img>
     </h1>
     <h2>开始安装 <?php echo $sitename; ?></h2>
     <div>
 
-        <p><a href="<?php echo $link['github']; ?>" target="_blank">Github</a> <a
-                    href="<?php echo $link['wiki']; ?>" target="_blank">Wiki</a> <a
-                    href="<?php echo $link['telegram']; ?>">Telegram</a></p>
+        <p><a href="<?php echo $link['github']; ?>" target="_blank">Github</a> <a href="<?php echo $link['wiki']; ?>" target="_blank">Wiki</a> <a href="<?php echo $link['telegram']; ?>">Telegram</a></p>
 
         <form method="post">
             <?php if ($errInfo): ?>
@@ -439,7 +439,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         .done(function (ret) {
                             if (ret === 'success') {
                                 $('#error').hide();
-                                $("#success").text("<?php echo $sitename; ?>安装成功，请使用默认用户名admin和密码123456登录，并尽快修改成新密码。").show();
+                                $("#success").text("<?php echo $sitename; ?>安装成功，请使用默认用户名admin、密码123456登录，并尽快修改密码并重置订阅地址。").show();
                                 $('<a class="btn" href="./">进入SSRPanel</a>').insertAfter($button);
                                 $button.remove();
                                 localStorage.setItem("fastep", "installed");

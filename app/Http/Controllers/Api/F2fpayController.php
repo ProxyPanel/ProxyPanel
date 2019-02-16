@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Components\Helpers;
-use App\Components\AlipayNotify;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
@@ -41,14 +40,14 @@ class F2fpayController extends Controller
     // 接收GET请求
     public function index(Request $request)
     {
-        \Log::info("【F2fPay】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
-        exit("【F2fPay】接口正常");
+        \Log::info("【支付宝当面付】回调接口[GET]：" . var_export($request->all(), true) . '[' . getClientIp() . ']');
+        exit("【支付宝当面付】接口正常");
     }
 
     // 接收POST请求
     public function store(Request $request)
     {
-        \Log::info("【F2fPay】回调接口[POST]：" . var_export($request->all(), true));
+        \Log::info("【支付宝当面付】回调接口[POST]：" . var_export($request->all(), true));
 
         $result = "fail";
 
@@ -68,9 +67,9 @@ class F2fpayController extends Controller
                 'trade_no'     => $request->get('trade_no'),
             ]);
 
-            \Log::info("【F2fPay】回调验证查询：" . var_export($verify_result, true));
+            \Log::info("【支付宝当面付】回调验证查询：" . var_export($verify_result, true));
         } catch (PayException $e) {
-            \Log::info("【F2fPay】回调验证查询出错：" . var_export($e->errorMessage(), true));
+            \Log::info("【支付宝当面付】回调验证查询出错：" . var_export($e->errorMessage(), true));
             exit($result);
         }
 
@@ -89,10 +88,10 @@ class F2fpayController extends Controller
 
                 $this->tradePaid($data);
             } else {
-                Log::info('AliPay-POST:交易失败[' . getClientIp() . ']');
+                Log::info('支付宝当面付-POST:交易失败[' . getClientIp() . ']');
             }
         } else {
-            Log::info('AliPay-POST:验证失败[' . getClientIp() . ']');
+            Log::info('支付宝当面付-POST:验证失败[' . getClientIp() . ']');
         }
 
         // 返回验证结果
@@ -102,12 +101,12 @@ class F2fpayController extends Controller
     // 交易支付
     private function tradePaid($msg)
     {
-        Log::info('【Alipay】回调交易支付');
+        Log::info('【支付宝当面付】回调交易支付');
 
         // 获取未完成状态的订单防止重复增加时间
         $payment = Payment::query()->with(['order', 'order.goods'])->where('status', 0)->where('order_sn', $msg['out_trade_no'])->first();
         if (!$payment) {
-            Log::info('【Alipay】回调订单不存在');
+            Log::info('【支付宝当面付】回调订单不存在');
             return;
         }
 
@@ -293,7 +292,7 @@ class F2fpayController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info('【Alipay】回调更新支付单和订单异常：' . $e->getMessage());
+            Log::info('【支付宝当面付】回调更新支付单和订单异常：' . $e->getMessage());
         }
     }
 
