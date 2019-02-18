@@ -20,6 +20,13 @@
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
                 <input type="hidden" name="aff" value="{{Session::get('register_aff')}}" />
             </div>
+            @if(\App\Components\Helpers::systemConfig()['is_verify_register'])
+                <div class="form-group" style="margin-bottom:75px;">
+                    <label class="control-label visible-ie8 visible-ie9">验证码</label>
+                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="verify_code" value="" required />
+                    <input type="button" class="btn grey" id="sendCode" value="发送" style="float:right;" onclick="sendVerifyCode()" >
+                </div>
+            @endif
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.password')}}</label>
                 <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.password')}}" name="password" value="{{Request::old('password')}}" required />
@@ -37,13 +44,7 @@
                     <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
                 @endif
             @endif
-            @if(\App\Components\Helpers::systemConfig()['is_verify_register'])
-                <div class="form-group" style="margin-bottom:75px;">
-                    <label class="control-label visible-ie8 visible-ie9">验证码</label>
-                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="verify_code" value="" required />
-                    <input type="button" class="btn grey" id="sendCode" value="发送" style="float:right;" onclick="sendVerifyCode()" >
-                </div>
-            @elseif(\App\Components\Helpers::systemConfig()['is_captcha'])
+            @if(!\App\Components\Helpers::systemConfig()['is_verify_register'] && \App\Components\Helpers::systemConfig()['is_captcha'])
                 <div class="form-group" style="margin-bottom:75px;">
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
                     <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />

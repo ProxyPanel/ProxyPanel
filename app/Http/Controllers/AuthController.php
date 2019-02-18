@@ -382,7 +382,7 @@ class AuthController extends Controller
                 }
             }
 
-            return Redirect::to('login');
+            return Redirect::to('login')->withInput();
         } else {
             Session::put('register_token', makeRandStr(16));
 
