@@ -42,7 +42,7 @@
                                             <td> {{$vo->title}} </td>
                                             <td> {{$vo->content}} </td>
                                             <td> {{$vo->created_at}} </td>
-                                            <td> {{$vo->status ? '投递成功' : $vo->error}} </td>
+                                            <td> {{$vo->status == 0 ? '等待投递' : ($vo->status ? '投递成功' : $vo->error)}} </td>
                                         </tr>
                                     @endforeach
                                 @endif

@@ -281,12 +281,8 @@ class F2fpayController extends Controller
                 $nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get()->toArray();
                 $content['serverList'] = $nodeList;
 
-                try {
-                    Mail::to($order->email)->send(new sendUserInfo($content));
-                    Helpers::addEmailLog($order->email, $title, json_encode($content));
-                } catch (\Exception $e) {
-                    Helpers::addEmailLog($order->email, $title, json_encode($content), 0, $e->getMessage());
-                }
+                $logId = Helpers::addEmailLog($order->email, $title, json_encode($content));
+                Mail::to($order->email)->send(new sendUserInfo($logId, $content));
             }
 
             DB::commit();

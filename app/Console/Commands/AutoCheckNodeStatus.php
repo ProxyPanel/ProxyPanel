@@ -173,12 +173,8 @@ class AutoCheckNodeStatus extends Command
     private function notifyMasterByEmail($title, $content, $nodeName, $nodeServer)
     {
         if (self::$systemConfig['is_node_crash_warning'] && self::$systemConfig['crash_warning_email']) {
-            try {
-                Mail::to(self::$systemConfig['crash_warning_email'])->send(new nodeCrashWarning($nodeName, $nodeServer));
-                Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
-            } catch (\Exception $e) {
-                Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
-            }
+            $logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
+            Mail::to(self::$systemConfig['crash_warning_email'])->send(new nodeCrashWarning($logId, $nodeName, $nodeServer));
         }
     }
 

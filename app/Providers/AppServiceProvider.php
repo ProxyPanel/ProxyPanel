@@ -21,11 +21,6 @@ class AppServiceProvider extends ServiceProvider
         }
 
         //\Schema::defaultStringLength(191);
-
-        // 队列失败时抓取异常
-        Queue::failing(function (JobFailed $event) {
-            \Log::error('[出队列]邮件发送失败：' . json_encode(['connectionName' => $event->connectionName, 'job' => $event->job, 'exception' => $event->exception]));
-        });
     }
 
     /**

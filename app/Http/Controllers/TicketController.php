@@ -66,20 +66,12 @@ class TicketController extends Controller
                 // 发通知邮件
                 if (!Auth::user()->is_admin) {
                     if (self::$systemConfig['crash_warning_email']) {
-                        try {
-                            Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($title, $content));
-                            Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
-                        } catch (\Exception $e) {
-                            Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
-                        }
+                        $logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
+                        Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($logId, $title, $content));
                     }
                 } else {
-                    try {
-                        Mail::to($ticket->user->username)->send(new replyTicket($title, $content));
-                        Helpers::addEmailLog($ticket->user->username, $title, $content);
-                    } catch (\Exception $e) {
-                        Helpers::addEmailLog($ticket->user->username, $title, $content, 0, $e->getMessage());
-                    }
+                    $logId = Helpers::addEmailLog($ticket->user->username, $title, $content);
+                    Mail::to($ticket->user->username)->send(new replyTicket($logId, $title, $content));
                 }
 
                 // 通过ServerChan发微信消息提醒管理员
@@ -119,12 +111,8 @@ class TicketController extends Controller
         $content = "工单【" . $ticket->title . "】已关闭";
 
         // 发邮件通知用户
-        try {
-            Mail::to($ticket->user->username)->send(new closeTicket($title, $content));
-            Helpers::addEmailLog($ticket->user->username, $title, $content);
-        } catch (\Exception $e) {
-            Helpers::addEmailLog($ticket->user->username, $title, $content, 0, $e->getMessage());
-        }
+        $logId = Helpers::addEmailLog($ticket->user->username, $title, $content);
+        Mail::to($ticket->user->username)->send(new closeTicket($logId, $title, $content));
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
     }

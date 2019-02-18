@@ -359,12 +359,8 @@ class AuthController extends Controller
                     $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
                     $this->addVerify($user->id, $token);
 
-                    try {
-                        Mail::to($username)->send(new activeUser($activeUserUrl));
-                        Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl);
-                    } catch (\Exception $e) {
-                        Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl, 0, $e->getMessage());
-                    }
+                    $logId = Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl);
+                    Mail::to($username)->send(new activeUser($logId, $activeUserUrl));
 
                     Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，如未收到，请查看垃圾邮箱');
                 } else {
@@ -443,12 +439,8 @@ class AuthController extends Controller
             $title = '重置密码';
             $content = '请求地址：' . $resetPasswordUrl;
 
-            try {
-                Mail::to($username)->send(new resetPassword($resetPasswordUrl));
-                Helpers::addEmailLog($username, $title, $content);
-            } catch (\Exception $e) {
-                Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());
-            }
+            $logId = Helpers::addEmailLog($username, $title, $content);
+            Mail::to($username)->send(new resetPassword($logId, $resetPasswordUrl));
 
             Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
             Session::flash('successMsg', '重置成功，请查看邮箱');
@@ -592,12 +584,8 @@ class AuthController extends Controller
             $title = '重新激活账号';
             $content = '请求地址：' . $activeUserUrl;
 
-            try {
-                Mail::to($username)->send(new activeUser($activeUserUrl));
-                Helpers::addEmailLog($username, $title, $content);
-            } catch (\Exception $e) {
-                Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());
-            }
+            $logId = Helpers::addEmailLog($username, $title, $content);
+            Mail::to($username)->send(new activeUser($logId, $activeUserUrl));
 
             Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
             Session::flash('successMsg', '激活邮件已发送，如未收到，请查看垃圾箱');
@@ -706,12 +694,8 @@ class AuthController extends Controller
         $title = '发送注册验证码';
         $content = '验证码：' . $code;
 
-        try {
-            Mail::to($username)->send(new sendVerifyCode($code));
-            Helpers::addEmailLog($username, $title, $content);
-        } catch (\Exception $e) {
-            Helpers::addEmailLog($username, $title, $content, 0, $e->getMessage());
-        }
+        $logId = Helpers::addEmailLog($username, $title, $content);
+        Mail::to($username)->send(new sendVerifyCode($logId, $code));
 
         $this->addVerifyCode($username, $code);
 

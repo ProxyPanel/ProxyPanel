@@ -141,8 +141,9 @@ class Helpers
         $log->content = $content;
         $log->status = $status;
         $log->error = $error;
+        $log->save();
 
-        return $log->save();
+        return $log->id;
     }
 
     /**

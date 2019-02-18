@@ -707,7 +707,7 @@ CREATE TABLE `email_log` (
   `address` VARCHAR(255) NOT NULL COMMENT '收信地址',
   `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
   `content` TEXT NOT NULL COMMENT '内容',
-  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-发送成功、2-发送失败',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1发送失败、0-等待发送、1-发送成功',
   `error` text COMMENT '发送失败抛出的异常信息',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',

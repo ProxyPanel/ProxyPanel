@@ -51,12 +51,8 @@ class UserTrafficAutoWarning extends Command
                 $title = '流量提醒';
                 $content = '流量已使用：' . $usedPercent . '%，请保持关注。';
 
-                try {
-                    Mail::to($user->username)->send(new userTrafficWarning($usedPercent));
-                    Helpers::addEmailLog($user->username, $title, $content);
-                } catch (\Exception $e) {
-                    Helpers::addEmailLog($user->username, $title, $content, 0, $e->getMessage());
-                }
+                $logId = Helpers::addEmailLog($user->username, $title, $content);
+                Mail::to($user->username)->send(new userTrafficWarning($logId, $usedPercent));
             }
         }
     }

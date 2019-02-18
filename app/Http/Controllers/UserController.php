@@ -389,12 +389,8 @@ class UserController extends Controller
 
             // 发邮件通知管理员
             if (self::$systemConfig['crash_warning_email']) {
-                try {
-                    Mail::to(self::$systemConfig['crash_warning_email'])->send(new newTicket($emailTitle, $content));
-                    Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $emailTitle, $content);
-                } catch (\Exception $e) {
-                    Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $emailTitle, $content, 0, $e->getMessage());
-                }
+                $logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $emailTitle, $content);
+                Mail::to(self::$systemConfig['crash_warning_email'])->send(new newTicket($logId, $emailTitle, $content));
             }
 
             ServerChan::send($emailTitle, $content);
@@ -440,12 +436,8 @@ class UserController extends Controller
 
                 // 发邮件通知管理员
                 if (self::$systemConfig['crash_warning_email']) {
-                    try {
-                        Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($title, $content));
-                        Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
-                    } catch (\Exception $e) {
-                        Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content, 0, $e->getMessage());
-                    }
+                    $logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
+                    Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($logId, $title, $content));
                 }
 
                 ServerChan::send($title, $content);
