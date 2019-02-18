@@ -42,7 +42,15 @@
                                             <td> {{$vo->title}} </td>
                                             <td> {{$vo->content}} </td>
                                             <td> {{$vo->created_at}} </td>
-                                            <td> {{$vo->status == 0 ? '等待投递' : ($vo->status ? '投递成功' : $vo->error)}} </td>
+                                            <td>
+                                                @if($vo->status < 0)
+                                                    <span class="label label-danger"> {{str_limit($vo->error)}} </span>
+                                                @elseif($vo->status > 0)
+                                                    <labe class="label label-success">投递成功</labe>
+                                                @else
+                                                    <span class="label label-default"> 等待投递 </span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
