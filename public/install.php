@@ -32,6 +32,7 @@ function is_really_writable($file)
     }
 
     fclose($fp);
+
     return true;
 }
 
@@ -69,10 +70,13 @@ function write_ini_file($assoc_arr, $path, $has_sections = false)
     if (!$handle = fopen($path, 'w')) {
         return false;
     }
+
     if (!fwrite($handle, $content)) {
         return false;
     }
+
     fclose($handle);
+
     return true;
 }
 

@@ -292,7 +292,7 @@ INSERT INTO `config` VALUES ('5', 'is_invite_register', 2);
 INSERT INTO `config` VALUES ('6', 'website_name', 'SSRPanel');
 INSERT INTO `config` VALUES ('7', 'is_reset_password', 1);
 INSERT INTO `config` VALUES ('8', 'reset_password_times', 3);
-INSERT INTO `config` VALUES ('9', 'website_url', 'http://www.ssrpanel.com');
+INSERT INTO `config` VALUES ('9', 'website_url', 'https://www.ssrpanel.com');
 INSERT INTO `config` VALUES ('10', 'is_active_register', 1);
 INSERT INTO `config` VALUES ('11', 'active_times', 3);
 INSERT INTO `config` VALUES ('12', 'login_add_score', 1);
@@ -356,10 +356,10 @@ INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
 INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
 INSERT INTO `config` VALUES ('71', 'is_verify_register', 0);
 INSERT INTO `config` VALUES ('72', 'node_daily_report', 0);
-INSERT INTO `config` values ('73', 'mix_subscribe', 0);
-INSERT INTO `config` values ('74', 'rand_subscribe', 0);
-INSERT INTO `config` values ('75', 'is_custom_subscribe', 0);
-INSERT INTO `config` values ('76', 'is_alipay', 0);
+INSERT INTO `config` VALUES ('73', 'mix_subscribe', 0);
+INSERT INTO `config` VALUES ('74', 'rand_subscribe', 0);
+INSERT INTO `config` VALUES ('75', 'is_custom_subscribe', 0);
+INSERT INTO `config` VALUES ('76', 'is_alipay', 0);
 INSERT INTO `config` VALUES ('77', 'alipay_sign_type', 'MD5');
 INSERT INTO `config` VALUES ('78', 'alipay_partner', '');
 INSERT INTO `config` VALUES ('79', 'alipay_key', '');
@@ -367,7 +367,7 @@ INSERT INTO `config` VALUES ('80', 'alipay_private_key', '');
 INSERT INTO `config` VALUES ('81', 'alipay_public_key', '');
 INSERT INTO `config` VALUES ('82', 'alipay_transport', 'http');
 INSERT INTO `config` VALUES ('83', 'alipay_currency', 'USD');
-INSERT INTO `config` values ('84', 'is_f2fpay', 0);
+INSERT INTO `config` VALUES ('84', 'is_f2fpay', 0);
 INSERT INTO `config` VALUES ('85', 'f2fpay_app_id', '');
 INSERT INTO `config` VALUES ('86', 'f2fpay_private_key', '');
 INSERT INTO `config` VALUES ('87', 'f2fpay_public_key', '');
@@ -652,15 +652,15 @@ CREATE TABLE `user_balance_log` (
 -- Table structure for `user_traffic_modify_log`
 -- ----------------------------
 CREATE TABLE `user_traffic_modify_log` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-	`order_id` int(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
-	`before` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作前流量',
-	`after` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作后流量',
-	`desc` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
-	`created_at` datetime NOT NULL,
-	`updated_at` datetime NOT NULL,
-	PRIMARY KEY (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '发生的订单ID',
+  `before` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作前流量',
+  `after` bigint(20) NOT NULL DEFAULT '0' COMMENT '操作后流量',
+  `desc` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户流量变动日志';
 
 
@@ -862,7 +862,7 @@ CREATE TABLE `user_subscribe` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   INDEX `user_id` (`user_id`, `status`),
-	INDEX `code` (`code`)
+  INDEX `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅';
 
 
@@ -1135,18 +1135,18 @@ CREATE TABLE `marketing` (
 -- Table structure for `user_login_log`
 -- ----------------------------
 CREATE TABLE `user_login_log` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`user_id` INT(11) NOT NULL DEFAULT '0',
-	`ip` CHAR(20) NOT NULL,
-	`country` CHAR(20) NOT NULL,
-	`province` CHAR(20) NOT NULL,
-	`city` CHAR(20) NOT NULL,
-	`county` CHAR(20) NOT NULL,
-	`isp` CHAR(20) NOT NULL,
-	`area` CHAR(20) NOT NULL,
-	`created_at` datetime NOT NULL,
-	`updated_at` datetime NOT NULL,
-	PRIMARY KEY (`id`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL DEFAULT '0',
+  `ip` CHAR(20) NOT NULL,
+  `country` CHAR(20) NOT NULL,
+  `province` CHAR(20) NOT NULL,
+  `city` CHAR(20) NOT NULL,
+  `county` CHAR(20) NOT NULL,
+  `isp` CHAR(20) NOT NULL,
+  `area` CHAR(20) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户登录日志';
 
 
@@ -1156,6 +1156,7 @@ CREATE TABLE `user_login_log` (
 CREATE TABLE `ss_node_ip` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT '端口',
   `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：all、tcp、udp',
   `ip` text COLLATE utf8mb4_unicode_ci COMMENT '连接IP：每个IP用,号隔开',
@@ -1170,10 +1171,10 @@ CREATE TABLE `ss_node_ip` (
 -- Table structure for `rule`
 -- ----------------------------
 CREATE TABLE `rule` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`type` CHAR(10) NOT NULL DEFAULT 'domain' COMMENT '类型：domain-域名（单一非通配）、ipv4-IPv4地址、ipv6-IPv6地址、reg-正则表达式',
-	`regular` VARCHAR(255) NOT NULL COMMENT '规则：域名、IP、正则表达式',
-	PRIMARY KEY (`id`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` CHAR(10) NOT NULL DEFAULT 'domain' COMMENT '类型：domain-域名（单一非通配）、ipv4-IPv4地址、ipv6-IPv6地址、reg-正则表达式',
+  `regular` VARCHAR(255) NOT NULL COMMENT '规则：域名、IP、正则表达式',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='规则表';
 
 
@@ -1181,10 +1182,10 @@ CREATE TABLE `rule` (
 -- Table structure for `ss_node_deny`
 -- ----------------------------
 CREATE TABLE `ss_node_deny` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`node_id` INT(11) NOT NULL DEFAULT '0',
-	`rule_id` INT(11) NOT NULL DEFAULT '0',
-	PRIMARY KEY (`id`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `node_id` INT(11) NOT NULL DEFAULT '0',
+  `rule_id` INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点访问规则关联表';
 
 
@@ -1192,13 +1193,13 @@ CREATE TABLE `ss_node_deny` (
 -- Table structure for `device`
 -- ----------------------------
 CREATE TABLE `device` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：0-兼容、1-Shadowsocks(R)、2-V2Ray',
-	`platform` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '所属平台：0-其他、1-iOS、2-Android、3-Mac、4-Windows、5-Linux',
-	`name` VARCHAR(50) NOT NULL COMMENT '设备名称',
-	`status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁止订阅、1-允许订阅',
-	`header` VARCHAR(100) NOT NULL COMMENT '请求时头部的识别特征码',
-	PRIMARY KEY (`id`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：0-兼容、1-Shadowsocks(R)、2-V2Ray',
+  `platform` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '所属平台：0-其他、1-iOS、2-Android、3-Mac、4-Windows、5-Linux',
+  `name` VARCHAR(50) NOT NULL COMMENT '设备名称',
+  `status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-禁止订阅、1-允许订阅',
+  `header` VARCHAR(100) NOT NULL COMMENT '请求时头部的识别特征码',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备型号表';
 
 
@@ -1206,28 +1207,28 @@ CREATE TABLE `device` (
 -- Records of `device`
 -- ----------------------------
 INSERT INTO `device` (`id`, `type`, `platform`, `name`, `status`, `header`) VALUES
-	(1, 1, 1, 'Quantumult', 1, 'Quantumult'),
-	(2, 1, 1, 'Shadowrocket', 1, 'Shadowrocket'),
-	(3, 1, 3, 'ShadowsocksX-NG-R', 1, 'ShadowsocksX-NG-R'),
-	(4, 1, 1, 'Pepi', 1, 'Pepi'),
-	(5, 1, 1, 'Potatso 2', 1, 'Potatso'),
-	(6, 1, 1, 'Potatso Lite', 1, 'Potatso'),
-	(7, 1, 4, 'ShadowsocksR', 1, 'ShadowsocksR'),
-	(8, 2, 4, 'V2RayW', 1, 'V2RayW'),
-	(9, 2, 4, 'V2RayN', 1, 'V2RayN'),
-	(10, 2, 4, 'V2RayS', 1, 'V2RayS'),
-	(11, 2, 4, 'Clash for Windows', 1, 'Clash'),
-	(12, 2, 3, 'V2RayX', 1, 'V2RayX'),
-	(13, 2, 3, 'V2RayU', 1, 'V2RayU'),
-	(14, 2, 3, 'V2RayC', 1, 'V2RayC'),
-	(15, 2, 3, 'ClashX', 1, 'ClashX'),
-	(16, 2, 1, 'Kitsunebi', 1, 'Kitsunebi'),
-	(17, 2, 1, 'Kitsunebi Lite', 1, 'Kitsunebi'),
-	(18, 2, 1, 'i2Ray', 1, 'i2Ray'),
-	(19, 2, 2, 'BifrostV', 1, 'BifrostV'),
-	(20, 2, 2, 'V2RayNG', 1, 'V2RayNG'),
-	(21, 2, 2, 'ShadowsocksR', 1, 'okhttp'),
-	(22, 2, 2, 'SSRR', 1, 'okhttp');
+  (1, 1, 1, 'Quantumult', 1, 'Quantumult'),
+  (2, 1, 1, 'Shadowrocket', 1, 'Shadowrocket'),
+  (3, 1, 3, 'ShadowsocksX-NG-R', 1, 'ShadowsocksX-NG-R'),
+  (4, 1, 1, 'Pepi', 1, 'Pepi'),
+  (5, 1, 1, 'Potatso 2', 1, 'Potatso'),
+  (6, 1, 1, 'Potatso Lite', 1, 'Potatso'),
+  (7, 1, 4, 'ShadowsocksR', 1, 'ShadowsocksR'),
+  (8, 2, 4, 'V2RayW', 1, 'V2RayW'),
+  (9, 2, 4, 'V2RayN', 1, 'V2RayN'),
+  (10, 2, 4, 'V2RayS', 1, 'V2RayS'),
+  (11, 2, 4, 'Clash for Windows', 1, 'Clash'),
+  (12, 2, 3, 'V2RayX', 1, 'V2RayX'),
+  (13, 2, 3, 'V2RayU', 1, 'V2RayU'),
+  (14, 2, 3, 'V2RayC', 1, 'V2RayC'),
+  (15, 2, 3, 'ClashX', 1, 'ClashX'),
+  (16, 2, 1, 'Kitsunebi', 1, 'Kitsunebi'),
+  (17, 2, 1, 'Kitsunebi Lite', 1, 'Kitsunebi'),
+  (18, 2, 1, 'i2Ray', 1, 'i2Ray'),
+  (19, 2, 2, 'BifrostV', 1, 'BifrostV'),
+  (20, 2, 2, 'V2RayNG', 1, 'V2RayNG'),
+  (21, 2, 2, 'ShadowsocksR', 1, 'okhttp'),
+  (22, 2, 2, 'SSRR', 1, 'okhttp');
 
 
 -- ----------------------------
