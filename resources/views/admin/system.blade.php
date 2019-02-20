@@ -165,6 +165,22 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="website_security_code" class="col-md-3 control-label">网站安全码</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="website_security_code" value="{{$website_security_code}}" id="website_security_code" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-default" type="button" onclick="makeWebsiteSecurityCode()">生成</button>
+                                                                        <button class="btn btn-success" type="button" onclick="setWebsiteSecurityCode()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 非空时必须通过安全码入口访问 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12"></div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -2468,6 +2484,30 @@
                 _token: '{{csrf_token()}}',
                 name: 'website_url',
                 value: website_url
+            }, function (ret) {
+                layer.msg(ret.message, {time: 1000}, function () {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 生成网站安全码
+        function makeWebsiteSecurityCode() {
+            $.get("{{url('makeSecurityCode')}}",  function(ret) {
+                $("#website_security_code").val(ret);
+            });
+        }
+
+        // 设置网站安全码
+        function setWebsiteSecurityCode() {
+            var website_security_code = $("#website_security_code").val();
+
+            $.post("{{url('admin/setConfig')}}", {
+                _token: '{{csrf_token()}}',
+                name: 'website_security_code',
+                value: website_security_code
             }, function (ret) {
                 layer.msg(ret.message, {time: 1000}, function () {
                     if (ret.status == 'fail') {

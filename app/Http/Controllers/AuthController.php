@@ -66,13 +66,14 @@ class AuthController extends Controller
                 }
             }
 
+            // 验证账号并创建会话
             if (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
                 Session::flash('errorMsg', '用户名或密码错误');
 
                 return Redirect::back()->withInput();
             }
 
-            // 只校验普通用户
+            // 校验普通用户账号状态
             if (!Auth::user()->is_admin) {
                 if (Auth::user()->status < 0) {
                     Session::flash('errorMsg', '账号已禁用');

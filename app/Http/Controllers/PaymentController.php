@@ -39,7 +39,6 @@ class PaymentController extends Controller
     {
         $goods_id = intval($request->get('goods_id'));
         $coupon_sn = $request->get('coupon_sn');
-        $pay_type = $request->get('pay_type');
 
         $goods = Goods::query()->where('is_del', 0)->where('status', 1)->where('id', $goods_id)->first();
         if (!$goods) {
@@ -171,6 +170,8 @@ class PaymentController extends Controller
                 $alipaySubmit = new AlipaySubmit(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key']);
                 $result = $alipaySubmit->buildRequestForm($parameter, "post", "确认");
             } elseif (self::$systemConfig['is_f2fpay']) {
+                // TODO：goods表里增加一个字段用于自定义商品付款时展示的商品名称，
+                // TODO：这里增加一个随机商品列表，根据goods的价格随机取值
                 $result = Charge::run("ali_qr", [
                     'use_sandbox'     => false,
                     "partner"         => self::$systemConfig['f2fpay_app_id'],

@@ -4,7 +4,7 @@ Route::get('s/{code}', 'SubscribeController@getSubscribeByCode'); // 节点订�
 
 Route::group(['middleware' => ['isForbidden', 'affiliate']], function () {
     Route::get('lang/{locale}', 'AuthController@switchLang'); // 语言切换
-    Route::any('login', 'AuthController@login'); // 登录
+    Route::any('login', 'AuthController@login')->middleware('isSecurity'); // 登录
     Route::get('logout', 'AuthController@logout'); // 退出
     Route::any('register', 'AuthController@register'); // 注册
     Route::any('resetPassword', 'AuthController@resetPassword'); // 重设密码
@@ -15,6 +15,7 @@ Route::group(['middleware' => ['isForbidden', 'affiliate']], function () {
     Route::get('free', 'AuthController@free'); // 免费邀请码
     Route::get('makePasswd', 'Controller@makePasswd'); // 生成密码
     Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
+    Route::get('makeSecurityCode', 'Controller@makeSecurityCode'); // 生成网站安全码
 });
 
 Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function () {

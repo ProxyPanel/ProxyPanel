@@ -28,6 +28,12 @@ class Controller extends BaseController
         exit(createGuid());
     }
 
+    // 生成网站安全码
+    public function makeSecurityCode()
+    {
+        exit(strtolower(makeRandStr(8)));
+    }
+
     // 类似Linux中的tail命令
     public function tail($file, $n, $base = 5)
     {

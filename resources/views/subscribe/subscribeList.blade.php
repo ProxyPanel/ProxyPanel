@@ -46,8 +46,8 @@
                                 <thead>
                                 <tr>
                                     <th> # </th>
-                                    <th> 订阅码 </th>
                                     <th> 用户 </th>
+                                    <th> 订阅码 </th>
                                     <th> 请求次数 </th>
                                     <th> 最后请求时间 </th>
                                     <th> 封禁时间 </th>
@@ -64,7 +64,6 @@
                                         @foreach($subscribeList as $subscribe)
                                             <tr class="odd gradeX">
                                                 <td> {{$subscribe->id}} </td>
-                                                <td> <span class="label label-danger"> {{$subscribe->code}} </span> </td>
                                                 <td>
                                                     @if(empty($subscribe->user))
                                                         【账号已删除】
@@ -72,6 +71,7 @@
                                                         <a href="{{url('admin/userList?id=' . $subscribe->user->id)}}">{{$subscribe->user->username}}</a>
                                                     @endif
                                                 </td>
+                                                <td> <span class="label label-danger"> {{$subscribe->code}} </span> </td>
                                                 <td> <span class="label label-danger"> {{$subscribe->times}} </span> </td>
                                                 <td> {{$subscribe->updated_at}} </td>
                                                 <td> {{$subscribe->ban_time > 0 ? date('Y-m-d H:i:s') : ''}} </td>
