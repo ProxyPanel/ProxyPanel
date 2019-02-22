@@ -176,7 +176,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setWebsiteSecurityCode()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 非空时必须通过安全码入口访问 </span>
+                                                                <span class="help-block"> 非空时必须通过 <a href="/login?securityCode=" target="_blank">安全入口</a> 加上安全码才可访问 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12"></div>
