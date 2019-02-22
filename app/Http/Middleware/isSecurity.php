@@ -27,7 +27,7 @@ class isSecurity
             if ($code != $websiteSecurityCode) {
                 Log::info("拒绝非安全入口访问(" . $ip . ")");
 
-                return response()->view('auth.error', ['message' => '请使用安全码从<a href="/login?securityCode=" target="_self">安全入口</a>访问'], 404);
+                return response()->view('auth.error', ['message' => '请使用安全码从<a href="/login?securityCode=" target="_self">安全入口</a>访问']);
             }
         }
 
