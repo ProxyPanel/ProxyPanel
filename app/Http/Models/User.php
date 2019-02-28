@@ -23,6 +23,11 @@ class User extends Authenticatable
     protected $table = 'user';
     protected $primaryKey = 'id';
 
+    function levelList()
+    {
+        return $this->hasOne(Level::class, 'level', 'level');
+    }
+
     function payment()
     {
         return $this->hasMany(Payment::class, 'user_id', 'id');

@@ -92,23 +92,6 @@ class AuthController extends Controller
                 }
             }
 
-            // 登录送积分
-            if (self::$systemConfig['login_add_score']) {
-                if (!Cache::has('loginAddScore_' . md5($username))) {
-                    $score = mt_rand(self::$systemConfig['min_rand_score'], self::$systemConfig['max_rand_score']);
-                    $ret = User::query()->where('id', Auth::user()->id)->increment('score', $score);
-                    if ($ret) {
-                        $this->addUserScoreLog(Auth::user()->id, Auth::user()->score, Auth::user()->score + $score, $score, '登录送积分');
-
-                        // 登录多久后再登录可以获取积分
-                        $ttl = self::$systemConfig['login_add_score_range'] ? self::$systemConfig['login_add_score_range'] : 1440;
-                        Cache::put('loginAddScore_' . md5($username), '1', $ttl);
-
-                        Session::flash('successMsg', '欢迎回来，系统自动赠送您 ' . $score . ' 积分，您可以用它兑换流量');
-                    }
-                }
-            }
-
             // 写入登录日志
             $this->addUserLoginLog(Auth::user()->id, getClientIp());
 

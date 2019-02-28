@@ -2185,8 +2185,10 @@ EOF;
         $is_expire = $request->get('is_expire');
         $pay_way = $request->get('pay_way');
         $status = intval($request->get('status'));
+        $range_time = $request->get('range_time');
+        $sort = intval($request->get('sort')); // 0-按创建时间降序、1-按创建时间升序
 
-        $query = Order::query()->with(['user', 'goods', 'coupon'])->orderBy('oid', 'desc');
+        $query = Order::query()->with(['user', 'goods', 'coupon']);
 
         if ($username) {
             $query->whereHas('user', function ($q) use ($username) {
@@ -2212,6 +2214,17 @@ EOF;
 
         if ($status != '') {
             $query->where('status', $status);
+        }
+
+        if ($range_time) {
+            $range_time = explode('至', $range_time);
+            $query->where('created_at', '>=', trim($range_time['0']))->where('created_at', '<=', trim($range_time[1]));
+        }
+
+        if ($sort) {
+            $query->orderBy('oid', 'asc');
+        } else {
+            $query->orderBy('oid', 'desc');
         }
 
         $view['orderList'] = $query->paginate(15)->appends($request->except('page'));

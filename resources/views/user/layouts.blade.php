@@ -113,6 +113,12 @@
                         <span class="selected"></span>
                     </a>
                 </li>
+                <li class="nav-item {{in_array(Request::path(), ['nodeList']) || in_array(Request::segment(1), ['nodeList']) ? 'active open' : ''}}">
+                    <a href="{{url('nodeList')}}" class="nav-link nav-toggle">
+                        <i class="icon-list"></i>
+                        <span class="title">节点列表</span>
+                    </a>
+                </li>
                 <li class="nav-item {{in_array(Request::path(), ['services']) || in_array(Request::segment(1), ['buy', 'payment']) ? 'active open' : ''}}">
                     <a href="{{url('services')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
@@ -137,13 +143,7 @@
                         <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['trafficLog']) ? 'active open' : ''}}">
-                    <a href="{{url('trafficLog')}}" class="nav-link nav-toggle">
-                        <i class="icon-speedometer"></i>
-                        <span class="title">{{trans('home.traffic_log')}}</span>
-                    </a>
-                </li>
-                @if(Session::get('referral_status'))
+                @if(\App\Components\Helpers::systemConfig()['referral_status'])
                 <li class="nav-item {{in_array(Request::path(), ['referral']) ? 'active open' : ''}}">
                     <a href="{{url('referral')}}" class="nav-link nav-toggle">
                         <i class="icon-diamond"></i>

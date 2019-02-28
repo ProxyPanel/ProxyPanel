@@ -26,7 +26,7 @@
                                             <a href="#tab_2" data-toggle="tab"> 拓展设置 </a>
                                         </li>
                                         <li>
-                                            <a href="#tab_3" data-toggle="tab"> 积分设置 </a>
+                                            <a href="#tab_3" data-toggle="tab"> 签到设置 </a>
                                         </li>
                                         <li>
                                             <a href="#tab_4" data-toggle="tab"> 推广返利设置 </a>
@@ -403,10 +403,10 @@
                                                 <div class="portlet-body">
                                                     <div class="form-group">
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="login_add_score" class="col-md-3 control-label">登录加积分</label>
+                                                            <label for="login_add_score" class="col-md-3 control-label">签到加流量</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($login_add_score) checked @endif id="login_add_score" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 登录时将根据积分范围随机得到积分 </span>
+                                                                <span class="help-block"> 登录时将根据流量范围随机得到流量 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -419,19 +419,20 @@
                                                                         <button class="btn btn-success" type="button" onclick="setLoginAddScoreRange()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 间隔多久登录才会加积分 </span>
+                                                                <span class="help-block"> 间隔多久才可以再次签到 </span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label class="col-md-3 control-label">积分范围</label>
+                                                            <label class="col-md-3 control-label">流量范围</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group input-large input-daterange">
                                                                     <input type="text" class="form-control" name="min_rand_score" value="{{$min_rand_score}}" id="min_rand_score">
                                                                     <span class="input-group-addon"> ~ </span>
                                                                     <input type="text" class="form-control" name="max_rand_score" value="{{$max_rand_score}}" id="max_rand_score">
                                                                 </div>
+                                                                <span class="help-block"> 单位：M </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">

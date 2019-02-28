@@ -112,8 +112,9 @@ Route::group(['middleware' => ['isForbidden', 'isLogin']], function () {
     Route::any('/', 'UserController@index'); // 用户首页
     Route::any('article', 'UserController@article'); // 文章详情
     Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
+    Route::get('nodeList', 'UserController@nodeList'); // 节点列表
+    Route::post('checkIn', 'UserController@checkIn'); // 签到
     Route::get('services', 'UserController@services'); // 商品列表
-    Route::get('trafficLog', 'UserController@trafficLog'); // 流量日志
     Route::get('tickets', 'UserController@ticketList'); // 工单
     Route::post('addTicket', 'UserController@addTicket'); // 快速添加工单
     Route::any('replyTicket', 'UserController@replyTicket'); // 回复工单
@@ -125,7 +126,6 @@ Route::group(['middleware' => ['isForbidden', 'isLogin']], function () {
     Route::get('invite', 'UserController@invite'); // 邀请码
     Route::post('makeInvite', 'UserController@makeInvite'); // 生成邀请码
     Route::any('profile', 'UserController@profile'); // 修改个人信息
-    Route::post('exchange', 'UserController@exchange'); // 积分兑换流量
     Route::get('referral', 'UserController@referral'); // 推广返利
     Route::post('extractMoney', 'UserController@extractMoney'); // 申请提现
     Route::post("switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份

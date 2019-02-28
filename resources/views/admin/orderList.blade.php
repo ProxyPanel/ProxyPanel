@@ -56,6 +56,21 @@
                                 </select>
                             </div>
                             <div class="col-md-3 col-sm-4 col-xs-12">
+                                <input type="text" class="form-control" name="time" id="range_time" placeholder="创建时间" autocomplete="off" />
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                <div class="mt-radio-inline">
+                                    <label class="mt-radio">
+                                        <input type="radio" name="sort" value="1" checked onchange="doSearch()"> 升序
+                                        <span></span>
+                                    </label>
+                                    <label class="mt-radio">
+                                        <input type="radio" name="sort" value="0" @if(Request::get('sort') == '0') checked @endif onchange="doSearch()"> 降序
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-12">
                                 <button type="button" class="btn blue" onclick="doSearch();">查询</button>
                                 <button type="button" class="btn grey" onclick="doReset();">重置</button>
                             </div>
@@ -149,7 +164,16 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/laydate/laydate.js" type="text/javascript"></script>
     <script type="text/javascript">
+        // 有效期
+        laydate.render({
+            elem: '#range_time',
+            type: 'datetime',
+            range: '至',
+            value: '{{urldecode(Request::get('range_time'))}}'
+        });
+
         // 搜索
         function doSearch() {
             var username = $("#username").val();
@@ -157,8 +181,10 @@
             var is_coupon = $("#is_coupon").val();
             var pay_way = $("#pay_way").val();
             var status = $("#status").val();
+            var sort = $("input:radio[name='sort']:checked").val();
+            var range_time = $("#range_time").val();
 
-            window.location.href = '{{url('admin/orderList')}}' + '?username=' + username + '&is_expire=' + is_expire + '&is_coupon=' + is_coupon + '&pay_way=' + pay_way + '&status=' + status;
+            window.location.href = '{{url('admin/orderList')}}' + '?username=' + username + '&is_expire=' + is_expire + '&is_coupon=' + is_coupon + '&pay_way=' + pay_way + '&status=' + status + '&sort=' + sort + '&range_time=' + range_time;
         }
 
         // 重置

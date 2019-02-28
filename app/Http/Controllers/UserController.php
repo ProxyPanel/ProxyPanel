@@ -9,7 +9,6 @@ use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Invite;
-use App\Http\Models\Level;
 use App\Http\Models\Order;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
@@ -20,12 +19,12 @@ use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
-use App\Http\Models\UserLoginLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Mail\newTicket;
 use App\Mail\replyTicket;
+use Cache;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -54,34 +53,92 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $user = User::query()->where('id', Auth::user()->id)->first();
-        $user->totalTransfer = flowAutoShow($user->transfer_enable);
-        $user->usedTransfer = flowAutoShow($user->u + $user->d);
-        $user->usedPercent = $user->transfer_enable > 0 ? round(($user->u + $user->d) / $user->transfer_enable, 2) : 1;
-        $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
+        $dailyData = [];
+        $hourlyData = [];
 
-        $view['info'] = $user->toArray();
-        $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first();
-        $view['ipa_list'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
-        $view['goodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get(); // 余额充值商品，只取10个
-        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->limit(5)->get(); // 近期登录日志
+        // 节点一个月内的流量
+        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 
-        // 推广返利是否可见
-        if (!Session::has('referral_status')) {
-            Session::put('referral_status', self::$systemConfig['referral_status']);
+        $dailyTotal = date('d', time()) - 1; // 今天不算，减一
+        $dailyCount = count($userTrafficDaily);
+        for ($x = 0; $x < ($dailyTotal - $dailyCount); $x++) {
+            $dailyData[$x] = 0;
+        }
+        for ($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++) {
+            $dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
         }
 
+        // 节点一天内的流量
+        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+        $hourlyTotal = date('H', time());
+        $hourlyCount = count($userTrafficHourly);
+        for ($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++) {
+            $hourlyData[$x] = 0;
+        }
+        for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
+            $hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
+        }
+
+        // 本月天数数据
+        $monthDays = [];
+        $monthHasDays = date("t");
+        for ($i = 1; $i <= $monthHasDays; $i++) {
+            $monthDays[] = $i;
+        }
+
+        $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
+        $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
+        $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
+        $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first(); // 公告
+
+        return Response::view('user.index', $view);
+    }
+
+    // 签到
+    public function checkIn(Request $request)
+    {
+        // 系统开启登录加积分功能才可以签到
+        if (!self::$systemConfig['is_checkin']) {
+            return Response::json(['status' => 'fail', 'message' => '系统未开启签到功能']);
+        }
+
+        // 已签到过，验证是否有效
+        if (Cache::has('userCheckIn_' . Auth::user()->id)) {
+            return Response::json(['status' => 'fail', 'message' => '已经签到过了，明天再来吧']);
+        }
+
+        $score = mt_rand(self::$systemConfig['min_rand_traffic'], self::$systemConfig['max_rand_traffic']);
+        $ret = User::query()->where('id', Auth::user()->id)->increment('transfer_enable', $score * 1048576);
+        if (!$ret) {
+            return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
+        }
+
+        // 写入用户流量变动记录
+        Helpers::addUserTrafficModifyLog(Auth::user()->id, 0, Auth::user()->transfer_enable, Auth::user()->transfer_enable + $score * 1048576, '[签到]');
+
+        // 多久后可以再签到
+        $ttl = self::$systemConfig['traffic_limit_time'] ? self::$systemConfig['traffic_limit_time'] : 1440;
+        Cache::put('userCheckIn_' . Auth::user()->id, '1', $ttl);
+
+        return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 ' . $score . 'M 流量']);
+    }
+
+    // 节点列表
+    public function nodeList(Request $request)
+    {
+        // 在线安装APP
+        $view['ipa_list'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
+
         // 订阅码
-        $subscribe = UserSubscribe::query()->where('user_id', Auth::user()->id)->first();
-        $view['subscribe_status'] = $subscribe->status;
-        $view['link'] = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . $subscribe->code;
+        $view['link'] = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . Auth::user()->subscribe->code;
 
         // 节点列表
         $userLabelIds = UserLabel::query()->where('user_id', Auth::user()->id)->pluck('label_id');
         if (empty($userLabelIds)) {
             $view['nodeList'] = [];
+            $view['allNodes'] = '';
 
-            return Response::view('user.index', $view);
+            return Response::view('user.nodeList', $view);
         }
 
         $nodeList = DB::table('ss_node')
@@ -101,14 +158,14 @@ class UserController extends Controller
 
             if ($node->type == 1) {
                 // 生成ssr scheme
-                $obfs_param = $user->obfs_param ? $user->obfs_param : $node->obfs_param;
-                $protocol_param = $node->single ? $user->port . ':' . $user->passwd : $user->protocol_param;
+                $obfs_param = Auth::user()->obfs_param ? Auth::user()->obfs_param : $node->obfs_param;
+                $protocol_param = $node->single ? Auth::user()->port . ':' . Auth::user()->passwd : Auth::user()->protocol_param;
 
-                $ssr_str = ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : $user->port);
-                $ssr_str .= ':' . ($node->single ? $node->single_protocol : $user->protocol) . ':' . ($node->single ? $node->single_method : $user->method);
-                $ssr_str .= ':' . ($node->single ? $node->single_obfs : $user->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode($user->passwd));
+                $ssr_str = ($node->server ? $node->server : $node->ip) . ':' . ($node->single ? $node->single_port : Auth::user()->port);
+                $ssr_str .= ':' . ($node->single ? $node->single_protocol : Auth::user()->protocol) . ':' . ($node->single ? $node->single_method : Auth::user()->method);
+                $ssr_str .= ':' . ($node->single ? $node->single_obfs : Auth::user()->obfs) . ':' . ($node->single ? base64url_encode($node->single_passwd) : base64url_encode(Auth::user()->passwd));
                 $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
-                $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
+                $ssr_str .= '&protoparam=' . ($node->single ? base64url_encode(Auth::user()->port . ':' . Auth::user()->passwd) : base64url_encode($protocol_param));
                 $ssr_str .= '&remarks=' . base64url_encode($node->name);
                 $ssr_str .= '&group=' . base64url_encode(empty($group) ? '' : $group->name);
                 $ssr_str .= '&udpport=0';
@@ -117,8 +174,8 @@ class UserController extends Controller
                 $ssr_scheme = 'ssr://' . $ssr_str;
 
                 // 生成ss scheme
-                $ss_str = $user->method . ':' . $user->passwd . '@';
-                $ss_str .= ($node->server ? $node->server : $node->ip) . ':' . $user->port;
+                $ss_str = Auth::user()->method . ':' . Auth::user()->passwd . '@';
+                $ss_str .= ($node->server ? $node->server : $node->ip) . ':' . Auth::user()->port;
                 $ss_str = base64url_encode($ss_str) . '#' . 'VPN';
                 $ss_scheme = 'ss://' . $ss_str;
 
@@ -127,14 +184,14 @@ class UserController extends Controller
                 if ($node->ipv6) {
                     $txt .= "IPv6：" . $node->ipv6 . "\r\n";
                 }
-                $txt .= "远程端口：" . ($node->single ? $node->single_port : $user->port) . "\r\n";
-                $txt .= "密码：" . ($node->single ? $node->single_passwd : $user->passwd) . "\r\n";
-                $txt .= "加密方法：" . ($node->single ? $node->single_method : $user->method) . "\r\n";
+                $txt .= "远程端口：" . ($node->single ? $node->single_port : Auth::user()->port) . "\r\n";
+                $txt .= "密码：" . ($node->single ? $node->single_passwd : Auth::user()->passwd) . "\r\n";
+                $txt .= "加密方法：" . ($node->single ? $node->single_method : Auth::user()->method) . "\r\n";
                 $txt .= "路由：绕过局域网及中国大陆地址" . "\r\n\r\n";
-                $txt .= "协议：" . ($node->single ? $node->single_protocol : $user->protocol) . "\r\n";
-                $txt .= "协议参数：" . ($node->single ? $user->port . ':' . $user->passwd : $user->protocol_param) . "\r\n";
-                $txt .= "混淆方式：" . ($node->single ? $node->single_obfs : $user->obfs) . "\r\n";
-                $txt .= "混淆参数：" . ($user->obfs_param ? $user->obfs_param : $node->obfs_param) . "\r\n";
+                $txt .= "协议：" . ($node->single ? $node->single_protocol : Auth::user()->protocol) . "\r\n";
+                $txt .= "协议参数：" . ($node->single ? Auth::user()->port . ':' . Auth::user()->passwd : Auth::user()->protocol_param) . "\r\n";
+                $txt .= "混淆方式：" . ($node->single ? $node->single_obfs : Auth::user()->obfs) . "\r\n";
+                $txt .= "混淆参数：" . (Auth::user()->obfs_param ? Auth::user()->obfs_param : $node->obfs_param) . "\r\n";
                 $txt .= "本地端口：1080" . "\r\n";
 
                 $node->txt = $txt;
@@ -149,7 +206,7 @@ class UserController extends Controller
                     "ps"   => $node->name,
                     "add"  => $node->server ? $node->server : $node->ip,
                     "port" => $node->v2_port,
-                    "id"   => $user->vmess_id,
+                    "id"   => Auth::user()->vmess_id,
                     "aid"  => $node->v2_alter_id,
                     "net"  => $node->v2_net,
                     "type" => $node->v2_type,
@@ -166,7 +223,7 @@ class UserController extends Controller
                 }
                 $txt .= "端口：" . $node->v2_port . "\r\n";
                 $txt .= "加密方式：" . $node->v2_method . "\r\n";
-                $txt .= "用户ID：" . $user->vmess_id . "\r\n";
+                $txt .= "用户ID：" . Auth::user()->vmess_id . "\r\n";
                 $txt .= "额外ID：" . $node->v2_alter_id . "\r\n";
                 $txt .= "传输协议：" . $node->v2_net . "\r\n";
                 $txt .= "伪装类型：" . $node->v2_type . "\r\n";
@@ -189,7 +246,7 @@ class UserController extends Controller
         $view['allNodes'] = rtrim($allNodes, "|");
         $view['nodeList'] = $nodeList;
 
-        return Response::view('user.index', $view);
+        return Response::view('user.nodeList', $view);
     }
 
     // 公告详情
@@ -290,52 +347,11 @@ class UserController extends Controller
         }
     }
 
-    // 流量日志
-    public function trafficLog(Request $request)
-    {
-        $dailyData = [];
-        $hourlyData = [];
-
-        // 节点一个月内的流量
-        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-
-        $dailyTotal = date('d', time()) - 1; // 今天不算，减一
-        $dailyCount = count($userTrafficDaily);
-        for ($x = 0; $x < ($dailyTotal - $dailyCount); $x++) {
-            $dailyData[$x] = 0;
-        }
-        for ($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++) {
-            $dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
-        }
-
-        // 节点一天内的流量
-        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-        $hourlyTotal = date('H', time());
-        $hourlyCount = count($userTrafficHourly);
-        for ($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++) {
-            $hourlyData[$x] = 0;
-        }
-        for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
-            $hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
-        }
-
-        // 本月天数数据
-        $monthDays = [];
-        $monthHasDays = date("t");
-        for ($i = 1; $i <= $monthHasDays; $i++) {
-            $monthDays[] = $i;
-        }
-
-        $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
-        $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
-        $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
-
-        return Response::view('user.trafficLog', $view);
-    }
-
     // 商品列表
     public function services(Request $request)
     {
+        // 余额充值商品，只取10个
+        $view['chargeGoodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
         $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('user.services', $view);
@@ -461,7 +477,7 @@ class UserController extends Controller
 
         $ret = Ticket::query()->where('id', $id)->where('user_id', Auth::user()->id)->update(['status' => 2]);
         if ($ret) {
-            ServerChan::send('工单关闭提醒', '工单：ID' . $id . '客户已手动关闭');
+            ServerChan::send('工单关闭提醒', '工单：ID' . $id . '用户已手动关闭');
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
         } else {
@@ -754,50 +770,8 @@ class UserController extends Controller
             }
 
             $view['goods'] = $goods;
-            $view['is_youzan'] = self::$systemConfig['is_youzan'];
-            $view['is_alipay'] = self::$systemConfig['is_alipay'];
-            $view['is_f2fpay'] = self::$systemConfig['is_f2fpay'];
 
             return Response::view('user.buy', $view);
-        }
-    }
-
-    // 积分兑换流量
-    public function exchange(Request $request)
-    {
-        // 积分满100才可以兑换
-        if (Auth::user()->score < 100) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：满100才可以兑换，请继续累计吧']);
-        }
-
-        // 账号过期不允许兑换
-        if (Auth::user()->expire_time < date('Y-m-d')) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：账号已过期，请先购买服务吧']);
-        }
-
-        DB::beginTransaction();
-        try {
-            // 写入积分操作日志
-            $ret = $this->addUserScoreLog(Auth::user()->id, Auth::user()->score, 0, -1 * Auth::user()->score, '积分兑换流量');
-
-            // 扣积分加流量
-            if ($ret) {
-                User::query()->where('id', Auth::user()->id)->update(['score' => 0]);
-                User::query()->where('id', Auth::user()->id)->increment('transfer_enable', Auth::user()->score * 1048576);
-            }
-
-            DB::commit();
-
-            // 更新session
-            $user = User::query()->where('id', Auth::user()->id)->first()->toArray();
-            Session::remove('user');
-            Session::put('user', $user);
-
-            return Response::json(['status' => 'success', 'data' => '', 'message' => '兑换成功']);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '兑换失败：' . $e->getMessage()]);
         }
     }
 
