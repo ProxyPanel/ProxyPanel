@@ -12,10 +12,10 @@ use Cache;
 use Mail;
 use Log;
 
-class AutoCheckNodeStatus extends Command
+class AutoCheckNodeTCP extends Command
 {
-    protected $signature = 'autoCheckNodeStatus';
-    protected $description = '自动检测节点状态';
+    protected $signature = 'autoCheckNodeTCP';
+    protected $description = '自动检测节点是否被TCP阻断';
     protected static $systemConfig;
 
     public function __construct()
@@ -28,14 +28,13 @@ class AutoCheckNodeStatus extends Command
     {
         $jobStartTime = microtime(true);
 
-        // 监测节点状态
         if (self::$systemConfig['is_tcp_check']) {
             if (!Cache::has('tcp_check_time')) {
                 $this->checkNodes();
             } elseif (Cache::get('tcp_check_time') <= time()) {
                 $this->checkNodes();
             } else {
-                Log::info('下次TCP阻断检测时间：' . date('Y-m-d H:i:s', Cache::get('tcp_check_time')));
+                Log::info('下次节点TCP阻断检测时间：' . date('Y-m-d H:i:s', Cache::get('tcp_check_time')));
             }
         }
 
@@ -97,12 +96,6 @@ class AutoCheckNodeStatus extends Command
                 }
 
                 Log::info("【TCP阻断检测】" . $node->name . ' - ' . $node->ip . ' - ' . $text);
-            }
-
-            // 10分钟内无节点负载信息且TCP检测认为不是离线则认为是后端炸了
-            $nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-            if ($tcpCheck !== 1 && !$nodeTTL) {
-                $this->notifyMaster($title, "节点**{$node->name}【{$node->ip}】**异常：**心跳异常**", $node->name, $node->server);
             }
         }
 

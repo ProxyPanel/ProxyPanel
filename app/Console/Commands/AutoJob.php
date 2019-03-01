@@ -9,6 +9,7 @@ use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SsNode;
+use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeLabel;
 use App\Http\Models\Ticket;
 use App\Http\Models\UserBalanceLog;
@@ -77,6 +78,9 @@ class AutoJob extends Command
 
         // 关闭超过72小时未处理的工单
         $this->closeTickets();
+
+        // 检测节点是否离线
+        $this->checkNodeStatus();
 
         $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
@@ -527,6 +531,19 @@ class AutoJob extends Command
             $ret = Ticket::query()->where('id', $ticket->id)->update(['status' => 2]);
             if ($ret) {
                 ServerChan::send('工单关闭提醒', '工单：ID' . $ticket->id . '超过72小时未处理，系统已自动关闭');
+            }
+        }
+    }
+
+    // 检测节点是否离线
+    private function checkNodeStatus()
+    {
+        $nodeList = SsNode::query()->where('status', 1)->get();
+        foreach ($nodeList as $node) {
+            // 10分钟内无节点负载信息且TCP检测认为不是离线则认为是后端炸了
+            $nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+            if (!$nodeTTL) {
+                ServerChan::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
             }
         }
     }

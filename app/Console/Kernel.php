@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\AutoClearLog::class,
         \App\Console\Commands\AutoDecGoodsTraffic::class,
         \App\Console\Commands\AutoResetUserTraffic::class,
-        \App\Console\Commands\AutoCheckNodeStatus::class,
+        \App\Console\Commands\AutoCheckNodeTCP::class,
         \App\Console\Commands\AutoStatisticsNodeDailyTraffic::class,
         \App\Console\Commands\AutoStatisticsNodeHourlyTraffic::class,
         \App\Console\Commands\AutoStatisticsUserDailyTraffic::class,
@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoClearLog')->everyThirtyMinutes();
         $schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
         $schedule->command('autoResetUserTraffic')->daily();
-        $schedule->command('autoCheckNodeStatus')->everyMinute();
+        $schedule->command('autoCheckNodeTCP')->everyMinute();
         $schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
         $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
         $schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
