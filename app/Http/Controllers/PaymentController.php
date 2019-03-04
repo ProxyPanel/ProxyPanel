@@ -206,7 +206,7 @@ class PaymentController extends Controller
                 $payment->qr_code = $result;
             } elseif (self::$systemConfig['is_f2fpay']) {
                 $payment->qr_code = $result;
-                $payment->qr_url = 'http://qr.liantu.com/api.php?text=' . $result . '&bg=ffffff&fg=1eabfc&pt=1c73bd&m=0&w=400&el=1&inpt=1eabfc';
+                $payment->qr_url = 'http://qr.topscan.com/api.php?text=' . $result . '&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';
                 $payment->qr_local_url = $payment->qr_url;
             }
             $payment->status = 0;
