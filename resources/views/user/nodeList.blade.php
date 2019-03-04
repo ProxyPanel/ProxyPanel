@@ -15,7 +15,7 @@
                             <div class="actions">
                                 <span class="caption-subject">
                                     {{trans('home.account_expire')}}：@if(date('Y-m-d') > Auth::user()->expire_time) {{trans('home.expired')}} @else {{Auth::user()->expire_time}} @endif
-                                    {{trans('home.account_bandwidth_usage')}}：{{flowAutoShow(flowAutoShow(Auth::user()->u + Auth::user()->d))}}（{{flowAutoShow(Auth::user()->transfer_enable)}}）
+                                    {{trans('home.account_bandwidth_usage')}}：{{flowAutoShow(Auth::user()->u + Auth::user()->d)}}（{{flowAutoShow(Auth::user()->transfer_enable)}}）
                                     @if(Auth::user()->traffic_reset_day) {{trans('home.account_reset_notice', ['reset_day' => Auth::user()->traffic_reset_day])}} @endif
                                 </span>
                             </div>
