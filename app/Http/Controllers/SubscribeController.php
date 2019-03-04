@@ -199,7 +199,7 @@ class SubscribeController extends Controller
                 $ssr_str .= '/?obfsparam=' . base64url_encode($obfs_param);
                 $ssr_str .= '&protoparam=' . ($node['single'] ? base64url_encode($user->port . ':' . $user->passwd) : base64url_encode($protocol_param));
                 $ssr_str .= '&remarks=' . base64url_encode($node['name']);
-                $ssr_str .= '&group=' . base64url_encode(empty($group) ? '默认' : $group->name);
+                $ssr_str .= '&group=' . base64url_encode(empty($group) ? Helpers::systemConfig()['website_name'] : $group->name);
                 $ssr_str .= '&udpport=0';
                 $ssr_str .= '&uot=0';
                 $ssr_str = base64url_encode($ssr_str);
@@ -255,7 +255,7 @@ class SubscribeController extends Controller
     {
         $text = '到期时间：' . $user->expire_time;
 
-        return 'ssr://' . base64url_encode('0.0.0.0:1:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode(Helpers::systemConfig()['website_name']) . '&udpport=0&uot=0') . "\n";
+        return 'ssr://' . base64url_encode('0.0.0.1:1:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode(Helpers::systemConfig()['website_name']) . '&udpport=0&uot=0') . "\n";
     }
 
     /**
@@ -269,6 +269,6 @@ class SubscribeController extends Controller
     {
         $text = '剩余流量：' . flowAutoShow($user->transfer_enable - $user->u - $user->d);
 
-        return 'ssr://' . base64url_encode('0.0.0.0:1:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode(Helpers::systemConfig()['website_name']) . '&udpport=0&uot=0') . "\n";
+        return 'ssr://' . base64url_encode('0.0.0.2:1:origin:none:plain:' . base64url_encode('0000') . '/?obfsparam=&protoparam=&remarks=' . base64url_encode($text) . '&group=' . base64url_encode(Helpers::systemConfig()['website_name']) . '&udpport=0&uot=0') . "\n";
     }
 }
