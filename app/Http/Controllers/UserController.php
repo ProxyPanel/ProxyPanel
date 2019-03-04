@@ -351,13 +351,13 @@ class UserController extends Controller
     public function services(Request $request)
     {
         // 余额充值商品，只取10个
-        $view['chargeGoodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
+        $view['chargeGoodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 3)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
 
         // 套餐列表
-        $view['packageList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(3, ['*'], 'packagePage');
+        $view['packageList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 2)->orderBy('sort', 'desc')->limit(12)->get();
 
         // 流量包列表
-        $view['trafficList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '1')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(3, ['*'], 'trafficPage');
+        $view['trafficList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 1)->orderBy('sort', 'desc')->limit(12)->get();
 
         return Response::view('user.services', $view);
     }

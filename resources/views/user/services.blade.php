@@ -62,98 +62,106 @@
                                     </ol>
                                 </div>
                                 <div class="tab-pane" id="services2">
-                                    <div class="portlet-body">
-                                        <div class="table-scrollable table-scrollable-borderless">
-                                            <table class="table table-hover table-light table-checkable order-column">
-                                                <thead>
-                                                <tr>
-                                                    <th style="width:35%;"> {{trans('home.service_name')}} </th>
-                                                    <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
-                                                    <th style="text-align: center;"> {{trans('home.service_price')}} </th>
-                                                    <th> </th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                @if($packageList->isEmpty())
-                                                    <tr>
-                                                        <td colspan="4" style="text-align: center;">{{trans('home.services_none')}}</td>
-                                                    </tr>
-                                                @else
-                                                    @foreach($packageList as $key => $vo)
-                                                        <tr class="odd gradeX">
-                                                            <td style="width: 20%;">
-                                                            <!--@if($vo->logo) <a href="{{$vo->logo}}" class="fancybox"><img src="{{$vo->logo}}"/></a> @endif -->
-                                                                <span style="font-size: 1.15em; color: #000;">{{$vo->name}}</span>
-                                                                <br>
-                                                                <span style="color: #000;">{{trans('home.service_traffic')}}：{{$vo->traffic_label}}</span>
-                                                                <br>
-                                                                <span style="color: #000;">{{trans('home.service_days')}}：{{$vo->days}} {{trans('home.day')}}</span>
-                                                            </td>
-                                                            <td style="width: 20%; text-align: center;"> {{$vo->desc}} </td>
-                                                            <td style="width: 20%; text-align: center;"> ￥{{$vo->price}} </td>
-                                                            <td style="width: 20%; text-align: center;">
-                                                                <a href="javascript:buy('{{$vo->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <div class="pricing-content-1" style="padding-top: 10px;">
                                         <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                                    {{ $packageList->appends(array_except(Request::query(), 'packagePage'))->links() }}
+                                            @if($packageList->isEmpty())
+                                                <div class="col-md-12" style="text-align: center;">
+                                                    <h2>暂无基础套餐</h2>
                                                 </div>
-                                            </div>
+                                            @else
+                                                @foreach($packageList as $key => $goods)
+                                                    <div class="col-md-3">
+                                                        <div class="price-column-container border-active" style="margin-bottom: 20px;">
+                                                            <div class="price-table-head bg-{{$goods->color}}">
+                                                                <h2 class="no-margin">{{$goods->name}}</h2>
+                                                            </div>
+                                                            <div class="arrow-down border-top-{{$goods->color}}"></div>
+                                                            <div class="price-table-pricing">
+                                                                <h3><sup class="price-sign">￥</sup>{{$goods->price}}</h3>
+                                                                @if($goods->is_hot)
+                                                                    <div class="price-ribbon">热销</div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="price-table-content">
+                                                                <div class="row mobile-padding">
+                                                                    <div class="col-xs-3 text-right mobile-padding">
+                                                                        <i class="icon-bar-chart"></i>
+                                                                    </div>
+                                                                    <div class="col-xs-9 text-left mobile-padding">内含流量：{{$goods->traffic_label}}</div>
+                                                                </div>
+                                                                <div class="row mobile-padding">
+                                                                    <div class="col-xs-3 text-right mobile-padding">
+                                                                        <i class="icon-clock"></i>
+                                                                    </div>
+                                                                    <div class="col-xs-9 text-left mobile-padding">有效时长：{{$goods->days}}天</div>
+                                                                </div>
+                                                                <div class="row mobile-padding">
+                                                                    <div class="col-xs-3 text-right mobile-padding">
+                                                                        <i class="icon-refresh"></i>
+                                                                    </div>
+                                                                    <div class="col-xs-9 text-left mobile-padding">每月重置流量</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="arrow-down arrow-grey"></div>
+                                                            <div class="price-table-footer">
+                                                                <button type="button" class="btn {{$goods->color}} {{$goods->is_hot ? '' : 'btn-outline'}} sbold uppercase price-button" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="services3">
-                                    <div class="portlet-body">
-                                        <div class="table-scrollable table-scrollable-borderless">
-                                            <table class="table table-hover table-light table-checkable order-column">
-                                                <thead>
-                                                <tr>
-                                                    <th style="width:35%;"> {{trans('home.service_name')}} </th>
-                                                    <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
-                                                    <th style="text-align: center;"> {{trans('home.service_price')}} </th>
-                                                    <th> </th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                @if($trafficList->isEmpty())
-                                                    <tr>
-                                                        <td colspan="4" style="text-align: center;">{{trans('home.services_none')}}</td>
-                                                    </tr>
-                                                @else
-                                                    @foreach($trafficList as $key => $vo)
-                                                        <tr class="odd gradeX">
-                                                            <td style="width: 20%;">
-                                                            <!--@if($vo->logo) <a href="{{$vo->logo}}" class="fancybox"><img src="{{$vo->logo}}"/></a> @endif -->
-                                                                <span style="font-size: 1.15em; color: #000;">{{$vo->name}}</span>
-                                                                <br>
-                                                                <span style="color: #000;">{{trans('home.service_traffic')}}：{{$vo->traffic_label}}</span>
-                                                                <br>
-                                                                <span style="color: #000;">{{trans('home.service_days')}}：{{$vo->days}} {{trans('home.day')}}</span>
-                                                            </td>
-                                                            <td style="width: 20%; text-align: center;"> {{$vo->desc}} </td>
-                                                            <td style="width: 20%; text-align: center;"> ￥{{$vo->price}} </td>
-                                                            <td style="width: 20%; text-align: center;">
-                                                                <a href="javascript:buy('{{$vo->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <div class="pricing-content-1" style="padding-top: 10px;">
                                         <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                                    {{ $trafficList->appends(array_except(Request::query(), 'trafficPage'))->links() }}
+                                            @if($trafficList->isEmpty())
+                                                <div class="col-md-12" style="text-align: center;">
+                                                    <h2>暂无流量包</h2>
                                                 </div>
-                                            </div>
+                                            @else
+                                                @foreach($trafficList as $key => $goods)
+                                                    <div class="col-md-3">
+                                                        <div class="price-column-container border-active" style="margin-bottom: 20px;">
+                                                            <div class="price-table-head bg-{{$goods->color}}">
+                                                                <h2 class="no-margin">{{$goods->name}}</h2>
+                                                            </div>
+                                                            <div class="arrow-down border-top-{{$goods->color}}"></div>
+                                                            <div class="price-table-pricing">
+                                                                <h3><sup class="price-sign">￥</sup>{{$goods->price}}</h3>
+                                                                @if($goods->is_hot)
+                                                                    <div class="price-ribbon">热销</div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="price-table-content">
+                                                                <div class="row mobile-padding">
+                                                                    <div class="col-xs-3 text-right mobile-padding">
+                                                                        <i class="icon-bar-chart"></i>
+                                                                    </div>
+                                                                    <div class="col-xs-9 text-left mobile-padding">内含流量：{{$goods->traffic_label}}</div>
+                                                                </div>
+                                                                <div class="row mobile-padding">
+                                                                    <div class="col-xs-3 text-right mobile-padding">
+                                                                        <i class="icon-clock"></i>
+                                                                    </div>
+                                                                    <div class="col-xs-9 text-left mobile-padding">有效时长：{{$goods->days}}天</div>
+                                                                </div>
+                                                                <div class="row mobile-padding">
+                                                                    <div class="col-xs-3 text-right mobile-padding">
+                                                                        <i class="icon-refresh"></i>
+                                                                    </div>
+                                                                    <div class="col-xs-9 text-left mobile-padding">用完即止、到期即止</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="arrow-down arrow-grey"></div>
+                                                            <div class="price-table-footer">
+                                                                <button type="button" class="btn {{$goods->color}} {{$goods->is_hot ? '' : 'btn-outline'}} sbold uppercase price-button" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
