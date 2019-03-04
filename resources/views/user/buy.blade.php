@@ -130,6 +130,9 @@
                             total_price = total_price > 0 ? total_price : 0;
                         }
 
+                        // 四舍五入，保留2位小数
+                        total_price = total_price.toFixed(2);
+
                         $(".grand-total").text("￥" + total_price);
                     } else {
                         $(".grand-total").text("￥" + goods_price);

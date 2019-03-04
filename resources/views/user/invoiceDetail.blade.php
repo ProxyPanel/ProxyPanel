@@ -24,18 +24,7 @@
                     <h2 class="invoice-title">{{trans('home.invoice_table_expire_at')}}</h2>
                     <p class="invoice-desc">{{$order->expire_at}}</p>
                 </div>
-                <div class="col-xs-3">
-                    <h2 class="invoice-title"> {{trans('home.service_subtotal_price')}} </h2>
-                    <p class="invoice-desc"> ￥{{$order->goods->price}} </p>
-                </div>
-                <div class="col-xs-3">
-                    <h2 class="invoice-title">{{trans('home.coupon')}}</h2>
-                    <p class="invoice-desc">{{$order->coupon ? $order->coupon->name : '未使用'}}</p>
-                </div>
-                <div class="col-xs-3">
-                    <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
-                    <p class="invoice-desc grand-total"> ￥{{$order->goods->price}} </p>
-                </div>
+                <!--
                 <div class="col-xs-3">
                     <h2 class="invoice-title uppercase">{{trans('home.invoice_table_status')}}</h2>
                     <p class="invoice-desc">
@@ -56,30 +45,45 @@
                         @endif
                     </p>
                 </div>
+                -->
             </div>
             <div class="row invoice-body">
                 <div class="col-xs-12 table-responsive">
                     <table class="table table-hover">
                         <thead>
-                        <tr>
-                            <th class="invoice-title"> {{trans('home.service_name')}} </th>
-                            <th class="invoice-title text-center"> {{trans('home.service_price')}} </th>
-                            <th class="invoice-title text-center"> {{trans('home.service_quantity')}} </th>
-                        </tr>
+                            <tr>
+                                <th class="invoice-title"> {{trans('home.service_name')}} </th>
+                                <th class="invoice-title text-center"> {{trans('home.service_price')}} </th>
+                                <th class="invoice-title text-center"> {{trans('home.service_quantity')}} </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td style="padding: 10px;">
-                                <h2>{{$order->goods->name}}</h2>
-                                {{trans('home.service_traffic')}} {{$order->goods->traffic_label}}
-                                <br/>
-                                {{trans('home.service_days')}} {{$order->goods->days}} {{trans('home.day')}}
-                            </td>
-                            <td class="text-center"> ￥{{$order->goods->price}} </td>
-                            <td class="text-center"> x 1 </td>
-                        </tr>
+                            <tr>
+                                <td style="padding: 10px;">
+                                    <h2>{{$order->goods->name}}</h2>
+                                    {{trans('home.service_traffic')}} {{$order->goods->traffic_label}}
+                                    <br/>
+                                    {{trans('home.service_days')}} {{$order->goods->days}} {{trans('home.day')}}
+                                </td>
+                                <td class="text-center"> ￥{{$order->goods->price}} </td>
+                                <td class="text-center"> x 1 </td>
+                            </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="row invoice-subtotal">
+                <div class="col-xs-3">
+                    <h2 class="invoice-title"> {{trans('home.service_subtotal_price')}} </h2>
+                    <p class="invoice-desc"> ￥{{$order->goods->price}} </p>
+                </div>
+                <div class="col-xs-3">
+                    <h2 class="invoice-title">{{trans('home.coupon')}}</h2>
+                    <p class="invoice-desc">{{$order->coupon ? $order->coupon->name : '未使用'}}</p>
+                </div>
+                <div class="col-xs-3">
+                    <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
+                    <p class="invoice-desc grand-total"> ￥{{$order->amount}} </p>
                 </div>
             </div>
             <div class="row">

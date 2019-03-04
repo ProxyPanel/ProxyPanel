@@ -381,7 +381,7 @@ class UserController extends Controller
     // 订单明细
     public function invoiceDetail(Request $request, $sn)
     {
-        $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
+        $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->where('user_id', Auth::user()->id)->firstOrFail();
 
         return Response::view('user.invoiceDetail', $view);
     }

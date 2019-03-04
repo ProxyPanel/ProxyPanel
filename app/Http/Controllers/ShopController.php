@@ -35,7 +35,7 @@ class ShopController extends Controller
             $name = $request->get('name');
             $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
-            $price = $request->get('price', 0);
+            $price = round($request->get('price'), 2);
             $score = intval($request->get('score', 0));
             $type = intval($request->get('type', 1));
             $days = intval($request->get('days', 90));
@@ -149,7 +149,7 @@ class ShopController extends Controller
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $desc = $request->get('desc');
-            $price = $request->get('price', 0);
+            $price = round($request->get('price'), 2);
             $labels = $request->get('labels');
             $color = trim($request->get('color', 0));
             $sort = intval($request->get('sort', 0));

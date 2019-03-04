@@ -20,6 +20,11 @@
                         <strong>错误：</strong> {{Session::get('errorMsg')}}
                     </div>
                 @endif
+
+                <div class="note note-danger">
+                    <p>公告：仅展示最后一条有效的</p>
+                </div>
+
                 <!-- BEGIN PORTLET-->
                 <div class="portlet light bordered">
                     <div class="portlet-title">

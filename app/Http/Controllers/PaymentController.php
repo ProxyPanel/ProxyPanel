@@ -82,7 +82,7 @@ class PaymentController extends Controller
 
             // 计算实际应支付总价
             $amount = $coupon->type == 2 ? $goods->price * $coupon->discount / 10 : $goods->price - $coupon->amount;
-            $amount = $amount > 0 ? $amount : 0;
+            $amount = $amount > 0 ? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
         } else {
             $amount = $goods->price;
         }
