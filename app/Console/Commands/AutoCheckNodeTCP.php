@@ -165,7 +165,7 @@ class AutoCheckNodeTCP extends Command
      */
     private function notifyMasterByEmail($title, $content, $nodeName, $nodeServer)
     {
-        if (self::$systemConfig['is_node_crash_warning'] && self::$systemConfig['crash_warning_email']) {
+        if (self::$systemConfig['crash_warning_email']) {
             $logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
             Mail::to(self::$systemConfig['crash_warning_email'])->send(new nodeCrashWarning($logId, $nodeName, $nodeServer));
         }

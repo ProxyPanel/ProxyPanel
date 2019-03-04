@@ -538,12 +538,14 @@ class AutoJob extends Command
     // 检测节点是否离线
     private function checkNodeStatus()
     {
-        $nodeList = SsNode::query()->where('status', 1)->get();
-        foreach ($nodeList as $node) {
-            // 10分钟内无节点负载信息且TCP检测认为不是离线则认为是后端炸了
-            $nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-            if (!$nodeTTL) {
-                ServerChan::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
+        if (Helpers::systemConfig()['is_node_crash_warning']) {
+            $nodeList = SsNode::query()->where('status', 1)->get();
+            foreach ($nodeList as $node) {
+                // 10分钟内无节点负载信息且TCP检测认为不是离线则认为是后端炸了
+                $nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+                if (!$nodeTTL) {
+                    ServerChan::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
+                }
             }
         }
     }

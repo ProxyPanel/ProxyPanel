@@ -549,7 +549,7 @@
                                                             <label for="is_node_crash_warning" class="col-md-3 control-label">节点离线提醒</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_node_crash_warning) checked @endif id="is_node_crash_warning" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后如果节点离线则发出提醒邮件 </span>
+                                                                <span class="help-block"> 启用后如果节点离线则通过ServerChan推送提醒 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
