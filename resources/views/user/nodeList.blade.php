@@ -134,8 +134,10 @@
                     </div>
                 </div>
 
-                @if(!$nodeList->isEmpty())
-                    <div class="col-md-6">
+                <div class="col-md-6">
+                    @if($nodeList->isEmpty())
+                        <h2>暂无可用节点，请先<a href="{{url('services')}}">购买服务</a></h2>
+                    @else
                         <div class="portlet light bordered">
                             <div class="portlet-title">
                                 <div class="caption">
@@ -198,8 +200,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
+
             </div>
         </div>
 
