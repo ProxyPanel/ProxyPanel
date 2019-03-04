@@ -352,7 +352,12 @@ class UserController extends Controller
     {
         // 余额充值商品，只取10个
         $view['chargeGoodsList'] = Goods::query()->where('type', 3)->where('status', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
-        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
+
+        // 套餐列表
+        $view['packageList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(3, ['*'], 'packagePage');
+
+        // 流量包列表
+        $view['trafficList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', '1')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(3, ['*'], 'trafficPage');
 
         return Response::view('user.services', $view);
     }

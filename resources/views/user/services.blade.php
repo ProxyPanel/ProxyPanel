@@ -12,77 +12,149 @@
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <h4 class="">
+                        <span class="font-blue">账户等级：</span>
+                        <span class="font-red">{{Auth::user()->levelList->level_name}}</span>
+                        <span class="font-blue">、账户余额：</span>
+                        <span class="font-red">{{Auth::user()->balance}}元</span>
+                        <a class="btn btn-sm red" href="#" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <span class="caption-subject font-blue">账户等级：</span>
-                            <span class="caption-subject font-red">{{Auth::user()->levelList->level_name}}、</span>
-                            <span class="caption-subject font-blue">账户余额：</span>
-                            <span class="caption-subject font-red">{{Auth::user()->balance}}元</span>
-                        </div>
-                        <div class="actions">
-                            <div class="btn-group btn-group-devided" data-toggle="buttons">
-                                <a class="btn btn-sm red" href="#" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="portlet light">
-                        <div class="portlet-body">
-                            <div class="table-scrollable table-scrollable-borderless">
-                                <table class="table table-hover table-light table-checkable order-column">
-                                    <thead>
-                                    <tr>
-                                        <th style="width:35%;"> {{trans('home.service_name')}} </th>
-                                        <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
-                                        <th style="text-align: center;"> {{trans('home.service_type')}} </th>
-                                        <th style="text-align: center;"> {{trans('home.service_price')}} </th>
-                                        <th> </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @if($goodsList->isEmpty())
-                                        <tr>
-                                            <td colspan="5" style="text-align: center;">{{trans('home.services_none')}}</td>
-                                        </tr>
-                                    @else
-                                        @foreach($goodsList as $key => $goods)
-                                            <tr class="odd gradeX">
-                                                <td style="width: 20%;">
-                                                    <!--@if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif -->
-                                                    <span style="font-size: 1.15em; color: #000;">{{$goods->name}}</span>
-                                                    <br>
-                                                    <span style="color: #000;">{{trans('home.service_traffic')}}：{{$goods->traffic_label}}</span>
-                                                    <br>
-                                                    <span style="color: #000;">{{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}</span>
-                                                </td>
-                                                <td style="width: 20%; text-align: center;"> {{$goods->desc}} </td>
-                                                <td style="width: 20%; text-align: center;">
-                                                    @if($goods->type == 1)
-                                                        {{trans('home.service_type_1')}}
-                                                    @elseif($goods->type == 2)
-                                                        {{trans('home.service_type_2')}}
-                                                    @else
-                                                        {{trans('home.service_type_3')}}
-                                                    @endif
-                                                </td>
-                                                <td style="width: 20%; text-align: center;"> ￥{{$goods->price}} </td>
-                                                <td style="width: 20%; text-align: center;">
-                                                    <a href="javascript:buy('{{$goods->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
-                                                    <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                        {{ $goodsList->links() }}
+                        <div class="tabbable-line">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#services1" data-toggle="tab"> <i class="fa fa-book"></i> 说明 </a>
+                                </li>
+                                <li>
+                                    <a href="#services2" data-toggle="tab"> <i class="fa fa-cloud"></i> 基础套餐 </a>
+                                </li>
+                                <li>
+                                    <a href="#services3" data-toggle="tab"> <i class="fa fa-jsfiddle"></i> 流量包 </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="font-size:16px;">
+                                <div class="tab-pane active" id="services1">
+                                    <h4>购买流程：</h4>
+                                    <ol>
+                                        <li>第一步：先购买基础套餐。</li>
+                                        <li>第二步：按需求，选择是否购买流量包。</li>
+                                    </ol>
+                                    <h4>基础套餐：</h4>
+                                    <ol>
+                                        <li>在套餐生效的时间内，您将获得「套餐对应的网络速度」、「套餐内相应的流量」及其它特权。</li>
+                                        <li>基础套餐每月将会重置一次流量，重置日为购买日。</li>
+                                        <li>如在套餐未到期的情况下购买新套餐，则会导致旧套餐的所有配置立即失效，新套餐的配置立即生效。</li>
+                                    </ol>
+                                    <h4>流量包：</h4>
+                                    <ol>
+                                        <li>当您在基础套餐重置日之前将流量耗尽，您可以选择购买流量包解燃眉之急。</li>
+                                        <li>流量包只在固定时间内增加可用流量，不会更改账户的配置，并且即时生效可以多个叠加。 </li>
+                                    </ol>
+                                </div>
+                                <div class="tab-pane" id="services2">
+                                    <div class="portlet-body">
+                                        <div class="table-scrollable table-scrollable-borderless">
+                                            <table class="table table-hover table-light table-checkable order-column">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width:35%;"> {{trans('home.service_name')}} </th>
+                                                    <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
+                                                    <th style="text-align: center;"> {{trans('home.service_price')}} </th>
+                                                    <th> </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @if($packageList->isEmpty())
+                                                    <tr>
+                                                        <td colspan="4" style="text-align: center;">{{trans('home.services_none')}}</td>
+                                                    </tr>
+                                                @else
+                                                    @foreach($packageList as $key => $vo)
+                                                        <tr class="odd gradeX">
+                                                            <td style="width: 20%;">
+                                                            <!--@if($vo->logo) <a href="{{$vo->logo}}" class="fancybox"><img src="{{$vo->logo}}"/></a> @endif -->
+                                                                <span style="font-size: 1.15em; color: #000;">{{$vo->name}}</span>
+                                                                <br>
+                                                                <span style="color: #000;">{{trans('home.service_traffic')}}：{{$vo->traffic_label}}</span>
+                                                                <br>
+                                                                <span style="color: #000;">{{trans('home.service_days')}}：{{$vo->days}} {{trans('home.day')}}</span>
+                                                            </td>
+                                                            <td style="width: 20%; text-align: center;"> {{$vo->desc}} </td>
+                                                            <td style="width: 20%; text-align: center;"> ￥{{$vo->price}} </td>
+                                                            <td style="width: 20%; text-align: center;">
+                                                                <a href="javascript:buy('{{$vo->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                                    {{ $packageList->appends(array_except(Request::query(), 'packagePage'))->links() }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="services3">
+                                    <div class="portlet-body">
+                                        <div class="table-scrollable table-scrollable-borderless">
+                                            <table class="table table-hover table-light table-checkable order-column">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width:35%;"> {{trans('home.service_name')}} </th>
+                                                    <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
+                                                    <th style="text-align: center;"> {{trans('home.service_price')}} </th>
+                                                    <th> </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @if($trafficList->isEmpty())
+                                                    <tr>
+                                                        <td colspan="4" style="text-align: center;">{{trans('home.services_none')}}</td>
+                                                    </tr>
+                                                @else
+                                                    @foreach($trafficList as $key => $vo)
+                                                        <tr class="odd gradeX">
+                                                            <td style="width: 20%;">
+                                                            <!--@if($vo->logo) <a href="{{$vo->logo}}" class="fancybox"><img src="{{$vo->logo}}"/></a> @endif -->
+                                                                <span style="font-size: 1.15em; color: #000;">{{$vo->name}}</span>
+                                                                <br>
+                                                                <span style="color: #000;">{{trans('home.service_traffic')}}：{{$vo->traffic_label}}</span>
+                                                                <br>
+                                                                <span style="color: #000;">{{trans('home.service_days')}}：{{$vo->days}} {{trans('home.day')}}</span>
+                                                            </td>
+                                                            <td style="width: 20%; text-align: center;"> {{$vo->desc}} </td>
+                                                            <td style="width: 20%; text-align: center;"> ￥{{$vo->price}} </td>
+                                                            <td style="width: 20%; text-align: center;">
+                                                                <a href="javascript:buy('{{$vo->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                                    {{ $trafficList->appends(array_except(Request::query(), 'trafficPage'))->links() }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
