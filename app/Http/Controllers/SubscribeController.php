@@ -211,7 +211,7 @@ class SubscribeController extends Controller
                     "ps"   => $node['name'],
                     "add"  => $node['server'] ? $node['server'] : $node['ip'],
                     "port" => $node['v2_port'],
-                    "id"   => $user['vmess_id'],
+                    "id"   => $user->vmess_id,
                     "aid"  => $node['v2_alter_id'],
                     "net"  => $node['v2_net'],
                     "type" => $node['v2_type'],
@@ -224,7 +224,18 @@ class SubscribeController extends Controller
             }
         }
 
-        exit(base64url_encode($scheme));
+        // 适配Quantumult的自定义订阅头
+        if (self::$systemConfig['is_custom_subscribe']) {
+            $headers = [
+                'Content-type'          => 'application/octet-stream; charset=utf-8',
+                'Cache-Control'         => 'no-store, no-cache, must-revalidate',
+                'Subscription-userinfo' => 'upload=' . $user->u . '; download=' . $user->d . '; total=' . $user->transfer_enable
+            ];
+
+            return Response::make(base64url_encode($scheme), 200, $headers);
+        } else {
+            return Response::make(base64url_encode($scheme));
+        }
     }
 
     // 写入订阅访问日志
