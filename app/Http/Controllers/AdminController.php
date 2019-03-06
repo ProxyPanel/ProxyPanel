@@ -2026,7 +2026,26 @@ EOF;
 
         // 演示环境禁止修改特定配置项
         if (env('APP_DEMO')) {
-            if (in_array($name, ['website_url', 'min_rand_score', 'max_rand_score', 'push_bear_send_key', 'push_bear_qrcode', 'youzan_client_id', 'youzan_client_secret', 'kdt_id', 'is_forbid_china', 'alipay_partner', 'alipay_key', 'alipay_transport', 'alipay_sign_type', 'alipay_private_key', 'alipay_public_key'])) {
+            $denyConfig = [
+                'website_url',
+                'min_rand_score',
+                'max_rand_score',
+                'push_bear_send_key',
+                'push_bear_qrcode',
+                'youzan_client_id',
+                'youzan_client_secret',
+                'kdt_id',
+                'is_forbid_china',
+                'alipay_partner',
+                'alipay_key',
+                'alipay_transport',
+                'alipay_sign_type',
+                'alipay_private_key',
+                'alipay_public_key',
+                'website_security_code'
+            ];
+
+            if (in_array($name, $denyConfig)) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '演示环境禁止修改该配置']);
             }
         }
