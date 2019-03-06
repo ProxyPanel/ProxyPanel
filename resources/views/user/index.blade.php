@@ -25,7 +25,9 @@
                             @if($notice)
                                 {!!$notice->content!!}
                             @else
-                                暂无公告
+                                <div style="text-align: center;">
+                                    <h3>暂无公告</h3>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -34,14 +36,14 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="portlet light bordered">
                     <div class="portlet-body">
                         <div id="chart2" style="width: auto;height:450px;"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="portlet light bordered">
                     <div class="portlet-body">
                         <div id="chart1" style="width: auto;height:450px;"></div>

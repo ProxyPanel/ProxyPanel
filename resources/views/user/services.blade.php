@@ -15,14 +15,25 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light">
-                    <h4 class="">
-                        <span class="font-blue">账户等级：</span>
-                        <span class="font-red">{{Auth::user()->levelList->level_name}}</span>
-                        &ensp;&ensp;
-                        <span class="font-blue">账户余额：</span>
-                        <span class="font-red">{{Auth::user()->balance}}元</span>
-                        <a class="btn btn-sm red" href="#" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
-                    </h4>
+                    <div class="portlet-body">
+                        <ul class="list-inline">
+                            <li>
+                                <h4>
+                                    <span class="font-blue">账户等级：</span>
+                                    <span class="font-red">{{Auth::user()->levelList->level_name}}</span>
+                                </h4>
+                            </li>
+                            <li>
+                                <h4>
+                                    <span class="font-blue">账户余额：</span>
+                                    <span class="font-red">{{Auth::user()->balance}}元</span>
+                                </h4>
+                            </li>
+                            <li>
+                                <a class="btn btn-sm red" href="#" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,7 +82,7 @@
                                                 </div>
                                             @else
                                                 @foreach($packageList as $key => $goods)
-                                                    <div class="col-md-3">
+                                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="price-column-container border-active" style="margin-bottom: 20px;">
                                                             <div class="price-table-head bg-{{$goods->color}}">
                                                                 <h2 class="no-margin">{{$goods->name}}</h2>
@@ -123,7 +134,7 @@
                                                 </div>
                                             @else
                                                 @foreach($trafficList as $key => $goods)
-                                                    <div class="col-md-3">
+                                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="price-column-container border-active" style="margin-bottom: 20px;">
                                                             <div class="price-table-head bg-{{$goods->color}}">
                                                                 <h2 class="no-margin">{{$goods->name}}</h2>
