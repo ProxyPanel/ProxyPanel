@@ -107,13 +107,18 @@
         // 发送注册验证码
         function sendVerifyCode() {
             var flag = true; // 请求成功与否标记
-            var token = '{{csrf_token()}}';
             var username = $("#username").val();
+
+            if (username == '' || username == undefined) {
+                layer.msg("请填入邮箱", {time: 1000});
+                return false;
+            }
+
             $.ajax({
                 type: "POST",
                 url: "{{url('sendCode')}}",
                 async: false,
-                data: {_token: token, username: username},
+                data: {_token: '{{csrf_token()}}', username: username},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status == 'fail') {
@@ -127,7 +132,7 @@
                     }
                 },
                 error: function (ret) {
-                    layer.msg('请求异常，请重试', {time: 1000});
+                    layer.msg('请求异常，请刷新页面重试', {time: 1000});
                     flag = false;
                 }
             });

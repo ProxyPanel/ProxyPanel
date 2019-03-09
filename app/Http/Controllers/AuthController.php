@@ -643,12 +643,12 @@ class AuthController extends Controller
         $username = trim($request->get('username'));
 
         if (!$username) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '请输入用户名']);
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '请填入邮箱']);
         }
 
         // 校验账号合法性
         if (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名必须是合法邮箱，请重新输入']);
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '邮箱地址不合法，请重新输入']);
         }
 
         // 校验域名邮箱是否在敏感词中
