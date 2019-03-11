@@ -15,9 +15,9 @@
                             </div>
                         </div>
                         <div class="portlet-body">
-                            <div class="search-container bordered">
+                            <div class="search-container">
                                 @if($articleList->isEmpty())
-                                    <p style="text-align:center;">{{trans('home.invoice_table_none')}} </p>
+                                    <div style="text-align: center;"><h3>{{trans('home.invoice_table_none')}}</h3></div>
                                 @else
                                     <ul>
                                         @foreach($articleList as $key => $article)

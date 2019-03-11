@@ -15,7 +15,7 @@ class QQWry
      */
     public static function ip($ip)
     {
-        $filePath = storage_path('qqwry.dat');
+        $filePath = public_path('qqwry.dat');
 
         return IpLocation::getLocation($ip, $filePath);
     }

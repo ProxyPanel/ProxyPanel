@@ -34,7 +34,7 @@
                                 <tbody>
                                 @if($ticketList->isEmpty())
                                     <tr>
-                                        <td colspan="4" style="text-align: center;"> {{trans('home.ticket_table_none')}} </td>
+                                        <td colspan="4" style="text-align: center;"> <h3>{{trans('home.ticket_table_none')}}</h3> </td>
                                     </tr>
                                 @else
                                     @foreach($ticketList as $key => $ticket)
