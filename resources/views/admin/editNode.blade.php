@@ -400,7 +400,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="v2_port" class="col-md-3 control-label">端口号</label>
+                                                        <label for="v2_port" class="col-md-3 control-label">端口</label>
                                                         <div class="col-md-8">
                                                             <input type="text" class="form-control" name="v2_port" value="{{$node->v2_port}}" id="v2_port" placeholder="10087">
                                                         </div>
@@ -469,6 +469,20 @@
                                                                     <span></span>
                                                                 </label>
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="v2_insider_port" class="col-md-3 control-label">内部端口</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="v2_insider_port" value="{{$node->v2_insider_port}}" id="v2_insider_port" placeholder="10550">
+                                                            <span class="help-block"> 内部监听，当端口为0时启用，仅支持<a href="https://github.com/rico93/pay-v2ray-sspanel-v3-mod_Uim-plugin/" target="_blank">rico93版</a> </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="v2_outsider_port" class="col-md-3 control-label">内部端口</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="v2_outsider_port" value="{{$node->v2_outsider_port}}" id="v2_outsider_port" placeholder="443">
+                                                            <span class="help-block"> 外部覆盖，当端口为0时启用，仅支持<a href="https://github.com/rico93/pay-v2ray-sspanel-v3-mod_Uim-plugin/" target="_blank">rico93版</a> </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -552,6 +566,8 @@
             var v2_host = $('#v2_host').val();
             var v2_path = $('#v2_path').val();
             var v2_tls = $("input:radio[name='v2_tls']:checked").val();
+            var v2_insider_port = $('#v2_insider_port').val();
+            var v2_outsider_port = $('#v2_outsider_port').val();
 
             $.ajax({
                 type: "POST",
@@ -600,7 +616,9 @@
                     v2_type: v2_type,
                     v2_host: v2_host,
                     v2_path: v2_path,
-                    v2_tls: v2_tls
+                    v2_tls: v2_tls,
+                    v2_insider_port: v2_insider_port,
+                    v2_outsider_port: v2_outsider_port
                 },
                 dataType: 'json',
                 success: function (ret) {
