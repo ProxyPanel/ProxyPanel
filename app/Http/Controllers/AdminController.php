@@ -463,7 +463,9 @@ class AdminController extends Controller
                 $this->makeUserLabels($id, $labels);
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($id, 0, $user->transfer_enable, toGB($transfer_enable), '后台手动编辑用户');
+                if ($user->transfer_enable != toGB($transfer_enable)) {
+                    Helpers::addUserTrafficModifyLog($id, 0, $user->transfer_enable, toGB($transfer_enable), '后台手动编辑用户');
+                }
 
                 DB::commit();
 

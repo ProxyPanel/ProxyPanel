@@ -608,42 +608,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="is_push_bear" class="col-md-3 control-label">PushBear</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_push_bear) checked @endif id="is_push_bear" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>） </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="push_bear_send_key" class="col-md-3 control-label">PushBear SendKey</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="push_bear_send_key" value="{{$push_bear_send_key}}" id="push_bear_send_key" placeholder="创建消息通道后即可获取" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setPushBearSendKey()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                                <span class="help-block"> 启用PushBear，请务必填入本值 </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <label for="push_bear_qrcode" class="col-md-3 control-label">PushBear订阅二维码</label>
-                                                            <div class="col-md-9">
-                                                                <div class="input-group">
-                                                                    <input class="form-control" type="text" name="push_bear_qrcode" value="{{$push_bear_qrcode}}" id="push_bear_qrcode" placeholder="填入创建好的消息通道的二维码URL" />
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setPushBearQrCode()">修改</button>
-                                                                    </span>
-                                                                </div>
-                                                                <span class="help-block"> 创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处 </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12"></div>
-                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -1450,25 +1414,6 @@
             }
         });
 
-        // 启用、禁用PushBear
-        $('#is_push_bear').on({
-            'switchChange.bootstrapSwitch': function (event, state) {
-                var is_push_bear = state ? 1 : 0;
-
-                $.post("{{url('admin/setConfig')}}", {
-                    _token: '{{csrf_token()}}',
-                    name: 'is_push_bear',
-                    value: is_push_bear
-                }, function (ret) {
-                    layer.msg(ret.message, {time: 1000}, function () {
-                        if (ret.status == 'fail') {
-                            window.location.reload();
-                        }
-                    });
-                });
-            }
-        });
-
         // 启用、禁用TCP阻断探测
         $('#is_tcp_check').on({
             'switchChange.bootstrapSwitch': function (event, state) {
@@ -1802,40 +1747,6 @@
                 _token: '{{csrf_token()}}',
                 name: 'namesilo_key',
                 value: namesilo_key
-            }, function (ret) {
-                layer.msg(ret.message, {time: 1000}, function () {
-                    if (ret.status == 'fail') {
-                        window.location.reload();
-                    }
-                });
-            });
-        }
-
-        // 设置PushBear的SendKey
-        function setPushBearSendKey() {
-            var push_bear_send_key = $("#push_bear_send_key").val();
-
-            $.post("{{url('admin/setConfig')}}", {
-                _token: '{{csrf_token()}}',
-                name: 'push_bear_send_key',
-                value: push_bear_send_key
-            }, function (ret) {
-                layer.msg(ret.message, {time: 1000}, function () {
-                    if (ret.status == 'fail') {
-                        window.location.reload();
-                    }
-                });
-            });
-        }
-
-        // 设置PushBear的消息通道二维码URL
-        function setPushBearQrCode() {
-            var push_bear_qrcode = $("#push_bear_qrcode").val();
-
-            $.post("{{url('admin/setConfig')}}", {
-                _token: '{{csrf_token()}}',
-                name: 'push_bear_qrcode',
-                value: push_bear_qrcode
             }, function (ret) {
                 layer.msg(ret.message, {time: 1000}, function () {
                     if (ret.status == 'fail') {
