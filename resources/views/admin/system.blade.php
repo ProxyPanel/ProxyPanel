@@ -49,6 +49,16 @@
                                         <li>
                                             <a href="#tab_10" data-toggle="tab"> 支付宝当面付 </a>
                                         </li>
+                                        @if (\App\Components\Helpers::systemConfig()['is_captcha'] == 2)
+                                        <li>
+                                            <a href="#tab_geetest" data-toggle="tab"> 极验验证 </a>
+                                        </li>
+                                        @endif
+                                        @if (\App\Components\Helpers::systemConfig()['is_captcha'] == 3)
+                                        <li>
+                                            <a href="#tab_googleCaptcha" data-toggle="tab"> Google验证 </a>
+                                        </li>
+                                        @endif
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -121,7 +131,12 @@
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="is_captcha" class="col-md-3 control-label">验证码</label>
                                                             <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($is_captcha) checked @endif id="is_captcha" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <select id="is_captcha" class="form-control select2" name="is_captcha">
+                                                                    <option value="0" @if($is_captcha == '0') selected @endif>关闭</option>
+                                                                    <option value="1" @if($is_captcha == '1') selected @endif>普通验证码</option>
+                                                                    <option value="2" @if($is_captcha == '2') selected @endif>Geetest 极验</option>
+                                                                    <option value="3" @if($is_captcha == '3') selected @endif>Google reCAPTCHA</option>
+                                                                </select>
                                                                 <span class="help-block"> 启用后登录、注册需要输入验证码 </span>
                                                             </div>
                                                         </div>
@@ -995,6 +1010,92 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="tab-pane" id="tab_geetest">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="alipay_private_key"
+                                                            class="col-md-3 control-label">ID</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="geetest_id" value="{{$geetest_id}}" id="geetest_id"/>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setGeetestId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 本功能需要 <a href="https://auth.geetest.com/login/" target="_blank">极验后台</a> 申请权限及应用 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="alipay_public_key"
+                                                                   class="col-md-3 control-label">KEY</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="geetest_key" value="{{$geetest_key}}" id="geetest_key"/>
+                                                                    <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setGeetestKey()">修改</button>
+                                                                </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab_googleCaptcha">
+                                            <form action="#" method="post" class="form-horizontal">
+                                                <div class="portlet-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="is_f2fpay"
+                                                                   class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_f2fpay) checked @endif id="is_f2fpay" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 本功能需要 <a href="https://open.alipay.com/platform/home.htm" target="_blank">蚂蚁金服开放平台</a> 申请权限及应用 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="alipay_partner" class="col-md-3 control-label">应用ID</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="f2fpay_app_id" value="{{$f2fpay_app_id}}" id="f2fpay_app_id"/>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setF2fpayAppId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="alipay_private_key"
+                                                                   class="col-md-3 control-label">RSA私钥</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="f2fpay_private_key" value="{{$f2fpay_private_key}}" id="f2fpay_private_key"/>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setF2fpayPrivateKey()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="alipay_public_key"
+                                                                   class="col-md-3 control-label">RSA公钥</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="f2fpay_public_key" value="{{$f2fpay_public_key}}" id="f2fpay_public_key"/>
+                                                                    <span class="input-group-btn">
+                                                                    <button class="btn btn-success" type="button" onclick="setF2fpayPublicKey()">修改</button>
+                                                                </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1225,22 +1326,20 @@
         });
 
         // 启用、禁用验证码
-        $('#is_captcha').on({
-            'switchChange.bootstrapSwitch': function (event, state) {
-                var is_captcha = state ? 1 : 0;
-
-                $.post("{{url('admin/setConfig')}}", {
-                    _token: '{{csrf_token()}}',
-                    name: 'is_captcha',
-                    value: is_captcha
-                }, function (ret) {
-                    layer.msg(ret.message, {time: 1000}, function () {
-                        if (ret.status == 'fail') {
-                            window.location.reload();
-                        }
-                    });
+        $('#is_captcha').change(function () {
+            var is_captcha = $(this).val();
+            
+            $.post("{{url('admin/setConfig')}}", {
+                _token: '{{csrf_token()}}',
+                name: 'is_captcha',
+                value: is_captcha
+            }, function (ret) {
+                layer.msg(ret.message, {time: 1000}, function () {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
                 });
-            }
+            });
         });
 
         // 启用、禁用免费邀请码
@@ -2026,6 +2125,40 @@
         $("#alipay_public_key,#alipay_private_key,#f2fpay_public_key,#f2fpay_private_key").on('input', function () {
             $(this).val($(this).val().replace(/(\s+)/g, ''));
         });
+
+        // 设置极验的Id
+        function setGeetestId() {
+            var geetest_id = $("#geetest_id").val();
+
+            $.post("{{url('admin/setConfig')}}", {
+                _token: '{{csrf_token()}}',
+                name: 'geetest_id',
+                value: geetest_id
+            }, function (ret) {
+                layer.msg(ret.message, {time: 1000}, function () {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置极验的Key
+        function setGeetestKey() {
+            var geetest_key = $("#geetest_key").val();
+
+            $.post("{{url('admin/setConfig')}}", {
+                _token: '{{csrf_token()}}',
+                name: 'geetest_key',
+                value: geetest_key
+            }, function (ret) {
+                layer.msg(ret.message, {time: 1000}, function () {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
 
         // 设置最小积分
         $("#min_rand_traffic").change(function () {

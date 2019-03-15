@@ -8,6 +8,7 @@
         "php": "^7.1.3",
         "barryvdh/laravel-ide-helper": "^2.5",
         "fideloper/proxy": "^4.0",
+        "germey/geetest": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
         "ipip/db": "^1.0",
         "itbdw/ip-database": "^2.0",

@@ -58,12 +58,26 @@ class AuthController extends Controller
             }
 
             // 是否校验验证码
-            if (self::$systemConfig['is_captcha']) {
-                if (!Captcha::check($captcha)) {
-                    Session::flash('errorMsg', '验证码错误，请重新输入');
-
-                    return Redirect::back()->withInput();
-                }
+            switch (self::$systemConfig['is_captcha']) {
+                case 1:
+                    // Default Captcha
+                    if (!Captcha::check($captcha)) {
+                        Session::flash('errorMsg', '验证码错误，请重新输入');
+                        return Redirect::back()->withInput();
+                    }
+                    break;
+                case 2:
+                    // Geetest
+                    // return Redirect::back()->withInput();
+                    echo 'Geetest';
+                    break;
+                case 3:
+                    // Google reCAPTCHA
+                    echo 'Google reCAPTCHA';
+                    break;
+                default:
+                    # nothing..
+                    break;
             }
 
             // 验证账号并创建会话

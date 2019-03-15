@@ -150,6 +150,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Germey\Geetest\GeetestServiceProvider::class,  // Geetest Service
 
         /*
          * Application Service Providers...
@@ -210,7 +211,7 @@ return [
         'Captcha'      => Mews\Captcha\Facades\Captcha::class,
         'Agent'        => Jenssegers\Agent\Facades\Agent::class,
         'Purifier'     => Mews\Purifier\Facades\Purifier::class,
-
+        'Geetest' => Germey\Geetest\Geetest::class,
     ],
 
 ];
