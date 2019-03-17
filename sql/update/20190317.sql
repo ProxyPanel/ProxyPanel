@@ -1,2 +1,2 @@
--- 节点适配rico93版的v2ray插件
+-- 增加F2FPay自定义商品名选项
 INSERT INTO `config` VALUES ('89', 'f2fpay_subject_name', '');
