@@ -214,7 +214,7 @@ class UserController extends Controller
                     "path" => $node->v2_path,
                     "tls"  => $node->v2_tls == 1 ? "tls" : ""
                 ];
-                $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json));
+                $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json,JSON_PRETTY_PRINT));
 
                 // 生成文本配置信息
                 $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
