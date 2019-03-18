@@ -184,7 +184,7 @@ class PaymentController extends Controller
                     'return_raw'      => false
                 ], [
                     'body'     => '',
-                    'subject'  => '银鹭牛奶花生复合蛋白饮品（CAN370g）', // TODO：改为生成随机零售商品，比如：银鹭牛奶花生复合蛋白饮品（CAN370g）、晋江牛肉馆 - 外卖订单
+                    'subject'  => self::$systemConfig['f2fpay_subject_name'], 
                     'order_no' => $orderSn,
                     'amount'   => $amount,
                 ]);

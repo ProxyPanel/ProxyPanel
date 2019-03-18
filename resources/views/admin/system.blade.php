@@ -963,6 +963,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setF2fpayAppId()">修改</button>
                                                                     </span>
                                                                 </div>
+                                                                <span class="help-block"> 即：APPID </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -977,11 +978,12 @@
                                                                         <button class="btn btn-success" type="button" onclick="setF2fpayPrivateKey()">修改</button>
                                                                     </span>
                                                                 </div>
+                                                                <span class="help-block"> 即：rsa_private_key，不包括首尾格式 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                             <label for="alipay_public_key"
-                                                                   class="col-md-3 control-label">RSA公钥</label>
+                                                                   class="col-md-3 control-label">支付宝公钥</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="f2fpay_public_key" value="{{$f2fpay_public_key}}" id="f2fpay_public_key"/>
@@ -989,6 +991,22 @@
                                                                     <button class="btn btn-success" type="button" onclick="setF2fpayPublicKey()">修改</button>
                                                                 </span>
                                                                 </div>
+                                                                <span class="help-block"> 注意不是RSA公钥 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <label for="f2fpay_subject_name"
+                                                                   class="col-md-3 control-label">自定义商品名称</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="f2fpay_subject_name" value="{{$f2fpay_subject_name}}" id="f2fpay_subject_name"/>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setF2fpaySubjectName()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 用于在用户支付宝客户端显示 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2021,11 +2039,27 @@
             });
         }
 
-
         // 自动去除公钥和私钥中的空格和换行
         $("#alipay_public_key,#alipay_private_key,#f2fpay_public_key,#f2fpay_private_key").on('input', function () {
             $(this).val($(this).val().replace(/(\s+)/g, ''));
         });
+
+        // 设置f2fpay的商品名称
+        function setF2fpaySubjectName() {
+            var f2fpay_subject_name = $("#f2fpay_subject_name").val();
+
+            $.post("{{url('admin/setConfig')}}", {
+                _token: '{{csrf_token()}}',
+                name: 'f2fpay_subject_name',
+                value: f2fpay_subject_name
+            }, function (ret) {
+                layer.msg(ret.message, {time: 1000}, function () {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
 
         // 设置最小积分
         $("#min_rand_traffic").change(function () {
