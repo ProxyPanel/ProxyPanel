@@ -16,7 +16,6 @@ Route::group(['middleware' => ['isForbidden', 'affiliate']], function () {
     Route::get('makePasswd', 'Controller@makePasswd'); // 生成密码
     Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
     Route::get('makeSecurityCode', 'Controller@makeSecurityCode'); // 生成网站安全码
-    Route::post('geetestVerify', 'CaptchaController@geetestPostValidate'); // Geetest 极验后端验证
 });
 
 Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function () {

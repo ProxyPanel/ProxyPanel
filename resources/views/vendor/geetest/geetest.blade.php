@@ -18,29 +18,6 @@
             captchaObj.onReady(function() {
                 $("#wait-{{ $captchaid }}")[0].className = "hide";
             })
-            captchaObj.onSuccess(function() {
-                // 进行服务器端二次验证
-                var result = captchaObj.getValidate();
-                
-                $.ajax({
-                    url: "{{url('geetestVerify')}}",
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        geetest_challenge: result.geetest_challenge,
-                        geetest_validate: result.geetest_validate,
-                        geetest_seccode: result.geetest_seccode,
-                        _token: '{{csrf_token()}}',
-                    },
-                    success: function(res) {
-                        Msg(true);
-                    },
-                    error: function(err) {
-                        Msg(false, err.responseJSON.errors.geetest_challenge + '，请重新验证', 'error');
-                        captchaObj.reset();
-                    }
-                })
-            })
             if ('{{ $product }}' == 'popup') {
                 captchaObj.bindOn($('#{{ $captchaid }}').closest('form').find(':submit'));
                 captchaObj.appendTo("#{{ $captchaid }}");

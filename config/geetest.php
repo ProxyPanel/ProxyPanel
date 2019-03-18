@@ -11,7 +11,17 @@ return [
 	| Options: ['zh-cn', 'zh-tw', 'en', 'ja', 'ko']
 	|
 	*/
-	'lang' => 'zh-cn',
+    'lang' => 'zh-cn',
+    
+    /*
+	|--------------------------------------------------------------------------
+	| Config ServerGetKey
+	|--------------------------------------------------------------------------
+	|
+	| Here you can decision whether to get the geetest key from database or not.
+	|
+	*/
+	'serverGetKey' => TRUE,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -21,8 +31,7 @@ return [
 	| Here you can config your yunpian api key from yunpian provided.
 	|
 	*/
-    'id' => env('GEETEST_ID'),
-
+	'id' => env('GEETEST_ID'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -32,7 +41,7 @@ return [
 	| Here you can config your yunpian api key from yunpian provided.
 	|
 	*/
-    'key' => env('GEETEST_KEY'),
+	'key' => env('GEETEST_KEY'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -66,7 +75,7 @@ return [
 	| Options: float, popup, custom, bind
 	|
 	*/
-	'product' => 'bind',
+	'product' => 'float',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -86,7 +95,7 @@ return [
 	| Here you can config the alert text when it failed in server (two factor validation).
 	|
 	*/
-	'server_fail_alert' => '验证码校验失败',
+	'server_fail_alert' => '验证码校验失败，请重新尝试',
 
 
 ];

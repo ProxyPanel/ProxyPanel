@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Components\IPIP;
 use App\Components\QQWry;
+use App\Components\CaptchaVerify;
 use App\Http\Models\Invite;
 use App\Http\Models\User;
 use App\Http\Models\UserLoginLog;
@@ -68,8 +69,16 @@ class AuthController extends Controller
                     break;
                 case 2:
                     // Geetest
-                    // return Redirect::back()->withInput();
-                    echo 'Geetest';
+                    $result = $this->validate($request, [
+                        'geetest_challenge' => 'required|geetest'
+                    ], [
+                        'geetest' => config('geetest.server_fail_alert')
+                    ]);
+
+                    if (!$result) {
+                        Session::flash('errorMsg', config('geetest.server_fail_alert'));
+                        return Redirect::back()->withInput();
+                    }
                     break;
                 case 3:
                     // Google reCAPTCHA
@@ -79,7 +88,7 @@ class AuthController extends Controller
                     # nothing..
                     break;
             }
-
+            
             // 验证账号并创建会话
             if (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
                 Session::flash('errorMsg', '用户名或密码错误');
