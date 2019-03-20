@@ -371,6 +371,7 @@ INSERT INTO `config` VALUES ('85', 'f2fpay_app_id', '');
 INSERT INTO `config` VALUES ('86', 'f2fpay_private_key', '');
 INSERT INTO `config` VALUES ('87', 'f2fpay_public_key', '');
 INSERT INTO `config` VALUES ('88', 'website_security_code', '');
+INSERT INTO `config` VALUES ('89', 'f2fpay_subject_name', '');
 
 -- ----------------------------
 -- Table structure for `article`
