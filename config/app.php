@@ -147,10 +147,12 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
+
         /*
          * Package Service Providers...
          */
         Misechow\Geetest\GeetestServiceProvider::class,  // Geetest Service
+        Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA Service
 
         /*
          * Application Service Providers...
@@ -211,7 +213,8 @@ return [
         'Captcha'      => Mews\Captcha\Facades\Captcha::class,
         'Agent'        => Jenssegers\Agent\Facades\Agent::class,
         'Purifier'     => Mews\Purifier\Facades\Purifier::class,
-        'Geetest' => Misechow\Geetest\Geetest::class,
+        'Geetest'      => Misechow\Geetest\Geetest::class,
+        'NoCaptcha' => Misechow\NoCaptcha\Facades\NoCaptcha::class,
     ],
 
 ];

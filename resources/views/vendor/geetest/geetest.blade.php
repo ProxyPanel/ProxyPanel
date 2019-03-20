@@ -1,7 +1,7 @@
 <script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
 <div id="{{ $captchaid }}"></div>
-<p id="wait-{{ $captchaid }}" class="show">正在加载验证码...</p>
+<p id="wait-{{ $captchaid }}" class="show" style="text-align:center;">{{trans('login.loading_captcha')}}</p>
 @define use Illuminate\Support\Facades\Config
 <script>
     var geetest = function(url) {
@@ -10,7 +10,7 @@
                 // captchaObj.verify();
                 var validate = captchaObj.getValidate();
                 if (!validate) {
-                    Msg(false, '{{ Config::get('geetest.client_fail_alert')}}', 'error');
+                    Msg(false, "{{trans('login.required_captcha')}}", 'error');
                     e.preventDefault();
                 }
             });
@@ -36,9 +36,9 @@
                     product: "{{ $product?$product:Config::get('geetest.product', 'float') }}",
                     offline: !data.success, // 表示用户后台检测极验服务器是否宕机
                     new_captcha: data.new_captcha,  // 用于宕机时表示是新验证码的宕机
-                    lang: '{{ Config::get('geetest.lang', 'zh-cn') }}',
+                    lang: '{{session::get('locale')}}',
                     http: '{{ Config::get('geetest.protocol', 'http') }}' + '://',
-                    width: '100%'
+                    // width: '100%'
                 }, handlerEmbed);
             }
         });

@@ -10,4 +10,7 @@ return [
     'forget_password' => '忘记密码',
     'login'           => '登 入',
     'register'        => '注 册',
+    'loading_captcha'         => '正在加载验证码...',
+    'required_captcha'         => '请正确完成验证码操作',
+    'fail_captcha'         => '服务器验证失败，请重新尝试',
 ];

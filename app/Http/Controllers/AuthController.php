@@ -72,17 +72,24 @@ class AuthController extends Controller
                     $result = $this->validate($request, [
                         'geetest_challenge' => 'required|geetest'
                     ], [
-                        'geetest' => config('geetest.server_fail_alert')
+                        'geetest' => trans('login.fail_captcha')
                     ]);
 
                     if (!$result) {
-                        Session::flash('errorMsg', config('geetest.server_fail_alert'));
+                        Session::flash('errorMsg', trans('login.fail_captcha'));
                         return Redirect::back()->withInput();
                     }
                     break;
                 case 3:
                     // Google reCAPTCHA
-                    echo 'Google reCAPTCHA';
+                    $result = $this->validate($request,[
+                        'g-recaptcha-response' => 'required|captcha'
+                    ]);
+                    
+                    if (!$result) {
+                        Session::flash('errorMsg', trans('login.fail_captcha'));
+                        return Redirect::back()->withInput();
+                    }
                     break;
                 default:
                     # nothing..

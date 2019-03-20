@@ -5,7 +5,7 @@
 @endsection
 @section('content')
     <!-- BEGIN LOGIN FORM -->
-    <form class="login-form" action="{{url('login')}}" method="post">
+    <form class="login-form" action="{{url('login')}}" id="login-form" method="post">
         @if (Session::get('errorMsg'))
             <div class="alert alert-danger">
                 <button class="close" data-close="alert"></button>
@@ -42,6 +42,13 @@
                     {!! Geetest::render() !!}
                 </div>
                 @break
+            @case(3)
+                <!-- Google noCAPTCHA -->
+                <div class="form-group">
+                    {!! NoCaptcha::display() !!}
+                    {!! NoCaptcha::renderJs(session::get('locale')) !!}
+                </div>
+                @break
             @default
                 @break
         @endswitch
@@ -68,4 +75,35 @@
         @endif
     </form>
     <!-- END LOGIN FORM -->
+@endsection
+@section('script')
+    <script type="text/javascript">
+        $('#login-form').submit(function(event){
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ( $('#g-recaptcha-response').val() === '' ) {
+                Msg(false, "{{trans('login.required_captcha')}}", 'error');
+                return false;
+            }
+        })
+
+        // 生成提示
+        function Msg(clear, msg, type) {
+            if ( !clear ) $('.login-form .alert').remove();
+            
+            var typeClass = 'alert-danger',
+                clear = clear ? clear : false,
+                $elem = $('.login-form');
+            type === 'error' ? typeClass = 'alert-danger' : typeClass = 'alert-success';
+
+            var tpl = '<div class="alert ' + typeClass + '">' +
+                    '<button type="button" class="close" onclick="$(this).parent().remove();"></button>' +
+                    '<span> ' + msg + ' </span></div>';
+            
+            if ( !clear ) {
+                $elem.prepend(tpl);
+            } else {
+                $('.login-form .alert').remove();
+            }
+        }
+    </script>
 @endsection
