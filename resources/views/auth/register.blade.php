@@ -3,7 +3,7 @@
 @section('css')
     <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
     <style>
-        @media screen and (max-height: 950px){  
+        @media screen and (max-height: 575px){  
             .g-recaptcha {
                 -webkit-transform:scale(0.81);
                 transform:scale(0.81);
