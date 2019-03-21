@@ -2369,16 +2369,16 @@
         },
         {
             "name": "misechow/no-captcha",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MIseChow/laravel-reCAPTCHA.git",
-                "reference": "f01633ce6dfac5484e26ac5fc18f60fd60d42349"
+                "reference": "962aedaaa8c4a0a77b41472148df938f2ba5c005"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MIseChow/laravel-reCAPTCHA/zipball/f01633ce6dfac5484e26ac5fc18f60fd60d42349",
-                "reference": "f01633ce6dfac5484e26ac5fc18f60fd60d42349",
+                "url": "https://api.github.com/repos/MIseChow/laravel-reCAPTCHA/zipball/962aedaaa8c4a0a77b41472148df938f2ba5c005",
+                "reference": "962aedaaa8c4a0a77b41472148df938f2ba5c005",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2430,7 +2430,7 @@
                 "no-captcha",
                 "recaptcha"
             ],
-            "time": "2019-03-20T06:17:09+00:00"
+            "time": "2019-03-21T02:33:58+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",

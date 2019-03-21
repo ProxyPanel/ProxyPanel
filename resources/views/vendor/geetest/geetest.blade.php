@@ -38,18 +38,18 @@
                     new_captcha: data.new_captcha,  // 用于宕机时表示是新验证码的宕机
                     lang: '{{session::get('locale')}}',
                     http: '{{ Config::get('geetest.protocol', 'http') }}' + '://',
-                    // width: '100%'
+                    width: '100%'
                 }, handlerEmbed);
             }
         });
     };
 
     function Msg(clear, msg, type) {
-        if ( !clear ) $('.login-form .alert').remove();
+        if ( !clear ) $('.login-form .alert, .register-form .alert').remove();
         
         var typeClass = 'alert-danger',
             clear = clear ? clear : false,
-            $elem = $('.login-form');
+            $elem = $('.login-form, .register-form');
         type === 'error' ? typeClass = 'alert-danger' : typeClass = 'alert-success';
 
         var tpl = '<div class="alert ' + typeClass + '">' +
@@ -59,7 +59,7 @@
         if ( !clear ) {
             $elem.prepend(tpl);
         } else {
-            $('.login-form .alert').remove();
+            $('.login-form .alert, .register-form .alert').remove();
         }
     }
 

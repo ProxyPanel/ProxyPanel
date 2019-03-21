@@ -2,6 +2,19 @@
 @section('title', trans('login.title'))
 @section('css')
     <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        @media screen and (max-height: 950px){  
+            .g-recaptcha {
+                -webkit-transform:scale(0.81);
+                transform:scale(0.81);
+                -webkit-transform-origin:0 0; 
+                transform-origin:0 0;
+            }
+        }  
+        .geetest_holder.geetest_wind {
+            min-width: 245px !important;
+        }
+    </style>
 @endsection
 @section('content')
     <!-- BEGIN LOGIN FORM -->

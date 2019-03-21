@@ -83,7 +83,7 @@ class AuthController extends Controller
                 case 3:
                     // Google reCAPTCHA
                     $result = $this->validate($request,[
-                        'g-recaptcha-response' => 'required|captcha'
+                        'g-recaptcha-response' => 'required|NoCaptcha'
                     ]);
                     
                     if (!$result) {
@@ -256,10 +256,40 @@ class AuthController extends Controller
                     $verifyCode->save();
                 }
             } elseif (self::$systemConfig['is_captcha']) { // 是否校验验证码
-                if (!Captcha::check($captcha)) {
-                    Session::flash('errorMsg', '验证码错误，请重新输入');
+                switch (self::$systemConfig['is_captcha']) {
+                    case 1:
+                        // Default Captcha
+                        if (!Captcha::check($captcha)) {
+                            Session::flash('errorMsg', '验证码错误，请重新输入');
+                            return Redirect::back()->withInput();
+                        }
+                        break;
+                    case 2:
+                        // Geetest
+                        $result = $this->validate($request, [
+                            'geetest_challenge' => 'required|geetest'
+                        ], [
+                            'geetest' => trans('login.fail_captcha')
+                        ]);
 
-                    return Redirect::back()->withInput($request->except(['captcha']));
+                        if (!$result) {
+                            Session::flash('errorMsg', trans('login.fail_captcha'));
+                            return Redirect::back()->withInput();
+                        }
+                        break;
+                    case 3:
+                        // Google reCAPTCHA
+                        $result = $this->validate($request,[
+                            'g-recaptcha-response' => 'required|NoCaptcha'
+                        ]);
+                        if (!$result) {
+                            Session::flash('errorMsg', trans('login.fail_captcha'));
+                            return Redirect::back()->withInput();
+                        }
+                        break;
+                    default:
+                        # nothing..
+                        break;
                 }
             }
 
