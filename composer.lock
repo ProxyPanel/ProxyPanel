@@ -2304,16 +2304,16 @@
         },
         {
             "name": "misechow/geetest",
-            "version": "v1.0.4",
+            "version": "v1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MIseChow/laravel-geetest.git",
-                "reference": "9fcff36407db0ee788146b56931df4444c6af178"
+                "reference": "78caa9dcbfeda917067245f0b067ab23b758386e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MIseChow/laravel-geetest/zipball/9fcff36407db0ee788146b56931df4444c6af178",
-                "reference": "9fcff36407db0ee788146b56931df4444c6af178",
+                "url": "https://api.github.com/repos/MIseChow/laravel-geetest/zipball/78caa9dcbfeda917067245f0b067ab23b758386e",
+                "reference": "78caa9dcbfeda917067245f0b067ab23b758386e",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2334,14 +2334,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.0-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Misechow\\Geetest\\GeetestServiceProvider"
-                    ],
-                    "aliases": {
-                        "Geetest": "Misechow\\Geetest\\Facades\\Geetest"
-                    }
                 }
             },
             "autoload": {
@@ -2365,20 +2357,20 @@
                 "geetest",
                 "laravel"
             ],
-            "time": "2019-03-20T06:20:35+00:00"
+            "time": "2019-03-22T06:24:55+00:00"
         },
         {
             "name": "misechow/no-captcha",
-            "version": "v1.0.2",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MIseChow/laravel-reCAPTCHA.git",
-                "reference": "962aedaaa8c4a0a77b41472148df938f2ba5c005"
+                "reference": "f9c18feb26e0e825afae4fea3cce67a950992d6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MIseChow/laravel-reCAPTCHA/zipball/962aedaaa8c4a0a77b41472148df938f2ba5c005",
-                "reference": "962aedaaa8c4a0a77b41472148df938f2ba5c005",
+                "url": "https://api.github.com/repos/MIseChow/laravel-reCAPTCHA/zipball/f9c18feb26e0e825afae4fea3cce67a950992d6a",
+                "reference": "f9c18feb26e0e825afae4fea3cce67a950992d6a",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2396,16 +2388,6 @@
                 "phpunit/phpunit": "~4.8"
             },
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Misechow\\NoCaptcha\\NoCaptchaServiceProvider"
-                    ],
-                    "aliases": {
-                        "NoCaptcha": "Misechow\\NoCaptcha\\Facades\\NoCaptcha"
-                    }
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Misechow\\NoCaptcha\\": "src/"
@@ -2430,7 +2412,7 @@
                 "no-captcha",
                 "recaptcha"
             ],
-            "time": "2019-03-21T02:33:58+00:00"
+            "time": "2019-03-22T06:35:49+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
