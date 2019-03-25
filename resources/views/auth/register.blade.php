@@ -2,10 +2,23 @@
 @section('title', trans('register.title'))
 @section('css')
     <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        @media screen and (max-height: 575px){  
+            .g-recaptcha {
+                -webkit-transform:scale(0.81);
+                transform:scale(0.81);
+                -webkit-transform-origin:0 0; 
+                transform-origin:0 0;
+            }
+        }  
+        .geetest_holder.geetest_wind {
+            min-width: 245px !important;
+        }
+    </style>
 @endsection
 @section('content')
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="{{url('register')}}" method="post" style="display: block;">
+    <form class="register-form" id="register-form" action="{{url('register')}}" method="post" style="display: block;">
         @if(\App\Components\Helpers::systemConfig()['is_register'])
             @if(Session::get('errorMsg'))
                 <div class="alert alert-danger">
@@ -44,12 +57,32 @@
                     <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
                 @endif
             @endif
-            @if(!\App\Components\Helpers::systemConfig()['is_verify_register'] && \App\Components\Helpers::systemConfig()['is_captcha'])
-                <div class="form-group" style="margin-bottom:75px;">
-                    <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
-                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
-                    <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
-                </div>
+            @if(!\App\Components\Helpers::systemConfig()['is_verify_register'])
+                @switch(\App\Components\Helpers::systemConfig()['is_captcha'])
+                    @case(1)
+                        <!-- Default Captcha -->
+                        <div class="form-group" style="margin-bottom:75px;">
+                            <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
+                            <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
+                            <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
+                        </div>
+                        @break
+                    @case(2)
+                        <!-- Geetest -->
+                        <div class="form-group">
+                            {!! Geetest::render() !!}
+                        </div>
+                        @break
+                    @case(3)
+                        <!-- Google noCAPTCHA -->
+                        <div class="form-group">
+                            {!! NoCaptcha::display() !!}
+                            {!! NoCaptcha::renderJs(session::get('locale')) !!}
+                        </div>
+                        @break
+                    @default
+                        @break
+                @endswitch
             @endif
             <div class="form-group margin-top-20 margin-bottom-20">
                 <label class="mt-checkbox mt-checkbox-outline">
@@ -150,6 +183,34 @@
                         $("#sendCode").val(left_time);
                     }
                 }, 1000);
+            }
+        }
+
+        $('#register-form').submit(function(event){
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ( $('#g-recaptcha-response').val() === '' ) {
+                Msg(false, "{{trans('login.required_captcha')}}", 'error');
+                return false;
+            }
+        })
+
+        // 生成提示
+        function Msg(clear, msg, type) {
+            if ( !clear ) $('.register-form .alert').remove();
+            
+            var typeClass = 'alert-danger',
+                clear = clear ? clear : false,
+                $elem = $('.register-form');
+            type === 'error' ? typeClass = 'alert-danger' : typeClass = 'alert-success';
+
+            var tpl = '<div class="alert ' + typeClass + '">' +
+                    '<button type="button" class="close" onclick="$(this).parent().remove();"></button>' +
+                    '<span> ' + msg + ' </span></div>';
+            
+            if ( !clear ) {
+                $elem.prepend(tpl);
+            } else {
+                $('.register-form .alert').remove();
             }
         }
     </script>

@@ -143,13 +143,17 @@ return [
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
-        //Illuminate\Translation\TranslationServiceProvider::class, // 弃用自带多国语言包功能
+        // Illuminate\Translation\TranslationServiceProvider::class, // 弃用自带多国语言包功能
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        
+        
         /*
-         * Package Service Providers...
-         */
+        * Package Service Providers...
+        */
+        Misechow\Geetest\GeetestServiceProvider::class,  // Geetest Service
+        Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA Service
+        Overtrue\LaravelLang\TranslationServiceProvider::class, // 多国语言包功能
 
         /*
          * Application Service Providers...
@@ -210,7 +214,8 @@ return [
         'Captcha'      => Mews\Captcha\Facades\Captcha::class,
         'Agent'        => Jenssegers\Agent\Facades\Agent::class,
         'Purifier'     => Mews\Purifier\Facades\Purifier::class,
-
+        'Geetest'      => Misechow\Geetest\Geetest::class,
+        'NoCaptcha' => Misechow\NoCaptcha\Facades\NoCaptcha::class,
     ],
 
 ];

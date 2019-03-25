@@ -372,6 +372,10 @@ INSERT INTO `config` VALUES ('86', 'f2fpay_private_key', '');
 INSERT INTO `config` VALUES ('87', 'f2fpay_public_key', '');
 INSERT INTO `config` VALUES ('88', 'website_security_code', '');
 INSERT INTO `config` VALUES ('89', 'f2fpay_subject_name', '');
+INSERT INTO `config` VALUES ('90', 'geetest_id', '');
+INSERT INTO `config` VALUES ('91', 'geetest_key', '');
+INSERT INTO `config` VALUES ('92', 'google_captcha_sitekey', '');
+INSERT INTO `config` VALUES ('93', 'google_captcha_secret', '');
 
 -- ----------------------------
 -- Table structure for `article`

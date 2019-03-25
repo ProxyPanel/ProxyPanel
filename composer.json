@@ -16,6 +16,8 @@
         "laravel/tinker": "^1.0",
         "mews/captcha": "^2.2",
         "mews/purifier": "^2.1",
+        "misechow/geetest": "^1.0",
+        "misechow/no-captcha": "^1.0",
         "openlss/lib-array2xml": "^0.5.1",
         "overtrue/laravel-lang": "^3.0",
         "phpoffice/phpspreadsheet": "^1.6",
