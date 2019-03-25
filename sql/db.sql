@@ -387,7 +387,7 @@ CREATE TABLE `article` (
   `summary` varchar(255) DEFAULT '' COMMENT '简介',
   `logo` varchar(255) DEFAULT '' COMMENT 'LOGO',
   `content` text COMMENT '内容',
-  `type` tinyint(4) DEFAULT '1' COMMENT '类型：1-文章、2-公告',
+  `type` tinyint(4) DEFAULT '1' COMMENT '类型：1-文章、2-公告、3-购买说明、4-使用教程',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',

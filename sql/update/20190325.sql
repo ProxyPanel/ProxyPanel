@@ -1,0 +1,1 @@
+ALTER TABLE article MODIFY COLUMN type TINYINT COMMENT '类型：1-文章、2-公告、3-购买说明、4-使用教程';

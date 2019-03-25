@@ -56,22 +56,13 @@
                             </ul>
                             <div class="tab-content" style="font-size:16px;">
                                 <div class="tab-pane active" id="services1">
-                                    <h4>购买流程：</h4>
-                                    <ol>
-                                        <li>第一步：先购买基础套餐。</li>
-                                        <li>第二步：按需求，选择是否购买流量包。</li>
-                                    </ol>
-                                    <h4>基础套餐：</h4>
-                                    <ol>
-                                        <li>在套餐生效的时间内，您将获得「套餐对应的网络速度」、「套餐内相应的流量」及其它特权。</li>
-                                        <li>基础套餐每月将会重置一次流量，重置日为购买日。</li>
-                                        <li>如在套餐未到期的情况下购买新套餐，则会导致旧套餐的所有配置立即失效，新套餐的配置立即生效。</li>
-                                    </ol>
-                                    <h4>流量包：</h4>
-                                    <ol>
-                                        <li>当您在基础套餐重置日之前将流量耗尽，您可以选择购买流量包解燃眉之急。</li>
-                                        <li>流量包只在固定时间内增加可用流量，不会更改账户的配置，并且即时生效可以多个叠加。 </li>
-                                    </ol>
+                                    @if($direction)
+                                        {!!$direction->content!!}
+                                    @else
+                                        <div style="text-align: center;">
+                                            <h3>暂无说明</h3>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="tab-pane" id="services2">
                                     <div class="pricing-content-1" style="padding-top: 10px;">

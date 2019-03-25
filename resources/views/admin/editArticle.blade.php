@@ -44,6 +44,14 @@
                                                 <input type="radio" name="type" value="2" {{$article->type == '2' ? 'checked' : ''}}> 公告
                                                 <span></span>
                                             </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="3" {{$article->type == '3' ? 'checked' : ''}}> 购买说明
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="4" {{$article->type == '4' ? 'checked' : ''}}> 使用教程
+                                                <span></span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
