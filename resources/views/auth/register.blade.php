@@ -59,14 +59,6 @@
             @endif
             @if(!\App\Components\Helpers::systemConfig()['is_verify_register'])
                 @switch(\App\Components\Helpers::systemConfig()['is_captcha'])
-                    @case(1)
-                        <!-- Default Captcha -->
-                        <div class="form-group" style="margin-bottom:75px;">
-                            <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
-                            <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
-                            <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
-                        </div>
-                        @break
                     @case(2)
                         <!-- Geetest -->
                         <div class="form-group">
@@ -80,7 +72,14 @@
                             {!! NoCaptcha::renderJs(session::get('locale')) !!}
                         </div>
                         @break
+                    @case(1)
                     @default
+                        <!-- Default Captcha -->
+                        <div class="form-group" style="margin-bottom:75px;">
+                            <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
+                            <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('register.captcha')}}" name="captcha" value="" required />
+                            <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
+                        </div>
                         @break
                 @endswitch
             @endif

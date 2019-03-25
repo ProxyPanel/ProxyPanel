@@ -82,10 +82,10 @@ class AuthController extends Controller
                     break;
                 case 3:
                     // Google reCAPTCHA
-                    $result = $this->validate($request,[
+                    $result = $this->validate($request, [
                         'g-recaptcha-response' => 'required|NoCaptcha'
                     ]);
-                    
+
                     if (!$result) {
                         Session::flash('errorMsg', trans('login.fail_captcha'));
                         return Redirect::back()->withInput();
@@ -95,7 +95,7 @@ class AuthController extends Controller
                     # nothing..
                     break;
             }
-            
+
             // 验证账号并创建会话
             if (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
                 Session::flash('errorMsg', '用户名或密码错误');
@@ -279,7 +279,7 @@ class AuthController extends Controller
                         break;
                     case 3:
                         // Google reCAPTCHA
-                        $result = $this->validate($request,[
+                        $result = $this->validate($request, [
                             'g-recaptcha-response' => 'required|NoCaptcha'
                         ]);
                         if (!$result) {
@@ -768,7 +768,7 @@ class AuthController extends Controller
      * 添加用户登录日志
      *
      * @param string $userId 用户ID
-     * @param string $ip     IP地址
+     * @param string $ip IP地址
      */
     private function addUserLoginLog($userId, $ip)
     {
@@ -816,7 +816,7 @@ class AuthController extends Controller
      * 获取AFF
      *
      * @param string $code 邀请码
-     * @param string $aff  URL中的aff参数
+     * @param string $aff URL中的aff参数
      *
      * @return array
      */

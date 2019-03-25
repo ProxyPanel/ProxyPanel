@@ -184,7 +184,7 @@ class PaymentController extends Controller
                     'return_raw'      => false
                 ], [
                     'body'     => '',
-                    'subject'  => self::$systemConfig['f2fpay_subject_name'], 
+                    'subject'  => self::$systemConfig['f2fpay_subject_name'],
                     'order_no' => $orderSn,
                     'amount'   => $amount,
                 ]);
