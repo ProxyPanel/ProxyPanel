@@ -115,12 +115,21 @@
                                             </div>
                                             <div class="tab-pane" id="tools4">
                                                 <ol>
-                                                    @if($tutorial4)
-                                                        {!!$tutorial4->content!!}
+                                                    @if(Agent::is('iPhone') || Agent::is('iPad'))
+                                                        @if(Agent::is('Safari'))
+                                                            <li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li>
+                                                        @else
+                                                            <li> <a href="javascript:onlineInstallWarning();">点击此处在线安装</a></li>
+                                                        @endif
+                                                        @if($tutorial4)
+                                                            {!!$tutorial4->content!!}
+                                                        @else
+                                                            <div style="text-align: center;">
+                                                                <h3>暂无教程</h3>
+                                                            </div>
+                                                        @endif
                                                     @else
-                                                        <div style="text-align: center;">
-                                                            <h3>暂无教程</h3>
-                                                        </div>
+                                                        <li> 请使用 Safari浏览器 访问本页面 </li>
                                                     @endif
                                                 </ol>
                                             </div>
