@@ -59,8 +59,8 @@
                                     @if($direction)
                                         {!!$direction->content!!}
                                     @else
-                                        <div style="text-align: center;">
-                                            <h3>暂无说明</h3>
+                                        <div style="text-align: center; padding-top: 10px;">
+                                            <h2>暂无说明</h2>
                                         </div>
                                     @endif
                                 </div>
