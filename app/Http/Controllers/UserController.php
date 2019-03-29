@@ -246,6 +246,14 @@ class UserController extends Controller
         $view['allNodes'] = rtrim($allNodes, "|");
         $view['nodeList'] = $nodeList;
 
+        // 使用教程
+        $view['tutorial1'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 1)->orderBy('id', 'desc')->first();
+        $view['tutorial2'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 2)->orderBy('id', 'desc')->first();
+        $view['tutorial3'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 3)->orderBy('id', 'desc')->first();
+        $view['tutorial4'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 4)->orderBy('id', 'desc')->first();
+        $view['tutorial5'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 5)->orderBy('id', 'desc')->first();
+        $view['tutorial6'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 6)->orderBy('id', 'desc')->first();
+
         return Response::view('user.nodeList', $view);
     }
 
@@ -358,6 +366,9 @@ class UserController extends Controller
 
         // 流量包列表
         $view['trafficList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 1)->orderBy('sort', 'desc')->limit(12)->get();
+
+        // 购买说明
+        $view['direction'] = Article::query()->where('type', 3)->where('is_del', 0)->orderBy('id', 'desc')->first();
 
         return Response::view('user.services', $view);
     }
