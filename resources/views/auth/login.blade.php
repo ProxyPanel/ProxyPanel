@@ -55,7 +55,6 @@
                 </div>
                 @break
             @case(1)
-            @default
                 <!-- Default Captcha -->
                 <div class="form-group" style="margin-bottom:65px;">
                     <label class="control-label visible-ie8 visible-ie9">{{trans('login.captcha')}}</label>
@@ -63,6 +62,7 @@
                     <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('login.captcha')}}" style="float:right;" />
                 </div>
                 @break
+            @default
         @endswitch
         <div class="form-actions">
             <div class="pull-left">

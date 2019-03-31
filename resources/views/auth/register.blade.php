@@ -73,7 +73,6 @@
                         </div>
                         @break
                     @case(1)
-                    @default
                         <!-- Default Captcha -->
                         <div class="form-group" style="margin-bottom:75px;">
                             <label class="control-label visible-ie8 visible-ie9">{{trans('register.captcha')}}</label>
@@ -81,6 +80,7 @@
                             <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('register.captcha')}}" style="float:right;" />
                         </div>
                         @break
+                    @default
                 @endswitch
             @endif
             <div class="form-group margin-top-20 margin-bottom-20">
