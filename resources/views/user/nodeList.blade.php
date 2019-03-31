@@ -81,79 +81,67 @@
                                         </ul>
                                         <div class="tab-content" style="font-size:16px;">
                                             <div class="tab-pane active" id="tools1">
-                                                <ol>
-                                                    @if($tutorial1)
-                                                        {!!$tutorial1->content!!}
-                                                    @else
-                                                        <div style="text-align: center;">
-                                                            <h3>暂无教程</h3>
-                                                        </div>
-                                                    @endif
-                                                </ol>
+                                                @if($tutorial1)
+                                                    {!!$tutorial1->content!!}
+                                                @else
+                                                    <div style="text-align: center;">
+                                                        <h3>暂无教程</h3>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="tab-pane" id="tools2">
-                                                <ol>
-                                                    @if($tutorial2)
-                                                        {!!$tutorial2->content!!}
-                                                    @else
-                                                        <div style="text-align: center;">
-                                                            <h3>暂无教程</h3>
-                                                        </div>
-                                                    @endif
-                                                </ol>
+                                                @if($tutorial2)
+                                                    {!!$tutorial2->content!!}
+                                                @else
+                                                    <div style="text-align: center;">
+                                                        <h3>暂无教程</h3>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="tab-pane" id="tools3">
-                                                <ol>
-                                                    @if($tutorial3)
-                                                        {!!$tutorial3->content!!}
-                                                    @else
-                                                        <div style="text-align: center;">
-                                                            <h3>暂无教程</h3>
-                                                        </div>
-                                                    @endif
-                                                </ol>
+                                                @if($tutorial3)
+                                                    {!!$tutorial3->content!!}
+                                                @else
+                                                    <div style="text-align: center;">
+                                                        <h3>暂无教程</h3>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="tab-pane" id="tools4">
-                                                <ol>
-                                                    @if(Agent::is('iPhone') || Agent::is('iPad'))
-                                                        @if(Agent::is('Safari'))
-                                                            <li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li>
-                                                        @else
-                                                            <li> <a href="javascript:onlineInstallWarning();">点击此处在线安装</a></li>
-                                                        @endif
-                                                        @if($tutorial4)
-                                                            {!!$tutorial4->content!!}
-                                                        @else
-                                                            <div style="text-align: center;">
-                                                                <h3>暂无教程</h3>
-                                                            </div>
-                                                        @endif
+                                                @if(Agent::is('iPhone') || Agent::is('iPad'))
+                                                    @if(Agent::is('Safari'))
+                                                        <ul class=" list-paddingleft-2"><li> <a href="{{$ipa_list}}" target="_blank">点击此处在线安装</a></li></ul>
                                                     @else
-                                                        <li> 请使用 Safari浏览器 访问本页面 </li>
+                                                        <ul class=" list-paddingleft-2"><li> <a href="javascript:onlineInstallWarning();">点击此处在线安装</a></li></ul>
                                                     @endif
-                                                </ol>
+                                                    @if($tutorial4)
+                                                        {!!$tutorial4->content!!}
+                                                    @else
+                                                        <div style="text-align: center;">
+                                                            <h3>暂无教程</h3>
+                                                        </div>
+                                                    @endif
+                                                @else
+                                                    <ul class=" list-paddingleft-2"><li> 请使用 Safari浏览器 访问本页面 </li></ul>
+                                                @endif
                                             </div>
                                             <div class="tab-pane" id="tools5">
-                                                <ol>
-                                                    @if($tutorial5)
-                                                        {!!$tutorial5->content!!}
-                                                    @else
-                                                        <div style="text-align: center;">
-                                                            <h3>暂无教程</h3>
-                                                        </div>
-                                                    @endif
-                                                </ol>
+                                                @if($tutorial5)
+                                                    {!!$tutorial5->content!!}
+                                                @else
+                                                    <div style="text-align: center;">
+                                                        <h3>暂无教程</h3>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="tab-pane" id="tools6">
-                                                <ol>
-                                                    @if($tutorial6)
-                                                        {!!$tutorial6->content!!}
-                                                    @else
-                                                        <div style="text-align: center;">
-                                                            <h3>暂无教程</h3>
-                                                        </div>
-                                                    @endif
-                                                </ol>
+                                                @if($tutorial6)
+                                                    {!!$tutorial6->content!!}
+                                                @else
+                                                    <div style="text-align: center;">
+                                                        <h3>暂无教程</h3>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
