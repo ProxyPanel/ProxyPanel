@@ -273,7 +273,7 @@ class UserController extends Controller
     // 修改个人资料
     public function profile(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $old_password = trim($request->get('old_password'));
             $new_password = trim($request->get('new_password'));
             $wechat = $request->get('wechat');
@@ -443,7 +443,7 @@ class UserController extends Controller
             return Redirect::to('tickets');
         }
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $content = clean($request->get('content'));
             $content = str_replace("eval", "", str_replace("atob", "", $content));
             $content = substr($content, 0, 300);
@@ -575,7 +575,7 @@ class UserController extends Controller
         $goods_id = intval($id);
         $coupon_sn = $request->get('coupon_sn');
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $goods = Goods::query()->with(['label'])->where('is_del', 0)->where('status', 1)->where('id', $goods_id)->first();
             if (!$goods) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);

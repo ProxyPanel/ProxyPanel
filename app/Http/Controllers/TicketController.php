@@ -42,7 +42,7 @@ class TicketController extends Controller
     {
         $id = $request->get('id');
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $content = clean($request->get('content'));
             $content = str_replace("eval", "", str_replace("atob", "", $content));
             $content = substr($content, 0, 300);

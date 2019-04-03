@@ -32,7 +32,7 @@ class CouponController extends Controller
     // 添加商品
     public function addCoupon(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $name = $request->get('name');
             $type = $request->get('type', 1);
             $usage = $request->get('usage', 1);

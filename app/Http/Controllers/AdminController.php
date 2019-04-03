@@ -224,7 +224,7 @@ class AdminController extends Controller
     // 添加账号
     public function addUser(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             // 校验username是否已存在
             $exists = User::query()->where('username', $request->get('username'))->first();
             if ($exists) {
@@ -366,7 +366,7 @@ class AdminController extends Controller
     {
         $id = intval($request->get('id'));
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $username = trim($request->get('username'));
             $password = $request->get('password');
             $port = intval($request->get('port'));
@@ -687,7 +687,7 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             if ($request->get('ssh_port') <= 0 || $request->get('ssh_port') >= 65535) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：SSH端口不合法']);
             }
@@ -920,7 +920,7 @@ class AdminController extends Controller
     // 添加文章
     public function addArticle(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             // LOGO
             $logo = '';
             if ($request->hasFile('logo')) {
@@ -967,7 +967,7 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $title = $request->get('title');
             $type = $request->get('type');
             $summary = $request->get('summary');
@@ -1050,7 +1050,7 @@ class AdminController extends Controller
     // 添加节点分组
     public function addGroup(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $ssGroup = new SsGroup();
             $ssGroup->name = $request->get('name');
             $ssGroup->level = $request->get('level');
@@ -1069,7 +1069,7 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $name = $request->get('name');
             $level = $request->get('level');
 
@@ -1160,7 +1160,7 @@ class AdminController extends Controller
     // SS(R)链接反解析
     public function decompile(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $content = $request->get('content');
 
             if (empty($content)) {
@@ -1195,7 +1195,7 @@ class AdminController extends Controller
     // 格式转换(SS转SSR)
     public function convert(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $method = $request->get('method');
             $transfer_enable = $request->get('transfer_enable');
             $protocol = $request->get('protocol');
@@ -1273,7 +1273,7 @@ class AdminController extends Controller
     // 数据导入
     public function import(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             if (!$request->hasFile('uploadFile')) {
                 Session::flash('errorMsg', '请选择要上传的文件');
 
@@ -1508,7 +1508,7 @@ EOF;
     // 修改个人资料
     public function profile(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $old_password = trim($request->get('old_password'));
             $new_password = trim($request->get('new_password'));
 
@@ -1619,7 +1619,7 @@ EOF;
     // 加密方式、混淆、协议、等级、国家地区
     public function config(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $name = $request->get('name');
             $type = $request->get('type', 1); // 类型：1-加密方式（method）、2-协议（protocol）、3-混淆（obfs）
             $is_default = $request->get('is_default', 0);
@@ -2291,7 +2291,7 @@ EOF;
     // 操作用户余额
     public function handleUserBalance(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $userId = $request->get('user_id');
             $amount = $request->get('amount');
 

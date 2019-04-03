@@ -31,7 +31,7 @@ class ShopController extends Controller
     // 添加商品
     public function addGoods(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $name = $request->get('name');
             $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
@@ -146,7 +146,7 @@ class ShopController extends Controller
     {
         $id = $request->get('id');
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $name = $request->get('name');
             $desc = $request->get('desc');
             $price = round($request->get('price'), 2);

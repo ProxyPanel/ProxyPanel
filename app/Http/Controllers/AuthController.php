@@ -46,7 +46,7 @@ class AuthController extends Controller
     // 登录
     public function login(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
             $captcha = trim($request->get('captcha'));
@@ -160,7 +160,7 @@ class AuthController extends Controller
     {
         $cacheKey = 'register_times_' . md5(getClientIp()); // 注册限制缓存key
 
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $username = trim($request->get('username'));
             $password = trim($request->get('password'));
             $repassword = trim($request->get('repassword'));
@@ -433,7 +433,7 @@ class AuthController extends Controller
     // 重设密码页
     public function resetPassword(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $username = trim($request->get('username'));
 
             // 校验账号合法性
@@ -498,7 +498,7 @@ class AuthController extends Controller
     // 重设密码
     public function reset(Request $request, $token)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $password = trim($request->get('password'));
             $repassword = trim($request->get('repassword'));
 
@@ -577,7 +577,7 @@ class AuthController extends Controller
     // 激活账号页
     public function activeUser(Request $request)
     {
-        if ($request->method() == 'POST') {
+        if ($request->isMethod('POST')) {
             $username = trim($request->get('username'));
 
             // 是否开启账号激活
