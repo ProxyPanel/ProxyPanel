@@ -529,7 +529,7 @@ class UserController extends Controller
         $obj->fuid = 0;
         $obj->code = strtoupper(mb_substr(md5(microtime() . makeRandStr()), 8, 12));
         $obj->status = 0;
-        $obj->dateline = date('Y-m-d H:i:s', strtotime("+7 days"));
+        $obj->dateline = date('Y-m-d H:i:s', strtotime("+" . self::$systemConfig['user_invite_days'] . " days"));
         $obj->save();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);

@@ -113,7 +113,7 @@ return [
     'invite_code_make'                => '生成邀请码',
     'invite_code_button'              => '生成',
     'invite_code_tips1'               => '可生成',
-    'invite_code_tips2'               => '枚邀请码，7日内有效',
+    'invite_code_tips2'               => '枚邀请码，:days 日内有效',
     'invite_code_my_codes'            => '我的邀请码',
     'invite_code_table_name'          => '邀请码',
     'invite_code_table_date'          => '有效期',

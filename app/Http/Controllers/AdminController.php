@@ -2122,13 +2122,13 @@ EOF;
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $obj = new Invite();
             $obj->uid = 0;
             $obj->fuid = 0;
             $obj->code = strtoupper(substr(md5(microtime() . makeRandStr()), 8, 12));
             $obj->status = 0;
-            $obj->dateline = date('Y-m-d H:i:s', strtotime("+ 7days"));
+            $obj->dateline = date('Y-m-d H:i:s', strtotime("+" . self::$systemConfig['admin_invite_days'] . " days"));
             $obj->save();
         }
 

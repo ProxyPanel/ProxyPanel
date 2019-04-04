@@ -113,7 +113,7 @@ return [
     'invite_code_make'                => '招待コードを生成する',
     'invite_code_button'              => '生成する',
     'invite_code_tips1'               => '生成できる',
-    'invite_code_tips2'               => '枚の招待コード，7日以内有効',
+    'invite_code_tips2'               => '枚の招待コード，:days 日以内有効',
     'invite_code_my_codes'            => '私の招待コード',
     'invite_code_table_name'          => '招待コード',
     'invite_code_table_date'          => '有効期限',

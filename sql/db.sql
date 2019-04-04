@@ -376,6 +376,8 @@ INSERT INTO `config` VALUES ('90', 'geetest_id', '');
 INSERT INTO `config` VALUES ('91', 'geetest_key', '');
 INSERT INTO `config` VALUES ('92', 'google_captcha_sitekey', '');
 INSERT INTO `config` VALUES ('93', 'google_captcha_secret', '');
+INSERT INTO `config` VALUES ('94', 'user_invite_days', 7);
+INSERT INTO `config` VALUES ('95', 'admin_invite_days', 7);
 
 
 -- ----------------------------

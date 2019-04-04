@@ -111,7 +111,7 @@ return [
     'invite_code_make'                => '초청코드생성',
     'invite_code_button'              => '생성',
     'invite_code_tips1'               => '생성가능',
-    'invite_code_tips2'               => '개 총청코드, 7 일내에 유효하다.',
+    'invite_code_tips2'               => '개 총청코드, :days 일내에 유효하다.',
     'invite_code_my_codes'            => '나의 초청코드',
     'invite_code_table_name'          => '초청코드',
     'invite_code_table_date'          => '유효기간',
