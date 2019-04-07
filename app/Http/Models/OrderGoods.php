@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class OrderGoods
  *
  * @package App\Http\Models
- * @property mixed $origin_price
- * @property mixed $price
- * @property-read \App\Http\Models\Goods $goods
- * @property-read \App\Http\Models\User $user
  * @mixin \Eloquent
  */
 class OrderGoods extends Model

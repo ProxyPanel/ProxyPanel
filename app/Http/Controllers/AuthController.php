@@ -126,7 +126,7 @@ class AuthController extends Controller
             $this->addUserLoginLog(Auth::user()->id, getClientIp());
 
             // 更新登录信息
-            User::query()->where('id', Auth::user()->id)->update(['last_login' => time()]);
+            User::uid()->update(['last_login' => time()]);
 
             // 根据权限跳转
             if (Auth::user()->is_admin) {

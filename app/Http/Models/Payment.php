@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,16 +10,16 @@ use Illuminate\Database\Eloquent\Model;
  * Class Payment
  *
  * @package App\Http\Models
- * @property mixed $amount
- * @property-read mixed $pay_way_label
- * @property-read mixed $status_label
- * @property-read \App\Http\Models\Order $order
- * @property-read \App\Http\Models\User $user
  * @mixin \Eloquent
  */
 class Payment extends Model
 {
     protected $table = 'payment';
+
+    public function scopeUid($query)
+    {
+        return $query->where('user_id', Auth::user()->id);
+    }
 
     public function user()
     {

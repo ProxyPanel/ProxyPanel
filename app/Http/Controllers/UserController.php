@@ -89,7 +89,7 @@ class UserController extends Controller
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
-        $view['notice'] = Article::query()->where('type', 2)->where('is_del', 0)->orderBy('id', 'desc')->first(); // 公告
+        $view['notice'] = Article::query()->where('type', 2)->orderBy('id', 'desc')->first(); // 公告
 
         return Response::view('user.index', $view);
     }
@@ -108,7 +108,7 @@ class UserController extends Controller
         }
 
         $score = mt_rand(self::$systemConfig['min_rand_traffic'], self::$systemConfig['max_rand_traffic']);
-        $ret = User::query()->where('id', Auth::user()->id)->increment('transfer_enable', $score * 1048576);
+        $ret = User::uid()->increment('transfer_enable', $score * 1048576);
         if (!$ret) {
             return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
         }
@@ -133,7 +133,7 @@ class UserController extends Controller
         $view['link'] = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . Auth::user()->subscribe->code;
 
         // 节点列表
-        $userLabelIds = UserLabel::query()->where('user_id', Auth::user()->id)->pluck('label_id');
+        $userLabelIds = UserLabel::uid()->pluck('label_id');
         if (empty($userLabelIds)) {
             $view['nodeList'] = [];
             $view['allNodes'] = '';
@@ -141,6 +141,7 @@ class UserController extends Controller
             return Response::view('user.nodeList', $view);
         }
 
+        // 获取当前用户可用节点
         $nodeList = DB::table('ss_node')
             ->selectRaw('ss_node.*')
             ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
@@ -247,12 +248,12 @@ class UserController extends Controller
         $view['nodeList'] = $nodeList;
 
         // 使用教程
-        $view['tutorial1'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 1)->orderBy('id', 'desc')->first();
-        $view['tutorial2'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 2)->orderBy('id', 'desc')->first();
-        $view['tutorial3'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 3)->orderBy('id', 'desc')->first();
-        $view['tutorial4'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 4)->orderBy('id', 'desc')->first();
-        $view['tutorial5'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 5)->orderBy('id', 'desc')->first();
-        $view['tutorial6'] = Article::query()->where('type', 4)->where('is_del', 0)->where('sort', 6)->orderBy('id', 'desc')->first();
+        $view['tutorial1'] = Article::query()->where('type', 4)->where('sort', 1)->orderBy('id', 'desc')->first();
+        $view['tutorial2'] = Article::query()->where('type', 4)->where('sort', 2)->orderBy('id', 'desc')->first();
+        $view['tutorial3'] = Article::query()->where('type', 4)->where('sort', 3)->orderBy('id', 'desc')->first();
+        $view['tutorial4'] = Article::query()->where('type', 4)->where('sort', 4)->orderBy('id', 'desc')->first();
+        $view['tutorial5'] = Article::query()->where('type', 4)->where('sort', 5)->orderBy('id', 'desc')->first();
+        $view['tutorial6'] = Article::query()->where('type', 4)->where('sort', 6)->orderBy('id', 'desc')->first();
 
         return Response::view('user.nodeList', $view);
     }
@@ -262,7 +263,7 @@ class UserController extends Controller
     {
         $id = $request->get('id');
 
-        $view['info'] = Article::query()->where('is_del', 0)->where('id', $id)->first();
+        $view['info'] = Article::query()->where('id', $id)->first();
         if (empty($view['info'])) {
             return Redirect::to('/');
         }
@@ -299,7 +300,7 @@ class UserController extends Controller
                     return Redirect::to('profile#tab_1');
                 }
 
-                $ret = User::query()->where('id', Auth::user()->id)->update(['password' => Hash::make($new_password)]);
+                $ret = User::uid()->update(['password' => Hash::make($new_password)]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
@@ -319,7 +320,7 @@ class UserController extends Controller
                     return Redirect::to('profile#tab_2');
                 }
 
-                $ret = User::query()->where('id', Auth::user()->id)->update(['wechat' => $wechat, 'qq' => $qq]);
+                $ret = User::uid()->update(['wechat' => $wechat, 'qq' => $qq]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
@@ -333,7 +334,7 @@ class UserController extends Controller
 
             // 修改代理密码
             if ($passwd) {
-                $ret = User::query()->where('id', Auth::user()->id)->update(['passwd' => $passwd]);
+                $ret = User::uid()->update(['passwd' => $passwd]);
                 if (!$ret) {
                     Session::flash('errorMsg', '修改失败');
 
@@ -349,7 +350,7 @@ class UserController extends Controller
 
             return Redirect::to('profile#tab_1');
         } else {
-            $view['info'] = User::query()->where('id', Auth::user()->id)->first();
+            $view['info'] = User::uid()->first();
 
             return Response::view('user.profile', $view);
         }
@@ -359,16 +360,16 @@ class UserController extends Controller
     public function services(Request $request)
     {
         // 余额充值商品，只取10个
-        $view['chargeGoodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 3)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
+        $view['chargeGoodsList'] = Goods::query()->where('status', 1)->where('type', 3)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
 
         // 套餐列表
-        $view['packageList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 2)->orderBy('sort', 'desc')->limit(12)->get();
+        $view['packageList'] = Goods::query()->where('status', 1)->where('type', 2)->orderBy('sort', 'desc')->limit(12)->get();
 
         // 流量包列表
-        $view['trafficList'] = Goods::query()->where('status', 1)->where('is_del', 0)->where('type', 1)->orderBy('sort', 'desc')->limit(12)->get();
+        $view['trafficList'] = Goods::query()->where('status', 1)->where('type', 1)->orderBy('sort', 'desc')->limit(12)->get();
 
         // 购买说明
-        $view['direction'] = Article::query()->where('type', 3)->where('is_del', 0)->orderBy('id', 'desc')->first();
+        $view['direction'] = Article::query()->where('type', 3)->orderBy('id', 'desc')->first();
 
         return Response::view('user.services', $view);
     }
@@ -376,7 +377,7 @@ class UserController extends Controller
     // 工单
     public function ticketList(Request $request)
     {
-        $view['ticketList'] = Ticket::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['ticketList'] = Ticket::uid()->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('user.ticketList', $view);
     }
@@ -384,7 +385,7 @@ class UserController extends Controller
     // 订单
     public function invoices(Request $request)
     {
-        $view['orderList'] = Order::query()->with(['user', 'goods', 'coupon', 'payment'])->where('user_id', Auth::user()->id)->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
+        $view['orderList'] = Order::uid()->with(['user', 'goods', 'coupon', 'payment'])->orderBy('oid', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('user.invoices', $view);
     }
@@ -392,7 +393,7 @@ class UserController extends Controller
     // 订单明细
     public function invoiceDetail(Request $request, $sn)
     {
-        $view['order'] = Order::query()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->where('user_id', Auth::user()->id)->firstOrFail();
+        $view['order'] = Order::uid()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
 
         return Response::view('user.invoiceDetail', $view);
     }
@@ -491,7 +492,7 @@ class UserController extends Controller
     {
         $id = $request->get('id');
 
-        $ret = Ticket::query()->where('id', $id)->where('user_id', Auth::user()->id)->update(['status' => 2]);
+        $ret = Ticket::uid()->where('id', $id)->update(['status' => 2]);
         if ($ret) {
             ServerChan::send('工单关闭提醒', '工单：ID' . $id . '用户已手动关闭');
 
@@ -505,10 +506,10 @@ class UserController extends Controller
     public function invite(Request $request)
     {
         // 已生成的邀请码数量
-        $num = Invite::query()->where('uid', Auth::user()->id)->count();
+        $num = Invite::uid()->count();
 
         $view['num'] = self::$systemConfig['invite_num'] - $num <= 0 ? 0 : self::$systemConfig['invite_num'] - $num; // 还可以生成的邀请码数量
-        $view['inviteList'] = Invite::query()->where('uid', Auth::user()->id)->with(['generator', 'user'])->paginate(10); // 邀请码列表
+        $view['inviteList'] = Invite::uid()->with(['generator', 'user'])->paginate(10); // 邀请码列表
         $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$systemConfig['referral_percent'];
 
@@ -519,7 +520,7 @@ class UserController extends Controller
     public function makeInvite(Request $request)
     {
         // 已生成的邀请码数量
-        $num = Invite::query()->where('uid', Auth::user()->id)->count();
+        $num = Invite::uid()->count();
         if ($num >= self::$systemConfig['invite_num']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . self::$systemConfig['invite_num'] . '个邀请码']);
         }
@@ -544,7 +545,7 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不能为空']);
         }
 
-        $coupon = Coupon::query()->where('sn', $coupon_sn)->whereIn('type', [1, 2])->where('is_del', 0)->first();
+        $coupon = Coupon::query()->where('sn', $coupon_sn)->whereIn('type', [1, 2])->first();
         if (!$coupon) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券不存在']);
         } elseif ($coupon->status == 1) {
@@ -576,7 +577,7 @@ class UserController extends Controller
         $coupon_sn = $request->get('coupon_sn');
 
         if ($request->isMethod('POST')) {
-            $goods = Goods::query()->with(['label'])->where('is_del', 0)->where('status', 1)->where('id', $goods_id)->first();
+            $goods = Goods::query()->with(['label'])->where('status', 1)->where('id', $goods_id)->first();
             if (!$goods) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
             }
@@ -584,7 +585,7 @@ class UserController extends Controller
             // 限购控制：all-所有商品限购, free-价格为0的商品限购, none-不限购（默认）
             $strategy = self::$systemConfig['goods_purchase_limit_strategy'];
             if ($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))) {
-                $noneExpireGoodExist = Order::query()->where('status', '>=', 0)->where('is_expire', 0)->where('user_id', Auth::user()->id)->where('goods_id', $goods_id)->exists();
+                $noneExpireGoodExist = Order::uid()->where('status', '>=', 0)->where('is_expire', 0)->where('goods_id', $goods_id)->exists();
                 if ($noneExpireGoodExist) {
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不可重复购买']);
                 }
@@ -592,7 +593,7 @@ class UserController extends Controller
 
             // 单个商品限购
             if ($goods->is_limit == 1) {
-                $noneExpireOrderExist = Order::query()->where('status', '>=', 0)->where('user_id', Auth::user()->id)->where('goods_id', $goods_id)->exists();
+                $noneExpireOrderExist = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->exists();
                 if ($noneExpireOrderExist) {
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：此商品每人限购1次']);
                 }
@@ -600,7 +601,7 @@ class UserController extends Controller
 
             // 使用优惠券
             if (!empty($coupon_sn)) {
-                $coupon = Coupon::query()->where('status', 0)->where('is_del', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
+                $coupon = Coupon::query()->where('status', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
                 if (empty($coupon)) {
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：优惠券不存在']);
                 }
@@ -618,19 +619,18 @@ class UserController extends Controller
             }
 
             // 验证账号余额是否充足
-            $user = User::query()->where('id', Auth::user()->id)->first();
+            $user = User::uid()->first();
             if ($user->balance < $amount) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
             }
 
             // 验证账号是否存在有效期更长的套餐
             if ($goods->type == 2) {
-                $existOrderList = Order::query()
+                $existOrderList = Order::uid()
                     ->with(['goods'])
                     ->whereHas('goods', function ($q) {
                         $q->where('type', 2);
                     })
-                    ->where('user_id', Auth::user()->id)
                     ->where('is_expire', 0)
                     ->where('status', 2)
                     ->get();
@@ -780,7 +780,7 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：' . $e->getMessage()]);
             }
         } else {
-            $goods = Goods::query()->where('id', $goods_id)->where('is_del', 0)->where('status', 1)->first();
+            $goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
             if (empty($goods)) {
                 return Redirect::to('services');
             }
@@ -851,7 +851,7 @@ class UserController extends Controller
     // 帮助中心
     public function help(Request $request)
     {
-        $view['articleList'] = Article::query()->where('type', 1)->where('is_del', 0)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
+        $view['articleList'] = Article::query()->where('type', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
 
         return Response::view('user.help', $view);
     }
@@ -865,7 +865,7 @@ class UserController extends Controller
             UserSubscribe::query()->where('user_id', Auth::user()->id)->update(['code' => Helpers::makeSubscribeCode()]);
 
             // 更换连接密码
-            User::query()->where('id', Auth::user()->id)->update(['passwd' => makeRandStr()]);
+            User::uid()->update(['passwd' => makeRandStr()]);
 
             DB::commit();
 
@@ -901,14 +901,14 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '券码不能为空']);
         }
 
-        $coupon = Coupon::query()->where('sn', $coupon_sn)->where('type', 3)->where('is_del', 0)->where('status', 0)->first();
+        $coupon = Coupon::query()->where('sn', $coupon_sn)->where('type', 3)->where('status', 0)->first();
         if (!$coupon) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该券不可用']);
         }
 
         DB::beginTransaction();
         try {
-            $user = User::query()->where('id', Auth::user()->id)->first();
+            $user = User::uid()->first();
 
             // 写入日志
             $this->addUserBalanceLog($user->id, 0, $user->balance, $user->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $coupon_sn . ']');

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNode
  *
  * @package App\Http\Models
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Http\Models\SsNodeLabel[] $label
  * @mixin \Eloquent
  */
 class SsNode extends Model

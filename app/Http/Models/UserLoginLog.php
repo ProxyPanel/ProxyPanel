@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserLoginLog
  *
  * @package App\Http\Models
- * @property-read \App\Http\Models\User $user
  * @mixin \Eloquent
  */
 class UserLoginLog extends Model

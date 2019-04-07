@@ -23,7 +23,7 @@ class ShopController extends Controller
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
+        $view['goodsList'] = Goods::query()->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('shop.goodsList', $view);
     }
@@ -106,7 +106,6 @@ class ShopController extends Controller
                 $goods->sort = $sort;
                 $goods->is_hot = $is_hot;
                 $goods->is_limit = $is_limit;
-                $goods->is_del = 0;
                 $goods->status = $status;
                 $goods->save();
 
@@ -259,7 +258,7 @@ class ShopController extends Controller
     {
         $id = $request->get('id');
 
-        Goods::query()->where('id', $id)->update(['is_del' => 1]);
+        Goods::query()->where('id', $id)->delete();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
     }

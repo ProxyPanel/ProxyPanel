@@ -912,7 +912,7 @@ class AdminController extends Controller
     // 文章列表
     public function articleList(Request $request)
     {
-        $view['list'] = Article::query()->where('is_del', 0)->orderBy('sort', 'desc')->paginate(15)->appends($request->except('page'));
+        $view['list'] = Article::query()->orderBy('sort', 'desc')->paginate(15)->appends($request->except('page'));
 
         return Response::view('admin.articleList', $view);
     }
@@ -946,7 +946,6 @@ class AdminController extends Controller
             $article->summary = $request->get('summary');
             $article->logo = $logo;
             $article->content = $request->get('editorValue');
-            $article->is_del = 0;
             $article->sort = $request->get('sort', 0);
             $article->save();
 
@@ -1024,7 +1023,7 @@ class AdminController extends Controller
     {
         $id = $request->get('id');
 
-        $ret = Article::query()->where('id', $id)->update(['is_del' => 1]);
+        $ret = Article::query()->where('id', $id)->delete();
         if ($ret) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
         } else {
@@ -1522,7 +1521,7 @@ EOF;
                 return Redirect::back();
             }
 
-            $ret = User::query()->where('id', Auth::user()->id)->update(['password' => Hash::make($new_password)]);
+             $ret = User::uid()->update(['password' => Hash::make($new_password)]);
             if (!$ret) {
                 Session::flash('errorMsg', '修改失败');
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserLabel
  *
  * @package App\Http\Models
- * @property-read \App\Http\Models\User $user
  * @mixin \Eloquent
  */
 class UserLabel extends Model
@@ -17,6 +17,11 @@ class UserLabel extends Model
     protected $table = 'user_label';
     protected $primaryKey = 'id';
     public $timestamps = false;
+
+    public function scopeUid($query)
+    {
+        return $query->where('user_id', Auth::user()->id);
+    }
 
     function user()
     {

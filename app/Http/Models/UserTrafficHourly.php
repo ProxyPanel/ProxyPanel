@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class Article
  *
  * @package App\Http\Models
- * @property-read \App\Http\Models\SsNode $node
  * @mixin \Eloquent
  */
 class UserTrafficHourly extends Model

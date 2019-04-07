@@ -152,12 +152,12 @@
                                     <label for="color" class="col-md-3 control-label">颜色</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="color" id="color">
-                                            <option value="green">green</option>
-                                            <option value="blue">blue</option>
-                                            <option value="red">red</option>
-                                            <option value="purple">purple</option>
-                                            <option value="white">white</option>
-                                            <option value="grey">grey</option>
+                                            <option value="green">绿</option>
+                                            <option value="blue">蓝</option>
+                                            <option value="red">红</option>
+                                            <option value="purple">紫</option>
+                                            <option value="white">白</option>
+                                            <option value="grey">灰</option>
                                         </select>
                                     </div>
                                 </div>

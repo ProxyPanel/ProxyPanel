@@ -337,7 +337,7 @@
                                                                         <option value="{{$label->id}}" @if(in_array($label->id, explode(',', $initial_labels_for_user))) selected @endif>{{$label->name}}</option>
                                                                     @endforeach
                                                                 </select>
-                                                                <span class="help-block"> 注册用户时的初始标签 </span>
+                                                                <span class="help-block"> 注册用户时的初始标签，标签用于关联节点 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -386,11 +386,12 @@
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="user_invite_days" value="{{$user_invite_days}}" id="user_invite_days" />
+                                                                    <span class="input-group-addon">天</span>
                                                                     <span class="input-group-btn">
                                                                         <button class="btn btn-success" type="button" onclick="setUserInviteDays()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 用户自行生成邀请的有效 </span>
+                                                                <span class="help-block"> 用户自行生成邀请的有效期 </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -398,6 +399,7 @@
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="admin_invite_days" value="{{$admin_invite_days}}" id="admin_invite_days" />
+                                                                    <span class="input-group-addon">天</span>
                                                                     <span class="input-group-btn">
                                                                         <button class="btn btn-success" type="button" onclick="setAdminInviteDays()">修改</button>
                                                                     </span>

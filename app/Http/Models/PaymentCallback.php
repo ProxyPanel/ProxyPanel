@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * Class PaymentCallback
  *
  * @package App\Http\Models
- * @property-read mixed $status_label
  * @mixin \Eloquent
  */
 class PaymentCallback extends Model

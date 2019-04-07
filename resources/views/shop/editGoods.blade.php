@@ -155,12 +155,12 @@
                                     <label for="color" class="col-md-3 control-label">颜色</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="color" id="color">
-                                            <option value="green" @if($goods->color == 'green') selected @endif>green</option>
-                                            <option value="blue" @if($goods->color == 'blue') selected @endif>blue</option>
-                                            <option value="red" @if($goods->color == 'red') selected @endif>red</option>
-                                            <option value="purple" @if($goods->color == 'purple') selected @endif>purple</option>
-                                            <option value="white" @if($goods->color == 'white') selected @endif>white</option>
-                                            <option value="grey" @if($goods->color == 'grey') selected @endif>grey</option>
+                                            <option value="green" @if($goods->color == 'green') selected @endif>绿</option>
+                                            <option value="blue" @if($goods->color == 'blue') selected @endif>蓝</option>
+                                            <option value="red" @if($goods->color == 'red') selected @endif>红</option>
+                                            <option value="purple" @if($goods->color == 'purple') selected @endif>紫</option>
+                                            <option value="white" @if($goods->color == 'white') selected @endif>白</option>
+                                            <option value="grey" @if($goods->color == 'grey') selected @endif>灰</option>
                                         </select>
                                     </div>
                                 </div>

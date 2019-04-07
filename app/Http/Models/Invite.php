@@ -2,21 +2,29 @@
 
 namespace App\Http\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * 邀请码
  * Class Invite
  *
  * @package App\Http\Models
- * @property-read \App\Http\Models\User $Generator
- * @property-read \App\Http\Models\User $User
  * @mixin \Eloquent
  */
 class Invite extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'invite';
     protected $primaryKey = 'id';
+    protected $dates = ['deleted_at'];
+
+    public function scopeUid($query)
+    {
+        return $query->where('uid', Auth::user()->id);
+    }
 
     public function Generator()
     {

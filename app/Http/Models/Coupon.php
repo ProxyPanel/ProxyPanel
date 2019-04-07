@@ -3,21 +3,22 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * 优惠券
  * Class Goods
  *
  * @package App\Http\Models
- * @property mixed $amount
- * @property mixed $discount
  * @mixin \Eloquent
  */
 class Coupon extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'coupon';
     protected $primaryKey = 'id';
-
+    protected $dates = ['deleted_at'];
 
     function getAmountAttribute($value)
     {

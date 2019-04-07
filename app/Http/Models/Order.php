@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,19 +10,17 @@ use Illuminate\Database\Eloquent\Model;
  * Class Order
  *
  * @package App\Http\Models
- * @property-read \App\Http\Models\Coupon $coupon
- * @property mixed $amount
- * @property mixed $origin_amount
- * @property-read mixed $status_label
- * @property-read \App\Http\Models\Goods $goods
- * @property-read \App\Http\Models\Payment $payment
- * @property-read \App\Http\Models\User $user
  * @mixin \Eloquent
  */
 class Order extends Model
 {
     protected $table = 'order';
     protected $primaryKey = 'oid';
+
+    public function scopeUid($query)
+    {
+        return $query->where('user_id', Auth::user()->id);
+    }
 
     function user()
     {
