@@ -616,7 +616,7 @@ class AdminController extends Controller
                 $ssNode->monitor_url = $request->get('monitor_url') ? $request->get('monitor_url') : '';
                 $ssNode->is_subscribe = intval($request->get('is_subscribe'));
                 $ssNode->is_nat = intval($request->get('is_nat'));
-                $ssNode->is_udp = intval($request->get('is_udp'));
+                $ssNode->is_transit = intval($request->get('is_transit'));
                 $ssNode->ssh_port = $request->get('ssh_port') ? intval($request->get('ssh_port')) : 22;
                 $ssNode->is_tcp_check = intval($request->get('is_tcp_check'));
                 $ssNode->compatible = intval($request->get('type')) == 2 ? 0 : (intval($request->get('is_nat')) ? 0 : intval($request->get('compatible')));
@@ -736,7 +736,7 @@ class AdminController extends Controller
                     'monitor_url'      => $request->get('monitor_url') ? $request->get('monitor_url') : '',
                     'is_subscribe'     => intval($request->get('is_subscribe')),
                     'is_nat'           => intval($request->get('is_nat')),
-                    'is_udp'           => intval($request->get('is_udp')),
+                    'is_transit'       => intval($request->get('is_transit')),
                     'ssh_port'         => intval($request->get('ssh_port')),
                     'is_tcp_check'     => intval($request->get('is_tcp_check')),
                     'compatible'       => intval($request->get('type')) == 2 ? 0 : (intval($request->get('is_nat')) ? 0 : intval($request->get('compatible'))),
@@ -1435,7 +1435,7 @@ class AdminController extends Controller
                     "path" => $node->v2_path,
                     "tls"  => $node->v2_tls ? "tls" : ""
                 ];
-                $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json,JSON_PRETTY_PRINT));
+                $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json, JSON_PRETTY_PRINT));
 
                 // 生成文本配置信息
                 $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
@@ -1521,7 +1521,7 @@ EOF;
                 return Redirect::back();
             }
 
-             $ret = User::uid()->update(['password' => Hash::make($new_password)]);
+            $ret = User::uid()->update(['password' => Hash::make($new_password)]);
             if (!$ret) {
                 Session::flash('errorMsg', '修改失败');
 

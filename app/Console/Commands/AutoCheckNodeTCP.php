@@ -49,7 +49,7 @@ class AutoCheckNodeTCP extends Command
     {
         $title = "节点异常警告";
 
-        $nodeList = SsNode::query()->where('status', 1)->where('is_tcp_check', 1)->where('is_nat', 0)->get();
+        $nodeList = SsNode::query()->where('is_transit', 0)->where('is_nat', 0)->where('status', 1)->where('is_tcp_check', 1)->get();
         foreach ($nodeList as $node) {
             $tcpCheck = $this->tcpCheck($node->ip);
             if (false !== $tcpCheck) {

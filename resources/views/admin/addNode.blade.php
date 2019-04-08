@@ -13,9 +13,11 @@
                     <div class="col-md-12">
                         <div class="note note-info">
                             <p><strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；</p>
-                            <p>V2Ray Go版节点部署 <a href="https://github.com/ssrpanel/SSRPanel/wiki/V2Ray%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B%EF%BC%88Go%E7%89%88%EF%BC%89" target="_blank" style="color:red;">[教程]</a>；</p>
-                            <p>Shadowsocks Go版节点部署 <a href="https://github.com/ssrpanel/SSRPanel/wiki/SS-Go%E7%89%88%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2" target="_blank" style="color:red;">[教程]</a>；</p>
-                            <p>更改服务器的SSH端口 <a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A6%81%E6%AD%A2PING%E3%80%81%E6%94%B9SSH%E7%AB%AF%E5%8F%A3%E5%8F%B7" target="_blank" style="color:red;">[教程]</a>；</p>
+                            <p>V2Ray Go版节点<a href="https://github.com/ssrpanel/SSRPanel/wiki/V2Ray%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B%EF%BC%88Go%E7%89%88%EF%BC%89" target="_blank">部署教程</a>；
+                                Shadowsocks Go版节点<a href="https://github.com/ssrpanel/SSRPanel/wiki/SS-Go%E7%89%88%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2" target="_blank">部署教程</a>；
+                                更改服务器的SSH端口<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A6%81%E6%AD%A2PING%E3%80%81%E6%94%B9SSH%E7%AB%AF%E5%8F%A3%E5%8F%B7" target="_blank">教程</a>；</p>
+                            <p>中转节点需要自行配置服务器端口转发，TCP阻断检测无效，务必填写域名； </p>
+                            <p>NAT节点需要<a href="https://github.com/ssrpanel/SSRPanel/wiki/NAT-VPS%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B" target="_blank">配置DDNS</a>，TCP阻断检测无效，务必填写域名； </p>
                         </div>
                     </div>
                 </div>
@@ -34,6 +36,21 @@
                                             </div>
                                             <div class="portlet-body">
                                                 <div class="form-group">
+                                                    <label for="is_transit" class="col-md-3 control-label">中转</label>
+                                                    <div class="col-md-8">
+                                                        <div class="mt-radio-inline">
+                                                            <label class="mt-radio">
+                                                                <input type="radio" name="is_transit" value="1"> 是
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="mt-radio">
+                                                                <input type="radio" name="is_transit" value="0" checked> 否
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="is_nat" class="col-md-3 control-label">NAT</label>
                                                     <div class="col-md-8">
                                                         <div class="mt-radio-inline">
@@ -46,7 +63,6 @@
                                                                 <span></span>
                                                             </label>
                                                         </div>
-                                                        <span class="help-block"> NAT机需要<a href="https://github.com/ssrpanel/SSRPanel/wiki/NAT-VPS%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B" target="_blank">配置DDNS</a>，TCP阻断检测无效，务必填写域名 </span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -62,15 +78,15 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ip" class="col-md-3 control-label"> IPV4地址 </label>
+                                                    <label for="ip" class="col-md-3 control-label"> IPv4地址 </label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control" name="ip" id="ip" placeholder="服务器IPV4地址" required>
+                                                        <input type="text" class="form-control" name="ip" id="ip" placeholder="服务器IPv4地址" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ipv6" class="col-md-3 control-label"> IPV6地址 </label>
+                                                    <label for="ipv6" class="col-md-3 control-label"> IPv6地址 </label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control" name="ipv6" id="ipv6" placeholder="服务器IPV6地址，填写则用户可见，域名无效">
+                                                        <input type="text" class="form-control" name="ipv6" id="ipv6" placeholder="服务器IPv6地址，填写则用户可见，域名无效">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -108,7 +124,6 @@
                                                                 @endforeach
                                                             @endif
                                                         </select>
-                                                        <span class="help-block">订阅时分组展示</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -150,53 +165,6 @@
                                                                 <span></span>
                                                             </label>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="is_subscribe" class="col-md-3 control-label">订阅</label>
-                                                    <div class="col-md-8">
-                                                        <div class="mt-radio-inline">
-                                                            <label class="mt-radio">
-                                                                <input type="radio" name="is_subscribe" value="1" checked> 允许
-                                                                <span></span>
-                                                            </label>
-                                                            <label class="mt-radio">
-                                                                <input type="radio" name="is_subscribe" value="0"> 不允许
-                                                                <span></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="is_udp" class="col-md-3 control-label">UDP</label>
-                                                    <div class="col-md-8">
-                                                        <div class="mt-radio-inline">
-                                                            <label class="mt-radio">
-                                                                <input type="radio" name="is_udp" value="1" checked> 允许
-                                                                <span></span>
-                                                            </label>
-                                                            <label class="mt-radio">
-                                                                <input type="radio" name="is_udp" value="0"> 不允许
-                                                                <span></span>
-                                                            </label>
-                                                        </div>
-                                                        <span class="help-block"> 禁止UDP，则无法用于加速游戏 </span>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
-                                                    <div class="col-md-8">
-                                                        <div class="mt-radio-inline">
-                                                            <label class="mt-radio">
-                                                                <input type="radio" name="is_tcp_check" value="1" checked> 开启
-                                                                <span></span>
-                                                            </label>
-                                                            <label class="mt-radio">
-                                                                <input type="radio" name="is_tcp_check" value="0"> 关闭
-                                                                <span></span>
-                                                            </label>
-                                                        </div>
-                                                        <span class="help-block"> 每30~60分钟随机进行TCP阻断检测 </span>
                                                     </div>
                                                 </div>
                                                 <!--
@@ -311,6 +279,37 @@
                                                                 </label>
                                                             </div>
                                                             <span class="help-block"> 如果兼容请在服务端配置协议和混淆时加上<span style="color:red">_compatible</span> </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="is_subscribe" class="col-md-3 control-label">订阅</label>
+                                                        <div class="col-md-8">
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_subscribe" value="1" checked> 允许
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_subscribe" value="0"> 不允许
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="is_tcp_check" class="col-md-3 control-label">TCP阻断检测</label>
+                                                        <div class="col-md-8">
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_tcp_check" value="1" checked> 开启
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_tcp_check" value="0"> 关闭
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                            <span class="help-block"> 每30~60分钟随机进行TCP阻断检测 </span>
                                                         </div>
                                                     </div>
                                                     <hr />
@@ -538,7 +537,7 @@
             var monitor_url = $('#monitor_url').val();
             var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
             var is_nat = $("input:radio[name='is_nat']:checked").val();
-            var is_udp = $("input:radio[name='is_udp']:checked").val();
+            var is_transit = $("input:radio[name='is_transit']:checked").val();
             var ssh_port = $('#ssh_port').val();
             var compatible = $("input:radio[name='compatible']:checked").val();
             var single = $("input:radio[name='single']:checked").val();
@@ -589,7 +588,7 @@
                     monitor_url: monitor_url,
                     is_subscribe: is_subscribe,
                     is_nat: is_nat,
-                    is_udp: is_udp,
+                    is_transit: is_transit,
                     ssh_port: ssh_port,
                     compatible: compatible,
                     single: single,
