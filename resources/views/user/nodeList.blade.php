@@ -52,7 +52,10 @@
                             <div class="portlet-body">
                                 <div class="mt-clipboard-container">
                                     <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
-                                    <a href="javascript:exchangeSubscribe();" class="btn green">
+                                    <a href="#subscribe_qrcode" class="btn green" data-toggle="modal">
+                                        <i class="fa fa-qrcode"></i>
+                                    </a>
+                                    <a href="javascript:exchangeSubscribe();" class="btn blue">
                                         {{trans('home.exchange_subscribe')}}
                                     </a>
                                     <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
@@ -305,6 +308,25 @@
                 </div>
             </div>
         @endforeach
+        <!-- 订阅二维码 -->
+        <div class="modal fade" id="subscribe_qrcode" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">请使用Shadowrocket扫描</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="subscribe_qrcode_img" style="text-align: center;"></div>
+                                <div style="text-align: center;"><a id="download_subscribe_qrcode_img">{{trans('home.download')}}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- END PAGE BASE CONTENT -->
     </div>
     <!-- END CONTENT BODY -->
@@ -356,6 +378,10 @@
                 $('#download_qrcode_v2_img_{{$node->id}}').attr({'download':'code','href':$('#qrcode_v2_img_{{$node->id}} canvas')[0].toDataURL("image/png")})
             @endif
         @endforeach
+
+        // 生成订阅地址二维码
+        $('#subscribe_qrcode_img').qrcode("{{$link_qrcode}}");
+        $('#download_subscribe_qrcode_img').attr({'download':'code','href':$('#subscribe_qrcode_img canvas')[0].toDataURL("image/png")})
 
         // 更换订阅地址
         function exchangeSubscribe() {
