@@ -229,7 +229,7 @@ class SubscribeController extends Controller
             $headers = [
                 'Content-type'          => 'application/octet-stream; charset=utf-8',
                 'Cache-Control'         => 'no-store, no-cache, must-revalidate',
-                'Subscription-userinfo' => 'upload=' . $user->u . '; download=' . $user->d . '; total=' . $user->transfer_enable
+                'Subscription-Userinfo' => 'upload=' . $user->u . '; download=' . $user->d . '; total=' . $user->transfer_enable . '; expire=' . strtotime($user->expire_time)
             ];
 
             return Response::make(base64url_encode($scheme), 200, $headers);

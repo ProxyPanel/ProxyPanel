@@ -16,6 +16,7 @@ class Order extends Model
 {
     protected $table = 'order';
     protected $primaryKey = 'oid';
+    protected $appends = ['status_label'];
 
     public function scopeUid($query)
     {

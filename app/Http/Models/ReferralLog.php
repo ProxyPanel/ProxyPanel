@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,6 +16,11 @@ class ReferralLog extends Model
 {
     protected $table = 'referral_log';
     protected $primaryKey = 'id';
+
+    function scopeUid($query)
+    {
+        return $query->where('ref_user_id', Auth::user()->id);
+    }
 
     function user()
     {

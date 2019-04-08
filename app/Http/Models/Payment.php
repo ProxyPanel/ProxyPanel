@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     protected $table = 'payment';
+    protected $primaryKey = 'id';
+    protected $appends = ['status_label'];
 
     public function scopeUid($query)
     {

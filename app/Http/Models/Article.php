@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Article extends Model
 {
     use SoftDeletes;
+
     protected $table = 'article';
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];

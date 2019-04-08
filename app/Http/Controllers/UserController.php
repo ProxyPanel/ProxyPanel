@@ -797,11 +797,11 @@ class UserController extends Controller
         $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$systemConfig['referral_percent'];
         $view['referral_money'] = self::$systemConfig['referral_money'];
-        $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', Auth::user()->id)->sum('ref_amount') / 100;
-        $view['canAmount'] = ReferralLog::query()->where('ref_user_id', Auth::user()->id)->where('status', 0)->sum('ref_amount') / 100;
+        $view['totalAmount'] = ReferralLog::uid()->sum('ref_amount') / 100;
+        $view['canAmount'] = ReferralLog::uid()->where('status', 0)->sum('ref_amount') / 100;
         $view['link'] = self::$systemConfig['website_url'] . '/register?aff=' . Auth::user()->id;
-        $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', Auth::user()->id)->with('user')->orderBy('id', 'desc')->paginate(10);
-        $view['referralApplyList'] = ReferralApply::query()->where('user_id', Auth::user()->id)->with('user')->orderBy('id', 'desc')->paginate(10);
+        $view['referralLogList'] = ReferralLog::uid()->with('user')->orderBy('id', 'desc')->paginate(10);
+        $view['referralApplyList'] = ReferralApply::uid()->with('user')->orderBy('id', 'desc')->paginate(10);
         $view['referralUserList'] = User::query()->select(['username', 'created_at'])->where('referral_uid', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('user.referral', $view);
@@ -816,13 +816,13 @@ class UserController extends Controller
         }
 
         // 判断是否已存在申请
-        $referralApply = ReferralApply::query()->where('user_id', Auth::user()->id)->whereIn('status', [0, 1])->first();
+        $referralApply = ReferralApply::uid()->whereIn('status', [0, 1])->first();
         if ($referralApply) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
         }
 
         // 校验可以提现金额是否超过系统设置的阀值
-        $ref_amount = ReferralLog::query()->where('ref_user_id', Auth::user()->id)->where('status', 0)->sum('ref_amount');
+        $ref_amount = ReferralLog::uid()->where('status', 0)->sum('ref_amount');
         $ref_amount = $ref_amount / 100;
         if ($ref_amount < self::$systemConfig['referral_money']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$systemConfig['referral_money'] . '元才可以提现，继续努力吧']);
@@ -830,7 +830,7 @@ class UserController extends Controller
 
         // 取出本次申请关联返利日志ID
         $link_logs = '';
-        $referralLog = ReferralLog::query()->where('ref_user_id', Auth::user()->id)->where('status', 0)->get();
+        $referralLog = ReferralLog::uid()->where('status', 0)->get();
         foreach ($referralLog as $log) {
             $link_logs .= $log->id . ',';
         }
@@ -862,7 +862,7 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             // 更换订阅码
-            UserSubscribe::query()->where('user_id', Auth::user()->id)->update(['code' => Helpers::makeSubscribeCode()]);
+            UserSubscribe::uid()->update(['code' => Helpers::makeSubscribeCode()]);
 
             // 更换连接密码
             User::uid()->update(['passwd' => makeRandStr()]);
