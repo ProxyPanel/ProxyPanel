@@ -539,7 +539,7 @@ class AutoJob extends Command
     private function checkNodeStatus()
     {
         if (Helpers::systemConfig()['is_node_crash_warning']) {
-            $nodeList = SsNode::query()->where('status', 1)->get();
+            $nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->get();
             foreach ($nodeList as $node) {
                 // 10分钟内无节点负载信息且TCP检测认为不是离线则认为是后端炸了
                 $nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();

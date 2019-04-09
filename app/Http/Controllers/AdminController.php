@@ -557,7 +557,7 @@ class AdminController extends Controller
 
             // 负载（10分钟以内）
             $node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-            $node->load = empty($node_info) || empty($node_info->load) ? '离线' : $node_info->load;
+            $node->load = $node->is_transit ? '' : (empty($node_info) || empty($node_info->load) ? '离线' : $node_info->load);
             $node->uptime = empty($node_info) ? 0 : seconds2time($node_info->uptime);
         }
 
