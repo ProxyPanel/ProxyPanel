@@ -89,8 +89,6 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::post('subscribe/setSubscribeStatus', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
     Route::post('subscribe/setDeviceStatus', 'SubscribeController@setDeviceStatus'); // 是否允许设备订阅
     Route::get("marketing/emailList", "MarketingController@emailList"); // 邮件消息列表
-    Route::get("marketing/pushList", "MarketingController@pushList"); // 推送消息列表
-    Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
     Route::get("admin/onlineIPMonitor", "AdminController@onlineIPMonitor"); // 在线IP监控
     Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
     Route::get('admin/download', 'AdminController@download'); // 下载转换过的JSON配置

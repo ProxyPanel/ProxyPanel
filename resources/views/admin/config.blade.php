@@ -52,13 +52,13 @@
                                         @else
                                             @foreach($method_list as $method)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$method->name}} @if($method->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
+                                                    <td> {{$method->name}} </td>
                                                     <td>
-                                                        @if(!$method->is_default)
+                                                        @if($method->is_default)
+                                                            <span class='label label-info'>默认</span>
+                                                        @else
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('1', '{{$method->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">删除</button>
                                                         @endif
                                                     </td>
                                                 </tr>

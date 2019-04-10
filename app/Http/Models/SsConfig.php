@@ -16,4 +16,14 @@ class SsConfig extends Model
     protected $table = 'ss_config';
     protected $primaryKey = 'id';
     public $timestamps = false;
+
+    function scopeDefault($query)
+    {
+        $query->where('is_default', 1);
+    }
+
+    function scopeType($query, $type)
+    {
+        $query->where('type', $type);
+    }
 }

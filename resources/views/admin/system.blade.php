@@ -429,7 +429,7 @@
                                                             <label for="is_custom_subscribe" class="col-md-3 control-label">高级订阅</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($is_custom_subscribe) checked @endif id="is_custom_subscribe" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用后，订阅信息顶部将显示过期时间、剩余流量 </span>
+                                                                <span class="help-block"> 启用后，订阅信息顶部将显示过期时间、剩余流量（Quantumult有特殊效果） </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-sm-6 col-xs-12"></div>

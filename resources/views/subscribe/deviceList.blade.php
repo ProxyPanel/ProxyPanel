@@ -30,12 +30,6 @@
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 form-control" name="user_id" value="{{Request::get('user_id')}}" id="user_id" placeholder="用户ID" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
                                 <select class="form-control" name="status" id="status" onChange="doSearch()">
                                     <option value="" @if(Request::get('status') == '') selected @endif>状态</option>
                                     <option value="0" @if(Request::get('status') == '0') selected @endif>禁用</option>
@@ -107,10 +101,9 @@
     <script type="text/javascript">
         // 搜索
         function doSearch() {
-            var name = $("#name").val();
             var status = $("#status option:checked").val();
 
-            window.location.href = '{{url('subscribe/deviceList')}}' + '?name=' + name + '&status=' + status;
+            window.location.href = '{{url('subscribe/deviceList')}}' + '?status=' + status;
         }
 
         // 重置

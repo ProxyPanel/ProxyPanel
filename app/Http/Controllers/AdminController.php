@@ -1629,7 +1629,7 @@ EOF;
             }
 
             // 校验是否已存在
-            $config = SsConfig::query()->where('name', $name)->where('type', $type)->first();
+            $config = SsConfig::type($type)->where('name', $name)->first();
             if ($config) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置已经存在，请勿重复添加']);
             }
@@ -1643,9 +1643,9 @@ EOF;
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
         } else {
-            $view['method_list'] = SsConfig::query()->where('type', 1)->get();
-            $view['protocol_list'] = SsConfig::query()->where('type', 2)->get();
-            $view['obfs_list'] = SsConfig::query()->where('type', 3)->get();
+            $view['method_list'] = SsConfig::type(1)->get();
+            $view['protocol_list'] = SsConfig::type(2)->get();
+            $view['obfs_list'] = SsConfig::type(3)->get();
             $view['level_list'] = Helpers::levelList();
             $view['country_list'] = Country::query()->get();
 
@@ -1681,7 +1681,7 @@ EOF;
         }
 
         // 去除该配置所属类型的默认值
-        SsConfig::query()->where('type', $config->type)->where('is_default', 1)->update(['is_default' => 0]);
+        SsConfig::default()->type($config->type)->update(['is_default' => 0]);
 
         // 将该ID对应记录值置为默认值
         SsConfig::query()->where('id', $id)->update(['is_default' => 1]);

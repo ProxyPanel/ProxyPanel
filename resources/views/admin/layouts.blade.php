@@ -260,12 +260,6 @@
                                 <span class="title">邮件群发</span>
                             </a>
                         </li>
-                        <li class="nav-item {{in_array(Request::path(), ['marketing/pushList']) ? 'active open' : ''}}">
-                            <a href="{{url('marketing/pushList')}}" class="nav-link ">
-                                <i class="fa fa-rss"></i>
-                                <span class="title">消息推送</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/emailLog', 'payment/callbackList', 'sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">

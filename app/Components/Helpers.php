@@ -37,25 +37,25 @@ class Helpers
     // 获取默认加密方式
     public static function getDefaultMethod()
     {
-        $config = SsConfig::query()->where('type', 1)->where('is_default', 1)->first();
+        $config = SsConfig::default()->type(1)->first();
 
         return $config ? $config->name : 'aes-256-cfb';
-    }
-
-    // 获取默认混淆
-    public static function getDefaultObfs()
-    {
-        $config = SsConfig::query()->where('type', 3)->where('is_default', 1)->first();
-
-        return $config ? $config->name : 'plain';
     }
 
     // 获取默认协议
     public static function getDefaultProtocol()
     {
-        $config = SsConfig::query()->where('type', 2)->where('is_default', 1)->first();
+        $config = SsConfig::default()->type(2)->first();
 
         return $config ? $config->name : 'origin';
+    }
+
+    // 获取默认混淆
+    public static function getDefaultObfs()
+    {
+        $config = SsConfig::default()->type(3)->first();
+
+        return $config ? $config->name : 'plain';
     }
 
     // 获取一个随机端口
@@ -89,19 +89,19 @@ class Helpers
     // 加密方式
     public static function methodList()
     {
-        return SsConfig::query()->where('type', 1)->get();
+        return SsConfig::type(1)->get();
     }
 
     // 协议
     public static function protocolList()
     {
-        return SsConfig::query()->where('type', 2)->get();
+        return SsConfig::type(2)->get();
     }
 
     // 混淆
     public static function obfsList()
     {
-        return SsConfig::query()->where('type', 3)->get();
+        return SsConfig::type(3)->get();
     }
 
     // 等级
