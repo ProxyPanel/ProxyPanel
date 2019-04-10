@@ -30,12 +30,12 @@ class Order extends Model
 
     function goods()
     {
-        return $this->hasOne(Goods::class, 'id', 'goods_id');
+        return $this->hasOne(Goods::class, 'id', 'goods_id')->withTrashed();
     }
 
     function coupon()
     {
-        return $this->hasOne(Coupon::class, 'id', 'coupon_id');
+        return $this->hasOne(Coupon::class, 'id', 'coupon_id')->withTrashed();
     }
 
     function payment()
