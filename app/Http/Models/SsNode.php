@@ -16,7 +16,7 @@ class SsNode extends Model
     protected $table = 'ss_node';
     protected $primaryKey = 'id';
 
-    public function label()
+    function label()
     {
         return $this->hasMany(SsNodeLabel::class, 'node_id', 'id');
     }

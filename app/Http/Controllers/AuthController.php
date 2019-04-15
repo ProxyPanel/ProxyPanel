@@ -17,6 +17,7 @@ use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use App\Mail\sendVerifyCode;
 use Illuminate\Http\Request;
+use Validator;
 use Response;
 use Redirect;
 use Captcha;
@@ -47,28 +48,22 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $username = trim($request->get('username'));
-            $password = trim($request->get('password'));
-            $captcha = trim($request->get('captcha'));
-            $remember = trim($request->get('remember'));
-
-            if (empty($username) || empty($password)) {
-                Session::flash('errorMsg', '请输入用户名和密码');
-
-                return Redirect::back();
-            }
+            $this->validate($request, [
+                'username' => 'required',
+                'password' => 'required'
+            ], [
+                'username.required' => '请输入用户名',
+                'password.required' => '请输入密码'
+            ]);
 
             // 是否校验验证码
             switch (self::$systemConfig['is_captcha']) {
-                case 1:
-                    // Default Captcha
-                    if (!Captcha::check($captcha)) {
-                        Session::flash('errorMsg', '验证码错误，请重新输入');
-                        return Redirect::back()->withInput();
+                case 1: // 默认图形验证码
+                    if (!Captcha::check($request->captcha)) {
+                        return Redirect::back()->withInput()->withErrors('验证码错误，请重新输入');
                     }
                     break;
-                case 2:
-                    // Geetest
+                case 2: // Geetest
                     $result = $this->validate($request, [
                         'geetest_challenge' => 'required|geetest'
                     ], [
@@ -76,49 +71,39 @@ class AuthController extends Controller
                     ]);
 
                     if (!$result) {
-                        Session::flash('errorMsg', trans('login.fail_captcha'));
-                        return Redirect::back()->withInput();
+                        return Redirect::back()->withInput()->withErrors(trans('login.fail_captcha'));
                     }
                     break;
-                case 3:
-                    // Google reCAPTCHA
+                case 3: // Google reCAPTCHA
                     $result = $this->validate($request, [
                         'g-recaptcha-response' => 'required|NoCaptcha'
                     ]);
 
                     if (!$result) {
-                        Session::flash('errorMsg', trans('login.fail_captcha'));
-                        return Redirect::back()->withInput();
+                        return Redirect::back()->withInput()->withErrors(trans('login.fail_captcha'));
                     }
                     break;
-                default:
-                    # nothing..
+                default: // 不启用验证码
                     break;
             }
 
             // 验证账号并创建会话
-            if (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
-                Session::flash('errorMsg', '用户名或密码错误');
-
-                return Redirect::back()->withInput();
+            if (!Auth::attempt(['username' => $request->username, 'password' => $request->password], $request->remember)) {
+                return Redirect::back()->withInput()->withErrors('用户名或密码错误');
             }
 
             // 校验普通用户账号状态
             if (!Auth::user()->is_admin) {
                 if (Auth::user()->status < 0) {
-                    Session::flash('errorMsg', '账号已禁用');
-
                     Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput();
+                    return Redirect::back()->withInput()->withErrors('账号已禁用');
                 }
 
                 if (Auth::user()->status == 0 && self::$systemConfig['is_active_register']) {
-                    Session::flash('errorMsg', '账号未激活，请点击<a href="/activeUser?username=' . Auth::user()->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
-
                     Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput();
+                    return Redirect::back()->withInput()->withErrors('账号未激活，请点击<a href="/activeUser?username=' . $request->username . '" target="_blank"><span style="color:#000">【激活账号】</span></a>');
                 }
             }
 
@@ -161,95 +146,63 @@ class AuthController extends Controller
         $cacheKey = 'register_times_' . md5(getClientIp()); // 注册限制缓存key
 
         if ($request->isMethod('POST')) {
-            $username = trim($request->get('username'));
-            $password = trim($request->get('password'));
-            $repassword = trim($request->get('repassword'));
-            $captcha = trim($request->get('captcha'));
-            $code = trim($request->get('code'));
-            $verify_code = trim($request->get('verify_code'));
-            $register_token = $request->get('register_token');
-            $aff = intval($request->get('aff', 0));
+            $this->validate($request, [
+                'username'   => 'required|email|unique:user',
+                'password'   => 'required|min:6',
+                'repassword' => 'required|same:password',
+            ], [
+                'username.required'   => '请输入用户名',
+                'username.email'      => '用户名必须是合法邮箱',
+                'username.unique'     => '用户已存在，如果忘记密码请找回密码',
+                'password.required'   => '请输入密码',
+                'password.min'        => '密码最少要6位数',
+                'repassword.required' => '请再次输入密码',
+                'repassword.same'     => '两次输入密码不一致'
+            ]);
 
             // 防止重复提交
-            $session_register_token = Session::get('register_token');
-            if (empty($register_token) || $register_token != $session_register_token) {
-                Session::flash('errorMsg', '请勿重复请求，刷新一下页面再试试');
-
-                return Redirect::back()->withInput();
+            if ($request->register_token != Session::get('register_token')) {
+                return Redirect::back()->withInput()->withErrors('请勿重复请求，刷新一下页面再试试');
             } else {
                 Session::forget('register_token');
             }
 
             // 是否开启注册
             if (!self::$systemConfig['is_register']) {
-                Session::flash('errorMsg', '系统维护，暂停注册');
-
-                return Redirect::back();
-            }
-
-            if (empty($username)) {
-                Session::flash('errorMsg', '请输入用户名');
-
-                return Redirect::back()->withInput();
-            } elseif (empty($password)) {
-                Session::flash('errorMsg', '请输入密码');
-
-                return Redirect::back()->withInput();
-            } elseif (empty($repassword)) {
-                Session::flash('errorMsg', '请重新输入密码');
-
-                return Redirect::back()->withInput();
-            } elseif (md5($password) != md5($repassword)) {
-                Session::flash('errorMsg', '两次输入密码不一致，请重新输入');
-
-                return Redirect::back()->withInput($request->except(['password', 'repassword']));
-            } elseif (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                Session::flash('errorMsg', '用户名必须是合法邮箱，请重新输入');
-
-                return Redirect::back()->withInput();
+                return Redirect::back()->withErrors('系统维护，暂停注册');
             }
 
             // 校验域名邮箱是否在敏感词中
             $sensitiveWords = $this->sensitiveWords();
-            $usernameSuffix = explode('@', $username); // 提取邮箱后缀
+            $usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
             if (in_array(strtolower($usernameSuffix[1]), $sensitiveWords)) {
-                Session::flash('errorMsg', '邮箱含有敏感词，请重新输入');
-
-                return Redirect::back()->withInput();
+                return Redirect::back()->withInput()->withErrors('邮箱含有敏感词，请重新输入');
             }
 
             // 如果需要邀请注册
             if (self::$systemConfig['is_invite_register']) {
                 // 必须使用邀请码
-                if (self::$systemConfig['is_invite_register'] == 2 && empty($code)) {
-                    Session::flash('errorMsg', '请输入邀请码');
-
-                    return Redirect::back()->withInput();
+                if (self::$systemConfig['is_invite_register'] == 2 && !$request->code) {
+                    return Redirect::back()->withInput()->withErrors('请输入邀请码');
                 }
 
                 // 校验邀请码合法性
-                if (!empty($code)) {
-                    $codeEnable = Invite::query()->where('code', $code)->where('status', 0)->first();
-                    if (empty($codeEnable)) {
-                        Session::flash('errorMsg', '邀请码不可用，请更换邀请码后重试');
-
-                        return Redirect::back()->withInput($request->except(['code']));
+                if ($request->code) {
+                    $codeEnable = Invite::query()->where('code', $request->code)->where('status', 0)->first();
+                    if (!$codeEnable) {
+                        return Redirect::back()->withInput($request->except(['code']))->withErrors('邀请码不可用，请重试');
                     }
                 }
             }
 
             // 如果开启注册发送验证码
             if (self::$systemConfig['is_verify_register']) {
-                if (!$verify_code) {
-                    Session::flash('errorMsg', '请输入验证码');
-
-                    return Redirect::back()->withInput($request->except(['verify_code']));
+                if (!$request->verify_code) {
+                    return Redirect::back()->withInput($request->except(['verify_code']))->withErrors('请输入验证码');
                 } else {
-                    $verifyCode = VerifyCode::query()->where('username', $username)->where('code', $verify_code)->where('status', 0)->first();
+                    $verifyCode = VerifyCode::query()->where('username', $request->username)->where('code', $request->verify_code)->where('status', 0)->first();
                     if (!$verifyCode) {
-                        Session::flash('errorMsg', '验证码不合法，可能已过期，请重试');
-
-                        return Redirect::back()->withInput($request->except(['verify_code']));
+                        return Redirect::back()->withInput($request->except(['verify_code']))->withErrors('验证码不合法，可能已过期，请重试');
                     }
 
                     $verifyCode->status = 1;
@@ -257,15 +210,12 @@ class AuthController extends Controller
                 }
             } elseif (self::$systemConfig['is_captcha']) { // 是否校验验证码
                 switch (self::$systemConfig['is_captcha']) {
-                    case 1:
-                        // Default Captcha
-                        if (!Captcha::check($captcha)) {
-                            Session::flash('errorMsg', '验证码错误，请重新输入');
-                            return Redirect::back()->withInput();
+                    case 1: // 默认图形验证码
+                        if (!Captcha::check($request->captcha)) {
+                            return Redirect::back()->withInput()->withErrors('验证码错误，请重新输入');
                         }
                         break;
-                    case 2:
-                        // Geetest
+                    case 2: // Geetest
                         $result = $this->validate($request, [
                             'geetest_challenge' => 'required|geetest'
                         ], [
@@ -273,22 +223,19 @@ class AuthController extends Controller
                         ]);
 
                         if (!$result) {
-                            Session::flash('errorMsg', trans('login.fail_captcha'));
-                            return Redirect::back()->withInput();
+                            return Redirect::back()->withInput()->withErrors(trans('login.fail_captcha'));
                         }
                         break;
-                    case 3:
-                        // Google reCAPTCHA
+                    case 3: // Google reCAPTCHA
                         $result = $this->validate($request, [
                             'g-recaptcha-response' => 'required|NoCaptcha'
                         ]);
+
                         if (!$result) {
-                            Session::flash('errorMsg', trans('login.fail_captcha'));
-                            return Redirect::back()->withInput();
+                            return Redirect::back()->withInput()->withErrors(trans('login.fail_captcha'));
                         }
                         break;
-                    default:
-                        # nothing..
+                    default: // 不启用验证码
                         break;
                 }
             }
@@ -298,39 +245,27 @@ class AuthController extends Controller
                 if (Cache::has($cacheKey)) {
                     $registerTimes = Cache::get($cacheKey);
                     if ($registerTimes >= self::$systemConfig['register_ip_limit']) {
-                        Session::flash('errorMsg', '系统已开启防刷机制，请勿频繁注册');
-
-                        return Redirect::back()->withInput($request->except(['code']));
+                        return Redirect::back()->withInput($request->except(['code']))->withErrors('系统已开启防刷机制，请勿频繁注册');
                     }
                 }
-            }
-
-            // 校验用户名是否已存在
-            $exists = User::query()->where('username', $username)->exists();
-            if ($exists) {
-                Session::flash('errorMsg', '用户名已存在，请更换用户名');
-
-                return Redirect::back()->withInput();
             }
 
             // 获取可用端口
             $port = self::$systemConfig['is_rand_port'] ? Helpers::getRandPort() : Helpers::getOnlyPort();
             if ($port > self::$systemConfig['max_port']) {
-                Session::flash('errorMsg', '用户已满，请联系管理员');
-
-                return Redirect::back()->withInput();
+                return Redirect::back()->withInput()->withErrors('系统不再接受新用户，请联系管理员');
             }
 
             // 获取aff
-            $affArr = $this->getAff($code, $aff);
+            $affArr = $this->getAff($request->code, intval($request->aff));
             $referral_uid = $affArr['referral_uid'];
 
             $transfer_enable = $referral_uid ? (self::$systemConfig['default_traffic'] + self::$systemConfig['referral_traffic']) * 1048576 : self::$systemConfig['default_traffic'] * 1048576;
 
             // 创建新用户
             $user = new User();
-            $user->username = $username;
-            $user->password = Hash::make($password);
+            $user->username = $request->username;
+            $user->password = Hash::make($request->password);
             $user->port = $port;
             $user->passwd = makeRandStr();
             $user->vmess_id = createGuid();
@@ -346,9 +281,7 @@ class AuthController extends Controller
 
             // 注册失败，抛出异常
             if (!$user->id) {
-                Session::flash('errorMsg', '注册失败，请联系管理员');
-
-                return Redirect::back()->withInput();
+                return Redirect::back()->withInput()->withErrors('注册失败，请联系管理员');
             }
 
             // 生成订阅码
@@ -399,12 +332,12 @@ class AuthController extends Controller
                 // 发送激活邮件
                 if (self::$systemConfig['is_active_register']) {
                     // 生成激活账号的地址
-                    $token = md5(self::$systemConfig['website_name'] . $username . microtime());
+                    $token = md5(self::$systemConfig['website_name'] . $request->username . microtime());
                     $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
                     $this->addVerify($user->id, $token);
 
-                    $logId = Helpers::addEmailLog($username, '注册激活', '请求地址：' . $activeUserUrl);
-                    Mail::to($username)->send(new activeUser($logId, $activeUserUrl));
+                    $logId = Helpers::addEmailLog($request->username, '注册激活', '请求地址：' . $activeUserUrl);
+                    Mail::to($request->username)->send(new activeUser($logId, $activeUserUrl));
 
                     Session::flash('regSuccessMsg', '注册成功：激活邮件已发送，如未收到，请查看垃圾邮箱');
                 } else {
@@ -434,43 +367,36 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $username = trim($request->get('username'));
-
-            // 校验账号合法性
-            if (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
-                Session::flash('errorMsg', '用户名必须是合法邮箱，请重新输入');
-
-                return Redirect::back();
-            }
+            // 校验请求
+            $this->validate($request, [
+                'username' => 'required|email'
+            ], [
+                'username.required' => '请输入用户名',
+                'username.email'    => '用户名必须是合法邮箱'
+            ]);
 
             // 是否开启重设密码
             if (!self::$systemConfig['is_reset_password']) {
-                Session::flash('errorMsg', '系统未开启重置密码功能，请联系管理员');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('系统未开启重置密码功能，请联系管理员');
             }
 
             // 查找账号
-            $user = User::query()->where('username', $username)->first();
+            $user = User::query()->where('username', $request->username)->first();
             if (!$user) {
-                Session::flash('errorMsg', '账号不存在，请重试');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('账号不存在，请重试');
             }
 
             // 24小时内重设密码次数限制
             $resetTimes = 0;
-            if (Cache::has('resetPassword_' . md5($username))) {
-                $resetTimes = Cache::get('resetPassword_' . md5($username));
+            if (Cache::has('resetPassword_' . md5($request->username))) {
+                $resetTimes = Cache::get('resetPassword_' . md5($request->username));
                 if ($resetTimes >= self::$systemConfig['reset_password_times']) {
-                    Session::flash('errorMsg', '同一个账号24小时内只能重设密码' . self::$systemConfig['reset_password_times'] . '次，请勿频繁操作');
-
-                    return Redirect::back();
+                    return Redirect::back()->withErrors('同一个账号24小时内只能重设密码' . self::$systemConfig['reset_password_times'] . '次，请勿频繁操作');
                 }
             }
 
             // 生成取回密码的地址
-            $token = md5(self::$systemConfig['website_name'] . $username . microtime());
+            $token = md5(self::$systemConfig['website_name'] . $request->username . microtime());
             $verify = new Verify();
             $verify->type = 1;
             $verify->user_id = $user->id;
@@ -480,16 +406,13 @@ class AuthController extends Controller
 
             // 发送邮件
             $resetPasswordUrl = self::$systemConfig['website_url'] . '/reset/' . $token;
-            $title = '重置密码';
-            $content = '请求地址：' . $resetPasswordUrl;
 
-            $logId = Helpers::addEmailLog($username, $title, $content);
-            Mail::to($username)->send(new resetPassword($logId, $resetPasswordUrl));
+            $logId = Helpers::addEmailLog($request->username, '重置密码', '请求地址：' . $resetPasswordUrl);
+            Mail::to($request->username)->send(new resetPassword($logId, $resetPasswordUrl));
 
-            Cache::put('resetPassword_' . md5($username), $resetTimes + 1, 1440);
-            Session::flash('successMsg', '重置成功，请查看邮箱');
+            Cache::put('resetPassword_' . md5($request->username), $resetTimes + 1, 1440);
 
-            return Redirect::back();
+            return Redirect::back()->with('successMsg', '重置成功，请查看邮箱');
         } else {
             return Response::view('auth.resetPassword');
         }
@@ -498,77 +421,57 @@ class AuthController extends Controller
     // 重设密码
     public function reset(Request $request, $token)
     {
+        if (!$token) {
+            return Redirect::to('login');
+        }
+
         if ($request->isMethod('POST')) {
-            $password = trim($request->get('password'));
-            $repassword = trim($request->get('repassword'));
-
-            if (empty($token)) {
-                return Redirect::to('login');
-            } elseif (empty($password) || empty($repassword)) {
-                Session::flash('errorMsg', '密码不能为空');
-
-                return Redirect::back();
-            } elseif (md5($password) != md5($repassword)) {
-                Session::flash('errorMsg', '两次输入密码不一致，请重新输入');
-
-                return Redirect::back();
-            }
+            $this->validate($request, [
+                'password'   => 'required|min:6',
+                'repassword' => 'required|same:password'
+            ], [
+                'password.required'   => '密码不能为空',
+                'password.min'        => '密码最少要6位数',
+                'repassword.required' => '密码不能为空',
+                'repassword.min'      => '密码最少要6位数',
+                'repassword.same'     => '两次输入密码不一致',
+            ]);
 
             // 校验账号
-            $verify = Verify::query()->where('type', 1)->where('token', $token)->with('User')->first();
-            if (empty($verify)) {
+            $verify = Verify::type(1)->with('user')->where('token', $token)->first();
+            if (!$verify) {
                 return Redirect::to('login');
             } elseif ($verify->status == 1) {
-                Session::flash('errorMsg', '该链接已失效');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('该链接已失效');
             } elseif ($verify->user->status < 0) {
-                Session::flash('errorMsg', '账号已被禁用');
-
-                return Redirect::back();
-            } elseif (Hash::check($password, $verify->user->password)) {
-                Session::flash('errorMsg', '新旧密码一样，请重新输入');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('账号已被禁用');
+            } elseif (Hash::check($request->password, $verify->user->password)) {
+                return Redirect::back()->withErrors('新旧密码一样，请重新输入');
             }
 
             // 更新密码
-            $ret = User::query()->where('id', $verify->user_id)->update(['password' => Hash::make($password)]);
+            $ret = User::query()->where('id', $verify->user_id)->update(['password' => Hash::make($request->password)]);
             if (!$ret) {
-                Session::flash('errorMsg', '重设密码失败');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('重设密码失败');
             }
 
             // 置为已使用
             $verify->status = 1;
             $verify->save();
 
-            Session::flash('successMsg', '新密码设置成功，请自行登录');
-
-            return Redirect::back();
+            return Redirect::back()->with('successMsg', '新密码设置成功，请自行登录');
         } else {
-            if (empty($token)) {
-                return Redirect::to('login');
-            }
-
-            $verify = Verify::query()->where('type', 1)->where('token', $token)->with('user')->first();
-            if (empty($verify)) {
+            $verify = Verify::type(1)->where('token', $token)->first();
+            if (!$verify) {
                 return Redirect::to('login');
             } elseif (time() - strtotime($verify->created_at) >= 1800) {
-                Session::flash('errorMsg', '该链接已过期');
-
                 // 置为已失效
                 $verify->status = 2;
                 $verify->save();
-
-                // 重新获取一遍verify
-                $view['verify'] = Verify::query()->where('type', 1)->where('token', $token)->with('user')->first();
-
-                return Response::view('auth.reset', $view);
             }
 
-            $view['verify'] = $verify;
+            // 重新获取一遍verify
+            $view['verify'] = Verify::type(1)->where('token', $token)->first();
 
             return Response::view('auth.reset', $view);
         }
@@ -578,44 +481,38 @@ class AuthController extends Controller
     public function activeUser(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $username = trim($request->get('username'));
+            $this->validate($request, [
+                'username' => 'required|email|exists:user,username'
+            ], [
+                'username.required' => '请输入用户名',
+                'username.email'    => '用户名必须是合法邮箱',
+                'username.exists'   => '账号不存在，请重试'
+            ]);
 
             // 是否开启账号激活
             if (!self::$systemConfig['is_active_register']) {
-                Session::flash('errorMsg', '系统未开启账号激活功能，请联系管理员');
-
-                return Redirect::back()->withInput();
+                return Redirect::back()->withInput()->withErrors('系统未开启账号激活功能，请联系管理员');
             }
 
             // 查找账号
-            $user = User::query()->where('username', $username)->first();
-            if (!$user) {
-                Session::flash('errorMsg', '账号不存在，请重试');
-
-                return Redirect::back();
-            } elseif ($user->status < 0) {
-                Session::flash('errorMsg', '账号已禁止登陆，无需激活');
-
-                return Redirect::back();
+            $user = User::query()->where('username', $request->username)->first();
+            if ($user->status < 0) {
+                return Redirect::back()->withErrors('账号已封禁，请联系管理员');
             } elseif ($user->status > 0) {
-                Session::flash('errorMsg', '账号无需激活');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('账号状态正常，无需激活');
             }
 
             // 24小时内激活次数限制
             $activeTimes = 0;
-            if (Cache::has('activeUser_' . md5($username))) {
-                $activeTimes = Cache::get('activeUser_' . md5($username));
+            if (Cache::has('activeUser_' . md5($request->username))) {
+                $activeTimes = Cache::get('activeUser_' . md5($request->username));
                 if ($activeTimes >= self::$systemConfig['active_times']) {
-                    Session::flash('errorMsg', '同一个账号24小时内只能请求激活' . self::$systemConfig['active_times'] . '次，请勿频繁操作');
-
-                    return Redirect::back();
+                    return Redirect::back()->withErrors('同一个账号24小时内只能请求激活' . self::$systemConfig['active_times'] . '次，请勿频繁操作');
                 }
             }
 
             // 生成激活账号的地址
-            $token = md5(self::$systemConfig['website_name'] . $username . microtime());
+            $token = md5(self::$systemConfig['website_name'] . $request->username . microtime());
             $verify = new Verify();
             $verify->type = 1;
             $verify->user_id = $user->id;
@@ -625,16 +522,13 @@ class AuthController extends Controller
 
             // 发送邮件
             $activeUserUrl = self::$systemConfig['website_url'] . '/active/' . $token;
-            $title = '重新激活账号';
-            $content = '请求地址：' . $activeUserUrl;
 
-            $logId = Helpers::addEmailLog($username, $title, $content);
-            Mail::to($username)->send(new activeUser($logId, $activeUserUrl));
+            $logId = Helpers::addEmailLog($request->username, '激活账号', '请求地址：' . $activeUserUrl);
+            Mail::to($request->username)->send(new activeUser($logId, $activeUserUrl));
 
-            Cache::put('activeUser_' . md5($username), $activeTimes + 1, 1440);
-            Session::flash('successMsg', '激活邮件已发送，如未收到，请查看垃圾箱');
+            Cache::put('activeUser_' . md5($request->username), $activeTimes + 1, 1440);
 
-            return Redirect::back();
+            return Redirect::back()->with('successMsg', '激活邮件已发送，如未收到，请查看垃圾箱');
         } else {
             return Response::view('auth.activeUser');
         }
@@ -643,18 +537,18 @@ class AuthController extends Controller
     // 激活账号
     public function active(Request $request, $token)
     {
-        if (empty($token)) {
+        if (!$token) {
             return Redirect::to('login');
         }
 
-        $verify = Verify::query()->where('type', 1)->where('token', $token)->with('user')->first();
-        if (empty($verify)) {
+        $verify = Verify::type(1)->with('user')->where('token', $token)->first();
+        if (!$verify) {
             return Redirect::to('login');
         } elseif (empty($verify->user)) {
             Session::flash('errorMsg', '该链接已失效');
 
             return Response::view('auth.active');
-        } elseif ($verify->status == 1) {
+        } elseif ($verify->status > 0) {
             Session::flash('errorMsg', '该链接已失效');
 
             return Response::view('auth.active');
@@ -700,27 +594,23 @@ class AuthController extends Controller
     // 发送注册验证码
     public function sendCode(Request $request)
     {
-        $username = trim($request->get('username'));
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|email|unique:user'
+        ], [
+            'username.required' => '请填入邮箱',
+            'username.email'    => '邮箱地址不合法，请重新输入',
+            'username.unique'   => '用户已存在，如果忘记密码请找回密码'
+        ]);
 
-        if (!$username) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '请填入邮箱']);
-        }
-
-        // 校验账号合法性
-        if (false === filter_var($username, FILTER_VALIDATE_EMAIL)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '邮箱地址不合法，请重新输入']);
+        if ($validator->fails()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
         }
 
         // 校验域名邮箱是否在敏感词中
         $sensitiveWords = $this->sensitiveWords();
-        $usernameSuffix = explode('@', $username); // 提取邮箱后缀
+        $usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
         if (in_array(strtolower($usernameSuffix[1]), $sensitiveWords)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '邮箱含有敏感词，请重新输入']);
-        }
-
-        $user = User::query()->where('username', $username)->first();
-        if ($user) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户已存在，无需注册，如果忘记密码请找回密码']);
         }
 
         // 是否开启注册发送验证码
@@ -735,13 +625,10 @@ class AuthController extends Controller
 
         // 发送邮件
         $code = makeRandStr(6, true);
-        $title = '发送注册验证码';
-        $content = '验证码：' . $code;
+        $logId = Helpers::addEmailLog($request->username, '发送注册验证码', '验证码：' . $code);
+        Mail::to($request->username)->send(new sendVerifyCode($logId, $code));
 
-        $logId = Helpers::addEmailLog($username, $title, $content);
-        Mail::to($username)->send(new sendVerifyCode($logId, $code));
-
-        $this->addVerifyCode($username, $code);
+        $this->addVerifyCode($request->username, $code);
 
         Cache::put('send_verify_code_' . md5(getClientIP()), getClientIP(), 1);
 
@@ -768,7 +655,7 @@ class AuthController extends Controller
      * 添加用户登录日志
      *
      * @param string $userId 用户ID
-     * @param string $ip IP地址
+     * @param string $ip     IP地址
      */
     private function addUserLoginLog($userId, $ip)
     {
@@ -816,7 +703,7 @@ class AuthController extends Controller
      * 获取AFF
      *
      * @param string $code 邀请码
-     * @param string $aff URL中的aff参数
+     * @param int    $aff  URL中的aff参数
      *
      * @return array
      */

@@ -34,6 +34,7 @@ use Log;
 use DB;
 use Auth;
 use Hash;
+use Validator;
 
 /**
  * 用户控制器
@@ -287,51 +288,35 @@ class UserController extends Controller
             // 修改密码
             if ($old_password && $new_password) {
                 if (!Hash::check($old_password, Auth::user()->password)) {
-                    Session::flash('errorMsg', '旧密码错误，请重新输入');
-
-                    return Redirect::to('profile#tab_1');
+                    return Redirect::to('profile#tab_1')->withErrors('旧密码错误，请重新输入');
                 } elseif (Hash::check($new_password, Auth::user()->password)) {
-                    Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
-
-                    return Redirect::to('profile#tab_1');
+                    return Redirect::to('profile#tab_1')->withErrors('新密码不可与旧密码一样，请重新输入');
                 }
 
                 // 演示环境禁止改管理员密码
                 if (env('APP_DEMO') && Auth::user()->id == 1) {
-                    Session::flash('errorMsg', '演示环境禁止修改管理员密码');
-
-                    return Redirect::to('profile#tab_1');
+                    return Redirect::to('profile#tab_1')->withErrors('演示环境禁止修改管理员密码');
                 }
 
                 $ret = User::uid()->update(['password' => Hash::make($new_password)]);
                 if (!$ret) {
-                    Session::flash('errorMsg', '修改失败');
-
-                    return Redirect::to('profile#tab_1');
+                    return Redirect::to('profile#tab_1')->withErrors('修改失败');
                 } else {
-                    Session::flash('successMsg', '修改成功');
-
-                    return Redirect::to('profile#tab_1');
+                    return Redirect::to('profile#tab_1')->with('successMsg', '修改成功');
                 }
             }
 
             // 修改联系方式
             if ($wechat || $qq) {
                 if (empty(clean($wechat)) && empty(clean($qq))) {
-                    Session::flash('errorMsg', '修改失败');
-
-                    return Redirect::to('profile#tab_2');
+                    return Redirect::to('profile#tab_2')->withErrors('修改失败');
                 }
 
                 $ret = User::uid()->update(['wechat' => $wechat, 'qq' => $qq]);
                 if (!$ret) {
-                    Session::flash('errorMsg', '修改失败');
-
-                    return Redirect::to('profile#tab_2');
+                    return Redirect::to('profile#tab_2')->withErrors('修改失败');
                 } else {
-                    Session::flash('successMsg', '修改成功');
-
-                    return Redirect::to('profile#tab_2');
+                    return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
                 }
             }
 
@@ -339,23 +324,15 @@ class UserController extends Controller
             if ($passwd) {
                 $ret = User::uid()->update(['passwd' => $passwd]);
                 if (!$ret) {
-                    Session::flash('errorMsg', '修改失败');
-
-                    return Redirect::to('profile#tab_3');
+                    return Redirect::to('profile#tab_3')->withErrors('修改失败');
                 } else {
-                    Session::flash('successMsg', '修改成功');
-
-                    return Redirect::to('profile#tab_3');
+                    return Redirect::to('profile#tab_3')->with('successMsg', '修改成功');
                 }
             }
 
-            Session::flash('errorMsg', '非法请求');
-
-            return Redirect::to('profile#tab_1');
+            return Redirect::to('profile#tab_1')->withErrors('非法请求');
         } else {
-            $view['info'] = User::uid()->first();
-
-            return Response::view('user.profile', $view);
+            return Response::view('user.profile');
         }
     }
 
@@ -442,10 +419,7 @@ class UserController extends Controller
     {
         $id = intval($request->get('id'));
 
-        $ticket = Ticket::query()->with('user')->where('id', $id)->first();
-        if (empty($ticket) || $ticket->user_id != Auth::user()->id) {
-            return Redirect::to('tickets');
-        }
+        $ticket = Ticket::uid()->with('user')->where('id', $id)->firstOrFail();
 
         if ($request->isMethod('POST')) {
             $content = clean($request->get('content'));
@@ -899,26 +873,28 @@ class UserController extends Controller
     // 卡券余额充值
     public function charge(Request $request)
     {
-        $coupon_sn = trim($request->get('coupon_sn'));
-        if (empty($coupon_sn)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '券码不能为空']);
+        $validator = Validator::make($request->all(), [
+            'coupon_sn' => 'required'
+        ], [
+            'coupon_sn.required' => '券码不能为空'
+        ]);
+
+        if ($validator->fails()) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
         }
 
-        $coupon = Coupon::query()->where('sn', $coupon_sn)->where('type', 3)->where('status', 0)->first();
+        $coupon = Coupon::type(3)->where('sn', $request->coupon_sn)->where('status', 0)->first();
         if (!$coupon) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '该券不可用']);
         }
 
         DB::beginTransaction();
         try {
-            $user = User::uid()->first();
-
             // 写入日志
-            $this->addUserBalanceLog($user->id, 0, $user->balance, $user->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $coupon_sn . ']');
+            $this->addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $request->coupon_sn . ']');
 
             // 余额充值
-            $user->balance = $user->balance + $coupon->amount;
-            $user->save();
+            User::uid()->increment('balance', $coupon->amount);
 
             // 更改卡券状态
             $coupon->status = 1;

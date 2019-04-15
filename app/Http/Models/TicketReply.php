@@ -16,7 +16,7 @@ class TicketReply extends Model
     protected $table = 'ticket_reply';
     protected $primaryKey = 'id';
 
-    public function User()
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

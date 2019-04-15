@@ -4,16 +4,15 @@
     <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
-    @if (Session::get('errorMsg'))
-        <div class="alert alert-danger">
-            <button class="close" data-close="alert"></button>
-            <span> {{Session::get('errorMsg')}} </span>
-        </div>
-    @endif
     @if (Session::get('successMsg'))
         <div class="alert alert-success">
             <button class="close" data-close="alert"></button>
             <span> {{Session::get('successMsg')}} </span>
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <span> {{$errors->first()}} </span>
         </div>
     @endif
     <!-- BEGIN FORGOT PASSWORD FORM -->

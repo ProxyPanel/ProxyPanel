@@ -18,7 +18,7 @@ class Order extends Model
     protected $primaryKey = 'oid';
     protected $appends = ['status_label'];
 
-    public function scopeUid($query)
+    function scopeUid($query)
     {
         return $query->where('user_id', Auth::user()->id);
     }
@@ -63,7 +63,7 @@ class Order extends Model
         return $this->attributes['amount'] = $value * 100;
     }
 
-    public function getStatusLabelAttribute()
+    function getStatusLabelAttribute()
     {
         switch ($this->attributes['status']) {
             case -1:

@@ -6,21 +6,18 @@
 @section('content')
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
-        @if(Session::get('errorMsg'))
-            <div class="alert alert-danger">
-                <button class="close" data-close="alert"></button>
-                <span> {{Session::get('errorMsg')}} </span>
-            </div>
-        @endif
         @if(Session::get('successMsg'))
             <div class="alert alert-success">
-                <button class="close" data-close="alert"></button>
                 <span> {{Session::get('successMsg')}} </span>
             </div>
         @endif
-        @if ($verify->status > 0 && empty(Session::get('errorMsg')) && empty(Session::get('successMsg')))
+        @if($errors->any())
             <div class="alert alert-danger">
-                <button class="close" data-close="alert"></button>
+                <span> {{$errors->first()}} </span>
+            </div>
+        @endif
+        @if ($verify->status > 0 && count($errors) <= 0 && empty(Session::get('successMsg')))
+            <div class="alert alert-danger">
                 <span> 该链接已失效 </span>
             </div>
         @else

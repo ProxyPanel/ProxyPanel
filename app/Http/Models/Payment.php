@@ -18,17 +18,17 @@ class Payment extends Model
     protected $primaryKey = 'id';
     protected $appends = ['status_label'];
 
-    public function scopeUid($query)
+    function scopeUid($query)
     {
         return $query->where('user_id', Auth::user()->id);
     }
 
-    public function user()
+    function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function order()
+    function order()
     {
         return $this->belongsTo(Order::class, 'oid', 'oid');
     }
@@ -44,7 +44,7 @@ class Payment extends Model
     }
 
     // 订单状态
-    public function getStatusLabelAttribute()
+    function getStatusLabelAttribute()
     {
         switch ($this->attributes['status']) {
             case -1:
@@ -62,7 +62,7 @@ class Payment extends Model
     }
 
     // 支付方式
-    public function getPayWayLabelAttribute()
+    function getPayWayLabelAttribute()
     {
         switch ($this->attributes['pay_way']) {
             case 1:

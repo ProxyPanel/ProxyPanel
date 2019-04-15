@@ -17,7 +17,7 @@ class UserBalanceLog extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-    public function User()
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

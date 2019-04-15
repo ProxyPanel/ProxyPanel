@@ -18,7 +18,7 @@ class UserLabel extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-    public function scopeUid($query)
+    function scopeUid($query)
     {
         return $query->where('user_id', Auth::user()->id);
     }

@@ -19,10 +19,9 @@
 @section('content')
     <!-- BEGIN LOGIN FORM -->
     <form class="login-form" action="{{url('login')}}" id="login-form" method="post">
-        @if (Session::get('errorMsg'))
+        @if($errors->any())
             <div class="alert alert-danger">
-                <button class="close" data-close="alert"></button>
-                <span> {!! Session::get('errorMsg') !!} </span>
+                <span> {!! $errors->first() !!} </span>
             </div>
         @endif
         @if (Session::get('regSuccessMsg'))

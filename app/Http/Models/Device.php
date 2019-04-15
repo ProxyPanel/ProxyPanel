@@ -17,7 +17,7 @@ class Device extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-    public function getTypeLabelAttribute()
+    function getTypeLabelAttribute()
     {
         switch ($this->attributes['type']) {
             case 1:
@@ -33,7 +33,7 @@ class Device extends Model
         return $type_label;
     }
 
-    public function getPlatformLabelAttribute()
+    function getPlatformLabelAttribute()
     {
         switch ($this->attributes['platform']) {
             case 1:

@@ -17,12 +17,12 @@ class Ticket extends Model
     protected $table = 'ticket';
     protected $primaryKey = 'id';
 
-    public function scopeUid($query)
+    function scopeUid($query)
     {
         return $query->where('user_id', Auth::user()->id);
     }
 
-    public function User()
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

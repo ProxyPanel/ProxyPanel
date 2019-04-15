@@ -16,7 +16,13 @@ class Verify extends Model
     protected $table = 'verify';
     protected $primaryKey = 'id';
 
-    public function User()
+    // 筛选类型
+    function scopeType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

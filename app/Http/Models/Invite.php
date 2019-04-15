@@ -21,17 +21,17 @@ class Invite extends Model
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];
 
-    public function scopeUid($query)
+    function scopeUid($query)
     {
         return $query->where('uid', Auth::user()->id);
     }
 
-    public function Generator()
+    function generator()
     {
         return $this->hasOne(User::class, 'id', 'uid');
     }
 
-    public function User()
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'fuid');
     }

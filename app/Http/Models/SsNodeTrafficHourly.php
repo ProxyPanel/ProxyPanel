@@ -16,7 +16,7 @@ class SsNodeTrafficHourly extends Model
     protected $table = 'ss_node_traffic_hourly';
     protected $primaryKey = 'id';
 
-    public function info()
+    function info()
     {
         return $this->hasOne(SsNode::class, 'id', 'node_id');
     }

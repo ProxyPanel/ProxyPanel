@@ -16,12 +16,12 @@ class SsNodeIp extends Model
     protected $table = 'ss_node_ip';
     protected $primaryKey = 'id';
 
-    public function node()
+    function node()
     {
         return $this->belongsTo(SsNode::class, 'node_id', 'id');
     }
 
-    public function user()
+    function user()
     {
         return $this->belongsTo(User::class, 'port', 'port');
     }

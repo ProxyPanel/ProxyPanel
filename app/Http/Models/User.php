@@ -19,7 +19,7 @@ class User extends Authenticatable
     protected $table = 'user';
     protected $primaryKey = 'id';
 
-    public function scopeUid($query)
+    function scopeUid($query)
     {
         return $query->where('id', Auth::user()->id);
     }

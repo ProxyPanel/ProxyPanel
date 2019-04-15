@@ -119,9 +119,9 @@ class CouponController extends Controller
     // 导出卡券
     public function exportCoupon(Request $request)
     {
-        $cashCouponList = Coupon::query()->where('status', 0)->where('type', 1)->get();
-        $discountCouponList = Coupon::query()->where('status', 0)->where('type', 2)->get();
-        $chargeCouponList = Coupon::query()->where('status', 0)->where('type', 3)->get();
+        $cashCouponList = Coupon::type(1)->where('status', 0)->get();
+        $discountCouponList = Coupon::type(2)->where('status', 0)->get();
+        $chargeCouponList = Coupon::type(3)->where('status', 0)->get();
 
         $filename = '卡券' . date('Ymd') . '.xlsx';
         $spreadsheet = new Spreadsheet();

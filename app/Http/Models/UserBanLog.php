@@ -16,7 +16,7 @@ class UserBanLog extends Model
     protected $table = 'user_ban_log';
     protected $primaryKey = 'id';
 
-    public function User()
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

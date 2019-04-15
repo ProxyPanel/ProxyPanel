@@ -16,7 +16,7 @@ class UserTrafficDaily extends Model
     protected $table = 'user_traffic_daily';
     protected $primaryKey = 'id';
 
-    public function node()
+    function node()
     {
         return $this->hasOne(SsNode::class, 'id', 'node_id');
     }

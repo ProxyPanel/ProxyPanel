@@ -85,9 +85,9 @@ class Handler extends ExceptionHandler
         // 捕获CSRF异常
         if ($exception instanceof TokenMismatchException) {
             if ($request->ajax()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Refresh Page, Try One More Time']);
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error, Please Refresh Page, Try One More Time']);
             } else {
-                return response()->view('auth.error', ['message' => 'Refresh Page, Try One More Time']);
+                return response()->view('auth.error', ['message' => 'System Error, Please Refresh Page, Try One More Time']);
             }
         }
 

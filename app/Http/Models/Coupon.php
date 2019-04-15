@@ -20,6 +20,12 @@ class Coupon extends Model
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];
 
+    // 筛选类型
+    function scopeType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
     function getAmountAttribute($value)
     {
         return $value / 100;

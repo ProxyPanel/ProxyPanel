@@ -20,10 +20,9 @@
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" id="register-form" action="{{url('register')}}" method="post" style="display: block;">
         @if(\App\Components\Helpers::systemConfig()['is_register'])
-            @if(Session::get('errorMsg'))
+            @if($errors->any())
                 <div class="alert alert-danger">
-                    <button class="close" data-close="alert"></button>
-                    <span> {{Session::get('errorMsg')}} </span>
+                    <span> {{$errors->first()}} </span>
                 </div>
             @endif
             <div class="form-group">
@@ -36,7 +35,7 @@
             @if(\App\Components\Helpers::systemConfig()['is_verify_register'])
                 <div class="form-group" style="margin-bottom:75px;">
                     <label class="control-label visible-ie8 visible-ie9">验证码</label>
-                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="verify_code" value="" required />
+                    <input class="form-control placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="验证码" name="verify_code" value="{{Request::old('verify_code')}}" required />
                     <input type="button" class="btn grey" id="sendCode" value="发送" style="float:right;" onclick="sendVerifyCode()" >
                 </div>
             @endif
@@ -115,23 +114,18 @@
         // 服务条款
         function showTnc() {
             layer.open({
-                type: 1
-                ,title: false //不显示标题栏
-                ,closeBtn: false
-                ,area: '500px;'
-                ,shade: 0.8
-                ,id: 'tnc' //设定一个id，防止重复弹出
-                ,resize: false
-                ,btn: ['{{trans('register.tnc_title')}}']
-                ,btnAlign: 'c'
-                ,moveType: 1 //拖拽模式，0或者1
-                ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">{!! trans('register.tnc_content') !!}</div>'
-                ,success: function(layero){
-//                var btn = layero.find('.layui-layer-btn');
-//                btn.find('.layui-layer-btn0').attr({
-//                    href: 'http://www.layui.com/'
-//                    ,target: '_blank'
-//                });
+                type: 1,
+                title: false, //不显示标题栏
+                closeBtn: false,
+                area: '500px;',
+                shade: 0.8,
+                id: 'tnc', //设定一个id，防止重复弹出
+                resize: false,
+                btn: ['{{trans('register.tnc_title')}}'],
+                btnAlign: 'c',
+                moveType: 1, //拖拽模式，0或者1
+                content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">{!! trans('register.tnc_content') !!}</div>',
+                success: function(layero){
                 }
             });
         }
@@ -158,7 +152,7 @@
                         $("#sendCode").attr('disabled', false);
                         flag = false;
                     } else {
-                        layer.alert('验证码已发送至您的邮箱，请稍作等待或查看垃圾箱');
+                        layer.alert('验证码已发送至您的邮箱，请稍作等待或查看垃圾箱', {icon:1, title:'提示'});
                         $("#sendCode").attr('disabled', true);
                         flag = true;
                     }

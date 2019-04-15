@@ -17,13 +17,13 @@ class UserTrafficModifyLog extends Model
     protected $primaryKey = 'id';
 
     // 关联账号
-    public function User()
+    function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     // 关联订单
-    public function Order()
+    function order()
     {
         return $this->hasOne(Order::class, 'oid', 'order_id');
     }
