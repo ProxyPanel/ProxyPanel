@@ -1512,24 +1512,16 @@ EOF;
             $new_password = trim($request->get('new_password'));
 
             if (!Hash::check($old_password, Auth::user()->password)) {
-                Session::flash('errorMsg', '旧密码错误，请重新输入');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('旧密码错误，请重新输入');
             } elseif (Hash::check($new_password, Auth::user()->password)) {
-                Session::flash('errorMsg', '新密码不可与旧密码一样，请重新输入');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('新密码不可与旧密码一样，请重新输入');
             }
 
             $ret = User::uid()->update(['password' => Hash::make($new_password)]);
             if (!$ret) {
-                Session::flash('errorMsg', '修改失败');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('修改失败');
             } else {
-                Session::flash('successMsg', '修改成功');
-
-                return Redirect::back();
+                return Redirect::back()->with('successMsg', '修改成功');
             }
         } else {
             return Response::view('admin.profile');
