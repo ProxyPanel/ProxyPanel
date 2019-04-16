@@ -134,7 +134,7 @@ class UserController extends Controller
         $view['link'] = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . Auth::user()->subscribe->code;
 
         // 订阅连接二维码
-        $view['link_qrcode'] = 'sub://' . base64url_encode($view['link']) . '#' . self::$systemConfig['website_name'];
+        $view['link_qrcode'] = 'sub://' . base64url_encode($view['link']) . '#' . base64url_encode(self::$systemConfig['website_name']);
 
         // 节点列表
         $userLabelIds = UserLabel::uid()->pluck('label_id');
