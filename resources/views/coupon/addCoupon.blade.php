@@ -14,10 +14,9 @@
                         {{Session::get('successMsg')}}
                     </div>
                 @endif
-                @if (Session::has('errorMsg'))
+                @if($errors->any())
                     <div class="alert alert-danger">
-                        <button class="close" data-close="alert"></button>
-                        <strong>错误：</strong> {{Session::get('errorMsg')}}
+                        <span> {{$errors->first()}} </span>
                     </div>
                 @endif
                 <!-- BEGIN PORTLET-->
@@ -35,7 +34,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">卡券名称</label>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control" name="name" value="" id="name" autocomplete="off" required>
+                                        <input type="text" class="form-control" name="name" value="{{Request::old('name')}}" id="name" autocomplete="off" required>
                                         <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                     </div>
                                 </div>

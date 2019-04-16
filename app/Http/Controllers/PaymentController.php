@@ -13,10 +13,10 @@ use App\Http\Models\PaymentCallback;
 use Illuminate\Http\Request;
 use Payment\Client\Charge;
 use Response;
-use Redirect;
 use Log;
 use DB;
 use Auth;
+use Validator;
 
 /**
  * 支付控制器
@@ -223,8 +223,7 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            if (self::$systemConfig['is_alipay']) {
-                // Alipay返回支付信息
+            if (self::$systemConfig['is_alipay']) { // Alipay返回支付信息
                 return Response::json(['status' => 'success', 'data' => $result, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
             } else {
                 return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
@@ -241,29 +240,7 @@ class PaymentController extends Controller
     // 支付单详情
     public function detail(Request $request, $sn)
     {
-        if (empty($sn)) {
-            return Redirect::to('services');
-        }
-
-        $payment = Payment::uid()->with(['order', 'order.goods'])->where('sn', $sn)->first();
-        if (!$payment) {
-            return Redirect::to('services');
-        }
-
-        $order = Order::query()->where('oid', $payment->oid)->first();
-        if (!$order) {
-            \Session::flash('errorMsg', '订单不存在');
-
-            return Response::view('payment/' . $sn);
-        }
-
-        $view['payment'] = $payment;
-        $view['website_logo'] = self::$systemConfig['website_logo'];
-        $view['website_analytics'] = self::$systemConfig['website_analytics'];
-        $view['website_customer_service'] = self::$systemConfig['website_customer_service'];
-        $view['is_alipay'] = self::$systemConfig['is_alipay'];
-        $view['is_f2fpay'] = self::$systemConfig['is_f2fpay'];
-        $view['is_youzan'] = self::$systemConfig['is_youzan'];
+        $view['payment'] = Payment::uid()->with(['order', 'order.goods'])->where('sn', $sn)->firstOrFail();
 
         return Response::view('payment.detail', $view);
     }
@@ -271,16 +248,19 @@ class PaymentController extends Controller
     // 获取订单支付状态
     public function getStatus(Request $request)
     {
-        $sn = $request->get('sn');
+        $validator = Validator::make($request->all(), [
+            'sn' => 'required|exists:payment,sn'
+        ], [
+            'sn.required' => '请求失败：缺少sn',
+            'sn.exists'   => '支付失败：支付单不存在'
+        ]);
 
-        if (empty($sn)) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '请求失败']);
+        if ($validator->fails()) {
+            return Response::json(['status' => 'error', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
         }
 
-        $payment = Payment::uid()->where('sn', $sn)->first();
-        if (!$payment) {
-            return Response::json(['status' => 'error', 'data' => '', 'message' => '支付失败']);
-        } elseif ($payment->status > 0) {
+        $payment = Payment::uid()->where('sn', $request->sn)->first();
+        if ($payment->status > 0) {
             return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
         } elseif ($payment->status < 0) {
             return Response::json(['status' => 'error', 'data' => '', 'message' => '订单超时未支付，已自动关闭']);
@@ -289,7 +269,7 @@ class PaymentController extends Controller
         }
     }
 
-    // 有赞云回调日志
+    // 回调日志
     public function callbackList(Request $request)
     {
         $status = $request->get('status', 0);

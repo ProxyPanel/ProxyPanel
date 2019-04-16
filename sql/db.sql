@@ -142,7 +142,6 @@ CREATE TABLE `user` (
   `usage` VARCHAR(10) NOT NULL DEFAULT '4' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
   `pay_way` tinyint(4) NOT NULL DEFAULT '0' COMMENT '付费方式：0-免费、1-季付、2-月付、3-半年付、4-年付',
   `balance` int(11) NOT NULL DEFAULT '0' COMMENT '余额，单位分',
-  `score` int(11) NOT NULL DEFAULT '0' COMMENT '积分，暂无用',
   `enable_time` date DEFAULT NULL COMMENT '开通日期',
   `expire_time` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
   `ban_time` int(11) NOT NULL DEFAULT '0' COMMENT '封禁到期时间',
@@ -506,8 +505,7 @@ CREATE TABLE `goods` (
   `sku` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品服务SKU',
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品图片地址',
-  `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位Mib',
-  `score` int(11) NOT NULL DEFAULT '0' COMMENT '商品价值多少积分',
+  `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位MiB',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '商品类型：1-流量包、2-套餐、3-余额充值',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品描述',
@@ -630,22 +628,6 @@ CREATE TABLE `ticket_reply` (
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工单回复';
-
-
--- ----------------------------
--- Table structure for `user_score_log`
--- ----------------------------
-CREATE TABLE `user_score_log` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '账号ID',
-  `before` int(11) NOT NULL DEFAULT '0' COMMENT '发生前积分',
-  `after` int(11) NOT NULL DEFAULT '0' COMMENT '发生后积分',
-  `score` int(11) NOT NULL DEFAULT '0' COMMENT '发生积分',
-  `desc` varchar(50) DEFAULT '' COMMENT '描述',
-  `created_at` datetime DEFAULT NULL COMMENT '创建日期',
-  PRIMARY KEY (`id`),
-  INDEX `idx` (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户积分变动日志';
 
 
 -- ----------------------------

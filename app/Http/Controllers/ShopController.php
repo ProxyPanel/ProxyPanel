@@ -6,6 +6,7 @@ use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Label;
 use Illuminate\Http\Request;
+use Log;
 use Response;
 use Redirect;
 use Session;
@@ -32,45 +33,34 @@ class ShopController extends Controller
     public function addGoods(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $name = $request->get('name');
-            $desc = $request->get('desc', '');
-            $traffic = $request->get('traffic');
-            $price = round($request->get('price'), 2);
-            $score = intval($request->get('score', 0));
-            $type = intval($request->get('type', 1));
-            $days = intval($request->get('days', 90));
-            $color = trim($request->get('color', 0));
-            $sort = intval($request->get('sort', 0));
-            $is_hot = intval($request->get('is_hot', 0));
-            $is_limit = intval($request->get('is_limit', 0));
-            $labels = $request->get('labels');
-            $status = $request->get('status');
-
-            if (empty($name) || empty($traffic)) {
-                Session::flash('errorMsg', '请填写完整');
-
-                return Redirect::back()->withInput();
-            }
+            $this->validate($request, [
+                'name'    => 'required',
+                'traffic' => 'required_unless:type,3|integer|min:1024|max:10240000|nullable',
+                'price'   => 'required|numeric|min:0',
+                'type'    => 'required',
+                'days'    => 'required|integer',
+            ], [
+                'name.required'           => '请填入名称',
+                'traffic.required_unless' => '请填入流量',
+                'traffic.integer'         => '内含流量必须是整数值',
+                'traffic.min'             => '内含流量不能低于1MB',
+                'traffic.max'             => '内含流量不能超过10TB',
+                'price.required'          => '请填入价格',
+                'price.numeric'           => '价格不合法',
+                'price.min'               => '价格最低0',
+                'type.required'           => '请选择类型',
+                'days.required'           => '请填入有效期',
+                'days.integer'            => '有效期不合法',
+            ]);
 
             // 套餐必须有价格
-            if ($type == 2 && $price <= 0) {
-                Session::flash('errorMsg', '套餐价格必须大于0');
-
-                return Redirect::back()->withInput();
+            if ($request->type == 2 && $request->price <= 0) {
+                return Redirect::back()->withInput()->withErrors('套餐价格必须大于0');
             }
 
             // 套餐有效天数必须大于90天
-            if ($type == 2 && $days < 90) {
-                Session::flash('errorMsg', '套餐有效天数必须不能少于90天');
-
-                return Redirect::back()->withInput();
-            }
-
-            // 流量不能超过10TB
-            if (in_array($type, [1, 2]) && $traffic > 10240000) {
-                Session::flash('errorMsg', '内含流量不能超过10TB');
-
-                return Redirect::back()->withInput();
+            if ($request->type == 2 && $request->days < 90) {
+                return Redirect::back()->withInput()->withErrors('套餐有效天数必须不能少于90天');
             }
 
             // 商品LOGO
@@ -81,9 +71,7 @@ class ShopController extends Controller
 
                 // 验证文件合法性
                 if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
-                    Session::flash('errorMsg', 'LOGO不合法');
-
-                    return Redirect::back()->withInput();
+                    return Redirect::back()->withInput()->withErrors('LOGO不合法');
                 }
 
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
@@ -94,19 +82,18 @@ class ShopController extends Controller
             DB::beginTransaction();
             try {
                 $goods = new Goods();
-                $goods->name = $name;
-                $goods->desc = $desc;
+                $goods->name = $request->name;
+                $goods->desc = $request->desc;
                 $goods->logo = $logo;
-                $goods->traffic = $traffic;
-                $goods->price = $price;
-                $goods->score = $score;
-                $goods->type = $type;
-                $goods->days = $days;
-                $goods->color = $color;
-                $goods->sort = $sort;
-                $goods->is_hot = $is_hot;
-                $goods->is_limit = $is_limit;
-                $goods->status = $status;
+                $goods->traffic = $request->traffic;
+                $goods->price = round($request->price, 2);
+                $goods->type = $request->type;
+                $goods->days = $request->days;
+                $goods->color = $request->color;
+                $goods->sort = intval($request->sort);
+                $goods->is_hot = intval($request->is_hot);
+                $goods->is_limit = intval($request->is_limit);
+                $goods->status = $request->status;
                 $goods->save();
 
                 // 生成SKU
@@ -114,6 +101,7 @@ class ShopController extends Controller
                 $goods->save();
 
                 // 生成商品标签
+                $labels = $request->get('labels');
                 if (!empty($labels)) {
                     foreach ($labels as $label) {
                         $goodsLabel = new GoodsLabel();
@@ -123,16 +111,15 @@ class ShopController extends Controller
                     }
                 }
 
-                Session::flash('successMsg', '添加成功');
-
                 DB::commit();
+
+                return Redirect::back()->with('successMsg', '添加成功');
             } catch (\Exception $e) {
-                Session::flash('errorMsg', '添加失败');
-
                 DB::rollBack();
-            }
+                Log::info($e);
 
-            return Redirect::to('shop/addGoods');
+                return Redirect::back()->withInput()->withErrors('添加失败');
+            }
         } else {
             $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 

@@ -16,10 +16,9 @@
                         {{Session::get('successMsg')}}
                     </div>
                 @endif
-                @if (Session::has('errorMsg'))
+                @if($errors->any())
                     <div class="alert alert-danger">
-                        <button class="close" data-close="alert"></button>
-                        <strong>错误：</strong> {{Session::get('errorMsg')}}
+                        <span> {{$errors->first()}} </span>
                     </div>
                 @endif
                 <div class="note note-danger">
@@ -122,15 +121,6 @@
                                         <span class="help-block"> 自动给购买此商品的用户打上相应的标签 </span>
                                     </div>
                                 </div>
-                                <!--
-                                <div class="form-group package-money">
-                                    <label class="control-label col-md-3">所需积分</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="score" value="0" id="score" placeholder="" required>
-                                        <span class="help-block">换购该商品需要的积分值</span>
-                                    </div>
-                                </div>
-                                -->
                                 <div class="form-group package-money">
                                     <label class="control-label col-md-3">有效期</label>
                                     <div class="col-md-6">

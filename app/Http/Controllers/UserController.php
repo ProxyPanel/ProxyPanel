@@ -90,7 +90,7 @@ class UserController extends Controller
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
-        $view['notice'] = Article::query()->where('type', 2)->orderBy('id', 'desc')->first(); // 公告
+        $view['notice'] = Article::type(2)->orderBy('id', 'desc')->first(); // 公告
 
         return Response::view('user.index', $view);
     }
@@ -108,20 +108,20 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'message' => '已经签到过了，明天再来吧']);
         }
 
-        $score = mt_rand(self::$systemConfig['min_rand_traffic'], self::$systemConfig['max_rand_traffic']);
-        $ret = User::uid()->increment('transfer_enable', $score * 1048576);
+        $traffic = mt_rand(self::$systemConfig['min_rand_traffic'], self::$systemConfig['max_rand_traffic']);
+        $ret = User::uid()->increment('transfer_enable', $traffic * 1048576);
         if (!$ret) {
             return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
         }
 
         // 写入用户流量变动记录
-        Helpers::addUserTrafficModifyLog(Auth::user()->id, 0, Auth::user()->transfer_enable, Auth::user()->transfer_enable + $score * 1048576, '[签到]');
+        Helpers::addUserTrafficModifyLog(Auth::user()->id, 0, Auth::user()->transfer_enable, Auth::user()->transfer_enable + $traffic * 1048576, '[签到]');
 
         // 多久后可以再签到
         $ttl = self::$systemConfig['traffic_limit_time'] ? self::$systemConfig['traffic_limit_time'] : 1440;
         Cache::put('userCheckIn_' . Auth::user()->id, '1', $ttl);
 
-        return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 ' . $score . 'M 流量']);
+        return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 ' . $traffic . 'M 流量']);
     }
 
     // 节点列表
@@ -252,12 +252,12 @@ class UserController extends Controller
         $view['nodeList'] = $nodeList;
 
         // 使用教程
-        $view['tutorial1'] = Article::query()->where('type', 4)->where('sort', 1)->orderBy('id', 'desc')->first();
-        $view['tutorial2'] = Article::query()->where('type', 4)->where('sort', 2)->orderBy('id', 'desc')->first();
-        $view['tutorial3'] = Article::query()->where('type', 4)->where('sort', 3)->orderBy('id', 'desc')->first();
-        $view['tutorial4'] = Article::query()->where('type', 4)->where('sort', 4)->orderBy('id', 'desc')->first();
-        $view['tutorial5'] = Article::query()->where('type', 4)->where('sort', 5)->orderBy('id', 'desc')->first();
-        $view['tutorial6'] = Article::query()->where('type', 4)->where('sort', 6)->orderBy('id', 'desc')->first();
+        $view['tutorial1'] = Article::type(4)->where('sort', 1)->orderBy('id', 'desc')->first();
+        $view['tutorial2'] = Article::type(4)->where('sort', 2)->orderBy('id', 'desc')->first();
+        $view['tutorial3'] = Article::type(4)->where('sort', 3)->orderBy('id', 'desc')->first();
+        $view['tutorial4'] = Article::type(4)->where('sort', 4)->orderBy('id', 'desc')->first();
+        $view['tutorial5'] = Article::type(4)->where('sort', 5)->orderBy('id', 'desc')->first();
+        $view['tutorial6'] = Article::type(4)->where('sort', 6)->orderBy('id', 'desc')->first();
 
         return Response::view('user.nodeList', $view);
     }
@@ -265,12 +265,7 @@ class UserController extends Controller
     // 公告详情
     public function article(Request $request)
     {
-        $id = $request->get('id');
-
-        $view['info'] = Article::query()->where('id', $id)->first();
-        if (empty($view['info'])) {
-            return Redirect::to('/');
-        }
+        $view['info'] = Article::query()->findOrFail($request->id);
 
         return Response::view('user.article', $view);
     }
@@ -340,16 +335,16 @@ class UserController extends Controller
     public function services(Request $request)
     {
         // 余额充值商品，只取10个
-        $view['chargeGoodsList'] = Goods::query()->where('status', 1)->where('type', 3)->orderBy('sort', 'desc')->orderBy('price', 'asc')->limit(10)->get();
+        $view['chargeGoodsList'] = Goods::type(3)->orderBy('price', 'asc')->limit(10)->get();
 
         // 套餐列表
-        $view['packageList'] = Goods::query()->where('status', 1)->where('type', 2)->orderBy('sort', 'desc')->limit(12)->get();
+        $view['packageList'] = Goods::type(2)->limit(12)->get();
 
         // 流量包列表
-        $view['trafficList'] = Goods::query()->where('status', 1)->where('type', 1)->orderBy('sort', 'desc')->limit(12)->get();
+        $view['trafficList'] = Goods::type(1)->limit(12)->get();
 
         // 购买说明
-        $view['direction'] = Article::query()->where('type', 3)->orderBy('id', 'desc')->first();
+        $view['direction'] = Article::type(3)->orderBy('id', 'desc')->first();
 
         return Response::view('user.services', $view);
     }
@@ -828,7 +823,7 @@ class UserController extends Controller
     // 帮助中心
     public function help(Request $request)
     {
-        $view['articleList'] = Article::query()->where('type', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
+        $view['articleList'] = Article::type(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
 
         return Response::view('user.help', $view);
     }

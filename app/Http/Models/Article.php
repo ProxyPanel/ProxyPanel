@@ -20,4 +20,9 @@ class Article extends Model
     protected $primaryKey = 'id';
     protected $dates = ['deleted_at'];
 
+    // 筛选类型
+    function scopeType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
 }

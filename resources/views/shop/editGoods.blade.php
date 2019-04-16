@@ -125,15 +125,6 @@
                                         <span class="help-block"> 自动给购买此商品的用户打上相应的标签 </span>
                                     </div>
                                 </div>
-                                <!--
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">所需积分</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="score" value="{{$goods->score}}" id="score" placeholder="" required>
-                                        <span class="help-block">换购该商品需要的积分值</span>
-                                    </div>
-                                </div>
-                                -->
                                 <div class="form-group">
                                     <label class="control-label col-md-3">有效期</label>
                                     <div class="col-md-6">

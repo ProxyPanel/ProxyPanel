@@ -97,7 +97,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
     Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
     Route::get('admin/emailLog', 'AdminController@emailLog'); // 邮件发送日志
-    Route::get("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
+    Route::get("payment/callbackList", "PaymentController@callbackList"); // 支付回调日志
     Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
     Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
     Route::post("sensitiveWords/del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词

@@ -2,14 +2,15 @@
 
 return [
 
-    'characters' => '2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ',
+    'characters' => '123467890',
+    //'characters' => '2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ',
 
     'default' => [
-        'length'  => 9,
+        'length'  => 4, // 启用科学计算后要改为 9
         'width'   => 90,
         'height'  => 43,
         'quality' => 90,
-        'math'    => true,
+        'math'    => false, // 改为true，启用科学计算
     ],
 
     'flat' => [

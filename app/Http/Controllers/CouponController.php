@@ -33,26 +33,39 @@ class CouponController extends Controller
     public function addCoupon(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $name = $request->get('name');
-            $type = $request->get('type', 1);
-            $usage = $request->get('usage', 1);
-            $num = $request->get('num', 1);
-            $amount = $request->get('amount');
-            $discount = $request->get('discount');
-            $available_start = $request->get('available_start');
-            $available_end = $request->get('available_end');
-
-            if (empty($num) || (empty($amount) && empty($discount)) || empty($available_start) || empty($available_end)) {
-                Session::flash('errorMsg', '请填写完整');
-
-                return Redirect::back()->withInput();
-            }
-
-            if (strtotime($available_start) > strtotime($available_end)) {
-                Session::flash('errorMsg', '有效期范围错误');
-
-                return Redirect::back()->withInput();
-            }
+            $this->validate($request, [
+                'name'            => 'required',
+                'type'            => 'required|integer|between:1,3',
+                'usage'           => 'required|integer|between:1,2',
+                'num'             => 'required|integer|min:1',
+                'amount'          => 'required_unless:type,2|numeric|min:0.01|nullable',
+                'discount'        => 'required_if:type,2|numeric|between:1,9.9|nullable',
+                'available_start' => 'required|date|before_or_equal:available_end',
+                'available_end'   => 'required|date|after_or_equal:available_start',
+            ], [
+                'name.required'                   => '请填入卡券名称',
+                'type.required'                   => '请选择卡券类型',
+                'type.integer'                    => '卡券类型不合法，请重选',
+                'type.between'                    => '卡券类型不合法，请重选',
+                'usage.required'                  => '请选择卡券用途',
+                'usage.integer'                   => '卡券用途不合法，请重选',
+                'usage.between'                   => '卡券用途不合法，请重选',
+                'num.required'                    => '请填写卡券数量',
+                'num.integer'                     => '卡券数量不合法',
+                'num.min'                         => '卡券数量不合法，最小1',
+                'amount.required_unless'          => '请填入卡券面值',
+                'amount.numeric'                  => '卡券金额不合法',
+                'amount.min'                      => '卡券金额不合法，最小0.01',
+                'discount.required_if'            => '请填入卡券折扣',
+                'discount.numeric'                => '卡券折扣不合法',
+                'discount.between'                => '卡券折扣不合法，有效范围：1 ~ 9.9',
+                'available_start.required'        => '请填入有效期',
+                'available_start.date'            => '有效期不合法',
+                'available_start.before_or_equal' => '有效期不合法',
+                'available_end.required'          => '请填入有效期',
+                'available_end.date'              => '有效期不合法',
+                'available_end.after_or_equal'    => '有效期不合法'
+            ]);
 
             // 商品LOGO
             $logo = '';
@@ -62,9 +75,7 @@ class CouponController extends Controller
 
                 // 验证文件合法性
                 if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
-                    Session::flash('errorMsg', 'LOGO不合法');
-
-                    return Redirect::back()->withInput();
+                    return Redirect::back()->withInput()->withErrors('LOGO不合法');
                 }
 
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
@@ -74,33 +85,31 @@ class CouponController extends Controller
 
             DB::beginTransaction();
             try {
-                for ($i = 0; $i < $num; $i++) {
+                for ($i = 0; $i < $request->num; $i++) {
                     $obj = new Coupon();
-                    $obj->name = $name;
+                    $obj->name = $request->name;
                     $obj->sn = strtoupper(makeRandStr(7));
                     $obj->logo = $logo;
-                    $obj->type = $type;
-                    $obj->usage = $usage;
-                    $obj->amount = empty($amount) ? 0 : $amount;
-                    $obj->discount = empty($discount) ? 0 : $discount;
-                    $obj->available_start = strtotime(date('Y-m-d 00:00:00', strtotime($available_start)));
-                    $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($available_end)));
+                    $obj->type = $request->type;
+                    $obj->usage = $request->usage;
+                    $obj->amount = empty($request->amount) ? 0 : $request->amount;
+                    $obj->discount = empty($request->discount) ? 0 : $request->discount;
+                    $obj->available_start = strtotime(date('Y-m-d 00:00:00', strtotime($request->available_start)));
+                    $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($request->available_end)));
                     $obj->status = 0;
                     $obj->save();
                 }
 
                 DB::commit();
 
-                Session::flash('successMsg', '生成成功');
+                return Redirect::back()->with('successMsg', '生成成功');
             } catch (\Exception $e) {
                 DB::rollBack();
 
                 Log::error('生成优惠券失败：' . $e->getMessage());
 
-                Session::flash('errorMsg', '生成失败：' . $e->getMessage());
+                return Redirect::back()->withInput()->withErrors('生成失败：' . $e->getMessage());
             }
-
-            return Redirect::to('coupon/addCoupon');
         } else {
             return Response::view('coupon.addCoupon');
         }
@@ -109,9 +118,7 @@ class CouponController extends Controller
     // 删除优惠券
     public function delCoupon(Request $request)
     {
-        $id = $request->get('id');
-
-        Coupon::query()->where('id', $id)->delete();
+        Coupon::query()->where('id', $request->id)->delete();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
     }
