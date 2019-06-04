@@ -40,10 +40,10 @@ class TicketController extends Controller
     // 回复工单
     public function replyTicket(Request $request)
     {
-        $id = $request->get('id');
+        $id = $request->input('id');
 
         if ($request->isMethod('POST')) {
-            $content = clean($request->get('content'));
+            $content = clean($request->input('content'));
             $content = str_replace("eval", "", str_replace("atob", "", $content));
             $content = substr($content, 0, 300);
 
@@ -94,7 +94,7 @@ class TicketController extends Controller
     // 关闭工单
     public function closeTicket(Request $request)
     {
-        $id = $request->get('id');
+        $id = $request->input('id');
 
         $ticket = Ticket::query()->with(['user'])->where('id', $id)->first();
         if (!$ticket) {

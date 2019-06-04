@@ -243,9 +243,7 @@ class ShopController extends Controller
     // 删除商品
     public function delGoods(Request $request)
     {
-        $id = $request->get('id');
-
-        Goods::query()->where('id', $id)->delete();
+        Goods::query()->where('id', $request->input('id'))->delete();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
     }

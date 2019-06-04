@@ -118,7 +118,7 @@ class CouponController extends Controller
     // 删除优惠券
     public function delCoupon(Request $request)
     {
-        Coupon::query()->where('id', $request->id)->delete();
+        Coupon::query()->where('id', $request->input('id'))->delete();
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
     }

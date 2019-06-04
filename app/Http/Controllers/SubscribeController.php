@@ -33,9 +33,9 @@ class SubscribeController extends Controller
     // 订阅码列表
     public function subscribeList(Request $request)
     {
-        $user_id = $request->get('user_id');
-        $username = $request->get('username');
-        $status = $request->get('status');
+        $user_id = $request->input('user_id');
+        $username = $request->input('username');
+        $status = $request->input('status');
 
         $query = UserSubscribe::with(['User']);
 
@@ -61,10 +61,10 @@ class SubscribeController extends Controller
     // 订阅设备列表
     public function deviceList(Request $request)
     {
-        $type = intval($request->get('type'));
-        $platform = intval($request->get('platform'));
-        $name = trim($request->get('name'));
-        $status = intval($request->get('status'));
+        $type = $request->input('type');
+        $platform = $request->input('platform');
+        $name = trim($request->input('name'));
+        $status = $request->input('status');
 
         $query = Device::query();
 
@@ -111,8 +111,8 @@ class SubscribeController extends Controller
     // 设置设备是否允许订阅的状态
     public function setDeviceStatus(Request $request)
     {
-        $id = intval($request->get('id'));
-        $status = intval($request->get('status', 0));
+        $id = $request->input('id');
+        $status = $request->input('status', 0);
 
         if (empty($id)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
@@ -126,10 +126,6 @@ class SubscribeController extends Controller
     // 通过订阅码获取订阅信息
     public function getSubscribeByCode(Request $request, $code)
     {
-        if (empty($code)) {
-            return Redirect::to('login');
-        }
-
         // 校验合法性
         $subscribe = UserSubscribe::query()->with('user')->where('status', 1)->where('code', $code)->first();
         if (!$subscribe) {

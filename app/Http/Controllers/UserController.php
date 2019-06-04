@@ -26,6 +26,7 @@ use App\Mail\newTicket;
 use App\Mail\replyTicket;
 use Cache;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Redirect;
 use Response;
 use Session;
@@ -185,19 +186,19 @@ class UserController extends Controller
                 $ss_scheme = 'ss://' . $ss_str;
 
                 // 生成文本配置信息
-                $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
+                $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . PHP_EOL;
                 if ($node->ipv6) {
-                    $txt .= "IPv6：" . $node->ipv6 . "\r\n";
+                    $txt .= "IPv6：" . $node->ipv6 . PHP_EOL;
                 }
-                $txt .= "远程端口：" . ($node->single ? $node->single_port : Auth::user()->port) . "\r\n";
-                $txt .= "密码：" . ($node->single ? $node->single_passwd : Auth::user()->passwd) . "\r\n";
-                $txt .= "加密方法：" . ($node->single ? $node->single_method : Auth::user()->method) . "\r\n";
-                $txt .= "路由：绕过局域网及中国大陆地址" . "\r\n\r\n";
-                $txt .= "协议：" . ($node->single ? $node->single_protocol : Auth::user()->protocol) . "\r\n";
-                $txt .= "协议参数：" . ($node->single ? Auth::user()->port . ':' . Auth::user()->passwd : Auth::user()->protocol_param) . "\r\n";
-                $txt .= "混淆方式：" . ($node->single ? $node->single_obfs : Auth::user()->obfs) . "\r\n";
-                $txt .= "混淆参数：" . (Auth::user()->obfs_param ? Auth::user()->obfs_param : $node->obfs_param) . "\r\n";
-                $txt .= "本地端口：1080" . "\r\n";
+                $txt .= "远程端口：" . ($node->single ? $node->single_port : Auth::user()->port) . PHP_EOL;
+                $txt .= "密码：" . ($node->single ? $node->single_passwd : Auth::user()->passwd) . PHP_EOL;
+                $txt .= "加密方法：" . ($node->single ? $node->single_method : Auth::user()->method) . PHP_EOL;
+                $txt .= "路由：绕过局域网及中国大陆地址" . PHP_EOL . PHP_EOL;
+                $txt .= "协议：" . ($node->single ? $node->single_protocol : Auth::user()->protocol) . PHP_EOL;
+                $txt .= "协议参数：" . ($node->single ? Auth::user()->port . ':' . Auth::user()->passwd : Auth::user()->protocol_param) . PHP_EOL;
+                $txt .= "混淆方式：" . ($node->single ? $node->single_obfs : Auth::user()->obfs) . PHP_EOL;
+                $txt .= "混淆参数：" . (Auth::user()->obfs_param ? Auth::user()->obfs_param : $node->obfs_param) . PHP_EOL;
+                $txt .= "本地端口：1080" . PHP_EOL;
 
                 $node->txt = $txt;
                 $node->ssr_scheme = $ssr_scheme;
@@ -222,19 +223,19 @@ class UserController extends Controller
                 $v2_scheme = 'vmess://' . base64url_encode(json_encode($v2_json, JSON_PRETTY_PRINT));
 
                 // 生成文本配置信息
-                $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . "\r\n";
+                $txt = "服务器：" . ($node->server ? $node->server : $node->ip) . PHP_EOL;
                 if ($node->ipv6) {
-                    $txt .= "IPv6：" . $node->ipv6 . "\r\n";
+                    $txt .= "IPv6：" . $node->ipv6 . PHP_EOL;
                 }
-                $txt .= "端口：" . $node->v2_port . "\r\n";
-                $txt .= "加密方式：" . $node->v2_method . "\r\n";
-                $txt .= "用户ID：" . Auth::user()->vmess_id . "\r\n";
-                $txt .= "额外ID：" . $node->v2_alter_id . "\r\n";
-                $txt .= "传输协议：" . $node->v2_net . "\r\n";
-                $txt .= "伪装类型：" . $node->v2_type . "\r\n";
-                $txt .= $node->v2_host ? "伪装域名：" . $node->v2_host . "\r\n" : "";
-                $txt .= $node->v2_path ? "路径：" . $node->v2_path . "\r\n" : "";
-                $txt .= $node->v2_tls ? "TLS：tls\r\n" : "";
+                $txt .= "端口：" . $node->v2_port . PHP_EOL;
+                $txt .= "加密方式：" . $node->v2_method . PHP_EOL;
+                $txt .= "用户ID：" . Auth::user()->vmess_id . PHP_EOL;
+                $txt .= "额外ID：" . $node->v2_alter_id . PHP_EOL;
+                $txt .= "传输协议：" . $node->v2_net . PHP_EOL;
+                $txt .= "伪装类型：" . $node->v2_type . PHP_EOL;
+                $txt .= $node->v2_host ? "伪装域名：" . $node->v2_host . PHP_EOL : "";
+                $txt .= $node->v2_path ? "路径：" . $node->v2_path . PHP_EOL : "";
+                $txt .= $node->v2_tls ? "TLS：tls" . PHP_EOL : "";
 
                 $node->txt = $txt;
                 $node->v2_scheme = $v2_scheme;
@@ -274,11 +275,11 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $old_password = trim($request->get('old_password'));
-            $new_password = trim($request->get('new_password'));
-            $wechat = $request->get('wechat');
-            $qq = $request->get('qq');
-            $passwd = trim($request->get('passwd'));
+            $old_password = trim($request->input('old_password'));
+            $new_password = trim($request->input('new_password'));
+            $wechat = $request->input('wechat');
+            $qq = $request->input('qq');
+            $passwd = trim($request->input('passwd'));
 
             // 修改密码
             if ($old_password && $new_password) {
@@ -334,17 +335,10 @@ class UserController extends Controller
     // 商品列表
     public function services(Request $request)
     {
-        // 余额充值商品，只取10个
-        $view['chargeGoodsList'] = Goods::type(3)->orderBy('price', 'asc')->limit(10)->get();
-
-        // 套餐列表
-        $view['packageList'] = Goods::type(2)->limit(12)->get();
-
-        // 流量包列表
-        $view['trafficList'] = Goods::type(1)->limit(12)->get();
-
-        // 购买说明
-        $view['direction'] = Article::type(3)->orderBy('id', 'desc')->first();
+        $view['chargeGoodsList'] = Goods::type(3)->orderBy('price', 'asc')->limit(10)->get(); // 余额充值商品，只取10个
+        $view['packageList'] = Goods::type(2)->limit(12)->get(); // 套餐列表
+        $view['trafficList'] = Goods::type(1)->limit(12)->get(); // 流量包列表
+        $view['direction'] = Article::type(3)->orderBy('id', 'desc')->first(); // 购买说明
 
         return Response::view('user.services', $view);
     }
@@ -376,8 +370,8 @@ class UserController extends Controller
     // 添加工单
     public function addTicket(Request $request)
     {
-        $title = $request->get('title');
-        $content = clean($request->get('content'));
+        $title = $request->input('title');
+        $content = clean($request->input('content'));
         $content = str_replace("eval", "", str_replace("atob", "", $content));
 
         if (empty($title) || empty($content)) {
@@ -412,12 +406,12 @@ class UserController extends Controller
     // 回复工单
     public function replyTicket(Request $request)
     {
-        $id = intval($request->get('id'));
+        $id = intval($request->input('id'));
 
         $ticket = Ticket::uid()->with('user')->where('id', $id)->firstOrFail();
 
         if ($request->isMethod('POST')) {
-            $content = clean($request->get('content'));
+            $content = clean($request->input('content'));
             $content = str_replace("eval", "", str_replace("atob", "", $content));
             $content = substr($content, 0, 300);
 
@@ -462,7 +456,7 @@ class UserController extends Controller
     // 关闭工单
     public function closeTicket(Request $request)
     {
-        $id = $request->get('id');
+        $id = $request->input('id');
 
         $ret = Ticket::uid()->where('id', $id)->update(['status' => 2]);
         if ($ret) {
@@ -511,7 +505,7 @@ class UserController extends Controller
     // 使用优惠券
     public function redeemCoupon(Request $request)
     {
-        $coupon_sn = $request->get('coupon_sn');
+        $coupon_sn = $request->input('coupon_sn');
 
         if (empty($coupon_sn)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不能为空']);
@@ -546,7 +540,7 @@ class UserController extends Controller
     public function buy(Request $request, $id)
     {
         $goods_id = intval($id);
-        $coupon_sn = $request->get('coupon_sn');
+        $coupon_sn = $request->input('coupon_sn');
 
         if ($request->isMethod('POST')) {
             $goods = Goods::query()->with(['label'])->where('status', 1)->where('id', $goods_id)->first();
@@ -869,27 +863,30 @@ class UserController extends Controller
     public function charge(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'coupon_sn' => 'required'
+            'coupon_sn' => [
+                'required',
+                Rule::exists('coupon', 'sn')->where(function ($query) {
+                    $query->where('type', 3)->where('status', 0);
+                }),
+            ]
         ], [
-            'coupon_sn.required' => '券码不能为空'
+            'coupon_sn.required' => '券码不能为空',
+            'coupon_sn.exists'   => '该券不可用'
         ]);
 
         if ($validator->fails()) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
         }
 
-        $coupon = Coupon::type(3)->where('sn', $request->coupon_sn)->where('status', 0)->first();
-        if (!$coupon) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '该券不可用']);
-        }
+        $coupon = Coupon::query()->where('sn', $request->input('coupon_sn'))->first();
 
         DB::beginTransaction();
         try {
             // 写入日志
-            $this->addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $request->coupon_sn . ']');
+            $this->addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $request->input('coupon_sn') . ']');
 
             // 余额充值
-            User::uid()->increment('balance', $coupon->amount);
+            User::uid()->increment('balance', $coupon->amount * 100);
 
             // 更改卡券状态
             $coupon->status = 1;
@@ -902,7 +899,7 @@ class UserController extends Controller
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::error($e);
             DB::rollBack();
 
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败']);
