@@ -70,12 +70,6 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
-	"repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.laravel-china.org"
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
