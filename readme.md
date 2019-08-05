@@ -9,7 +9,6 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray
 ## Donate
 **ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
 
-![Chat in Telegram](https://i.loli.net/2019/01/10/5c37189a75edd.png)
 
 [VPS Recommend](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
 
