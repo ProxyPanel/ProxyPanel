@@ -14,6 +14,7 @@ return [
 
     // 菜单
     'home'                            => '个人中心',
+    'my_service'                      => '我的服务',
     'services'                        => '购买服务',
     'traffic_log'                     => '流量记录',
     'help'                            => '帮助中心',
@@ -23,6 +24,8 @@ return [
     'referrals'                       => '推广返利',
     'free_invite_codes_title'         => '免费邀请码',
     'no_need_invite_codes'            => '现在无需邀请码',
+    'check_in'                        => '签到',
+    'no_notice'                       => '暂无公告',
 
     // 首页
     'ratio_tips'                      => '推荐使用支持节点订阅功能的客户端，通过订阅功能可以在客户端快速同步节点信息。',

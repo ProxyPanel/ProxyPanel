@@ -11,7 +11,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-dark sbold uppercase">添加敏感词</span>
+                            <span class="caption-subject font-dark uppercase">添加敏感词</span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -78,14 +78,14 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('admin/addSensitiveWords')}}",
+                url: "/admin/addSensitiveWords",
                 async: false,
                 data: {_token:_token, words:words},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('admin/sensitiveWordsList')}}';
+                            window.location.href = '/admin/sensitiveWordsList';
                         }
                     });
                 }

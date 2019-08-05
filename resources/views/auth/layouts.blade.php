@@ -33,9 +33,9 @@
     <!-- BEGIN LOGO -->
     <div class="logo">
         @if(\App\Components\Helpers::systemConfig()['website_home_logo'])
-            <a href="{{url('/')}}"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="max-width:300px; max-height:90px;"/> </a>
+            <a href="/"> <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']}}" alt="" style="max-width:300px; max-height:90px;"/> </a>
         @else
-            <a href="{{url('/')}}"> <img src="/assets/images/home_logo.png" alt="" /> </a>
+            <a href="/"> <img src="/assets/images/home_logo.png" alt="" /> </a>
         @endif
     </div>
     <!-- END LOGO -->

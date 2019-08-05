@@ -14,6 +14,7 @@ return [
 
     // 菜单
     'home'                            => '個人中心',
+    'my_service'                      => '我的服務',
     'services'                        => '購買服務',
     'traffic_log'                     => '流量記錄',
     'help'                            => '援助中心',
@@ -23,6 +24,8 @@ return [
     'referrals'                       => '推廣返利',
     'free_invite_codes_title'         => '免費邀請碼',
     'no_need_invite_codes'            => '現在無需邀請碼，即可注册',
+    'check_in'                        => '簽到',
+    'no_notice'                       => '暫無公告',
 
     // 首页
     'ratio_tips'                      => '推薦使用支持節點訂閱功能的用戶端，通過訂閱功能可以在用戶端快速同步節點資訊。',

@@ -146,14 +146,16 @@ return [
         // Illuminate\Translation\TranslationServiceProvider::class, // 弃用自带多国语言包功能
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
-        
+
+
         /*
         * Package Service Providers...
         */
-        Misechow\Geetest\GeetestServiceProvider::class,  // Geetest Service
-        Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA Service
+        Misechow\Geetest\GeetestServiceProvider::class,  // Geetest极验
+        Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA
         Overtrue\LaravelLang\TranslationServiceProvider::class, // 多国语言包功能
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class, // jwt auth
+        Telegram\Bot\Laravel\TelegramServiceProvider::class, // Telegram Bot
 
         /*
          * Application Service Providers...
@@ -215,7 +217,9 @@ return [
         'Agent'        => Jenssegers\Agent\Facades\Agent::class,
         'Purifier'     => Mews\Purifier\Facades\Purifier::class,
         'Geetest'      => Misechow\Geetest\Geetest::class,
-        'NoCaptcha' => Misechow\NoCaptcha\Facades\NoCaptcha::class,
+        'NoCaptcha'    => Misechow\NoCaptcha\Facades\NoCaptcha::class,
+        'JWTAuth'      => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'Telegram'     => Telegram\Bot\Laravel\Facades\Telegram::class
     ],
 
 ];

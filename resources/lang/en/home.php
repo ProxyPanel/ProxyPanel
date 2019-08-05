@@ -14,6 +14,7 @@ return [
 
     // 菜单
     'home'                            => 'Home',
+    'my_service'                      => 'My Services',
     'services'                        => 'Services',
     'traffic_log'                     => 'Monitor',
     'help'                            => 'Help',
@@ -23,6 +24,7 @@ return [
     'referrals'                       => 'Referrals',
     'free_invite_codes_title'         => 'Free Invite Codes',
     'no_need_invite_codes'            => 'In the open registration system, no invitation code is required',
+    'no_notice'                       => 'No Notice',
 
     // 首页
     'ratio_tips'                      => 'Recommends the use of support node subscription function of the client, through subscription function can quickly synchronize node information in the client.',
@@ -132,7 +134,7 @@ return [
     'invoice_table_pay_way'           => 'Pay Method',
     'invoice_table_price'             => 'Amount',
     'invoice_table_create_date'       => 'Created On',
-    'invoice_table_expire_at' 	      => 'Expire Time',
+    'invoice_table_expire_at'         => 'Expire Time',
     'invoice_table_status'            => 'Status',
     'invoice_table_none'              => 'None Data',
     'invoice_table_closed'            => 'Closed',

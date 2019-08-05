@@ -30,6 +30,13 @@ class isForbidden
             }
         }
 
+        // 拒绝通过订阅链接域名访问网站，防止网站被探测
+        if (false !== strpos(Helpers::systemConfig()['subscribe_domain'], $request->getHost())) {
+            Log::info("识别到通过订阅链接访问，强制跳转至百度(" . getClientIp() . ")");
+
+            return redirect('https://www.baidu.com');
+        }
+
         $ip = getClientIP();
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             Log::info('识别到IPv6，尝试解析：' . $ip);

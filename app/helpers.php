@@ -136,8 +136,8 @@ if (!function_exists('getClientIP')) {
                 $ip = $_SERVER['REMOTE_ADDR'];
             } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } elseif (isset($_SERVER['HTTP_CLIENT_ip'])) {
-                $ip = $_SERVER['HTTP_CLIENT_ip'];
+            } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
             } elseif (isset($_SERVER['REMOTE_ADDR'])) {
                 $ip = $_SERVER['REMOTE_ADDR'];
             } else {
@@ -147,8 +147,8 @@ if (!function_exists('getClientIP')) {
             // 绕过CDN获取真实访客IP
             if (getenv('HTTP_X_FORWARDED_FOR')) {
                 $ip = getenv('HTTP_X_FORWARDED_FOR');
-            } elseif (getenv('HTTP_CLIENT_ip')) {
-                $ip = getenv('HTTP_CLIENT_ip');
+            } elseif (getenv('HTTP_CLIENT_IP')) {
+                $ip = getenv('HTTP_CLIENT_IP');
             } else {
                 $ip = getenv('REMOTE_ADDR');
             }
@@ -156,6 +156,15 @@ if (!function_exists('getClientIP')) {
 
         if (trim($ip) == '::1') {
             $ip = '127.0.0.1';
+        }
+
+        // 多IP容错判断
+        if (false !== strpos($ip, ',')) {
+            \Log::info("检测到用户通过多级代理访问，请求IP串：" . $ip);
+
+            $ipArr = explode(',', $ip);
+
+            return $ipArr[0]; // 第一个是真实IP，后面都是代理IP
         }
 
         return $ip;
@@ -261,5 +270,33 @@ if (!function_exists('isMobile')) {
         }
 
         return preg_match('#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#', $mobile) ? true : false;
+    }
+}
+
+// 网速速率转换
+if (!function_exists('formatNetSpeed')) {
+    function formatNetSpeed($value)
+    {
+        if ($value < 0) {
+            return '';
+        }
+
+        if ($value == 0) {
+            return '不限速';
+        }
+
+        $kb = 1024;
+        $mb = 1024 * 1024;
+
+        if (abs($value) >= $mb) {
+            $speed = round($value / $mb, 2) * 8;
+            if (abs($speed / 1024) >= 1) {
+                return round($speed / 1024, 2) . "Gbps";
+            } else {
+                return $speed . "Mbps";
+            }
+        } else {
+            return round($value / $kb, 2) * 8 / 1024 . "Mbps";
+        }
     }
 }

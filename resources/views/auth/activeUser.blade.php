@@ -16,7 +16,7 @@
         </div>
     @endif
     <!-- BEGIN FORGOT PASSWORD FORM -->
-    <form class="forget-form" action="{{url('activeUser')}}" method="post" style="display: block;">
+    <form class="forget-form" action="/activeUser" method="post" style="display: block;">
         @if(\App\Components\Helpers::systemConfig()['is_active_register'])
             <div class="form-title">
                 <span class="form-title">{{trans('active.title')}}</span>
@@ -43,7 +43,7 @@
     <script type="text/javascript">
         // 登录
         function login() {
-            window.location.href = '{{url('login')}}';
+            window.location.href = '/login';
         }
     </script>
 @endsection

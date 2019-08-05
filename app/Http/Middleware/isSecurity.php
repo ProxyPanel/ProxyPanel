@@ -20,7 +20,7 @@ class isSecurity
     public function handle($request, Closure $next)
     {
         $ip = getClientIP();
-        $code = $request->get('securityCode');
+        $code = $request->input('securityCode');
         $cacheKey = 'SecurityLogin_' . ip2long($ip);
         $websiteSecurityCode = Helpers::systemConfig()['website_security_code'];
 

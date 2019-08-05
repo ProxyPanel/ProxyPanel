@@ -18,7 +18,7 @@
 @endsection
 @section('content')
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" id="register-form" action="{{url('register')}}" method="post" style="display: block;">
+    <form class="register-form" id="register-form" action="/register" method="post" style="display: block;">
         @if(\App\Components\Helpers::systemConfig()['is_register'])
             @if($errors->any())
                 <div class="alert alert-danger">
@@ -41,11 +41,11 @@
             @endif
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.password')}}</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.password')}}" name="password" value="{{Request::old('password')}}" required />
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.password')}}" name="password" value="" required />
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.retype_password')}}</label>
-                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.retype_password')}}" name="repassword" value="{{Request::old('repassword')}}" required />
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('register.retype_password')}}" name="repassword" value="" required />
             </div>
             @if(\App\Components\Helpers::systemConfig()['is_invite_register'])
                 <div class="form-group">
@@ -53,7 +53,7 @@
                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" @if(\App\Components\Helpers::systemConfig()['is_invite_register'] == 2) required @endif />
                 </div>
                 @if(\App\Components\Helpers::systemConfig()['is_free_code'])
-                    <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
+                    <p class="hint"> <a href="/free" target="_blank">{{trans('register.get_free_code')}}</a> </p>
                 @endif
             @endif
             @if(!\App\Components\Helpers::systemConfig()['is_verify_register'])
@@ -108,7 +108,7 @@
     <script type="text/javascript">
         // 登录
         function login() {
-            window.location.href = '{{url('login')}}';
+            window.location.href = '/login';
         }
 
         // 服务条款
@@ -142,7 +142,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{url('sendCode')}}",
+                url: "/sendCode",
                 async: false,
                 data: {_token: '{{csrf_token()}}', username: username},
                 dataType: 'json',

@@ -68,7 +68,7 @@
                                 <tr style="padding:0;text-align:left;vertical-align:top">
                                     <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                         <div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
-                                            <p>您的账号将于今天晚上【24:00】过期，为了确保您可以继续正常使用我们的服务，请及时续费。</p>
+                                            <p>您的账号将于今天晚上【24:00】过期，为了确保您可以继续使用我们的服务，请及时续费或者购买服务。详情见网站：{{\App\Components\Helpers::systemConfig()['website_url']}}</p>
                                         </div>
                                     </th>
                                     <th class="expander" style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0!important;text-align:left;visibility:hidden;width:0"></th>

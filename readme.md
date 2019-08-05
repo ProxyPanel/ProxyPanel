@@ -6,6 +6,13 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray
 - [Issues](https://github.com/ssrpanel/SSRPanel/issues)
 - [WIKI](https://github.com/ssrpanel/SSRPanel/wiki)
 
+
+**WARNING : This version only fixes BUG and no new features are added.**
+
+Star Number of Projects as of May 13, 2019 (Project was set to private)
+![stars](https://i.loli.net/2019/08/05/t7NsEWFQ3crZMYj.png)
+
+
 ## Donate
 **ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
 

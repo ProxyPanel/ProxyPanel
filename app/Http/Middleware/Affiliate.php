@@ -17,7 +17,7 @@ class Affiliate
      */
     public function handle($request, Closure $next)
     {
-        $aff = trim($request->get('aff', 0));
+        $aff = trim($request->input('aff', 0));
         if ($aff) {
             Cookie::queue('register_aff', $aff, 129600);
         }

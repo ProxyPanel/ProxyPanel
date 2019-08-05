@@ -47,7 +47,7 @@
     <script type="text/javascript">
         // 登录
         function login() {
-            window.location.href = '{{url('login')}}';
+            window.location.href = '/login';
         }
     </script>
 @endsection

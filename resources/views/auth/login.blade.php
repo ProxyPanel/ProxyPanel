@@ -18,7 +18,7 @@
 @endsection
 @section('content')
     <!-- BEGIN LOGIN FORM -->
-    <form class="login-form" action="{{url('login')}}" id="login-form" method="post">
+    <form class="login-form" action="/login" id="login-form" method="post">
         @if($errors->any())
             <div class="alert alert-danger">
                 <span> {!! $errors->first() !!} </span>
@@ -71,7 +71,7 @@
                 </label>
             </div>
             <div class="pull-right forget-password-block">
-                <a href="{{url('resetPassword')}}" class="forget-password">{{trans('login.forget_password')}}</a>
+                <a href="/resetPassword" class="forget-password">{{trans('login.forget_password')}}</a>
             </div>
         </div>
         <div class="form-actions">
@@ -80,7 +80,7 @@
         @if(\App\Components\Helpers::systemConfig()['is_register'])
             <div class="create-account">
                 <p>
-                    <a href="{{url('register')}}" class="btn-primary btn">{{trans('login.register')}}</a>
+                    <a href="/register" class="btn-primary btn">{{trans('login.register')}}</a>
                 </p>
             </div>
         @endif

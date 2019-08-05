@@ -18,7 +18,7 @@
                         <div class="actions">
                             @if($ticket->status != 2)
                                 <div class="btn-group btn-group-devided" data-toggle="buttons">
-                                    <a class="btn red btn-outline sbold" data-toggle="modal" href="#closeTicket"> 关闭 </a>
+                                    <a class="btn red btn-outline" data-toggle="modal" href="#closeTicket"> 关闭 </a>
                                 </div>
                             @endif
                         </div>
@@ -136,14 +136,14 @@
         function closeTicket() {
             $.ajax({
                 type: "POST",
-                url: "{{url('ticket/closeTicket')}}",
+                url: "/ticket/closeTicket",
                 async: true,
                 data: {_token:'{{csrf_token()}}', id:'{{$ticket->id}}'},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
-                            window.location.href = '{{url('ticket/ticketList')}}';
+                            window.location.href = '/ticket/ticketList';
                         }
                     });
                 }
@@ -160,7 +160,7 @@
             }
 
             layer.confirm('确定回复工单？', {icon: 3, title:'提示'}, function(index) {
-                $.post("{{url('ticket/replyTicket')}}",{_token:'{{csrf_token()}}', id:'{{$ticket->id}}', content:content}, function(ret) {
+                $.post("/ticket/replyTicket",{_token:'{{csrf_token()}}', id:'{{$ticket->id}}', content:content}, function(ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'success') {
                             window.location.reload();

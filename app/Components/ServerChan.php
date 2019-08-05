@@ -19,6 +19,7 @@ class ServerChan
     {
         if (Helpers::systemConfig()['is_server_chan'] && Helpers::systemConfig()['server_chan_key']) {
             try {
+                // TODO：一天仅可发送不超过500条
                 $url = 'https://sc.ftqq.com/' . Helpers::systemConfig()['server_chan_key'] . '.send?text=' . $title . '&desp=' . urlencode($content);
                 $response = Curl::send($url);
                 $result = json_decode($response);
@@ -28,13 +29,15 @@ class ServerChan
                     self::addLog($title, $content, 0, $result->errmsg);
                 }
             } catch (\Exception $e) {
-                Log::error($e);
+                Log::error('ServerChan消息推送异常：' . $e);
             }
+        } else {
+            Log::error('消息推送失败：未启用或未正确配置ServerChan');
         }
     }
 
     /**
-     * 添加serverChan投递日志
+     * 添加serverChan推送日志
      *
      * @param string $title   标题
      * @param string $content 内容

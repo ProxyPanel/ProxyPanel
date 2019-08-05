@@ -2,6 +2,11 @@
 @section('css')
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        input,select {
+            margin-bottom: 5px;
+        }
+    </style>
 @endsection
 @section('content')
     <!-- BEGIN CONTENT BODY -->
@@ -17,7 +22,7 @@
                         </div>
                         <div class="actions">
                             <div class="btn-group btn-group-devided">
-                                <button class="btn sbold blue" onclick="send()"> 群发邮件 </button>
+                                <button class="btn blue" onclick="send()"> 群发邮件 </button>
                             </div>
                         </div>
                     </div>

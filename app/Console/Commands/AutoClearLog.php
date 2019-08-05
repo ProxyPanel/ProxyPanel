@@ -53,11 +53,11 @@ class AutoClearLog extends Command
         // 自动清除1小时以前的节点在线用户数日志
         SsNodeOnlineLog::query()->where('log_time', '<=', strtotime("-1 hour"))->delete();
 
-        // 自动清除7天以前的用户流量日志
-        UserTrafficLog::query()->where('log_time', '<=', strtotime("-7 days"))->delete();
+        // 自动清除3天以前的用户流量日志
+        UserTrafficLog::query()->where('log_time', '<=', strtotime("-3 days"))->delete();
 
-        // 自动清除10天以前的用户每小时流量数据日志
-        UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-10 days')))->delete();
+        // 自动清除3天以前的用户每小时流量数据日志
+        UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 days')))->delete();
 
         // 自动清除1个月以前的用户每天流量数据日志
         UserTrafficDaily::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month')))->delete();
@@ -71,8 +71,8 @@ class AutoClearLog extends Command
         // 自动清除30天以前用户封禁日志
         UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
 
-        // 自动清除3天前用户连接IP
-        SsNodeIp::query()->where('created_at', '<=', strtotime("-3 days"))->delete();
+        // 自动清除1天前用户连接IP
+        SsNodeIp::query()->where('created_at', '<=', strtotime("-1 day"))->delete();
 
         // 自动清除3个月以前用户登陆日志
         UserLoginLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-3 month")))->delete();

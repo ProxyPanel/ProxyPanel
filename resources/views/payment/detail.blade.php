@@ -66,15 +66,15 @@
         function getStatus() {
             var sn = '{{$payment->sn}}';
 
-            $.get("{{url('payment/getStatus')}}", {sn:sn}, function (ret) {
+            $.get("/payment/getStatus", {sn:sn}, function (ret) {
                 console.log(ret);
                 if (ret.status == 'success') {
                     layer.msg(ret.message, {time:1500}, function() {
-                        window.location.href = '{{url('invoices')}}';
+                        window.location.href = '/invoices';
                     });
                 } else if(ret.status == 'error') {
                     layer.msg(ret.message, {time:1500}, function () {
-                        window.location.href = '{{url('invoices')}}';
+                        window.location.href = '/invoices';
                     })
                 }
             });

@@ -14,7 +14,7 @@
             <span> {{$errors->first()}} </span>
         </div>
     @endif
-    <form class="forget-form" action="{{url('resetPassword')}}" method="post" style="display: block;">
+    <form class="forget-form" action="/resetPassword" method="post" style="display: block;">
         @if(\App\Components\Helpers::systemConfig()['is_reset_password'])
             <div class="form-title">
                 <span class="form-title">{{trans('home.reset_password_title')}}</span>
@@ -40,7 +40,7 @@
     <script type="text/javascript">
         // 登录
         function login() {
-            window.location.href = '{{url('login')}}';
+            window.location.href = '/login';
         }
     </script>
 @endsection

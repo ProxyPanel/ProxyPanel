@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'number' => '450',
+    'number' => '500',
     'name'   => 'Standard'
 ];

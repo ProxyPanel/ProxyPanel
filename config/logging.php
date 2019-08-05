@@ -1,7 +1,5 @@
 <?php
 
-use Monolog\Handler\StreamHandler;
-
 return [
 
     /*
@@ -27,8 +25,7 @@ return [
     | you a variety of powerful log handlers / formatters to utilize.
     |
     | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "monolog",
-    |                    "custom", "stack"
+    |                    "errorlog", "custom", "stack"
     |
     */
 
@@ -48,7 +45,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
-            'days' => 30,
+            'days' => 7,
         ],
 
         'slack' => [
@@ -57,14 +54,6 @@ return [
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
             'level' => 'critical',
-        ],
-
-        'stderr' => [
-            'driver' => 'monolog',
-            'handler' => StreamHandler::class,
-            'with' => [
-                'stream' => 'php://stderr',
-            ],
         ],
 
         'syslog' => [

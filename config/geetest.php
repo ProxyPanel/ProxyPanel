@@ -21,7 +21,7 @@ return [
 	| Here you can decision whether to get the geetest key from database or not.
 	|
 	*/
-	'server-get-config' => TRUE,
+	'server-get-config' => true,
 
 	/*
 	|--------------------------------------------------------------------------

@@ -40,18 +40,12 @@
             <!-- BEGIN LOGO -->
             <div class="page-logo">
                 @if(\App\Components\Helpers::systemConfig()['website_logo'])
-                    <a href="{{url('/')}}"> <img src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
+                    <a href="/"> <img src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" alt="" style="width:300px; height:90px;"/> </a>
                 @else
-                    <a href="{{url('/')}}"> <img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
+                    <a href="/"> <img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
                 @endif
             </div>
             <!-- END LOGO -->
-            <!-- BEGIN PAGE TOP -->
-            <div class="page-top">
-                <div class="top-menu">
-                    <ul class="nav navbar-nav pull-right"></ul>
-                </div>
-            </div>
         </div>
         <!-- END HEADER INNER -->
     </div>
@@ -93,7 +87,7 @@
                                                     @else
                                                         @foreach($inviteList as $key => $invite)
                                                             <tr>
-                                                                <td style="width: 50%; text-align: center;"> <a href="{{url('register?code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
+                                                                <td style="width: 50%; text-align: center;"> <a href="/register?code={{$invite->code}}" target="_blank">{{$invite->code}}</a> </td>
                                                                 <td style="width: 50%; text-align: center;"> {{$invite->dateline}} </td>
                                                             </tr>
                                                         @endforeach

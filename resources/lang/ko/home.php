@@ -14,6 +14,7 @@ return [
 
     // 菜单
     'home'                            => '개인 센터',
+    'my_service'                      => '나의 서비스',
     'services'                        => '서버구축',
     'traffic_log'                     => '트래픽',
     'help'                            => '도와주다',
@@ -23,6 +24,8 @@ return [
     'referrals'                       => '홍보센트',
     'free_invite_codes_title'         => '무료초청코드',
     'no_need_invite_codes'            => '초청코드 없이 가입가능합니다',
+    'check_in'                        => '도착하다',
+    'no_notice'                       => '공고',
 
     // 首页
     'ratio_tips'                      => '지원 기능의 구독 기능을 사용하는 클라이언트 사용, 구독 기능으로 클라이언트 동기화 정보를 입력할 수 있습니다.',

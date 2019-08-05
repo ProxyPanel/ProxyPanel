@@ -14,6 +14,7 @@ return [
 
     // 菜单
     'home'                            => 'パーソナルセンター',
+    'my_service'                      => '私のサービス',
     'services'                        => 'ショップ',
     'traffic_log'                     => '使用記録',
     'help'                            => '手伝いをする',
@@ -23,6 +24,8 @@ return [
     'referrals'                       => '招待リンク',
     'free_invite_codes_title'         => '無料招待コード',
     'no_need_invite_codes'            => 'プラットフォームオープン登録、招待コードなし',
+    'check_in'                        => '署名する',
+    'no_notice'                       => 'しばらく公告がない',
 
     // 首页
     'ratio_tips'                      => 'ノードの購読機能をサポートするクライアントを使用することをお勧めします。',

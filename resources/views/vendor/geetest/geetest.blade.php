@@ -36,7 +36,7 @@
                     product: "{{ $product?$product:Config::get('geetest.product', 'float') }}",
                     offline: !data.success, // 表示用户后台检测极验服务器是否宕机
                     new_captcha: data.new_captcha,  // 用于宕机时表示是新验证码的宕机
-                    lang: '{{session::get('locale')}}',
+                    lang: '{{session::get('locale', 'zh-cn')}}', // 免费版本仅支持中文
                     http: '{{ Config::get('geetest.protocol', 'http') }}' + '://',
                     width: '100%'
                 }, handlerEmbed);

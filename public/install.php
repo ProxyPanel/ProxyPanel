@@ -27,6 +27,7 @@ function is_really_writable($file)
     if (DIRECTORY_SEPARATOR == '/' and @ ini_get("safe_mode") == false) {
         return is_writable($file);
     }
+
     if (!is_file($file) or ($fp = @fopen($file, "r+")) === false) {
         return false;
     }
@@ -120,6 +121,7 @@ if (is_file($lockFile)) {
             $errInfo = '当前服务器因配置了open_basedir，导致无法读取应用根目录';
         }
     }
+
     if (!$errInfo) {
         $errInfo = '权限不足，无法写入配置文件.env';
     }
@@ -178,6 +180,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!$sql) {
             throw new Exception("无法读取所需的sql/db.sql，请检查是否有读权限");
         }
+
         $pdo = new PDO("mysql:host={$DB_HOST};port={$DB_PORT}", $DB_USERNAME, $DB_PASSWORD, [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
@@ -191,20 +194,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $pdo->query("CREATE DATABASE IF NOT EXISTS `{$DB_DATABASE}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-
         $pdo->query("USE `{$DB_DATABASE}`");
-
         $pdo->exec($sql);
 
         $config = @file_get_contents($exampleConfigFile);
         if (!$config) {
             throw new Exception("无法写入读取配置.env.example文件，请检查是否有读权限");
         }
+
         $callback = function ($matches) use ($APP_KEY, $DB_HOST, $DB_PORT, $DB_USERNAME, $DB_PASSWORD, $DB_DATABASE) {
             $field = $matches[1];
             $replace = ${"{$field}"};
             return "{$matches[1]}={$replace}" . PHP_EOL;
         };
+
         $config = preg_replace_callback("/(APP_KEY|DB_HOST|DB_DATABASE|DB_USERNAME|DB_PASSWORD|DB_PORT)=(.*)(\s+)/", $callback, $config);
 
         // 检测能否成功写入数据库配置
@@ -219,6 +222,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     } catch (Exception $e) {
         $err = $e->getMessage();
     }
+
     echo $err;
     exit;
 }
