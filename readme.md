@@ -1,4 +1,4 @@
-# SSRPanel
+# SSRPanel Standard
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray
 
 - [Demo](https://demo.ssrpanel.com)
