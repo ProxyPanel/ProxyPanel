@@ -1,6 +1,6 @@
 <?php
 /**
- * SSRPanel安装程序
+ * OtakuCloud安装程序
  *
  * 安装完成后建议删除此文件
  *
@@ -81,13 +81,7 @@ function write_ini_file($assoc_arr, $path, $has_sections = false)
     return true;
 }
 
-$sitename = "SSRPanel";
-
-$link = [
-    'github'   => "https://github.com/ssrpanel/SSRPanel",
-    'wiki'     => 'https://github.com/ssrpanel/SSRPanel/wiki',
-    'telegram' => 'https://t.me/ssrpanel',
-];
+$sitename = "OtakuCloud";
 
 // 检测目录是否存在
 $checkDirs = [
@@ -359,11 +353,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
 <div class="container">
-    <h2>开始安装 <?php echo $sitename; ?></h2>
+    <h2>安装 <?php echo $sitename; ?></h2>
     <div>
-
-        <p><a href="<?php echo $link['github']; ?>" target="_blank">Github</a> <a href="<?php echo $link['wiki']; ?>" target="_blank">Wiki</a> <a href="<?php echo $link['telegram']; ?>">Telegram</a></p>
-
         <form method="post">
             <?php if ($errInfo): ?>
                 <div class="error">

@@ -8,10 +8,10 @@ use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Mail\closeTicket;
 use App\Mail\replyTicket;
-use Illuminate\Http\Request;
-use Response;
-use Mail;
 use Auth;
+use Illuminate\Http\Request;
+use Mail;
+use Response;
 
 /**
  * 工单控制器

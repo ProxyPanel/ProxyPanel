@@ -1,0 +1,16 @@
+@media (max-width: 479.98px) {
+  .panel-actions .dataTables_length {
+    display: none; } }
+
+@media (max-width: 320px) {
+  .panel-actions .dataTables_filter {
+    display: none; } }
+
+@media (max-width: 767.98px) {
+  .dataTables_length {
+    float: left; }
+  #exampleAddRow_wrapper .col-sm-12 {
+    overflow-x: auto; } }
+
+.page-content th > .form-control {
+  box-sizing: border-box; }

@@ -1,0 +1,375 @@
+.card-completed-options .pie-progress {
+  max-width: 120px;
+  min-width: 120px;
+  margin: 10px 0; }
+
+.card-lg .card-title {
+  margin: 0;
+  font-weight: 300;
+  color: #37474f; }
+
+.row div[class^="col-"]:last-child .card-title {
+  display: inline;
+  line-height: 32px; }
+
+.row div[class^="col-"]:nth-last-child(2) .card-title {
+  margin-top: 12px;
+  margin-bottom: 21px; }
+
+#teamCompletedWidget .counter-label {
+  font-size: 26px;
+  color: #37474f; }
+
+#teamCompletedWidget .counter-number-group span:first-child {
+  color: #ff4c52;
+  font-size: 48px; }
+
+#teamCompletedWidget .counter-number-group span:last-child {
+  margin-left: 30px;
+  font-size: 30px;
+  color: #37474f; }
+
+#teamCompletedWidget .list-inline {
+  float: right;
+  margin-top: 74px;
+  margin-bottom: 20px; }
+  #teamCompletedWidget .list-inline li {
+    padding: 0; }
+    #teamCompletedWidget .list-inline li:first-child, #teamCompletedWidget .list-inline li:last-child {
+      position: relative; }
+      #teamCompletedWidget .list-inline li:first-child::before, #teamCompletedWidget .list-inline li:last-child::before {
+        display: inline-block;
+        position: absolute;
+        bottom: 5px;
+        left: -22px;
+        content: "";
+        width: 10px;
+        height: 10px; }
+    #teamCompletedWidget .list-inline li:first-child {
+      margin-right: 60px;
+      color: #a3afb7; }
+      #teamCompletedWidget .list-inline li:first-child::before {
+        background-color: #0bb2d4; }
+    #teamCompletedWidget .list-inline li:last-child {
+      color: #526069; }
+      #teamCompletedWidget .list-inline li:last-child::before {
+        background-color: #a57afa; }
+
+#teamCompletedWidget .card-block {
+  min-width: 480px; }
+
+#teamCompletedWidget .ct-grids .ct-vertical {
+  stroke-dasharray: 6; }
+
+#teamCompletedWidget .ct-grids .ct-horizontal {
+  stroke: none; }
+
+#teamCompletedWidget .ct-grids .ct-point-label {
+  stroke: #fff;
+  stroke-width: 60px; }
+
+#teamCompletedWidget .ct-labels .ct-horizontal {
+  display: block;
+  padding-top: 10px;
+  margin-left: -28px;
+  font-size: 14px;
+  color: #76838f; }
+
+#teamCompletedWidget .ct-labels .ct-vertical {
+  margin-top: 5px; }
+
+#teamCompletedWidget .ct-area {
+  fill-opacity: 0.8; }
+
+#teamCompletedWidget .ct-series .ct-point, #teamCompletedWidget .ct-series .ct-point-content {
+  opacity: 0;
+  transition: all .3s; }
+
+#teamCompletedWidget .ct-series:hover .ct-point, #teamCompletedWidget .ct-series:hover .ct-point-content {
+  opacity: 1; }
+
+#teamCompletedWidget .ct-series.ct-series-a .ct-area {
+  fill: #a57afa; }
+
+#teamCompletedWidget .ct-series.ct-series-a .ct-line {
+  stroke: #a57afa;
+  stroke-width: 1px; }
+
+#teamCompletedWidget .ct-series.ct-series-a .ct-point {
+  stroke: #9463f7;
+  stroke-width: 12px;
+  cursor: pointer; }
+
+#teamCompletedWidget .ct-series.ct-series-a .ct-point-content {
+  stroke: #fff;
+  stroke-width: 6px;
+  stroke-linecap: round;
+  pointer-events: none; }
+
+#teamCompletedWidget .ct-series.ct-series-b .ct-area {
+  fill: #28c0de; }
+
+#teamCompletedWidget .ct-series.ct-series-b .ct-line {
+  stroke: #28c0de;
+  stroke-width: 1px; }
+
+#teamCompletedWidget .ct-series.ct-series-b .ct-point {
+  stroke: #0bb2d4;
+  stroke-width: 12px;
+  cursor: pointer; }
+
+#teamCompletedWidget .ct-series.ct-series-b .ct-point-content {
+  stroke: #fff;
+  stroke-width: 6px;
+  stroke-linecap: round;
+  pointer-events: none; }
+
+#personalCompletedWidget {
+  height: calc(100% - 30px); }
+  #personalCompletedWidget .card-header {
+    display: inline-block;
+    position: relative;
+    height: 270px;
+    width: 100%;
+    text-align: center; }
+    #personalCompletedWidget .card-header img {
+      height: 100%; }
+    #personalCompletedWidget .card-header .avatar {
+      width: 120px; }
+  #personalCompletedWidget .overlay-background {
+    background: rgba(109, 69, 188, 0.8); }
+  #personalCompletedWidget .card-block {
+    padding: 48px 30px 0; }
+  #personalCompletedWidget .counter-number {
+    margin-top: 10px;
+    font-size: 40px; }
+  #personalCompletedWidget .table-responsive {
+    border: none;
+    margin-bottom: 0; }
+  #personalCompletedWidget caption {
+    padding-top: 0;
+    padding-bottom: 10px;
+    color: #37474f;
+    font-weight: 400; }
+  #personalCompletedWidget .table {
+    min-width: 350px;
+    margin-bottom: 0; }
+    #personalCompletedWidget .table td {
+      padding: 20px 0 19px;
+      width: 40%; }
+      #personalCompletedWidget .table td:last-child {
+        width: 20%;
+        text-align: right; }
+  #personalCompletedWidget .progress {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle; }
+
+#toDoListWidget {
+  height: calc(100% - 30px); }
+  #toDoListWidget img {
+    width: 30px; }
+  #toDoListWidget .card-header {
+    line-height: 1; }
+    #toDoListWidget .card-header::after {
+      display: block;
+      clear: both;
+      content: ""; }
+  #toDoListWidget .card-header-actions {
+    margin-top: 12px;
+    margin-right: 14px; }
+  #toDoListWidget .wb-plus {
+    color: #76838f; }
+  #toDoListWidget .list-group {
+    margin: 0 30px; }
+  #toDoListWidget .list-group-item {
+    padding: 20px 0;
+    margin-bottom: 0;
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    cursor: pointer; }
+    #toDoListWidget .list-group-item::after {
+      display: block;
+      clear: both;
+      content: ""; }
+    #toDoListWidget .list-group-item .checkbox-custom {
+      margin: 0; }
+      #toDoListWidget .list-group-item .checkbox-custom label {
+        padding-left: 20px;
+        padding-bottom: 2px; }
+      #toDoListWidget .list-group-item .checkbox-custom input:checked + label {
+        text-decoration: line-through; }
+  #toDoListWidget .item-due-date {
+    float: left; }
+    #toDoListWidget .item-due-date span {
+      line-height: 34px;
+      margin-left: 44px; }
+  #toDoListWidget .item-members {
+    float: right;
+    padding: 0;
+    margin-top: 4px;
+    text-align: right;
+    white-space: normal;
+    list-style-type: none; }
+    #toDoListWidget .item-members::after {
+      display: block;
+      clear: both;
+      content: ""; }
+    #toDoListWidget .item-members li {
+      float: left;
+      position: relative;
+      margin-left: 10px; }
+      #toDoListWidget .item-members li:not(:hover) .avatar + button {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0; }
+      #toDoListWidget .item-members li:hover .avatar {
+        display: none; }
+      #toDoListWidget .item-members li:hover button {
+        opacity: 1; }
+      #toDoListWidget .item-members li button {
+        width: 30px;
+        height: 30px;
+        padding: 7px; }
+
+#recentActivityWidget {
+  height: calc(100% - 30px); }
+  #recentActivityWidget .card-header::after {
+    display: block;
+    clear: both;
+    content: ""; }
+  #recentActivityWidget .card-header .badge {
+    padding: 3px 21px;
+    line-height: 26px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #76838f;
+    cursor: pointer; }
+  #recentActivityWidget .timeline {
+    margin-left: 50px;
+    margin-right: 30px;
+    margin-bottom: 0; }
+    #recentActivityWidget .timeline::before {
+      left: 0;
+      top: 20px;
+      width: 1px;
+      height: 85%;
+      margin-left: 0;
+      background-color: #e5e5e5; }
+    #recentActivityWidget .timeline > li {
+      width: 100%;
+      padding-left: 49px;
+      padding-right: 0;
+      margin-bottom: 0;
+      margin-top: 0;
+      cursor: pointer; }
+      #recentActivityWidget .timeline > li:last-child .timeline-content-wrap {
+        border-bottom: none; }
+  #recentActivityWidget .timeline-content-wrap {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e5e5; }
+    #recentActivityWidget .timeline-content-wrap::after {
+      display: block;
+      clear: both;
+      content: ""; }
+  #recentActivityWidget .timeline-icon .timeline-reverse .timeline-dot {
+    top: 12px; }
+  #recentActivityWidget .timeline-content .title {
+    color: #76838f; }
+    #recentActivityWidget .timeline-content .title .authors, #recentActivityWidget .timeline-content .title .room-number {
+      margin-right: 5px;
+      font-weight: 400;
+      color: #37474f; }
+  #recentActivityWidget .timeline-content .metas {
+    padding: 3px 0;
+    color: #a3afb7; }
+  #recentActivityWidget .timeline-content .members {
+    padding-left: 0;
+    margin-top: 7px;
+    list-style-type: none; }
+    #recentActivityWidget .timeline-content .members > li {
+      display: inline-block;
+      margin-right: 10px; }
+    #recentActivityWidget .timeline-content .members .avatar-sm {
+      width: 27px; }
+  #recentActivityWidget .timeline-content .photos {
+    padding-left: 0;
+    margin-top: 7px;
+    list-style-type: none; }
+    #recentActivityWidget .timeline-content .photos::after {
+      display: block;
+      clear: both;
+      content: ""; }
+    #recentActivityWidget .timeline-content .photos > li {
+      float: left;
+      width: 31%;
+      margin-right: 3%; }
+      #recentActivityWidget .timeline-content .photos > li:last-child {
+        margin-right: 0; }
+  #recentActivityWidget .timeline-content .operates {
+    padding-left: 0;
+    margin-top: 7px;
+    list-style-type: none; }
+    #recentActivityWidget .timeline-content .operates > li {
+      display: inline-block;
+      margin-right: 15px; }
+    #recentActivityWidget .timeline-content .operates .btn {
+      width: 103px;
+      height: 30px;
+      line-height: 16px;
+      color: #76838f; }
+      #recentActivityWidget .timeline-content .operates .btn:hover, #recentActivityWidget .timeline-content .operates .btn:focus {
+        color: #fff; }
+
+@media screen and (min-width: 992px) and (max-width: 1599px) {
+  .card-completed-options .pie-progress {
+    min-width: 100px; } }
+
+@media (max-width: 991.98px) {
+  #teamCompletedWidget .list-inline {
+    float: left;
+    margin-top: 20px;
+    margin-left: 40px; } }
+
+@media (min-width: 480px) and (max-width: 991.98px) {
+  .card-completed-options {
+    height: calc(100% - 30px); }
+    .card-completed-options .pie-progress {
+      min-width: 50px; }
+  .card-completed-options .col-xs-6 {
+    width: 100%; }
+  .card-completed-options .counter::after {
+    display: block;
+    clear: both;
+    content: ""; }
+  .card-completed-options .counter-label {
+    display: inline-block; }
+  .card-completed-options .counter-number {
+    float: left;
+    margin-right: 20px;
+    font-size: 14px !important;
+    font-weight: 400; }
+  .card-completed-options .pie-progress {
+    margin: 20px auto 10px; } }
+
+@media (max-width: 479.98px) {
+  .card-completed-options .pie-progress {
+    min-width: 100px; }
+  #recentActivityWidget .timeline-content .operates > li {
+    display: block;
+    margin-right: 0;
+    margin-top: 10px;
+    padding-bottom: 1px; }
+  #recentActivityWidget .timeline-content .operates .btn {
+    height: 25px;
+    line-height: 11px;
+    width: 85px; } }
+
+@media screen and (max-width: 400px) {
+  #personalCompletedWidget .total-completed {
+    font-size: 10px;
+    line-height: 22px; }
+  #personalCompletedWidget .card-block {
+    padding: 30px 15px 0; } }

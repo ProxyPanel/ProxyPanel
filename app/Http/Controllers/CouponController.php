@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Coupon;
+use DB;
 use Illuminate\Http\Request;
+use Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Response;
 use Redirect;
+use Response;
 use Session;
-use DB;
-use Log;
 
 /**
  * 优惠券控制器

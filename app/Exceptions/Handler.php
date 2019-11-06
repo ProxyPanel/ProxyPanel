@@ -125,7 +125,7 @@ class Handler extends ExceptionHandler
             if ($request->expectsJson()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error, Please Refresh Page, Try One More Time']);
             } else {
-                return response()->view('auth.error', ['message' => 'System Error, Please Refresh Page, Try One More Time']);
+                return response()->view('auth.error', ['message' => trans('error.RefreshPage')]);
             }
         }
 
@@ -134,7 +134,7 @@ class Handler extends ExceptionHandler
             if ($request->expectsJson()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
             } else {
-                return response()->view('auth.error', ['message' => 'System Error']);
+                return response()->view('auth.error', ['message' => trans('error.SystemError')]);
             }
         }
 
@@ -143,7 +143,7 @@ class Handler extends ExceptionHandler
             if ($request->expectsJson()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
             } else {
-                return response()->view('auth.error', ['message' => 'System Error, See <a href="/logs" target="_blank">Logs</a>']);
+                return response()->view('auth.error', ['message' => trans('error.SystemError') . ', ' . trans('error.Visit') . '<a href="/logs" target="_blank">' . trans('error.log') . '</a>']);
             }
         }
 

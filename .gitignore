@@ -1,11 +1,10 @@
-/node_modules
 /public/upload
-/public/storage
-/public/hot
-/storage/framework/cache
-/storage/framework/sessions
-/storage/framework/views
-/storage/logs
+/storage/framework/cache/*
+/storage/framework/cookies/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
 /storage/app/public
 /storage/*.key
 /vendor

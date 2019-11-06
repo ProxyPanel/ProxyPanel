@@ -1,0 +1,17 @@
+.breadcrumb-left .breadcrumb-ellipsis {
+  padding-left: 5px; }
+
+.breadcrumb-left .dropdown {
+  display: inline-block; }
+
+.breadcrumb-left .breadcrumb-dropdown li.active {
+  padding: 3px 20px; }
+
+.breadcrumb-right .breadcrumb-ellipsis {
+  padding-right: 5px; }
+
+.breadcrumb-right .dropdown {
+  display: inline-block; }
+
+.breadcrumb-right .breadcrumb-dropdown li.active {
+  padding: 3px 20px; }

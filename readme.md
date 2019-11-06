@@ -1,23 +1,9 @@
-# SSRPanel Standard
-Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray
+# SSRPanel_OtakuMod
+Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,VNET
 
-- [Demo](https://demo.ssrpanel.com)
-- [Telegram](https://t.me/ssrpanel)
-- [Issues](https://github.com/ssrpanel/SSRPanel/issues)
-- [WIKI](https://github.com/ssrpanel/SSRPanel/wiki)
-
-
-**WARNING : This version only fixes BUG and no new features are added.**
-
-Star Number of Projects as of May 13, 2019 (Project was set to private)
-![stars](https://i.loli.net/2019/08/05/t7NsEWFQ3crZMYj.png)
-
-
-## Donate
-**ETH** : 0x968f797f194fcec05ea571723199748b58de38ba
-
-
-[VPS Recommend](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
+- [Demo](https://demo.ssrpanel.com) 待添加 coming soon
+- [Issues](https://github.com/ssrpanel/SSRPanel/issues) 待添加 coming soon
+- [WIKI](https://github.com/ssrpanel/SSRPanel/wiki) 待添加 coming soon
 
 ## Requirements
 - PHP 7.1.3 +
@@ -45,7 +31,8 @@ Star Number of Projects as of May 13, 2019 (Project was set to private)
 - [@cz88](http://www.cz88.net/index.shtml)
 - [@ip.sb](https://www.ip.sb)
 - [@ipip](https://www.ipip.net)
+- [@Bruskyii Panda](https://github.com/ssrpanel)
 
 ## License
 
-SSRPanel Standard is open-sourced software licensed under the MIT license.
+SSRPanel_OtakuMod also is open-sourced software licensed under the MIT license.

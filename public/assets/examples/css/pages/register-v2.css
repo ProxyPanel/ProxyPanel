@@ -1,0 +1,83 @@
+.page-register-v2 {
+  height: 100%; }
+  .page-register-v2:before {
+    background-image: url("../../images/login.jpg"); }
+  .page-register-v2.page-dark.layout-full:after {
+    background-color: rgba(38, 50, 56, 0.6); }
+  .page-register-v2 .page-brand-info {
+    margin: 220px 100px 0 90px; }
+    .page-register-v2 .page-brand-info .brand-img {
+      vertical-align: middle; }
+    .page-register-v2 .page-brand-info .brand-text {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 11px 0 11px 20px; }
+    .page-register-v2 .page-brand-info p {
+      opacity: 0.6;
+      max-width: 650px; }
+  .page-register-v2 .page-register-main {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: auto;
+    min-height: 100%;
+    padding: 150px 60px 180px;
+    color: #76838f;
+    background: #fff; }
+    .page-register-v2 .page-register-main .brand {
+      margin-bottom: 60px; }
+    .page-register-v2 .page-register-main .brand-img {
+      vertical-align: middle; }
+    .page-register-v2 .page-register-main .brand-text {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 11px 0 11px 20px;
+      color: #3e8ef7; }
+  .page-register-v2 form {
+    width: 350px;
+    margin: 45px 0 20px; }
+    .page-register-v2 form > button {
+      margin-top: 38px; }
+  .page-register-v2 footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 50px 60px;
+    text-align: center; }
+  .page-register-v2 .social .icon, .page-register-v2 .social .icon:hover, .page-register-v2 .social .icon:active {
+    color: #fff; }
+
+@media (min-width: 992px) {
+  .page-register-v2 .page-content {
+    padding-right: 500px; } }
+
+@media (max-width: 767.98px) {
+  .page-register-v2 .page-register-main {
+    padding-top: 60px; } }
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .page-register-v2 .page-register-main {
+    padding-top: 80px; }
+  .page-register-v2 .page-brand-info {
+    margin: 160px 0 0 35px; }
+    .page-register-v2 .page-brand-info > p {
+      opacity: 0;
+      color: transparent; } }
+
+@media (max-width: 767.98px) {
+  .page-register-v2 .page-register-main {
+    padding-top: 60px;
+    width: 100%; }
+  .page-register-v2 form {
+    width: auto; } }
+
+@media (max-width: 767.98px) {
+  .page-register-v2 .page-brand-info {
+    margin: 220px 0 0; }
+  .page-register-v2 .page-register-main {
+    padding: 50px 30px 180px; }
+  .page-register-v2 form {
+    width: auto; }
+  .page-register-v2 footer {
+    margin: 50px 30px; } }

@@ -1,0 +1,27 @@
+.dashboard .page-header {
+  background-image: url("../../images/dashboard2-header.jpg");
+  background-size: cover; }
+
+.dashboard .card, .dashboard .panel {
+  height: calc(100% - 30px); }
+
+#widgetLinearea .ct-chart .ct-label.ct-vertical, #widgetLinearea .ct-chart .ct-label.ct-horizontal {
+  font-size: 14px; }
+
+#widgetLinearea .ct-chart .ct-area {
+  fill-opacity: 1; }
+
+#widgetLinearea .ct-chart .ct-series.ct-series-a .ct-area {
+  fill: #b8d7ff; }
+
+#widgetLinearea .ct-chart .ct-series.ct-series-b .ct-area {
+  fill: #92f0e6; }
+
+#widgetLinearea ul .icon {
+  vertical-align: text-bottom; }
+
+#widgetGmap {
+  overflow: hidden; }
+  #widgetGmap .map {
+    border: none;
+    padding: 0; }

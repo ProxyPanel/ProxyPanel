@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Components\Helpers;
 use App\Components\AlipayNotify;
+use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
@@ -14,11 +14,11 @@ use App\Http\Models\SsNodeLabel;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Mail\sendUserInfo;
+use DB;
+use Hash;
 use Illuminate\Http\Request;
 use Log;
-use DB;
 use Mail;
-use Hash;
 
 /**
  * Class AlipayController

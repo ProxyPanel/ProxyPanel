@@ -1,0 +1,10 @@
+.lightbox-block {
+  max-width: 600px;
+  padding: 15px 20px;
+  margin: 40px auto;
+  overflow: auto;
+  background: #fff;
+  border-radius: 3px; }
+
+.example img {
+  margin-bottom: 5px; }

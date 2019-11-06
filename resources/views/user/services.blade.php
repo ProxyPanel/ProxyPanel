@@ -1,288 +1,205 @@
 @extends('user.layouts')
-@section('css')
-    <link href="/assets/pages/css/pricing.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
-    <style>
-        .fancybox > img {
-            width: 75px;
-            height: 75px;
-        }
-    </style>
-@endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top:0;">
+    <div class="page-content">
         <div class="row">
-            <div class="col-md-12">
-                <div class="portlet light">
-                    <div class="portlet-body">
-                        <ul class="list-inline">
-                            <li>
-                                <h4>
-                                    <span class="font-blue">账户等级：</span>
-                                    <span class="font-red">{{Auth::user()->levelList->level_name}}</span>
-                                </h4>
-                            </li>
-                            <li>
-                                <h4>
-                                    <span class="font-blue">账户余额：</span>
-                                    <span class="font-red">{{Auth::user()->balance}}元</span>
-                                </h4>
-                            </li>
-                            <li>
-                                <a class="btn btn-sm red" href="#" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
-                            </li>
-                        </ul>
+            <div class="col-xxl-2 col-lg-3">
+                <div class="card card-shadow">
+                    <div class="card-block p-20">
+                        <button type="button" class="btn btn-floating btn-sm btn-pure">
+                            <i class="icon wb-payment green-500"></i>
+                        </button>
+                        <span class="font-weight-400">{{trans('home.account_balance')}}</span>
+                        <div class="content-text text-center mb-0">
+                            <span class="font-size-40 font-weight-100">{{$user_balance}}</span>
+                            <br/>
+                            <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{trans('home.recharge')}}</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="portlet light">
-                    <div class="portlet light">
-                        <div class="tabbable-line">
-                            <ul class="nav nav-tabs">
-                                <li class="active">
-                                    <a href="#services1" data-toggle="tab"> <i class="fa fa-book"></i> 说明 </a>
-                                </li>
-                                <li>
-                                    <a href="#services2" data-toggle="tab"> <i class="fa fa-cloud"></i> 基础套餐 </a>
-                                </li>
-                                <li>
-                                    <a href="#services3" data-toggle="tab"> <i class="fa fa-jsfiddle"></i> 流量包 </a>
-                                </li>
-                            </ul>
-                            <div class="tab-content" style="font-size:16px;">
-                                <div class="tab-pane active" id="services1">
-                                    @if($direction)
-                                        {!!$direction->content!!}
-                                    @else
-                                        <div style="text-align: center; padding-top: 10px;">
-                                            <h2>暂无说明</h2>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="tab-pane" id="services2">
-                                    <div class="pricing-content-1" style="padding-top: 10px;">
-                                        <div class="row">
-                                            @if($packageList->isEmpty())
-                                                <div class="col-md-12" style="text-align: center;">
-                                                    <h2>暂无基础套餐</h2>
+            <div class="col-xxl-10 col-lg-9">
+                <div class="panel">
+                    <div class="panel-heading p-20">
+                        <h1 class="panel-title cyan-700"><i class="icon wb-shopping-cart"></i>{{trans('home.services')}}
+                        </h1>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            @foreach($goodsList as $key => $goods)
+                                <div class="col-md-6 col-xl-4 col-xxl-3">
+                                    <div class="pricing-list text-left">
+                                        <div class="pricing-header bg-{{$goods->color}}-700">
+                                            <div class="pricing-title font-size-20">{{$goods->name}}</div>
+                                            @if($goods->is_limit)
+                                                <div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-primary mr-10">
+                                                    <span class="ribbon-inner h-auto">限<br>购</span>
                                                 </div>
-                                            @else
-                                                @foreach($packageList as $key => $goods)
-                                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                                        <div class="price-column-container border-active" style="margin-bottom: 20px;">
-                                                            <div class="price-table-head bg-{{$goods->color}}">
-                                                                <h2 class="no-margin">{{$goods->name}}</h2>
-                                                            </div>
-                                                            <div class="arrow-down border-top-{{$goods->color}}"></div>
-                                                            <div class="price-table-pricing">
-                                                                <h3><sup class="price-sign">￥</sup>{{$goods->price}}</h3>
-                                                                @if($goods->is_hot)
-                                                                    <div class="price-ribbon">热销</div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="price-table-content">
-                                                                <div class="row mobile-padding">
-                                                                    <div class="col-xs-3 text-right mobile-padding">
-                                                                        <i class="icon-bar-chart"></i>
-                                                                    </div>
-                                                                    <div class="col-xs-9 text-left mobile-padding">内含流量：{{$goods->traffic_label}}</div>
-                                                                </div>
-                                                                <div class="row mobile-padding">
-                                                                    <div class="col-xs-3 text-right mobile-padding">
-                                                                        <i class="icon-clock"></i>
-                                                                    </div>
-                                                                    <div class="col-xs-9 text-left mobile-padding">有效时长：{{$goods->days}}天</div>
-                                                                </div>
-                                                                <div class="row mobile-padding">
-                                                                    <div class="col-xs-3 text-right mobile-padding">
-                                                                        <i class="icon-refresh"></i>
-                                                                    </div>
-                                                                    <div class="col-xs-9 text-left mobile-padding">每月重置流量</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="arrow-down arrow-grey"></div>
-                                                            <div class="price-table-footer">
-                                                                <button type="button" class="btn {{$goods->color}} {{$goods->is_hot ? '' : 'btn-outline'}} sbold uppercase price-button" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                            @elseif($goods->is_hot)
+                                                <div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-danger mr-10">
+                                                    <span class="ribbon-inner h-auto">热<br>销</span>
+                                                </div>
                                             @endif
+                                            <div class="pricing-price">
+                                                <span class="pricing-currency">¥</span>
+                                                <span class="pricing-amount">{{$goods->price}}</span>
+                                                <span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
+                                            </div>
+                                            @if($goods->info)
+                                                <p class="px-30 pb-25 text-center">{{$goods->info}}</p>
+                                            @endif
+                                        </div>
+                                        <ul class="pricing-features">
+                                            <li>
+                                                @if($goods->type == 2)
+                                                    <strong>{{$goods->traffic_label}}</strong> {{trans('home.account_bandwidth_usage')}}/{{trans('home.month')}}
+                                                @elseif($goods->type == 1)
+                                                    <strong>{{$goods->traffic_label}}</strong> {{trans('home.account_bandwidth_usage')}}/{{$goods->days}} {{trans('home.day')}}
+                                                @endif
+                                            </li>
+                                            <li>
+                                                <strong>{{trans('home.service_unlimited')}}</strong> {{trans('home.service_device')}}
+                                            </li>
+                                            {!!  $goods->desc !!}
+                                        </ul>
+                                        <div class="pricing-footer text-center bg-blue-grey-100">
+                                            <button class="btn btn-primary btn-lg" onclick="buy({{$goods->id}})"> {{trans('home.service_buy_button')}}</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="services3">
-                                    <div class="pricing-content-1" style="padding-top: 10px;">
-                                        <div class="row">
-                                            @if($trafficList->isEmpty())
-                                                <div class="col-md-12" style="text-align: center;">
-                                                    <h2>暂无流量包</h2>
-                                                </div>
-                                            @else
-                                                @foreach($trafficList as $key => $goods)
-                                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                                        <div class="price-column-container border-active" style="margin-bottom: 20px;">
-                                                            <div class="price-table-head bg-{{$goods->color}}">
-                                                                <h2 class="no-margin">{{$goods->name}}</h2>
-                                                            </div>
-                                                            <div class="arrow-down border-top-{{$goods->color}}"></div>
-                                                            <div class="price-table-pricing">
-                                                                <h3><sup class="price-sign">￥</sup>{{$goods->price}}</h3>
-                                                                @if($goods->is_hot)
-                                                                    <div class="price-ribbon">热销</div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="price-table-content">
-                                                                <div class="row mobile-padding">
-                                                                    <div class="col-xs-3 text-right mobile-padding">
-                                                                        <i class="icon-bar-chart"></i>
-                                                                    </div>
-                                                                    <div class="col-xs-9 text-left mobile-padding">内含流量：{{$goods->traffic_label}}</div>
-                                                                </div>
-                                                                <div class="row mobile-padding">
-                                                                    <div class="col-xs-3 text-right mobile-padding">
-                                                                        <i class="icon-clock"></i>
-                                                                    </div>
-                                                                    <div class="col-xs-9 text-left mobile-padding">有效时长：{{$goods->days}}天</div>
-                                                                </div>
-                                                                <div class="row mobile-padding">
-                                                                    <div class="col-xs-3 text-right mobile-padding">
-                                                                        <i class="icon-refresh"></i>
-                                                                    </div>
-                                                                    <div class="col-xs-9 text-left mobile-padding">用完即止、到期即止</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="arrow-down arrow-grey"></div>
-                                                            <div class="price-table-footer">
-                                                                <button type="button" class="btn {{$goods->color}} {{$goods->is_hot ? '' : 'btn-outline'}} sbold uppercase price-button" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title">{{trans('home.recharge_balance')}}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-danger" style="display: none; text-align: center;" id="charge_msg"></div>
-                        <form action="#" method="post" class="form-horizontal">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <label for="charge_type" class="col-md-4 control-label">{{trans('home.payment_method')}}</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" name="charge_type" id="charge_type">
-                                            <option value="1" selected>{{trans('home.coupon_code')}}</option>
-                                            @if(!$chargeGoodsList->isEmpty())
-                                                <option value="2">{{trans('home.online_pay')}}</option>
-                                            @endif
-                                        </select>
-                                    </div>
-                                </div>
-                                @if(!$chargeGoodsList->isEmpty())
-                                    <div class="form-group" id="charge_balance" style="display: none;">
-                                        <label for="online_pay" class="col-md-4 control-label">充值金额</label>
-                                        <div class="col-md-6">
-                                            <select class="form-control" name="online_pay" id="online_pay">
-                                                @foreach($chargeGoodsList as $key => $goods)
-                                                    <option value="{{$goods->id}}">充值{{$goods->price}}元</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                @endif
-                                <div class="form-group" id="charge_coupon_code">
-                                    <label for="charge_coupon" class="col-md-4 control-label"> {{trans('home.coupon_code')}} </label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
-                                    </div>
+    </div>
+    <div id="charge_modal" class="modal fade" aria-labelledby="charge_modal" role="dialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-simple modal-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">{{trans('home.recharge_balance')}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" style="display: none;" id="charge_msg"></div>
+                    <form action="#" method="post">
+                        @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || !$chargeGoodsList->isEmpty())
+                            <div class="mb-15 w-p50">
+                                <select class="form-control" name="charge_type" id="charge_type">
+                                    @if(!$chargeGoodsList->isEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+                                        <option value="1" selected>{{trans('home.online_pay')}}</option>
+                                    @endif
+                                    @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+                                        <option value="2" @if($chargeGoodsList->isEmpty()) selected @endif>二维码</option>
+                                    @endif
+                                    <option value="3">{{trans('home.coupon_code')}}</option>
+                                </select>
+                            </div>
+                        @endif
+                        @if(!$chargeGoodsList->isEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+                            <div class="form-group row" id="charge_balance">
+                                <label for="online_pay" class="offset-md-2 col-md-2 col-form-label">充值金额</label>
+                                <div class="col-md-6">
+                                    <select class="form-control round" name="online_pay" id="online_pay">
+                                        @foreach($chargeGoodsList as $key => $goods)
+                                            <option value="{{$goods->id}}">充值{{$goods->price}}元</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">{{trans('home.close')}}</button>
-                        <button type="button" class="btn red btn-outline" onclick="return charge();">{{trans('home.recharge')}}</button>
-                    </div>
+                        @endif
+                        @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+                            <div class="text-center" id="charge_qrcode" @if(!$chargeGoodsList->isEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan']|| \App\Components\Helpers::systemConfig()['is_f2fpay']))style="display: none;" @endif>
+                                <div class="row">
+                                    <p class="col-md-12 mb-10">付款时，请
+                                        <mark>备注邮箱账号</mark>
+                                        ，充值会在<code>24</code>小时内受理!
+                                    </p>
+                                    @if(\App\Components\Helpers::systemConfig()['wechat_qrcode'])
+                                        <div class="col-md-6">
+                                            <img class="w-p75 mb-10" src="{{\App\Components\Helpers::systemConfig()['wechat_qrcode']}}" alt=""/>
+                                            <p>微 信 | WeChat</p>
+                                        </div>
+                                    @endif
+                                    @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'])
+                                        <div class="col-md-6">
+                                            <img class="w-p75 mb-10" src="{{\App\Components\Helpers::systemConfig()['alipay_qrcode']}}" alt=""/>
+                                            <p>支 付 宝 | AliPay</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                        <div class="form-group row" id="charge_coupon_code" @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || !$chargeGoodsList->isEmpty()) style="display: none;" @endif>
+                            <label for="charge_coupon" class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{trans('home.close')}}</button>
+                    <button type="button" class="btn btn-primary" id="change_btn" onclick="return charge();">{{trans('home.recharge')}}</button>
                 </div>
             </div>
         </div>
-        <!-- END PAGE BASE CONTENT -->
     </div>
-    <!-- END CONTENT BODY -->
-@endsection
-@section('script')
-    <script src="/assets/global/plugins/fancybox/source/jquery.fancybox.js" type="text/javascript"></script>
-
+@endsection @section('script')
     <script type="text/javascript">
         function buy(goods_id) {
             window.location.href = '/buy/' + goods_id;
         }
 
-        // 查看商品图片
-        $(document).ready(function () {
-            $('.fancybox').fancybox({
-                openEffect: 'elastic',
-                closeEffect: 'elastic'
-            })
-        })
-
         // 切换充值方式
-        $("#charge_type").change(function(){
-            if ($(this).val() == 2) {
+        $("#charge_type").change(function () {
+            if ($(this).val() === 1) {
                 $("#charge_balance").show();
+                $("#change_btn").show();
+                $("#charge_qrcode").hide();
+                $("#charge_coupon_code").hide();
+            } else if ($(this).val() === 2) {
+                $("#charge_balance").hide();
+                $("#change_btn").hide();
+                $("#charge_qrcode").show();
                 $("#charge_coupon_code").hide();
             } else {
                 $("#charge_balance").hide();
+                $("#charge_qrcode").hide();
                 $("#charge_coupon_code").show();
+                $("#change_btn").show();
             }
         });
 
         // 充值
         function charge() {
-            var charge_type = $("#charge_type").val();
-            var charge_coupon = $("#charge_coupon").val();
-            var online_pay = $("#online_pay").val();
+            const paymentType = $('#charge_type').val();
+            const charge_coupon = $('#charge_coupon').val();
+            const online_pay = $('#online_pay').val();
 
-            if (charge_type == '2') {
+            if (paymentType === '1') {
                 $("#charge_msg").show().html("正在跳转支付界面");
                 window.location.href = '/buy/' + online_pay;
                 return false;
             }
 
-            if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
+            if (paymentType === '3' && (charge_coupon === '' || charge_coupon === undefined)) {
                 $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
                 return false;
             }
 
             $.ajax({
-                url:'{{url('charge')}}',
-                type:"POST",
-                data:{_token:'{{csrf_token()}}', coupon_sn:charge_coupon},
-                beforeSend:function(){
+                type: "POST",
+                url: '/charge',
+                data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
+                beforeSend: function () {
                     $("#charge_msg").show().html("{{trans('home.recharging')}}");
                 },
-                success:function(ret){
-                    if (ret.status == 'fail') {
+                success: function (ret) {
+                    if (ret.status === 'fail') {
                         $("#charge_msg").show().html(ret.message);
                         return false;
                     }
@@ -290,10 +207,11 @@
                     $("#charge_modal").modal("hide");
                     window.location.reload();
                 },
-                error:function(){
+                error: function () {
                     $("#charge_msg").show().html("{{trans('home.error_response')}}");
                 },
-                complete:function(){}
+                complete: function () {
+                }
             });
         }
     </script>

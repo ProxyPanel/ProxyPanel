@@ -1,0 +1,286 @@
+.app-taskboard .ui-tooltip {
+  display: none !important; }
+
+.app-taskboard .ui-helper-hidden-accessible {
+  display: none; }
+
+.app-taskboard .control-content .bootstrap-select {
+  width: 100% !important; }
+
+.app-taskboard .page {
+  height: calc(100% - 44px);
+  overflow: hidden; }
+  .app-taskboard .page-content {
+    height: calc(100% - 91px);
+    width: 100%;
+    overflow-x: auto; }
+
+.app-taskboard .subtasks .checkbox-custom input:checked + label {
+  text-decoration: line-through; }
+
+.app-taskboard .slidePanel .overlay-panel a:not([class]) {
+  text-decoration: none; }
+
+.app-taskboard .slidePanel-header .btn .focus, .app-taskboard .slidePanel-header .btn:focus, .app-taskboard .slidePanel-header .btn:hover {
+  color: #e4eaec; }
+
+.app-taskboard .slidePanel-actions {
+  min-height: 0; }
+  .app-taskboard .slidePanel-actions .btn {
+    line-height: 1em; }
+
+.app-taskboard .slidePanel-inner {
+  padding: 0 30px; }
+
+.app-taskboard .slidePanel .caption {
+  font-size: 22px;
+  font-weight: normal;
+  line-height: 1; }
+
+.app-taskboard .slidePanel .priority .list-inline > li {
+  padding-left: 20px;
+  padding-right: 0; }
+  .app-taskboard .slidePanel .priority .list-inline > li label {
+    font-size: 0;
+    color: transparent; }
+
+.app-taskboard .slidePanel .priority .list-inline-item {
+  display: inline-block; }
+
+.app-taskboard .slidePanel .addMember {
+  margin-top: 30px;
+  margin-bottom: 20px; }
+  .app-taskboard .slidePanel .addMember-trigger {
+    vertical-align: top; }
+  .app-taskboard .slidePanel .addMember-items {
+    display: inline; }
+  .app-taskboard .slidePanel .addMember-item {
+    margin-bottom: 10px; }
+  .app-taskboard .slidePanel .addMember-trigger-dropdown {
+    left: auto;
+    top: 40px;
+    z-index: 1; }
+    .app-taskboard .slidePanel .addMember-trigger-dropdown:before {
+      border-color: transparent transparent white;
+      left: 4px;
+      top: -20px; }
+
+.app-taskboard .slidePanel .description-content {
+  margin-bottom: 20px; }
+
+.app-taskboard .slidePanel .description-toggle {
+  display: none;
+  margin-bottom: 20px; }
+
+.app-taskboard .slidePanel .description.is-empty .description-toggle {
+  display: inline-block; }
+
+.app-taskboard .slidePanel .radio-custom.radio-high label::before {
+  border-color: #eb6709; }
+
+.app-taskboard .slidePanel .radio-custom.radio-high label::after {
+  border-color: #fff; }
+
+.app-taskboard .slidePanel .radio-custom.radio-urgent label::before {
+  border-color: #ff4c52; }
+
+.app-taskboard .slidePanel .radio-custom.radio-urgent label::after {
+  border-color: #fff; }
+
+.app-taskboard .slidePanel .overlay-panel .dropdown-menu {
+  color: #76838f; }
+
+.app-taskboard .slidePanel .subtasks-add {
+  display: none; }
+
+.app-taskboard .slidePanel .subtasks.is-edit .subtasks-add {
+  display: block; }
+
+.app-taskboard .slidePanel .subtasks-list .checkbox-custom {
+  margin-top: 0;
+  margin-bottom: 0; }
+
+.app-taskboard .slidePanel .subtasks-list .subtask-editor {
+  display: none; }
+
+.app-taskboard .slidePanel .subtasks .subtask.is-edit .checkbox-custom {
+  display: none; }
+
+.app-taskboard .slidePanel .subtasks .subtask.is-edit .subtask-editor {
+  display: block; }
+
+.app-taskboard .slidePanel .attachments .list-group-item:hover .attachments-actions {
+  display: inline-block; }
+
+.app-taskboard .slidePanel .attachments .list-group-item .size {
+  display: inline-block;
+  width: 80px;
+  color: #a3afb7; }
+
+.app-taskboard .slidePanel .attachments-list {
+  margin-bottom: 0; }
+
+.app-taskboard .slidePanel .attachments-actions {
+  display: none; }
+
+.app-taskboard .slidePanel .attachments-image {
+  width: 80px;
+  line-height: 70px;
+  text-align: center;
+  border: 1px solid #e4eaec;
+  padding: 2px; }
+  .app-taskboard .slidePanel .attachments-image > img {
+    max-width: 100%;
+    max-height: 100%; }
+
+.app-taskboard .slidePanel .attachments .btn {
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
+  vertical-align: baseline;
+  color: #a3afb7; }
+  .app-taskboard .slidePanel .attachments .btn:hover {
+    color: #76838f; }
+
+.app-taskboard .slidePanel .attachments .icon {
+  margin-right: 0; }
+
+.app-taskboard .slidePanel .slidePanel-inner-section:last-child {
+  border-bottom: none; }
+
+.app-taskboard .slidePanel .task-section {
+  display: none; }
+  .app-taskboard .slidePanel .task-section.is-show {
+    display: block; }
+
+.app-taskboard .slidePanel .task-main.is-edit .task-main-surface {
+  display: none; }
+
+.app-taskboard .slidePanel .task-main.is-edit .task-main-editor {
+  display: block; }
+
+.app-taskboard .slidePanel .task-main-editor {
+  display: none; }
+
+.app-taskboard #fileupload {
+  display: none; }
+
+.taskboard-stages {
+  height: 100%;
+  position: relative;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  white-space: nowrap; }
+
+.taskboard-stage {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 260px;
+  height: 100%;
+  margin-right: 30px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  border-width: 0;
+  margin-top: -1px; }
+  .taskboard-stage.ui-sortable-helper {
+    max-height: none; }
+  .taskboard-stage-rename-wrap {
+    display: none;
+    padding: 6px 10px !important; }
+  .taskboard-stage-header {
+    padding: 16px 20px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 1px solid #e4eaec;
+    background-color: #fafafa; }
+    .taskboard-stage-header > h1, .taskboard-stage-header h2, .taskboard-stage-header h3, .taskboard-stage-header h4, .taskboard-stage-header h5, .taskboard-stage-header h6 {
+      margin: 0; }
+    .taskboard-stage-header .dropdown-menu {
+      left: -10px; }
+      .taskboard-stage-header .dropdown-menu > li {
+        width: 200px; }
+        .taskboard-stage-header .dropdown-menu > li > a {
+          overflow: hidden;
+          text-overflow: ellipsis; }
+      .taskboard-stage-header .dropdown-menu.is-edit [role="menuitem"] {
+        display: none; }
+      .taskboard-stage-header .dropdown-menu.is-edit .taskboard-stage-rename-wrap {
+        display: block; }
+  .taskboard-stage-actions a {
+    color: #76838f; }
+  .taskboard-stage-actions a:hover, .taskboard-stage-actions a.open {
+    color: #a3afb7; }
+  .taskboard-stage-content {
+    height: calc(100% - 49px);
+    overflow: auto; }
+    .taskboard-stage-content .action-wrap {
+      padding: 20px; }
+      .taskboard-stage-content .action-wrap.action-open .add-item-toggle {
+        display: none; }
+      .taskboard-stage-content .action-wrap.action-open .add-item-wrap {
+        display: block; }
+    .taskboard-stage-content .add-item-toggle {
+      display: block;
+      color: #37474f; }
+      .taskboard-stage-content .add-item-toggle:focus, .taskboard-stage-content .add-item-toggle:hover {
+        color: #76838f;
+        text-decoration: none; }
+      .taskboard-stage-content .add-item-toggle > .icon {
+        margin-right: 6px;
+        vertical-align: text-top; }
+    .taskboard-stage-content .add-item-wrap {
+      display: none; }
+    .taskboard-stage-content .add-item-priority {
+      display: block; }
+
+.taskboard-list {
+  min-height: 30px;
+  margin-bottom: 0;
+  margin-top: -1px; }
+  .taskboard-list .list-group-item {
+    padding: 12px 20px;
+    border-top: 1px solid #e4eaec;
+    border-bottom: 1px solid #e4eaec;
+    border-left: 3px solid transparent;
+    cursor: pointer; }
+    .taskboard-list .list-group-item::after {
+      display: block;
+      clear: both;
+      content: ""; }
+    .taskboard-list .list-group-item .task-badge {
+      float: left;
+      margin-top: 10px;
+      color: #a3afb7;
+      line-height: 30px; }
+      .taskboard-list .list-group-item .task-badge.icon:before {
+        margin-right: 6px; }
+    .taskboard-list .list-group-item .task-members {
+      float: right;
+      text-align: right;
+      white-space: normal;
+      padding: 0; }
+      .taskboard-list .list-group-item .task-members > li {
+        display: inline-block;
+        margin-left: 6px;
+        margin-top: 10px; }
+    .taskboard-list .list-group-item.priority-high {
+      border-left-color: #eb6709; }
+    .taskboard-list .list-group-item.priority-urgent {
+      border-left-color: #ff4c52; }
+    .taskboard-list .list-group-item:first-child, .taskboard-list .list-group-item:last-child {
+      border-radius: 0; }
+    .taskboard-list .list-group-item.ui-sortable-helper {
+      border-color: #e4eaec; }
+    .taskboard-list .list-group-item.ui-sortable-placeholder {
+      background-color: #e4eaec;
+      visibility: visible !important; }
+    .taskboard-list .list-group-item > .checkbox-custom {
+      margin: 0; }
+      .taskboard-list .list-group-item > .checkbox-custom input:checked + label {
+        text-decoration: line-through; }
+    .taskboard-list .list-group-item > .list-group-item-title {
+      margin-left: 30px;
+      white-space: normal; }

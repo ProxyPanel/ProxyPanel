@@ -45,7 +45,7 @@ class AutoResetUserTraffic extends Command
                     continue;
                 }
 
-                // 取出用户最后购买的有效套餐
+                // 取出用户购买的有效套餐
                 $order = Order::query()
                     ->with(['user', 'goods'])
                     ->whereHas('goods', function ($q) {
@@ -60,17 +60,19 @@ class AutoResetUserTraffic extends Command
                     continue;
                 }
 
-                $month = abs(date('m'));
-                $today = abs(date('d'));
-                if ($order->user->traffic_reset_day == $today) {
+                $month = date('m');
+                $today = date('d');
+                $last_day= date('t');
+                $resetDay = $order->user->traffic_reset_day;
+                if ($resetDay == $today || ($today == $last_day && $resetDay > $last_day)) {
                     // 跳过本月，防止异常重置
                     if ($month == date('m', strtotime($order->expire_at))) {
                         continue;
                     } elseif ($month == date('m', strtotime($order->created_at))) {
                         continue;
                     }
-
-                    User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0]);
+                    // 重置流量
+                    User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0,'transfer_enable' => $order->goods->traffic * 1048576]);
                 }
             }
         }

@@ -1,0 +1,68 @@
+.page-profile .card-block {
+  padding: 40px 15px;
+  background-color: #fff; }
+
+.page-profile .card-footer {
+  padding: 10px;
+  background-color: #f6f9fd;
+  border-top: none; }
+
+.page-profile .card .avatar {
+  width: 130px;
+  margin-bottom: 10px; }
+
+.page-profile .profile-user {
+  margin-bottom: 10px;
+  color: #263238; }
+
+.page-profile .profile-job {
+  margin-bottom: 20px;
+  color: #a3afb7; }
+
+.page-profile .profile-social {
+  margin: 25px 0; }
+  .page-profile .profile-social .icon {
+    margin: 0 10px;
+    color: rgba(55, 71, 79, 0.4); }
+
+.page-profile .profile-stat-count {
+  display: block;
+  margin-bottom: 3px;
+  color: #526069;
+  font-size: 20px;
+  font-weight: 100; }
+  .page-profile .profile-stat-count + span {
+    color: #a3afb7; }
+
+.page-profile .page-content .list-group-item {
+  padding: 25px 15px;
+  border-top-color: #e4eaec; }
+  .page-profile .page-content .list-group-item:first-child {
+    border-top: transparent; }
+  .page-profile .page-content .list-group-item:last-child {
+    border-bottom-color: #e4eaec; }
+  .page-profile .page-content .list-group-item .media .avatar {
+    width: 50px; }
+  .page-profile .page-content .list-group-item .media small {
+    color: #a3afb7; }
+  .page-profile .page-content .list-group-item .media-heading {
+    font-size: 16px; }
+    .page-profile .page-content .list-group-item .media-heading span {
+      margin-left: 5px;
+      color: #76838f;
+      font-size: 1rem; }
+  .page-profile .page-content .list-group-item .media .media:first-child {
+    border-top: none; }
+
+.page-profile .profile-readMore {
+  margin: 40px 0; }
+
+.page-profile .profile-brief {
+  margin-top: 20px; }
+
+.page-profile .profile-uploaded {
+  float: left;
+  max-width: 220px;
+  width: 100%;
+  max-height: 150px;
+  padding: 0 20px 20px 0; }

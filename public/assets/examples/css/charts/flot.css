@@ -1,0 +1,19 @@
+#exampleFlotCurve,
+#exampleFlotRealtime,
+#exampleFlotMix,
+#exampleFlotFullBg,
+#exampleFlotStackBar,
+#exampleFlotHorizontalBar,
+#exampleFlotPie,
+#exampleFlotVisitors {
+  height: 300px; }
+
+#exampleFlotVisitorsOverview {
+  height: 120px; }
+
+.legend td {
+  padding: 3px; }
+
+@media (max-width: 586px) {
+  .example-responsive {
+    padding-bottom: 10px; } }

@@ -1,46 +1,36 @@
 @extends('auth.layouts')
-@section('title', trans('home.reset_password_title'))
-@section('css')
-    <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
-@endsection
+@section('title', trans('auth.restPassword'))
 @section('content')
-    @if (Session::get('successMsg'))
-        <div class="alert alert-success">
-            <span> {{Session::get('successMsg')}} </span>
-        </div>
-    @endif
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <span> {{$errors->first()}} </span>
-        </div>
-    @endif
-    <form class="forget-form" action="/resetPassword" method="post" style="display: block;">
-        @if(\App\Components\Helpers::systemConfig()['is_reset_password'])
-            <div class="form-title">
-                <span class="form-title">{{trans('home.reset_password_title')}}</span>
-            </div>
-            <div class="form-group">
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('home.username_placeholder')}}" name="username" value="{{Request::old('username')}}" required autofocus />
-                <input type="hidden" name="_token" value="{{csrf_token()}}" />
-            </div>
-        @else
-            <div class="alert alert-danger">
-                <span> {{trans('home.system_down')}} </span>
-            </div>
-        @endif
-        <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">{{trans('register.back')}}</button>
-            @if(\App\Components\Helpers::systemConfig()['is_reset_password'])
-                <button type="submit" class="btn red uppercase pull-right">{{trans('register.submit')}}</button>
-            @endif
-        </div>
-    </form>
-@endsection
-@section('script')
-    <script type="text/javascript">
-        // 登录
-        function login() {
-            window.location.href = '/login';
-        }
-    </script>
+	@if (Session::get('successMsg'))
+		<div class="alert alert-success">
+			<span> {{Session::get('successMsg')}} </span>
+		</div>
+	@endif
+	@if($errors->any())
+		<div class="alert alert-danger">
+			<span> {{$errors->first()}} </span>
+		</div>
+	@endif
+	<form method="post" action="/resetPassword">
+		@if(\App\Components\Helpers::systemConfig()['is_reset_password'])
+			<div class="form-title">
+				{{trans('auth.restPassword')}}
+			</div>
+			<div class="form-group form-material floating" data-plugin="formMaterial">
+				<input type="email" class="form-control" name="username" value="{{Request::old('username')}}" required="required" autofocus="autofocus"/>
+				<label class="floating-label">{{trans('auth.username')}}</label>
+				<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+			</div>
+		@else
+			<div class="alert alert-danger">
+				<span> {{trans('auth.system_maintenance_tip',['email' => \App\Components\Helpers::systemConfig()['admin_email']])}} </span>
+			</div>
+		@endif
+		<div class="form-actions">
+			<button class="btn btn-danger btn-lg float-left" onclick="login()">{{trans('auth.back')}}</button>
+			@if(\App\Components\Helpers::systemConfig()['is_reset_password'])
+				<button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.submit')}}</button>
+			@endif
+		</div>
+	</form>
 @endsection

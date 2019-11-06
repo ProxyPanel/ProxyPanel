@@ -1,0 +1,12 @@
+.example-well .page-header {
+  padding: 30px 20px; }
+
+@media (max-width: 767.98px) {
+  .page-header-actions {
+    position: relative;
+    right: auto;
+    top: auto;
+    padding: 5px 0;
+    -webkit-transform: none;
+    transform: none;
+    margin: auto; } }

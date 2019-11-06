@@ -1,0 +1,56 @@
+#exampleTable1 table {
+  min-width: 800px;
+  margin-top: -1px;
+  margin-bottom: 17px; }
+
+#exampleTable1 .progress {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 0;
+  width: 80%; }
+
+#exampleTable1 .progress-percent {
+  display: inline-block;
+  width: 20%;
+  font-size: 14px;
+  text-align: right;
+  vertical-align: middle;
+  color: #76838f; }
+
+#exampleTable1 td {
+  vertical-align: middle; }
+
+#exampleTable1 thead th {
+  border-bottom-width: 0; }
+
+#exampleTable1 .example {
+  margin-top: 0;
+  border: 1px solid #e4eaec;
+  border-top: none; }
+
+#exampleTable1 .example-title {
+  border: 1px solid #e4eaec;
+  margin-bottom: 0;
+  padding: 15px 20px; }
+
+#exampleReport table {
+  min-width: 800px;
+  margin-bottom: 0; }
+  #exampleReport table td {
+    vertical-align: middle; }
+
+#exampleReport .panel-heading {
+  border-bottom: 0; }
+
+#exampleReport .panel-title {
+  border: 1px solid #e4eaec;
+  margin-bottom: 0;
+  padding: 15px 20px; }
+
+#exampleReport .panel-actions {
+  right: 15px; }
+
+#exampleReport .example {
+  margin-top: 0;
+  border: 1px solid #e4eaec;
+  border-top: none; }

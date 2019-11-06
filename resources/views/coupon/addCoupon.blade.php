@@ -1,187 +1,158 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="/assets/global/vendor/dropify/dropify.min.css">
+	<link rel="stylesheet" href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css">
+	<style>
+		.hidden {
+			display: none
+		}
+	</style>
 @endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
-        <div class="row">
-            <div class="col-md-12">
-                @if (Session::has('successMsg'))
-                    <div class="alert alert-success">
-                        <button class="close" data-close="alert"></button>
-                        {{Session::get('successMsg')}}
-                    </div>
-                @endif
-                @if($errors->any())
-                    <div class="alert alert-danger">
-                        <span> {{$errors->first()}} </span>
-                    </div>
-                @endif
-                <!-- BEGIN PORTLET-->
-                <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <span class="caption-subject font-dark uppercase">生成卡券</span>
-                        </div>
-                        <div class="actions"></div>
-                    </div>
-                    <div class="portlet-body form">
-                        <!-- BEGIN FORM-->
-                        <form action="/coupon/addCoupon" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">卡券名称</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" name="name" value="{{Request::old('name')}}" id="name" autocomplete="off" required>
-                                        <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">LOGO</label>
-                                    <div class="col-md-4">
-                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                <img src="/assets/images/noimage.png" alt="" />
-                                            </div>
-                                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                            <div>
-                                                <span class="btn default btn-file">
-                                                    <span class="fileinput-new"> 选择 </span>
-                                                    <span class="fileinput-exists"> 更换 </span>
-                                                    <input type="file" name="logo" id="logo">
-                                                </span>
-                                                <a href="javascript:;" class="btn red fileinput-exists" data-dismiss="fileinput"> 移除 </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">类型</label>
-                                    <div class="col-md-4">
-                                        <div class="mt-radio-inline">
-                                            <label class="mt-radio">
-                                                <input type="radio" name="type" value="1" checked> 抵用券
-                                                <span></span>
-                                            </label>
-                                            <label class="mt-radio">
-                                                <input type="radio" name="type" value="3"> 充值券
-                                                <span></span>
-                                            </label>
-                                            <label class="mt-radio">
-                                                <input type="radio" name="type" value="2"> 折扣券
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">用途</label>
-                                    <div class="col-md-4">
-                                        <div class="mt-radio-inline">
-                                            <label class="mt-radio">
-                                                <input type="radio" name="usage" value="1" id="usage1" checked> 仅限一次性使用
-                                                <span></span>
-                                            </label>
-                                            <label class="mt-radio hide">
-                                                <input type="radio" name="usage" value="2" id="usage2"> 可重复使用
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">数量</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="num" value="{{Request::old('num')}}" id="num" autocomplete="off" required>
-                                            <span class="input-group-addon">张</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">金额</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="amount" value="{{Request::old('amount')}}" id="amount" autocomplete="off" required>
-                                            <span class="input-group-addon">元</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group hide">
-                                    <label class="control-label col-md-3">折扣</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="discount" value="{{Request::old('discount')}}" id="discount" autocomplete="off" placeholder="">
-                                            <span class="input-group-addon">折</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">有效期</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group input-large input-daterange">
-                                            <input type="text" class="form-control" name="available_start" value="{{Request::old('available_start')}}" id="available_start" autocomplete="off" required>
-                                            <span class="input-group-addon"> 至 </span>
-                                            <input type="text" class="form-control" name="available_end" value="{{Request::old('available_end')}}" id="available_end" autocomplete="off" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <div class="row">
-                                    <div class="col-md-offset-3 col-md-4">
-                                        <button type="submit" class="btn green">提交</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <!-- END FORM-->
-                    </div>
-                </div>
-                <!-- END PORTLET-->
-            </div>
-        </div>
-        <!-- END PAGE BASE CONTENT -->
-    </div>
-    <!-- END CONTENT BODY -->
+	<div class="page-content container">
+		<div class="panel">
+			<div class="panel-heading">
+				<h2 class="panel-title">生成卡券</h2>
+			</div>
+			@if (Session::has('successMsg'))
+				<div class="alert alert-success alert-dismissible">
+					<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span></button>
+					{{Session::get('successMsg')}}
+				</div>
+			@endif
+			@if($errors->any())
+				<div class="alert alert-danger alert-dismissible">
+					<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span></button>
+					<strong>错误：</strong> {{$errors->first()}}
+				</div>
+			@endif
+			<div class="panel-body">
+				<form action="{{url('coupon/addCoupon')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+					<div class="form-group row">
+						<label class="col-form-label col-md-3" for="name">卡券名称</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
+							<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-md-3" for="logo">LOGO</label>
+						<div class="col-md-9">
+							<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/noimage.png"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-md-3" for="type">类型</label>
+						<ul class="col-md-9 list-unstyled list-inline">
+							<li class="list-inline-item">
+								<div class="radio-custom radio-primary">
+									<input type="radio" name="type" value="1" checked>
+									<label>抵用券</label>
+								</div>
+							</li>
+							<li class="list-inline-item">
+								<div class="radio-custom radio-primary">
+									<input type="radio" name="type" value="2">
+									<label>充值券</label>
+								</div>
+							</li>
+							<li class="list-inline-item">
+								<div class="radio-custom radio-primary">
+									<input type="radio" name="type" value="3">
+									<label>折扣券</label>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="coupon hidden">
+						<div class="form-group row">
+							<label class="col-form-label col-md-3" for="usage">用途</label>
+							<ul class="col-md-9 list-unstyled list-inline">
+								<li class="list-inline-item">
+									<div class="radio-custom radio-primary">
+										<input type="radio" name="usage" value="1" id="usage1" checked>
+										<label>仅限一次性使用</label>
+									</div>
+								</li>
+								<li class="list-inline-item">
+									<div class="radio-custom radio-primary">
+										<input type="radio" name="usage" value="2" id="usage2">
+										<label>可重复使用</label>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="form-group row">
+							<label class="col-form-label col-md-3" for="discount">折扣</label>
+							<div class="input-group col-md-3">
+								<input type="text" class="form-control" name="discount" value="{{Request::old('discount')}}" id="discount">
+								<span class="input-group-text">折</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-md-3" for="amount">金额</label>
+						<div class="input-group col-md-3">
+							<input type="text" class="form-control" name="amount" value="{{Request::old('amount')}}" id="amount" required/>
+							<span class="input-group-text">元</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-md-3" for="num">数量</label>
+						<div class="input-group col-md-3">
+							<input type="text" class="form-control" name="num" value="{{Request::old('num')}}" id="num" required/>
+							<span class="input-group-text">张</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-md-3">有效期</label>
+						<div class="input-group col-md-7 input-daterange" data-plugin="datepicker">
+							<div class="input-group-prepend">
+								<span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
+							</div>
+							<input type="text" class="form-control" value="{{Request::old('available_start')}}" name="available_start" id="available_start" required/>
+							<div class="input-group-prepend">
+								<span class="input-group-text">至</span>
+							</div>
+							<input type="text" class="form-control" value="{{Request::old('available_end')}}" name="available_end" id="available_end" required/>
+						</div>
+					</div>
+					<div class="form-actions">
+						<button type="submit" class="btn btn-success">提交</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/laydate/laydate.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+	<script src="/assets/global/vendor/dropify/dropify.min.js"></script>
+	<script src="/assets/global/js/Plugin/bootstrap-datepicker.min.js"></script>
+	<script src="/assets/global/js/Plugin/dropify.min.js"></script>
 
-    <script type="text/javascript">
-        // 有效期-开始
-        laydate.render({
-            elem: '#available_start'
-        });
-
-        // 有效期-结束
-        laydate.render({
-            elem: '#available_end'
+	<script type="text/javascript">
+        $('.input-daterange>input').datepicker({
+            format: "yyyy-mm-dd"
         });
 
         // 根据类型显示
-        $("input[name='type']").change(function(){
+        $("input[name='type']").change(function () {
             var type = $(this).val();
-            if (type == '1' || type == '3') {
-                $("#amount").parent("div").parent("div").parent("div").removeClass("hide");
-                $("#discount").parent("div").parent("div").parent("div").addClass("hide");
-                $("#amount").prop('required', 'required');
-                $("#discount").removeAttr('required');
-                $("#discount").val('');
-                $("#usage2").parent("label").addClass("hide");
-                $("#usage1").prop('checked', 'checked');
-                $("#usage2").prop('checked', false);
-            } else {
-                $("#amount").parent("div").parent("div").parent("div").addClass("hide");
-                $("#discount").parent("div").parent("div").parent("div").removeClass("hide");
-                $("#discount").prop('required', 'required');
+            if (type === '3') {
+                $(".coupon").removeClass("hidden");
+                $("#amount").parent("div").parent("div").addClass("hidden");
                 $("#amount").removeAttr('required');
                 $("#amount").val('');
-                $("#usage2").parent("label").removeClass("hide");
+                $("#discount").prop('required', 'required');
+            } else {
+                $(".coupon").addClass("hidden");
+                $("#usage1").prop('checked', 'checked');
+                $("#usage2").prop('checked', false);
+                $("#amount").parent("div").parent("div").removeClass("hidden");
+                $("#discount").removeAttr('required');
+                $("#discount").val('');
             }
         });
-    </script>
+	</script>
 @endsection

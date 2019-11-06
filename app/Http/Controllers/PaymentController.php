@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\AlipaySubmit;
 use App\Components\Helpers;
 use App\Components\Yzy;
-use App\Components\AlipaySubmit;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
+use Auth;
+use DB;
 use Illuminate\Http\Request;
+use Log;
 use Payment\Client\Charge;
 use Response;
-use Log;
-use DB;
-use Auth;
 use Validator;
 
 /**

@@ -1,0 +1,100 @@
+.app-message .page {
+  height: calc(100% - 44px); }
+
+.app-message .page-main {
+  height: 100%; }
+
+.app-message .page-aside .form-control {
+  border-radius: 0;
+  border-width: 0 0 1px 0;
+  border-color: rgba(0, 0, 0, 0.06);
+  padding: 10px 60px 10px 30px;
+  height: 56px; }
+
+.app-message .page-aside .input-search-btn {
+  padding-right: 30px;
+  border-radius: 0; }
+
+.app-message .page-aside-inner {
+  height: 100%; }
+
+.app-message-list {
+  height: calc(100% - 4.003rem); }
+  .app-message-list .list-group .list-group-item {
+    border-bottom: 0;
+    border-radius: 0;
+    padding: 16px 30px;
+    white-space: nowrap;
+    z-index: 0; }
+    .app-message-list .list-group .list-group-item:hover, .app-message-list .list-group .list-group-item.active {
+      background-color: #d9e9ff; }
+    .app-message-list .list-group .list-group-item.active:after {
+      width: 1px;
+      position: absolute;
+      content: ' ';
+      height: 100%;
+      right: 0;
+      top: 0;
+      background: #3e8ef7; }
+    .app-message-list .list-group .list-group-item .media-time {
+      color: #a3afb7; }
+
+.app-message-chats {
+  padding: 20px 30px;
+  overflow-y: auto;
+  text-align: center;
+  height: calc(100% - 96px);
+  background-color: #fff; }
+  .app-message-chats > .btn {
+    color: #589ffc; }
+    .app-message-chats > .btn:hover {
+      color: #76838f; }
+  .app-message-chats .chats {
+    padding: 0; }
+    .app-message-chats .chats .chat-avatar .avatar {
+      width: 60px;
+      margin-top: -10px; }
+    .app-message-chats .chats .time {
+      color: #a3afb7;
+      font-size: 12px;
+      text-align: center;
+      margin: 40px 0; }
+
+.app-message-input {
+  position: relative;
+  padding: 30px;
+  padding-right: 110px;
+  background-color: #f3f7f9; }
+  .app-message-input .message-input {
+    position: relative; }
+    .app-message-input .message-input textarea {
+      height: 36px;
+      resize: none;
+      max-height: 100px;
+      padding-right: 110px;
+      -ms-overflow-y: auto !important; }
+    .app-message-input .message-input-actions {
+      position: absolute;
+      bottom: 0;
+      right: 0; }
+      .app-message-input .message-input-actions input {
+        display: none; }
+  .app-message-input .message-input-btn {
+    position: absolute;
+    bottom: 30px;
+    right: 30px; }
+
+@media (max-width: 1199.98px) {
+  .app-message .page-aside .list-group-item {
+    padding: 14px 16px;
+    font-size: 12px; }
+    .app-message .page-aside .list-group-item h4 {
+      font-size: 12px; }
+    .app-message .page-aside .list-group-item .avatar {
+      width: 34px; }
+    .app-message .page-aside .list-group-item .badge {
+      padding: 1px 4px; } }
+
+@media (max-width: 479.98px) {
+  .app-message .page {
+    height: calc(100% - 66px); } }

@@ -1,1 +1,0 @@
-var FormSamples=function(){return{init:function(){}}}();jQuery(document).ready(function(){FormSamples.init()});

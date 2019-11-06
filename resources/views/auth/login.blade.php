@@ -1,24 +1,24 @@
 @extends('auth.layouts')
-@section('title', trans('login.title'))
+@section('title', trans('auth.login'))
 @section('css')
-    <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
     <style>
-        @media screen and (max-height: 575px){  
+        @media screen and (max-height: 575px) {
             .g-recaptcha {
-                -webkit-transform:scale(0.81);
-                transform:scale(0.81);
-                -webkit-transform-origin:0 0; 
-                transform-origin:0 0;
+                -webkit-transform: scale(0.81);
+                transform: scale(0.81);
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
             }
-        }  
+        }
+
         .geetest_holder.geetest_wind {
             min-width: 245px !important;
         }
     </style>
+
 @endsection
 @section('content')
-    <!-- BEGIN LOGIN FORM -->
-    <form class="login-form" action="/login" id="login-form" method="post">
+    <form method="post" id="login-form" action="/login">
         @if($errors->any())
             <div class="alert alert-danger">
                 <span> {!! $errors->first() !!} </span>
@@ -26,91 +26,80 @@
         @endif
         @if (Session::get('regSuccessMsg'))
             <div class="alert alert-success">
-                <button class="close" data-close="alert"></button>
-                <span> {{Session::get('regSuccessMsg')}} </span>
+                <button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    <span class="sr-only">{{trans('auth.close')}}</span>
+                </button>
+                <span>{{Session::get('regSuccessMsg')}}</span>
             </div>
         @endif
-        <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9">{{trans('login.username')}}</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('login.username')}}" name="username" value="{{Request::old('username')}}" required />
+        <div class="form-group form-material floating" data-plugin="formMaterial">
+            <input type="email" class="form-control" name="username" value="{{Request::old('username')}}" required/>
+            <label class="floating-label" for="username">{{trans('auth.username')}}</label>
         </div>
-        <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9">{{trans('login.password')}}</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="{{trans('login.password')}}" name="password" value="{{Request::old('password')}}" required />
-            <input type="hidden" name="_token" value="{{csrf_token()}}" />
+        <div class="form-group form-material floating" data-plugin="formMaterial">
+            <input type="password" class="form-control" name="password" value="{{Request::old('password')}}" required/>
+            <label class="floating-label" for="password">{{trans('auth.password')}}</label>
+            <input type="hidden" name="_token" value="{{csrf_token()}}"/>
         </div>
         @switch(\App\Components\Helpers::systemConfig()['is_captcha'])
-            @case(2)
-                <!-- Geetest -->
-                <div class="form-group">
-                    {!! Geetest::render() !!}
-                </div>
-                @break
-            @case(3)
-                <!-- Google noCAPTCHA -->
-                <div class="form-group">
-                    {!! NoCaptcha::display() !!}
-                    {!! NoCaptcha::renderJs(session::get('locale')) !!}
-                </div>
-                @break
-            @case(1)
-                <!-- Default Captcha -->
-                <div class="form-group" style="margin-bottom:65px;">
-                    <label class="control-label visible-ie8 visible-ie9">{{trans('login.captcha')}}</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" style="width:60%;float:left;" type="text" autocomplete="off" placeholder="{{trans('login.captcha')}}" name="captcha" value="" />
-                    <img src="{{captcha_src()}}" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('login.captcha')}}" style="float:right;" />
-                </div>
-                @break
+            @case(1)<!-- Default Captcha -->
+            <div class="form-group form-material floating input-group" data-plugin="formMaterial">
+                <input type="text" class="form-control" name="captcha" value=""/>
+                <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
+                <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()"
+                     alt="{{trans('auth.captcha')}}"/>
+            </div>
+            @break
+            @case(2)<!-- Geetest -->
+            <div class="form-group form-material floating" data-plugin="formMaterial">
+                {!! Geetest::render() !!}
+            </div>
+            @break
+            @case(3)<!-- Google noCAPTCHA -->
+            <div class="form-group form-material floating" data-plugin="formMaterial">
+                {!! NoCaptcha::display() !!}
+                {!! NoCaptcha::renderJs(session::get('locale')) !!}
+            </div>
+            @break
             @default
         @endswitch
-        <div class="form-actions">
-            <div class="pull-left">
-                <label class="rememberme mt-checkbox mt-checkbox-outline">
-                    <input type="checkbox" name="remember" value="1"> {{trans('login.remember')}}
-                    <span></span>
-                </label>
+        <div class="form-group clearfix">
+            <div class="checkbox-custom checkbox-inline checkbox-primary checkbox-lg float-left">
+                <input type="checkbox" id="inputCheckbox" name="remember">
+                <label for="inputCheckbox" for="remember">{{trans('auth.remember')}}</label>
             </div>
-            <div class="pull-right forget-password-block">
-                <a href="/resetPassword" class="forget-password">{{trans('login.forget_password')}}</a>
-            </div>
+            <a class="float-right" href="/resetPassword">{{trans('auth.forget_password')}}</a>
         </div>
-        <div class="form-actions">
-            <button type="submit" class="btn red btn-block uppercase">{{trans('login.login')}}</button>
-        </div>
-        @if(\App\Components\Helpers::systemConfig()['is_register'])
-            <div class="create-account">
-                <p>
-                    <a href="/register" class="btn-primary btn">{{trans('login.register')}}</a>
-                </p>
-            </div>
-        @endif
+        <button type="submit" class="btn btn-primary btn-block btn-lg mt-40">{{trans('auth.login')}}</button>
     </form>
-    <!-- END LOGIN FORM -->
+    @if(\App\Components\Helpers::systemConfig()['is_register'])
+        <p>{{trans('auth.register_tip')}} <a href="/register">{{trans('auth.register')}}</a></p>
+    @endif
 @endsection
 @section('script')
     <script type="text/javascript">
-        $('#login-form').submit(function(event){
+        $('#login-form').submit(function (event) {
             // 先检查Google reCAPTCHA有没有进行验证
-            if ( $('#g-recaptcha-response').val() === '' ) {
+            if ($('#g-recaptcha-response').val() === '') {
                 Msg(false, "{{trans('login.required_captcha')}}", 'error');
                 return false;
             }
-        })
+        });
 
         // 生成提示
         function Msg(clear, msg, type) {
-            if ( !clear ) $('.login-form .alert').remove();
-            
+            if (!clear) $('.login-form .alert').remove();
+
             var typeClass = 'alert-danger',
                 clear = clear ? clear : false,
                 $elem = $('.login-form');
             type === 'error' ? typeClass = 'alert-danger' : typeClass = 'alert-success';
 
-            var tpl = '<div class="alert ' + typeClass + '">' +
-                    '<button type="button" class="close" onclick="$(this).parent().remove();"></button>' +
-                    '<span> ' + msg + ' </span></div>';
-            
-            if ( !clear ) {
+            const tpl = '<div class="alert ' + typeClass + '">' +
+                '<button type="button" class="close" onclick="$(this).parent().remove();"></button>' +
+                '<span> ' + msg + ' </span></div>';
+
+            if (!clear) {
                 $elem.prepend(tpl);
             } else {
                 $('.login-form .alert').remove();

@@ -1,1 +1,0 @@
-var AppTask=function(){return{init:function(){$('.task-list input[type="checkbox"]').change(function(){$(this).is(":checked")?$(this).parents("li").addClass("task-done"):$(this).parents("li").removeClass("task-done")})}}}();jQuery(document).ready(function(){AppTask.init()});

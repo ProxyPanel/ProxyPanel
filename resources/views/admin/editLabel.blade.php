@@ -1,87 +1,60 @@
 @extends('admin.layouts')
-@section('css')
-@endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
-        <div class="row">
-            <div class="col-md-12">
-                @if (Session::has('errorMsg'))
-                    <div class="alert alert-danger">
-                        <button class="close" data-close="alert"></button>
-                        <strong>错误：</strong> {{Session::get('errorMsg')}}
-                    </div>
-                @endif
-                <!-- BEGIN PORTLET-->
-                <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <span class="caption-subject font-darm sbold uppercase">编辑文章</span>
-                        </div>
-                        <div class="actions"></div>
-                    </div>
-                    <div class="portlet-body form">
-                        <!-- BEGIN FORM-->
-                        <form action="{{url('admin/editLabel')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return doSubmit();">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">标题</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="name" value="{{$label->name}}" id="name" placeholder="" autofocus required>
-                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">排序</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="sort" value="{{$label->sort}}" id="sort" required />
-                                        <span class="help-block"> 值越高显示时越靠前 </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <div class="row">
-                                    <div class="col-md-offset-3 col-md-4">
-                                        <button type="submit" class="btn green">提 交</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <!-- END FORM-->
-                    </div>
+    <div class="page-content container">
+        <div class="panel">
+            <div class="panel-heading">
+                <h2 class="panel-title">编辑标签</h2>
+            </div>
+            @if (Session::has('errorMsg'))
+                <div class="alert alert-danger">
+                    <button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span></button>
+                    <strong>错误：</strong> {{Session::get('errorMsg')}}
                 </div>
-                <!-- END PORTLET-->
+            @endif
+            <div class="panel-body">
+                <form action="/admin/editLabel" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return doSubmit();">
+                    <div class="form-group row">
+                        <label for="name" class="col-form-label col-md-1">标签</label>
+                        <input type="text" class="form-control col-md-6" name="name" id="name" value="{{$label->name}}" autofocus required>
+                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                    </div>
+                    <div class="form-group row">
+                        <label for="sort" class="col-form-label col-md-1">排序</label>
+                        <input type="text" class="form-control col-md-6" name="sort" id="sort" value="{{$label->sort}}" required/>
+                        <span class="text-help offset-md-1"> 排序值越高显示时越靠前 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">提交</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <!-- END PAGE BASE CONTENT -->
     </div>
-    <!-- END CONTENT BODY -->
 @endsection
 @section('script')
     <script type="text/javascript">
         // ajax同步提交
         function doSubmit() {
-            var _token = '{{csrf_token()}}';
-            var id = '{{$label->id}}';
-            var name = $('#name').val();
-            var sort = $('#sort').val();
+			const _token = '{{csrf_token()}}';
+			const id = '{{$label->id}}';
+			const name = $('#name').val();
+			const sort = $('#sort').val();
 
-            $.ajax({
+			$.ajax({
                 type: "POST",
-                url: "{{url('admin/editLabel')}}",
+                url: "/admin/editLabel",
                 async: false,
-                data: {_token:_token, id:id, name: name, sort:sort},
+                data: {_token: _token, id: id, name: name, sort: sort},
                 dataType: 'json',
                 success: function (ret) {
-                    layer.msg(ret.message, {time:1000}, function() {
-                        if (ret.status == 'success') {
-                            window.location.href = '{{url('admin/labelList')}}';
-                        }
-                    });
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                            .then(() => window.location.href = '/admin/labelList')
+                    } else {
+                        swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
+                    }
                 }
             });
-
             return false;
         }
     </script>

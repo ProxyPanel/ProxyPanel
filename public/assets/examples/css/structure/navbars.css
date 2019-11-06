@@ -1,0 +1,25 @@
+.page-content .navbar-fixed-top,
+.page-content .navbar-fixed-bottom {
+  position: relative; }
+
+.page-content .card-block {
+  padding-left: 0;
+  padding-right: 0; }
+  .page-content .card-block .card-link + .card-link {
+    margin-left: 0; }
+
+.scrollspy-example {
+  position: relative;
+  height: 200px;
+  padding: 0 20px;
+  overflow: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); }
+
+.example-fixed {
+  height: 400px;
+  line-height: 400px;
+  text-align: center; }
+
+.example-grid .example-col {
+  margin-bottom: 10px;
+  word-break: break-all; }

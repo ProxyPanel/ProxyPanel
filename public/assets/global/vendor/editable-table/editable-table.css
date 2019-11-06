@@ -1,0 +1,12 @@
+.editable-table + input.error {
+  border: 1px solid #ff4c52;
+  outline: none;
+  outline-offset: 0; }
+
+.editable-table + input:focus, .editable-table + input {
+  border: 1px solid #3e8ef7 !important;
+  outline: none !important;
+  outline-offset: 0 !important; }
+
+.editable-table td:focus {
+  outline: none; }

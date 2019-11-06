@@ -3,8 +3,8 @@ cd `dirname $0`
 ps -ef | grep queue:work | grep -v grep
 if [ $? -ne 0 ]
 then
-    echo "Queue start listen....."
-    nohup php artisan queue:work database --queue=default --timeout=60 --sleep=5 --tries=3 >> ./queue.log 2>&1 &
+    echo "启动队列监听"
+    nohup php artisan queue:work redis --daemon --queue=default --timeout=60 --tries=3 -vvv >> ./queue.log 2>&1 &
 else
-    echo "Queue is listening....."
+    echo "队列监听中"
 fi

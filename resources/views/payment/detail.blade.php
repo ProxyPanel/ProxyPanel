@@ -1,63 +1,51 @@
 @extends('user.layouts')
-@section('css')
-@endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
-        <div class="portlet light bordered">
-            <div class="portlet-body">
-                <div class="alert alert-info" style="text-align: center;">
-                    请使用<strong style="color:red;">支付宝@if(\App\Components\Helpers::systemConfig()['is_youzan'])、微信@endif</strong>扫描如下二维码
-                </div>
-                <div class="row" style="text-align: center; font-size: 1.05em;">
-                    <div class="col-md-12">
-                        <div class="table-scrollable">
-                            <table class="table table-hover table-light">
-                                <tr>
-                                    <td align="right" width="50%">服务名称：</td>
-                                    <td align="left" width="50%">{{$payment->order->goods->name}}</td>
-                                </tr>
-                                <tr>
-                                    <td align="right">应付金额：</td>
-                                    <td align="left">{{$payment->amount}} 元</td>
-                                </tr>
-                                <tr>
-                                    <td align="right">有效期：</td>
-                                    <td align="left">{{$payment->order->goods->days}} 天</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        扫描下方二维码进行付款
-                                        <br>
-                                        请于15分钟内支付，到期未支付订单将自动关闭
-                                        <br>
-                                        支付后请稍作等待，系统将自动处理
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" align="center">
-                                        <img id="qr" src="{{$payment->qr_local_url}}"/>
-                                    </td>
-                                </tr>
-                            </table>
+    <div class="page-content container">
+        <div class="panel panel-bordered">
+            <div class="panel-heading">
+                <h1 class="panel-title cyan-600"><i class="icon wb-payment"></i>{{\App\Components\Helpers::systemConfig()['website_name']}}{{trans('home.online_pay')}}
+                </h1>
+            </div>
+            <div class="panel-body border-primary">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="alert alert-info col-8 text-center">
+                        请使用<strong class="red-600">支付宝@if(\App\Components\Helpers::systemConfig()['is_youzan']) 、微信 @endif </strong>扫描二维码进行支付
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-2"></div>
+                    <div class="row col-8">
+                        <div class="col-md-6">
+                            <ul class="list-group list-group-dividered">
+                                <li class="list-group-item">服务名称：{{$payment->order->goods->name}}</li>
+                                <li class="list-group-item">支付金额：{{$payment->amount}}元</li>
+                                <li class="list-group-item">有效期：{{$payment->order->goods->days}} 天</li>
+                                <li class="list-group-item"> 请在<code>15分钟</code>内完成支付，否者订单将会自动关闭</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 text-center mb-15">
+                            <img class="h-250 w-250" src="{{$payment->qr_local_url}}" alt="支付二维码">
                         </div>
                     </div>
+                    <div class="col-2"></div>
+                    <div class="col-2"></div>
+                    <div class="alert alert-danger col-8 text-center">
+                        <strong>手机用户</strong>：长按二维码 -> 保存图片 ->打开支付软件 -> 扫一扫 -> 选择相册 进行付款
+                    </div>
+                    <div class="col-2"></div>
                 </div>
             </div>
         </div>
-        <!-- END PAGE BASE CONTENT -->
     </div>
-    <!-- END CONTENT BODY -->
 @endsection
 @section('script')
     <script type="text/javascript">
         // 每800毫秒查询一次订单状态
-        $(document).ready(function(){
+        $(document).ready(function () {
             // 支付宝直接跳转支付
             @if(\App\Components\Helpers::systemConfig()['is_alipay'])
                 document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
-                document.forms['alipaysubmit'].submit();
+            document.forms['alipaysubmit'].submit();
             @endif
             setInterval("getStatus()", 800);
         });
@@ -66,28 +54,15 @@
         function getStatus() {
             var sn = '{{$payment->sn}}';
 
-            $.get("/payment/getStatus", {sn:sn}, function (ret) {
-                console.log(ret);
-                if (ret.status == 'success') {
-                    layer.msg(ret.message, {time:1500}, function() {
-                        window.location.href = '/invoices';
-                    });
-                } else if(ret.status == 'error') {
-                    layer.msg(ret.message, {time:1500}, function () {
-                        window.location.href = '/invoices';
-                    })
+            $.get("/payment/getStatus", {sn: sn}, function (ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false})
+                        .then(() => window.location.href = '/invoices')
+                } else {
+                    swal.fire({title: ret.message, type: "error", timer: 1500, showConfirmButton: false})
+                        .then(() => window.location.href = '/invoices')
                 }
             });
-        }
-
-        // 付款二维码自适应
-        var w = window.innerWidth;
-        var h = window.innerHeight;
-        x = document.getElementById("qr");
-        if (w <= h) {
-            x.setAttribute("width", "75%");
-        } else {
-            x.setAttribute("height", "75%");
         }
 
         // 还原html脚本 < > & " '

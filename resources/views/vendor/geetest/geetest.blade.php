@@ -1,7 +1,7 @@
 <script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
 <div id="{{ $captchaid }}"></div>
-<p id="wait-{{ $captchaid }}" class="show" style="text-align:center;">{{trans('login.loading_captcha')}}</p>
+<p id="wait-{{ $captchaid }}" class="show" style="text-align:center;">{{trans('auth.captcha_loading')}}</p>
 @define use Illuminate\Support\Facades\Config
 <script>
     var geetest = function(url) {
@@ -10,7 +10,7 @@
                 // captchaObj.verify();
                 var validate = captchaObj.getValidate();
                 if (!validate) {
-                    Msg(false, "{{trans('login.required_captcha')}}", 'error');
+                    Msg(false, "{{trans('auth.captcha_required')}}", 'error');
                     e.preventDefault();
                 }
             });

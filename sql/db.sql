@@ -352,31 +352,34 @@ INSERT INTO `config` VALUES ('67', 'is_tcp_check', 0);
 INSERT INTO `config` VALUES ('68', 'tcp_check_warning_times', 3);
 INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
 INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
-INSERT INTO `config` VALUES ('71', 'is_verify_register', 0);
-INSERT INTO `config` VALUES ('72', 'node_daily_report', 0);
-INSERT INTO `config` VALUES ('73', 'mix_subscribe', 0);
-INSERT INTO `config` VALUES ('74', 'rand_subscribe', 0);
-INSERT INTO `config` VALUES ('75', 'is_custom_subscribe', 0);
-INSERT INTO `config` VALUES ('76', 'is_alipay', 0);
-INSERT INTO `config` VALUES ('77', 'alipay_sign_type', 'MD5');
-INSERT INTO `config` VALUES ('78', 'alipay_partner', '');
-INSERT INTO `config` VALUES ('79', 'alipay_key', '');
-INSERT INTO `config` VALUES ('80', 'alipay_private_key', '');
-INSERT INTO `config` VALUES ('81', 'alipay_public_key', '');
-INSERT INTO `config` VALUES ('82', 'alipay_transport', 'http');
-INSERT INTO `config` VALUES ('83', 'alipay_currency', 'USD');
-INSERT INTO `config` VALUES ('84', 'is_f2fpay', 0);
-INSERT INTO `config` VALUES ('85', 'f2fpay_app_id', '');
-INSERT INTO `config` VALUES ('86', 'f2fpay_private_key', '');
-INSERT INTO `config` VALUES ('87', 'f2fpay_public_key', '');
-INSERT INTO `config` VALUES ('88', 'website_security_code', '');
-INSERT INTO `config` VALUES ('89', 'f2fpay_subject_name', '');
-INSERT INTO `config` VALUES ('90', 'geetest_id', '');
-INSERT INTO `config` VALUES ('91', 'geetest_key', '');
-INSERT INTO `config` VALUES ('92', 'google_captcha_sitekey', '');
-INSERT INTO `config` VALUES ('93', 'google_captcha_secret', '');
-INSERT INTO `config` VALUES ('94', 'user_invite_days', 7);
-INSERT INTO `config` VALUES ('95', 'admin_invite_days', 7);
+INSERT INTO `config` VALUES ('71', 'AppStore_id', 0);
+INSERT INTO `config` VALUES ('72', 'AppStore_password', 0);
+INSERT INTO `config` VALUES ('73', 'is_verify_register', 0);
+INSERT INTO `config` VALUES ('74', 'node_daily_report', 0);
+INSERT INTO `config` VALUES ('75', 'mix_subscribe', 0);
+INSERT INTO `config` VALUES ('76', 'rand_subscribe', 0);
+INSERT INTO `config` VALUES ('77', 'is_custom_subscribe', 0);
+INSERT INTO `config` VALUES ('78', 'is_alipay', 0);
+INSERT INTO `config` VALUES ('79', 'alipay_sign_type', 'MD5');
+INSERT INTO `config` VALUES ('80', 'alipay_partner', '');
+INSERT INTO `config` VALUES ('81', 'alipay_key', '');
+INSERT INTO `config` VALUES ('82', 'alipay_private_key', '');
+INSERT INTO `config` VALUES ('83', 'alipay_public_key', '');
+INSERT INTO `config` VALUES ('84', 'alipay_transport', 'http');
+INSERT INTO `config` VALUES ('85', 'alipay_currency', 'USD');
+INSERT INTO `config` VALUES ('86', 'is_f2fpay', 0);
+INSERT INTO `config` VALUES ('87', 'f2fpay_app_id', '');
+INSERT INTO `config` VALUES ('88', 'f2fpay_private_key', '');
+INSERT INTO `config` VALUES ('89', 'f2fpay_public_key', '');
+INSERT INTO `config` VALUES ('90', 'website_security_code', '');
+INSERT INTO `config` VALUES ('91', 'f2fpay_subject_name', '');
+INSERT INTO `config` VALUES ('92', 'geetest_id', '');
+INSERT INTO `config` VALUES ('93', 'geetest_key', '');
+INSERT INTO `config` VALUES ('94', 'google_captcha_sitekey', '');
+INSERT INTO `config` VALUES ('95', 'google_captcha_secret', '');
+INSERT INTO `config` VALUES ('96', 'user_invite_days', 7);
+INSERT INTO `config` VALUES ('97', 'admin_invite_days', 7);
+INSERT INTO `config` VALUES ('98', 'admin_email', '');
 
 
 -- ----------------------------
@@ -508,6 +511,7 @@ CREATE TABLE `goods` (
   `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位MiB',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '商品类型：1-流量包、2-套餐、3-余额充值',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
+  `info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品信息',
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品描述',
   `days` int(11) NOT NULL DEFAULT '30' COMMENT '有效期',
   `color` VARCHAR(50) NOT NULL DEFAULT 'green' COMMENT '商品颜色',

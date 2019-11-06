@@ -1,0 +1,20 @@
+.page-code-editor .page {
+  height: calc(100% - 44px); }
+  .page-code-editor .page-main, .page-code-editor .page-content {
+    padding: 0;
+    height: 100%; }
+
+.page-code-editor .page-aside-inner {
+  height: 100%; }
+
+.page-code-editor .treeview .list-group-item.node-filesTree {
+  padding-top: 8px;
+  padding-bottom: 8px; }
+
+.page-code-editor .treeview .list-group-item.node-selected {
+  background-color: #f3f7f9; }
+  .page-code-editor .treeview .list-group-item.node-selected, .page-code-editor .treeview .list-group-item.node-selected .node-icon {
+    color: #3e8ef7; }
+
+.page-code-editor .CodeMirror {
+  height: 100%; }

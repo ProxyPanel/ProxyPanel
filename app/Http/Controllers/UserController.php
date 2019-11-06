@@ -9,6 +9,7 @@ use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Invite;
+use App\Http\Models\Level;
 use App\Http\Models\Order;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
@@ -19,22 +20,23 @@ use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
+use App\Http\Models\UserLoginLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
 use App\Http\Models\UserTrafficHourly;
 use App\Mail\newTicket;
 use App\Mail\replyTicket;
+use Auth;
 use Cache;
+use DB;
+use Exception;
+use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Log;
+use Mail;
 use Redirect;
 use Response;
 use Session;
-use Mail;
-use Log;
-use DB;
-use Auth;
-use Hash;
 use Validator;
 
 /**
@@ -55,26 +57,52 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
+        $user = User::uid()->first();
+        $user->totalTransfer = flowAutoShow($user->transfer_enable);
+        $user->unusedTransfer = $user->transfer_enable - $user->u - $user->d > 0 ? $user->transfer_enable - $user->u - $user->d : 0;
+        $user->unusedPercent = $user->transfer_enable > 0 ? round($user->unusedTransfer / $user->transfer_enable, 2) : 0;
+        $user->unusedTransfer = flowAutoShow($user->unusedTransfer);
+        $user->levelName = Level::query()->where('level', $user['level'])->first()['level_name'];
+        $user->remainDays = date('Y-m-d') < $user->expire_time ? (strtotime($user->expire_time) - strtotime(date('Y-m-d'))) / 86400 : 0;
+        $user->resetDays = date('d') > $user->traffic_reset_day ? (strtotime($user->traffic_reset_day) - strtotime(date('Y-m-d'))) / 86400 : strtotime($user->traffic_reset_day);
+        $user_reset_day = $user->traffic_reset_day;
+        $last_day = date('t');
+        $today = date('d');
+        if ($user_reset_day > $today) {
+            $user->resetDays = $user_reset_day > $last_day ? $last_day - $today : $user_reset_day - $today;
+        } else {
+            $next_last_day = date('t', strtotime('next month'));
+            $user->resetDays = $user_reset_day > $next_last_day ? $last_day - $today + $next_last_day : $last_day - $today + $user_reset_day;
+        }
+        $view['info'] = $user->toArray();
+        $view['noticeList'] = Article::type(2)->orderBy('id', 'desc')->Paginate(1); // 公告
+        $view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first(); // 近期登录日志
+        //流量异常判断
+        $hourlyTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))->sum('total');
+        $view['isTrafficWarning'] = $hourlyTraffic < (self::$systemConfig['traffic_ban_value'] * 1073741824) ? 0 : 1;
+        //付费用户判断
+        $view['is_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty();
+
+
         $dailyData = [];
         $hourlyData = [];
-
         // 节点一个月内的流量
         $userTrafficDaily = UserTrafficDaily::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 
-        $dailyTotal = date('d', time()) - 1; // 今天不算，减一
+        $dailyTotal = date('d') - 1; // 今天不算，减一
         $dailyCount = count($userTrafficDaily);
-        for ($x = 0; $x < ($dailyTotal - $dailyCount); $x++) {
+        for ($x = 0; $x < $dailyTotal - $dailyCount; $x++) {
             $dailyData[$x] = 0;
         }
-        for ($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++) {
+        for ($x = $dailyTotal - $dailyCount; $x < $dailyTotal; $x++) {
             $dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
         }
 
         // 节点一天内的流量
         $userTrafficHourly = UserTrafficHourly::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-        $hourlyTotal = date('H', time());
+        $hourlyTotal = date('H');
         $hourlyCount = count($userTrafficHourly);
-        for ($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++) {
+        for ($x = 0; $x < $hourlyTotal - $hourlyCount; $x++) {
             $hourlyData[$x] = 0;
         }
         for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
@@ -83,16 +111,19 @@ class UserController extends Controller
 
         // 本月天数数据
         $monthDays = [];
-        $monthHasDays = date("t");
-        for ($i = 1; $i <= $monthHasDays; $i++) {
+        for ($i = 1; $i <= date("d"); $i++) {
             $monthDays[] = $i;
+        }
+        // 本日小时数据
+        $dayHours = [];
+        for ($i = 1; $i <= date("H"); $i++) {
+            $dayHours[] = $i;
         }
 
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
         $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
-        $view['notice'] = Article::type(2)->orderBy('id', 'desc')->first(); // 公告
-
+        $view['dayHours'] = "'" . implode("','", $dayHours) . "'";
         return Response::view('user.index', $view);
     }
 
@@ -128,16 +159,7 @@ class UserController extends Controller
     // 节点列表
     public function nodeList(Request $request)
     {
-        // 在线安装APP
-        $view['ipa_list'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
-
-        // 订阅连接
-        $view['link'] = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . Auth::user()->subscribe->code;
-
-        // 订阅连接二维码
-        $view['link_qrcode'] = 'sub://' . base64url_encode($view['link']) . '#' . base64url_encode(self::$systemConfig['website_name']);
-
-        // 节点列表
+    // 节点列表
         $userLabelIds = UserLabel::uid()->pluck('label_id');
         if (empty($userLabelIds)) {
             $view['nodeList'] = [];
@@ -246,19 +268,11 @@ class UserController extends Controller
             $node->online_status = empty($nodeInfo) || empty($nodeInfo->load) ? 0 : 1;
 
             // 节点标签
-            $node->labels = SsNodeLabel::query()->with('labelInfo')->where('node_id', $node->id)->get();
+            $node->labels = SsNodeLabel::query()->with('labelInfo')->where('node_id', $node->id)->first();
         }
 
         $view['allNodes'] = rtrim($allNodes, "|");
         $view['nodeList'] = $nodeList;
-
-        // 使用教程
-        $view['tutorial1'] = Article::type(4)->where('sort', 1)->orderBy('id', 'desc')->first();
-        $view['tutorial2'] = Article::type(4)->where('sort', 2)->orderBy('id', 'desc')->first();
-        $view['tutorial3'] = Article::type(4)->where('sort', 3)->orderBy('id', 'desc')->first();
-        $view['tutorial4'] = Article::type(4)->where('sort', 4)->orderBy('id', 'desc')->first();
-        $view['tutorial5'] = Article::type(4)->where('sort', 5)->orderBy('id', 'desc')->first();
-        $view['tutorial6'] = Article::type(4)->where('sort', 6)->orderBy('id', 'desc')->first();
 
         return Response::view('user.nodeList', $view);
     }
@@ -335,10 +349,12 @@ class UserController extends Controller
     // 商品列表
     public function services(Request $request)
     {
-        $view['chargeGoodsList'] = Goods::type(3)->orderBy('price', 'asc')->limit(10)->get(); // 余额充值商品，只取10个
-        $view['packageList'] = Goods::type(2)->limit(12)->get(); // 套餐列表
-        $view['trafficList'] = Goods::type(1)->limit(12)->get(); // 流量包列表
-        $view['direction'] = Article::type(3)->orderBy('id', 'desc')->first(); // 购买说明
+        $user = User::uid()->first();
+        $view['user_balance'] = $user->balance;
+
+        // 余额充值商品，只取10个
+        $view['chargeGoodsList'] = Goods::type(3)->where('status', 1)->orderBy('price', 'asc')->orderBy('price', 'asc')->limit(10)->get();
+        $view['goodsList'] = Goods::query()->where('status', 1)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('user.services', $view);
     }
@@ -471,10 +487,9 @@ class UserController extends Controller
     // 邀请码
     public function invite(Request $request)
     {
-        // 已生成的邀请码数量
-        $num = Invite::uid()->count();
-
-        $view['num'] = self::$systemConfig['invite_num'] - $num <= 0 ? 0 : self::$systemConfig['invite_num'] - $num; // 还可以生成的邀请码数量
+        if (Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty()) {
+            return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返回</a>']);
+        }
         $view['inviteList'] = Invite::uid()->with(['generator', 'user'])->paginate(10); // 邀请码列表
         $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$systemConfig['referral_percent'];
@@ -485,21 +500,32 @@ class UserController extends Controller
     // 生成邀请码
     public function makeInvite(Request $request)
     {
-        // 已生成的邀请码数量
-        $num = Invite::uid()->count();
-        if ($num >= self::$systemConfig['invite_num']) {
-            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成' . self::$systemConfig['invite_num'] . '个邀请码']);
+        if (!Auth::user()->invite_num) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：邀请码数量不足']);
         }
 
-        $obj = new Invite();
-        $obj->uid = Auth::user()->id;
-        $obj->fuid = 0;
-        $obj->code = strtoupper(mb_substr(md5(microtime() . makeRandStr()), 8, 12));
-        $obj->status = 0;
-        $obj->dateline = date('Y-m-d H:i:s', strtotime("+" . self::$systemConfig['user_invite_days'] . " days"));
-        $obj->save();
+        DB::beginTransaction();
+        try {
+            // 生成邀请码
+            $obj = new Invite();
+            $obj->uid = Auth::user()->id;
+            $obj->fuid = 0;
+            $obj->code = strtoupper(mb_substr(md5(microtime() . makeRandStr()), 8, 12));
+            $obj->status = 0;
+            $obj->dateline = date('Y-m-d H:i:s', strtotime("+" . self::$systemConfig['user_invite_days'] . " days"));
+            $obj->save();
+            // 扣减邀请码数
+            User::uid()->decrement('invite_num', 1);
 
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
+            DB::commit();
+
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
+        } catch (Exception $e) {
+            Log::info("用户生成邀请码异常：" . $e);
+            DB::rollBack();
+
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：邀请码数量不足']);
+        }
     }
 
     // 使用优惠券
@@ -541,7 +567,7 @@ class UserController extends Controller
     {
         $goods_id = intval($id);
         $coupon_sn = $request->input('coupon_sn');
-
+        // 余额支付
         if ($request->isMethod('POST')) {
             $goods = Goods::query()->with(['label'])->where('status', 1)->where('id', $goods_id)->first();
             if (!$goods) {
@@ -569,7 +595,7 @@ class UserController extends Controller
             if (!empty($coupon_sn)) {
                 $coupon = Coupon::query()->where('status', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
                 if (empty($coupon)) {
-                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：优惠券不存在']);
+                    return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不存在']);
                 }
 
                 // 计算实际应支付总价
@@ -690,11 +716,7 @@ class UserController extends Controller
 
                 // 套餐就改流量重置日，流量包不改
                 if ($goods->type == 2) {
-                    if (date('m') == 2 && date('d') == 29) {
-                        $traffic_reset_day = 28;
-                    } else {
-                        $traffic_reset_day = date('d') == 31 ? 30 : abs(date('d'));
-                    }
+                    $traffic_reset_day = date('d');
                     User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
                 } else {
                     User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
@@ -732,6 +754,11 @@ class UserController extends Controller
                     $this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount * self::$systemConfig['referral_percent']);
                 }
 
+                // 增加用户邀请码数量
+                if ($goods->invite_num) {
+                    User::uid()->increment('invite_num', $goods->invite_num);
+                }
+
                 // 取消重复返利
                 User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
 
@@ -760,6 +787,9 @@ class UserController extends Controller
     // 推广返利
     public function referral(Request $request)
     {
+        if (Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty()) {
+            return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返回</a>']);
+        }
         $view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$systemConfig['referral_percent'];
         $view['referral_money'] = self::$systemConfig['referral_money'];
@@ -818,6 +848,21 @@ class UserController extends Controller
     public function help(Request $request)
     {
         $view['articleList'] = Article::type(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
+
+        //付费用户判断
+        $view['is_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty();
+        //客户端安装
+        $view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/clients/ipa.plist';
+        $view['Quantumult_install'] = 'itms-services://?action=download-manifest&url=' . self::$systemConfig['website_url'] . '/ipa.plist';
+        // 订阅连接
+        $subscribe = UserSubscribe::query()->where('user_id', Auth::user()->id)->first();
+        $view['subscribe_status'] = $subscribe->status;
+        $subscribe_link = (self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']) . '/s/' . $subscribe->code;
+        $view['link'] = $subscribe_link;
+        $view['Shadowrocket_link'] = 'shadowrocket://add/sub://' . base64url_encode($subscribe_link) . '?remarks=' . self::$systemConfig['website_name'] . '-' . self::$systemConfig['website_url'];
+        $view['Shadowrocket_linkQrcode'] = 'sub://' . base64url_encode($subscribe_link) . '#' . base64url_encode(self::$systemConfig['website_name']);
+        $view['Quantumult_linkOut'] = 'quantumult://configuration?server=' . base64url_encode($subscribe_link) . '&filter=' . base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Pro.conf') . '&rejection=' . base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Rejection.conf');
+        $view['Quantumult_linkIn'] = 'quantumult://configuration?server=' . base64url_encode($subscribe_link) . '&filter=' . base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/BacktoCN.conf') . '&rejection=' . base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Rejection.conf');
 
         return Response::view('user.help', $view);
     }

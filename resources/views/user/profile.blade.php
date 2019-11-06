@@ -1,116 +1,103 @@
 @extends('user.layouts')
-@section('css')
-    <link href="/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
-@endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top: 0px; min-height: 354px;">
-        <!-- BEGIN PAGE BASE CONTENT -->
+    <div class="page-content container">
         <div class="row">
-            <div class="col-md-12">
-                @if (Session::has('successMsg'))
-                    <div class="alert alert-success alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        {{Session::get('successMsg')}}
+            @if (Session::has('successMsg'))
+                <div class="alert alert-success alert-dismissable">
+                    <button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    {{Session::get('successMsg')}}
+                </div>
+            @endif
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissable">
+                    <button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <strong>{{trans('home.error')}}：</strong> {{$errors->first()}}
+                </div>
+            @endif
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header white bg-cyan-600 p-30 clearfix">
+                        <a class="avatar avatar-100 float-left mr-20" href="javascript:void(0)">
+                            <img src="/assets/images/astronaut.svg" alt="头像">
+                        </a>
+                        <div class="float-left">
+                            <div class="font-size-20 mb-15">{{Auth::user()->username}}</div>
+                            <p class="mb-5 text-nowrap"><i class="icon bd-webchat mr-10" aria-hidden="true"></i>
+                                <span class="text-break">@if(Auth::user()->wechat) {{Auth::user()->wechat}} @else 未添加 @endif</span>
+                            </p>
+                            <p class="mb-5 text-nowrap"><i class="icon bd-qq mr-10" aria-hidden="true"></i>
+                                <span class="text-break">@if(Auth::user()->qq) {{Auth::user()->qq}} @else 未添加 @endif</span>
+                            </p>
+                        </div>
                     </div>
-                @endif
-                @if($errors->any())
-                    <div class="alert alert-danger">
-                        <span> {{$errors->first()}} </span>
-                    </div>
-                @endif
-                <!-- BEGIN PROFILE CONTENT -->
-                <div class="profile-content">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="portlet light bordered">
-                                <div class="portlet-title tabbable-line">
-                                    <div class="caption caption-md">
-                                        <i class="icon-globe theme-font hide"></i>
-                                        <span class="caption-subject font-blue-madison bold uppercase">{{trans('home.profile')}}</span>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="panel">
+                    <div class="panel-body nav-tabs-animate nav-tabs-horizontal" data-plugin="tabs">
+                        <ul class="nav nav-tabs nav-tabs-line" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="active nav-link" data-toggle="tab" href="#tab_1" aria-controls="tab_1" role="tab">{{trans('home.password')}}</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-toggle="tab" href="#tab_2" aria-controls="tab_2" role="tab">{{trans('home.contact')}}</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-toggle="tab" href="#tab_3" aria-controls="tab_3" role="tab">{{trans('home.ssr_setting')}}</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content py-10">
+                            <div class="tab-pane active animation-slide-left" id="tab_1" role="tabpanel">
+                                <form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
+                                    <div class="form-group row">
+                                        <label for="old_password" class="col-md-2 col-form-label">{{trans('home.current_password')}}</label>
+                                        <input type="password" class="form-control col-md-5 round" name="old_password" id="old_password" autofocus required/>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}"/>
                                     </div>
-                                    <ul class="nav nav-tabs">
-                                        <li class="active">
-                                            <a href="#tab_1" data-toggle="tab">{{trans('home.password')}}</a>
-                                        </li>
-                                        <li>
-                                            <a href="#tab_2" data-toggle="tab">{{trans('home.contact')}}</a>
-                                        </li>
-                                        <li>
-                                            <a href="#tab_3" data-toggle="tab">{{trans('home.ssr_setting')}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="portlet-body">
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="tab_1">
-                                            <form action="{{url('profile')}}" method="post" enctype="multipart/form-data" class="form-bordered">
-                                                <div class="form-group">
-                                                    <label class="control-label">{{trans('home.current_password')}}</label>
-                                                    <input type="password" class="form-control" name="old_password" id="old_password" autofocus required />
-                                                    <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">{{trans('home.new_password')}}</label>
-                                                    <input type="password" class="form-control" name="new_password" id="new_password" required />
-                                                </div>
-                                                <div class="form-actions">
-                                                    <div class="row">
-                                                        <div class=" col-md-4">
-                                                            <button type="submit" class="btn green">{{trans('home.submit')}}</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="tab-pane" id="tab_2">
-                                            <form action="{{url('profile')}}" method="post" enctype="multipart/form-data" class="form-bordered">
-                                                <div class="form-group">
-                                                    <label class="control-label">{{trans('home.wechat')}}</label>
-                                                    <input type="text" class="form-control" name="wechat" value="{{Auth::user()->wechat}}" id="wechat" required />
-                                                    <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label"> QQ </label>
-                                                    <input type="text" class="form-control" name="qq" value="{{Auth::user()->qq}}" id="qq" required />
-                                                </div>
-                                                <div class="form-actions">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn green">{{trans('home.submit')}}</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="tab-pane" id="tab_3">
-                                            <form action="{{url('profile')}}" method="post" enctype="multipart/form-data" class="form-bordered">
-                                                <div class="form-group">
-                                                    <label class="control-label"> {{trans('home.connection_password')}} </label>
-                                                    <input type="text" class="form-control" name="passwd" value="{{Auth::user()->passwd}}" id="passwd" required />
-                                                    <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                                                </div>
-                                                <div class="form-actions">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn green"> {{trans('home.submit')}} </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
+                                    <div class="form-group row">
+                                        <label for="new_password" class="col-md-2  col-form-label">{{trans('home.new_password')}}</label>
+                                        <input type="password" class="form-control col-md-5 round" name="new_password" id="new_password" required/>
                                     </div>
-                                </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-info">{{trans('home.submit')}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane animation-slide-left" id="tab_2" role="tabpanel">
+                                <form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                    <div class="form-group row">
+                                        <label for="wechat" class="col-md-2 col-form-label">{{trans('home.wechat')}}</label>
+                                        <input type="text" class="form-control col-md-5 round" name="wechat" id="wechat" value="{{Auth::user()->wechat}}" required/>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}"/>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="qq" class="col-md-2 col-form-label">QQ</label>
+                                        <input type="text" class="form-control col-md-5 round" name="qq" id="qq" value="{{Auth::user()->qq}}" required/>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-info">{{trans('home.submit')}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane animation-slide-left" id="tab_3" role="tabpanel">
+                                <form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                    <div class="form-group row">
+                                        <label for="passwd" class="col-md-2 col-form-label"> {{trans('home.connection_password')}} </label>
+                                        <input type="text" class="form-control col-md-5 round" name="passwd" id="passwd" value="{{Auth::user()->passwd}}" required/>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}"/>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-info"> {{trans('home.submit')}} </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- END PROFILE CONTENT -->
             </div>
         </div>
-        <!-- END PAGE BASE CONTENT -->
     </div>
-    <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/js/Plugin/tabs.js"></script>
 @endsection

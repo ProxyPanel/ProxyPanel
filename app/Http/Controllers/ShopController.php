@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Label;
+use DB;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 use Redirect;
+use Response;
 use Session;
-use DB;
 
 /**
  * 商店控制器
@@ -58,9 +58,9 @@ class ShopController extends Controller
                 return Redirect::back()->withInput()->withErrors('套餐价格必须大于0');
             }
 
-            // 套餐有效天数必须大于90天
-            if ($request->type == 2 && $request->days < 90) {
-                return Redirect::back()->withInput()->withErrors('套餐有效天数必须不能少于90天');
+            // 套餐有效天数必须大于30天
+            if ($request->type == 2 && $request->days < 30) {
+                return Redirect::back()->withInput()->withErrors('套餐有效天数必须不能少于30天');
             }
 
             // 商品LOGO
@@ -83,6 +83,7 @@ class ShopController extends Controller
             try {
                 $goods = new Goods();
                 $goods->name = $request->name;
+                $goods->info = $request->$info;
                 $goods->desc = $request->desc;
                 $goods->logo = $logo;
                 $goods->traffic = $request->traffic;
@@ -134,6 +135,7 @@ class ShopController extends Controller
 
         if ($request->isMethod('POST')) {
             $name = $request->get('name');
+            $info = $request->get('info', '');
             $desc = $request->get('desc');
             $price = round($request->get('price'), 2);
             $labels = $request->get('labels');
@@ -185,6 +187,7 @@ class ShopController extends Controller
             try {
                 $data = [
                     'name'     => $name,
+                    'info'     => $info,
                     'desc'     => $desc,
                     'price'    => $price * 100,
                     'sort'     => $sort,

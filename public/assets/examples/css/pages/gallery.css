@@ -1,0 +1,9 @@
+.page-content .card-title {
+  margin-bottom: 0; }
+
+.page-content .card-block {
+  padding: 12px 20px; }
+
+@media (max-width: 479.98px) {
+  .page-header-tabs .nav-tabs-line .nav-link {
+    padding: 5px 12px; } }

@@ -1,8 +1,5 @@
 @extends('auth.layouts')
-@section('title', trans('active.title'))
-@section('css')
-    <link href="/assets/pages/css/login-2.min.css" rel="stylesheet" type="text/css" />
-@endsection
+@section('title', trans('auth.active_account'))
 @section('content')
     @if(Session::get('errorMsg'))
         <div class="alert alert-danger">
@@ -14,19 +11,9 @@
             <span> {{Session::get('successMsg')}} </span>
         </div>
     @endif
-    <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
-        <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">{{trans('active.login_button')}}</button>
+    <form action="{{url(Request::getRequestUri())}}" method="post">
+        <div class="form-group form-material pt-20" data-plugin="formMaterial">
+            <button class="btn btn-lg btn-success" onclick="login()">{{trans('auth.login')}}</button>
         </div>
     </form>
-    <!-- END REGISTRATION FORM -->
-@endsection
-@section('script')
-    <script type="text/javascript">
-        // 登录
-        function login() {
-            window.location.href = '/login';
-        }
-    </script>
 @endsection

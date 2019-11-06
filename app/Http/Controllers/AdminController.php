@@ -80,7 +80,7 @@ class AdminController extends Controller
         $userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
         if (!$userTotalTrafficList->isEmpty()) {
             foreach ($userTotalTrafficList as $vo) {
-                if ($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)) {
+                if ($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1073741824)) {
                     $tempUsers[] = $vo->user_id;
                 }
             }
@@ -892,16 +892,22 @@ class AdminController extends Controller
             'hourlyData' => "'" . implode("','", $hourlyData) . "'"
         ];
 
+
         // 本月天数数据
         $monthDays = [];
-        $monthHasDays = date("t");
-        for ($i = 1; $i <= $monthHasDays; $i++) {
+        for ($i = 1; $i <= date("d"); $i++) {
             $monthDays[] = $i;
+        }
+        // 本日小时数据
+        $dayHours = [];
+        for ($i = 1; $i <= date("H"); $i++) {
+            $dayHours[] = $i;
         }
 
         $view['nodeName'] = $node->name;
         $view['nodeServer'] = $node->server;
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
+        $view['dayHours'] = "'" . implode("','", $dayHours) . "'";
 
         return Response::view('admin.nodeMonitor', $view);
     }
@@ -918,31 +924,39 @@ class AdminController extends Controller
     public function addArticle(Request $request)
     {
         if ($request->isMethod('POST')) {
+            $article = new Article();
+            $article->title = $request->get('title');
+            $article->type = $request->get('type', 1);
+            $article->author = '管理员';
+            $article->summary = $request->get('summary');
             // LOGO
-            $logo = '';
-            if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $fileType = $file->getClientOriginalExtension();
+            if ($article->type == 4) {
+                $article->logo = $request->get('logo');
+            } else {
+                $logo = '';
+                if ($request->hasFile('logo')) {
+                    $file = $request->file('logo');
+                    $fileType = $file->getClientOriginalExtension();
 
-                // 验证文件合法性
-                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
-                    Session::flash('errorMsg', 'LOGO不合法');
+                    // 验证文件合法性
+                    if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                        Session::flash('errorMsg', 'LOGO不合法');
 
-                    return Redirect::back()->withInput();
+                        return Redirect::back()->withInput();
+                    }
+
+                    $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+                    $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                    $logo = $move ? '/upload/image/' . $logoName : '';
                 }
-
-                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
-                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
-                $logo = $move ? '/upload/image/' . $logoName : '';
-            }
-
             $article = new Article();
             $article->title = $request->get('title');
             $article->type = $request->get('type', 1);
             $article->author = '管理员';
             $article->summary = $request->get('summary');
             $article->logo = $logo;
-            $article->content = $request->get('editorValue');
+            }			
+            $article->content = $request->get('content');
             $article->sort = $request->get('sort', 0);
             $article->save();
 
@@ -967,25 +981,29 @@ class AdminController extends Controller
             $title = $request->get('title');
             $type = $request->get('type');
             $summary = $request->get('summary');
-            $content = $request->get('editorValue');
+            $content = $request->get('content');
             $sort = $request->get('sort');
 
             // 商品LOGO
-            $logo = '';
-            if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $fileType = $file->getClientOriginalExtension();
+            if ($type == 4) {
+                $logo = $request->get('logo');
+            } else {
+                $logo = '';
+                if ($request->hasFile('logo')) {
+                    $file = $request->file('logo');
+                    $fileType = $file->getClientOriginalExtension();
 
-                // 验证文件合法性
-                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
-                    Session::flash('errorMsg', 'LOGO不合法');
+                    // 验证文件合法性
+                    if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                        Session::flash('errorMsg', 'LOGO不合法');
 
-                    return Redirect::back()->withInput();
+                        return Redirect::back()->withInput();
+                    }
+
+                    $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
+                    $move = $file->move(base_path() . '/public/upload/image/', $logoName);
+                    $logo = $move ? '/upload/image/' . $logoName : '';
                 }
-
-                $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
-                $move = $file->move(base_path() . '/public/upload/image/', $logoName);
-                $logo = $move ? '/upload/image/' . $logoName : '';
             }
 
             $data = [
@@ -1540,59 +1558,47 @@ EOF;
         }
 
         // 30天内的流量
-        $trafficDaily = [];
-        $trafficHourly = [];
-        $nodeList = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->get();
-        foreach ($nodeList as $node) {
-            $dailyData = [];
-            $hourlyData = [];
+        $dailyData = [];
+        $hourlyData = [];
+        // 节点一个月内的流量
+        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 
+        $dailyTotal = date('d') - 1; // 今天不算，减一
+        $dailyCount = count($userTrafficDaily);
+        for ($x = 0; $x < $dailyTotal - $dailyCount; $x++) {
+            $dailyData[$x] = 0;
+        }
+        for ($x = $dailyTotal - $dailyCount; $x < $dailyTotal; $x++) {
+            $dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
+        }
 
-            // 节点一个月内的流量
-            $userTrafficDaily = UserTrafficDaily::query()->with(['info'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-            $dailyTotal = date('d', time()) - 1;//今天不算，减一
-            $dailyCount = count($userTrafficDaily);
-            for ($x = 0; $x < ($dailyTotal - $dailyCount); $x++) {
-                $dailyData[$x] = 0;
-            }
-            for ($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++) {
-                $dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
-            }
-
-            // 节点一天内的流量
-            $userTrafficHourly = UserTrafficHourly::query()->with(['info'])->where('user_id', $user->id)->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-            $hourlyTotal = date('H', time());
-            $hourlyCount = count($userTrafficHourly);
-            for ($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++) {
-                $hourlyData[$x] = 0;
-            }
-            for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
-                $hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
-            }
-
-            $trafficDaily[$node->id] = [
-                'nodeName'  => $node->name,
-                'dailyData' => "'" . implode("','", $dailyData) . "'"
-            ];
-
-            $trafficHourly[$node->id] = [
-                'nodeName'   => $node->name,
-                'hourlyData' => "'" . implode("','", $hourlyData) . "'"
-            ];
+        // 节点一天内的流量
+        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+        $hourlyTotal = date('H');
+        $hourlyCount = count($userTrafficHourly);
+        for ($x = 0; $x < $hourlyTotal - $hourlyCount; $x++) {
+            $hourlyData[$x] = 0;
+        }
+        for ($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++) {
+            $hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
         }
 
         // 本月天数数据
         $monthDays = [];
-        $monthHasDays = date("t");
-        for ($i = 1; $i <= $monthHasDays; $i++) {
+        for ($i = 1; $i <= date("d"); $i++) {
             $monthDays[] = $i;
         }
+        // 本日小时数据
+        $dayHours = [];
+        for ($i = 1; $i <= date("H"); $i++) {
+            $dayHours[] = $i;
+        }
 
-        $view['trafficDaily'] = $trafficDaily;
-        $view['trafficHourly'] = $trafficHourly;
-        $view['username'] = $user->username;
+        $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
+        $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
         $view['monthDays'] = "'" . implode("','", $monthDays) . "'";
-
+        $view['dayHours'] = "'" . implode("','", $dayHours) . "'";
+        $view['username'] = $user->username;
         return Response::view('admin.userMonitor', $view);
     }
 

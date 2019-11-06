@@ -1,134 +1,120 @@
 @extends('admin.layouts')
-@section('css')
-@endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="note note-info">
-                    <h3 class="block">{{$nodeName}}<small style="padding-left:10px;">{{$nodeServer}}</small></h3>
-                    <p> 提示：月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。 </p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="portlet light bordered">
-                    <div class="portlet-body">
-                        <div id="chart1" style="width: auto;height:450px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="portlet light bordered">
-                    <div class="portlet-body">
-                        <div id="chart2" style="width: auto;height:450px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END PAGE BASE CONTENT -->
-    </div>
-    <!-- END CONTENT BODY -->
+	<div class="page-content container-fluid">
+		<div class="panel">
+			<div class="panel-heading">
+				<h2 class="panel-title">节点流量</h2>
+			</div>
+			<div class="alert alert-info alert-dismissible">
+				<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span></button>
+				<h4 class="block">{{$nodeName}}
+					<small class="pl-10">{{$nodeServer}}</small>
+				</h4>
+				<strong>提示：</strong> 月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+                        <canvas id="dailyChart" aria-label="小时流量图" role="img"></canvas>
+					</div>
+					<div class="col-md-6">
+                        <canvas id="monthlyChart" aria-label="月流量图" role="img"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/echarts/echarts.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/chart-js/Chart.min.js"></script>
 
-    <script type="text/javascript">
-        var myChart = echarts.init(document.getElementById('chart1'));
-
-        option = {
-            title: {
-                text: '今日流量',
-                subtext: '单位 / G'
+	<script type="text/javascript">
+        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [{!! $dayHours !!}],
+                datasets: [{
+                    fill: true,
+                    backgroundColor: "rgba(98, 168, 234, .1)",
+                    borderColor: Config.colors("primary", 600),
+                    pointRadius: 4,
+                    borderDashOffset: 2,
+                    pointBorderColor: "#fff",
+                    pointBackgroundColor: Config.colors("primary", 600),
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: Config.colors("primary", 600),
+                    data: [{!! $trafficHourly['hourlyData'] !!}],
+                }]
             },
-            tooltip: {
-                trigger: 'axis'
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: {
-                    formatter: '{value} G'
-                }
-            },
-            series: [
-                @if(!empty($trafficHourly))
-                    {
-                        name:'{{$trafficHourly['nodeName']}}',
-                        type:'line',
-                        data:[{!! $trafficHourly['hourlyData'] !!}],
-                        markPoint: {
-                            data: [
-                                {type: 'max', name: '最大值'}
-                            ]
+            options: {
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: '小时'
                         }
-                    }
-                @endif
-            ]
-        };
-
-        myChart.setOption(option);
-    </script>
-
-    <script type="text/javascript">
-        var myChart = echarts.init(document.getElementById('chart2'));
-
-        option = {
-            title: {
-                text: '本月流量',
-                subtext: '单位 / G'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: [{!! $monthDays !!}]
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: {
-                    formatter: '{value} G'
-                }
-            },
-            series: [
-                @if(!empty($trafficDaily))
-                    {
-                        name:'{{$trafficDaily['nodeName']}}',
-                        type:'line',
-                        data:[{!! $trafficDaily['dailyData'] !!}],
-                        markPoint: {
-                            data: [
-                                {type: 'max', name: '最大值'}
-                            ]
+                    }],
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: '{{trans('home.traffic_log_24hours')}}'
                         }
-                    }
-                @endif
-            ]
-        };
+                    }]
+                }
+            }
+        });
 
-        myChart.setOption(option);
-    </script>
+        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [{!! $monthDays !!}],
+                datasets: [{
+                    fill: true,
+                    backgroundColor: "rgba(98, 168, 234, .1)",
+                    borderColor: Config.colors("primary", 600),
+                    pointRadius: 4,
+                    borderDashOffset: 2,
+                    pointBorderColor: "#fff",
+                    pointBackgroundColor: Config.colors("primary", 600),
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: Config.colors("primary", 600),
+                    data: [{!! $trafficDaily['dailyData'] !!}],
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: '天'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: '{{trans('home.traffic_log_30days')}}'
+                        }
+                    }]
+                }
+            }
+        });
+	</script>
 @endsection

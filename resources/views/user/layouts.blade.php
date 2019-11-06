@@ -1,254 +1,304 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="{{app()->getLocale()}}" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="{{app()->getLocale()}}" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]>
+<html lang="{{app()->getLocale()}}" class="ie8 no-js css-menubar"> <![endif]-->
+<!--[if IE 9]>
+<html lang="{{app()->getLocale()}}" class="ie9 no-js css-menubar"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="{{app()->getLocale()}}">
 <!--<![endif]-->
-
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <title>{{\App\Components\Helpers::systemConfig()['website_name']}}</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="" name="description" />
-    <meta content="" name="author" />
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-    <!-- END GLOBAL MANDATORY STYLES -->
-    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="兔姬菌">
+    <meta name="copyright" content="2017-2019©兔姬菌">
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}">
+    <!-- 样式表/Stylesheets -->
+    <link rel="stylesheet" href="/assets/global/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/global/css/bootstrap-extend.min.css">
+    <link rel="stylesheet" href="/assets/css/site.min.css">
+
+    <!-- 插件/Plugins -->
+    <link rel="stylesheet" href="/assets/global/vendor/animsition/animsition.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/asscrollable/asScrollable.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/intro-js/introjs.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/slidepanel/slidePanel.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/flag-icon-css/flag-icon.min.css">
     @yield('css')
-    <!-- END PAGE LEVEL PLUGINS -->
-    <!-- BEGIN THEME GLOBAL STYLES -->
-    <link href="/assets/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
-    <link href="/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-    <!-- END THEME GLOBAL STYLES -->
-    <!-- BEGIN THEME LAYOUT STYLES -->
-    <link href="/assets/layouts/layout4/css/layout.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/layouts/layout4/css/themes/default.min.css" rel="stylesheet" type="text/css" id="style_color" />
-    <link href="/assets/layouts/layout4/css/custom.min.css" rel="stylesheet" type="text/css" />
-    <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" />
+    <link rel="stylesheet" href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css">
+
+    <!-- 字体/Fonts -->
+    <link rel="stylesheet" href="/assets/global/fonts/web-icons/web-icons.min.css">
+    <link rel="stylesheet" href="/assets/global/fonts/brand-icons/brand-icons.min.css">
+    <link rel='stylesheet' href='https://fonts.loli.net/css?family=Roboto:300,400,500,300italic'>
+    <!--[if lt IE 9]>
+    <script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script>
+    <![endif]-->
+    <!--[if lt IE 10]>
+    <script src="/assets/global/vendor/media-match/media.match.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/respond/respond.min.js" type="text/javascript"></script>
+    <![endif]-->
+    <!-- Scripts -->
+    <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
+    <script>
+        Breakpoints();
+    </script>
 </head>
 
-<body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo">
-<!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top">
-    <!-- BEGIN HEADER INNER -->
-    <div class="page-header-inner ">
-        <!-- BEGIN LOGO -->
-        <div class="page-logo">
+<body class="animsition dashboard">
+<nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided" data-toggle="menubar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="hamburger-bar"></span>
+        </button>
+        <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-collapse" data-toggle="collapse">
+            <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+        </button>
+        <div class="navbar-brand navbar-brand-center">
             @if(\App\Components\Helpers::systemConfig()['website_logo'])
-                <a href="{{url('/')}}"><img src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" alt="logo" class="logo-default" style="width:150px; height:30px;"/> </a>
+                <img class="navbar-brand-logo" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}">
             @else
-                <a href="{{url('/')}}"><img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
+                <img class="navbar-brand-logo" src="/assets/images/logo64.png" alt="Otaku Logo">
             @endif
-            <div class="menu-toggler sidebar-toggler">
-                <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
-            </div>
+            <span class="navbar-brand-text hidden-xs-down"> {{\App\Components\Helpers::systemConfig()['website_name']}}</span>
         </div>
-        <!-- END LOGO -->
-        <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
-        <!-- END RESPONSIVE MENU TOGGLER -->
-        <!-- BEGIN TOP NAVIGATION MENU -->
-        <div class="top-menu" style="float:right">
-            <ul class="nav navbar-nav pull-right">
-                <li class="separator hide"> </li>
-                <!-- BEGIN USER LOGIN DROPDOWN -->
-                <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                <li class="dropdown dropdown-user dropdown-dark">
-                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                        <span class="username username-hide-on-mobile"> {{Auth::user()->username}} </span>
-                        <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
-                        <img alt="" class="img-circle" src="/assets/images/avatar.png" /> </a>
-                    <ul class="dropdown-menu dropdown-menu-default">
+    </div>
+    <div class="navbar-container container-fluid">
+        <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+            <ul class="nav navbar-toolbar">
+                <li class="nav-item hidden-float" id="toggleMenubar">
+                    <a class="nav-link" data-toggle="menubar" href="#" role="button">
+                        <i class="icon hamburger hamburger-arrow-left">
+                            <span class="sr-only">菜单</span>
+                            <span class="hamburger-bar"></span>
+                        </i>
+                    </a>
+                </li>
+                <li class="nav-item hidden-sm-down" id="toggleFullscreen">
+                    <a class="nav-link icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
+                        <span class="sr-only">全屏</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                <li class="nav-item dropdown" id="toggleLanguage">
+                    <a class="nav-link" data-toggle="dropdown" href="javascript:void(0)" data-animation="scale-up" aria-expanded="false" role="button">
+                        <span class="flag-icon wb-flag"></span>
+                        <span class="flag-icon icon wb-chevron-down-mini"></span>
+                    </a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-CN'])}}" role="menuitem">
+                            <span class="flag-icon flag-icon-cn"></span>
+                            简体中文</a>
+                        <a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-tw'])}}" role="menuitem">
+                            <span class="flag-icon flag-icon-tw"></span>
+                            繁體中文</a>
+                        <a class="dropdown-item" href="{{url('lang', ['locale' => 'en'])}}" role="menuitem">
+                            <span class="flag-icon flag-icon-gb"></span>
+                            English</a>
+                        <a class="dropdown-item" href="{{url('lang', ['locale' => 'ja'])}}" role="menuitem">
+                            <span class="flag-icon flag-icon-jp"></span>
+                            日本語</a>
+                        <a class="dropdown-item" href="{{url('lang', ['locale' => 'ko'])}}" role="menuitem">
+                            <span class="flag-icon flag-icon-kr"></span>
+                            한국어</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" id="toggerUsermenu">
+                    <a class="nav-link navbar-avatar" data-toggle="dropdown" href="#" aria-expanded="false" data-animation="scale-up" role="button">
+                <span class="avatar avatar-online">
+                  <img src="/assets/images/astronaut.svg" alt="头像">
+                </span>
+                    </a>
+                    <div class="dropdown-menu" role="menu">
                         @if(Auth::user()->is_admin)
-                            <li>
-                                <a href="{{url('admin')}}"> <i class="icon-settings"></i>{{trans('home.console')}}</a>
-                            </li>
+                            <a class="dropdown-item" href="/admin" role="menuitem">
+                                <i class="icon wb-settings" aria-hidden="true"></i>
+                                {{trans('home.console')}}
+                            </a>
                         @endif
-                        <li>
-                            <a href="{{url('profile')}}"> <i class="icon-user"></i>{{trans('home.profile')}}</a>
-                        </li>
-                        <li class="divider"> </li>
-                        <li>
-                            <a href="{{url('logout')}}"> <i class="icon-key"></i>{{trans('home.logout')}}</a>
-                        </li>
-                    </ul>
+                        <a class="dropdown-item" href="/profile" role="menuitem">
+                            <i class="icon wb-user" aria-hidden="true"></i>
+                            {{trans('home.profile')}}
+                        </a>
+                        <div class="dropdown-divider" role="presentation"></div>
+                        <a class="dropdown-item" href="/logout" role="menuitem">
+                            <i class="icon wb-power" aria-hidden="true"></i>
+                            {{trans('home.logout')}}
+                        </a>
+                    </div>
                 </li>
-                <!-- END USER LOGIN DROPDOWN -->
             </ul>
         </div>
-        <!-- END TOP NAVIGATION MENU -->
     </div>
-    <!-- END HEADER INNER -->
-</div>
-<!-- END HEADER -->
-<!-- BEGIN HEADER & CONTENT DIVIDER -->
-<div class="clearfix"> </div>
-<!-- END HEADER & CONTENT DIVIDER -->
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
-    <!-- BEGIN SIDEBAR -->
-    <div class="page-sidebar-wrapper">
-        <!-- BEGIN SIDEBAR -->
-        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-        <div class="page-sidebar navbar-collapse collapse">
-            <!-- BEGIN SIDEBAR MENU -->
-            <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-            <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-            <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-            <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-            <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-            <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-            <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{in_array(Request::path(), ['/', 'subscribe', 'profile']) ? 'active open' : ''}}">
-                    <a href="/" class="nav-link nav-toggle">
-                        <i class="icon-home"></i>
-                        <span class="title">{{trans('home.home')}}</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['nodeList']) || in_array(Request::segment(1), ['nodeList']) ? 'active open' : ''}}">
-                    <a href="{{url('nodeList')}}" class="nav-link nav-toggle">
-                        <i class="icon-list"></i>
-                        <span class="title">节点列表</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['services']) || in_array(Request::segment(1), ['buy', 'payment']) ? 'active open' : ''}}">
-                    <a href="{{url('services')}}" class="nav-link nav-toggle">
-                        <i class="icon-basket"></i>
-                        <span class="title">{{trans('home.services')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['invoices']) || Request::segment(1) == 'invoice' ? 'active open' : ''}}">
-                    <a href="{{url('invoices')}}" class="nav-link nav-toggle">
-                        <i class="icon-wallet"></i>
-                        <span class="title">{{trans('home.invoices')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['tickets', 'replyTicket']) ? 'active open' : ''}}">
-                    <a href="{{url('tickets')}}" class="nav-link nav-toggle">
-                        <i class="icon-question"></i>
-                        <span class="title">{{trans('home.tickets')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}">
-                    <a href="{{url('invite')}}" class="nav-link nav-toggle">
-                        <i class="icon-user-follow"></i>
-                        <span class="title">{{trans('home.invite_code')}}</span>
-                    </a>
-                </li>
-                @if(\App\Components\Helpers::systemConfig()['referral_status'])
-                <li class="nav-item {{in_array(Request::path(), ['referral']) ? 'active open' : ''}}">
-                    <a href="{{url('referral')}}" class="nav-link nav-toggle">
-                        <i class="icon-diamond"></i>
-                        <span class="title">{{trans('home.referrals')}}</span>
-                    </a>
-                </li>
+</nav>
+<div class="site-menubar site-menubar-light">
+    <div class="site-menubar-body">
+        <ul class="site-menu" data-plugin="menu">
+            <li class="site-menu-item {{in_array(Request::path(), ['/', 'profile', 'article']) ? 'active open' : ''}}" id="home">
+                <a href="/">
+                    <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
+                    <span class="site-menu-title">{{trans('home.home')}}</span>
+                </a>
+            </li>
+            <li class="site-menu-item {{in_array(Request::path(), ['services']) || in_array(Request::segment(1), ['buy', 'payment']) ? 'active open' : ''}}" id="services">
+                <a href="/services">
+                    <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
+                    <span class="site-menu-title">{{trans('home.services')}}</span>
+                </a>
+            </li>
+            <li class="site-menu-item {{in_array(Request::path(), ['nodeList']) || in_array(Request::segment(1), ['nodeList']) ? 'active open' : ''}}" id="nodes">
+                <a href="/nodeList">
+                    <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
+                    <span class="site-menu-title">{{trans('home.nodeList')}}</span>
+                </a>
+            </li>
+            <li class="site-menu-item {{in_array(Request::path(), ['help', 'article']) ? 'active open' : ''}}" id="help">
+                <a href="/help">
+                    <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
+                    <span class="site-menu-title">{{trans('home.help')}}</span>
+                </a>
+            </li>
+            <li class="site-menu-item {{in_array(Request::path(), ['tickets', 'replyTicket']) ? 'active open' : ''}}" id="tickets">
+                <a href="/tickets">
+                    <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
+                    <span class="site-menu-title">{{trans('home.ticket_title')}}</span>
+                </a>
+            </li>
+            <li class="site-menu-item {{in_array(Request::path(), ['invoices']) ? 'active open' : ''}}" id="invoices">
+                <a href="/invoices">
+                    <i class="site-menu-icon wb-bookmark" aria-hidden="true"></i>
+                    <span class="site-menu-title">{{trans('home.invoices')}}</span>
+                </a>
+            </li>
+            @if(!\App\Http\Models\Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty())
+                @if(\App\Components\Helpers::systemConfig()['is_invite_register'])
+                    <li class="site-menu-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}" id="invite">
+                        <a href="/invite">
+                            <i class="site-menu-icon wb-extension" aria-hidden="true"></i>
+                            <span class="site-menu-title">{{trans('home.invite_code')}}</span>
+                        </a>
+                    </li>
                 @endif
-                <li class="nav-item {{in_array(Request::path(), ['help', 'article']) ? 'active open' : ''}}">
-                    <a href="{{url('help')}}" class="nav-link nav-toggle">
-                        <i class="icon-doc"></i>
-                        <span class="title">{{trans('home.help')}}</span>
-                    </a>
-                </li>
-            </ul>
-            <!-- END SIDEBAR MENU -->
-        </div>
-        <!-- END SIDEBAR -->
-    </div>
-    <!-- END SIDEBAR -->
-    <!-- BEGIN CONTENT -->
-    <div class="page-content-wrapper">
-        @yield('content')
-    </div>
-    @if(Session::get("admin"))
-        <div class="portlet light bordered" style="position:fixed;right:20px;bottom:0px;width:270px;">
-            <div class="portlet-body text-right">
-                <h5>当前身份：{{Auth::user()->username}}</h5>
-                <button class="btn btn-sm btn-danger" id="return_to_admin"> 返回管理页面 </button>
-            </div>
-        </div>
-    @endif
-    <!-- END CONTENT -->
-</div>
-<!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-    <div class="page-footer-inner"> Copyright &copy; 2017 - 2019 <a href="https://github.com/ssrpanel/ssrpanel" target="_blank">SSRPanel</a> {{config('version.name')}} </div>
-    <div class="scroll-to-top">
-        <i class="icon-arrow-up"></i>
+                @if((\App\Components\Helpers::systemConfig()['referral_status']) )
+                    <li class="site-menu-item {{in_array(Request::path(), ['referral']) ? 'active open' : ''}}" id="referral">
+                        <a href="/referral">
+                            <i class="site-menu-icon wb-star-outline" aria-hidden="true"></i>
+                            <span class="site-menu-title">{{trans('home.referrals')}}</span>
+                        </a>
+                    </li>
+                @endif
+            @endif
+        </ul>
     </div>
 </div>
-<!-- END FOOTER -->
-<!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script>
-<script src="/assets/global/plugins/ie8.fix.min.js"></script>
+<div class="page">
+    <!--[if lt IE 8]>
+    <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
+        <a href="http://browsehappy.com/">升级您的浏览器</a> </br>You are using an <strong>outdated</strong> browser. Please
+        <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    @yield('content')
+</div>
+@if(Session::get("admin"))
+    <div class="panel panel-bordered" style="position:fixed;right:20px;bottom:0px;width:270px; background-color:#E0E0E0;">
+        <div class="panel-body text-right">
+            <h5>当前身份：{{Auth::user()->username}}</h5>
+            <button class="btn btn-danger btn-block mt-20" id="return_to_admin">
+                返回管理页面
+            </button>
+        </div>
+    </div>
+@endif
+<!-- 核心/Core -->
+<script src="/assets/global/vendor/babel-external-helpers/babel-external-helpers.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/jquery/jquery.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/popper-js/umd/popper.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/animsition/animsition.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/mousewheel/jquery.mousewheel.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
+
+<!-- 插件/Plugins -->
+<script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
+<!--[if lt IE 11]>
+<script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
 <![endif]-->
-<!-- BEGIN CORE PLUGINS -->
-<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-<script src="/js/layer/layer.js" type="text/javascript"></script>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+
+<!-- 脚本/Scripts -->
+<script src="/assets/global/js/Component.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin.js" type="text/javascript"></script>
+<script src="/assets/global/js/Base.js" type="text/javascript"></script>
+<script src="/assets/global/js/Config.js" type="text/javascript"></script>
+<script src="/assets/js/Section/Menubar.js" type="text/javascript"></script>
+<script src="/assets/js/Section/Sidebar.js" type="text/javascript"></script>
+<script src="/assets/js/Section/PageAside.js" type="text/javascript"></script>
+<script src="/assets/js/Plugin/menu.js" type="text/javascript"></script>
+
+<!-- 设置/Config -->
+<script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
+<script>
+    Config.set('assets', '/assets');
+</script>
+<!-- 页面/Page -->
+<script src="/assets/js/Site.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
+<script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
+<script>
+    (function (document, window, $) {
+        'use strict';
+
+        var Site = window.Site;
+        $(document).ready(function () {
+            Site.run();
+        });
+    })(document, window, jQuery);
+</script>
 @yield('script')
 
 @if(Session::get("admin"))
     <script type="text/javascript">
         $("#return_to_admin").click(function () {
             $.ajax({
-                'url': "{{url("switchToAdmin")}}",
+                'type': "POST",
+                'url': "/switchToAdmin",
                 'data': {
                     '_token': "{{csrf_token()}}"
                 },
                 'dataType': "json",
-                'type': "POST",
                 success: function (ret) {
-                    layer.msg(ret.message, {time: 1000}, function () {
-                        if (ret.status == 'success') {
-                            window.location.href = "{{url('admin')}}";
-                        }
-                    });
+                    swal.fire({
+                        title: ret.message,
+                        type: 'success',
+                        timer: 1000,
+                        showConfirmButton: false
+                    }).then(() => window.location.href = "/admin")
                 },
                 error: function (ret) {
-                    layer.msg("操作失败：" + ret, {time: 5000});
+                    swal.fire({
+                        title: ret.message,
+                        type: 'error',
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
                 }
             });
         });
     </script>
 @endif
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
-<!-- END THEME GLOBAL SCRIPTS -->
-<!-- BEGIN THEME LAYOUT SCRIPTS -->
-<script src="/assets/layouts/layout4/scripts/layout.min.js" type="text/javascript"></script>
-<!-- END THEME LAYOUT SCRIPTS -->
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122312249-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-122312249-1');
-</script>
-
 <!-- 统计 -->
 {!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
 <!-- 客服 -->
 {!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
 </body>
-
 </html>

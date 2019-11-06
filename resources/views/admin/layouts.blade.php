@@ -1,406 +1,407 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="{{app()->getLocale()}}" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="{{app()->getLocale()}}" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]>
+<html lang="{{app()->getLocale()}}" class="ie8 no-js css-menubar"> <![endif]-->
+<!--[if IE 9]>
+<html lang="{{app()->getLocale()}}" class="ie9 no-js css-menubar"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="{{app()->getLocale()}}">
 <!--<![endif]-->
-
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <title>{{\App\Components\Helpers::systemConfig()['website_name']}}</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="" name="description" />
-    <meta content="" name="author" />
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-    <!-- END GLOBAL MANDATORY STYLES -->
-    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="兔姬菌">
+    <meta name="copyright" content="2017-2019©兔姬菌">
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}">
+    <!-- 样式表/Stylesheets -->
+    <link rel="stylesheet" href="/assets/global/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/global/css/bootstrap-extend.min.css">
+    <link rel="stylesheet" href="/assets/css/site.min.css">
+
+    <!-- 插件/Plugins -->
+    <link rel="stylesheet" href="/assets/global/vendor/animsition/animsition.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/asscrollable/asScrollable.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/intro-js/introjs.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/slidepanel/slidePanel.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/flag-icon-css/flag-icon.min.css">
     @yield('css')
-    <!-- END PAGE LEVEL PLUGINS -->
-    <!-- BEGIN THEME GLOBAL STYLES -->
-    <link href="/assets/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
-    <link href="/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-    <!-- END THEME GLOBAL STYLES -->
-    <!-- BEGIN THEME LAYOUT STYLES -->
-    <link href="/assets/layouts/layout4/css/layout.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/layouts/layout4/css/themes/default.min.css" rel="stylesheet" type="text/css" id="style_color" />
-    <link href="/assets/layouts/layout4/css/custom.min.css" rel="stylesheet" type="text/css" />
-    <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" />
+    <link rel="stylesheet" href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css">
+
+    <!-- 字体/Fonts -->
+    <link rel="stylesheet" href="/assets/global/fonts/web-icons/web-icons.min.css">
+    <link rel="stylesheet" href="/assets/global/fonts/brand-icons/brand-icons.min.css">
+    <link rel='stylesheet' href='https://fonts.loli.net/css?family=Roboto:300,400,500,300italic'>
+    <!--[if lt IE 9]>
+    <script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script>
+    <![endif]-->
+    <!--[if lt IE 10]>
+    <script src="/assets/global/vendor/media-match/media.match.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/respond/respond.min.js" type="text/javascript"></script>
+    <![endif]-->
+    <!-- Scripts -->
+    <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
+    <script>
+        Breakpoints();
+    </script>
 </head>
 
-<body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo">
-<!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top">
-    <!-- BEGIN HEADER INNER -->
-    <div class="page-header-inner ">
-        <!-- BEGIN LOGO -->
-        <div class="page-logo">
-            <a href="{{url('/')}}"> <img src="/assets/images/logo.png" alt="logo" class="logo-default" /> </a>
-            <div class="menu-toggler sidebar-toggler">
-                <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
-            </div>
+<body class="animsition dashboard">
+<nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided" data-toggle="menubar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="hamburger-bar"></span>
+        </button>
+        <button type="button" class="navbar-toggler collapsed" data-target="#site-navbar-collapse" data-toggle="collapse">
+            <i class="icon wb-more-horizontal" aria-hidden="true"></i>
+        </button>
+        <div class="navbar-brand navbar-brand-center">
+            @if(\App\Components\Helpers::systemConfig()['website_logo'])
+                <img class="navbar-brand-logo" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}">
+            @else
+                <img class="navbar-brand-logo" src="/assets/images/logo64.png" alt="Otaku Logo">
+            @endif
+            <span class="navbar-brand-text hidden-xs-down"> {{\App\Components\Helpers::systemConfig()['website_name']}}</span>
         </div>
-        <!-- END LOGO -->
-        <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
-        <!-- END RESPONSIVE MENU TOGGLER -->
-        <!-- BEGIN TOP NAVIGATION MENU -->
-        <div class="top-menu" style="float:right">
-            <ul class="nav navbar-nav pull-right">
-                <li class="separator hide"> </li>
-                <!-- BEGIN USER LOGIN DROPDOWN -->
-                <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                <li class="dropdown dropdown-user dropdown-dark">
-                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                        <span class="username username-hide-on-mobile"> {{Auth::user()->username}} </span>
-                        <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
-                        <img alt="" class="img-circle" src="/assets/images/avatar.png" /> </a>
-                    <ul class="dropdown-menu dropdown-menu-default">
-                        <li>
-                            <a href="{{url('/')}}"> <i class="icon-home"></i> 个人中心 </a>
-                        </li>
-                        <li>
-                            <a href="{{url('admin/profile')}}"> <i class="icon-user"></i> 个人设置 </a>
-                        </li>
-                        <li>
-                            <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- END USER LOGIN DROPDOWN -->
-            </ul>
-        </div>
-        <!-- END TOP NAVIGATION MENU -->
     </div>
-    <!-- END HEADER INNER -->
-</div>
-<!-- END HEADER -->
-<!-- BEGIN HEADER & CONTENT DIVIDER -->
-<div class="clearfix"> </div>
-<!-- END HEADER & CONTENT DIVIDER -->
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
-    <!-- BEGIN SIDEBAR -->
-    <div class="page-sidebar-wrapper">
-        <!-- BEGIN SIDEBAR -->
-        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-        <div class="page-sidebar navbar-collapse collapse">
-            <!-- BEGIN SIDEBAR MENU -->
-            <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-            <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-            <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-            <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-            <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-            <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-            <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{in_array(Request::path(), ['admin']) ? 'active open' : ''}}">
-                    <a href="{{url('admin')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-home"></i>
-                        <span class="title">管理中心</span>
-                        <span class="selected"></span>
+    <div class="navbar-container container-fluid">
+        <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+            <ul class="nav navbar-toolbar">
+                <li class="nav-item hidden-float" id="toggleMenubar">
+                    <a class="nav-link" data-toggle="menubar" href="#" role="button">
+                        <i class="icon hamburger hamburger-arrow-left">
+                            <span class="sr-only">菜单</span>
+                            <span class="hamburger-bar"></span>
+                        </i>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/inviteList']) ? 'active open' : ''}}">
-                    <a href="{{url('admin/inviteList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title">邀请管理</span>
+                <li class="nav-item hidden-sm-down">
+                    <a class="nav-link icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
+                        <span class="sr-only">全屏</span>
                     </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/applyList', 'admin/applyDetail']) ? 'active open' : ''}}">
-                    <a href="{{url('admin/applyList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-credit-card"></i>
-                        <span class="title">提现管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['shop/goodsList', 'shop/addGoods', 'shop/editGoods']) ? 'active open' : ''}}">
-                    <a href="{{url('shop/goodsList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-shopping-cart"></i>
-                        <span class="title">商品管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['coupon/couponList', 'coupon/addCoupon']) ? 'active open' : ''}}">
-                    <a href="{{url('coupon/couponList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-ticket"></i>
-                        <span class="title">卡券管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['ticket/ticketList', 'ticket/replyTicket']) ? 'active open' : ''}}">
-                    <a href="{{url('ticket/ticketList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-question-circle"></i>
-                        <span class="title">工单管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/labelList', 'admin/addLabel', 'admin/editLabel']) ? 'active open' : ''}}">
-                    <a href="{{url('admin/labelList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-sticky-note-o"></i>
-                        <span class="title">标签管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/orderList']) ? 'active open' : ''}}">
-                    <a href="{{url('admin/orderList')}}" class="nav-link nav-toggle">
-                        <i class="fa fa-reorder"></i>
-                        <span class="title">订单管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
-                    <a href="{{url('admin/articleList')}}" class="nav-link">
-                        <i class="fa fa-file-word-o"></i>
-                        <span class="title">文章管理</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/userOrderList', 'admin/userBalanceLogList', 'admin/userTrafficLogList', 'admin/userRebateList', 'admin/userBanLogList', 'admin/export', 'admin/userMonitor', 'admin/subscribeLog', 'admin/userOnlineIPList', 'admin/onlineIPMonitor']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-users"></i>
-                        <span class="title">用户管理</span>
-                        <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userList')}}" class="nav-link ">
-                                <i class="fa fa-user"></i>
-                                <span class="title">用户列表</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userOnlineIPList']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userOnlineIPList')}}" class="nav-link">
-                                <i class="icon-list"></i>
-                                <span class="title">用户在线IP</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/onlineIPMonitor']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/onlineIPMonitor')}}" class="nav-link">
-                                <i class="icon-list"></i>
-                                <span class="title">在线IP监控</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userBalanceLogList']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userBalanceLogList')}}" class="nav-link ">
-                                <i class="fa fa-money"></i>
-                                <span class="title">余额变动记录</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userTrafficLogList']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userTrafficLogList')}}" class="nav-link ">
-                                <i class="fa fa-area-chart"></i>
-                                <span class="title">流量变动记录</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userRebateList']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userRebateList')}}" class="nav-link ">
-                                <i class="fa fa-credit-card"></i>
-                                <span class="title">返利流水记录</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/userBanLogList')}}" class="nav-link ">
-                                <i class="fa fa-user-times"></i>
-                                <span class="title">用户封禁记录</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['subscribe/subscribeList', 'subscribe/deviceList']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-list-alt"></i>
-                        <span class="title">订阅管理</span>
-                        <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['subscribe/subscribeList']) ? 'active open' : ''}}">
-                            <a href="{{url('subscribe/subscribeList')}}" class="nav-link">
-                                <i class="icon-list"></i>
-                                <span class="title">订阅码列表</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['subscribe/deviceList']) ? 'active open' : ''}}">
-                            <a href="{{url('subscribe/deviceList')}}" class="nav-link ">
-                                <i class="fa fa-list"></i>
-                                <span class="title">订阅设备列表</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/groupList', 'admin/addGroup', 'admin/editGroup', 'admin/nodeMonitor']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-list-alt"></i>
-                        <span class="title">节点管理</span>
-                        <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/nodeList')}}" class="nav-link ">
-                                <i class="fa fa-list"></i>
-                                <span class="title">节点列表</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/groupList')}}" class="nav-link ">
-                                <i class="fa fa-list-ul"></i>
-                                <span class="title">节点分组</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['marketing/emailList', 'marketing/pushList']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-send-o"></i>
-                        <span class="title">营销管理</span>
-                        <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['marketing/emailList']) ? 'active open' : ''}}">
-                            <a href="{{url('marketing/emailList')}}" class="nav-link ">
-                                <i class="fa fa-inbox"></i>
-                                <span class="title">邮件群发</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/trafficLog', 'admin/analysis', 'admin/emailLog', 'payment/callbackList', 'sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-wrench"></i>
-                        <span class="title">工具箱</span>
-                        <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/decompile']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/decompile')}}" class="nav-link">
-                                <i class="icon-reload"></i>
-                                <span class="title">反解析</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/convert']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/convert')}}" class="nav-link">
-                                <i class="icon-refresh"></i>
-                                <span class="title">格式转换</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/import']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/import')}}" class="nav-link">
-                                <i class="icon-plus"></i>
-                                <span class="title">数据导入</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/trafficLog']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/trafficLog')}}" class="nav-link">
-                                <i class="fa fa-area-chart"></i>
-                                <span class="title">流量日志</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/analysis']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/analysis')}}" class="nav-link">
-                                <i class="fa fa-bar-chart"></i>
-                                <span class="title">日志分析</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
-                            <a href="{{url('sensitiveWords/list')}}" class="nav-link">
-                                <i class="fa fa-font"></i>
-                                <span class="title">敏感词管理</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/emailLog']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/emailLog')}}" class="nav-link">
-                                <i class="fa fa-envelope-o"></i>
-                                <span class="title">邮件投递记录</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
-                            <a href="{{url('payment/callbackList')}}" class="nav-link">
-                                <i class="fa fa-th"></i>
-                                <span class="title">支付回调日志</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
-                            <a href="{{url('logs')}}" class="nav-link" target="_blank">
-                                <i class="fa fa-cubes"></i>
-                                <span class="title">系统运行日志</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['admin/config', 'admin/addConfig', 'admin/system']) ? 'active open' : ''}}">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-gear"></i>
-                        <span class="title">设置</span>
-                        <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item {{in_array(Request::path(), ['admin/config']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/config')}}" class="nav-link ">
-                                <i class="fa fa-cog"></i>
-                                <span class="title">通用配置</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{in_array(Request::path(), ['admin/system']) ? 'active open' : ''}}">
-                            <a href="{{url('admin/system')}}" class="nav-link ">
-                                <i class="fa fa-cogs"></i>
-                                <span class="title">系统设置</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
             </ul>
-            <!-- END SIDEBAR MENU -->
+            <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                <li class="nav-item dropdown" id="toggerUsermenu">
+                    <a class="nav-link navbar-avatar" data-toggle="dropdown" href="#" aria-expanded="false" data-animation="scale-up" role="button">
+                <span class="avatar avatar-online">
+                  <img src="/assets/images/avatar.png" alt="...">
+                </span>
+                    </a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" href="/" role="menuitem">
+                            <i class="icon wb-settings" aria-hidden="true"></i>
+                            个人中心
+                        </a>
+                        <a class="dropdown-item" href="/admin/profile" role="menuitem">
+                            <i class="icon wb-user" aria-hidden="true"></i>
+                            {{trans('home.profile')}}
+                        </a>
+                        <div class="dropdown-divider" role="presentation"></div>
+                        <a class="dropdown-item" href="/logout" role="menuitem">
+                            <i class="icon wb-power" aria-hidden="true"></i>
+                            {{trans('home.logout')}}
+                        </a>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <!-- END SIDEBAR -->
     </div>
-    <!-- END SIDEBAR -->
-    <!-- BEGIN CONTENT -->
-    <div class="page-content-wrapper">
-        @yield('content')
+</nav>
+<div class="site-menubar site-menubar-light">
+    <div class="site-menubar-body">
+        <ul class="site-menu" data-plugin="menu">
+            <li class="site-menu-item {{in_array(Request::path(), ['admin']) ? 'active open' : ''}}">
+                <a href="/admin">
+                    <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
+                    <span class="site-menu-title">管理中心</span>
+                </a>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'subscribe/subscribeList', 'subscribe/deviceList', 'admin/userBanLogList', 'admin/userOnlineIPList', 'admin/onlineIPMonitor', 'admin/userBalanceLogList', 'admin/userTrafficLogList']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                    <span class="site-menu-title">用户系统</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
+                        <a href="/admin/userList" class="animsition-link">
+                            <span class="site-menu-title">用户管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['subscribe/subscribeList']) ? 'active open' : ''}}">
+                        <a href="/subscribe/subscribeList" class="animsition-link">
+                            <span class="site-menu-title">订阅管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['subscribe/deviceList']) ? 'active open' : ''}}">
+                        <a href="/subscribe/deviceList" class="animsition-link">
+                            <span class="site-menu-title">订阅设备</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
+                        <a href="/admin/userBanLogList" class="animsition-link">
+                            <span class="site-menu-title">封禁记录</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userOnlineIPList']) ? 'active open' : ''}}">
+                        <a href="/admin/userOnlineIPList" class="animsition-link">
+                            <span class="site-menu-title">在线记录</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/onlineIPMonitor']) ? 'active open' : ''}}">
+                        <a href="/admin/onlineIPMonitor" class="animsition-link">
+                            <span class="site-menu-title">在线监控</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userBalanceLogList']) ? 'active open' : ''}}">
+                        <a href="/admin/userBalanceLogList" class="animsition-link">
+                            <span class="site-menu-title">余额变动</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userTrafficLogList']) ? 'active open' : ''}}">
+                        <a href="/admin/userTrafficLogList" class="animsition-link">
+                            <span class="site-menu-title">流量变动</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket/ticketList', 'ticket/replyTicket', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/pushList', 'marketing/emailList']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
+                    <span class="site-menu-title">客服系统</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['ticket/ticketList', 'ticket/replyTicket']) ? 'active open' : ''}}">
+                        <a href="/ticket/ticketList" class="animsition-link">
+                            <span class="site-menu-title">服务工单</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
+                        <a href="/admin/articleList" class="animsition-link">
+                            <span class="site-menu-title">文章管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['marketing/pushList']) ? 'active open' : ''}}">
+                        <a href="/marketing/pushList" class="animsition-link">
+                            <span class="site-menu-title">消息推送</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['marketing/emailList']) ? 'active open' : ''}}">
+                        <a href="/marketing/emailList" class="animsition-link">
+                            <span class="site-menu-title">邮件群发</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor', 'admin/labelList', 'admin/addLabel', 'admin/editLabel', 'admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
+                    <span class="site-menu-title">线路系统</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor']) ? 'active open' : ''}}">
+                        <a href="/admin/nodeList" class="animsition-link">
+                            <span class="site-menu-title">线路管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/labelList', 'admin/addLabel', 'admin/editLabel']) ? 'active open' : ''}}">
+                        <a href="/admin/labelList">
+                            <span class="site-menu-title">标签管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
+                        <a href="/admin/groupList" class="animsition-link">
+                            <span class="site-menu-title">分组管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['shop/goodsList', 'shop/addGoods', 'shop/editGoods', 'coupon/couponList', 'coupon/addCoupon']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
+                    <span class="site-menu-title">商品系统</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['shop/goodsList', 'shop/addGoods', 'shop/editGoods']) ? 'active open' : ''}}">
+                        <a href="/shop/goodsList" class="animsition-link">
+                            <span class="site-menu-title">商品管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['coupon/couponList', 'coupon/addCoupon']) ? 'active open' : ''}}">
+                        <a href="/coupon/couponList" class="animsition-link">
+                            <span class="site-menu-title">卡券管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/inviteList', 'admin/applyList', 'admin/applyDetail', 'admin/userRebateList']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-thumb-up" aria-hidden="true"></i>
+                    <span class="site-menu-title">推广系统</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/inviteList']) ? 'active open' : ''}}">
+                        <a href="/admin/inviteList" class="animsition-link">
+                            <span class="site-menu-title">邀请管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/applyList', 'admin/applyDetail']) ? 'active open' : ''}}">
+                        <a href="/admin/applyList" class="animsition-link">
+                            <span class="site-menu-title">提现管理</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userRebateList']) ? 'active open' : ''}}">
+                        <a href="/admin/userRebateList" class="animsition-link">
+                            <span class="site-menu-title">返利流水</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/orderList', 'admin/trafficLog', 'admin/emailLog', 'payment/callbackList', 'logs']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-calendar" aria-hidden="true"></i>
+                    <span class="site-menu-title">日志系统</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/orderList']) ? 'active open' : ''}}">
+                        <a href="/admin/orderList" class="animsition-link">
+                            <span class="site-menu-title">商品订单</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/trafficLog']) ? 'active open' : ''}}">
+                        <a href="/admin/trafficLog" class="animsition-link">
+                            <span class="site-menu-title">流量使用</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/emailLog']) ? 'active open' : ''}}">
+                        <a href="/admin/emailLog" class="animsition-link">
+                            <span class="site-menu-title">邮件投递</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
+                        <a href="/payment/callbackList" class="animsition-link">
+                            <span class="site-menu-title">支付回调</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
+                        <a href="/logs" class="animsition-link">
+                            <span class="site-menu-title">系统运行</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/decompile', 'admin/convert', 'admin/import', 'admin/analysis', 'sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-briefcase" aria-hidden="true"></i>
+                    <span class="site-menu-title">工具箱</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/decompile']) ? 'active open' : ''}}">
+                        <a href="/admin/decompile" class="animsition-link">
+                            <span class="site-menu-title">反解析</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/convert']) ? 'active open' : ''}}">
+                        <a href="/admin/convert" class="animsition-link">
+                            <span class="site-menu-title">格式转换</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/import']) ? 'active open' : ''}}">
+                        <a href="/admin/import" class="animsition-link">
+                            <span class="site-menu-title">数据导入</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/analysis']) ? 'active open' : ''}}">
+                        <a href="/admin/analysis" class="animsition-link">
+                            <span class="site-menu-title">日志分析</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['sensitiveWords/list', 'sensitiveWords/add']) ? 'active open' : ''}}">
+                        <a href="/sensitiveWords/list" class="animsition-link">
+                            <span class="site-menu-title">敏感词管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/config', 'admin/system']) ? 'active open' : ''}}">
+                <a href="javascript:void(0)">
+                    <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
+                    <span class="site-menu-title">设置</span>
+                </a>
+                <ul class="site-menu-sub">
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/config']) ? 'active open' : ''}}">
+                        <a href="/admin/config" class="animsition-link">
+                            <span class="site-menu-title">通用配置</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item {{in_array(Request::path(), ['admin/system']) ? 'active open' : ''}}">
+                        <a href="/admin/system" class="animsition-link">
+                            <span class="site-menu-title">系统设置</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </div>
-    <!-- END CONTENT -->
 </div>
-<!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-    <div class="page-footer-inner"> Copyright &copy; 2017 - 2019 <a href="https://github.com/ssrpanel/ssrpanel" target="_blank">SSRPanel</a> {{config('version.name')}} </div>
-    <div class="scroll-to-top">
-        <i class="icon-arrow-up"></i>
-    </div>
+<div class="page">
+    <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
+        <a href="http://browsehappy.com/">升级您的浏览器</a> </br>You are using an <strong>outdated</strong> browser. Please
+        <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    @yield('content')
 </div>
-<!-- END FOOTER -->
-<!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script>
-<script src="/assets/global/plugins/ie8.fix.min.js"></script>
+<!-- 核心/Core -->
+<script src="/assets/global/vendor/babel-external-helpers/babel-external-helpers.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/jquery/jquery.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/popper-js/umd/popper.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/animsition/animsition.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/mousewheel/jquery.mousewheel.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
+
+<!-- 插件/Plugins -->
+<script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
+<!--[if lt IE 11]>
+<script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js"></script>
 <![endif]-->
-<!-- BEGIN CORE PLUGINS -->
-<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-<script src="/js/layer/layer.js" type="text/javascript"></script>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-@yield('script')
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
-<!-- END THEME GLOBAL SCRIPTS -->
-<!-- BEGIN THEME LAYOUT SCRIPTS -->
-<script src="/assets/layouts/layout4/scripts/layout.min.js" type="text/javascript"></script>
-<!-- END THEME LAYOUT SCRIPTS -->
+<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js"></script>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122312249-1"></script>
+<!-- 脚本/Scripts -->
+<script src="/assets/global/js/Component.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin.js" type="text/javascript"></script>
+<script src="/assets/global/js/Base.js" type="text/javascript"></script>
+<script src="/assets/global/js/Config.js" type="text/javascript"></script>
+<script src="/assets/js/Section/Menubar.js" type="text/javascript"></script>
+<script src="/assets/js/Section/Sidebar.js" type="text/javascript"></script>
+<script src="/assets/js/Section/PageAside.js" type="text/javascript"></script>
+<script src="/assets/js/Plugin/menu.js" type="text/javascript"></script>
+<!-- 设置/Config -->
+<script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-122312249-1');
+    Config.set('assets', '/assets');
 </script>
-
+<!-- 页面/Page -->
+<script src="/assets/js/Site.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
+<script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
+<script>
+    (function (document, window, $) {
+        'use strict';
+        var Site = window.Site;
+        $(document).ready(function () {
+            Site.run();
+        });
+    })(document, window, jQuery);
+</script>
+@yield('script')
 </body>
-
 </html>

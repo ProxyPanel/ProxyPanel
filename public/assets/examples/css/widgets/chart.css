@@ -1,0 +1,235 @@
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  vertical-align: middle;
+  border-radius: 50%; }
+
+.card {
+  margin-bottom: 30px;
+  height: calc(100% - 30px); }
+
+.ct-chart .ct-label.ct-vertical, .ct-chart .ct-label.ct-horizontal {
+  font-size: 14px;
+  color: #a3afb7; }
+
+.ct-chart .ct-label.ct-horizontal {
+  text-align: center; }
+
+#chartThreeLinearea .ct-chart .ct-area {
+  fill-opacity: 1; }
+
+#chartThreeLinearea .ct-chart .ct-series.ct-series-a .ct-area {
+  fill: #ff4c52; }
+
+#chartThreeLinearea .ct-chart .ct-series.ct-series-b .ct-area {
+  fill: #eb6709; }
+
+#chartThreeLinearea .ct-chart .ct-series.ct-series-c .ct-area {
+  fill: #11c26d; }
+
+#chartLinePie .chart-line .ct-line, #chartLinePie .chart-line .ct-point {
+  stroke: white; }
+
+#chartLinePie .chart-line .ct-line {
+  stroke-width: 2px; }
+
+#chartLinePie .chart-line .ct-point {
+  stroke-width: 6px; }
+
+#chartLinePie .chart-pie .ct-series.ct-series-a .ct-slice-donut {
+  stroke: #0bb2d4; }
+
+#chartLinePie .chart-pie .ct-series.ct-series-b .ct-slice-donut {
+  stroke: #ff4c52; }
+
+#chartBarPie .chart-bar .ct-bar {
+  stroke: #79b2fc;
+  stroke-width: 3%; }
+
+#chartBarPie .chart-pie .ct-series.ct-series-a .ct-slice-donut {
+  stroke: #9463f7; }
+
+#chartBarPie .chart-pie .ct-series.ct-series-b .ct-slice-donut {
+  stroke: #3e8ef7; }
+
+#chartBarStacked .ct-chart .ct-bar {
+  stroke-width: 4%; }
+
+#chartBarStacked .ct-chart .ct-series.ct-series-a .ct-bar {
+  stroke: #3e8ef7; }
+
+#chartBarStacked .ct-chart .ct-series.ct-series-b .ct-bar {
+  stroke: #9463f7; }
+
+#chartBarStacked .ct-chart .ct-series.ct-series-c .ct-bar {
+  stroke: #ccd5db; }
+
+#chartPie .ct-chart .ct-series.ct-series-a .ct-slice-donut {
+  stroke: #9463f7; }
+
+#chartPie .ct-chart .ct-series.ct-series-b .ct-slice-donut {
+  stroke: #ff4c52; }
+
+#chartPie .ct-chart .ct-series.ct-series-c .ct-slice-donut {
+  stroke: #3e8ef7; }
+
+#chartBarSimple .ct-chart .ct-bar {
+  stroke: #3e8ef7;
+  stroke-width: 2%; }
+
+#chartLineareaSimple .ct-chart .ct-line {
+  stroke-width: 1px;
+  stroke: #ffa1a4; }
+
+#chartLineareaSimple .ct-chart .ct-area {
+  fill: #ffbfc1; }
+
+#chartLineareaWithfooter .ct-chart .ct-area {
+  fill: #247cf0; }
+
+#chartLineareaWithfooter .ct-chart .ct-line {
+  stroke-width: 1px;
+  stroke: #79b2fc; }
+
+#chartBarWithfooter .ct-chart .ct-series.ct-series-a .ct-bar {
+  stroke: #ff4c52;
+  stroke-width: 2%; }
+
+#chartBarWithfooter .ct-chart .ct-series.ct-series-b .ct-bar {
+  stroke: #e4eaec;
+  stroke-width: 2%; }
+
+#chartLinebarLarge .chart-line .ct-line {
+  stroke: #3e8ef7;
+  stroke-width: 2px; }
+
+#chartLinebarLarge .chart-line .ct-label.ct-horizontal {
+  margin-left: -20px; }
+
+#chartLinebarLarge .chart-bar .ct-bar {
+  stroke: #0bb2d4;
+  stroke-width: 5%; }
+
+#chartLineTime .chart-line .ct-line {
+  stroke: #f3f7f9;
+  stroke-width: 2px; }
+
+#chartLineTime .ct-chart {
+  position: relative; }
+
+#chartLineTime .chart-pie-left .ct-series.ct-series-a .ct-slice-donut {
+  stroke: #3e8ef7; }
+
+#chartLineTime .chart-pie-left .ct-series.ct-series-b .ct-slice-donut {
+  stroke: #e4eaec; }
+
+#chartLineTime .chart-pie-right .ct-series.ct-series-a .ct-slice-donut {
+  stroke: #ff4c52; }
+
+#chartLineTime .chart-pie-right .ct-series.ct-series-b .ct-slice-donut {
+  stroke: #e4eaec; }
+
+#chartBarlineMix .chart-bar {
+  position: relative; }
+  #chartBarlineMix .chart-bar .ct-bar {
+    stroke: #fab06b;
+    stroke-width: 2%; }
+
+#chartBarlineMix .chart-line {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0; }
+  #chartBarlineMix .chart-line .ct-line {
+    stroke: white;
+    stroke-width: 2px; }
+
+#chartBarlineMixTwo .small-bar-one, #chartBarlineMixTwo .small-bar-two {
+  display: inline-block;
+  width: 80px;
+  height: 45px;
+  vertical-align: top; }
+  #chartBarlineMixTwo .small-bar-one .ct-bar, #chartBarlineMixTwo .small-bar-two .ct-bar {
+    stroke-width: 4px; }
+
+#chartBarlineMixTwo .small-bar-one .ct-bar {
+  stroke: #11c26d; }
+
+#chartBarlineMixTwo .small-bar-two .ct-bar {
+  stroke: #3e8ef7; }
+
+#chartBarlineMixTwo .line-chart .ct-series.ct-series-a .ct-line {
+  stroke: #3e8ef7;
+  stroke-width: 2px; }
+
+#chartBarlineMixTwo .line-chart .ct-series.ct-series-b .ct-line {
+  stroke: #11c26d;
+  stroke-width: 2px; }
+
+#chartBarlineMixTwo .line-chart .ct-labels > foreignObject:first-child .ct-label.ct-horizontal {
+  margin-left: 0px; }
+
+#chartBarlineMixTwo .line-chart .ct-label.ct-vertical {
+  text-align: left; }
+
+#chartBarlineMixTwo .line-chart .ct-label.ct-horizontal {
+  margin-left: -20px; }
+
+#charLineareaTwo .ct-chart .ct-label.ct-vertical, #charLineareaTwo .ct-chart .ct-label.ct-horizontal {
+  font-size: 14px; }
+
+#charLineareaTwo .ct-chart .ct-area {
+  fill-opacity: 1; }
+
+#charLineareaTwo .ct-chart .ct-series.ct-series-a .ct-area {
+  fill: #b8d7ff; }
+
+#charLineareaTwo .ct-chart .ct-series.ct-series-b .ct-area {
+  fill: #92f0e6; }
+
+#chartLinepoint .header {
+  border-bottom: 1px solid #e4eaec; }
+
+#chartLinepoint .badge {
+  padding: 8px 12px; }
+
+#chartLinepoint .ct-chart .ct-line, #chartLinepoint .ct-chart .ct-point {
+  stroke: #3e8ef7; }
+
+#chartLinepoint .ct-chart .ct-line {
+  stroke-width: 2px; }
+
+#chartLinepoint .ct-chart .ct-point {
+  stroke-width: 6px; }
+
+#chartTimelineTwo ul li {
+  border-bottom: 1px solid #e4eaec; }
+
+#chartTimelineTwo .ct-chart .ct-area {
+  fill-opacity: 1; }
+
+#chartTimelineTwo .ct-chart .ct-series.ct-series-a .ct-area {
+  fill: #e4eaec; }
+
+#chartTimelineTwo .ct-chart .ct-series.ct-series-b .ct-area {
+  fill: #3e8ef7; }
+
+#chartStackedBar .ct-chart .ct-label.ct-vertical, #chartStackedBar .ct-chart .ct-label.ct-horizontal {
+  font-size: 14px; }
+
+#chartStackedBar .ct-chart .ct-label.ct-horizontal {
+  text-align: center; }
+
+#chartStackedBar .ct-chart .ct-bar {
+  stroke-width: 3%; }
+
+#chartStackedBar .ct-chart .ct-series.ct-series-a .ct-bar {
+  stroke: #3e8ef7; }
+
+#chartStackedBar .ct-chart .ct-series.ct-series-b .ct-bar {
+  stroke: #f3f7f9; }
+
+@media screen and (max-width: 595px) {
+  #chartBarlineMixTwo .counter-label {
+    font-size: 10px; } }

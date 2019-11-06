@@ -1,247 +1,251 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        input,select {
-            margin-bottom: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
 @endsection
 @section('content')
-    <!-- BEGIN CONTENT BODY -->
-    <div class="page-content" style="padding-top:0;">
-        <!-- BEGIN PAGE BASE CONTENT -->
-        <div class="row">
-            <div class="col-md-12">
-                <!-- BEGIN EXAMPLE TABLE PORTLET-->
-                <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <span class="caption-subject bold uppercase"> 用户列表 </span>
-                        </div>
-                        <div class="actions">
-                            <div class="btn-group btn-group-devided">
-                                <button class="btn sbold red" onclick="exportSSJson()"> 导出JSON </button>
-                                <button class="btn sbold blue" onclick="batchAddUsers()"> 批量生成 </button>
-                                <button class="btn sbold blue" onclick="addUser()"> 添加用户 </button>
-                            </div>
-                        </div>
+    <div class="page-content container-fluid">
+        <div class="panel">
+            <div class="panel-heading">
+                <h2 class="panel-title">用户列表</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-outline-default" onclick="exportSSJson()">
+                        <i class="icon wb-download" aria-hidden="true"></i>导出JSON
+                    </button>
+                    <button class="btn btn-outline-default" onclick="batchAddUsers()">
+                        <i class="icon wb-plus" aria-hidden="true"></i>批量生成
+                    </button>
+                    <button class="btn btn-outline-default" onclick="addUser()">
+                        <i class="icon wb-user-add" aria-hidden="true"></i>添加用户
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="form-inline mb-20">
+                    <div class="form-group">
+                        <input type="text" class="form-control w-60" name="id" value="{{Request::get('id')}}" id="id" placeholder="ID">
+                        <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名">
+                        <input type="text" class="form-control w-100" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信">
+                        <input type="text" class="form-control w-100" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ">
+                        <input type="text" class="form-control w-60" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口">
+                        <select name="pay_way" id="pay_way" class="form-control">
+                            <option value="" @if(Request::get('pay_way') == '') selected hidden @endif>付费方式</option>
+                            <option value="0" @if(Request::get('pay_way') == '0') selected hidden @endif>免费</option>
+                            <option value="1" @if(Request::get('pay_way') == '1') selected hidden @endif>月付</option>
+                            <option value="2" @if(Request::get('pay_way') == '2') selected hidden @endif>季付</option>
+                            <option value="3" @if(Request::get('pay_way') == '3') selected hidden @endif>半年付</option>
+                            <option value="4" @if(Request::get('pay_way') == '4') selected hidden @endif>年付</option>
+                        </select>
+                        <select name="status" id="status" class="form-control">
+                            <option value="" @if(Request::get('status') == '') selected hidden @endif>账号状态</option>
+                            <option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>禁用</option>
+                            <option value="0" @if(Request::get('status') == '0') selected hidden @endif>未激活</option>
+                            <option value="1" @if(Request::get('status') == '1') selected hidden @endif>正常</option>
+                        </select>
+                        <select name="enable" id="enable" class="form-control">
+                            <option value="" @if(Request::get('enable') == '') selected hidden @endif>代理状态</option>
+                            <option value="1" @if(Request::get('enable') == '1') selected hidden @endif>启用</option>
+                            <option value="0" @if(Request::get('enable') == '0') selected hidden @endif>禁用</option>
+                        </select>
                     </div>
-                    <div class="portlet-body">
-                        <div class="row">
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="id" value="{{Request::get('id')}}" id="id" placeholder="用户ID" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="wechat" value="{{Request::get('wechat')}}" id="wechat" placeholder="微信" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 col-sm-4 col-xs-12 form-control" name="qq" value="{{Request::get('qq')}}" id="qq" placeholder="QQ" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <input type="text" class="col-md-4 form-control" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口" onkeydown="if(event.keyCode==13){doSearch();}">
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <select class="form-control" name="pay_way" id="pay_way" onChange="doSearch()">
-                                    <option value="" @if(Request::get('pay_way') == '') selected @endif>付费方式</option>
-                                    <option value="0" @if(Request::get('pay_way') == '0') selected @endif>免费</option>
-                                    <option value="1" @if(Request::get('pay_way') == '1') selected @endif>月付</option>
-                                    <option value="2" @if(Request::get('pay_way') == '2') selected @endif>季付</option>
-                                    <option value="3" @if(Request::get('pay_way') == '3') selected @endif>半年付</option>
-                                    <option value="4" @if(Request::get('pay_way') == '4') selected @endif>年付</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <select class="form-control" name="status" id="status" onChange="doSearch()">
-                                    <option value="" @if(Request::get('status') == '') selected @endif>账号状态</option>
-                                    <option value="-1" @if(Request::get('status') == '-1') selected @endif>禁用</option>
-                                    <option value="0" @if(Request::get('status') == '0') selected @endif>未激活</option>
-                                    <option value="1" @if(Request::get('status') == '1') selected @endif>正常</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <select class="form-control" name="enable" id="enable" onChange="doSearch()">
-                                    <option value="" @if(Request::get('enable') == '') selected @endif>代理状态</option>
-                                    <option value="1" @if(Request::get('enable') == '1') selected @endif>启用</option>
-                                    <option value="0" @if(Request::get('enable') == '0') selected @endif>禁用</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-sm-4 col-xs-12">
-                                <button type="button" class="btn blue" onclick="doSearch();">查询</button>
-                                <button type="button" class="btn grey" onclick="doReset();">重置</button>
-                            </div>
-                        </div>
-                        <div class="table-scrollable table-scrollable-borderless">
-                            <table class="table table-hover table-light">
-                                <thead>
-                                <tr>
-                                    <th> # </th>
-                                    <th> 用户名 </th>
-                                    <th> 订阅码 </th>
-                                    <th> 端口 </th>
-                                    <th> 连接密码 </th>
-                                    <th> 加密方式 </th>
-                                    <!--<th> 协议 </th>
-                                    <th> 混淆 </th>-->
-                                    <th> 已消耗 </th>
-                                    <th> 最后使用 </th>
-                                    <th> 有效期 </th>
-                                    <th> 状态 </th>
-                                    <th> 代理 </th>
-                                    <th> 操作 </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    @if ($userList->isEmpty())
-                                        <tr>
-                                            <td colspan="14" style="text-align: center;">暂无数据</td>
-                                        </tr>
-                                    @else
-                                        @foreach ($userList as $user)
-                                            <tr class="odd gradeX {{$user->trafficWarning ? 'danger' : ''}}">
-                                                <td> {{$user->id}} </td>
-                                                <td> {{$user->username}} </td>
-                                                <td> <a href="javascript:;" class="copySubscribeLink" data-clipboard-text="{{$user->link}}" title="点击复制订阅链接">{{$user->subscribe->code}}</a> </td>
-                                                <td> <span class="label label-danger"> {{$user->port ? $user->port : '未分配'}} </span> </td>
-                                                <td> <span class="label label-default"> {{$user->passwd}} </span> </td>
-                                                <td> <span class="label label-default"> {{$user->method}} </span> </td>
-                                                <!--<td> <span class="label label-default"> {{$user->protocol}} </span> </td>
-                                                <td> <span class="label label-default"> {{$user->obfs}} </span> </td>-->
-                                                <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
-                                                <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i:s', $user->t)}} </td>
-                                                <td class="center">
-                                                    @if ($user->expireWarning == '-1')
-                                                        <span class="label label-danger"> {{$user->expire_time}} </span>
-                                                    @elseif ($user->expireWarning == '0')
-                                                        <span class="label label-warning"> {{$user->expire_time}} </span>
-                                                    @elseif ($user->expireWarning == '1')
-                                                        <span class="label label-default"> {{$user->expire_time}} </span>
-                                                    @else
-                                                        {{$user->expire_time}}
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($user->status > 0)
-                                                        <span class="label label-info">正常</span>
-                                                    @elseif ($user->status < 0)
-                                                        <span class="label label-danger">禁用</span>
-                                                    @else
-                                                        <span class="label label-default">未激活</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($user->enable)
-                                                        <span class="label label-info">启用</span>
-                                                    @else
-                                                        <span class="label label-danger">禁用</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 操作
-                                                            <i class="fa fa-angle-down"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a href="javascript:editUser('{{$user->id}}');"> 编辑 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:delUser('{{$user->id}}');"> 删除 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:doExport('{{$user->id}}');"> 配置信息 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:doMonitor('{{$user->id}}');"> 流量概况 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:ipMonitor('{{$user->id}}');"> 在线巡查 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:resetTraffic('{{$user->id}}');"> 流量清零 </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:switchToUser('{{$user->id}}');"> 切换身份 </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$userList->total()}} 个账号</div>
-                            </div>
-                            <div class="col-md-8 col-sm-8">
-                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $userList->links() }}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+                        <button class="btn btn-danger" onclick="doReset()">重置</button>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
+                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                    <thead class="thead-default">
+                    <tr>
+                        <th> #</th>
+                        <th> 用户名</th>
+                        <th> 端口</th>
+                        <th> 订阅码</th>
+                        <th> 加密方式</th>
+                        <!--<th> 协议 </th>
+                        <th> 混淆 </th>-->
+                        <th> 流量使用</th>
+                        <th> 最后使用</th>
+                        <th> 有效期</th>
+                        <th> 状态</th>
+                        <th> 代理</th>
+                        <th> 操作</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-striped">
+                    @if ($userList->isEmpty())
+                        <tr>
+                            <td colspan="12">暂无数据</td>
+                        </tr>
+                    @else
+                        @foreach ($userList as $user)
+                            <tr class="{{$user->trafficWarning ? 'red-700' : ''}}">
+                                <td> {{$user->id}} </td>
+                                <td> {{$user->username}} </td>
+                                <td>
+                                    @if ($user->port)
+                                        {{$user->port}}
+                                    @else
+                                        <span class="badge badge-lg badge-danger"> 未分配 </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{$user->link}}">{{$user->subscribe->code}}</a>
+                                </td>
+                                <td> {{$user->method}} </td>
+                            <!--<td> {{$user->protocol}} </td>
+                                <td> {{$user->obfs}} </td>-->
+                                <td class="center"> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
+                                <td class="center"> {{empty($user->t) ? '未使用' : date('Y-m-d H:i', $user->t)}} </td>
+                                <td class="center">
+                                    @if ($user->expireWarning == '-1')
+                                        <span class="badge badge-lg badge-danger"> {{$user->expire_time}} </span>
+                                    @elseif ($user->expireWarning == '0')
+                                        <span class="badge badge-lg badge-warning"> {{$user->expire_time}} </span>
+                                    @elseif ($user->expireWarning == '1')
+                                        <span class="badge badge-lg badge-default"> {{$user->expire_time}} </span>
+                                    @else
+                                        {{$user->expire_time}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($user->status > 0)
+                                        <span class="badge badge-lg badge-primary"><i class="wb-check"></i></span>
+                                    @elseif ($user->status < 0)
+                                        <span class="badge badge-lg badge-danger"><i class="wb-close"></i></span>
+                                    @else
+                                        <span class="badge badge-lg badge-default"><i class="wb-minus"></i></span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($user->enable)
+                                        <span class="badge badge-lg badge-info"><i class="wb-check"></i></span>
+                                    @else
+                                        <span class="badge badge-lg badge-danger"><i class="wb-close"></i></span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="javascript:editUser('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-edit"></i></a>
+                                        <a href="javascript:delUser('{{$user->id}}');" class="btn btn-danger"><i class="icon wb-trash"></i></a>
+                                        <a href="javascript:doExport('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-code"></i></a>
+                                        <a href="javascript:doMonitor('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
+                                        <a href="javascript:ipMonitor('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-check"></i></a>
+                                        <a href="javascript:resetTraffic('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-loop"></i>
+                                        </a>
+                                        <a href="javascript:switchToUser('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-user"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-4">
+                        共 {{$userList->total()}} 个账号
+                    </div>
+                    <div class="col-sm-8">
+                        <nav class="Page navigation float-right">
+                            {{ $userList->links() }}
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- END PAGE BASE CONTENT -->
     </div>
-    <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 导出原版json配置
         function exportSSJson() {
-            layer.msg("成功导出原版SS的用户配置信息，加密方式为系统默认的加密方式");
-            window.location.href = '{{url('admin/exportSSJson')}}';
+            swal.fire({
+                title: '导出成功',
+                text: '成功导出原版SS的用户配置信息，加密方式为系统默认的加密方式',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            }).then(() => window.location.href = '/admin/exportSSJson')
         }
 
         // 批量生成账号
         function batchAddUsers() {
-            layer.confirm('将自动生成5个账号，确定继续吗？', {icon: 3, title:'注意'}, function(index) {
-                $.post("{{url('admin/batchAddUsers')}}", {_token:'{{csrf_token()}}'}, function(ret) {
-                    layer.msg(ret.message, {time:1000}, function() {
-                        if (ret.status == 'success') {
-                            window.location.reload();
+            swal.fire({
+                title: '注意',
+                text: '将自动生成5个账号，确定继续吗？',
+                type: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post("/admin/batchAddUsers", {_token: '{{csrf_token()}}'}, function (ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                                .then(() => window.location.reload())
+                        } else {
+                            swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }
                     });
-                });
-
-                layer.close(index);
+                }
             });
         }
 
         // 添加账号
         function addUser() {
-            window.location.href = '{{url('admin/addUser')}}';
+            window.location.href = '/admin/addUser';
         }
 
         // 编辑账号
         function editUser(id) {
-            window.location.href = '{{url('admin/editUser?id=')}}' + id;
+            window.location.href = '/admin/editUser?id=' + id;
         }
 
         // 删除账号
         function delUser(id) {
-            layer.confirm('确定删除账号？', {icon: 2, title:'警告'}, function(index) {
-                $.post("{{url('admin/delUser')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
-                    layer.msg(ret.message, {time:1000}, function() {
-                        if (ret.status == 'success') {
-                            window.location.reload();
+            swal.fire({
+                title: '警告',
+                text: '确定删除账号？',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post("/admin/delUser", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                                .then(() => window.location.reload())
+                        } else {
+                            swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }
                     });
-                });
-
-                layer.close(index);
+                }
             });
+        }
+
+        // 重置
+        function doReset() {
+            window.location.href = '/admin/userList';
+        }
+
+        // 导出配置
+        function doExport(id) {
+            window.location.href = '/admin/export?id=' + id;
+        }
+
+        // 流量监控
+        function doMonitor(id) {
+            window.location.href = '/admin/userMonitor?id=' + id;
+        }
+
+        //在线巡查
+        function ipMonitor(id) {
+            window.location.href = '/admin/onlineIPMonitor?id=' + id;
         }
 
         // 搜索
@@ -255,47 +259,36 @@
             var status = $("#status option:checked").val();
             var enable = $("#enable option:checked").val();
 
-            window.location.href = '{{url('admin/userList')}}' + '?id=' + id +'&username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&status=' + status + '&enable=' + enable;
-        }
-
-        // 重置
-        function doReset() {
-            window.location.href = '{{url('admin/userList')}}';
-        }
-
-        // 导出配置
-        function doExport(id) {
-            window.location.href = '{{url('admin/export?id=')}}' + id;
-        }
-
-        // 流量监控
-        function doMonitor(id) {
-            window.location.href = '{{url('admin/userMonitor?id=')}}' + id;
-        }
-
-        function ipMonitor(id) {
-            window.location.href = '{{url('admin/onlineIPMonitor?id=')}}' + id;
+            window.location.href = '/admin/userList' + '?id=' + id + '&username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&status=' + status + '&enable=' + enable;
         }
 
         // 重置流量
         function resetTraffic(id) {
-            layer.confirm('确定重置该用户流量吗？', {icon: 7, title:'警告'}, function(index) {
-                $.post("{{url('admin/resetUserTraffic')}}", {_token:'{{csrf_token()}}', id:id}, function (ret) {
-                    layer.msg(ret.message, {time:1000}, function() {
-                        if (ret.status == 'success') {
-                            window.location.reload();
+            swal.fire({
+                title: '警告',
+                text: '确定重置该用户流量吗？',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post("/admin/resetUserTraffic", {_token: '{{csrf_token()}}', id: id}, function (ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                                .then(() => window.location.reload())
+                        } else {
+                            swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }
                     });
-                });
-
-                layer.close(index);
+                }
             });
         }
 
         // 切换用户身份
         function switchToUser(user_id) {
             $.ajax({
-                'url': "{{url("/admin/switchToUser")}}",
+                'url': "/admin/switchToUser",
                 'data': {
                     'user_id': user_id,
                     '_token': '{{csrf_token()}}'
@@ -303,32 +296,32 @@
                 'dataType': "json",
                 'type': "POST",
                 success: function (ret) {
-                    layer.msg(ret.message, {time: 1000}, function () {
-                        if (ret.status == 'success') {
-                            window.location.href = "/";
-                        }
-                    });
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                            .then(() => window.location.href = "/")
+                    } else {
+                        swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
+                    }
                 }
             });
         }
 
-        // 修正table的dropdown
-        $('.table-scrollable').on('show.bs.dropdown', function () {
-            $('.table-scrollable').css( "overflow", "inherit" );
+        const clipboard = new ClipboardJS('.copySubscribeLink');
+        clipboard.on('success', function () {
+            swal.fire({
+                title: '复制成功',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false
+            });
         });
-
-        $('.table-scrollable').on('hide.bs.dropdown', function () {
-            $('.table-scrollable').css( "overflow", "auto" );
+        clipboard.on('error', function () {
+            swal.fire({
+                title: '复制失败，请手动复制',
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false
+            });
         });
-
-        // 复制订阅链接
-        var clipboard = new Clipboard('.copySubscribeLink');
-        clipboard.on('success', function(e) {
-            layer.alert("成功复制该用户的订阅链接", {icon: 1, title:'提示'});
-        });
-        clipboard.on('error', function(e) {
-            console.log(e);
-        });
-
     </script>
 @endsection

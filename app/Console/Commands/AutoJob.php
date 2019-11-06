@@ -196,7 +196,7 @@ class AutoJob extends Command
 
                     // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
                     $totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))->sum('total');
-                    if ($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)) {
+                    if ($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * 1073741824)) {
                         User::query()->where('id', $user->id)->update(['enable' => 0, 'ban_time' => strtotime(date('Y-m-d H:i:s', strtotime("+" . self::$systemConfig['traffic_ban_time'] . " minutes")))]);
 
                         // 写入日志

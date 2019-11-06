@@ -1,0 +1,6 @@
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .form-inline .form-control-label {
+    display: block; }
+  .form-inline .form-group {
+    margin-bottom: 20px;
+    vertical-align: baseline; } }

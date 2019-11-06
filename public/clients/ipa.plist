@@ -10,19 +10,19 @@
                         <key>kind</key>
                         <string>software-package</string>
                         <key>url</key>
-                        <string>https://demo.ssrpanel.com/clients/Shadowrocket-2.1.23.ipa</string>
+                        <string>https://域名/clients/文件名.ipa</string><!--修改这里-->
                     </dict>
                 </array>
                 <key>metadata</key>
                 <dict>
                     <key>bundle-identifier</key>
-                     <string>com.liguangming.Shadowrocket</string>
+                     <string>com.liguangming.Shadowrocket</string><!--修改这里-->
                      <key>bundle-version</key>
-                    <string>2.1.23</string>
+                    <string>版本（格式x.x.xx）</string><!--修改这里-->
                     <key>kind</key>
                     <string>software</string>
                     <key>title</key>
-                    <string>Shadowrocket</string>
+                    <string>Shadowrocket</string><!--修改这里-->
                 </dict>
             </dict>
         </array>

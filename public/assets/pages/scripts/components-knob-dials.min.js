@@ -1,1 +1,0 @@
-var ComponentsKnobDials=function(){return{init:function(){jQuery().knob&&!App.isIE8()&&$(".knob").knob({dynamicDraw:!0,thickness:.2,tickColorizeValues:!0,skin:"tron"})}}}();jQuery(document).ready(function(){ComponentsKnobDials.init()});
