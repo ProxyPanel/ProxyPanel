@@ -65,13 +65,13 @@
                                     <i class="wb-stats-bars cyan-500"></i>
                                 </button>
                                 <span class="font-weight-400">{{trans('home.account_bandwidth_usage')}}</span>
-                                <p class="text-center font-weight-100 font-size-40">
+                                <div class="text-center font-weight-100 font-size-40">
                                     {{$info['unusedTransfer']}}
-                                </p>
+                                </div>
                                 @if( \App\Components\Helpers::systemConfig()['reset_traffic'] && $info['resetDays'] != 0 && $info['remainDays']>$info['resetDays'])
-                                    <p class="text-center font-weight-300 blue-grey-500">
+                                    <div class="text-center font-weight-300 blue-grey-500">
                                         {{trans('home.account_reset_notice', ['reset_day' => $info['resetDays']])}}
-                                    </p>
+                                    </div>
                                 @endif
                             </div>
                             <div class="col-lg-5 col-md-12 col-sm-5">
@@ -183,14 +183,14 @@
                                     </nav>
                                 </div>
                             </div>
-                            <div class="panel-body h-400" data-show-on-hover="false" data-direction="vertical"
+                            <div class="panel-body" data-show-on-hover="false" data-direction="vertical"
                                  data-skin="scrollable-shadow" data-plugin="scrollable">
                                 <div data-role="container">
                                     <div data-role="content">
                                         @if(!$noticeList -> isEmpty())
                                             @foreach($noticeList as $notice)
                                                 <h3 class="text-center">{!!$notice->title!!}</h3>
-                                                {!!$notice->content!!}
+                                                {!! $notice->content !!}
                                             @endforeach
                                         @else
                                             <p class="text-center font-size-40">暂无公告</p>
@@ -200,8 +200,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-6 col-lg-12">
-                        <div class="panel panel-primary panel-line h-450">
+                    <div class="col-xxl-6">
+                        <div class="panel panel-primary panel-line">
                             <div class="panel-heading">
                                 <h1 class="panel-title"><i class="wb-pie-chart mr-10"></i>流量使用</h1>
                                 <div class="panel-actions">

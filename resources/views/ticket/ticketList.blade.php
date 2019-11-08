@@ -49,7 +49,7 @@
                                 </td>
                                 @endif
                                 <td>
-                                    <a href="/admin/userList?id={{$ticket->user->id}}" target="_blank">{{$ticket->title}}</a>
+                                    <a href="/ticket/replyTicket?id={{$ticket->id}}" target="_blank">{{$ticket->title}}</a>
                                 </td>
                                 <td style="text-align: center;">
                                     @if ($ticket->status == 0)
