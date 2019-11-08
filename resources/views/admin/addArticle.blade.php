@@ -1,8 +1,7 @@
 @extends('admin.layouts')
 @section('css')
     <link rel="stylesheet" href="/assets/global/vendor/dropify/dropify.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.css">
-    <link rel="stylesheet" href="/assets/global/fonts/font-awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/global/vendor/summernote/summernote.min.css">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -81,7 +80,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-form-label col-md-2" for="content">内容</label>
-                        <textarea class="col-md-10" name="content" data-provide="markdown" data-iconlibrary="fa" rows="15"> </textarea>
+                        <textarea class="col-md-10" name="content" id="summernote" data-plugin="summernote" rows="15"> </textarea>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-success">提交</button>
@@ -93,8 +92,7 @@
 @endsection
 @section('script')
     <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
+    <script src="/assets/global/vendor/summernote/summernote.min.js"></script>
     <script src="/assets/global/js/Plugin/dropify.js"></script>
-    <script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.js"></script>
-    <script src="/assets/global/vendor/marked/marked.js"></script>
-    <script src="/assets/global/vendor/to-markdown/to-markdown.js"></script>
+    <script src="/assets/global/js/Plugin/summernote.js"></script>
 @endsection
