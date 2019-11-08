@@ -1,6 +1,8 @@
 @extends('admin.layouts')
 @section('css')
 	<link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+	<link rel="stylesheet" href="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.css">
+	<link rel="stylesheet" href="/assets/global/fonts/font-awesome/font-awesome.min.css">
 @endsection
 @section('content')
 	<div class="page-content container-fluid">
@@ -103,7 +105,7 @@
 								<div class="row">
 									<label for="content" class="col-md-2 control-label"> 内容 </label>
 									<div class="col-md-10">
-										<textarea class="form-control" rows="6" name="content" id="content"></textarea>
+										<textarea class="form-control" rows="6" name="content" id="content" data-provide="markdown" data-iconlibrary="fa"></textarea>
 										<span class="help-block"> 内容支持<a href="https://maxiang.io/" target="_blank">Markdown语法</a> </span>
 									</div>
 								</div>
@@ -122,6 +124,9 @@
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+	<script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.js"></script>
+	<script src="/assets/global/vendor/marked/marked.js"></script>
+	<script src="/assets/global/vendor/to-markdown/to-markdown.js"></script>
 	<script type="text/javascript">
         // 发送通道消息
         function send() {
