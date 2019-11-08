@@ -70,7 +70,7 @@
                 <div class="panel-title">
                     <div class="brand">
                         @if(\App\Components\Helpers::systemConfig()['website_logo'])
-                            <img class="brand-img" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" width="70px">
+                            <img class="brand-img" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" width="70px" alt="Logo">
                         @else
                             <img class="brand-img" src="/assets/images/logo64.png" alt="Logo">
                         @endif
