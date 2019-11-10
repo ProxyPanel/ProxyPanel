@@ -8,10 +8,6 @@ ALTER TABLE `coupon`
 ALTER TABLE `goods`
 	DROP COLUMN `is_del`;
 
-ALTER TABLE `invite`
-	DROP COLUMN `is_del`;
-
-
 ALTER TABLE `article`
 	ADD COLUMN `deleted_at` DATETIME NULL DEFAULT NULL COMMENT '删除时间' AFTER `updated_at`;
 
