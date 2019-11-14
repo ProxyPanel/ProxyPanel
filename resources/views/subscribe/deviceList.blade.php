@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -9,21 +9,21 @@
                 <h3 class="panel-title">订阅设备列表</h3>
             </div>
             <div class="panel-body">
-                <div class="form-inline pb-20">
-                    <div class="form-group">
-                        <select name="status" id="status" class="form-control">
+                <div class="form-row">
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <select name="status" id="status" class="form-control" onChange="Search()">
                             <option value="" @if(Request::get('status') == '') selected hidden @endif>账号状态</option>
                             <option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>禁用</option>
                             <option value="0" @if(Request::get('status') == '0') selected hidden @endif>未激活</option>
                             <option value="1" @if(Request::get('status') == '1') selected hidden @endif>正常</option>
                         </select>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-2 col-sm-6 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/subscribe/deviceList" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
@@ -63,14 +63,13 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="col-md-4 col-sm-4">
-						<p class="dataTables_info" role="status" aria-live="polite">共
-							<code>{{$deviceList->total()}}</code> 条记录</p>
+                    <div class="col-sm-4">
+                        共 <code>{{$deviceList->total()}}</code> 条记录
                     </div>
-                    <div class="col-md-8 col-sm-8">
-						<div class="float-right">
-							<nav aria-label="Page navigation">{{ $deviceList->links() }}</nav>
-						</div>
+                    <div class="col-sm-8">
+                        <nav class="Page navigation float-right">
+                            {{$deviceList->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -78,19 +77,13 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 搜索
-        function doSearch() {
-			const status = $("#status option:selected").val();
-
-			window.location.href = '/subscribe/deviceList' + '?status=' + status;
-        }
-
-        // 重置
-        function doReset() {
-            window.location.href = '/subscribe/deviceList';
+        function Search() {
+            const status = $("#status option:selected").val();
+            window.location.href = '/subscribe/deviceList' + '?status=' + status;
         }
 
         // 启用禁用订阅设备

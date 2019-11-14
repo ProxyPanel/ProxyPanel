@@ -22,7 +22,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::get('admin', 'AdminController@index'); // 后台首页
     Route::get('admin/userList', 'AdminController@userList'); // 账号列表
     Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
-    Route::any('admin/editUser', 'AdminController@editUser'); // 编辑账号
+    Route::any('admin/editUser/{id}', 'AdminController@editUser'); // 编辑账号
     Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
     Route::post('admin/batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
     Route::get('admin/exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
@@ -30,15 +30,15 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
     Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
     Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
-    Route::get('admin/nodeMonitor', 'AdminController@nodeMonitor'); // 节点流量监控
+    Route::get('admin/nodeMonitor/{id}', 'AdminController@nodeMonitor'); // 节点流量监控
     Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
     Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
     Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
     Route::post('admin/delArticle', 'AdminController@delArticle'); // 删除文章
     Route::get('admin/groupList', 'AdminController@groupList'); // 分组列表
     Route::any('admin/addGroup', 'AdminController@addGroup'); // 添加分组
-    Route::any('admin/editGroup', 'AdminController@editGroup'); // 编辑分组
-    Route::post('admin/delGroup', 'AdminController@delGroup'); // 删除分组
+    Route::any('admin/editGroup/{id}', 'AdminController@editGroup'); // 编辑分组
+    Route::post('admin/delGroup/{id}', 'AdminController@delGroup'); // 删除分组
     Route::get('admin/labelList', 'AdminController@labelList'); // 标签列表
     Route::any('admin/addLabel', 'AdminController@addLabel'); // 添加标签
     Route::any('admin/editLabel', 'AdminController@editLabel'); // 编辑标签
@@ -59,7 +59,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::get('coupon/exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
     Route::any('shop/goodsList', 'ShopController@goodsList'); // 商品列表
     Route::any('shop/addGoods', 'ShopController@addGoods'); // 添加商品
-    Route::any('shop/editGoods', 'ShopController@editGoods'); // 编辑商品
+    Route::any('shop/editGoods/{id}', 'ShopController@editGoods'); // 编辑商品
     Route::post('shop/delGoods', 'ShopController@delGoods'); // 删除商品
     Route::any('admin/config', 'AdminController@config'); // 配置列表
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
@@ -79,8 +79,8 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function (
     Route::get('admin/userRebateList', 'AdminController@userRebateList'); // 返利流水记录
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
     Route::get('admin/userOnlineIPList', 'AdminController@userOnlineIPList'); // 用户在线IP记录
-    Route::get('admin/export', 'AdminController@export'); // 导出(查看)配置信息
-    Route::get('admin/userMonitor', 'AdminController@userMonitor'); // 用户流量监控
+    Route::get('admin/export/{id}', 'AdminController@export'); // 导出(查看)配置信息
+    Route::get('admin/userMonitor/{id}', 'AdminController@userMonitor'); // 用户流量监控
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 用户余额充值
     Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份

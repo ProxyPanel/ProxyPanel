@@ -1,7 +1,6 @@
 @extends('user.layouts')
-
 @section('css')
-    <link rel="stylesheet" href="/assets/examples/css/pages/invoice.css">
+    <link href="/assets/examples/css/pages/invoice.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content">
@@ -104,24 +103,32 @@
                 data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn},
                 dataType: 'json',
                 success: function (ret) {
+                    console.log(ret);
                     $(".input-group-prepend").remove();
                     if (ret.status === 'success') {
                         $("#coupon_sn").parent().prepend('<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
                         // 根据类型计算折扣后的总金额
                         let total_price = 0;
-                        if (ret.data.type === '2') {
-                            total_price = goods_price * ret.data.discount / 10;
+                        if (ret.data.type === 2) {
+                            total_price=  goods_price * (1 - ret.data.discount/10);
+                            $(".page-invoice-amount").parent().prepend('<p>优惠码 - '+ret.data.name+' '+ret.data.discount+'折<br> 优惠 <span>￥'+total_price.toFixed(2)+'</span></p>');
+                            total_price = goods_price - total_price;
+                            console.log(total_price);
                         } else {
                             total_price = goods_price - ret.data.amount;
                             total_price = total_price > 0 ? total_price : 0;
+                            if(ret.data.type === 1){
+                                $(".page-invoice-amount").parent().prepend('优惠码-'+ret.data.name+' <span>￥0</span>');
+                            }
                         }
 
                         // 四舍五入，保留2位小数
-                        $(".grand-total").text("￥" + total_price.toFixed(2));
+                        $(".grand-total").text('￥' + total_price.toFixed(2));
                         swal.fire({
                             title: ret.message,
                             type: 'success',
                             timer: 1500,
+                            showConfirmButton: false
                         });
                     } else {
                         $(".grand-total").text("￥" + goods_price);
@@ -130,6 +137,7 @@
                             title: ret.message,
                             type: 'error',
                             timer: 1500,
+                            showConfirmButton: false
                         });
                     }
                 }
@@ -152,6 +160,7 @@
                             title: ret.message,
                             type: 'success',
                             timer: 1300,
+                            showConfirmButton: false
                         });
                         if (pay_type === 4) {
                             // 如果是Alipay支付写入Alipay的支付页面

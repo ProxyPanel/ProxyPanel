@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -11,29 +11,35 @@
                 </h2>
             </div>
             <div class="panel-body">
-                <div class="form-inline mb-20">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="out_trade_no" value="{{Request::get('out_trade_no')}}" id="out_trade_no" placeholder="本地订单号" autocomplete="off" onkeydown="if(event.keyCode==13){do_search();}">
-                        <input type="text" class="form-control" name="trade_no" value="{{Request::get('trade_no')}}" id="trade_no" placeholder="外部订单号" autocomplete="off" onkeydown="if(event.keyCode==13){do_search();}">
-                        <select class="form-control" name="type" id="type" onChange="doSearch()">
-                            <option value="" @if(Request::get('type') == '') selected @endif>支付方式</option>
-                            <option value="2" @if(Request::get('type') == '2') selected @endif>码支付</option>
-                            <option value="3" @if(Request::get('type') == '3') selected @endif>易支付</option>
-                            <option value="4" @if(Request::get('type') == '4') selected @endif>支付宝国际</option>
-                            <option value="5" @if(Request::get('type') == '5') selected @endif>当面付</option>
-                        </select>
-                        <select class="form-control" name="trade_status" id="trade_status" onChange="doSearch()">
-                            <option value="" @if(Request::get('trade_status') == '') selected @endif>交易状态</option>
-                            <option value="1" @if(Request::get('trade_status') == '1') selected @endif>成功</option>
-                            <option value="0" @if(Request::get('trade_status') == '0') selected @endif>失败</option>
+                <div class="form-row">
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <input type="number" class="form-control" name="out_trade_no" id="out_trade_no" value="{{Request::get('out_trade_no')}}" placeholder="本地订单号" autocomplete="off"/>
+                    </div>
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <input type="number" class="form-control" name="trade_no" id="trade_no" value="{{Request::get('trade_no')}}" placeholder="外部订单号" autocomplete="off"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-4">
+                        <select class="form-control" name="type" id="type" onChange="Search()">
+                            <option value="" @if(Request::get('type') == '') selected hidden @endif>支付方式</option>
+                            <option value="2" @if(Request::get('type') == '2') selected hidden @endif>码支付</option>
+                            <option value="3" @if(Request::get('type') == '3') selected hidden @endif>易支付</option>
+                            <option value="4" @if(Request::get('type') == '4') selected hidden @endif>支付宝国际</option>
+                            <option value="5" @if(Request::get('type') == '5') selected hidden @endif>当面付</option>
                         </select>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-2 col-sm-4">
+                        <select class="form-control" name="trade_status" id="trade_status" onChange="Search()">
+                            <option value="" @if(Request::get('trade_status') == '') selected hidden @endif>交易状态</option>
+                            <option value="1" @if(Request::get('trade_status') == '1') selected hidden @endif>成功</option>
+                            <option value="0" @if(Request::get('trade_status') == '0') selected hidden @endif>失败</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-4 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/payment/callbackList" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="table text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
@@ -69,12 +75,12 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="col-md-4 col-sm-4">
+                    <div class="col-sm-4">
                         共 <code>{{$list->total()}}</code> 个账号
                     </div>
-                    <div class="col-md-8 col-sm-8">
+                    <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{ $list->links() }}
+                            {{$list->links()}}
                         </nav>
                     </div>
                 </div>
@@ -84,22 +90,23 @@
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+        //回车检测
+        $(document).on("keypress", "input", function (e) {
+            if (e.which === 13) {
+                Search()
+            }
+        });
+
         // 搜索
-        function doSearch() {
+        function Search() {
             const trade_no = $("#trade_no").val();
             const out_trade_no = $("#out_trade_no").val();
             const type = $("#type option:selected").val();
             const trade_status = $("#trade_status option:selected").val();
-
             window.location.href = '/payment/callbackList?out_trade_no=' + out_trade_no + '&trade_no=' + trade_no + '&type=' + type + '&trade_status=' + trade_status;
-        }
-
-        // 重置
-        function doReset() {
-            window.location.href = '/payment/callbackList';
         }
     </script>
 @endsection

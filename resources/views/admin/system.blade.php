@@ -1,8 +1,8 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css">
-    <link href="//cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/css/bootstrap-switch.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/global/vendor/dropify/dropify.min.css">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/css/bootstrap-switch.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -74,7 +74,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="website_url">网站地址</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="website_url" value="{{$website_url}}" id="website_url"/>
+                                                    <input class="form-control" type="url" name="website_url" value="{{$website_url}}" id="website_url"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setWebsiteUrl()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 生成重置密码、在线支付必备 </span>
@@ -218,11 +218,11 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label">端口范围</label>
                                                 <div class="input-group col-md-7">
-                                                    <input type="text" class="form-control" name="min_port" value="{{$min_port}}" id="min_port"/>
+                                                    <input type="number" class="form-control" name="min_port" value="{{$min_port}}" id="min_port"/>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> ~ </span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="max_port" value="{{$max_port}}" id="max_port"/>
+                                                    <input type="number" class="form-control" name="max_port" value="{{$max_port}}" id="max_port"/>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 端口范围：1000 - 65535 </span>
                                             </div>
@@ -255,7 +255,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="default_days">初始有效期</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="default_days" value="{{$default_days}}" id="default_days"/>
+                                                    <input class="form-control" type="number" name="default_days" value="{{$default_days}}" id="default_days"/>
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">天</span>
                                                         <button class="btn btn-primary" type="button" onclick="setDefaultDays()">修改</button>
@@ -268,7 +268,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="default_traffic">初始流量</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="default_traffic" value="{{$default_traffic}}" id="default_traffic"/>
+                                                    <input class="form-control" type="number" name="default_traffic" value="{{$default_traffic}}" id="default_traffic"/>
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">MB</span>
                                                         <button class="btn btn-primary" type="button" onclick="setDefaultTraffic()">修改</button>
@@ -281,7 +281,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="invite_num">可生成邀请码数</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="invite_num" value="{{$invite_num}}" id="invite_num"/>
+                                                    <input class="form-control" type="number" name="invite_num" value="{{$invite_num}}" id="invite_num"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setInviteNum()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 用户可以生成的邀请码数 </span>
@@ -291,7 +291,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="reset_password_times">重置密码次数</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="reset_password_times" value="{{$reset_password_times}}" id="reset_password_times"/>
+                                                    <input class="form-control" type="number" name="reset_password_times" value="{{$reset_password_times}}" id="reset_password_times"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setResetPasswordTimes()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 24小时内可以通过邮件重置密码次数 </span>
@@ -301,7 +301,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="active_times">激活账号次数</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="active_times" value="{{$active_times}}" id="active_times"/>
+                                                    <input class="form-control" type="number" name="active_times" value="{{$active_times}}" id="active_times"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setActiveTimes()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 24小时内可以通过邮件激活账号次数 </span>
@@ -311,7 +311,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="register_ip_limit">同IP注册限制</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="register_ip_limit" value="{{$register_ip_limit}}" id="register_ip_limit"/>
+                                                    <input class="form-control" type="number" name="register_ip_limit" value="{{$register_ip_limit}}" id="register_ip_limit"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setRegisterIpLimit()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 同IP在24小时内允许注册数量，为0时不限制 </span>
@@ -345,7 +345,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="subscribe_domain">节点订阅地址</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="subscribe_domain" value="{{$subscribe_domain}}" id="subscribe_domain"/>
+                                                    <input class="form-control" type="url" name="subscribe_domain" value="{{$subscribe_domain}}" id="subscribe_domain"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setSubscribeDomain()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> （推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https:// </span>
@@ -355,7 +355,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="subscribe_max">订阅节点数</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="subscribe_max" value="{{$subscribe_max}}" id="subscribe_max"/>
+                                                    <input class="form-control" type="number" name="subscribe_max" value="{{$subscribe_max}}" id="subscribe_max"/>
                                                     <span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setSubscribeMax()">修改</button></span>
                                                 </div>
                                                 <span class="text-help offset-md-3"> 客户端订阅时取得几个节点，为0时返回全部节点 </span>
@@ -365,7 +365,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="user_invite_days">用户-邀请码有效期</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="user_invite_days" value="{{$user_invite_days}}" id="user_invite_days"/>
+                                                    <input class="form-control" type="number" name="user_invite_days" value="{{$user_invite_days}}" id="user_invite_days"/>
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">天</span>
                                                         <button class="btn btn-primary" type="button" onclick="setUserInviteDays()">修改</button>
@@ -378,7 +378,7 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label" for="admin_invite_days">管理员-邀请码有效期</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="admin_invite_days" value="{{$admin_invite_days}}" id="admin_invite_days"/>
+                                                    <input class="form-control" type="number" name="admin_invite_days" value="{{$admin_invite_days}}" id="admin_invite_days"/>
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">天</span>
                                                         <button class="btn btn-primary" type="button" onclick="setAdminInviteDays()">修改</button>
@@ -425,7 +425,7 @@
                                             <div class="row">
                                                 <label for="traffic_limit_time" class="col-md-3 col-form-label">时间间隔</label>
                                                 <div class="input-group col-md-7">
-                                                    <input class="form-control" type="text" name="traffic_limit_time" value="{{$traffic_limit_time}}" id="traffic_limit_time"/>
+                                                    <input class="form-control" type="number" name="traffic_limit_time" value="{{$traffic_limit_time}}" id="traffic_limit_time"/>
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">分钟</span>
                                                         <button class="btn btn-primary" type="button" onclick="setTrafficLimitTime()">修改</button>
@@ -438,11 +438,11 @@
                                             <div class="row">
                                                 <label class="col-md-3 col-form-label">流量范围</label>
                                                 <div class="input-group col-md-7">
-                                                    <input type="text" class="form-control" name="min_rand_traffic" value="{{$min_rand_traffic}}" id="min_rand_traffic">
+                                                    <input type="number" class="form-control" name="min_rand_traffic" value="{{$min_rand_traffic}}" id="min_rand_traffic">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> ~ </span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="max_rand_traffic" value="{{$max_rand_traffic}}" id="max_rand_traffic">
+                                                    <input type="number" class="form-control" name="max_rand_traffic" value="{{$max_rand_traffic}}" id="max_rand_traffic">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> MB </span>
                                                     </div>
@@ -992,14 +992,14 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
-    <script src="/assets/global/js/Plugin/responsive-tabs.js"></script>
-    <script src="/assets/global/js/Plugin/tabs.js"></script>
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    <script src="//cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/js/bootstrap-switch.min.js"></script>
-    <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
-    <script src="/assets/global/js/Plugin/dropify.js"></script>
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/responsive-tabs.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
+    <script src="//cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         $('input[type="checkbox"]').bootstrapSwitch();

@@ -24,7 +24,7 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/chart-js/Chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {

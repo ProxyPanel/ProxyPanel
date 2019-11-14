@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -9,10 +9,12 @@
                 <h3 class="panel-title">提现申请列表</h3>
             </div>
             <div class="panel-body">
-                <div class="form-inline mb-20">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="申请账号" autocomplete="off">
-                        <select class="form-control" name="status" id="status">
+                <div class="form-row">
+                    <div class="form-group col-lg-2 col-sm-4">
+                        <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="申请账号"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-4">
+                        <select class="form-control" name="status" id="status" onChange="Search()">
                             <option value="" @if(Request::get('status') == '') selected hidden @endif>状态</option>
                             <option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>驳回</option>
                             <option value="0" @if(Request::get('status') == '0') selected hidden @endif>待审核</option>
@@ -20,12 +22,12 @@
                             <option value="2" @if(Request::get('status') == '2') selected hidden @endif>已打款</option>
                         </select>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-1 col-sm-4 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/admin/applyList" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
@@ -69,9 +71,9 @@
                                 <td> {{$apply->created_at == $apply->updated_at ? '' : $apply->updated_at}} </td>
                                 <td>
                                     @if($apply->status > 0 && $apply->status < 2)
-                                        <button class="btn btn-sm btn-danger" onclick="doAudit('{{$apply->id}}')"> 审核</button>
+                                        <a href="/admin/applyDetail?id={{$apply->id}}" class="btn btn-sm btn-danger">审核</a>
                                     @else
-                                        <button class="btn btn-sm btn-primary" onclick="doAudit('{{$apply->id}}')"><i class="icon wb-search"></i></button>
+                                        <a href="/admin/applyDetail?id={{$apply->id}}" class="btn btn-sm btn-primary"><i class="icon wb-search"></i></a>
                                     @endif
                                 </td>
                             </tr>
@@ -83,12 +85,12 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$applyList->total()}} 个申请
+                        共 <code>{{$applyList->total()}}</code> 个申请
                     </div>
                     <div class="col-sm-8">
-                        <div class="Page navigation float-right">
-                            {{ $applyList->links() }}
-                        </div>
+                        <nav class="Page navigation float-right">
+                            {{$applyList->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -97,25 +99,21 @@
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 审核
-        function doAudit(id) {
-            window.open('/admin/applyDetail?id=' + id);
-        }
+        //回车检测
+        $(document).on("keypress", "input", function (e) {
+            if (e.which === 13) {
+                Search()
+            }
+        });
 
         // 搜索
-        function do_search() {
+        function Search() {
             const username = $("#username").val();
             const status = $("#status option:selected").val();
-
             window.location.href = '/admin/applyList?username=' + username + '&status=' + status;
-        }
-
-        // 重置
-        function do_reset() {
-            window.location.href = '/admin/applyList';
         }
     </script>
 @endsection

@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">节点分组</h3>
                 <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="addGroup()"><i class="icon wb-plus"></i>添加分组</button>
+                    <a href="/admin/addGroup" class="btn btn-primary"><i class="icon wb-plus"></i>添加分组</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -34,7 +34,7 @@
                                 <td> {{$levelMap[$group->level]}} </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-primary" onclick="editGroup('{{$group->id}}')"><i class="icon wb-edit"></i></button>
+                                        <a href="/admin/editGroup/{{$group->id}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
                                         <button class="btn btn-danger" onclick="delGroup('{{$group->id}}')"><i class="icon wb-trash"></i></button>
                                     </div>
                                 </td>
@@ -46,13 +46,13 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="col-md-4 col-sm-4">
-                        共 {{$groupList->total()}} 个节点分组
+                    <div class="col-sm-4">
+                        共 <code>{{$groupList->total()}}</code> 个节点分组
                     </div>
-                    <div class="col-md-8 col-sm-8">
-                        <div class="Page navigation float-right">
-                            {{ $groupList->links() }}
-                        </div>
+                    <div class="col-sm-8">
+                        <nav class="Page navigation float-right">
+                            {{$groupList->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -60,19 +60,9 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 添加节点分组
-        function addGroup() {
-            window.location.href = '/admin/addGroup';
-        }
-
-        // 编辑节点分组
-        function editGroup(id) {
-            window.location.href = '/admin/editGroup/' + id;
-        }
-
         // 删除节点分组
         function delGroup(id) {
             swal.fire({

@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'number' => '500',
-    'name'   => 'OtakuMod'
+    'number' => '1.1',
+    'name'   => 'SSRPanel_OtakuMod'
 ];

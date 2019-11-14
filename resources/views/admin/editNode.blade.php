@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css">
-    <style>
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
         .hidden {
             display: none
         }
@@ -18,7 +18,7 @@
                 <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
             </div>
             <div class="panel-body">
-                <form action="{{url('admin/editNode')}}" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                <form action="/admin/editNode" method="post" class="form-horizontal" onsubmit="return Submit()">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="example-wrap">
@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="server" class="col-md-3 col-form-label"> 域名 </label>
-                                        <input type="text" class="form-control col-md-4" name="server" id="server" value="{{$node->server}}" placeholder="服务器域名地址，填则优先取域名地址">
+                                        <input type="url" class="form-control col-md-4" name="server" id="server" value="{{$node->server}}" placeholder="服务器域名地址，填则优先取域名地址">
                                         <span class="text-help offset-md-3">如果开启Namesilo且域名是Namesilo上购买的，则会强制更新域名的DNS记录为本节点IP，如果其他节点绑定了该域名则会清空其域名信息</span>
                                     </div>
                                     <div class="form-group row">
@@ -80,12 +80,12 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="ssh_port" class="col-md-3 col-form-label"> SSH端口 </label>
-                                        <input type="text" class="form-control col-md-4" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
+                                        <input type="number" class="form-control col-md-4" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
                                         <span class="text-help offset-md-3">请务必正确填写此值，否则TCP阻断检测可能误报</span>
                                     </div>
                                     <div class="form-group row">
                                         <label for="traffic_rate" class="col-md-3 col-form-label"> 流量比例 </label>
-                                        <input type="text" class="form-control col-md-4" name="traffic_rate" value="{{$node->traffic_rate}}" id="traffic_rate" required>
+                                        <input type="number" class="form-control col-md-4" name="traffic_rate" value="{{$node->traffic_rate}}" id="traffic_rate" required>
                                         <span class="text-help offset-md-3"> 举例：0.1用100M结算10M，5用100M结算500M </span>
                                     </div>
                                     <div class="form-group row">
@@ -124,7 +124,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="sort" class="col-md-3 col-form-label">排序</label>
-                                        <input type="text" class="form-control col-md-4" name="sort" value="{{$node->sort}}" id="sort">
+                                        <input type="number" class="form-control col-md-4" name="sort" value="{{$node->sort}}" id="sort">
                                         <span class="text-help offset-md-3"> 排序值越大排越前 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</span>
                                     </div>
                                     <div class="form-group row">
@@ -326,7 +326,7 @@
                                             </div>
                                             <div class="form-group row">
                                                 <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
-                                                <input type="text" class="form-control col-md-4" name="single_port" id="single_port" value="{{$node->single_port}}" placeholder="443">
+                                                <input type="number" class="form-control col-md-4" name="single_port" id="single_port" value="{{$node->single_port}}" placeholder="443">
                                                 <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
                                             </div>
                                             <div class="form-group row">
@@ -371,7 +371,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <label for="v2_port" class="col-md-3 col-form-label">端口</label>
-                                            <input type="text" class="form-control col-md-4" name="v2_port" id="v2_port" value="{{$node->v2_port}}" placeholder="10087">
+                                            <input type="number" class="form-control col-md-4" name="v2_port" id="v2_port" value="{{$node->v2_port}}" placeholder="10087">
                                         </div>
                                         <div class="form-group row">
                                             <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
@@ -455,12 +455,12 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             var _token = '{{csrf_token()}}';
             var id = '{{Request::get('id')}}';
             var name = $('#name').val();

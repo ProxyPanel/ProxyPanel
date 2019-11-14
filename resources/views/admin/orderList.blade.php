@@ -1,8 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -11,71 +10,79 @@
                 <h2 class="panel-title">订单列表</h2>
             </div>
             <div class="panel-body">
-                <div class="form-inline pb-20">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名"/>
-                        <input type="text" class="col-md-4 form-control" name="order_sn" value="{{Request::get('order_sn')}}" id="order_sn" placeholder="订单号" onkeydown="if(event.keyCode==13){do_search();}">
-                        <div class="input-group col-md-6 input-daterange" data-plugin="datepicker">
+                <div class="form-row">
+                    <div class="form-group col-lg-2 col-sm-6">
+                        <input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6">
+                        <input type="number" class="form-control" name="order_sn" id="order_sn" value="{{Request::get('order_sn')}}" placeholder="订单号"/>
+                    </div>
+                    <div class="form-group col-lg-6 col-sm-12">
+                        <div class="input-group input-daterange" data-plugin="datepicker">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
                             </div>
-                            <div class="input-daterange input-group" id="datepicker">
-                                <input type="text" class="form-control" value="2019-11-05" name="start" id="start_time"/>
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">至</span>
-                                </div>
-                                <input type="text" class="form-control" value="2019-11-25" name="end" id="end_time"/>
+                            <input type="text" class="form-control" name="start" id="start" value="" placeholder="{{date("Y-m-d")}}"/>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">至</span>
                             </div>
+                            <input type="text" class="form-control" name="end" id="end" value="" placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
                         </div>
-                        <select class="form-control" name="is_expire" id="is_expire">
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6">
+                        <select class="form-control" name="is_expire" id="is_expire" onChange="Search()">
                             <option value="" @if(Request::get('is_expire') == '') selected hidden @endif>是否过期</option>
                             <option value="0" @if(Request::get('is_expire') == '0') selected hidden @endif>否</option>
                             <option value="1" @if(Request::get('is_expire') == '1') selected hidden @endif>是</option>
                         </select>
-                        <select class="form-control" name="is_coupon" id="is_coupon">
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6">
+                        <select class="form-control" name="is_coupon" id="is_coupon" onChange="Search()">
                             <option value="" @if(Request::get('is_coupon') == '') selected hidde @endif>是否使用优惠券</option>
                             <option value="0" @if(Request::get('is_coupon') == '0') selected hidden @endif>否</option>
                             <option value="1" @if(Request::get('is_coupon') == '1') selected hidden @endif>是</option>
                         </select>
-                        <select class="form-control" name="pay_way" id="pay_way">
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6">
+                        <select class="form-control" name="pay_way" id="pay_way" onChange="Search()">
                             <option value="" @if(Request::get('pay_way') == '') selected hidden @endif>支付方式</option>
                             <option value="1" @if(Request::get('pay_way') == '1') selected hidden @endif>余额支付</option>
                             <option value="2" @if(Request::get('pay_way') == '2') selected hidden @endif>有赞云支付</option>
                             <option value="4" @if(Request::get('pay_way') == '4') selected hidden @endif>支付宝国际</option>
                             <option value="5" @if(Request::get('pay_way') == '5') selected hidden @endif>支付宝当面付</option>
                         </select>
-                        <select class="form-control" name="status" id="status">
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6">
+                        <select class="form-control" name="status" id="status" onChange="Search()">
                             <option value="" @if(Request::get('status') == '') selected hidden @endif>订单状态</option>
                             <option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>已关闭</option>
                             <option value="0" @if(Request::get('status') == '0') selected hidden @endif>待支付</option>
                             <option value="1" @if(Request::get('status') == '1') selected hidden @endif>已支付待确认</option>
                             <option value="2" @if(Request::get('status') == '2') selected hidden @endif>已完成</option>
                         </select>
-                        <ul class="list-unstyled list-inline">
-                            <li class="list-inline-item">
-                                <div class="radio-custom radio-primary">
-                                    <input type="radio" name="sort" value="1" checked/>
-                                    <label>升序</label>
-                                </div>
-                            </li>
-                            <li class="list-inline-item">
-                                <div class="radio-custom radio-primary">
-                                    <input type="radio" name="sort" value="0" @if(Request::get('sort') == '0') checked @endif />
-                                    <label>降序</label>
-                                </div>
-                            </li>
-                        </ul>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <div class="radio-custom radio-primary radio-inline">
+                                <input type="radio" name="sort" value="0" checked/>
+                                <label for="type">降序</label>
+                            </div>
+                            <div class="radio-custom radio-primary radio-inline">
+                                <input type="radio" name="sort" value="1" @if(Request::get('sort') == '1') checked @endif/>
+                                <label for="type">升序</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/admin/orderList" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 操作人</th>
+                        <th> 用户名</th>
                         <th> 订单号</th>
                         <th> 商品</th>
                         <th> 过期时间</th>
@@ -100,11 +107,10 @@
                                     @if(empty($order->user) )
                                         【账号不存在】
                                     @else
-                                        <a href="{{url('admin/userList?id=') . $order->user->id}}" target="_blank">{{$order->user->username}} </a>
+                                        <a href="/admin/userList?id={{$order->user->id}}" target="_blank">{{$order->user->username}} </a>
                                     @endif
                                 </td>
-                                <td><a href="/admin/orderList?order_sn={{$order->order_sn}}">{{$order->order_sn}}</a>
-                                </td>
+                                <td> {{$order->order_sn}}</td>
                                 <td> {{$order->goods->name}} </td>
                                 <td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
                                 <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
@@ -144,11 +150,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$orderList->total()}} 个订单
+                        共 <code>{{$orderList->total()}}</code> 个订单
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{ $orderList->links() }}
+                            {{$orderList->links()}}
                         </nav>
                     </div>
                 </div>
@@ -158,36 +164,35 @@
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 有效期
         $('.input-daterange').datepicker({
             format: "yyyy-mm-dd",
         });
+        //回车检测
+        $(document).on("keypress", "input", function (e) {
+            if (e.which === 13) {
+                Search()
+            }
+        });
 
         // 搜索
-        function doSearch() {
-            var username = $("#username").val();
-            var is_expire = $("#is_expire").val();
-            var is_coupon = $("#is_coupon").val();
-            var pay_way = $("#pay_way").val();
-            var status = $("#status").val();
-            var sort = $("input:radio[name='sort']:checked").val();
-            var start= $("#start_time").val;
-            var end = $("#end_time").val;
-            var range_time = [start,end];
-            log.console(range_time);
+        function Search() {
+            const username = $("#username").val();
+            const order_sn = $("#order_sn").val();
+            const is_expire = $("#is_expire").val();
+            const is_coupon = $("#is_coupon").val();
+            const pay_way = $("#pay_way").val();
+            const status = $("#status").val();
+            const sort = $("input:radio[name='sort']:checked").val();
+            const startTime = $("#start").val();
+            const endTime = $("#end").val();
+            const range_time = [startTime, endTime];
             window.location.href = '/admin/orderList?username=' + username + '&order_sn=' + order_sn + '&is_expire=' + is_expire + '&is_coupon=' + is_coupon + '&pay_way=' + pay_way + '&status=' + status + '&sort=' + sort + '&range_time=' + range_time;
-        }
-
-        // 重置
-        function doReset() {
-            window.location.href = '/admin/orderList';
         }
     </script>
 @endsection

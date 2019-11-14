@@ -58,7 +58,7 @@
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false})
                         .then(() => window.location.href = '/invoices')
-                } else {
+                } else if(ret.status === 'error') {
                     swal.fire({title: ret.message, type: "error", timer: 1500, showConfirmButton: false})
                         .then(() => window.location.href = '/invoices')
                 }

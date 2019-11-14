@@ -7,14 +7,8 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
-use InvalidArgumentException;
 use ReflectionException;
-use RuntimeException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class Handler extends ExceptionHandler
 {
@@ -73,56 +67,29 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         }
 
-        // 捕获未生成key异常
-        if ($exception instanceof RuntimeException) {
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
-            } else {
-                return response()->view('auth.error', ['message' => $exception->getMessage()]);
-            }
-        }
-
         // 捕获访问异常
         if ($exception instanceof NotFoundHttpException) {
             \Log::info("异常请求：" . $request->fullUrl() . "，IP：" . getClientIp());
 
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
+            if ($request->ajax()) {
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Page Not Found']);
             } else {
-                return response()->view('auth.error', ['message' => $exception->getMessage()]);
-            }
-        }
-
-        // 路由参数异常
-        if ($exception instanceof InvalidArgumentException) {
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
-            } else {
-                return response()->view('auth.error', ['message' => $exception->getMessage()]);
-            }
-        }
-
-        // 请求方式不允许异常
-        if ($exception instanceof MethodNotAllowedHttpException) {
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
-            } else {
-                return response()->view('auth.error', ['message' => $exception->getMessage()]);
+                return response()->view('auth.error', ['message' => trans('error.MissingPage')]);
             }
         }
 
         // 捕获身份校验异常
         if ($exception instanceof AuthenticationException) {
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
+            if ($request->ajax()) {
+                return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Unauthorized']);
             } else {
-                return response()->view('auth.error', ['message' => $exception->getMessage()]);
+                return response()->view('auth.error', ['message' => trans('error.Unauthorized')]);
             }
         }
 
         // 捕获CSRF异常
         if ($exception instanceof TokenMismatchException) {
-            if ($request->expectsJson()) {
+            if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error, Please Refresh Page, Try One More Time']);
             } else {
                 return response()->view('auth.error', ['message' => trans('error.RefreshPage')]);
@@ -131,7 +98,7 @@ class Handler extends ExceptionHandler
 
         // 捕获反射异常
         if ($exception instanceof ReflectionException) {
-            if ($request->expectsJson()) {
+            if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
             } else {
                 return response()->view('auth.error', ['message' => trans('error.SystemError')]);
@@ -140,30 +107,11 @@ class Handler extends ExceptionHandler
 
         // 捕获系统错误异常
         if ($exception instanceof ErrorException) {
-            if ($request->expectsJson()) {
+            if ($request->ajax()) {
                 return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
             } else {
                 return response()->view('auth.error', ['message' => trans('error.SystemError') . ', ' . trans('error.Visit') . '<a href="/logs" target="_blank">' . trans('error.log') . '</a>']);
             }
-        }
-
-        // 未授权异常
-        if ($exception instanceof UnauthorizedHttpException) {
-            if ($request->expectsJson()) {
-                return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
-            } else {
-                return response()->view('auth.error', ['message' => $exception->getMessage()]);
-            }
-        }
-
-        // 客户端API：捕获认证过期异常
-        if ($exception instanceof TokenExpiredException) {
-            return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
-        }
-
-        // 客户端API：捕获认证不合法异常
-        if ($exception instanceof TokenInvalidException) {
-            return response()->json(['status' => 'fail', 'data' => '', 'message' => $exception->getMessage()]);
         }
 
         return parent::render($request, $exception);

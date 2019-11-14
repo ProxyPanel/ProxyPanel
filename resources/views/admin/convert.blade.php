@@ -20,7 +20,7 @@
                     <div class="col-md-4 form-group">
                         <label for="transfer_enable">可用流量</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="transfer_enable" value="1000" id="transfer_enable" placeholder="" required>
+                            <input type="number" class="form-control" name="transfer_enable" value="1000" id="transfer_enable" placeholder="" required>
                             <span class="input-group-text">GB</span>
                         </div>
                     </div>
@@ -56,10 +56,10 @@
                         <textarea class="form-control" rows="22" name="result" id="result" onclick="this.focus();this.select()" readonly="readonly"></textarea>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn btn-block btn-primary" onclick="doConvert()">转 换</button>
+                        <button class="btn btn-block btn-primary" onclick="Convert()">转 换</button>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn btn-block btn-danger" onclick="doDownload()">下 载</button>
+                        <a href="/admin/download?type=1" class="btn btn-block btn-danger">下 载</a>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
 @section('script')
     <script type="text/javascript">
         // 转换
-        function doConvert() {
+        function Convert() {
             const _token = '{{csrf_token()}}';
 			const method = $('#method').val();
 			const transfer_enable = $('#transfer_enable').val();
@@ -119,11 +119,6 @@
                 }
             });
             return false;
-        }
-
-        // 下载
-        function doDownload() {
-            window.location.href = '/admin/download?type=1';
         }
     </script>
 @endsection

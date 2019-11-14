@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -45,15 +45,13 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="col-md-4 col-sm-4">
+                    <div class="col-sm-4">
                         共 <code>{{$list->total()}}</code> 条记录
                     </div>
-                    <div class="col-md-8 col-sm-8">
-                        <div class="float-right">
-                            <nav class="Page navigation">
-                                {{ $list->links() }}
+                    <div class="col-sm-8">
+                            <nav class="Page navigation float-right">
+                                {{$list->links()}}
                             </nav>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -70,7 +68,7 @@
                     <h4 class="modal-title"> 添加敏感词 </h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="words" id="words" placeholder="请填入敏感词" class="form-control">
+                    <input type="text" name="words" id="words" placeholder="请填入敏感词" class="form-control"/>
                 </div>
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-danger"> 关 闭 </button>
@@ -82,8 +80,8 @@
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 添加敏感词

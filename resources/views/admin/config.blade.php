@@ -1,8 +1,7 @@
 @extends('admin.layouts')
-
 @section('css')
     <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -319,10 +318,10 @@
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
-    <script src="/assets/global/js/Plugin/tabs.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 添加等级
@@ -354,7 +353,6 @@
                         $("#level_msg").show().html(ret.message);
                         return false;
                     }
-
                     $("#add_level_modal").modal("hide");
                     window.location.href = '/admin/config?tab=' + tabId;
                 },
@@ -440,7 +438,6 @@
                         $("#country_msg").show().html(ret.message);
                         return false;
                     }
-
                     $("#add_country_modal").modal("hide");
                     window.location.href = '/admin/config?tab=' + tabId;
                 },

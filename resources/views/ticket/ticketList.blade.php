@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -8,22 +8,22 @@
             <div class="panel-heading">
                 <h3 class="panel-title">工单列表</h3>
                 <div class="panel-actions">
-                    <button class="btn btn-primary btn-animate btn-animate-side" onclick="addTicket()">
+                    <a href="/ticket/addTicket" class="btn btn-primary btn-animate btn-animate-side">
                         <span><i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}</span>
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="panel-body">
-                <div class="form-inline mb-20">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" autocomplete="off" onkeydown="if(event.keyCode==13){do_search();}">
+                <div class="form-row">
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名" autocomplete="off"/>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-2 col-sm-6 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/ticket/ticketList" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
@@ -46,12 +46,13 @@
                                         【账号已删除】
                                     @else
                                         <a href="/admin/userList?id={{$ticket->user->id}}" target="_blank">{{$ticket->user->username}}</a>
+                                    @endif
                                 </td>
-                                @endif
+
                                 <td>
                                     <a href="/ticket/replyTicket?id={{$ticket->id}}" target="_blank">{{$ticket->title}}</a>
                                 </td>
-                                <td style="text-align: center;">
+                                <td class="text-center">
                                     @if ($ticket->status == 0)
                                         <span class="badge badge-lg badge-info"> 待处理 </span>
                                     @elseif ($ticket->status == 1)
@@ -68,11 +69,13 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="col-md-4 col-sm-4">
+                    <div class="col-sm-4">
                         共 <code>{{$ticketList->total()}}</code> 个工单
                     </div>
-                    <div class="col-md-8 col-sm-8">
-                        <nav class="Page navigation float-right">{{ $ticketList->links() }}</nav>
+                    <div class="col-sm-8">
+                        <nav class="Page navigation float-right">
+                            {{$ticketList->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -80,28 +83,20 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 发起工单
-        function addTicket() {
-            window.location.href = '/ticket/addTicket';
-        }
-
-        // 回复工单
-        function reply(id) {
-            window.location.href = '/ticket/replyTicket?id=' + id;
-        }
+        //回车检测
+        $(document).on("keypress", "input", function (e) {
+            if (e.which === 13) {
+                Search()
+            }
+        });
 
         // 搜索
-        function doSearch() {
+        function Search() {
             const username = $("#username").val();
             window.location.href = '/ticket/ticketList?username=' + username;
-        }
-
-        // 重置
-        function doReset() {
-            window.location.href = '/ticket/ticketList';
         }
     </script>
 @endsection

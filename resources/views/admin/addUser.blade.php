@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -10,7 +10,7 @@
                 <h2 class="panel-title">用户添加</h2>
             </div>
             <div class="panel-body">
-                <form action="/admin/addUser" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                <form action="/admin/addUser" method="post" class="form-horizontal" onsubmit="return Submit()">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="example-wrap">
@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label for="password" class="col-md-3 col-form-label">密码</label>
-                                    <input type="text" class="form-control col-md-4" name="password" value="" id="password" placeholder="留空则自动生成随机密码" autocomplete="off"/>
+                                    <input type="password" class="form-control col-md-4" name="password" value="" id="password" placeholder="留空则自动生成随机密码" autocomplete="off"/>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label">用途</label>
@@ -167,7 +167,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label for="qq" class="col-md-3 col-form-label">QQ</label>
-                                    <input type="text" class="col-md-4 form-control" name="qq" id="qq" autocomplete="off"/>
+                                    <input type="number" class="col-md-4 form-control" name="qq" id="qq" autocomplete="off"/>
                                 </div>
                                 <div class="form-group row">
                                     <label for="remark" class="col-md-3 col-form-label">备注</label>
@@ -182,11 +182,11 @@
                                     <div class="col-md-4">
                                         @if(\App\Components\Helpers::systemConfig()['is_rand_port'])
                                             <div class="input-group">
-                                                <input class="form-control" type="text" name="port" value="{{$last_port}}" id="port" autocomplete="off"/>
+                                                <input class="form-control" type="number" name="port" value="{{$last_port}}" id="port" autocomplete="off"/>
                                                 <span class="input-group-append"><button class="btn btn-success" type="button" onclick="makePort()"> <i class="icon wb-refresh"></i> </button></span>
                                             </div>
                                         @else
-                                            <input type="text" class="form-control" name="port" value="{{$last_port}}" id="port" autocomplete="off" aria-required="true" aria-invalid="true" aria-describedby="number-error" required/>
+                                            <input type="number" class="form-control" name="port" value="{{$last_port}}" id="port" autocomplete="off" aria-required="true" aria-invalid="true" aria-describedby="number-error" required/>
                                         @endif
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@
                                 <div class="form-group row">
                                     <label for="transfer_enable" class="col-md-3 col-form-label">可用流量</label>
                                     <div class="input-group col-md-3">
-                                        <input type="text" class="form-control" name="transfer_enable" value="1024" id="transfer_enable" autocomplete="off" required>
+                                        <input type="number" class="form-control" name="transfer_enable" value="1024" id="transfer_enable" autocomplete="off" required>
                                         <span class="input-group-text">GB</span>
                                     </div>
                                 </div>
@@ -258,7 +258,7 @@
                                 <div class="form-group row">
                                     <label for="speed_limit_per_con" class="col-md-3 col-form-label">单连接限速</label>
                                     <div class="input-group col-md-4">
-                                        <input type="text" class="form-control" name="speed_limit_per_con" value="10737418240" id="speed_limit_per_con" autocomplete="off"/>
+                                        <input type="number" class="form-control" name="speed_limit_per_con" value="10737418240" id="speed_limit_per_con" autocomplete="off"/>
                                         <span class="input-group-text">Byte</span>
                                     </div>
                                     <span class="text-help offset-md-1"> 为 0 时不限速 </span>
@@ -266,7 +266,7 @@
                                 <div class="form-group row">
                                     <label for="speed_limit_per_user" class="col-md-3 col-form-label">单用户限速</label>
                                     <div class="input-group col-md-4">
-                                        <input type="text" class="form-control" name="speed_limit_per_user" value="10737418240" id="speed_limit_per_user" autocomplete="off"/>
+                                        <input type="number" class="form-control" name="speed_limit_per_user" value="10737418240" id="speed_limit_per_user" autocomplete="off"/>
                                         <span class="input-group-text">Byte</span>
                                     </div>
                                     <span class="text-help offset-md-1">为 0 时不限速 </span>
@@ -292,10 +292,10 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         $('.input-daterange>input').datepicker({
@@ -304,7 +304,7 @@
         });
 
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             var _token = '{{csrf_token()}}';
             var username = $('#username').val();
             var password = $('#password').val();

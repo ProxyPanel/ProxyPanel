@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -10,7 +10,7 @@
                     <small>标签影响用户查看/订阅节点信息（用户和节点通过标签进行关联）</small>
                 </h3>
                 <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="addLabel()"><i class="icon wb-plus"></i>添加标签</button>
+                    <a href="/admin/addLabel" class="btn btn-primary"><i class="icon wb-plus"></i>添加标签</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -40,7 +40,7 @@
                                 <td> {{$label->sort}} </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-primary" onclick="editLabel('{{$label->id}}')"><i class="icon wb-edit"></i></button>
+                                        <a href="/admin/editLabel?id={{$label->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
                                         <button class="btn btn-danger" onclick="delLabel('{{$label->id}}')"><i class="icon wb-trash"></i></button>
                                     </div>
                                 </td>
@@ -53,11 +53,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$labelList->total()}} 个标签
+                        共 <code>{{$labelList->total()}}</code> 个标签
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{ $labelList->links() }}
+                            {{$labelList->links()}}
                         </nav>
                     </div>
                 </div>
@@ -66,19 +66,9 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 添加标签
-        function addLabel() {
-            window.location.href = '/admin/addLabel';
-        }
-
-        // 编辑标签
-        function editLabel(id) {
-            window.location.href = '/admin/editLabel?id=' + id + '&page={{Request::get('page', 1)}}';
-        }
-
         // 删除标签
         function delLabel(id) {
             swal.fire({

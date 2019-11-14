@@ -1,7 +1,7 @@
 @extends('auth.layouts')
 @section('title',\App\Components\Helpers::systemConfig()['website_name'])
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">>
 @endsection
 @section('content')
     <h4 class="caption-subject font-dark bold">{{trans('home.free_invite_codes_title')}}</h4>
@@ -47,12 +47,12 @@
         <div class="mt-20">
             <button class="btn btn-danger btn-lg float-left" onclick="login()">{{trans('auth.back')}}</button>
             <nav class="Page navigation float-right">
-                {{ $inviteList->links() }}
+                {{$inviteList->links()}}
             </nav>
         </div>
     @endif
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 @endsection

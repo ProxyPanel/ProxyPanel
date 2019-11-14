@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -14,16 +14,17 @@
                         <span class="badge badge-lg badge-success"> 已打款 </span>
                     @else
                         <div class="btn-group" role="group">
+                            <a href="/admin/applyList" class="btn btn-danger"> 返回</a>
                             <button type="button" class="btn btn-primary dropdown-toggle" href="javascript:" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon wb-list" aria-hidden="true"></i>
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="exampleIconDropdown1" role="menu">
+                            <div class="dropdown-menu" role="menu">
                                 @if($info->status == 0)
-                                    <a class="dropdown-item" href="javascript:setStatus('1');" role="menuitem"><i class="icon wb-check" aria-hidden="true"></i>审核通过</a>
-                                    <a class="dropdown-item" href="javascript:setStatus('-1');" role="menuitem"><i class="icon wb-close" aria-hidden="true"></i>驳回</a>
+                                    <a class="dropdown-item" href="javascript:setStatus(1);" role="menuitem"><i class="icon wb-check" aria-hidden="true"></i>审核通过</a>
+                                    <a class="dropdown-item" href="javascript:setStatus(-1);" role="menuitem"><i class="icon wb-close" aria-hidden="true"></i>驳回</a>
                                 @endif
                                 @if($info->status == 1)
-                                    <a class="dropdown-item" href="javascript:setStatus('2');" role="menuitem"><i class="icon wb-check-circle" aria-hidden="true"></i>已打款</a>
+                                    <a class="dropdown-item" href="javascript:setStatus(2);" role="menuitem"><i class="icon wb-check-circle" aria-hidden="true"></i>已打款</a>
                                 @endif
                             </div>
                         </div>
@@ -38,6 +39,7 @@
                             <th colspan="6">申请单ID：{{$info->id}} | 申请人：{{$info->user->username}} | 申请提现金额：￥{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
                         </tr>
                         <tr>
+                            <th> # </th>
                             <th> 关联人</th>
                             <th> 关联订单</th>
                             <th> 订单金额</th>
@@ -71,12 +73,12 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        本申请共涉及 {{$list->total()}} 单
+                        本申请共涉及 <code>{{$list->total()}}</code> 单
                     </div>
                     <div class="col-sm-8">
-                        <div class="Page navigation float-right">
-                            {{ $list->links() }}
-                        </div>
+                        <nav class="Page navigation float-right">
+                            {{$list->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -84,9 +86,8 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
-
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 更改状态
         function setStatus(status) {

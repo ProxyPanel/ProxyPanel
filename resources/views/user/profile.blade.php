@@ -99,5 +99,5 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/js/Plugin/tabs.js"></script>
+    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
 @endsection

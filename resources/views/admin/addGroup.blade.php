@@ -12,7 +12,7 @@
                 </div>
             @endif
             <div class="panel-body">
-                <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return do_submit();">
+                <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return Submit()">
                     <div class="form-group row">
                         <label class="col-form-label col-md-1" for="name">分组名称</label>
                         <input type="text" class="form-control col-md-5" name="name" value="" id="name" required/>
@@ -40,7 +40,7 @@
 @section('script')
     <script type="text/javascript">
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             const _token = '{{csrf_token()}}';
             const name = $('#name').val();
             const level = $("#level option:selected").val();
@@ -53,8 +53,8 @@
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000})
-                            .then(() => window.location.href = '/admin/groupLis')
+                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                            .then(() => window.location.href = '/admin/groupList')
                     } else {
                         swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                     }

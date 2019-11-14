@@ -10,7 +10,7 @@
                         </button>
                         <span class="font-weight-400">{{trans('home.account_balance')}}</span>
                         <div class="content-text text-center mb-0">
-                            <span class="font-size-40 font-weight-100">{{$user_balance}}</span>
+                            <span class="font-size-40 font-weight-100">{{Auth::user()->balance}}</span>
                             <br/>
                             <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{trans('home.recharge')}}</button>
                         </div>
@@ -26,9 +26,9 @@
                     <div class="panel-body">
                         <div class="row">
                             @foreach($goodsList as $key => $goods)
-                                <div class="col-md-6 col-xl-4 col-xxl-3">
+                                <div class="col-md-6 col-xl-4 col-xxl-3 pb-30">
                                     <div class="pricing-list text-left">
-                                        <div class="pricing-header bg-{{$goods->color}}-700">
+                                        <div class="pricing-header text-white" style="background-color: {{$goods->color}}">
                                             <div class="pricing-title font-size-20">{{$goods->name}}</div>
                                             @if($goods->is_limit)
                                                 <div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-primary mr-10">
@@ -39,13 +39,13 @@
                                                     <span class="ribbon-inner h-auto">热<br>销</span>
                                                 </div>
                                             @endif
-                                            <div class="pricing-price">
+                                            <div class="pricing-price text-white">
                                                 <span class="pricing-currency">¥</span>
                                                 <span class="pricing-amount">{{$goods->price}}</span>
                                                 <span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
                                             </div>
                                             @if($goods->info)
-                                                <p class="px-30 pb-25 text-center">{{$goods->info}}</p>
+                                                <p class="px-30 pb-25 text-center">{{$goods->desc}}</p>
                                             @endif
                                         </div>
                                         <ul class="pricing-features">
@@ -59,7 +59,7 @@
                                             <li>
                                                 <strong>{{trans('home.service_unlimited')}}</strong> {{trans('home.service_device')}}
                                             </li>
-                                            {!!  $goods->desc !!}
+                                            {!!$goods->info!!}
                                         </ul>
                                         <div class="pricing-footer text-center bg-blue-grey-100">
                                             <button class="btn btn-primary btn-lg" onclick="buy({{$goods->id}})"> {{trans('home.service_buy_button')}}</button>
@@ -78,12 +78,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                        <span aria-hidden="true">×</span></button>
                     <h4 class="modal-title">{{trans('home.recharge_balance')}}</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger" style="display: none;" id="charge_msg"></div>
+                    <div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
                     <form action="#" method="post">
                         @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || !$chargeGoodsList->isEmpty())
                             <div class="mb-15 w-p50">
@@ -98,12 +97,12 @@
                                 </select>
                             </div>
                         @endif
-                        @if(!$chargeGoodsList->isEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+                        @if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
                             <div class="form-group row" id="charge_balance">
                                 <label for="online_pay" class="offset-md-2 col-md-2 col-form-label">充值金额</label>
                                 <div class="col-md-6">
                                     <select class="form-control round" name="online_pay" id="online_pay">
-                                        @foreach($chargeGoodsList as $key => $goods)
+                                        @foreach($chargeGoodsList as $goods)
                                             <option value="{{$goods->id}}">充值{{$goods->price}}元</option>
                                         @endforeach
                                     </select>
@@ -111,7 +110,7 @@
                             </div>
                         @endif
                         @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
-                            <div class="text-center" id="charge_qrcode" @if(!$chargeGoodsList->isEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan']|| \App\Components\Helpers::systemConfig()['is_f2fpay']))style="display: none;" @endif>
+                            <div class="text-center" id="charge_qrcode" @if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan']|| \App\Components\Helpers::systemConfig()['is_f2fpay']))style="display: none;" @endif>
                                 <div class="row">
                                     <p class="col-md-12 mb-10">付款时，请
                                         <mark>备注邮箱账号</mark>
@@ -132,7 +131,7 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="form-group row" id="charge_coupon_code" @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || !$chargeGoodsList->isEmpty()) style="display: none;" @endif>
+                        <div class="form-group row" id="charge_coupon_code" @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode']|| ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan']|| \App\Components\Helpers::systemConfig()['is_f2fpay']))) style="display: none;" @endif>
                             <label for="charge_coupon" class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
@@ -142,7 +141,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{trans('home.close')}}</button>
-                    <button type="button" class="btn btn-primary" id="change_btn" onclick="return charge();">{{trans('home.recharge')}}</button>
+                    <button type="button" class="btn btn-primary" id="change_btn" onclick="charge()">{{trans('home.recharge')}}</button>
                 </div>
             </div>
         </div>
@@ -185,7 +184,7 @@
                 return false;
             }
 
-            if (paymentType === '3' && (charge_coupon === '' || charge_coupon === undefined)) {
+            if (paymentType === '3' && charge_coupon.trim() === '') {
                 $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
                 $("#charge_coupon").focus();
                 return false;

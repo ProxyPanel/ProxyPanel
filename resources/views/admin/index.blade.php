@@ -1,12 +1,12 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/fonts/material-design/material-design.min.css" rel="stylesheet">
+    <link href="/assets/global/fonts/material-design/material-design.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
-        <div class="row">
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList');">
+        <div class="row" data-plugin="matchHeight" data-by-row="true">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-account"></i>
@@ -16,10 +16,10 @@
                             <span class="font-size-40 font-weight-100">{{$totalUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?enable=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?enable=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-info">
                             <i class="icon md-account"></i>
@@ -29,10 +29,10 @@
                             <span class="font-size-40 font-weight-100">{{$enableUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?active=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?active=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-account"></i>
@@ -42,10 +42,10 @@
                             <span class="font-size-40 font-weight-100">{{$activeUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?unActive=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?unActive=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-account"></i>
@@ -55,10 +55,10 @@
                             <span class="font-size-40 font-weight-100">{{$unActiveUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?online=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?online=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-account"></i>
@@ -68,10 +68,10 @@
                             <span class="font-size-40 font-weight-100">{{$onlineUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?expireWarning=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?expireWarning=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-danger">
                             <i class="icon md-account"></i>
@@ -81,10 +81,10 @@
                             <span class="font-size-40 font-weight-100">{{$expireWarningUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?largeTraffic=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?largeTraffic=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-account"></i>
@@ -94,10 +94,10 @@
                             <span class="font-size-40 font-weight-100">{{$largeTrafficUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userList?flowAbnormal=1');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userList?flowAbnormal=1" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-danger">
                             <i class="icon md-account"></i>
@@ -107,10 +107,10 @@
                             <span class="font-size-40 font-weight-100">{{$flowAbnormalUserCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/nodeList');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/nodeList" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-cloud"></i>
@@ -120,10 +120,10 @@
                             <span class="font-size-40 font-weight-100">{{$nodeCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/nodeList?status=0');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/nodeList?status=0" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-info">
                             <i class="icon md-cloud-off"></i>
@@ -133,10 +133,10 @@
                             <span class="font-size-40 font-weight-100">{{$unnormalNodeCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/trafficLog');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/trafficLog" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-time-countdown"></i>
@@ -146,10 +146,10 @@
                             <span class="font-size-40 font-weight-100">{{$totalFlowCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/trafficLog');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/trafficLog" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-time-countdown"></i>
@@ -159,10 +159,10 @@
                             <span class="font-size-40 font-weight-100">{{$flowCount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/orderList');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/orderList" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-ticket-star"></i>
@@ -172,10 +172,10 @@
                             <span class="font-size-40 font-weight-100">{{$totalOrder}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/orderList');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/orderList" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-info">
                             <i class="icon md-ticket-star"></i>
@@ -185,10 +185,10 @@
                             <span class="font-size-40 font-weight-100">{{$totalOnlinePayOrder}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/orderList?status=2');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/orderList?status=2" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-ticket-star"></i>
@@ -198,10 +198,10 @@
                             <span class="font-size-40 font-weight-100">{{$totalSuccessOrder}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/orderList?status=2&range_time={{date('Y-m-d 00:00:00') . ' 至 ' . date('Y-m-d 23:59:59')}}');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/orderList?status=2&range_time={{date('Y-m-d 00:00:00') . ',' . date('Y-m-d 23:59:59')}}" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-ticket-star"></i>
@@ -211,10 +211,10 @@
                             <span class="font-size-40 font-weight-100">{{$todaySuccessOrder}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <div class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-money"></i>
@@ -226,8 +226,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow" onclick="skip('/admin/userRebateList');">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <a href="/admin/userRebateList" class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-money"></i>
@@ -237,10 +237,10 @@
                             <span class="font-size-40 font-weight-100">{{$totalWaitRefAmount}}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <div class="card card-shadow">
+            <div class="col-xl-3 col-md-6 info-panel pb-30">
+                <div class="card card-shadow h-full">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-dark">
                             <i class="icon md-money"></i>
@@ -256,9 +256,6 @@
     </div>
 @endsection
 @section('script')
-    <script>
-        function skip(url) {
-            window.location.href = url;
-        }
-    </script>
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
 @endsection

@@ -15,31 +15,31 @@
     <meta name="author" content="兔姬菌">
     <meta name="copyright" content="2017-2019©兔姬菌">
     <title>@yield('title')</title>
-    <link rel="shortcut icon" href="{{asset('favicon.ico')}}">
+    <link href="{{asset('favicon.ico')}}" rel="shortcut icon">
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/global/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/global/css/bootstrap-extend.min.css">
-    <link rel="stylesheet" href="/assets/css/site.min.css">
+    <link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/site.min.css" type="text/css" rel="stylesheet">
     <!-- Plugins -->
-    <link rel="stylesheet" href="/assets/global/vendor/animsition/animsition.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/asscrollable/asScrollable.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/intro-js/introjs.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/slidepanel/slidePanel.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/flag-icon-css/flag-icon.min.css">
-    <link rel="stylesheet" href="/assets/examples/css/pages/login-v3.css">
+    <link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/intro-js/introjs.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/examples/css/pages/login-v3.css" type="text/css" rel="stylesheet">
 @yield('css')
 <!-- Fonts -->
-    <link rel="stylesheet" href="/assets/global/fonts/web-icons/web-icons.min.css">
-    <link rel="stylesheet" href="/assets/global/fonts/brand-icons/brand-icons.min.css">
-    <link rel='stylesheet' href='https://fonts.loli.net/css?family=Roboto:300,400,500,300italic'>
+    <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/brand-icons/brand-icons.min.css" type="text/css" rel="stylesheet">
+    <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
     <!--[if lt IE 9]>
-    <script src="/assets/global/vendor/html5shiv/html5shiv.min.js"></script> <![endif]-->
+    <script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script> <![endif]-->
     <!--[if lt IE 10]>
-    <script src="/assets/global/vendor/media-match/media.match.min.js"></script>
-    <script src="/assets/global/vendor/respond/respond.min.js"></script> <![endif]-->
+    <script src="/assets/global/vendor/media-match/media.match.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/respond/respond.min.js" type="text/javascript"></script> <![endif]-->
     <!-- Scripts -->
-    <script src="/assets/global/vendor/breakpoints/breakpoints.min.js"></script>
-    <script>
+    <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
         Breakpoints();
     </script>
 </head>
@@ -49,7 +49,7 @@
     <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 @if(Agent::isMobile() && Agent::isiOS() && strpos(Agent::getUserAgent(), 'MicroMessenger') !== false)
-    <style>
+    <style type="text/css">
         .cover-up {
             opacity: 0.1;
             filter: alpha(opacity=10);
@@ -69,11 +69,7 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="brand">
-                        @if(\App\Components\Helpers::systemConfig()['website_logo'])
-                            <img class="brand-img" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}" width="70px" alt="Logo">
-                        @else
-                            <img class="brand-img" src="/assets/images/logo64.png" alt="Logo">
-                        @endif
+                        <img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']?\App\Components\Helpers::systemConfig()['website_home_logo']:'/assets/images/logo64.png'}}" class="brand-img" alt="logo"/>
                         <h3 class="brand-text">{{\App\Components\Helpers::systemConfig()['website_name']}}</h3>
                     </div>
                 </div>
@@ -121,19 +117,19 @@
 <script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
-<script src="/assets/global/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+<script src="/assets/global/vendor/jquery-placeholder/jquery.placeholder.js" type="text/javascript"></script>
 <!-- 脚本/Scripts -->
-<script src="/assets/global/js/Component.js"></script>
-<script src="/assets/global/js/Plugin.js"></script>
-<script src="/assets/global/js/Base.js"></script>
-<script src="/assets/global/js/Config.js"></script>
-<script src="/assets/js/Section/Menubar.js"></script>
-<script src="/assets/js/Section/Sidebar.js"></script>
-<script src="/assets/js/Section/PageAside.js"></script>
-<script src="/assets/js/Plugin/menu.js"></script>
+<script src="/assets/global/js/Component.js" type="text/javascript"></script>
+<script src="/assets/global/js/Plugin.js" type="text/javascript"></script>
+<script src="/assets/global/js/Base.js" type="text/javascript"></script>
+<script src="/assets/global/js/Config.js" type="text/javascript"></script>
+<script src="/assets/js/Section/Menubar.js" type="text/javascript"></script>
+<script src="/assets/js/Section/Sidebar.js" type="text/javascript"></script>
+<script src="/assets/js/Section/PageAside.js" type="text/javascript"></script>
+<script src="/assets/js/Plugin/menu.js" type="text/javascript"></script>
 <!-- 设置/Config -->
-<script src="/assets/global/js/config/colors.js"></script>
-<script>
+<script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
+<script type="text/javascript">
     Config.set('assets', '/assets');
 </script>
 <!-- Page -->
@@ -148,10 +144,10 @@
 {!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
 <!-- 客服 -->
 {!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
-<script>
+<script type="text/javascript">
     (function (document, window, $) {
         'use strict';
-        var Site = window.Site;
+        const Site = window.Site;
         $(document).ready(function () {
             Site.run();
         });

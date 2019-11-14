@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -9,16 +9,16 @@
                 <h3 class="panel-title">余额变动记录</h3>
             </div>
             <div class="panel-body">
-                <div class="form-inline pb-20">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名">
+                <div class="form-row">
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-2 col-sm-6 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/admin/userBalanceLogList" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
@@ -62,11 +62,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$list->total()}} 条记录
+                        共 <code>{{$list->total()}}</code> 条记录
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{ $list->links() }}
+                            {{$list->links()}}
                         </nav>
                     </div>
                 </div>
@@ -75,19 +75,20 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+        //回车检测
+        $(document).on("keypress", "input", function (e) {
+            if (e.which === 13) {
+                Search()
+            }
+        });
+
         // 搜索
-        function do_search() {
+        function Search() {
             const username = $("#username").val();
-
             window.location.href = '/admin/userBalanceLogList?username=' + username;
-        }
-
-        // 重置
-        function do_reset() {
-            window.location.href = '/admin/userBalanceLogList';
         }
     </script>
 @endsection

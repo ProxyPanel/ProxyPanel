@@ -14,10 +14,10 @@
                         <textarea class="form-control" rows="25" name="result" id="result" readonly="readonly"></textarea>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn btn-block btn-primary" onclick="doDecompile()">反解析</button>
+                        <button class="btn btn-block btn-primary" onclick="Decompile()">反解析</button>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn btn-block btn-danger" onclick="doDownload()">下 载</button>
+                        <a href="/admin/download?type=2" class="btn btn-block btn-danger">下 载</a>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
 @section('script')
     <script type="text/javascript">
         // 转换
-        function doDecompile() {
+        function Decompile() {
             const _token = '{{csrf_token()}}';
             const content = $('#content').val();
 
@@ -61,11 +61,6 @@
                 }
             });
             return false;
-        }
-
-        // 下载
-        function doDownload() {
-            window.location.href = '/admin/download?type=2';
         }
     </script>
 @endsection

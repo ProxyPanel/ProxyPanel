@@ -1,6 +1,6 @@
 @extends('user.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -9,11 +9,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <h3>
-                            @if(\App\Components\Helpers::systemConfig()['website_logo'])
-                                <img class="navbar-brand-logo mr-10" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}">
-                            @else
-                                <img class="navbar-brand-logo" src="/assets/images/logo64.png" alt="Otaku Logo">
-                            @endif
+                            <img src="{{\App\Components\Helpers::systemConfig()['website_logo']?\App\Components\Helpers::systemConfig()['website_logo']:'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
                             {{\App\Components\Helpers::systemConfig()['website_name']}}
                         </h3>
                     </div>
@@ -28,7 +24,7 @@
                             @if(!$order->is_expire)
                                 @if($order->status == -1)
                                     <button class="btn btn-dark">{{trans('home.invoice_table_closed')}}</button>
-                                    @elseif($order->status == 0)</button>
+                                @elseif($order->status == 0)
                                     <button class="btn btn-default">{{trans('home.invoice_table_wait_payment')}}</button>
                                 @elseif($order->status == 1)
                                     <button class="btn btn-info">{{trans('home.invoice_table_wait_confirm')}}</button>

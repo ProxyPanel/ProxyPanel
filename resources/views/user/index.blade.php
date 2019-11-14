@@ -1,7 +1,7 @@
 @extends('user.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/fonts/font-awesome/font-awesome.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/aspieprogress/asPieProgress.min.css">
+    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/aspieprogress/asPieProgress.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -12,15 +12,7 @@
                     {{Session::get('successMsg')}}
                 </div>
             @endif
-            {{--            @if(!empty($info['t']))--}}
-            {{--                <div class="col-12 alert alert-info text-center" role="alert">--}}
-            {{--                    <button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span></button>--}}
-            {{--                    <button class="site-tour-trigger btn btn-outline-info text-center">点我激活 面板介绍 功能</button>--}}
-            {{--                </div>--}}
-            {{--            @endif--}}
-
-
-            <div class="col-xl-4 col-lg-5 col-md-6">
+            <div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12">
                 <div class="card card-shadow">
                     <div class="card-block p-20">
                         <button type="button" class="btn btn-floating btn-sm btn-pure">
@@ -33,15 +25,15 @@
                             </a>
                         @endif
                         <div class="content-text text-center mb-0">
-                            @if($info['enable'])
+                            @if(Auth::user()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.enabled')}}</span>
                                 <p class="font-weight-300 m-0 green-500">{{trans('home.normal')}}</p>
-                            @elseif($info['remainDays'] == 0)
+                            @elseif($remainDays == 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.expired')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('home.reason_expired')}}</p>
-                            @elseif($info['unusedTransfer'] == 0)
+                            @elseif($unusedTransfer == 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.disabled')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('home.reason_traffic_exhausted')}}</p>
@@ -66,19 +58,19 @@
                                 </button>
                                 <span class="font-weight-400">{{trans('home.account_bandwidth_usage')}}</span>
                                 <div class="text-center font-weight-100 font-size-40">
-                                    {{$info['unusedTransfer']}}
+                                    {{flowAutoShow($unusedTransfer)}}
                                 </div>
-                                @if( \App\Components\Helpers::systemConfig()['reset_traffic'] && $info['resetDays'] != 0 && $info['remainDays']>$info['resetDays'])
+                                @if( \App\Components\Helpers::systemConfig()['reset_traffic'] && $resetDays != 0 && $remainDays>$resetDays)
                                     <div class="text-center font-weight-300 blue-grey-500">
-                                        {{trans('home.account_reset_notice', ['reset_day' => $info['resetDays']])}}
+                                        {{trans('home.account_reset_notice', ['reset_day' => $resetDays])}}
                                     </div>
                                 @endif
                             </div>
                             <div class="col-lg-5 col-md-12 col-sm-5">
                                 <div class="w-only-xs-p50 w-only-sm-p75 w-only-md-p50" data-plugin="pieProgress" data-valuemax="100"
                                      data-barcolor="#96A3FA" data-size="100" data-barsize="10"
-                                     data-goal="{{$info['unusedPercent'] * 100}}" aria-valuenow="{{$info['unusedPercent'] * 100}}" role="progressbar">
-                                    <span class="pie-progress-number blue-grey-700 font-size-20">{{$info['unusedPercent'] * 100}}%</span>
+                                     data-goal="{{$unusedPercent * 100}}" aria-valuenow="{{$unusedPercent * 100}}" role="progressbar">
+                                    <span class="pie-progress-number blue-grey-700 font-size-20">{{$unusedPercent * 100}}%</span>
                                 </div>
                             </div>
                         </div>
@@ -91,13 +83,13 @@
                         </button>
                         <span class="font-weight-400">{{trans('home.account_expire')}}</span>
                         <div class="content-text text-center mb-0">
-                            @if($info['remainDays'] != 0)
-                                <span class="font-size-40 font-weight-100">{{$info['remainDays']}} 天</span>
-                                <p class="blue-grey-500 font-weight-300 m-0">{{$info['expire_time']}}</p>
+                            @if($remainDays != 0)
+                                <span class="font-size-40 font-weight-100">{{$remainDays}} 天</span>
+                                <p class="blue-grey-500 font-weight-300 m-0">{{$expireTime}}</p>
                             @else
                                 <span class="font-size-40 font-weight-100">{{trans('home.expired')}}</span>
                                 <br/>
-                                <a href="{{url('services')}}" class="btn btn-danger">{{trans('home.service_buy_button')}}</a>
+                                <a href="/services" class="btn btn-danger">{{trans('home.service_buy_button')}}</a>
                             @endif
                         </div>
                     </div>
@@ -124,20 +116,20 @@
                     </div>
                 @endif
             </div>
-            <div class="col-xl-8 col-lg-7 col-md-6">
-                <div class="row">
-                    <div class="col-xl-4 col-lg-6">
-                        <div class="card card-shadow">
+            <div class="col-xxl-9 col-xl-4col-xl-8 col-lg-7 col-md-6 col-12">
+                <div class="row" data-plugin="matchHeight" data-by-row="true">
+                    <div class="col-xl-4 col-lg-6 pb-30">
+                        <div class="card card-shadow h-full">
                             <div class="card-block text-center p-20">
                                 <i class="font-size-40 wb-wrench"></i>
                                 <h4 class="card-title">客户端</h4>
                                 <p class="card-text">下载 & 教程 </p>
-                                <a href="{{url('help#answer-2')}}" class="btn btn-primary mb-10">前往</a>
+                                <a href="/help#answer-2" class="btn btn-primary mb-10">前往</a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-6">
-                        <div class="card card-shadow text-center">
+                    <div class="col-xl-4 col-lg-6 pb-30">
+                        <div class="card card-shadow text-center h-full">
                             <div class="card-block">
                                 @if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
                                     <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
@@ -149,15 +141,17 @@
                                     <p class="card-link btn btn-outline btn-primary">
                                         <i class="wb-lock mr-5"></i>购买套餐后解锁 用户交流群信息</p>
                                 @else
-                                    <a class="card-link btn btn-pill-left btn-info" href="#" target="_blank" rel="noopener">
-                                        <i class="fa fa-qq"></i> QQ群</a>
-                                    <a class="card-link btn btn-pill-right btn-success" href="#" target="_blank" rel="noopener">TG群
-                                        <i class="fa fa-paper-plane"></i></a>
+                                    <div class="btn-group">
+                                        <a class="card-link btn btn-sm btn-pill-left btn-info" href="https://jq.qq.com/?_wv=1027&k=52AI188" target="_blank" rel="noopener">
+                                            <i class="fa fa-qq"></i> QQ群</a>
+                                        <a class="card-link btn btn-sm btn-pill-right btn-success" href="https://t.me/otakucloud" target="_blank" rel="noopener">TG群
+                                            <i class="fa fa-paper-plane"></i></a>
+                                    </div>
                                 @endif
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-6">
+                    <div class="col-xl-4 col-lg-6 pb-30">
                         {{--                        <div class="card card-shadow">--}}
                         {{--                            <div class="card-block p-20">--}}
                         {{--                                <h4 class="card-title"><i class="wb-info-circle blue-600 mr-10"></i>账号信息</h4>--}}
@@ -168,8 +162,10 @@
                         {{--                            </div>--}}
                         {{--                        </div>--}}
                     </div>
-                    <div class="col-xl-6 col-lg-12">
-                        <div class="panel panel-info panel-line">
+                </div>
+                <div class="row" data-plugin="matchHeight" data-by-row="true">
+                    <div class="col-xxl-6">
+                        <div class="panel panel-info panel-line h-full">
                             <div class="panel-heading">
                                 <h2 class="panel-title"><i class="wb-volume-high mr-10"></i>{{trans('home.announcement')}}
                                 </h2>
@@ -201,7 +197,7 @@
                         </div>
                     </div>
                     <div class="col-xxl-6">
-                        <div class="panel panel-primary panel-line">
+                        <div class="panel panel-primary panel-line h-full">
                             <div class="panel-heading">
                                 <h1 class="panel-title"><i class="wb-pie-chart mr-10"></i>流量使用</h1>
                                 <div class="panel-actions">
@@ -242,13 +238,11 @@
 @endsection
 @section('script')
     <script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.js"></script>
-    <script src="/assets/global/js/Plugin/aspieprogress.js"></script>
-    <script src="/assets/global/vendor/chart-js/Chart.min.js"></script>
-
-    @if(empty($info['t']))
-        <script src="/assets/tour.js" type="text/javascript"></script>
-    @endif
+    <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/aspieprogress.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 签到
         function checkIn() {

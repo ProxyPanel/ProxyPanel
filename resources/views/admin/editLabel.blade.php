@@ -12,7 +12,7 @@
                 </div>
             @endif
             <div class="panel-body">
-                <form action="/admin/editLabel" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return doSubmit();">
+                <form action="/admin/editLabel" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return Submit()">
                     <div class="form-group row">
                         <label for="name" class="col-form-label col-md-1">标签</label>
                         <input type="text" class="form-control col-md-6" name="name" id="name" value="{{$label->name}}" autofocus required>
@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="sort" class="col-form-label col-md-1">排序</label>
-                        <input type="text" class="form-control col-md-6" name="sort" id="sort" value="{{$label->sort}}" required/>
+                        <input type="number" class="form-control col-md-6" name="sort" id="sort" value="{{$label->sort}}" required/>
                         <span class="text-help offset-md-1"> 排序值越高显示时越靠前 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</span>
                     </div>
                     <div class="form-actions">
@@ -34,7 +34,7 @@
 @section('script')
     <script type="text/javascript">
         // ajax同步提交
-        function doSubmit() {
+        function Submit() {
 			const _token = '{{csrf_token()}}';
 			const id = '{{$label->id}}';
 			const name = $('#name').val();

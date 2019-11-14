@@ -63,8 +63,8 @@ class F2fpayController extends Controller
                 'return_url'      => self::$systemConfig['website_url'],
                 'return_raw'      => false
             ], [
-                'out_trade_no' => $request->get('out_trade_no'),
-                'trade_no'     => $request->get('trade_no'),
+                'out_trade_no' => $request->input('out_trade_no'),
+                'trade_no'     => $request->input('trade_no'),
             ]);
 
             \Log::info("【支付宝当面付】回调验证查询：" . var_export($verify_result, true));
@@ -78,13 +78,13 @@ class F2fpayController extends Controller
             if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
                 // 商户订单号
                 $data = [];
-                $data['out_trade_no'] = $request->get('out_trade_no');
+                $data['out_trade_no'] = $request->input('out_trade_no');
                 // 支付宝交易号
-                $data['trade_no'] = $request->get('trade_no');
+                $data['trade_no'] = $request->input('trade_no');
                 // 交易状态
-                $data['trade_status'] = $request->get('trade_status');
+                $data['trade_status'] = $request->input('trade_status');
                 // 交易金额(这里是按照结算货币汇率的金额，和rmb_fee不相等)
-                $data['total_amount'] = $request->get('total_amount');
+                $data['total_amount'] = $request->input('total_amount');
 
                 $this->tradePaid($data);
             } else {

@@ -58,13 +58,13 @@ class AlipayController extends Controller
             if ($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
                 // 商户订单号
                 $data = [];
-                $data['out_trade_no'] = $request->get('out_trade_no');
+                $data['out_trade_no'] = $request->input('out_trade_no');
                 // 支付宝交易号
-                $data['trade_no'] = $request->get('trade_no');
+                $data['trade_no'] = $request->input('trade_no');
                 // 交易状态
-                $data['trade_status'] = $request->get('trade_status');
+                $data['trade_status'] = $request->input('trade_status');
                 // 交易金额(这里是按照结算货币汇率的金额，和rmb_fee不相等)
-                $data['total_fee'] = $request->get('total_fee');
+                $data['total_fee'] = $request->input('total_fee');
 
                 $this->tradePaid($data);
             } else {

@@ -1,8 +1,8 @@
 @extends('user.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/fonts/font-awesome/font-awesome.min.css">
-    <link rel="stylesheet" href="/assets/global/fonts/material-design/material-design.min.css">
-    <style>
+    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/material-design/material-design.min.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
         ol > li {
             margin-bottom: 8px;
         }
@@ -523,7 +523,9 @@
 @section('script')
     <script src="/assets/custom/tour.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
-    <script>
+    <script src="/assets/global/js/Plugin/responsive-tabs.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
+    <script type="text/javascript">
         // 更换订阅地址
         function exchangeSubscribe() {
             swal.fire({

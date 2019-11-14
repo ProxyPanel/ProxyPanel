@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">节点列表</h3>
                 <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="addNode()"><i class="icon wb-plus"></i> 添加节点</button>
+                    <a href="/admin/addNode" class="btn btn-primary"><i class="icon wb-plus"></i> 添加节点</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -36,9 +36,9 @@
                         </tr>
                     @else
                         @foreach($nodeList as $node)
-                            <tr>
+                            <tr class="text-center{{$node->status ? ' table-danger' : ''}}">
                                 <td>
-                                    <span class="badge badge-lg {{$node->status ? 'badge-danger' : 'badge-default'}}"> {{$node->id}} </span>
+                                    {{$node->id}}
                                 </td>
                                 <td>
                                     @if($node->is_transit)
@@ -63,9 +63,9 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="javascript:editNode('{{$node->id}}');" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-                                        <a href="javascript:delNode('{{$node->id}}');" class="btn btn-danger"><i class="icon wb-trash"></i></a>
-                                        <a href="javascript:nodeMonitor('{{$node->id}}');" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
+                                        <a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
+                                        <a href="javascript:delNode({{$node->id}})" class="btn btn-danger"><i class="icon wb-trash"></i></a>
+                                        <a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -77,11 +77,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$nodeList->total()}} 条线路
+                        共 <code>{{$nodeList->total()}}</code> 条线路
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{ $nodeList->links() }}
+                            {{$nodeList->links()}}
                         </nav>
                     </div>
                 </div>
@@ -90,19 +90,9 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 添加节点
-        function addNode() {
-            window.location.href = '/admin/addNode';
-        }
-
-        // 编辑节点
-        function editNode(id) {
-            window.location.href = '/admin/editNode?id=' + id + '&page={{Request::get('page', 1)}}';
-        }
-
         // 删除节点
         function delNode(id) {
             swal.fire({
@@ -125,12 +115,6 @@
                 }
             });
         }
-
-        // 节点流量监控
-        function nodeMonitor(id) {
-            window.location.href = '/admin/nodeMonitor?id=' + id;
-        }
-
         // 显示提示
         function showIdTips() {
             swal.fire({
