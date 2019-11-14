@@ -1,6 +1,6 @@
 @extends('user.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -73,7 +73,7 @@
                 </table>
                 <div class="panel-footer">
                     <nav class="Page navigation float-right">
-                        {{ $orderList->links() }}
+                        {{$orderList->links()}}
                     </nav>
                 </div>
             </div>

@@ -174,7 +174,7 @@
                             </table>
                             <div class="panel-footer">
                                 <nav class="Page navigation float-right">
-                                    {{ $referralApplyList->appends(array_except(Request::query(), 'user_page'))->links() }}
+                                    {{$referralApplyList->appends(array_except(Request::query(), 'user_page'))->links()}}
                                 </nav>
                             </div>
                         </div>

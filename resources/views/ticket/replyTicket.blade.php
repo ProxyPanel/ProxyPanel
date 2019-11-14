@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/examples/css/structure/chat.css">
+    <link href="/assets/examples/css/structure/chat.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content">
@@ -19,7 +19,7 @@
                         <div class="chat chat-left">
                             <div class="chat-avatar">
                                 <p class="avatar" data-toggle="tooltip" data-placement="right" title="{{trans('home.ticket_reply_me')}}">
-                                    <img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}">
+                                    <img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}"/>
                                 </p>
                             </div>
                             <div class="chat-body">
@@ -36,11 +36,11 @@
                                 <div class="chat-avatar">
                                     @if ($reply->user->is_admin)
                                         <p class="avatar" data-toggle="tooltip" data-placement="left" title="{{trans('home.ticket_reply_master')}}">
-                                            <img src="/assets/images/logo64.png" alt="{{trans('home.ticket_reply_master')}}">
+                                            <img src="/assets/images/logo64.png" alt="{{trans('home.ticket_reply_master')}}"/>
                                         </p>
                                     @else
                                         <p class="avatar" data-toggle="tooltip" data-placement="left" title="{{trans('home.ticket_reply_me')}}">
-                                            <img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}">
+                                            <img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}"/>
                                         </p>
                                     @endif
                                 </div>
@@ -59,9 +59,9 @@
             </div>
             @if($ticket->status != 2)
                 <div class="panel-footer pb-30">
-                    <form onkeydown="if (event.keyCode === 13){replyTicket()}">
+                    <form>
                         <div class="input-group">
-                            <input id="editor" type="text/plain" class="form-control" placeholder="{{trans('home.ticket_reply_placeholder')}}">
+                            <input id="editor" type="text" class="form-control" placeholder="{{trans('home.ticket_reply_placeholder')}}">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-primary" onclick="replyTicket()"> {{trans('home.ticket_reply')}}</button>
                             </span>
@@ -74,6 +74,10 @@
 @endsection
 @section('script')
     <script type="text/javascript">
+        //回车检测
+        $(document).on("keypress", "input", function(e){
+            if(e.which === 13){replyTicket()}
+        });
         // 关闭工单
         function closeTicket() {
             $.ajax({

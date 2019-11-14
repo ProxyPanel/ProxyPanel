@@ -33,8 +33,8 @@ class LoginController extends Controller
     // 登录返回订阅信息
     public function login(Request $request)
     {
-        $username = trim($request->get('username'));
-        $password = trim($request->get('password'));
+        $username = trim($request->input('username'));
+        $password = trim($request->input('password'));
         $cacheKey = 'request_times_' . md5(getClientIp());
 
         if (!$username || !$password) {

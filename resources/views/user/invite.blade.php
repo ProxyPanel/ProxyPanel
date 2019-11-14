@@ -14,10 +14,9 @@
                             <h4 class="card-title cyan-600"><i class="icon wb-plus"></i> {{trans('home.invite_code_make')}}
                             </h4>
                             <p class="card-text alert alert-info">
-                                <i class="icon wb-warning red-700"></i> {{trans('home.invite_code_tips1')}}
-                                <strong> {{Auth::user()->invite_num}} </strong> {{trans('home.invite_code_tips2', ['days' => \App\Components\Helpers::systemConfig()['user_invite_days']])}}
+                                <i class="icon wb-warning red-700"></i> {{trans('home.invite_code_tips1')}} <strong> {{$num}} </strong> {{trans('home.invite_code_tips2', ['days' => \App\Components\Helpers::systemConfig()['user_invite_days']])}}
                             </p>
-                            <button type="button" class="btn btn-primary btn-animate btn-animate-side" onclick="makeInvite()" @if(!Auth::user()->invite_num) disabled @endif><i class="icon wb-plus"></i> {{trans('home.invite_code_button')}}
+                            <button type="button" class="btn btn-primary btn-animate btn-animate-side" onclick="makeInvite()" @if(!$num)  disabled @endif><i class="icon wb-plus"></i> {{trans('home.invite_code_button')}}
                             </button>
                         </div>
                     </div>
@@ -77,7 +76,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <nav class="Page navigation float-right">
-                                        {{ $inviteList->links() }}
+                                        {{$inviteList->links()}}
                                     </nav>
                                 </div>
                             </div>
@@ -92,7 +91,7 @@
     <script type="text/javascript">
         // 生成邀请码
         function makeInvite() {
-            var _token = '{{csrf_token()}}';
+            const _token = '{{csrf_token()}}';
 
             $.ajax({
                 type: "POST",

@@ -12,18 +12,18 @@
                 <h1 class="panel-title cyan-600"><i class="icon wb-add"></i>发起工单</h1>
             </div>
             <div class="panel-body">
-                <form action="/ticket/addTicket" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return do_submit();">
+                <form action="/ticket/addTicket" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return Submit()">
                     <div class="form-body">
                         <div class="form-group">
                             <label class="control-label col-md-2">用户名</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" autocomplete="off" autofocus required>
+                                <input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" autocomplete="off" autofocus required/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-2">标题</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="title" id="title" autocomplete="off" required>
+                                <input type="text" class="form-control" name="title" id="title" autocomplete="off" required/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -48,7 +48,7 @@
 @section('script')
     <script type="text/javascript">
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             const username = $('#username').val();
             const title = $('#title').val();
             const content = $('#content').val();

@@ -1,7 +1,7 @@
 @extends('auth.layouts')
 @section('title', trans('auth.login'))
 @section('css')
-    <style>
+    <style type="text/css">
         @media screen and (max-height: 575px) {
             .g-recaptcha {
                 -webkit-transform: scale(0.81);
@@ -10,15 +10,13 @@
                 transform-origin: 0 0;
             }
         }
-
         .geetest_holder.geetest_wind {
             min-width: 245px !important;
         }
     </style>
-
 @endsection
 @section('content')
-    <form method="post" id="login-form" action="/login">
+    <form action="/login" method="post" id="login-form">
         @if($errors->any())
             <div class="alert alert-danger">
                 <span> {!! $errors->first() !!} </span>

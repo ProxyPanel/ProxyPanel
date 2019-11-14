@@ -443,8 +443,8 @@
     </style>
 
     <!--[if !mso]><!--><style type="text/css">
-        @import url(https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic);
-    </style><link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic" rel="stylesheet" type="text/css" /><!--<![endif]--><style type="text/css">
+        @import url(//fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic);
+    </style><link href="//fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic" rel="stylesheet" type="text/css" /><!--<![endif]--><style type="text/css">
         body{background-color:#f0f0f0}.logo a:hover,.logo a:focus{color:#859bb1 !important}.mso .layout-has-border{border-top:1px solid #bdbdbd;border-bottom:1px solid #bdbdbd}.mso .layout-has-bottom-border{border-bottom:1px solid #bdbdbd}.mso .border,.ie .border{background-color:#bdbdbd}.mso h1,.ie h1{}.mso h1,.ie h1{font-size:36px !important;line-height:43px !important}.mso h2,.ie h2{}.mso h2,.ie h2{font-size:22px !important;line-height:31px !important}.mso h3,.ie h3{}.mso h3,.ie h3{font-size:18px !important;line-height:26px !important}.mso .layout__inner,.ie .layout__inner{}.mso .footer__share-button p{}.mso .footer__share-button p{font-family:Ubuntu,sans-serif}
     </style><meta name="robots" content="noindex,nofollow" />
     <meta property="og:title" content="My First Campaign" />

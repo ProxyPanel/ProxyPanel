@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css">
-    <style>
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
         .hidden {
             display: none
         }
@@ -18,7 +18,7 @@
                 <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
             </div>
             <div class="panel-body">
-                <form action="/admin/addNode" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                <form action="/admin/addNode" method="post" class="form-horizontal" onsubmit="return Submit()">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="example-wrap">
@@ -453,12 +453,12 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             var name = $('#name').val();
             var labels = $("#labels").val();
             var group_id = $("#group_id option:selected").val();

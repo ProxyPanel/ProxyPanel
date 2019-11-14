@@ -12,6 +12,7 @@ use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
 use Auth;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 use Log;
 use Payment\Client\Charge;
@@ -37,8 +38,8 @@ class PaymentController extends Controller
     // 创建支付单
     public function create(Request $request)
     {
-        $goods_id = intval($request->get('goods_id'));
-        $coupon_sn = $request->get('coupon_sn');
+        $goods_id = $request->input('goods_id');
+        $coupon_sn = $request->input('coupon_sn');
 
         $goods = Goods::query()->where('status', 1)->where('id', $goods_id)->first();
         if (!$goods) {
@@ -96,14 +97,9 @@ class PaymentController extends Controller
 
         // 验证账号是否存在有效期更长的套餐
         if ($goods->type == 2) {
-            $existOrderList = Order::uid()
-                ->with(['goods'])
-                ->whereHas('goods', function ($q) {
-                    $q->where('type', 2);
-                })
-                ->where('is_expire', 0)
-                ->where('status', 2)
-                ->get();
+            $existOrderList = Order::uid()->with(['goods'])->whereHas('goods', function ($q) {
+                $q->where('type', 2);
+            })->where('is_expire', 0)->where('status', 2)->get();
 
             foreach ($existOrderList as $vo) {
                 if ($vo->goods->days > $goods->days) {
@@ -147,23 +143,18 @@ class PaymentController extends Controller
                 if (isset($result['error_response'])) {
                     Log::error('【有赞云】创建二维码失败：' . $result['error_response']['msg']);
 
-                    throw new \Exception($result['error_response']['msg']);
+                    throw new Exception($result['error_response']['msg']);
                 }
             } elseif (self::$systemConfig['is_alipay']) {
-                $parameter = [
-                    "service"        => "create_forex_trade", // WAP:create_forex_trade_wap ,即时到帐:create_forex_trade
-                    "partner"        => self::$systemConfig['alipay_partner'],
-                    "notify_url"     => self::$systemConfig['website_url'] . "/api/alipay", // 异步回调接口
-                    "return_url"     => self::$systemConfig['website_url'],
-                    "out_trade_no"   => $orderSn,  // 订单号
-                    "subject"        => "Package", // 订单名称
+                $parameter = ["service"      => "create_forex_trade", // WAP:create_forex_trade_wap ,即时到帐:create_forex_trade
+                              "partner"      => self::$systemConfig['alipay_partner'], "notify_url" => self::$systemConfig['website_url'] . "/api/alipay", // 异步回调接口
+                              "return_url"   => self::$systemConfig['website_url'], "out_trade_no" => $orderSn,  // 订单号
+                              "subject"      => "Package", // 订单名称
                     //"total_fee"      => $amount, // 金额
-                    "rmb_fee"        => $amount,   // 使用RMB标价，不再使用总金额
-                    "body"           => "",        // 商品描述，可为空
-                    "currency"       => self::$systemConfig['alipay_currency'], // 结算币种
-                    "product_code"   => "NEW_OVERSEAS_SELLER",
-                    "_input_charset" => "utf-8"
-                ];
+                              "rmb_fee"      => $amount,   // 使用RMB标价，不再使用总金额
+                              "body"         => "",        // 商品描述，可为空
+                              "currency"     => self::$systemConfig['alipay_currency'], // 结算币种
+                              "product_code" => "NEW_OVERSEAS_SELLER", "_input_charset" => "utf-8"];
 
                 // 建立请求
                 $alipaySubmit = new AlipaySubmit(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key']);
@@ -171,22 +162,8 @@ class PaymentController extends Controller
             } elseif (self::$systemConfig['is_f2fpay']) {
                 // TODO：goods表里增加一个字段用于自定义商品付款时展示的商品名称，
                 // TODO：这里增加一个随机商品列表，根据goods的价格随机取值
-                $result = Charge::run("ali_qr", [
-                    'use_sandbox'     => false,
-                    "partner"         => self::$systemConfig['f2fpay_app_id'],
-                    'app_id'          => self::$systemConfig['f2fpay_app_id'],
-                    'sign_type'       => 'RSA2',
-                    'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
-                    'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
-                    'notify_url'      => self::$systemConfig['website_url'] . "/api/f2fpay", // 异步回调接口
-                    'return_url'      => self::$systemConfig['website_url'],
-                    'return_raw'      => false
-                ], [
-                    'body'     => '',
-                    'subject'  => self::$systemConfig['f2fpay_subject_name'],
-                    'order_no' => $orderSn,
-                    'amount'   => $amount,
-                ]);
+                $result = Charge::run("ali_qr", ['use_sandbox' => false, "partner" => self::$systemConfig['f2fpay_app_id'], 'app_id' => self::$systemConfig['f2fpay_app_id'], 'sign_type' => 'RSA2', 'ali_public_key' => self::$systemConfig['f2fpay_public_key'], 'rsa_private_key' => self::$systemConfig['f2fpay_private_key'], 'notify_url' => self::$systemConfig['website_url'] . "/api/f2fpay", // 异步回调接口
+                                                 'return_url'  => self::$systemConfig['website_url'], 'return_raw' => false], ['body' => '', 'subject' => self::$systemConfig['f2fpay_subject_name'], 'order_no' => $orderSn, 'amount' => $amount,]);
             }
 
             $payment = new Payment();
@@ -228,7 +205,7 @@ class PaymentController extends Controller
             } else {
                 return Response::json(['status' => 'success', 'data' => $sn, 'message' => '创建订单成功，正在转到付款页面，请稍后']);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
 
             Log::error('创建支付订单失败：' . $e->getMessage());
@@ -248,12 +225,7 @@ class PaymentController extends Controller
     // 获取订单支付状态
     public function getStatus(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'sn' => 'required|exists:payment,sn'
-        ], [
-            'sn.required' => '请求失败：缺少sn',
-            'sn.exists'   => '支付失败：支付单不存在'
-        ]);
+        $validator = Validator::make($request->all(), ['sn' => 'required|exists:payment,sn'], ['sn.required' => '请求失败：缺少sn', 'sn.exists' => '支付失败：支付单不存在']);
 
         if ($validator->fails()) {
             return Response::json(['status' => 'error', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
@@ -272,15 +244,15 @@ class PaymentController extends Controller
     // 回调日志
     public function callbackList(Request $request)
     {
-        $status = $request->get('status', 0);
+        $status = $request->input('status', 0);
 
         $query = PaymentCallback::query();
 
-        if ($status) {
+        if (isset($status)) {
             $query->where('status', $status);
         }
 
-        $view['list'] = $query->orderBy('id', 'desc')->paginate(10);
+        $view['list'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('payment.callbackList', $view);
     }

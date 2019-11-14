@@ -1,8 +1,8 @@
 @extends('auth.layouts')
 @section('title', trans('auth.register'))
 @section('css')
-    <link rel="stylesheet" href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css">
-    <style>
+    <link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
         @media screen and (max-height: 575px) {
             .g-recaptcha {
                 -webkit-transform: scale(0.81);
@@ -11,14 +11,13 @@
                 transform-origin: 0 0;
             }
         }
-
         .geetest_holder.geetest_wind {
             min-width: 245px !important;
         }
     </style>
 @endsection
 @section('content')
-    <form method="post" id="register-form" action="/register">
+    <form action="/register" method="post" id="register-form">
         @if(\App\Components\Helpers::systemConfig()['is_register'])
             @if($errors->any())
                 <div class="alert alert-danger">
@@ -120,9 +119,9 @@
     @endsection
 @section('script')
 	<!--[if lt IE 11]>
-    <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js"></script>
+    <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
     <![endif]-->
-    <script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 发送注册验证码
         function sendVerifyCode() {

@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -11,25 +11,33 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <div class="form-inline pb-20">
-                    <div class="form-group">
-                        <input type="text" class="form-control w-60" name="id" value="{{Request::get('id')}}" id="id" placeholder="ID">
-                        <input type="text" class="form-control w-100" name="ip" value="{{Request::get('ip')}}" id="ip" placeholder="IP">
-                        <input type="text" class="form-control w-150" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名">
-                        <input type="text" class="form-control w-60" name="port" value="{{Request::get('port')}}" id="port" placeholder="端口">
-                        <select name="nodeId" id="nodeId" class="form-control">
+                <div class="form-row">
+                    <div class="form-group col-lg-2 col-sm-2">
+                        <input type="number" class="form-control" name="id" id="id" value="{{Request::get('id')}}" placeholder="ID"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-5">
+                        <input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-5">
+                        <input type="text" class="form-control" name="ip" id="ip" value="{{Request::get('ip')}}" placeholder="IP"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-3">
+                        <input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}" placeholder="端口"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-5">
+                        <select name="nodeId" id="nodeId" class="form-control" onChange="Search()">
                             <option value="" @if(Request::get('nodeId') == '') selected @endif>选择节点</option>
                             @foreach($nodeList as $node)
                                 <option value="{{$node->id}}" @if(Request::get('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="doSearch()">搜索</button>
-                        <button class="btn btn-danger" onclick="doReset()">重置</button>
+                    <div class="form-group col-lg-2 col-sm-4 btn-group">
+                        <button class="btn btn-primary" onclick="Search()">搜索</button>
+                        <a href="/admin/onlineIPMonitor" class="btn btn-danger">重置</a>
                     </div>
                 </div>
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
+                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
@@ -66,11 +74,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$list->total()}} 个账号
+                        共 <code>{{$list->total()}}</code> 个账号
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{ $list->links() }}
+                            {{$list->links()}}
                         </nav>
                     </div>
                 </div>
@@ -79,24 +87,25 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+        //回车检测
+        $(document).on("keypress", "input", function (e) {
+            if (e.which === 13) {
+                Search()
+            }
+        });
+
         // 搜索
-        function doSearch() {
-            var id = $("#id").val();
-            var ip = $("#ip").val();
-            var username = $("#username").val();
-            var port = $("#port").val();
-            var nodeId = $("#nodeId option:selected").val();
-
+        function Search() {
+            const id = $("#id").val();
+            const username = $("#username").val();
+            const ip = $("#ip").val();
+            const port = $("#port").val();
+            const nodeId = $("#nodeId option:selected").val();
             window.location.href = '/admin/onlineIPMonitor?id=' + id + '&ip=' + ip + '&username=' + username + '&port=' + port + '&nodeId=' + nodeId;
-        }
-
-        // 重置
-        function doReset() {
-            window.location.href = '/admin/onlineIPMonitor';
         }
     </script>
 @endsection

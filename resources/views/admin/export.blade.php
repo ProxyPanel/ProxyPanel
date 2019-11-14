@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
-    <link rel="stylesheet" href="/assets/global/fonts/font-awesome/font-awesome.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/font-awesome.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -50,12 +50,12 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$nodeList->total()}} 个账号
+                        共 <code>{{$nodeList->total()}}</code> 个账号
                     </div>
-                    <div class="col-sm-8">
-                        <div class="Page navigation float-right">
-                            {{ $nodeList->links() }}
-                        </div>
+
+                        <nav class="Page navigation float-right">
+                            {{$nodeList->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -138,10 +138,10 @@
     @endforeach
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/webui-popover.js"></script>
+    <script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         const UIModals = function () {

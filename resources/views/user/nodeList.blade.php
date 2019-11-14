@@ -1,8 +1,8 @@
 @extends('user.layouts')
 @section('css')
-    <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js"></script>
-    <link rel="stylesheet" href="/assets/global/fonts/font-awesome/font-awesome.css">
-    <link rel="stylesheet" href="/assets/global/vendor/webui-popover/webui-popover.css">
+    <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
+    <link href="/assets/global/fonts/font-awesome/font-awesome.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/webui-popover/webui-popover.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <!-- BEGIN CONTENT BODY -->
@@ -122,7 +122,7 @@
     @endforeach
 @endsection @section('script')
     <script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/webui-popover.js"></script>
+    <script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         const UIModals = function () {

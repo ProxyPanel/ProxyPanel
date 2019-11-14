@@ -12,11 +12,11 @@
                 </div>
             @endif
             <div class="panel-body">
-                <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return do_submit();">
+                <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return Submit()">
                     <div class="form-group row">
                         <label class="col-form-label col-md-2">敏感词</label>
                         <div class="col-md-5">
-                            <input type="text" class="form-control" name="words" value="" id="words" required>
+                            <input type="text" class="form-control" name="words" value="" id="words" required/>
                             <input type="hidden" name="_token" value="{{csrf_token()}}"/>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                     <h4 class="modal-title"> {{trans('home.ticket_table_new_button')}} </h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="title" id="title" placeholder="{{trans('home.ticket_table_title')}}" class="form-control mb-20">
+                    <input type="text" name="title" id="title" placeholder="{{trans('home.ticket_table_title')}}" class="form-control mb-20"/>
                     <textarea name="content" id="content" placeholder="{{trans('home.ticket_table_new_desc')}}" class="form-control mb-20" rows="4"></textarea>
                 </div>
                 <div class="modal-footer">
@@ -50,7 +50,7 @@
 @section('script')
     <script type="text/javascript">
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             const _token = '{{csrf_token()}}';
             const words = $('#words').val();
 

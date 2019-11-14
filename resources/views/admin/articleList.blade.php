@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">文章列表</h3>
                 <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="addArticle()"><i class="icon wb-plus"></i>添加文章</button>
+                    <a href="/admin/addArticle" class="btn btn-primary"><i class="icon wb-plus"></i>添加文章</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -50,7 +50,7 @@
                                 <td> {{$vo->created_at}} </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-outline-primary" onclick="editArticle('{{$vo->id}}')"><i class="icon wb-edit"></i></button>
+                                        <a href="/admin/editArticle?id={{$vo->id}}&page={{Request::get('page', 1)}}" class="btn btn-outline-primary"><i class="icon wb-edit"></i></a>
                                         <button class="btn btn-outline-danger" onclick="delArticle('{{$vo->id}}')"><i class="icon wb-close"></i></button>
                                     </div>
                                 </td>
@@ -63,12 +63,12 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 {{$list->total()}} 篇文章
+                        共 <code>{{$list->total()}}</code> 篇文章
                     </div>
                     <div class="col-sm-8">
-                        <div class="Page navigation float-right">
-                            {{ $list->links() }}
-                        </div>
+                        <nav class="Page navigation float-right">
+                            {{$list->links()}}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -76,19 +76,9 @@
     </div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 添加文章
-        function addArticle() {
-            window.location.href = '/admin/addArticle';
-        }
-
-        // 编辑文章
-        function editArticle(id) {
-            window.location.href = '/admin/editArticle?id=' + id + '&page=' + '{{Request::get('page', 1)}}';
-        }
-
         // 删除文章
         function delArticle(id) {
             swal.fire({

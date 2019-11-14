@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Http\Models\Marketing;
 use DB;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Log;
@@ -29,7 +30,15 @@ class MarketingController extends Controller
     // 邮件群发消息列表
     public function emailList(Request $request)
     {
-        $view['list'] = Marketing::query()->where('type', 1)->paginate(15);
+        $status = $request->input('status');
+
+        $query = Marketing::query()->where('type', 1);
+
+        if (isset($status)) {
+            $query->where('status', $status);
+        }
+
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
         return Response::view('marketing.emailList', $view);
     }
@@ -37,11 +46,11 @@ class MarketingController extends Controller
     // 消息通道群发列表
     public function pushList(Request $request)
     {
-        $status = $request->get('status');
+        $status = $request->input('status');
 
         $query = Marketing::query()->where('type', 2);
 
-        if ($status != '') {
+        if (isset($status)) {
             $query->where('status', $status);
         }
 
@@ -53,8 +62,8 @@ class MarketingController extends Controller
     // 添加推送消息
     public function addPushMarketing(Request $request)
     {
-        $title = trim($request->get('title'));
-        $content = $request->get('content');
+        $title = trim($request->input('title'));
+        $content = $request->input('content');
 
         if (!self::$systemConfig['is_push_bear']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '推送失败：请先启用并配置PushBear']);
@@ -63,19 +72,13 @@ class MarketingController extends Controller
         DB::beginTransaction();
         try {
             $client = new Client();
-            $response = $client->request('GET', 'https://pushbear.ftqq.com/sub', [
-                'query' => [
-                    'sendkey' => self::$systemConfig['push_bear_send_key'],
-                    'text'    => $title,
-                    'desp'    => $content
-                ]
-            ]);
+            $response = $client->request('GET', 'https://pushbear.ftqq.com/sub', ['query' => ['sendkey' => self::$systemConfig['push_bear_send_key'], 'text' => $title, 'desp' => $content]]);
 
             $result = json_decode($response->getBody());
             if ($result->code) { // 失败
                 $this->addMarketing(2, $title, $content, -1, $result->message);
 
-                throw new \Exception($result->message);
+                throw new Exception($result->message);
             }
 
             $this->addMarketing(2, $title, $content, 1);
@@ -83,7 +86,7 @@ class MarketingController extends Controller
             DB::commit();
 
             return Response::json(['status' => 'success', 'data' => '', 'message' => '推送成功']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::info('PushBear消息推送失败：' . $e->getMessage());
 
             DB::rollBack();

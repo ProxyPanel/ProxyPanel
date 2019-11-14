@@ -1,8 +1,8 @@
 @extends('user.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/alertify/alertify.min.css">
-    <link rel="stylesheet" href="/assets/global/fonts/themify/themify.min.css">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/alertify/alertify.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/themify/themify.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -55,7 +55,7 @@
                                                             <a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-success">
                                                                 <span><i class="icon wb-check" aria-hidden="true" style="left: 40%"></i> {{trans('home.ticket_open')}} </span></a>
                                                         @else
-                                                            <a class="btn btn-animate btn-animate-vertical btn-outline-info" href="{{url('replyTicket?id=') . $ticket->id}}">
+                                                            <a class="btn btn-animate btn-animate-vertical btn-outline-info" href="/replyTicket?id={{$ticket->id}}">
                                                                 <span><i class="icon wb-eye" aria-hidden="true" style="left: 40%">  </i> {{trans('home.ticket_table_view')}} </span></a>
                                                         @endif
                                                     </td>

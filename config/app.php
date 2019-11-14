@@ -124,6 +124,8 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
@@ -154,8 +156,6 @@ return [
         Misechow\Geetest\GeetestServiceProvider::class,  // Geetest极验
         Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA
         Overtrue\LaravelLang\TranslationServiceProvider::class, // 多国语言包功能
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class, // jwt auth
-        Telegram\Bot\Laravel\TelegramServiceProvider::class, // Telegram Bot
 
         /*
          * Application Service Providers...
@@ -185,6 +185,7 @@ return [
         'Auth'         => Illuminate\Support\Facades\Auth::class,
         'Blade'        => Illuminate\Support\Facades\Blade::class,
         'Broadcast'    => Illuminate\Support\Facades\Broadcast::class,
+        'Debugbar'     => Barryvdh\Debugbar\Facade::class,
         'Bus'          => Illuminate\Support\Facades\Bus::class,
         'Cache'        => Illuminate\Support\Facades\Cache::class,
         'Config'       => Illuminate\Support\Facades\Config::class,
@@ -217,9 +218,7 @@ return [
         'Agent'        => Jenssegers\Agent\Facades\Agent::class,
         'Purifier'     => Mews\Purifier\Facades\Purifier::class,
         'Geetest'      => Misechow\Geetest\Geetest::class,
-        'NoCaptcha'    => Misechow\NoCaptcha\Facades\NoCaptcha::class,
-        'JWTAuth'      => Tymon\JWTAuth\Facades\JWTAuth::class,
-        'Telegram'     => Telegram\Bot\Laravel\Facades\Telegram::class
+        'NoCaptcha' => Misechow\NoCaptcha\Facades\NoCaptcha::class,
     ],
 
 ];

@@ -230,7 +230,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <meta name="renderer" content="webkit">
 
-    <style>
+    <style type="text/css">
         body {
             background: #5c97bd;
             margin: 0;
@@ -419,9 +419,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
 
         <!-- jQuery -->
-        <script src="https://cdn.staticfile.org/jquery/2.1.4/jquery.min.js"></script>
+        <script src="//cdn.staticfile.org/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
 
-        <script>
+        <script type="text/javascript">
             $(function () {
 
                 $('form').on('submit', function (e) {

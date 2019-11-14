@@ -17,23 +17,21 @@
     <meta name="copyright" content="2017-2019©兔姬菌">
     <link rel="shortcut icon" href="{{asset('favicon.ico')}}">
     <!-- 样式表/Stylesheets -->
-    <link rel="stylesheet" href="/assets/global/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/global/css/bootstrap-extend.min.css">
-    <link rel="stylesheet" href="/assets/css/site.min.css">
-
+    <link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/site.min.css" type="text/css" rel="stylesheet">
     <!-- 插件/Plugins -->
-    <link rel="stylesheet" href="/assets/global/vendor/animsition/animsition.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/asscrollable/asScrollable.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/intro-js/introjs.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/slidepanel/slidePanel.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/flag-icon-css/flag-icon.min.css">
+    <link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/intro-js/introjs.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
     @yield('css')
-    <link rel="stylesheet" href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css">
-
+    <link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
     <!-- 字体/Fonts -->
-    <link rel="stylesheet" href="/assets/global/fonts/web-icons/web-icons.min.css">
-    <link rel="stylesheet" href="/assets/global/fonts/brand-icons/brand-icons.min.css">
-    <link rel='stylesheet' href='https://fonts.loli.net/css?family=Roboto:300,400,500,300italic'>
+    <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/brand-icons/brand-icons.min.css" type="text/css" rel="stylesheet">
+    <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script>
     <![endif]-->
@@ -43,7 +41,7 @@
     <![endif]-->
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
-    <script>
+    <script type="text/javascript">
         Breakpoints();
     </script>
 </head>
@@ -59,11 +57,7 @@
             <i class="icon wb-more-horizontal" aria-hidden="true"></i>
         </button>
         <div class="navbar-brand navbar-brand-center">
-            @if(\App\Components\Helpers::systemConfig()['website_logo'])
-                <img class="navbar-brand-logo" src="{{\App\Components\Helpers::systemConfig()['website_logo']}}">
-            @else
-                <img class="navbar-brand-logo" src="/assets/images/logo64.png" alt="Otaku Logo">
-            @endif
+            <img src="{{\App\Components\Helpers::systemConfig()['website_logo']?\App\Components\Helpers::systemConfig()['website_logo']:'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
             <span class="navbar-brand-text hidden-xs-down"> {{\App\Components\Helpers::systemConfig()['website_name']}}</span>
         </div>
     </div>
@@ -85,10 +79,11 @@
                 </li>
             </ul>
             <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
-                <li class="nav-item dropdown" id="toggerUsermenu">
+                <li class="nav-item dropdown">
                     <a class="nav-link navbar-avatar" data-toggle="dropdown" href="#" aria-expanded="false" data-animation="scale-up" role="button">
                 <span class="avatar avatar-online">
-                  <img src="/assets/images/avatar.png" alt="...">
+                  <img src="/assets/images/astronaut.svg" alt="..."/>
+                    <i></i>
                 </span>
                     </a>
                     <div class="dropdown-menu" role="menu">
@@ -364,16 +359,14 @@
 <script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
-
 <!-- 插件/Plugins -->
 <script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
 <!--[if lt IE 11]>
-<script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js"></script>
+<script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
 <![endif]-->
-<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js"></script>
-
+<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
 <!-- 脚本/Scripts -->
 <script src="/assets/global/js/Component.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin.js" type="text/javascript"></script>
@@ -385,7 +378,7 @@
 <script src="/assets/js/Plugin/menu.js" type="text/javascript"></script>
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
-<script>
+<script type="text/javascript">
     Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
@@ -393,10 +386,10 @@
 <script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
-<script>
+<script type="text/javascript">
     (function (document, window, $) {
         'use strict';
-        var Site = window.Site;
+        const Site = window.Site;
         $(document).ready(function () {
             Site.run();
         });

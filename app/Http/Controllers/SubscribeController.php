@@ -39,18 +39,18 @@ class SubscribeController extends Controller
 
         $query = UserSubscribe::with(['User']);
 
-        if (!empty($user_id)) {
+        if (isset($user_id)) {
             $query->where('user_id', $user_id);
         }
 
-        if (!empty($username)) {
+        if (isset($username)) {
             $query->whereHas('user', function ($q) use ($username) {
                 $q->where('username', 'like', '%' . $username . '%');
             });
         }
 
-        if ($status != '') {
-            $query->where('status', intval($status));
+        if (isset($status)) {
+            $query->where('status', $status);
         }
 
         $view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
@@ -63,24 +63,24 @@ class SubscribeController extends Controller
     {
         $type = $request->input('type');
         $platform = $request->input('platform');
-        $name = trim($request->input('name'));
+        $name = $request->input('name');
         $status = $request->input('status');
 
         $query = Device::query();
 
-        if (!empty($type)) {
+        if (isset($type)) {
             $query->where('type', $type);
         }
 
-        if ($platform != '') {
+        if (isset($platform)) {
             $query->where('platform', $platform);
         }
 
-        if (!empty($name)) {
+        if (isset($name)) {
             $query->where('name', 'like', '%' . $name . '%');
         }
 
-        if ($status != '') {
+        if (isset($status)) {
             $query->where('status', $status);
         }
 
@@ -92,8 +92,8 @@ class SubscribeController extends Controller
     // 设置用户的订阅的状态
     public function setSubscribeStatus(Request $request)
     {
-        $id = $request->get('id');
-        $status = $request->get('status', 0);
+        $id = $request->input('id');
+        $status = $request->input('status', 0);
 
         if (empty($id)) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
@@ -126,6 +126,10 @@ class SubscribeController extends Controller
     // 通过订阅码获取订阅信息
     public function getSubscribeByCode(Request $request, $code)
     {
+        if (empty($code)) {
+            return Redirect::to('login');
+        }
+
         // 校验合法性
         $subscribe = UserSubscribe::query()->with('user')->where('status', 1)->where('code', $code)->first();
         if (!$subscribe) {

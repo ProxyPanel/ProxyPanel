@@ -1,5 +1,5 @@
-<script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
-<script src="https://static.geetest.com/static/tools/gt.js"></script>
+<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js" type="text/javascript"></script>
+<script src="//static.geetest.com/static/tools/gt.js" type="text/javascript"></script>
 <div id="{{ $captchaid }}"></div>
 <p id="wait-{{ $captchaid }}" class="show" style="text-align:center;">{{trans('auth.captcha_loading')}}</p>
 @define use Illuminate\Support\Facades\Config
@@ -23,7 +23,7 @@
                 captchaObj.appendTo("#{{ $captchaid }}");
             }
         };
-        
+
         // 前端第一次验证
         $.ajax({
             url: url + "?t=" + (new Date()).getTime(),
@@ -46,7 +46,7 @@
 
     function Msg(clear, msg, type) {
         if ( !clear ) $('.login-form .alert, .register-form .alert').remove();
-        
+
         var typeClass = 'alert-danger',
             clear = clear ? clear : false,
             $elem = $('.login-form, .register-form');
@@ -55,7 +55,7 @@
         var tpl = '<div class="alert ' + typeClass + '">' +
                 '<button class="close" data-close="alert"></button>' +
                 '<span> ' + msg + ' </span></div>';
-        
+
         if ( !clear ) {
             $elem.prepend(tpl);
         } else {
@@ -67,7 +67,7 @@
         geetest('{{ $url?$url:Config::get('geetest.url', 'geetest') }}');
     })();
 </script>
-<style>
+<style type="text/css">
     .hide {
         display: none;
     }

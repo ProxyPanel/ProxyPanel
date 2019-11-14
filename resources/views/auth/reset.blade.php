@@ -1,7 +1,7 @@
 @extends('auth.layouts')
 @section('title', trans('auth.restPassword'))
 @section('content')
-	<form class="register-form" action="{{url(Request::getRequestUri())}}" method="post">
+	<form action="{{url(Request::getRequestUri())}}" method="post" class="register-form">
 		@if(Session::get('successMsg'))
 			<div class="alert alert-success">
 				<span> {{Session::get('successMsg')}} </span>

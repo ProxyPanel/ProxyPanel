@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css">
-    <link rel="stylesheet" href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -13,18 +13,18 @@
                 </div>
             </div>
             <div class="panel-body">
-                <form action="/admin/editUser/{{$user->id}}" method="post" class="form-horizontal" onsubmit="return do_submit();">
+                <form action="/admin/editUser/{{$user->id}}" method="post" class="form-horizontal" onsubmit="return Submit()">
                     <div class="row">
                         <div class="col-md-12 col-lg-6">
                             <div class="example-wrap">
                                 <h4 class="example-title">账号信息</h4>
                                 <div class="form-group row">
                                     <label for="username" class="col-md-3 col-form-label">用户名</label>
-                                    <input type="text" class="form-control col-md-4" name="username" value="{{$user->username}}" id="username" autocomplete="off" autofocus required/>
+                                    <input type="email" class="form-control col-md-4" name="username" value="{{$user->username}}" id="username" autocomplete="off" autofocus required/>
                                 </div>
                                 <div class="form-group row">
                                     <label for="password" class="col-md-3 col-form-label">密码</label>
-                                    <input type="text" class="form-control col-md-4" name="password" value="" id="password" placeholder="不填则不变" autocomplete="off"/>
+                                    <input type="password" class="form-control col-md-4" name="password" value="" id="password" placeholder="不填则不变" autocomplete="off"/>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label">用途</label>
@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label">有效期</label>
-                                    <div class="input-group col-md-6 input-daterange" data-plugin="datepicker">
+                                    <div class="col-md-6 input-group input-daterange" data-plugin="datepicker">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
                                         </div>
@@ -194,7 +194,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label for="qq" class="col-md-3 col-form-label">QQ</label>
-                                    <input type="text" class="col-md-4 form-control" name="qq" value="{{$user->qq}}" id="qq" autocomplete="off"/>
+                                    <input type="number" class="col-md-4 form-control" name="qq" value="{{$user->qq}}" id="qq" autocomplete="off"/>
                                 </div>
                                 <div class="form-group row">
                                     <label for="remark" class="col-md-3 col-form-label">备注</label>
@@ -213,7 +213,7 @@
                                 <div class="form-group row">
                                     <label for="port" class="col-md-3 col-form-label">端口</label>
                                     <div class="input-group col-md-4">
-                                        <input class="form-control" type="text" name="port" value="{{$user->port}}" id="port"/>
+                                        <input class="form-control" type="number" name="port" value="{{$user->port}}" id="port"/>
                                         <span class="input-group-append"><button class="btn btn-success" type="button" onclick="makePort()"> <i class="icon wb-refresh"></i> </button></span>
                                     </div>
                                 </div>
@@ -235,7 +235,7 @@
                                 <div class="form-group row">
                                     <label for="transfer_enable" class="col-md-3 col-form-label">可用流量</label>
                                     <div class="input-group col-md-3">
-                                        <input type="text" class="form-control" name="transfer_enable" value="{{$user->transfer_enable}}" id="transfer_enable" required>
+                                        <input type="number" class="form-control" name="transfer_enable" value="{{$user->transfer_enable}}" id="transfer_enable" required>
                                         <span class="input-group-text">GB</span>
                                     </div>
                                 </div>
@@ -332,12 +332,12 @@
                     <div class="alert alert-danger" style="display: none;" id="msg"></div>
                     <div class="form-group row">
                         <label for="amount" class="col-md-3 col-form-label"> 充值金额 </label>
-                        <input type="text" class="col-md-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" onkeydown="if(event.keyCode==13){return false;}"/>
+                        <input type="number" class="col-md-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" onkeydown="if(event.keyCode==13){return false;}"/>
                     </div>
                 </form>
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-danger">关闭</button>
-                    <button class="btn btn-primary" onclick="return handleUserBalance();">充值</button>
+                    <button type="button" class="btn btn-primary" onclick="return handleUserBalance();">充值</button>
                 </div>
             </div>
         </div>
@@ -345,17 +345,16 @@
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         $('.input-daterange>input').datepicker({
             format: "yyyy-mm-dd",
             startDate: "2017-01-01"
         });
-
         // 切换用户身份
         function switchToUser() {
             $.ajax({
@@ -378,9 +377,8 @@
         }
 
         // ajax同步提交
-        function do_submit() {
+        function Submit() {
             var _token = '{{csrf_token()}}';
-            var id = '{{Request::get('id')}}';
             var username = $('#username').val();
             var password = $('#password').val();
             var pay_way = $("input:radio[name='pay_way']:checked").val();
@@ -416,14 +414,12 @@
                 }
             });
             usage = usage.substring(0, usage.length - 1);
-
             $.ajax({
                 type: "POST",
                 url: "/admin/editUser/{{$user->id}}",
                 async: false,
                 data: {
                     _token: _token,
-                    id: id,
                     username: username,
                     password: password,
                     usage: usage,
@@ -439,7 +435,6 @@
                     is_admin: is_admin,
                     remark: remark,
                     level: level,
-                    invite_num: invite_num,
                     port: port,
                     passwd: passwd,
                     method: method,
@@ -465,7 +460,11 @@
                             confirmButtonText: '{{trans('home.ticket_confirm')}}',
                         }).then((result) => {
                                 if (result.value) {
-                                    window.location.href = '/admin/userList?page={{Request::get('page', 1)}}';
+                                    @if (Request::getQueryString())
+                                        window.location.href = '/admin/userList' + '?{!! Request::getQueryString() !!}';
+                                    @else
+                                        window.location.href = '/admin/userList';
+                                    @endif
                                 }
                             }
                         )
@@ -512,7 +511,7 @@
             $.ajax({
                 url: '/admin/handleUserBalance',
                 type: "POST",
-                data: {_token: '{{csrf_token()}}', user_id: '{{$user->id}}', amount: amount},
+                data: {_token: '{{csrf_token()}}', user_id: '{{Request::get('id')}}', amount: amount},
                 beforeSend: function () {
                     $("#msg").show().html("充值中...");
                 },

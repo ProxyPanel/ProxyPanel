@@ -32,7 +32,17 @@ class TicketController extends Controller
     // 工单列表
     public function ticketList(Request $request)
     {
-        $view['ticketList'] = Ticket::query()->orderBy('id', 'desc')->paginate(10);
+        $username = $request->input('username');
+
+        $query = Ticket::query();
+
+        if (isset($username)) {
+            $query->whereHas('user', function ($q) use ($username) {
+                $q->where('username', 'like', '%' . $username . '%');
+            });
+        }
+
+        $view['ticketList'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
         return Response::view('ticket.ticketList', $view);
     }
