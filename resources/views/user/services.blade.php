@@ -62,7 +62,7 @@
                                             {!!$goods->info!!}
                                         </ul>
                                         <div class="pricing-footer text-center bg-blue-grey-100">
-                                            <button class="btn btn-primary btn-lg" onclick="buy({{$goods->id}})"> {{trans('home.service_buy_button')}}</button>
+                                            <a href="/buy/{{$goods->id}}" class="btn btn-lg btn-primary"> {{trans('home.service_buy_button')}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -148,18 +148,14 @@
     </div>
 @endsection @section('script')
     <script type="text/javascript">
-        function buy(goods_id) {
-            window.location.href = '/buy/' + goods_id;
-        }
-
         // 切换充值方式
         $("#charge_type").change(function () {
-            if ($(this).val() === 1) {
+            if ($(this).val() === '1') {
                 $("#charge_balance").show();
                 $("#change_btn").show();
                 $("#charge_qrcode").hide();
                 $("#charge_coupon_code").hide();
-            } else if ($(this).val() === 2) {
+            } else if ($(this).val() === '2') {
                 $("#charge_balance").hide();
                 $("#change_btn").hide();
                 $("#charge_qrcode").show();
