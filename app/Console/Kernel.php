@@ -2,70 +2,88 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AutoCheckNodeTCP;
+use App\Console\Commands\AutoClearLog;
+use App\Console\Commands\AutoDecGoodsTraffic;
+use App\Console\Commands\AutoJob;
+use App\Console\Commands\AutoReportNode;
+use App\Console\Commands\AutoResetUserTraffic;
+use App\Console\Commands\AutoStatisticsNodeDailyTraffic;
+use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
+use App\Console\Commands\AutoStatisticsUserDailyTraffic;
+use App\Console\Commands\AutoStatisticsUserHourlyTraffic;
+use App\Console\Commands\upgradeUserLabels;
+use App\Console\Commands\upgradeUserPassword;
+use App\Console\Commands\upgradeUserSpeedLimit;
+use App\Console\Commands\upgradeUserSubscribe;
+use App\Console\Commands\upgradeUserVmessId;
+use App\Console\Commands\UserExpireAutoWarning;
+use App\Console\Commands\UserTrafficAbnormalAutoWarning;
+use App\Console\Commands\UserTrafficAutoWarning;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-        \App\Console\Commands\AutoJob::class,
-        \App\Console\Commands\AutoClearLog::class,
-        \App\Console\Commands\AutoDecGoodsTraffic::class,
-        \App\Console\Commands\AutoResetUserTraffic::class,
-        \App\Console\Commands\AutoCheckNodeTCP::class,
-        \App\Console\Commands\AutoStatisticsNodeDailyTraffic::class,
-        \App\Console\Commands\AutoStatisticsNodeHourlyTraffic::class,
-        \App\Console\Commands\AutoStatisticsUserDailyTraffic::class,
-        \App\Console\Commands\AutoStatisticsUserHourlyTraffic::class,
-        \App\Console\Commands\UserTrafficAbnormalAutoWarning::class,
-        \App\Console\Commands\UserExpireAutoWarning::class,
-        \App\Console\Commands\UserTrafficAutoWarning::class,
-        \App\Console\Commands\upgradeUserLabels::class,
-        \App\Console\Commands\upgradeUserPassword::class,
-        \App\Console\Commands\upgradeUserSpeedLimit::class,
-        \App\Console\Commands\upgradeUserSubscribe::class,
-        \App\Console\Commands\upgradeUserVmessId::class,
-        \App\Console\Commands\AutoReportNode::class,
-    ];
+	/**
+	 * The Artisan commands provided by your application.
+	 *
+	 * @var array
+	 */
+	protected $commands = [
+		AutoJob::class,
+		AutoClearLog::class,
+		AutoDecGoodsTraffic::class,
+		AutoResetUserTraffic::class,
+		AutoCheckNodeTCP::class,
+		AutoStatisticsNodeDailyTraffic::class,
+		AutoStatisticsNodeHourlyTraffic::class,
+		AutoStatisticsUserDailyTraffic::class,
+		AutoStatisticsUserHourlyTraffic::class,
+		UserTrafficAbnormalAutoWarning::class,
+		UserExpireAutoWarning::class,
+		UserTrafficAutoWarning::class,
+		upgradeUserLabels::class,
+		upgradeUserPassword::class,
+		upgradeUserSpeedLimit::class,
+		upgradeUserSubscribe::class,
+		upgradeUserVmessId::class,
+		AutoReportNode::class,
+	];
 
-    /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
-     *
-     * @return void
-     */
-    protected function schedule(Schedule $schedule)
-    {
-        $schedule->command('autoJob')->everyMinute();
-        $schedule->command('autoClearLog')->everyThirtyMinutes();
-        $schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
-        $schedule->command('autoResetUserTraffic')->daily();
-        $schedule->command('autoCheckNodeTCP')->everyMinute();
-        $schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
-        $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
-        $schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
-        $schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
-        $schedule->command('userTrafficAbnormalAutoWarning')->hourly();
-        $schedule->command('userExpireAutoWarning')->dailyAt('20:00');
-        $schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
-        $schedule->command('autoReportNode')->dailyAt('09:00');
-    }
+	/**
+	 * Define the application's command schedule.
+	 *
+	 * @param Schedule $schedule
+	 *
+	 * @return void
+	 */
+	protected function schedule(Schedule $schedule)
+	{
+		$schedule->command('autoJob')->everyMinute();
+		$schedule->command('autoClearLog')->everyThirtyMinutes();
+		$schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
+		$schedule->command('autoResetUserTraffic')->daily();
+		$schedule->command('autoCheckNodeTCP')->everyMinute();
+		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
+		$schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
+		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
+		$schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
+		$schedule->command('userTrafficAbnormalAutoWarning')->hourly();
+		$schedule->command('userExpireAutoWarning')->dailyAt('20:00');
+		$schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
+		$schedule->command('autoReportNode')->dailyAt('09:00');
+	}
 
-    /**
-     * Register the commands for the application.
-     *
-     * @return void
-     */
-    protected function commands()
-    {
-        $this->load(__DIR__.'/Commands');
+	/**
+	 * Register the commands for the application.
+	 *
+	 * @return void
+	 */
+	protected function commands()
+	{
+		$this->load(__DIR__.'/Commands');
 
-        require base_path('routes/console.php');
-    }
+		require base_path('routes/console.php');
+	}
 }

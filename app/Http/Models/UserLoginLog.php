@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,15 +10,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserLoginLog
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class UserLoginLog extends Model
 {
-    protected $table = 'user_login_log';
-    protected $primaryKey = 'id';
+	protected $table = 'user_login_log';
+	protected $primaryKey = 'id';
 
-    function user()
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
+	function user()
+	{
+		return $this->hasOne(User::class, 'id', 'user_id');
+	}
 }

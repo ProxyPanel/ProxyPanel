@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class SensitiveWords
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SensitiveWords extends Model
 {
-    protected $table = 'sensitive_words';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'sensitive_words';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 }

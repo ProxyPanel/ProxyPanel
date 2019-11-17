@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Auth;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -10,20 +11,20 @@ use Illuminate\Database\Eloquent\Model;
  * Class Ticket
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Ticket extends Model
 {
-    protected $table = 'ticket';
-    protected $primaryKey = 'id';
+	protected $table = 'ticket';
+	protected $primaryKey = 'id';
 
-    function scopeUid($query)
-    {
-        return $query->where('user_id', Auth::user()->id);
-    }
+	function scopeUid($query)
+	{
+		return $query->where('user_id', Auth::user()->id);
+	}
 
-    function user()
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
+	function user()
+	{
+		return $this->hasOne(User::class, 'id', 'user_id');
+	}
 }

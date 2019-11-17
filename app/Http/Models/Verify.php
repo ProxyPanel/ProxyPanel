@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,22 +10,22 @@ use Illuminate\Database\Eloquent\Model;
  * Class Verify
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Verify extends Model
 {
-    protected $table = 'verify';
-    protected $primaryKey = 'id';
+	protected $table = 'verify';
+	protected $primaryKey = 'id';
 
-    // 筛选类型
-    function scopeType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
+	// 筛选类型
+	function scopeType($query, $type)
+	{
+		return $query->where('type', $type);
+	}
 
-    function user()
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
+	function user()
+	{
+		return $this->hasOne(User::class, 'id', 'user_id');
+	}
 
 }

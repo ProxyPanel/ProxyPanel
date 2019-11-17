@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,17 +10,17 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeLabel
  *
  * @package App\Http\Models
- * @property-read \App\Http\Models\Label $labelInfo
- * @mixin \Eloquent
+ * @property-read Label $labelInfo
+ * @mixin Eloquent
  */
 class SsNodeLabel extends Model
 {
-    protected $table = 'ss_node_label';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'ss_node_label';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 
-    function labelInfo()
-    {
-        return $this->hasOne(Label::class, 'id', 'label_id');
-    }
+	function labelInfo()
+	{
+		return $this->hasOne(Label::class, 'id', 'label_id');
+	}
 }

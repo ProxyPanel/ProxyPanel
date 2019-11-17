@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Auth;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -11,29 +12,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Invite
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Invite extends Model
 {
-    use SoftDeletes;
+	use SoftDeletes;
 
-    protected $table = 'invite';
-    protected $primaryKey = 'id';
-    protected $dates = ['deleted_at'];
+	protected $table = 'invite';
+	protected $primaryKey = 'id';
+	protected $dates = ['deleted_at'];
 
-    function scopeUid($query)
-    {
-        return $query->where('uid', Auth::user()->id);
-    }
+	function scopeUid($query)
+	{
+		return $query->where('uid', Auth::user()->id);
+	}
 
-    function generator()
-    {
-        return $this->hasOne(User::class, 'id', 'uid');
-    }
+	function generator()
+	{
+		return $this->hasOne(User::class, 'id', 'uid');
+	}
 
-    function user()
-    {
-        return $this->hasOne(User::class, 'id', 'fuid');
-    }
+	function user()
+	{
+		return $this->hasOne(User::class, 'id', 'fuid');
+	}
 
 }

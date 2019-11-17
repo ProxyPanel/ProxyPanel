@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Auth;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -10,20 +11,20 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserSubscribe
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class UserSubscribe extends Model
 {
-    protected $table = 'user_subscribe';
-    protected $primaryKey = 'id';
+	protected $table = 'user_subscribe';
+	protected $primaryKey = 'id';
 
-    function scopeUid($query)
-    {
-        return $query->where('user_id', Auth::user()->id);
-    }
+	function scopeUid($query)
+	{
+		return $query->where('user_id', Auth::user()->id);
+	}
 
-    function User()
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
+	function User()
+	{
+		return $this->hasOne(User::class, 'id', 'user_id');
+	}
 }

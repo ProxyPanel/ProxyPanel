@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,16 +10,16 @@ use Illuminate\Database\Eloquent\Model;
  * Class GoodsLabel
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class GoodsLabel extends Model
 {
-    protected $table = 'goods_label';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'goods_label';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 
-    function goods()
-    {
-        return $this->hasOne(Goods::class, 'id', 'goods_id');
-    }
+	function goods()
+	{
+		return $this->hasOne(Goods::class, 'id', 'goods_id');
+	}
 }

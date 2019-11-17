@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,15 +10,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class TicketReply
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class TicketReply extends Model
 {
-    protected $table = 'ticket_reply';
-    protected $primaryKey = 'id';
+	protected $table = 'ticket_reply';
+	protected $primaryKey = 'id';
 
-    function user()
-    {
-        return $this->hasOne(User::class, 'id', 'user_id');
-    }
+	function user()
+	{
+		return $this->hasOne(User::class, 'id', 'user_id');
+	}
 }

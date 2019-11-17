@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,15 +10,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class Article
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class UserTrafficHourly extends Model
 {
-    protected $table = 'user_traffic_hourly';
-    protected $primaryKey = 'id';
+	protected $table = 'user_traffic_hourly';
+	protected $primaryKey = 'id';
 
-    function node()
-    {
-        return $this->hasOne(SsNode::class, 'id', 'node_id');
-    }
+	function node()
+	{
+		return $this->hasOne(SsNode::class, 'id', 'node_id');
+	}
 }

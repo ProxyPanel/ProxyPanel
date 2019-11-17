@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class Level
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Level extends Model
 {
-    protected $table = 'level';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'level';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class Goods
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class CouponLog extends Model
 {
-    protected $table = 'coupon_log';
-    protected $primaryKey = 'id';
+	protected $table = 'coupon_log';
+	protected $primaryKey = 'id';
 
 }

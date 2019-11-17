@@ -15,10 +15,10 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-md-6">
-                        <canvas id="dailyChart" aria-label="小时流量图" role="img"></canvas>
+						<canvas id="dailyChart" aria-label="小时流量图" role="img"></canvas>
 					</div>
 					<div class="col-md-6">
-                        <canvas id="monthlyChart" aria-label="月流量图" role="img"></canvas>
+						<canvas id="monthlyChart" aria-label="月流量图" role="img"></canvas>
 					</div>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 	</div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
         const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {

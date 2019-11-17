@@ -21,15 +21,15 @@ class isSecurity
 	{
 		$ip = getClientIP();
 		$code = $request->input('securityCode');
-		$cacheKey = 'SecurityLogin_' . ip2long($ip);
+		$cacheKey = 'SecurityLogin_'.ip2long($ip);
 		$websiteSecurityCode = Helpers::systemConfig()['website_security_code'];
 
-		if ($websiteSecurityCode && !Cache::has($cacheKey)) {
-			if ($code != $websiteSecurityCode) {
-				Log::info("拒绝非安全入口访问(" . $ip . ")");
+		if($websiteSecurityCode && !Cache::has($cacheKey)){
+			if($code != $websiteSecurityCode){
+				Log::info("拒绝非安全入口访问(".$ip.")");
 
-				return response()->view('auth.error', ['message' => trans('error.SecurityError') . ', ' . trans('error.Visit') . '<a href="/login?securityCode=" target="_self">' . trans('error.SecurityEnter') . '</a>']);
-			} else {
+				return response()->view('auth.error', ['message' => trans('error.SecurityError').', '.trans('error.Visit').'<a href="/login?securityCode=" target="_self">'.trans('error.SecurityEnter').'</a>']);
+			}else{
 				Cache::put($cacheKey, $ip, 120); // 缓存120分钟，因为每个session默认存活120分钟
 			}
 		}

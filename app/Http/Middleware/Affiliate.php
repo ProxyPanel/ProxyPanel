@@ -2,26 +2,27 @@
 
 namespace App\Http\Middleware;
 
-use Cookie;
 use Closure;
+use Cookie;
+use Illuminate\Http\Request;
 
 class Affiliate
 {
-    /**
-     * 返利识别
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
-     *
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
-    {
-        $aff = trim($request->input('aff', 0));
-        if ($aff) {
-            Cookie::queue('register_aff', $aff, 129600);
-        }
+	/**
+	 * 返利识别
+	 *
+	 * @param Request $request
+	 * @param Closure                  $next
+	 *
+	 * @return mixed
+	 */
+	public function handle($request, Closure $next)
+	{
+		$aff = trim($request->input('aff', 0));
+		if($aff){
+			Cookie::queue('register_aff', $aff, 129600);
+		}
 
-        return $next($request);
-    }
+		return $next($request);
+	}
 }

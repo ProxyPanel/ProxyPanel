@@ -18,7 +18,7 @@
 			@endif
 			<div class="panel-body">
 				<div class="example">
-					<table class="text-center" data-toggle="table" data-mobile-responsive="true">
+					<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
 						<thead class="thead-default">
 						<tr>
 							<th>近期请求地址</th>
@@ -40,8 +40,8 @@
 					</table>
 				</div>
 			</div>
-			</div>
 		</div>
+	</div>
 	</div>
 
 @endsection

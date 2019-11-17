@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class Label
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Label extends Model
 {
-    protected $table = 'label';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'label';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 }

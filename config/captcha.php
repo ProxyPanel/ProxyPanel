@@ -2,46 +2,46 @@
 
 return [
 
-    'characters' => '123467890',
-    //'characters' => '2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ',
+	'characters' => '123467890',
+	//'characters' => '2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ',
 
-    'default' => [
-        'length'  => 4, // ÆôÓÃ¿ÆÑ§¼ÆËãºóÒª¸ÄÎª 9
-        'width'   => 90,
-        'height'  => 43,
-        'quality' => 90,
-        'math'    => false, // ¸ÄÎªtrue£¬ÆôÓÃ¿ÆÑ§¼ÆËã
-    ],
+	'default' => [
+		'length'  => 4, // ï¿½ï¿½ï¿½Ã¿ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Îª 9
+		'width'   => 90,
+		'height'  => 43,
+		'quality' => 90,
+		'math'    => FALSE, // ï¿½ï¿½Îªtrueï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½
+	],
 
-    'flat' => [
-        'length'     => 6,
-        'width'      => 160,
-        'height'     => 46,
-        'quality'    => 90,
-        'lines'      => 6,
-        'bgImage'    => false,
-        'bgColor'    => '#ecf2f4',
-        'fontColors' => ['#2c3e50', '#c0392b', '#16a085', '#c0392b', '#8e44ad', '#303f9f', '#f57c00', '#795548'],
-        'contrast'   => -5,
-    ],
+	'flat' => [
+		'length'     => 6,
+		'width'      => 160,
+		'height'     => 46,
+		'quality'    => 90,
+		'lines'      => 6,
+		'bgImage'    => FALSE,
+		'bgColor'    => '#ecf2f4',
+		'fontColors' => ['#2c3e50', '#c0392b', '#16a085', '#c0392b', '#8e44ad', '#303f9f', '#f57c00', '#795548'],
+		'contrast'   => -5,
+	],
 
-    'mini' => [
-        'length' => 3,
-        'width'  => 60,
-        'height' => 32,
-    ],
+	'mini' => [
+		'length' => 3,
+		'width'  => 60,
+		'height' => 32,
+	],
 
-    'inverse' => [
-        'length'    => 5,
-        'width'     => 120,
-        'height'    => 36,
-        'quality'   => 90,
-        'sensitive' => true,
-        'angle'     => 12,
-        'sharpen'   => 10,
-        'blur'      => 2,
-        'invert'    => true,
-        'contrast'  => -5,
-    ]
+	'inverse' => [
+		'length'    => 5,
+		'width'     => 120,
+		'height'    => 36,
+		'quality'   => 90,
+		'sensitive' => TRUE,
+		'angle'     => 12,
+		'sharpen'   => 10,
+		'blur'      => 2,
+		'invert'    => TRUE,
+		'contrast'  => -5,
+	]
 
 ];
