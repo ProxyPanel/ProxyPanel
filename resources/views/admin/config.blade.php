@@ -1,329 +1,329 @@
 @extends('admin.layouts')
 @section('css')
-    <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+	<script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
+	<link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
-    <div class="page-content container">
-        <div class="panel">
-            <div class="panel-heading">
-                <h3 class="panel-title">通用配置</h3>
-            </div>
-            <div class="panel-body">
-                <div class="nav-tabs-vertical" data-plugin="tabs">
-                    <ul class="nav nav-tabs mr-25" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link active" data-toggle="tab" href="#tab1" aria-controls="tab1" role="tab">加密</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#tab2" aria-controls="tab2" role="tab">协议</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#tab3" aria-controls="tab3" role="tab">混淆</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#tab4" aria-controls="tab4" role="tab">等级</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#tab5" aria-controls="tab5" role="tab">国家地区</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab1" role="tabpanel">
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
-                                <i class="icon wb-plus"></i></button>
-                            <table class="text-center" data-toggle="table" data-mobile-responsive="true">
-                                <thead class="thead-default">
-                                <tr>
-                                    <th> 名称</th>
-                                    <th> 操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($method_list->isEmpty())
-                                    <tr>
-                                        <td colspan="2">暂无数据</td>
-                                    </tr>
-                                @else
-                                    @foreach($method_list as $method)
-                                        <tr>
-                                            <td> {{$method->name}}</td>
-                                            <td>
-                                                @if($method->is_default)
-                                                    <span class='badge badge-lg badge-default'>默认</span>
-                                                @else
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-primary" onclick="setDefault('1', '{{$method->id}}')">默认</button>
-                                                        <button class="btn btn-danger" onclick="delConfig('1', '{{$method->id}}')">
-                                                            <i class="icon wb-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane" id="tab2" role="tabpanel">
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
-                                <i class="icon wb-plus"></i></button>
-                            <table class="text-center" data-toggle="table" data-mobile-responsive="true">
-                                <thead class="thead-default">
-                                <tr>
-                                    <th> 名称</th>
-                                    <th> 操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($method_list->isEmpty())
-                                    <tr>
-                                        <td colspan="2">暂无数据</td>
-                                    </tr>
-                                @else
-                                    @foreach($protocol_list as $protocol)
-                                        <tr>
-                                            <td> {{$protocol->name}}</td>
-                                            <td>
-                                                @if($protocol->is_default)
-                                                    <span class="badge badge-lg badge-default">默认</span>
-                                                @else
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-primary" onclick="setDefault('2', '{{$protocol->id}}')">默认</button>
-                                                        <button class="btn btn-danger" onclick="delConfig('2', '{{$protocol->id}}')">
-                                                            <i class="icon wb-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
+	<div class="page-content container">
+		<div class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">通用配置</h3>
+			</div>
+			<div class="panel-body">
+				<div class="nav-tabs-vertical" data-plugin="tabs">
+					<ul class="nav nav-tabs mr-25" role="tablist">
+						<li class="nav-item" role="presentation">
+							<a class="nav-link active" data-toggle="tab" href="#tab1" aria-controls="tab1" role="tab">加密</a>
+						</li>
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" data-toggle="tab" href="#tab2" aria-controls="tab2" role="tab">协议</a>
+						</li>
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" data-toggle="tab" href="#tab3" aria-controls="tab3" role="tab">混淆</a>
+						</li>
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" data-toggle="tab" href="#tab4" aria-controls="tab4" role="tab">等级</a>
+						</li>
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" data-toggle="tab" href="#tab5" aria-controls="tab5" role="tab">国家地区</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab1" role="tabpanel">
+							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
+								<i class="icon wb-plus"></i></button>
+							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+								<thead class="thead-default">
+								<tr>
+									<th> 名称</th>
+									<th> 操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								@if($method_list->isEmpty())
+									<tr>
+										<td colspan="2">暂无数据</td>
+									</tr>
+								@else
+									@foreach($method_list as $method)
+										<tr>
+											<td> {{$method->name}}</td>
+											<td>
+												@if($method->is_default)
+													<span class='badge badge-lg badge-default'>默认</span>
+												@else
+													<div class="btn-group">
+														<button class="btn btn-primary" onclick="setDefault('1', '{{$method->id}}')">默认</button>
+														<button class="btn btn-danger" onclick="delConfig('1', '{{$method->id}}')">
+															<i class="icon wb-trash"></i>
+														</button>
+													</div>
+												@endif
+											</td>
+										</tr>
+									@endforeach
+								@endif
+								</tbody>
+							</table>
+						</div>
+						<div class="tab-pane" id="tab2" role="tabpanel">
+							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
+								<i class="icon wb-plus"></i></button>
+							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+								<thead class="thead-default">
+								<tr>
+									<th> 名称</th>
+									<th> 操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								@if($method_list->isEmpty())
+									<tr>
+										<td colspan="2">暂无数据</td>
+									</tr>
+								@else
+									@foreach($protocol_list as $protocol)
+										<tr>
+											<td> {{$protocol->name}}</td>
+											<td>
+												@if($protocol->is_default)
+													<span class="badge badge-lg badge-default">默认</span>
+												@else
+													<div class="btn-group">
+														<button class="btn btn-primary" onclick="setDefault('2', '{{$protocol->id}}')">默认</button>
+														<button class="btn btn-danger" onclick="delConfig('2', '{{$protocol->id}}')">
+															<i class="icon wb-trash"></i>
+														</button>
+													</div>
+												@endif
+											</td>
+										</tr>
+									@endforeach
+								@endif
+								</tbody>
+							</table>
+						</div>
 
-                        <div class="tab-pane" id="tab3" role="tabpanel">
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
-                                <i class="icon wb-plus"></i></button>
-                            <table class="text-center" data-toggle="table" data-mobile-responsive="true">
-                                <thead class="thead-default">
-                                <tr>
-                                    <th> 名称</th>
-                                    <th> 操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($obfs_list->isEmpty())
-                                    <tr>
-                                        <td colspan="2">暂无数据</td>
-                                    </tr>
-                                @else
-                                    @foreach($obfs_list as $obfs)
-                                        <tr>
-                                            <td> {{$obfs->name}}</td>
-                                            <td>
-                                                @if($obfs->is_default)
-                                                    <span class="badge badge-lg badge-default">默认</span>
-                                                @else
-                                                    <button class="btn btn-primary" onclick="setDefault('3', '{{$obfs->id}}')">默认</button>
-                                                    <button class="btn btn-danger" onclick="delConfig('3', '{{$obfs->id}}')">
-                                                        <i class="icon wb-trash"></i>
-                                                    </button>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane" id="tab4" role="tabpanel">
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_level_modal"> 新增
-                                <i class="icon wb-plus"></i></button>
-                            <table class="text-center" data-toggle="table" data-mobile-responsive="true">
-                                <thead class="thead-default">
-                                <tr>
-                                    <th> 等级</th>
-                                    <th> 名称</th>
-                                    <th> 操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($level_list->isEmpty())
-                                    <tr>
-                                        <td colspan="3">暂无数据</td>
-                                    </tr>
-                                @else
-                                    @foreach($level_list as $level)
-                                        <tr>
-                                            <td>
-                                                <input id="level_{{$level->id}}" name="level" value="{{$level->level}}" type="text" class="form-control">
-                                            </td>
-                                            <td>
-                                                <input id="level_name_{{$level->id}}" name="level_name" value="{{$level->level_name}}" type="text" class="form-control">
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-primary" onclick="updateLevel('4', '{{$level->id}}')">修改</button>
-                                                    <button type="button" class="btn btn-danger" onclick="delLevel('4', '{{$level->id}}')">
-                                                        <i class="icon wb-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane" id="tab5" role="tabpanel">
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_country_modal"> 新增
-                                <i class="icon wb-plus"></i></button>
-                            <table class="table text-center" data-toggle="table" data-mobile-responsive="true">
-                                <thead class="thead-default">
-                                <tr>
-                                    <th> 图标</th>
-                                    <th> 国家/地区名称</th>
-                                    <th> 代码</th>
-                                    <th> 操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($country_list->isEmpty())
-                                    <tr>
-                                        <td colspan="4">暂无数据</td>
-                                    </tr>
-                                @else
-                                    @foreach($country_list as $country)
-                                        <tr>
-                                            <td>
-                                                <svg class="w-50 h-50 text-center" aria-hidden="true">
-                                                    <use xlink:href="@if($country->country_code)#icon-{{$country->country_code}}@endif"></use>
-                                                </svg>
-                                            </td>
-                                            <td>
-                                                <input id="country_name_{{$country->id}}" name="country_name" value="{{$country->country_name}}" type="text" class="form-control">
-                                            </td>
-                                            <td>
-                                                <input id="country_code_{{$country->id}}" name="country_code" value="{{$country->country_code}}" type="text" class="form-control">
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-primary" onclick="updateCountry('5', '{{$country->id}}')">修改</button>
-                                                    <button type="button" class="btn btn-danger" onclick="delCountry('5', '{{$country->id}}')"><i class="icon wb-trash"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+						<div class="tab-pane" id="tab3" role="tabpanel">
+							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
+								<i class="icon wb-plus"></i></button>
+							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+								<thead class="thead-default">
+								<tr>
+									<th> 名称</th>
+									<th> 操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								@if($obfs_list->isEmpty())
+									<tr>
+										<td colspan="2">暂无数据</td>
+									</tr>
+								@else
+									@foreach($obfs_list as $obfs)
+										<tr>
+											<td> {{$obfs->name}}</td>
+											<td>
+												@if($obfs->is_default)
+													<span class="badge badge-lg badge-default">默认</span>
+												@else
+													<button class="btn btn-primary" onclick="setDefault('3', '{{$obfs->id}}')">默认</button>
+													<button class="btn btn-danger" onclick="delConfig('3', '{{$obfs->id}}')">
+														<i class="icon wb-trash"></i>
+													</button>
+												@endif
+											</td>
+										</tr>
+									@endforeach
+								@endif
+								</tbody>
+							</table>
+						</div>
+						<div class="tab-pane" id="tab4" role="tabpanel">
+							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_level_modal"> 新增
+								<i class="icon wb-plus"></i></button>
+							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+								<thead class="thead-default">
+								<tr>
+									<th> 等级</th>
+									<th> 名称</th>
+									<th> 操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								@if($level_list->isEmpty())
+									<tr>
+										<td colspan="3">暂无数据</td>
+									</tr>
+								@else
+									@foreach($level_list as $level)
+										<tr>
+											<td>
+												<input id="level_{{$level->id}}" name="level" value="{{$level->level}}" type="text" class="form-control">
+											</td>
+											<td>
+												<input id="level_name_{{$level->id}}" name="level_name" value="{{$level->level_name}}" type="text" class="form-control">
+											</td>
+											<td>
+												<div class="btn-group">
+													<button type="button" class="btn btn-primary" onclick="updateLevel('4', '{{$level->id}}')">修改</button>
+													<button type="button" class="btn btn-danger" onclick="delLevel('4', '{{$level->id}}')">
+														<i class="icon wb-trash"></i>
+													</button>
+												</div>
+											</td>
+										</tr>
+									@endforeach
+								@endif
+								</tbody>
+							</table>
+						</div>
+						<div class="tab-pane" id="tab5" role="tabpanel">
+							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_country_modal"> 新增
+								<i class="icon wb-plus"></i></button>
+							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+								<thead class="thead-default">
+								<tr>
+									<th> 图标</th>
+									<th> 国家/地区名称</th>
+									<th> 代码</th>
+									<th> 操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								@if($country_list->isEmpty())
+									<tr>
+										<td colspan="4">暂无数据</td>
+									</tr>
+								@else
+									@foreach($country_list as $country)
+										<tr>
+											<td>
+												<svg class="w-50 h-50 text-center" aria-hidden="true">
+													<use xlink:href="@if($country->country_code)#icon-{{$country->country_code}}@endif"></use>
+												</svg>
+											</td>
+											<td>
+												<input id="country_name_{{$country->id}}" name="country_name" value="{{$country->country_name}}" type="text" class="form-control">
+											</td>
+											<td>
+												<input id="country_code_{{$country->id}}" name="country_code" value="{{$country->country_code}}" type="text" class="form-control">
+											</td>
+											<td>
+												<div class="btn-group">
+													<button type="button" class="btn btn-primary" onclick="updateCountry('5', '{{$country->id}}')">修改</button>
+													<button type="button" class="btn btn-danger" onclick="delCountry('5', '{{$country->id}}')"><i class="icon wb-trash"></i></button>
+												</div>
+											</td>
+										</tr>
+									@endforeach
+								@endif
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal fade" id="add_config_modal" aria-hidden="true" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-simple modal-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">新增配置</h4>
-                </div>
-                <form action="#" method="post" class="modal-body">
-                    <div class="alert alert-danger" style="display: none;" id="msg"></div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <select class="form-control" name="type" id="type" placeholder="类型">
-                                <option value="1" selected>加密方式</option>
-                                <option value="2">协议</option>
-                                <option value="3">混淆</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="name" id="name" placeholder="名称">
-                        </div>
-                    </div>
-                </form>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" data-dismiss="modal">关闭</button>
-                    <button class="btn btn-primary" onclick="return addConfig();">提交</button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="add_config_modal" aria-hidden="true" role="dialog" tabindex="-1">
+		<div class="modal-dialog modal-simple modal-center">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">新增配置</h4>
+				</div>
+				<form action="#" method="post" class="modal-body">
+					<div class="alert alert-danger" style="display: none;" id="msg"></div>
+					<div class="row">
+						<div class="col-md-6 form-group">
+							<select class="form-control" name="type" id="type" placeholder="类型">
+								<option value="1" selected>加密方式</option>
+								<option value="2">协议</option>
+								<option value="3">混淆</option>
+							</select>
+						</div>
+						<div class="col-md-6 form-group">
+							<input type="text" class="form-control" name="name" id="name" placeholder="名称">
+						</div>
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button class="btn btn-danger" data-dismiss="modal">关闭</button>
+					<button class="btn btn-primary" onclick="addConfig()">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal fade" id="add_level_modal" aria-hidden="true" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-simple modal-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">新增配置</h4>
-                </div>
-                <form action="#" method="post" class="modal-body">
-                    <div class="alert alert-danger" style="display: none;" id="level_msg"></div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="level" id="add_level" placeholder="等级">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="level_name" id="add_level_name" placeholder="等级名称">
-                        </div>
-                    </div>
-                </form>
-                <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关闭</button>
-                    <button class="btn btn-primary" onclick="return addLevel(4);">提交</button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="add_level_modal" aria-hidden="true" role="dialog" tabindex="-1">
+		<div class="modal-dialog modal-simple modal-center">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">新增配置</h4>
+				</div>
+				<form action="#" method="post" class="modal-body">
+					<div class="alert alert-danger" style="display: none;" id="level_msg"></div>
+					<div class="row">
+						<div class="col-md-6 form-group">
+							<input type="text" class="form-control" name="level" id="add_level" placeholder="等级">
+						</div>
+						<div class="col-md-6 form-group">
+							<input type="text" class="form-control" name="level_name" id="add_level_name" placeholder="等级名称">
+						</div>
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button data-dismiss="modal" class="btn btn-danger">关闭</button>
+					<button class="btn btn-primary" onclick="addLevel('4')">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal fade" id="add_country_modal" aria-hidden="true" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-simple modal-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">新增国家/地区</h4>
-                </div>
-                <form action="#" method="post" class="modal-body">
-                    <div class="alert alert-danger" style="display: none;" id="country_msg"></div>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="country_name" id="add_country_name" placeholder=" 国家/地区名称">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="country_code" id="add_country_code" placeholder="国家代码">
-                        </div>
-                    </div>
-                </form>
-                <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关闭</button>
-                    <button class="btn btn-primary" onclick="return addCountry(5);">提交</button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="add_country_modal" aria-hidden="true" role="dialog" tabindex="-1">
+		<div class="modal-dialog modal-simple modal-center">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">新增国家/地区</h4>
+				</div>
+				<form action="#" method="post" class="modal-body">
+					<div class="alert alert-danger" style="display: none;" id="country_msg"></div>
+					<div class="row">
+						<div class="col-md-6 form-group">
+							<input type="text" class="form-control" name="country_name" id="add_country_name" placeholder=" 国家/地区名称">
+						</div>
+						<div class="col-md-6 form-group">
+							<input type="text" class="form-control" name="country_code" id="add_country_code" placeholder="国家代码">
+						</div>
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button data-dismiss="modal" class="btn btn-danger">关闭</button>
+					<button class="btn btn-primary" onclick="addCountry('5')">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+	<script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
-    <script type="text/javascript">
+	<script type="text/javascript">
         // 添加等级
         function addLevel(tabId) {
             const level = $('#add_level').val();
@@ -571,5 +571,5 @@
                 }
             });
         }
-    </script>
+	</script>
 @endsection

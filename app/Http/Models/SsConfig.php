@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,23 +10,23 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsConfig
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SsConfig extends Model
 {
-    protected $table = 'ss_config';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'ss_config';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 
-    // 筛选默认
-    function scopeDefault($query)
-    {
-        $query->where('is_default', 1);
-    }
+	// 筛选默认
+	function scopeDefault($query)
+	{
+		$query->where('is_default', 1);
+	}
 
-    // 筛选类型
-    function scopeType($query, $type)
-    {
-        $query->where('type', $type);
-    }
+	// 筛选类型
+	function scopeType($query, $type)
+	{
+		$query->where('type', $type);
+	}
 }

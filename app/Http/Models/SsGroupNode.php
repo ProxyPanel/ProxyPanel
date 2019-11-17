@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeGroup
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SsGroupNode extends Model
 {
-    protected $table = 'ss_group_node';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'ss_group_node';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 
 }

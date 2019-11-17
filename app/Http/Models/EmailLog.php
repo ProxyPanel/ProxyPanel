@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class EmailLog
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class EmailLog extends Model
 {
-    protected $table = 'email_log';
-    protected $primaryKey = 'id';
+	protected $table = 'email_log';
+	protected $primaryKey = 'id';
 
 }

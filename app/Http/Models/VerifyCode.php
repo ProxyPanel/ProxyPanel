@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class VerifyCode
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class VerifyCode extends Model
 {
-    protected $table = 'verify_code';
-    protected $primaryKey = 'id';
+	protected $table = 'verify_code';
+	protected $primaryKey = 'id';
 
 }

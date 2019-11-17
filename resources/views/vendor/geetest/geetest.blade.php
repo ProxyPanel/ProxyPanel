@@ -4,9 +4,9 @@
 <p id="wait-{{ $captchaid }}" class="show" style="text-align:center;">{{trans('auth.captcha_loading')}}</p>
 @define use Illuminate\Support\Facades\Config
 <script>
-    var geetest = function(url) {
-        var handlerEmbed = function(captchaObj) {
-            $("#{{ $captchaid }}").closest('form').submit(function(e) {
+    var geetest = function (url) {
+        var handlerEmbed = function (captchaObj) {
+            $("#{{ $captchaid }}").closest('form').submit(function (e) {
                 // captchaObj.verify();
                 var validate = captchaObj.getValidate();
                 if (!validate) {
@@ -15,9 +15,9 @@
                 }
             });
             captchaObj.appendTo("#{{ $captchaid }}");
-            captchaObj.onReady(function() {
+            captchaObj.onReady(function () {
                 $("#wait-{{ $captchaid }}")[0].className = "hide";
-            })
+            });
             if ('{{ $product }}' == 'popup') {
                 captchaObj.bindOn($('#{{ $captchaid }}').closest('form').find(':submit'));
                 captchaObj.appendTo("#{{ $captchaid }}");
@@ -29,7 +29,7 @@
             url: url + "?t=" + (new Date()).getTime(),
             type: "get",
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 initGeetest({
                     gt: data.gt,
                     challenge: data.challenge,
@@ -45,7 +45,7 @@
     };
 
     function Msg(clear, msg, type) {
-        if ( !clear ) $('.login-form .alert, .register-form .alert').remove();
+        if (!clear) $('.login-form .alert, .register-form .alert').remove();
 
         var typeClass = 'alert-danger',
             clear = clear ? clear : false,
@@ -53,22 +53,22 @@
         type === 'error' ? typeClass = 'alert-danger' : typeClass = 'alert-success';
 
         var tpl = '<div class="alert ' + typeClass + '">' +
-                '<button class="close" data-close="alert"></button>' +
-                '<span> ' + msg + ' </span></div>';
+            '<button class="close" data-close="alert"></button>' +
+            '<span> ' + msg + ' </span></div>';
 
-        if ( !clear ) {
+        if (!clear) {
             $elem.prepend(tpl);
         } else {
             $('.login-form .alert, .register-form .alert').remove();
         }
     }
 
-    (function() {
+    (function () {
         geetest('{{ $url?$url:Config::get('geetest.url', 'geetest') }}');
     })();
 </script>
 <style type="text/css">
-    .hide {
-        display: none;
-    }
+	.hide {
+		display: none;
+	}
 </style>

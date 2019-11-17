@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,15 +10,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNode
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SsNode extends Model
 {
-    protected $table = 'ss_node';
-    protected $primaryKey = 'id';
+	protected $table = 'ss_node';
+	protected $primaryKey = 'id';
 
-    function label()
-    {
-        return $this->hasMany(SsNodeLabel::class, 'node_id', 'id');
-    }
+	function label()
+	{
+		return $this->hasMany(SsNodeLabel::class, 'node_id', 'id');
+	}
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,20 +10,20 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeIp
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SsNodeIp extends Model
 {
-    protected $table = 'ss_node_ip';
-    protected $primaryKey = 'id';
+	protected $table = 'ss_node_ip';
+	protected $primaryKey = 'id';
 
-    function node()
-    {
-        return $this->belongsTo(SsNode::class, 'node_id', 'id');
-    }
+	function node()
+	{
+		return $this->belongsTo(SsNode::class, 'node_id', 'id');
+	}
 
-    function user()
-    {
-        return $this->belongsTo(User::class, 'port', 'port');
-    }
+	function user()
+	{
+		return $this->belongsTo(User::class, 'port', 'port');
+	}
 }

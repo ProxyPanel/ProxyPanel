@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeOnlineLog
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SsNodeOnlineLog extends Model
 {
-    protected $table = 'ss_node_online_log';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'ss_node_online_log';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 
 }

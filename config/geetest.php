@@ -11,9 +11,9 @@ return [
 	| Options: ['zh-cn', 'zh-tw', 'en', 'ja', 'ko']
 	|
 	*/
-    'lang' => 'zh-cn',
-    
-    /*
+	'lang'              => 'zh-cn',
+
+	/*
 	|--------------------------------------------------------------------------
 	| Config ServerGetKey
 	|--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ return [
 	| Here you can decision whether to get the geetest key from database or not.
 	|
 	*/
-	'server-get-config' => true,
+	'server-get-config' => TRUE,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -31,7 +31,7 @@ return [
 	| Here you can config your yunpian api key from yunpian provided.
 	|
 	*/
-	'id' => env('GEETEST_ID'),
+	'id'                => env('GEETEST_ID'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
 	| Here you can config your yunpian api key from yunpian provided.
 	|
 	*/
-	'key' => env('GEETEST_KEY'),
+	'key'               => env('GEETEST_KEY'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
 	| Here you can config your geetest url for ajax validation.
 	|
 	*/
-	'url' => '/geetest',
+	'url'               => '/geetest',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return [
 	| Options: http or https
 	|
 	*/
-	'protocol' => 'http',
+	'protocol'          => 'http',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -75,7 +75,7 @@ return [
 	| Options: float, popup, custom, bind
 	|
 	*/
-	'product' => 'float',
+	'product'           => 'float',
 
 	/*
 	|--------------------------------------------------------------------------

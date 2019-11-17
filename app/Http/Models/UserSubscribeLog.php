@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class UserSubscribeLog
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class UserSubscribeLog extends Model
 {
-    protected $table = 'user_subscribe_log';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+	protected $table = 'user_subscribe_log';
+	protected $primaryKey = 'id';
+	public $timestamps = FALSE;
 
 }

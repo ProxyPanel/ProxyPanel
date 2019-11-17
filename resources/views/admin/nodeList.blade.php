@@ -1,98 +1,97 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
-    <div class="page-content container-fluid">
-        <div class="panel">
-            <div class="panel-heading">
-                <h3 class="panel-title">节点列表</h3>
-                <div class="panel-actions">
-                    <a href="/admin/addNode" class="btn btn-primary"><i class="icon wb-plus"></i> 添加节点</a>
-                </div>
-            </div>
-            <div class="panel-body">
-                <table class="text-center" data-toggle="table" data-mobile-responsive="true">
-                    <thead class="thead-default">
-                    <tr>
-                        <th> ID</th>
-                        <th> 类型</th>
-                        <th> 名称</th>
-                        <th> IP</th>
-                        <th> 域名</th>
-                        <th> 存活</th>
-                        <th> 状态</th>
-                        <th> 在线</th>
-                        <th>产生流量</th>
-                        <th> 流量比例</th>
-                        <th> 扩展</th>
-                        <th> 操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @if($nodeList->isEmpty())
-                        <tr>
-                            <td colspan="12">暂无数据</td>
-                        </tr>
-                    @else
-                        @foreach($nodeList as $node)
-                            <tr class="text-center{{$node->status ? ' table-danger' : ''}}">
-                                <td>
-                                    {{$node->id}}
-                                </td>
-                                <td>
-                                    @if($node->is_transit)
-                                        {{$node->is_transit ? '中转' : ''}}
-                                    @else
-                                        {{$node->type == 2 ? 'V2' : 'SSR'}}
-                                    @endif
-                                </td>
-                                <td> {{$node->name}} </td>
-                                <td> {{$node->is_nat ? 'Nat' : $node->ip}} </td>
-                                <td> {{$node->server}} </td>
-                                <td> {{$node->is_transit ? '' : $node->uptime}} </td>
-                                <td> {{$node->is_transit ? '' : $node->load}} </td>
-                                <td> {{$node->is_transit ? '' : $node->online_users}} </td>
-                                <td> {{$node->is_transit ? '' : $node->transfer}} </td>
-                                <td> {{$node->traffic_rate}} </td>
-                                <td>
-                                    @if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
-                                    @if($node->single) <span class="badge badge-lg  badge-info">单</span> @endif
-                                    @if(!$node->is_subscribe)
-                                        <span class="badge badge-lg  badge-info"><s>订</s></span> @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-                                        <a href="javascript:delNode({{$node->id}})" class="btn btn-danger"><i class="icon wb-trash"></i></a>
-                                        <a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                    </tbody>
-                </table>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-sm-4">
-                        共 <code>{{$nodeList->total()}}</code> 条线路
-                    </div>
-                    <div class="col-sm-8">
-                        <nav class="Page navigation float-right">
-                            {{$nodeList->links()}}
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="page-content container-fluid">
+		<div class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">节点列表</h3>
+				<div class="panel-actions">
+					<a href="/admin/addNode" class="btn btn-primary"><i class="icon wb-plus"></i> 添加节点</a>
+				</div>
+			</div>
+			<div class="panel-body">
+				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+					<thead class="thead-default">
+					<tr>
+						<th> ID</th>
+						<th> 类型</th>
+						<th> 名称</th>
+						<th> IP</th>
+						<th> 域名</th>
+						<th> 存活</th>
+						<th> 状态</th>
+						<th> 在线</th>
+						<th>产生流量</th>
+						<th> 流量比例</th>
+						<th> 扩展</th>
+						<th> 操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					@if($nodeList->isEmpty())
+						<tr>
+							<td colspan="12">暂无数据</td>
+						</tr>
+					@else
+						@foreach($nodeList as $node)
+							<tr class="{{!$node->isOnline && $node->status ? 'table-danger' : ''}}">
+								<td>
+									{{$node->id}}
+								</td>
+								<td>
+									@if($node->is_transit)
+										中转
+									@else
+										{{$node->type == 2 ? 'V2' : 'SSR'}}
+									@endif
+								</td>
+								<td> {{$node->name}} </td>
+								<td> {{$node->is_nat ? 'Nat' : $node->ip}} </td>
+								<td> {{$node->server}} </td>
+								<td> {{$node->uptime}} </td>
+								<td> {{$node->status? $node->load : '维护'}} </td>
+								<td> {{$node->online_users}} </td>
+								<td> {{$node->transfer}} </td>
+								<td> {{$node->traffic_rate}} </td>
+								<td>
+									@if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
+									@if($node->single) <span class="badge badge-lg badge-info">单</span> @endif
+									@if(!$node->is_subscribe) <span class="badge badge-lg badge-danger"><s>订</s></span> @endif
+								</td>
+								<td>
+									<div class="btn-group">
+										<a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
+										<a href="javascript:delNode({{$node->id}})" class="btn btn-danger"><i class="icon wb-trash"></i></a>
+										<a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
+									</div>
+								</td>
+							</tr>
+						@endforeach
+					@endif
+					</tbody>
+				</table>
+			</div>
+			<div class="panel-footer">
+				<div class="row">
+					<div class="col-sm-4">
+						共 <code>{{$nodeList->total()}}</code> 条线路
+					</div>
+					<div class="col-sm-8">
+						<nav class="Page navigation float-right">
+							{{$nodeList->links()}}
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
+	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
         // 删除节点
         function delNode(id) {
             swal.fire({
@@ -115,6 +114,7 @@
                 }
             });
         }
+
         // 显示提示
         function showIdTips() {
             swal.fire({
@@ -133,5 +133,5 @@
         $('.table-scrollable').on('hide.bs.dropdown', function () {
             $('.table-scrollable').css("overflow", "auto");
         });
-    </script>
+	</script>
 @endsection

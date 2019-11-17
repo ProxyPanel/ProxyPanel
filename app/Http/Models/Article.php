@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -10,19 +11,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Article
  *
  * @package App\Http\Models
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Article extends Model
 {
-    use SoftDeletes;
+	use SoftDeletes;
 
-    protected $table = 'article';
-    protected $primaryKey = 'id';
-    protected $dates = ['deleted_at'];
+	protected $table = 'article';
+	protected $primaryKey = 'id';
+	protected $dates = ['deleted_at'];
 
-    // 筛选类型
-    function scopeType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
+	// 筛选类型
+	function scopeType($query, $type)
+	{
+		return $query->where('type', $type);
+	}
 }
