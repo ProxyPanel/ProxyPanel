@@ -34,27 +34,23 @@ CREATE TABLE `ss_node` (
   `ipv6` CHAR(128) NULL DEFAULT '' COMMENT '服务器IPV6地址',
   `desc` VARCHAR(255) NULL DEFAULT '' COMMENT '节点简单描述',
   `method` VARCHAR(32) NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
-  `protocol` VARCHAR(128) NOT NULL DEFAULT 'origin' COMMENT '协议',
+  `protocol` VARCHAR(64) NOT NULL DEFAULT 'origin' COMMENT '协议',
   `protocol_param` VARCHAR(128) NULL DEFAULT '' COMMENT '协议参数',
-  `obfs` VARCHAR(128) NOT NULL DEFAULT 'plain' COMMENT '混淆',
-  `obfs_param` VARCHAR(128) NULL DEFAULT '' COMMENT '混淆参数',
+  `obfs` VARCHAR(64) NOT NULL DEFAULT 'plain' COMMENT '混淆',
+  `obfs_param` VARCHAR(255) NULL DEFAULT '' COMMENT '混淆参数',
   `traffic_rate` FLOAT NOT NULL DEFAULT '1.00' COMMENT '流量比率',
   `bandwidth` INT(11) NOT NULL DEFAULT '100' COMMENT '出口带宽，单位M',
   `traffic` INT(20) NOT NULL DEFAULT '1000' COMMENT '每月可用流量，单位G',
   `monitor_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '监控地址',
   `is_subscribe` TINYINT(4) NULL DEFAULT '1' COMMENT '是否允许用户订阅该节点：0-否、1-是',
-  `is_nat` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否为NAT机：0-否、1-是',
+  `is_ddns` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否使用DDNS：0-否、1-是',
   `is_transit` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否中转节点：0-否、1-是',
   `ssh_port` SMALLINT(6) UNSIGNED NOT NULL DEFAULT '22' COMMENT 'SSH端口',
-  `is_tcp_check` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '是否开启检测: 0-不开启、1-开启',
+  `detectionType` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '节点检测: 0-关闭、1-只检测TCP、2-只检测ICMP、3-检测全部',
   `compatible` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '兼容SS',
-  `single` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '单端口多用户：0-否、1-是',
-  `single_force` TINYINT(4) NULL DEFAULT NULL COMMENT '模式：0-兼容模式、1-严格模式',
-  `single_port` VARCHAR(50) NULL DEFAULT '' COMMENT '端口号，用,号分隔',
-  `single_passwd` VARCHAR(50) NULL DEFAULT '' COMMENT '密码',
-  `single_method` VARCHAR(50) NULL DEFAULT '' COMMENT '加密方式',
-  `single_protocol` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '协议',
-  `single_obfs` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '混淆',
+  `single` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '启用单端口功能：0-否、1-是',
+  `port` varchar(50) NULL COMMENT '单端口的端口号',
+  `passwd` varchar(255) NULL COMMENT '单端口的连接密码',
   `sort` INT(11) NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
   `status` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
   `v2_alter_id` INT(11) NOT NULL DEFAULT '16' COMMENT 'V2ray额外ID',
@@ -72,7 +68,7 @@ CREATE TABLE `ss_node` (
   PRIMARY KEY (`id`),
   INDEX `idx_group` (`group_id`),
 	INDEX `idx_sub` (`is_subscribe`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点信息表';
 
 
 -- ----------------------------
@@ -81,12 +77,12 @@ CREATE TABLE `ss_node` (
 CREATE TABLE `ss_node_info` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
-  `uptime` int(11) NOT NULL COMMENT '在线时长',
-  `load` varchar(64) NOT NULL COMMENT '负载',
+  `uptime` int(11) NOT NULL COMMENT '后端存活时长，单位秒',
+  `load` varchar(255) NOT NULL COMMENT '负载',
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   INDEX `idx_node_id` (`node_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点负载信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点心跳信息';
 
 
 -- ----------------------------
@@ -128,6 +124,7 @@ CREATE TABLE `user` (
   `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
   `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
   `t` int(11) NOT NULL DEFAULT '0' COMMENT '最后使用时间',
+  `ip` char(128) DEFAULT NULL COMMENT '最后连接IP',
   `enable` tinyint(4) NOT NULL DEFAULT '1' COMMENT '代理状态',
   `method` varchar(30) NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
   `protocol` varchar(30) NOT NULL DEFAULT 'origin' COMMENT '协议',
@@ -136,7 +133,6 @@ CREATE TABLE `user` (
   `obfs_param` varchar(255) DEFAULT '' COMMENT '混淆参数',
   `speed_limit_per_con` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单连接限速，默认10G，为0表示不限速，单位Byte',
   `speed_limit_per_user` bigint(20) NOT NULL DEFAULT '10737418240' COMMENT '单用户限速，默认10G，为0表示不限速，单位Byte',
-  `gender` tinyint(4) NOT NULL DEFAULT '1' COMMENT '性别：0-女、1-男',
   `wechat` varchar(30) DEFAULT '' COMMENT '微信',
   `qq` varchar(20) DEFAULT '' COMMENT 'QQ',
   `usage` VARCHAR(10) NOT NULL DEFAULT '4' COMMENT '用途：1-手机、2-电脑、3-路由器、4-其他',
@@ -148,25 +144,26 @@ CREATE TABLE `user` (
   `remark` text COMMENT '备注',
   `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '等级：可定义名称',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
-  `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
+  `reg_ip` char(128) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
   `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `referral_uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人',
   `traffic_reset_day` tinyint(4) NOT NULL DEFAULT '0' COMMENT '流量自动重置日，0表示不重置',
+  `invite_num` INT NOT NULL DEFAULT '0' COMMENT '可生成邀请码数',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-禁用、0-未激活、1-正常',
   `remember_token` varchar(256) DEFAULT '',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `unq_username` (`username`),
-  INDEX `idx_search` (`enable`, `status`)
+  INDEX `idx_search` (`enable`, `status`, `port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';
 
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `user` (`id`, `username`, `password`, `port`, `passwd`, `vmess_id`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `protocol_param`, `obfs`, `obfs_param`, `speed_limit_per_con`, `speed_limit_per_user`, `wechat`, `qq`, `usage`, `pay_way`, `balance`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
-VALUES (1,'admin','$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq',10000,'@123', 'c6effafd-6046-7a84-376e-b0429751c304', 1099511627776,0,0,0,1,'aes-256-cfb','origin','','plain','',204800,204800,'','',1,3,0.00,'2017-01-01','2099-01-01',NULL,1,'127.0.0.1',1,now(),now());
+INSERT INTO `user` (`id`, `username`, `password`, `port`, `passwd`, `vmess_id`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `obfs`, `obfs_param`, `wechat`, `qq`, `usage`, `pay_way`, `balance`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
+VALUES (1,'test@test.com','$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq',10000,'@123', 'c6effafd-6046-7a84-376e-b0429751c304', 1099511627776,0,0,0,1,'aes-256-cfb','origin','plain',0,'','',1,3,0.00,'2017-01-01','2099-01-01',NULL,1,'127.0.0.1',1,now(),now());
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -223,7 +220,7 @@ CREATE TABLE `ss_config` (
 ) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用配置';
 
 -- ----------------------------
--- Records of ss_config
+-- Records of `ss_config`
 -- ----------------------------
 INSERT INTO `ss_config` VALUES ('1', 'none', '1', '0', '0');
 INSERT INTO `ss_config` VALUES ('2', 'rc4', '1', '0', '0');
@@ -319,7 +316,7 @@ INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
 INSERT INTO `config` VALUES ('37', 'is_node_crash_warning', 0);
-INSERT INTO `config` VALUES ('38', 'crash_warning_email', '');
+INSERT INTO `config` VALUES ('38', 'webmaster_email', '');
 INSERT INTO `config` VALUES ('39', 'is_server_chan', 0);
 INSERT INTO `config` VALUES ('40', 'server_chan_key', '');
 INSERT INTO `config` VALUES ('41', 'is_subscribe_ban', 1);
@@ -339,7 +336,7 @@ INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');
 INSERT INTO `config` VALUES ('55', 'website_analytics', '');
 INSERT INTO `config` VALUES ('56', 'website_customer_service', '');
 INSERT INTO `config` VALUES ('57', 'register_ip_limit', 5);
-INSERT INTO `config` VALUES ('58', 'goods_purchase_limit_strategy', 'none');
+INSERT INTO `config` VALUES ('58', 'sensitiveType', '1');
 INSERT INTO `config` VALUES ('59', 'is_push_bear', 0);
 INSERT INTO `config` VALUES ('60', 'push_bear_send_key', '');
 INSERT INTO `config` VALUES ('61', 'push_bear_qrcode', '');
@@ -348,8 +345,8 @@ INSERT INTO `config` VALUES ('63', 'is_namesilo', 0);
 INSERT INTO `config` VALUES ('64', 'namesilo_key', '');
 INSERT INTO `config` VALUES ('65', 'website_logo', '');
 INSERT INTO `config` VALUES ('66', 'website_home_logo', '');
-INSERT INTO `config` VALUES ('67', 'is_tcp_check', 0);
-INSERT INTO `config` VALUES ('68', 'tcp_check_warning_times', 3);
+INSERT INTO `config` VALUES ('67', 'nodes_detection', 0);
+INSERT INTO `config` VALUES ('68', 'numberOfWarningTimes', 3);
 INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
 INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
 INSERT INTO `config` VALUES ('71', 'AppStore_id', 0);
@@ -402,10 +399,10 @@ CREATE TABLE `article` (
 
 
 -- ----------------------------
--- Records of article
+-- Records of `article`
 -- ----------------------------
 INSERT INTO article(title, author, content, type, sort)
-VALUES('购买说明', '管理员', '<h4>购买流程：</h4><ol class=" list-paddingleft-2"><li><p>第一步：先购买基础套餐。</p></li><li><p>第二步：按需求，选择是否购买流量包。</p></li></ol><h4>基础套餐：</h4><ol class=" list-paddingleft-2"><li><p>在套餐生效的时间内，您将获得「套餐对应的网络速度」、「套餐内相应的流量」及其它特权。</p></li><li><p>基础套餐每月将会重置一次流量，重置日为购买日。</p></li><li><p>如在套餐未到期的情况下购买新套餐，则会导致旧套餐的所有配置立即失效，新套餐的配置立即生效。</p></li></ol><h4>流量包：</h4><ol class=" list-paddingleft-2"><li><p>当您在基础套餐重置日之前将流量耗尽，您可以选择购买流量包解燃眉之急。</p></li><li><p>流量包只在固定时间内增加可用流量，不会更改账户的配置，并且即时生效可以多个叠加。</p></li></ol>', '3', '0'), ('使用教程_Mac', '管理员', '<li> <a href=\"clients/ShadowsocksX-NG-R8-1.4.4.dmg\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 点击状态栏纸飞机 -> 服务器 -> 编辑订阅 </li>\r\n<li> 点击窗口左下角 “+”号 新增订阅，完整复制本页上方“订阅服务”处地址，将其粘贴至“订阅地址”栏，点击右下角“OK” </li>\r\n<li> 点击纸飞机 -> 服务器 -> 手动更新订阅 </li>\r\n<li> 点击纸飞机 -> 服务器，选定合适服务器 </li>\r\n<li> 点击纸飞机 -> 打开Shadowsocks </li>\r\n<li> 点击纸飞机 -> PAC自动模式 </li>\r\n<li> 点击纸飞机 -> 代理设置->从 GFW List 更新 PAC </li>\r\n<li> 打开系统偏好设置 -> 网络，在窗口左侧选定显示为“已连接”的网络，点击右下角“高级...” </li>\r\n<li> 切换至“代理”选项卡，勾选“自动代理配置”和“不包括简单主机名”，点击右下角“好”，再次点击右下角“应用” </li>', '4', '1'), ('使用教程_Windows', '管理员', '<li> <a href=\"clients/ShadowsocksR-win.zip\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 运行 ShadowsocksR 文件夹内的 ShadowsocksR.exe </li>\r\n<li> 右击桌面右下角状态栏（或系统托盘）纸飞机 -> 服务器订阅 -> SSR服务器订阅设置 </li>\r\n<li> 点击窗口左下角 “Add” 新增订阅，完整复制本页上方 “订阅服务” 处地址，将其粘贴至“网址”栏，点击“确定” </li>\r\n<li> 右击纸飞机 -> 服务器订阅 -> 更新SSR服务器订阅（不通过代理） </li>\r\n<li> 右击纸飞机 -> 服务器，选定合适服务器 </li>\r\n<li> 右击纸飞机 -> 系统代理模式 -> PAC模式 </li>\r\n<li> 右击纸飞机 -> PAC -> 更新PAC为GFWList </li>\r\n<li> 右击纸飞机 -> 代理规则 -> 绕过局域网和大陆 </li>\r\n<li> 右击纸飞机，取消勾选“服务器负载均衡” </li>', '4', '2'), ('使用教程_Linux', '管理员', '<li> <a href=\"clients/Shadowsocks-qt5-3.0.1.zip\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 单击状态栏小飞机，找到服务器 -> 编辑订阅，复制黏贴订阅地址 </li>\r\n<li> 更新订阅设置即可 </li>', '4', '3'), ('使用教程_iOS', '管理员', '<li> 请从站长处获取 App Store 账号密码 </li>\r\n<li> 打开 Shadowrocket，点击右上角 “+”号 添加节点，类型选择 Subscribe </li>\r\n<li> 完整复制本页上方 “订阅服务” 处地址，将其粘贴至 “URL”栏，点击右上角 “完成” </li>\r\n<li> 左划新增的服务器订阅，点击 “更新” </li>\r\n<li> 选定合适服务器节点，点击右上角连接开关，屏幕上方状态栏出现“VPN”图标 </li>\r\n<li> 当进行海外游戏时请将 Shadowrocket “首页” 页面中的 “全局路由” 切换至 “代理”，并确保“设置”页面中的“UDP”已开启转发 </li>', '4', '4'), ('使用教程_Android', '管理员', '<li> <a href=\"clients/ShadowsocksRR-3.5.1.1.apk\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 单击左上角的shadowsocksR进入配置文件页，点击右下角的“+”号，点击“添加/升级SSR订阅”，完整复制本页上方“订阅服务”处地址，填入订阅信息并保存 </li>\r\n<li> 选中任意一个节点，返回软件首页 </li>\r\n<li> 在软件首页处找到“路由”选项，并将其改为“绕过局域网及中国大陆地址” </li>\r\n<li> 点击右上角的小飞机图标进行连接，提示是否添加（或创建）VPN连接，点同意（或允许） </li>', '4', '5'), ('使用教程_Games', '管理员', '<li> <a href=\"clients/SSTap-beta-setup-1.0.9.7.zip\" target=\"_blank\">点击此处</a>下载客户端并安装 </li>\r\n<li> 打开 SSTap，选择 <i class=\"fa fa-cog\"></i> -> SSR订阅 -> SSR订阅管理，添加订阅地址 </li>\r\n<li> 添加完成后，再次选择 <i class=\"fa fa-cog\"></i> - SSR订阅 - 手动更新SSR订阅，即可同步节点列表。</li>\r\n<li> 在代理模式中选择游戏或「不代理中国IP」，点击「连接」即可加速。</li>\r\n<li> 需要注意的是，一旦连接成功，客户端会自动缩小到任务栏，可在设置中关闭。</li>', '4', '6');
+VALUES('购买说明', '管理员', '<h4>购买流程：</h4><ol class=" list-paddingleft-2"><li><p>第一步：先购买基础套餐。</p></li><li><p>第二步：按需求，选择是否购买流量包。</p></li></ol><h4>基础套餐：</h4><ol class=" list-paddingleft-2"><li><p>在套餐生效的时间内，您将获得「套餐对应的网络速度」、「套餐内相应的流量」及其它特权。</p></li><li><p>基础套餐每月将会重置一次流量，重置日为购买日。</p></li><li><p>如在套餐未到期的情况下购买新套餐，则会导致旧套餐的所有配置立即失效，新套餐的配置立即生效。</p></li></ol><h4>流量包：</h4><ol class=" list-paddingleft-2"><li><p>当您在基础套餐重置日之前将流量耗尽，您可以选择购买流量包解燃眉之急。</p></li><li><p>流量包只在固定时间内增加可用流量，不会更改账户的配置，并且即时生效可以多个叠加。</p></li></ol>', '3', '0'), ('使用教程_Mac', '管理员', '<li> <a href=\"clients/ShadowsocksX-NG-R8-1.4.6.dmg\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 点击状态栏纸飞机 -> 服务器 -> 编辑订阅 </li>\r\n<li> 点击窗口左下角 “+”号 新增订阅，完整复制本页上方“订阅服务”处地址，将其粘贴至“订阅地址”栏，点击右下角“OK” </li>\r\n<li> 点击纸飞机 -> 服务器 -> 手动更新订阅 </li>\r\n<li> 点击纸飞机 -> 服务器，选定合适服务器 </li>\r\n<li> 点击纸飞机 -> 打开Shadowsocks </li>\r\n<li> 点击纸飞机 -> PAC自动模式 </li>\r\n<li> 点击纸飞机 -> 代理设置->从 GFW List 更新 PAC </li>\r\n<li> 打开系统偏好设置 -> 网络，在窗口左侧选定显示为“已连接”的网络，点击右下角“高级...” </li>\r\n<li> 切换至“代理”选项卡，勾选“自动代理配置”和“不包括简单主机名”，点击右下角“好”，再次点击右下角“应用” </li>', '4', '1'), ('使用教程_Windows', '管理员', '<li> <a href=\"clients/ShadowsocksR-win.zip\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 运行 ShadowsocksR 文件夹内的 ShadowsocksR.exe </li>\r\n<li> 右击桌面右下角状态栏（或系统托盘）纸飞机 -> 服务器订阅 -> SSR服务器订阅设置 </li>\r\n<li> 点击窗口左下角 “Add” 新增订阅，完整复制本页上方 “订阅服务” 处地址，将其粘贴至“网址”栏，点击“确定” </li>\r\n<li> 右击纸飞机 -> 服务器订阅 -> 更新SSR服务器订阅（不通过代理） </li>\r\n<li> 右击纸飞机 -> 服务器，选定合适服务器 </li>\r\n<li> 右击纸飞机 -> 系统代理模式 -> PAC模式 </li>\r\n<li> 右击纸飞机 -> PAC -> 更新PAC为GFWList </li>\r\n<li> 右击纸飞机 -> 代理规则 -> 绕过局域网和大陆 </li>\r\n<li> 右击纸飞机，取消勾选“服务器负载均衡” </li>', '4', '2'), ('使用教程_Linux', '管理员', '<li> <a href=\"clients/Shadowsocks-qt5-3.0.1.zip\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 单击状态栏小飞机，找到服务器 -> 编辑订阅，复制黏贴订阅地址 </li>\r\n<li> 更新订阅设置即可 </li>', '4', '3'), ('使用教程_iOS', '管理员', '<li> 请从站长处获取 App Store 账号密码 </li>\r\n<li> 打开 Shadowrocket，点击右上角 “+”号 添加节点，类型选择 Subscribe </li>\r\n<li> 完整复制本页上方 “订阅服务” 处地址，将其粘贴至 “URL”栏，点击右上角 “完成” </li>\r\n<li> 左划新增的服务器订阅，点击 “更新” </li>\r\n<li> 选定合适服务器节点，点击右上角连接开关，屏幕上方状态栏出现“VPN”图标 </li>\r\n<li> 当进行海外游戏时请将 Shadowrocket “首页” 页面中的 “全局路由” 切换至 “代理”，并确保“设置”页面中的“UDP”已开启转发 </li>', '4', '4'), ('使用教程_Android', '管理员', '<li> <a href=\"clients/ShadowsocksRR-3.5.1.1.apk\" target=\"_blank\">点击此处</a>下载客户端并启动 </li>\r\n<li> 单击左上角的shadowsocksR进入配置文件页，点击右下角的“+”号，点击“添加/升级SSR订阅”，完整复制本页上方“订阅服务”处地址，填入订阅信息并保存 </li>\r\n<li> 选中任意一个节点，返回软件首页 </li>\r\n<li> 在软件首页处找到“路由”选项，并将其改为“绕过局域网及中国大陆地址” </li>\r\n<li> 点击右上角的小飞机图标进行连接，提示是否添加（或创建）VPN连接，点同意（或允许） </li>', '4', '5'), ('使用教程_Games', '管理员', '<li> <a href=\"clients/SSTap-beta-setup-1.0.9.7.zip\" target=\"_blank\">点击此处</a>下载客户端并安装 </li>\r\n<li> 打开 SSTap，选择 <i class=\"fa fa-cog\"></i> -> SSR订阅 -> SSR订阅管理，添加订阅地址 </li>\r\n<li> 添加完成后，再次选择 <i class=\"fa fa-cog\"></i> - SSR订阅 - 手动更新SSR订阅，即可同步节点列表。</li>\r\n<li> 在代理模式中选择游戏或「不代理中国IP」，点击「连接」即可加速。</li>\r\n<li> 需要注意的是，一旦连接成功，客户端会自动缩小到任务栏，可在设置中关闭。</li>', '4', '6');
 
 
 -- ----------------------------
@@ -415,7 +412,7 @@ CREATE TABLE `invite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人ID',
   `fuid` int(11) NOT NULL DEFAULT '0' COMMENT '受邀人ID',
-  `code` char(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邀请码',
+  `code` char(32) NOT NULL COMMENT '邀请码',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '邀请码状态：0-未使用、1-已使用、2-已过期',
   `dateline` datetime DEFAULT NULL COMMENT '有效期至',
   `created_at` datetime DEFAULT NULL,
@@ -430,14 +427,14 @@ CREATE TABLE `invite` (
 -- ----------------------------
 CREATE TABLE `label` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '名称',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='标签';
 
 
 -- ----------------------------
--- Records of label
+-- Records of `label`
 -- ----------------------------
 INSERT INTO `label` VALUES ('1', '电信', '0');
 INSERT INTO `label` VALUES ('2', '联通', '0');
@@ -454,7 +451,7 @@ CREATE TABLE `verify` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` TINYINT NOT NULL DEFAULT '1' COMMENT '激活类型：1-自行激活、2-管理员激活',
   `user_id` int(11) NOT NULL COMMENT '用户ID',
-  `token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '校验token',
+  `token` varchar(32) NOT NULL COMMENT '校验token',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
@@ -481,7 +478,7 @@ CREATE TABLE `verify_code` (
 -- ----------------------------
 CREATE TABLE `ss_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分组名称',
+  `name` varchar(50) NOT NULL COMMENT '分组名称',
   `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '分组级别',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -505,19 +502,21 @@ CREATE TABLE `ss_group_node` (
 -- ----------------------------
 CREATE TABLE `goods` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `sku` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品服务SKU',
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称',
-  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品图片地址',
+  `sku` varchar(15) NOT NULL DEFAULT '' COMMENT '商品服务SKU',
+  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '商品名称',
+  `logo` varchar(255) NOT NULL DEFAULT '' COMMENT '商品图片地址',
   `traffic` bigint(20) NOT NULL DEFAULT '0' COMMENT '商品内含多少流量，单位MiB',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '商品类型：1-流量包、2-套餐、3-余额充值',
-  `price` int(11) NOT NULL DEFAULT '0' COMMENT '商品售价，单位分',
-  `info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品信息',
-  `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '商品描述',
+  `price` int(11) NOT NULL DEFAULT '0' COMMENT '售价，单位分',
+  `renew` int(11) NOT NULL DEFAULT '0' COMMENT '流量重置价格，单位分',
+  `info` varchar(255) DEFAULT '' COMMENT '商品',
+  `desc` varchar(255) DEFAULT '' COMMENT '商品描述',
   `days` int(11) NOT NULL DEFAULT '30' COMMENT '有效期',
+  `invite_num` int(11) NOT NULL DEFAULT '0' COMMENT '赠送邀请码数',
+  `limit_num` int(11) NOT NULL DEFAULT '0' COMMENT '限购数量，默认为0不限购',
   `color` VARCHAR(50) NOT NULL DEFAULT 'green' COMMENT '商品颜色',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
-  `is_limit` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否限购：0-否、1-是',
-  `is_hot` TINYINT(4) NOT NULL DEFAULT '0' COMMENT '是否热销：0-否、1-是',
+  `is_hot` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否热销：0-否、1-是',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
@@ -531,13 +530,14 @@ CREATE TABLE `goods` (
 -- ----------------------------
 CREATE TABLE `coupon` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '优惠券名称',
-  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '优惠券LOGO',
-  `sn` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '优惠券码',
+  `name` varchar(50) NOT NULL COMMENT '优惠券名称',
+  `logo` varchar(255) NOT NULL DEFAULT '' COMMENT '优惠券LOGO',
+  `sn` varchar(50) NOT NULL DEFAULT '' COMMENT '优惠券码',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '类型：1-现金券、2-折扣券、3-充值券',
   `usage` tinyint(4) NOT NULL DEFAULT '1' COMMENT '用途：1-仅限一次性使用、2-可重复使用',
   `amount` bigint(20) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
   `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '折扣',
+  `rule` bigint(20) NOT NULL DEFAULT '0' COMMENT '使用限制，单位分',
   `available_start` int(11) NOT NULL DEFAULT '0' COMMENT '有效期开始',
   `available_end` int(11) NOT NULL DEFAULT '0' COMMENT '有效期结束',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-未使用、1-已使用、2-已失效',
@@ -568,7 +568,7 @@ CREATE TABLE `coupon_log` (
 -- ----------------------------
 CREATE TABLE `order` (
   `oid` int(11) NOT NULL AUTO_INCREMENT,
-  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
+  `order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '订单编号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人',
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品ID',
   `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券ID',
@@ -675,7 +675,7 @@ CREATE TABLE `referral_apply` (
   `before` int(11) NOT NULL DEFAULT '0' COMMENT '操作前可提现金额，单位分',
   `after` int(11) NOT NULL DEFAULT '0' COMMENT '操作后可提现金额，单位分',
   `amount` int(11) NOT NULL DEFAULT '0' COMMENT '本次提现金额，单位分',
-  `link_logs` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联返利日志ID，例如：1,3,4',
+  `link_logs` text NOT NULL DEFAULT '' COMMENT '关联返利日志ID，例如：1,3,4',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
@@ -722,131 +722,151 @@ CREATE TABLE `email_log` (
 -- ----------------------------
 CREATE TABLE `sensitive_words` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：1-黑名单、2-白名单',
   `words` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '敏感词',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='敏感词';
 
 
 -- ----------------------------
--- Records of label
+-- Records of `sensitive_words`
 -- ----------------------------
-INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('chacuo.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('1766258.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('3202.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('4057.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('4059.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('a7996.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('bccto.me');
-INSERT INTO `sensitive_words` (`words`) VALUES ('bnuis.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('chaichuang.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('cr219.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('cuirushi.org');
-INSERT INTO `sensitive_words` (`words`) VALUES ('dawin.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('jiaxin8736.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('lakqs.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('urltc.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('027168.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('10minutemail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('11163.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('1shivom.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('auoie.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('bareed.ws');
-INSERT INTO `sensitive_words` (`words`) VALUES ('bit-degree.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('cjpeg.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('cool.fr.nf');
-INSERT INTO `sensitive_words` (`words`) VALUES ('courriel.fr.nf');
-INSERT INTO `sensitive_words` (`words`) VALUES ('disbox.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('disbox.org');
-INSERT INTO `sensitive_words` (`words`) VALUES ('fidelium10.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('get365.pw');
-INSERT INTO `sensitive_words` (`words`) VALUES ('ggr.la');
-INSERT INTO `sensitive_words` (`words`) VALUES ('grr.la');
-INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.biz');
-INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.de');
-INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamail.org');
-INSERT INTO `sensitive_words` (`words`) VALUES ('guerrillamailblock.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('hubii-network.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('hurify1.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('itoup.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('jetable.fr.nf');
-INSERT INTO `sensitive_words` (`words`) VALUES ('jnpayy.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('juyouxi.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mail.bccto.me');
-INSERT INTO `sensitive_words` (`words`) VALUES ('www.bccto.me');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mega.zik.dj');
-INSERT INTO `sensitive_words` (`words`) VALUES ('moakt.co');
-INSERT INTO `sensitive_words` (`words`) VALUES ('moakt.ws');
-INSERT INTO `sensitive_words` (`words`) VALUES ('molms.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('moncourrier.fr.nf');
-INSERT INTO `sensitive_words` (`words`) VALUES ('monemail.fr.nf');
-INSERT INTO `sensitive_words` (`words`) VALUES ('monmail.fr.nf');
-INSERT INTO `sensitive_words` (`words`) VALUES ('nomail.xl.cx');
-INSERT INTO `sensitive_words` (`words`) VALUES ('nospam.ze.tc');
-INSERT INTO `sensitive_words` (`words`) VALUES ('pay-mon.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('poly-swarm.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('sgmh.online');
-INSERT INTO `sensitive_words` (`words`) VALUES ('sharklasers.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('shiftrpg.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('spam4.me');
-INSERT INTO `sensitive_words` (`words`) VALUES ('speed.1s.fr');
-INSERT INTO `sensitive_words` (`words`) VALUES ('tmail.ws');
-INSERT INTO `sensitive_words` (`words`) VALUES ('tmails.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('tmpmail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('tmpmail.org');
-INSERT INTO `sensitive_words` (`words`) VALUES ('travala10.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('yopmail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('yopmail.fr');
-INSERT INTO `sensitive_words` (`words`) VALUES ('yopmail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('yuoia.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('zep-hyr.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('zippiex.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('lrc8.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('1otc.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('emailna.co');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mailinator.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('nbzmr.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('awsoo.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('zhcne.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('0box.eu');
-INSERT INTO `sensitive_words` (`words`) VALUES ('contbay.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('damnthespam.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('kurzepost.de');
-INSERT INTO `sensitive_words` (`words`) VALUES ('objectmail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('proxymail.eu');
-INSERT INTO `sensitive_words` (`words`) VALUES ('rcpt.at');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trash-mail.at');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.at');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.io');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.me');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trashmail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('wegwerfmail.de');
-INSERT INTO `sensitive_words` (`words`) VALUES ('wegwerfmail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('wegwerfmail.org');
-INSERT INTO `sensitive_words` (`words`) VALUES ('nwytg.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('despam.it');
-INSERT INTO `sensitive_words` (`words`) VALUES ('spambox.us');
-INSERT INTO `sensitive_words` (`words`) VALUES ('spam.la');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mytrashmail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mt2014.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mt2015.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('thankyou2010.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trash2009.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mt2009.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('trashymail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('tempemail.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('slopsbox.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mailnesia.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('ezehe.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('tempail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('newairmail.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('temp-mail.org');
-INSERT INTO `sensitive_words` (`words`) VALUES ('linshiyouxiang.net');
-INSERT INTO `sensitive_words` (`words`) VALUES ('zwoho.com');
-INSERT INTO `sensitive_words` (`words`) VALUES ('mailboxy.fun');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'chacuo.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'chacuo.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '1766258.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '3202.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '4057.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '4059.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'a7996.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'bccto.me');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'bnuis.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'chaichuang.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'cr219.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'cuirushi.org');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'dawin.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'jiaxin8736.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'lakqs.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'urltc.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '027168.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '10minutemail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '11163.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '1shivom.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'auoie.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'bareed.ws');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'bit-degree.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'cjpeg.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'cool.fr.nf');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'courriel.fr.nf');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'disbox.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'disbox.org');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'fidelium10.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'get365.pw');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'ggr.la');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'grr.la');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamail.biz');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamail.de');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamail.org');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamailblock.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'hubii-network.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'hurify1.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'itoup.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'jetable.fr.nf');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'jnpayy.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'juyouxi.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mail.bccto.me');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'www.bccto.me');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mega.zik.dj');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'moakt.co');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'moakt.ws');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'molms.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'moncourrier.fr.nf');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'monemail.fr.nf');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'monmail.fr.nf');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'nomail.xl.cx');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'nospam.ze.tc');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'pay-mon.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'poly-swarm.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'sgmh.online');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'sharklasers.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'shiftrpg.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'spam4.me');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'speed.1s.fr');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'tmail.ws');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'tmails.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'tmpmail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'tmpmail.org');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'travala10.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'yopmail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'yopmail.fr');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'yopmail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'yuoia.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'zep-hyr.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'zippiex.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'lrc8.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '1otc.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'emailna.co');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mailinator.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'nbzmr.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'awsoo.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'zhcne.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '0box.eu');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'contbay.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'damnthespam.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'kurzepost.de');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'objectmail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'proxymail.eu');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'rcpt.at');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trash-mail.at');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trashmail.at');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trashmail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trashmail.io');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trashmail.me');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trashmail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'wegwerfmail.de');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'wegwerfmail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'wegwerfmail.org');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'nwytg.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'despam.it');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'spambox.us');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'spam.la');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mytrashmail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mt2014.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mt2015.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'thankyou2010.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trash2009.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mt2009.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'trashymail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'tempemail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'slopsbox.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mailnesia.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'ezehe.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'tempail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'newairmail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'temp-mail.org');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'linshiyouxiang.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'zwoho.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'mailboxy.fun');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'crypto-net.club');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'guerrillamail.info');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'pokemail.net');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'odmail.cn');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'hlooy.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'ozlaq.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', '666email.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'linshiyou.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'linshiyou.pl');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'woyao.pl');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('1', 'yaowo.pl');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', 'qq.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', '163.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', '126.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', '189.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', 'sohu.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', 'gmail.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', 'outlook.com');
+INSERT INTO `sensitive_words` (`type`, `words`) VALUES ('2', 'icloud.com');
 
 
 -- ----------------------------
@@ -880,7 +900,7 @@ INSERT INTO `user_subscribe` (`id`, `user_id`, `code`) VALUES ('1', '1', 'SsXa1'
 CREATE TABLE `user_subscribe_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `sid` int(11) DEFAULT NULL COMMENT '对应user_subscribe的id',
-  `request_ip` varchar(20) DEFAULT NULL COMMENT '请求IP',
+  `request_ip` char(128) DEFAULT NULL COMMENT '请求IP',
   `request_time` datetime DEFAULT NULL COMMENT '请求时间',
   `request_header` text COMMENT '请求头部信息',
   PRIMARY KEY (`id`),
@@ -965,9 +985,9 @@ CREATE TABLE `user_ban_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `minutes` int(11) NOT NULL DEFAULT '0' COMMENT '封禁账号时长，单位分钟',
-  `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '操作描述',
+  `desc` varchar(255) NOT NULL DEFAULT '' COMMENT '操作描述',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未处理、1-已处理',
-  `created_at` datetime DEFAULT NULL COMMENT ' 创建时间',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户封禁日志';
@@ -1002,8 +1022,8 @@ CREATE TABLE `goods_label` (
 -- ----------------------------
 CREATE TABLE `country` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `country_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
-  `country_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代码',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '名称',
+  `code` varchar(10) NOT NULL DEFAULT '' COMMENT '代码',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='国家代码';
 
@@ -1139,7 +1159,7 @@ CREATE TABLE `marketing` (
 CREATE TABLE `user_login_log` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL DEFAULT '0',
-  `ip` CHAR(20) NOT NULL,
+  `ip` CHAR(128) NOT NULL,
   `country` CHAR(20) NOT NULL,
   `province` CHAR(20) NOT NULL,
   `city` CHAR(20) NOT NULL,
@@ -1160,13 +1180,14 @@ CREATE TABLE `ss_node_ip` (
   `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
   `user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT '端口',
-  `type` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tcp' COMMENT '类型：all、tcp、udp',
-  `ip` text COLLATE utf8mb4_unicode_ci COMMENT '连接IP：每个IP用,号隔开',
+  `type` char(10) NOT NULL DEFAULT 'tcp' COMMENT '类型：all、tcp、udp',
+  `ip` text COMMENT '连接IP：每个IP用,号隔开',
   `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '上报时间',
   PRIMARY KEY (`id`),
-  INDEX `idx_node` (`node_id`),
-  INDEX `idx_port` (`port`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='在线IP';
+  KEY `idx_port` (`port`),
+  KEY `idx_node` (`node_id`),
+  KEY `idx_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户连接IP';
 
 
 -- ----------------------------
@@ -1174,25 +1195,59 @@ CREATE TABLE `ss_node_ip` (
 -- ----------------------------
 CREATE TABLE `rule` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `type` CHAR(10) NOT NULL DEFAULT 'domain' COMMENT '类型：domain-域名（单一非通配）、ipv4-IPv4地址、ipv6-IPv6地址、reg-正则表达式',
-  `regular` VARCHAR(255) NOT NULL COMMENT '规则：域名、IP、正则表达式',
+  `type` char(20) NOT NULL DEFAULT '0' COMMENT '类型：reg-正则表达式、domain-域名、ip-IP、protocol-协议',
+  `name` VARCHAR(100) NOT NULL COMMENT '规则描述',
+  `pattern` TEXT NOT NULL COMMENT '规则值',
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='规则表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='审计规则';
 
 
 -- ----------------------------
--- Table structure for `ss_node_deny`
+-- Records of `rule`
 -- ----------------------------
-CREATE TABLE `ss_node_deny` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `node_id` INT(11) NOT NULL DEFAULT '0',
-  `rule_id` INT(11) NOT NULL DEFAULT '0',
+INSERT INTO `rule` (`id`, `type`, `name`, `pattern`, `created_at`, `updated_at`) VALUES
+  (1, 'reg', '360', '(.*\.||)(^360|0360|1360|3600|360safe|^so|qhimg|qhmsg|^yunpan|qihoo|qhcdn|qhupdate|360totalsecurity|360shouji|qihucdn|360kan|secmp)\.(cn|com|net)', '2019-07-19 15:04:11', '2019-07-19 15:04:11'),
+  (2, 'reg', '腾讯管家', '(\.guanjia\.qq\.com|qqpcmgr|QQPCMGR)', '2019-07-19 15:04:11', '2019-07-19 15:04:11'),
+  (3, 'reg', '金山毒霸', '(.*\.||)(rising|kingsoft|duba|xindubawukong|jinshanduba)\.(com|net|org)', '2019-07-19 15:04:11', '2019-07-19 15:04:11'),
+  (4, 'reg', '暗网相关', '(.*\.||)(netvigator|torproject)\.(cn|com|net|org)', '2019-07-19 15:04:11', '2019-07-19 15:04:11'),
+  (5, 'reg', '百度定位', '(api|ps|sv|offnavi|newvector|ulog\\.imap|newloc|tracknavi)(\\.map|)\\.(baidu|n\\.shifen)\\.com', '2019-07-19 15:05:06', '2019-07-19 15:05:06'),
+  (6, 'reg', '法轮功类', '(.*\\.||)(dafahao|minghui|dongtaiwang|dajiyuan|falundata|shenyun|tuidang|epochweekly|epochtimes|ntdtv|falundafa|wujieliulan|zhengjian)\\.(org|com|net)', '2019-07-19 15:05:46', '2019-07-19 15:05:46'),
+  (7, 'reg', 'BT扩展名', '(torrent|\\.torrent|peer_id=|info_hash|get_peers|find_node|BitTorrent|announce_peer|announce\\.php\\?passkey=)', '2019-07-19 15:06:07', '2019-07-19 15:06:07'),
+  (8, 'reg', '邮件滥发', '((^.*\@)(guerrillamail|guerrillamailblock|sharklasers|grr|pokemail|spam4|bccto|chacuo|027168)\.(info|biz|com|de|net|org|me|la)|Subject|HELO|SMTP)', '2019-07-19 15:06:20', '2019-07-19 15:06:20'),
+  (9, 'reg', '迅雷下载', '(.?)(xunlei|sandai|Thunder|XLLiveUD)(.)', '2019-07-19 15:06:31', '2019-07-19 15:06:31'),
+  (10, 'reg', '大陆应用', '(.*\\.||)(qq|163|sohu|sogoucdn|sogou|uc|58|taobao)\\.(org|com|net|cn)', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+  (11, 'reg', '大陆银行', '(.*\\.||)(icbc|ccb|boc|bankcomm|abchina|cmbchina|psbc|cebbank|cmbc|pingan|spdb|citicbank|cib|hxb|bankofbeijing|hsbank|tccb|4001961200|bosc|hkbchina|njcb|nbcb|lj-bank|bjrcb|jsbchina|gzcb|cqcbank|czbank|hzbank|srcb|cbhb|cqrcb|grcbank|qdccb|bocd|hrbcb|jlbank|bankofdl|qlbchina|dongguanbank|cscb|hebbank|drcbank|zzbank|bsb|xmccb|hljrcc|jxnxs|gsrcu|fjnx|sxnxs|gx966888|gx966888|zj96596|hnnxs|ahrcu|shanxinj|hainanbank|scrcu|gdrcu|hbxh|ynrcc|lnrcc|nmgnxs|hebnx|jlnls|js96008|hnnx|sdnxs)\\.(org|com|net|cn)', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+  (12, 'reg', '台湾银行', '(.*\\.||)(firstbank|bot|cotabank|megabank|tcb-bank|landbank|hncb|bankchb|tbb|ktb|tcbbank|scsb|bop|sunnybank|kgibank|fubon|ctbcbank|cathaybk|eximbank|bok|ubot|feib|yuantabank|sinopac|esunbank|taishinbank|jihsunbank|entiebank|hwataibank|csc|skbank)\\.(org|com|net|tw)', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+  (13, 'reg', '大陆第三方支付', '(.*\\.||)(alipay|baifubao|yeepay|99bill|95516|51credit|cmpay|tenpay|lakala|jdpay)\\.(org|com|net|cn)', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+  (14, 'reg', '台湾特供', '(.*\.||)(visa|mycard|mastercard|gov|gash|beanfun|bank|line)\.(org|com|net|cn|tw|jp|kr)', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+  (15, 'reg', '涉政治类', '(.*\\.||)(shenzhoufilm|secretchina|renminbao|aboluowang|mhradio|guangming|zhengwunet|soundofhope|yuanming|zhuichaguoji|fgmtv|xinsheng|shenyunperformingarts|epochweekly|tuidang|shenyun|falundata|bannedbook)\\.(org|com|net)', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+
+-- ----------------------------
+-- Table structure for `rule_group`
+-- ----------------------------
+CREATE TABLE `rule_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(4) DEFAULT '1' COMMENT '模式：1-阻断、2-仅放行',
+  `name` varchar(255) DEFAULT NULL COMMENT '分组名称',
+  `rules` text COMMENT '关联的规则ID，多个用,号分隔',
+  `nodes` text COMMENT '关联的节点ID，多个用,号分隔',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点访问规则关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='审计规则分组';
 
 
 -- ----------------------------
--- Table structure for `device`
+-- Records of `rule_group`
+-- ----------------------------
+INSERT INTO `rule_group` (`id`, `type`, `name`, `rules`, `nodes`, `created_at`, `updated_at`) VALUES
+(1, 1, '默认', '1,2,3,4,5,6,7,8,9,10,11,12,13,14', NULL, '2019-10-26 15:29:48', '2019-10-26 15:29:48');
+
+
+-- ----------------------------
+-- Table structure for `rule_group_node`
 -- ----------------------------
 CREATE TABLE `device` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1238,10 +1293,10 @@ INSERT INTO `device` (`id`, `type`, `platform`, `name`, `status`, `header`) VALU
 -- ----------------------------
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='失败任务';
@@ -1252,8 +1307,8 @@ CREATE TABLE `failed_jobs` (
 -- ----------------------------
 CREATE TABLE `jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
   `attempts` tinyint(3) unsigned NOT NULL,
   `reserved_at` int(10) unsigned DEFAULT NULL,
   `available_at` int(10) unsigned NOT NULL,
@@ -1268,7 +1323,7 @@ CREATE TABLE `jobs` (
 -- ----------------------------
 CREATE TABLE `migrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='迁移';

@@ -41,8 +41,8 @@
 					<div class="form-row">
 						<div class="col-lg-6 col-md-12">
 							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="type">类型</label>
-								<div class="col-md-10 d-flex align-items-center">
+								<label class="col-md-3 col-form-label" for="type">类型</label>
+								<div class="col-md-9 d-flex align-items-center">
 									<div class="radio-custom radio-primary radio-inline">
 										<input type="radio" name="type" value="1" checked/>
 										<label for="type">流量包</label>
@@ -56,51 +56,48 @@
 										<label for="type">充值</label>
 									</div>
 								</div>
-								<span class="offset-md-2 text-help"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
+								<span class="offset-md-3 text-help"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
 							</div>
 							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="name">名称</label>
+								<label class="col-md-3 col-form-label" for="name">名称</label>
 								<div class="col-md-6">
 									<input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
-									<input name="_token" value="{{csrf_token()}}" hidden/>
+									{{csrf_field()}}
 								</div>
 							</div>
 							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="logo">商品图片</label>
-								<div class="col-md-9">
-									<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/noimage.png"/>
+								<label class="col-md-3 col-form-label" for="traffic">流量额度</label>
+								<div class="col-md-4 input-group">
+									<input type="number" class="form-control" name="traffic" id="traffic" value="{{Request::old('traffic')? :1024}}" required/>
+									<span class="input-group-text">MB</span>
 								</div>
-							</div>
-							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="desc">描述</label>
-								<div class="col-md-9">
-									<textarea class="form-control" rows="2" name="desc" id="desc" placeholder="商品的简单描述">{{Request::old('desc')}}</textarea>
-								</div>
-							</div>
-							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="info">自定义列表</label>
-								<div class="col-md-9">
-									<textarea class="form-control" rows="6" name="info" id="info" placeholder="商品的自定义列表添加">{{Request::old('info')}}</textarea>
-								</div>
-								<span class="offset-md-2 text-help"> 每行内容请以<code>&lt;li&gt;</code> 开头 <code>&lt;/li&gt;</code> 结尾</span>
+								<span class="text-help"> *提交后不可修改 </span>
 							</div>
 							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="price">售价</label>
+								<label class="col-md-3 col-form-label" for="price">售价</label>
 								<div class="col-md-4 input-group">
 									<input type="number" class="form-control" name="price" id="price" value="{{Request::old('price')}}" required/>
 									<span class="input-group-text">元</span>
 								</div>
 							</div>
-							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="traffic">内含流量</label>
+							<div class="form-group row package-renew" style="display: none">
+								<label class="col-md-3 col-form-label" for="renew">流量重置价格</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="traffic" id="traffic" value="{{Request::old('traffic')?Request::old('traffic') :1024}}" required/>
-									<span class="input-group-text">MB</span>
+									<input type="number" class="form-control" name="renew" id="renew" value="{{Request::old('renew')? :0}}" required/>
+									<span class="input-group-text">元</span>
 								</div>
-								<span class="offset-md-12 text-help"> 提交后不可修改 </span>
+								<span class="offset-md-3 text-help"> 用户自行重置流量价格, <code>0</code> 时代表改该商品不提供重置功能 </span>
 							</div>
 							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="labels">标签</label>
+								<label class="col-md-3 col-form-label" for="limit_num">限购数量</label>
+								<div class="col-md-4 input-group">
+									<input type="number" class="form-control" name="limit_num" id="limit_num" value="{{Request::old('limit_num')? :0}}" required/>
+									<span class="input-group-text">次</span>
+								</div>
+								<span class="offset-md-3 text-help"> 每个用户可以购买该商品次数，为 <code>0</code> 时代表不限购 </span>
+							</div>
+							<div class="form-group row package-money">
+								<label class="col-md-3 col-form-label" for="labels">标签</label>
 								<div class="col-md-8">
 									<select class="form-control show-tick" name="labels[]" id="labels" data-plugin="selectpicker" data-style="btn-outline btn-primary" multiple>
 										@foreach($label_list as $label)
@@ -108,34 +105,19 @@
 										@endforeach
 									</select>
 								</div>
-								<span class="offset-md-2 text-help"> 自动给购买此商品的用户打上相应的标签 </span>
+								<span class="offset-md-3 text-help"> 自动给购买此商品的用户打上相应的标签 </span>
 							</div>
-						</div>
-						<div class="col-lg-6 col-md-12">
 							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="days">有效期</label>
+								<label class="col-md-3 col-form-label" for="days">有效期</label>
 								<div class="col-md-3 input-group">
-									<input type="number" class="form-control" name="days" id="days" value="{{Request::old('days')?Request::old('days') :30}}" required/>
+									<input type="number" class="form-control" name="days" id="days" value="{{Request::old('days')? :30}}" required/>
 									<span class="input-group-text">天</span>
 								</div>
-								<span class="offset-md-2 text-help"> 到期后会自动从总流量扣减对应的流量，添加后不可修改 </span>
+								<span class="text-help"> *提交后不可修改 </span>
 							</div>
 							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="sort">排序</label>
-								<div class="col-md-3">
-									<input type="number" class="form-control" name="sort" id="sort" value="{{Request::old('sort')?Request::old('days') :0}}"/>
-								</div>
-								<span class="text-help"> 排序值越大排越前 </span>
-							</div>
-							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="color">颜色</label>
-								<div class="col-md-4">
-									<input type="text" class="form-control" name="color" id="color" data-plugin="asColorPicker" data-mode="simple" value="{{Request::old('color')?Request::old('color') :'#667AFA'}}"/>
-								</div>
-							</div>
-							<div class="form-group row package-money">
-								<label class="col-md-2 col-form-label" for="is_hot">热销</label>
-								<div class="col-md-10 d-flex align-items-center">
+								<label class="col-md-3 col-form-label" for="is_hot">热销</label>
+								<div class="col-md-9 d-flex align-items-center">
 									<div class="radio-custom radio-primary radio-inline">
 										<input type="radio" name="is_hot" value="1"/>
 										<label for="is_hot">是</label>
@@ -147,21 +129,8 @@
 								</div>
 							</div>
 							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="is_limit">限购</label>
-								<div class="col-md-10 d-flex align-items-center">
-									<div class="radio-custom radio-primary radio-inline">
-										<input type="radio" name="is_limit" value="1"/>
-										<label for="is_limit">是</label>
-									</div>
-									<div class="radio-custom radio-primary radio-inline">
-										<input type="radio" name="is_limit" value="0" checked/>
-										<label for="is_limit">否</label>
-									</div>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="status">状态</label>
-								<div class="col-md-10 d-flex align-items-center">
+								<label class="col-md-3 col-form-label" for="status">状态</label>
+								<div class="col-md-9 d-flex align-items-center">
 									<div class="radio-custom radio-primary radio-inline">
 										<input type="radio" name="status" value="1" checked/>
 										<label for="status">上架</label>
@@ -173,7 +142,42 @@
 								</div>
 							</div>
 						</div>
+						<div class="col-lg-6 col-md-12 package-money">
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label" for="sort">排序</label>
+								<div class="col-md-3">
+									<input type="number" class="form-control" name="sort" id="sort" value="{{Request::old('sort')? :0}}"/>
+								</div>
+								<span class="text-help"> 排序值越大排越前 </span>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label" for="color">颜色</label>
+								<div class="col-md-4">
+									<input type="text" class="form-control" name="color" id="color" data-plugin="asColorPicker" data-mode="simple" value="{{Request::old('color')? :'#667AFA'}}"/>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label" for="logo">商品图片</label>
+								<div class="col-md-9">
+									<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/noimage.png"/>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label" for="desc">描述</label>
+								<div class="col-md-9">
+									<textarea class="form-control" rows="2" name="desc" id="desc" placeholder="商品的简单描述">{{Request::old('desc')}}</textarea>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label" for="info">自定义列表</label>
+								<div class="col-md-9">
+									<textarea class="form-control" rows="6" name="info" id="info" placeholder="商品的自定义列表添加">{{Request::old('info')}}</textarea>
+								</div>
+								<span class="offset-md-3 text-help"> 每行内容请以<code>&lt;li&gt;</code> 开头 <code>&lt;/li&gt;</code> 结尾</span>
+							</div>
+						</div>
 						<div class="form-actions col-12 text-right">
+							<a href="/shop/goodsList" class="btn btn-danger"> 返 回</a>
 							<button type="submit" class="btn btn-success"><i class="icon wb-check"></i> 提 交</button>
 						</div>
 					</div>
@@ -197,10 +201,16 @@
         // 选择商品类型
         $("input[name='type']").change(function () {
             const type = $(this).val();
-            if (type == 3) {
+            if (type === '3') {
                 $(".package-money").hide();
             } else {
                 $(".package-money").show();
+            }
+
+            if (type === '2') {
+                $(".package-renew").show();
+            } else {
+                $(".package-renew").hide();
             }
         });
 	</script>

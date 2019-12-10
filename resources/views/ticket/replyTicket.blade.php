@@ -9,7 +9,7 @@
 				<h1 class="panel-title cyan-600"><i class="icon wb-help-circle"></i> {{$ticket->title}} </h1>
 				@if($ticket->status != 2)
 					<div class="panel-actions">
-						<a href="/ticket/ticketList" class="btn btn-danger">返回</a>
+						<a href="/ticket/ticketList" class="btn btn-danger">返 回</a>
 						<button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
 					</div>
 				@endif
@@ -105,7 +105,7 @@
                                 title: ret.message,
                                 type: 'success',
                                 timer: 1000,
-	                            showConfirmButton: false
+                                showConfirmButton: false
                             }).then(() => window.location.href = '/ticket/ticketList')
                         },
                         error: function () {

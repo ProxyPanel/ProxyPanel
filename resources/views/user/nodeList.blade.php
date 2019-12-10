@@ -1,8 +1,8 @@
 @extends('user.layouts')
 @section('css')
 	<script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
-	<link href="/assets/global/fonts/font-awesome/font-awesome.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/vendor/webui-popover/webui-popover.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/webui-popover/webui-popover.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
 	<!-- BEGIN CONTENT BODY -->

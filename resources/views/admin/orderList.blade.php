@@ -183,17 +183,7 @@
 
         // 搜索
         function Search() {
-            const username = $("#username").val();
-            const order_sn = $("#order_sn").val();
-            const is_expire = $("#is_expire").val();
-            const is_coupon = $("#is_coupon").val();
-            const pay_way = $("#pay_way").val();
-            const status = $("#status").val();
-            const sort = $("input:radio[name='sort']:checked").val();
-            const startTime = $("#start").val();
-            const endTime = $("#end").val();
-            const range_time = [startTime, endTime];
-            window.location.href = '/admin/orderList?username=' + username + '&order_sn=' + order_sn + '&is_expire=' + is_expire + '&is_coupon=' + is_coupon + '&pay_way=' + pay_way + '&status=' + status + '&sort=' + sort + '&range_time=' + range_time;
+            window.location.href = '/admin/orderList?username=' + $("#username").val() + '&order_sn=' + $("#order_sn").val() + '&is_expire=' + $("#is_expire").val() + '&is_coupon=' + $("#is_coupon").val() + '&pay_way=' + $("#pay_way").val() + '&status=' + $("#status").val() + '&sort=' + $("input:radio[name='sort']:checked").val() + '&range_time=' + [$("#start").val(), $("#end").val()];
         }
 	</script>
 @endsection

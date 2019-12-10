@@ -231,7 +231,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="passwd">密码</label>
 								<div class="col-xl-5 col-sm-8">
 									<div class="input-group">
-										<input class="form-control" type="text" name="passwd id=" passwd"" value="{{$user->passwd}}"/>
+										<input class="form-control" type="text" name="passwd" id="passwd" value="{{$user->passwd}}"/>
 										<span class="input-group-append"><button class="btn btn-success" type="button" onclick="makePasswd()"> <i class="icon wb-refresh"></i> </button></span>
 									</div>
 								</div>
@@ -250,7 +250,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="transfer_enable">可用流量</label>
 								<div class="col-xl-5 col-sm-8">
 									<div class="input-group">
-										<input type="number" class="form-control" name="transfer_enable" value="{{$user->transfer_enable}}" id="transfer_enable" required>
+										<input type="text" class="form-control" name="transfer_enable" value="{{$user->transfer_enable}}" id="transfer_enable" required>
 										<span class="input-group-text">GB</span>
 									</div>
 								</div>
@@ -410,33 +410,6 @@
 
         // ajax同步提交
         function Submit() {
-            const _token = '{{csrf_token()}}';
-            const username = $('#username').val();
-            const password = $('#password').val();
-            const pay_way = $("input:radio[name='pay_way']:checked").val();
-            const balance = $('#balance').val();
-            const status = $("input:radio[name='status']:checked").val();
-            const labels = $('#labels').val();
-            const enable_time = $('#enable_time').val();
-            const expire_time = $('#expire_time').val();
-            const wechat = $('#wechat').val();
-            const qq = $('#qq').val();
-            const is_admin = $("input:radio[name='is_admin']:checked").val();
-            const remark = $('#remark').val();
-            const level = $("#level option:selected").val();
-            const port = $('#port').val();
-            const passwd = $('#passwd').val();
-            const method = $('#method option:selected').val();
-            const transfer_enable = $('#transfer_enable').val();
-            const enable = $("input:radio[name='enable']:checked").val();
-            const protocol = $('#protocol option:selected').val();
-            const protocol_param = $('#protocol_param').val();
-            const obfs = $('#obfs option:selected').val();
-            const obfs_param = $('#obfs_param').val();
-            const speed_limit_per_con = $('#speed_limit_per_con').val();
-            const speed_limit_per_user = $('#speed_limit_per_user').val();
-            const vmess_id = $('#vmess_id').val();
-
             // 用途
             let usage = '';
             $.each($("input:checkbox[name='usage']"), function () {
@@ -444,39 +417,38 @@
                     usage += $(this).val() + ',';
                 }
             });
-            usage = usage.substring(0, usage.length - 1);
             $.ajax({
                 type: "POST",
                 url: "/admin/editUser/{{$user->id}}",
                 async: false,
                 data: {
-                    _token: _token,
-                    username: username,
-                    password: password,
-                    usage: usage,
-                    pay_way: pay_way,
-                    balance: balance,
-                    status: status,
-                    labels: labels,
-                    enable_time: enable_time,
-                    expire_time: expire_time,
-                    wechat: wechat,
-                    qq: qq,
-                    is_admin: is_admin,
-                    remark: remark,
-                    level: level,
-                    port: port,
-                    passwd: passwd,
-                    method: method,
-                    transfer_enable: transfer_enable,
-                    enable: enable,
-                    protocol: protocol,
-                    protocol_param: protocol_param,
-                    obfs: obfs,
-                    obfs_param: obfs_param,
-                    speed_limit_per_con: speed_limit_per_con,
-                    speed_limit_per_user: speed_limit_per_user,
-                    vmess_id: vmess_id
+                    _token: '{{csrf_token()}}',
+                    username: $('#username').val(),
+                    password: $('#password').val(),
+                    usage: usage.substring(0, usage.length - 1),
+                    pay_way: $("input:radio[name='pay_way']:checked").val(),
+                    balance: $('#balance').val(),
+                    status: $("input:radio[name='status']:checked").val(),
+                    labels: $('#labels').val(),
+                    enable_time: $('#enable_time').val(),
+                    expire_time: $('#expire_time').val(),
+                    wechat: $('#wechat').val(),
+                    qq: $('#qq').val(),
+                    is_admin: $("input:radio[name='is_admin']:checked").val(),
+                    remark: $('#remark').val(),
+                    level: $("#level option:selected").val(),
+                    port: $('#port').val(),
+                    passwd: $('#passwd').val(),
+                    method: $('#method option:selected').val(),
+                    transfer_enable: $('#transfer_enable').val(),
+                    enable: $("input:radio[name='enable']:checked").val(),
+                    protocol: $('#protocol option:selected').val(),
+                    protocol_param: $('#protocol_param').val(),
+                    obfs: $('#obfs option:selected').val(),
+                    obfs_param: $('#obfs_param').val(),
+                    speed_limit_per_con: $('#speed_limit_per_con').val(),
+                    speed_limit_per_user: $('#speed_limit_per_user').val(),
+                    vmess_id: $('#vmess_id').val()
                 },
                 dataType: 'json',
                 success: function (ret) {
@@ -532,7 +504,7 @@
             const amount = $("#amount").val();
             const reg = /^(\-?)\d+(\.\d+)?$/; //只可以是正负数字
 
-            if (amount.trim() === '' || amount == 0 || !reg.test(amount)) {
+            if (amount.trim() === '' || amount === 0 || !reg.test(amount)) {
                 $("#msg").show().html("请输入充值金额");
                 $("#name").focus();
                 return false;

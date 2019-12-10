@@ -110,12 +110,7 @@
 
         // 搜索
         function Search() {
-            const id = $("#id").val();
-            const username = $("#username").val();
-            const ip = $("#ip").val();
-            const port = $("#port").val();
-            const nodeId = $("#nodeId option:selected").val();
-            window.location.href = '/admin/onlineIPMonitor?id=' + id + '&ip=' + ip + '&username=' + username + '&port=' + port + '&nodeId=' + nodeId;
+            window.location.href = '/admin/onlineIPMonitor?id=' + $("#id").val() + '&ip=' + $("#ip").val() + '&username=' + $("#username").val() + '&port=' + $("#port").val() + '&nodeId=' + $("#nodeId option:selected").val();
         }
 	</script>
 @endsection

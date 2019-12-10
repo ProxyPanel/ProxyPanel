@@ -17,11 +17,10 @@
 						<label class="col-form-label col-md-2">敏感词</label>
 						<div class="col-md-5">
 							<input type="text" class="form-control" name="words" value="" id="words" required/>
-							<input type="hidden" name="_token" value="{{csrf_token()}}"/>
 						</div>
 					</div>
 					<div class="form-actions">
-						<button type="submit" class="btn btn-success">提交</button>
+						<button type="submit" class="btn btn-success">提 交</button>
 					</div>
 				</form>
 			</div>
@@ -51,14 +50,11 @@
 	<script type="text/javascript">
         // ajax同步提交
         function Submit() {
-            const _token = '{{csrf_token()}}';
-            const words = $('#words').val();
-
             $.ajax({
                 type: "POST",
                 url: "/admin/addSensitiveWords",
                 async: false,
-                data: {_token: _token, words: words},
+                data: {_token: '{{csrf_token()}}', words: $('#words').val()},
                 dataType: 'json',
                 success: function (ret) {
                     swal.fire({title: ret.message, timer: 1000, showConfirmButton: false,})
@@ -67,7 +63,6 @@
                         })
                 }
             });
-
             return false;
         }
 	</script>

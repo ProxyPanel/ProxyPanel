@@ -49,22 +49,17 @@
 	<script type="text/javascript">
         // ajax同步提交
         function Submit() {
-            const username = $('#username').val();
-            const title = $('#title').val();
-            const content = $('#content').val();
-
             $.ajax({
                 type: "POST",
                 url: "/ticket/addTicket",
                 async: false,
-                data: {_token: '{{csrf_token()}}', username: username, title: title, content: content},
+                data: {_token: '{{csrf_token()}}', username: $('#username').val(), title: $('#title').val(), content: $('#content').val()},
                 dataType: 'json',
                 success: function (ret) {
                     swal.fire({title: ret.message, type: 'success', timer: 1000})
                         .then(() => window.location.href = '/ticket/ticketList');
                 }
             });
-
             return false;
         }
 	</script>

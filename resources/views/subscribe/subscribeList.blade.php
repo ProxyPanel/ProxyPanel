@@ -18,9 +18,8 @@
 					</div>
 					<div class="form-group col-lg-3 col-sm-6">
 						<select name="status" id="status" class="form-control" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>账号状态</option>
-							<option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>禁用</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>未激活</option>
+							<option value="" @if(Request::get('status') == '') selected hidden @endif>状态</option>
+							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>禁用</option>
 							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>正常</option>
 						</select>
 					</div>
@@ -60,7 +59,7 @@
 								</td>
 								<td> {{$subscribe->code}} </td>
 								<td>
-									<a href="/admin/userSubscribeLog?user_id={{$subscribe->user->id}}" target="_blank">{{$subscribe->times}}</a>
+									<a href="/subscribe/subscribeLog?id={{$subscribe->id}}" target="_blank">{{$subscribe->times}}</a>
 								</td>
 								<td> {{$subscribe->updated_at}} </td>
 								<td> {{$subscribe->ban_time > 0 ? date('Y-m-d H:i', $subscribe->ban_time): ''}} </td>
@@ -108,10 +107,7 @@
 
         // 搜索
         function Search() {
-            const user_id = $("#user_id").val();
-            const username = $("#username").val();
-            const status = $("#status option:selected").val();
-            window.location.href = '/subscribe/subscribeList' + '?user_id=' + user_id + '&username=' + username + '&status=' + status;
+            window.location.href = '/subscribe/subscribeList' + '?user_id=' + $("#user_id").val() + '&username=' + $("#username").val() + '&status=' + $("#status option:selected").val();
         }
 
         // 启用禁用用户的订阅

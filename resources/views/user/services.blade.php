@@ -16,6 +16,21 @@
 						</div>
 					</div>
 				</div>
+				@if($renewTraffic)
+					<div class="card card-shadow">
+						<div class="card-block p-20">
+							<button type="button" class="btn btn-floating btn-sm btn-pure">
+								<i class="icon wb-payment green-500"></i>
+							</button>
+							<span class="font-weight-400">流量重置</span>
+							<div class="content-text text-center mb-0">
+								<span class="font-size-20 font-weight-100">需要 <code>{{$renewTraffic}}</code> 元</span>
+								<br/>
+								<button class="btn btn-danger" onclick="resetTraffic()">重置</button>
+							</div>
+						</div>
+					</div>
+				@endif
 			</div>
 			<div class="col-xxl-10 col-lg-9">
 				<div class="panel">
@@ -25,12 +40,12 @@
 					</div>
 					<div class="panel-body">
 						<div class="row">
-							@foreach($goodsList as $key => $goods)
+							@foreach($goodsList as $goods)
 								<div class="col-md-6 col-xl-4 col-xxl-3 pb-30">
 									<div class="pricing-list text-left">
 										<div class="pricing-header text-white" style="background-color: {{$goods->color}}">
 											<div class="pricing-title font-size-20">{{$goods->name}}</div>
-											@if($goods->is_limit)
+											@if($goods->limit_num)
 												<div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-primary mr-10">
 													<span class="ribbon-inner h-auto">限<br>购</span>
 												</div>
@@ -84,10 +99,10 @@
 				<div class="modal-body">
 					<div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
 					<form action="#" method="post">
-						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || !$chargeGoodsList->isEmpty())
+						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])))
 							<div class="mb-15 w-p50">
 								<select class="form-control" name="charge_type" id="charge_type">
-									@if(!$chargeGoodsList->isEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+									@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
 										<option value="1" selected>{{trans('home.online_pay')}}</option>
 									@endif
 									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
@@ -168,15 +183,37 @@
             }
         });
 
+        // 重置流量
+        function resetTraffic() {
+            swal.fire({
+                title: '重置流量',
+                text: '本次重置流量将扣除余额 {{$renewTraffic}} 元？',
+                type: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post("/resetUserTraffic", {_token: '{{csrf_token()}}'}, function (ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                                .then(() => window.location.reload())
+                        } else {
+                            swal.fire({title: ret.message, text: ret.data, type: "error"}).then(() => window.location.reload())
+                        }
+                    });
+                }
+            });
+        }
+
         // 充值
         function charge() {
             const paymentType = $('#charge_type').val();
             const charge_coupon = $('#charge_coupon').val();
-            const online_pay = $('#online_pay').val();
 
             if (paymentType === '1') {
                 $("#charge_msg").show().html("正在跳转支付界面");
-                window.location.href = '/buy/' + online_pay;
+                window.location.href = '/buy/' + $('#online_pay').val();
                 return false;
             }
 
@@ -209,5 +246,6 @@
                 }
             });
         }
+
 	</script>
 @endsection

@@ -134,9 +134,9 @@ class Controller extends BaseController
 	}
 
 	// 获取敏感词
-	public function sensitiveWords()
+	public function sensitiveWords($type)
 	{
-		return SensitiveWords::query()->get()->pluck('words')->toArray();
+		return SensitiveWords::query()->where('type',$type)->get()->pluck('words')->toArray();
 	}
 
 	// 将Base64图片转换为本地图片并保存

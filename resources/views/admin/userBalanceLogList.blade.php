@@ -88,8 +88,7 @@
 
         // 搜索
         function Search() {
-            const username = $("#username").val();
-            window.location.href = '/admin/userBalanceLogList?username=' + username;
+            window.location.href = '/admin/userBalanceLogList?username=' + $("#username").val();
         }
 	</script>
 @endsection

@@ -82,8 +82,7 @@
 	<script type="text/javascript">
         // 搜索
         function Search() {
-            const status = $("#status option:selected").val();
-            window.location.href = '/subscribe/deviceList' + '?status=' + status;
+            window.location.href = '/subscribe/deviceList' + '?status=' + $("#status option:selected").val();
         }
 
         // 启用禁用订阅设备

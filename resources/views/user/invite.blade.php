@@ -49,23 +49,13 @@
 										<tr>
 											<td> {{$loop->iteration}} </td>
 											<td>
-												<a href="/register?aff={{Auth::user()->id}}&code={{$invite->code}}" target="_blank">{{$invite->code}}</a>
+												<a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{url('/register?aff='.Auth::user()->id.'&code='.$invite->code)}}">{{$invite->code}}</a>
 											</td>
 											<td> {{$invite->dateline}} </td>
 											<td>
-												@if($invite->status == '0')
-													<span class="badge badge-success">{{trans('home.invite_code_table_status_un')}}</span>
-												@elseif($invite->status == '1')
-													<span class="badge badge-danger">{{trans('home.invite_code_table_status_yes')}}</span>
-												@else
-													<span class="badge badge-default">{{trans('home.invite_code_table_status_expire')}}</span>
-												@endif
+												{!!$invite->$status_label!!}
 											</td>
-											@if($invite->status == '1')
-												<td> {{empty($invite->user) ? ($invite->status == 1 ? '【账号已删除】' : '') : $invite->user->username}} </td>
-											@else
-												<td></td>
-											@endif
+											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->username) : ''}}
 										</tr>
 									@endforeach
 								@endif
@@ -91,18 +81,17 @@
 	</div>
 @endsection
 @section('script')
+	<script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
         // 生成邀请码
         function makeInvite() {
-            const _token = '{{csrf_token()}}';
-
             $.ajax({
                 type: "POST",
                 url: "/makeInvite",
                 async: false,
-                data: {_token: _token},
+                data: {_token: '{{csrf_token()}}'},
                 dataType: 'json',
                 success: function (ret) {
                     swal.fire({title: ret.message, type: 'success', timer: 1000})
@@ -115,5 +104,23 @@
             });
             return false;
         }
+
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function () {
+            swal.fire({
+                title: '复制成功',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false
+            });
+        });
+        clipboard.on('error', function () {
+            swal.fire({
+                title: '复制失败，请手动复制',
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        });
 	</script>
 @endsection

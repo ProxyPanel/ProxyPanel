@@ -57,8 +57,7 @@
 							<div class="input-group">
 								<input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}"/>
 								<div class="input-group-btn">
-									<button type="submit" class="btn btn-info" onclick="redeemCoupon()"><i class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
-									</button>
+									<button type="submit" class="btn btn-info" onclick="redeemCoupon()"><i class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}</button>
 								</div>
 							</div>
 						</div>
@@ -100,10 +99,9 @@
                 type: "POST",
                 url: "/redeemCoupon",
                 async: false,
-                data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn},
+                data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn, price: '{{$goods->price}}'},
                 dataType: 'json',
                 success: function (ret) {
-                    console.log(ret);
                     $(".input-group-prepend").remove();
                     if (ret.status === 'success') {
                         $("#coupon_sn").parent().prepend('<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
@@ -111,14 +109,13 @@
                         let total_price = 0;
                         if (ret.data.type === 2) {
                             total_price = goods_price * (1 - ret.data.discount / 10);
-                            $(".page-invoice-amount").parent().prepend('<p>优惠码 - ' + ret.data.name + ' ' + ret.data.discount + '折<br> 优惠 <span>￥' + total_price.toFixed(2) + '</span></p>');
+                            $(".page-invoice-amount").parent().prepend('<p>优惠码 - ' + ret.data.name + ' ' + ret.data.discount + '折<br> 优惠 <span>￥ - ' + total_price.toFixed(2) + '</span></p>');
                             total_price = goods_price - total_price;
-                            console.log(total_price);
                         } else {
                             total_price = goods_price - ret.data.amount;
                             total_price = total_price > 0 ? total_price : 0;
                             if (ret.data.type === 1) {
-                                $(".page-invoice-amount").parent().prepend('优惠码-' + ret.data.name + ' <span>￥0</span>');
+                                $(".page-invoice-amount").parent().prepend('优惠码-' + ret.data.name + ' <span>￥ - '+ret.data.amount+'</span>');
                             }
                         }
 
@@ -127,17 +124,16 @@
                         swal.fire({
                             title: ret.message,
                             type: 'success',
-                            timer: 1500,
+                            timer: 1300,
                             showConfirmButton: false
                         });
                     } else {
                         $(".grand-total").text("￥" + goods_price);
                         $("#coupon_sn").parent().prepend('<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>');
                         swal.fire({
-                            title: ret.message,
-                            type: 'error',
-                            timer: 1500,
-                            showConfirmButton: false
+                            title: ret.title,
+                            text: ret.message,
+                            type: 'error'
                         });
                     }
                 }
@@ -169,10 +165,12 @@
                         } else {
                             window.location.href = '/payment/' + ret.data;
                         }
+                    } else if(ret.status === 'info'){
+                        swal.fire({title: ret.title, text: ret.message, type: 'question'});
                     } else {
                         swal.fire({
                             title: ret.message,
-                            type: 'error',
+                            type: 'error'
                         })
                     }
                 },
@@ -184,24 +182,24 @@
 
         // 余额支付
         function pay() {
-            const goods_id = '{{$goods->id}}';
-            const coupon_sn = $('#coupon_sn').val();
             $.ajax({
                 type: "POST",
-                url: "/buy/" + goods_id,
+                url: "/buy/" + '{{$goods->id}}',
                 async: false,
-                data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn},
+                data: {_token: '{{csrf_token()}}', coupon_sn: $('#coupon_sn').val()},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, type: 'success',})
                             .then(() => window.location.href = '/invoices')
-                    } else {
-                        swal.fire({title: ret.message, type: 'error',})
+                    } else if(ret.status === 'info'){
+                        swal.fire({title: ret.title, text: ret.message, type: 'question'});
+	                } else{
+                        swal.fire({title: ret.message, type: 'error'})
                     }
                 },
                 error: function () {
-                    swal.fire({title: '未知错误！请开工单通知客服', type: 'error',})
+                    swal.fire({title: '未知错误！请开工单通知客服', type: 'error'})
                 }
             });
         }

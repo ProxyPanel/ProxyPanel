@@ -38,21 +38,15 @@
 											<td>{{$ticket->id}}</td>
 											<td>{{$ticket->title}}</td>
 											<td>
-												@if ($ticket->status == 0)
-													<span class="badge badge-primary badge-lg"> {{trans('home.ticket_table_status_wait')}} </span>
-												@elseif ($ticket->status == 1)
-													<span class="badge badge-danger badge-lg"> {{trans('home.ticket_table_status_reply')}} </span>
-												@else
-													<span class="badge badge-default badge-lg"> {{trans('home.ticket_table_status_close')}} </span>
-												@endif
+												{!!$ticket->status_label!!}
 											</td>
 											<td>
-												@if($ticket->status != 2)
+												@if($ticket->status == 2)
+													<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
+														<span><i class="icon wb-eye" aria-hidden="true" style="left: 40%">  </i> {{trans('home.ticket_table_view')}} </span></a>
+												@else
 													<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-success">
 														<span><i class="icon wb-check" aria-hidden="true" style="left: 40%"></i> {{trans('home.ticket_open')}} </span></a>
-												@else
-													<a class="btn btn-animate btn-animate-vertical btn-outline-info" href="/replyTicket?id={{$ticket->id}}">
-														<span><i class="icon wb-eye" aria-hidden="true" style="left: 40%">  </i> {{trans('home.ticket_table_view')}} </span></a>
 												@endif
 											</td>
 										</tr>

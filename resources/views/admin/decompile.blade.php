@@ -28,7 +28,6 @@
 	<script type="text/javascript">
         // 转换
         function Decompile() {
-            const _token = '{{csrf_token()}}';
             const content = $('#content').val();
 
             if (content.trim() === '') {
@@ -48,7 +47,7 @@
                         type: "POST",
                         url: "/admin/decompile",
                         async: false,
-                        data: {_token: _token, content: content},
+                        data: {_token: '{{csrf_token()}}', content: content},
                         dataType: 'json',
                         success: function (ret) {
                             if (ret.status === 'success') {

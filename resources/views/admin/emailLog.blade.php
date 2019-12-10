@@ -92,9 +92,7 @@
 	<script type="text/javascript">
         // 搜索
         function Search() {
-            const username = $("#username").val();
-            const type = $("#type option:selected").val();
-            window.location.href = '/admin/emailLog?username=' + username + '&type=' + type;
+            window.location.href = '/admin/emailLog?username=' + $("#username").val() + '&type=' + $("#type option:selected").val();
         }
 	</script>
 @endsection

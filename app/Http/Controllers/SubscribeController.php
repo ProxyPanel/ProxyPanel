@@ -37,7 +37,7 @@ class SubscribeController extends Controller
 		$username = $request->input('username');
 		$status = $request->input('status');
 
-		$query = UserSubscribe::with(['User']);
+		$query = UserSubscribe::with(['user:id,username']);
 
 		if(isset($user_id)){
 			$query->where('user_id', $user_id);
@@ -56,6 +56,21 @@ class SubscribeController extends Controller
 		$view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
 
 		return Response::view('subscribe.subscribeList', $view);
+	}
+
+	//订阅记录
+	public function subscribeLog(Request $request)
+	{
+		$id = $request->input('id');
+		$query = UserSubscribeLog::with('user:username');
+
+		if(isset($id)){
+			$query->where('sid',$id);
+		}
+
+		$view['subscribeLog'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
+
+		return Response::view('subscribe.subscribeLog', $view);
 	}
 
 	// 订阅设备列表
@@ -175,8 +190,7 @@ class SubscribeController extends Controller
 
 		// 展示到期时间和剩余流量
 		if(self::$systemConfig['is_custom_subscribe']){
-			$scheme .= $this->expireDate($user);
-			$scheme .= $this->lastTraffic($user);
+			$scheme .= $this->expireDate($user).$this->lastTraffic($user);
 		}
 
 		foreach($nodeList as $key => $node){
@@ -184,32 +198,37 @@ class SubscribeController extends Controller
 			if(self::$systemConfig['subscribe_max'] && $key >= self::$systemConfig['subscribe_max']){
 				break;
 			}
-
 			// 获取分组名称
+			$host = $node['server']? : $node['ip'];
 			if($node['type'] == 1){
 				$group = SsGroup::query()->where('id', $node['group_id'])->first();
+				$group = empty($group)? Helpers::systemConfig()['website_name'] : $group->name;
+				$obfs_param = $user->obfs_param? : $node['obfs_param'];
 
-				$obfs_param = $user->obfs_param? $user->obfs_param : $node['obfs_param'];
-				$protocol_param = $node['single']? $user->port.':'.$user->passwd : $user->protocol_param;
+				if($node['single']){
+					$port = $node['port'];
+					$protocol = $node['protocol'];
+					$method = $node['method'];
+					$obfs = $node['obfs'];
+					$passwd = $node['passwd'];
+					$protocol_param = $user->port.':'.$user->passwd;
+				}else{
+					$port = $user->port;
+					$protocol = $user->protocol;
+					$method = $user->method;
+					$obfs = $user->obfs;
+					$passwd = $user->passwd;
+					$protocol_param = $user->protocol_param;
+				}
 
 				// 生成ssr scheme
-				$ssr_str = ($node['server']? $node['server'] : $node['ip']).':'.($node['single']? $node['single_port'] : $user->port);
-				$ssr_str .= ':'.($node['single']? $node['single_protocol'] : $user->protocol).':'.($node['single']? $node['single_method'] : $user->method);
-				$ssr_str .= ':'.($node['single']? $node['single_obfs'] : $user->obfs).':'.($node['single']? base64url_encode($node['single_passwd']) : base64url_encode($user->passwd));
-				$ssr_str .= '/?obfsparam='.base64url_encode($obfs_param);
-				$ssr_str .= '&protoparam='.($node['single']? base64url_encode($user->port.':'.$user->passwd) : base64url_encode($protocol_param));
-				$ssr_str .= '&remarks='.base64url_encode($node['name']);
-				$ssr_str .= '&group='.base64url_encode(empty($group)? Helpers::systemConfig()['website_name'] : $group->name);
-				$ssr_str .= '&udpport=0';
-				$ssr_str .= '&uot=0';
-				$ssr_str = base64url_encode($ssr_str);
-				$scheme .= 'ssr://'.$ssr_str."\n";
+				$scheme .= 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node['name']).'&group='.base64url_encode($group).'&udpport=0&uot=0')."\n";
 			}else{
 				// 生成v2ray scheme
 				$v2_json = [
 					"v"    => "2",
 					"ps"   => $node['name'],
-					"add"  => $node['server']? $node['server'] : $node['ip'],
+					"add"  => $host,
 					"port" => $node['v2_port'],
 					"id"   => $user->vmess_id,
 					"aid"  => $node['v2_alter_id'],

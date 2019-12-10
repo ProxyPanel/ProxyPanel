@@ -18,4 +18,8 @@ class UserSubscribeLog extends Model
 	protected $primaryKey = 'id';
 	public $timestamps = FALSE;
 
+	function user()
+	{
+		return $this->hasManyThrough(User::class, UserSubscribe::class, 'id', 'id', 'sid', 'user_id');
+	}
 }

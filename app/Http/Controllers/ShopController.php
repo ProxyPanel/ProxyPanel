@@ -54,6 +54,9 @@ class ShopController extends Controller
 				return Redirect::back()->withInput()->withErrors('套餐价格必须大于0');
 			}
 
+			if($request->renew < 0){
+				return Redirect::back()->withInput()->withErrors('流量重置价格必须大于0');
+			}
 			// 套餐有效天数必须大于30天
 			if($request->type == 2 && $request->days < 1){
 				return Redirect::back()->withInput()->withErrors('套餐有效天数必须不能少于1天');
@@ -85,12 +88,13 @@ class ShopController extends Controller
 				$goods->logo = $logo;
 				$goods->traffic = $request->traffic;
 				$goods->price = round($request->price, 2);
+				$goods->renew = round($request->renew, 2);
 				$goods->type = $request->type;
 				$goods->days = $request->days;
 				$goods->color = $request->color;
 				$goods->sort = $request->sort;
 				$goods->is_hot = $request->is_hot;
-				$goods->is_limit = $request->is_limit;
+				$goods->limit_num = $request->limit_num;
 				$goods->status = $request->status;
 				$goods->save();
 
@@ -133,11 +137,12 @@ class ShopController extends Controller
 			$info = $request->input('info');
 			$desc = $request->input('desc');
 			$price = round($request->input('price'), 2);
+			$renew = round($request->input('renew'), 2);
 			$labels = $request->input('labels');
 			$color = $request->input('color');
 			$sort = $request->input('sort');
 			$is_hot = $request->input('is_hot');
-			$is_limit = $request->input('is_limit');
+			$limit_num = $request->input('limit_num');
 			$status = $request->input('status');
 
 			$goods = Goods::query()->where('id', $id)->first();
@@ -156,6 +161,12 @@ class ShopController extends Controller
 			// 套餐必须有价格
 			if($goods->type == 2 && $price <= 0){
 				Session::flash('errorMsg', '套餐价格必须大于0');
+
+				return Redirect::back()->withInput();
+			}
+
+			if($renew < 0){
+				Session::flash('errorMsg', '流量重置价格必须大于0');
 
 				return Redirect::back()->withInput();
 			}
@@ -180,7 +191,17 @@ class ShopController extends Controller
 
 			DB::beginTransaction();
 			try{
-				$data = ['name' => $name, 'info' => $info, 'desc' => $desc, 'price' => $price*100, 'sort' => $sort, 'color' => $color, 'is_hot' => $is_hot, 'is_limit' => $is_limit, 'status' => $status];
+				$data = [
+					'name'      => $name,
+					'info'      => $info,
+					'desc'      => $desc,
+					'price'     => $price*100,
+					'renew'     => $renew*100,
+					'sort'      => $sort,
+					'color'     => $color,
+					'is_hot'    => $is_hot,
+					'limit_num' => $limit_num,
+					'status'    => $status];
 
 				if($logo){
 					$data['logo'] = $logo;

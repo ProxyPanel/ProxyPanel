@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Http\Models
  * @mixin Eloquent
+ * @property-read mixed $status_label
  */
 class Order extends Model
 {

@@ -116,10 +116,7 @@
 
         // 搜索
         function Search() {
-            const username = $("#username").val();
-            const ref_username = $("#ref_username").val();
-            const status = $("#status option:selected").val();
-            window.location.href = '/admin/userRebateList' + '?username=' + username + '&ref_username=' + ref_username + '&status=' + status;
+            window.location.href = '/admin/userRebateList' + '?username=' + $("#username").val() + '&ref_username=' + $("#ref_username").val() + '&status=' + $("#status option:selected").val();
         }
 	</script>
 @endsection

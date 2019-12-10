@@ -17,31 +17,28 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<div class="example">
-					<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
-						<thead class="thead-default">
+				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+					<thead class="thead-default">
+					<tr>
+						<th>近期请求地址</th>
+					</tr>
+					</thead>
+					<tbody>
+					@if(empty($urlList))
 						<tr>
-							<th>近期请求地址</th>
+							<td colspan="1">访问记录不足15000条，无法分析数据</td>
 						</tr>
-						</thead>
-						<tbody>
-						@if(empty($urlList))
+					@else
+						@foreach($urlList as $url)
 							<tr>
-								<td colspan="1">访问记录不足15000条，无法分析数据</td>
+								<td> {{$url}} </td>
 							</tr>
-						@else
-							@foreach($urlList as $url)
-								<tr>
-									<td> {{$url}} </td>
-								</tr>
-							@endforeach
-						@endif
-						</tbody>
-					</table>
-				</div>
+						@endforeach
+					@endif
+					</tbody>
+				</table>
 			</div>
 		</div>
-	</div>
 	</div>
 
 @endsection
@@ -94,13 +91,7 @@
 
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function (event, state) {
-                var is_rand_port = 0;
-
-                if (state) {
-                    is_rand_port = 1;
-                }
-
-                $.post("/admin/enableRandPort", {_token: '{{csrf_token()}}', value: is_rand_port}, function (ret) {
+                $.post("/admin/enableRandPort", {_token: '{{csrf_token()}}', value: state ? 1 : 0}, function (ret) {
                     console.log(ret);
                 });
             }

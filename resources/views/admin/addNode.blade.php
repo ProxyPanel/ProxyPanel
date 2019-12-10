@@ -42,22 +42,22 @@
 										</ul>
 									</div>
 									<div class="form-group row">
-										<label for="is_nat" class="col-md-3 col-form-label">NAT</label>
+										<label for="is_ddns" class="col-md-3 col-form-label">DDNS</label>
 										<ul class="col-md-9 list-unstyled list-inline">
 											<li class="list-inline-item">
 												<div class="radio-custom radio-primary">
-													<input type="radio" name="is_nat" value="1">
+													<input type="radio" name="is_ddns" value="1">
 													<label>是</label>
 												</div>
 											</li>
 											<li class="list-inline-item">
 												<div class="radio-custom radio-primary">
-													<input type="radio" name="is_nat" value="0" checked>
+													<input type="radio" name="is_ddns" value="0" checked>
 													<label>否</label>
 												</div>
 											</li>
 										</ul>
-										<span class="text-help offset-md-3"> NAT机需要<a href="https://github.com/ssrpanel/SSRPanel/wiki/NAT-VPS%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B" target="_blank">配置DDNS</a>，TCP阻断检测无效，务必填写域名 </span>
+										<span class="text-help offset-md-3"> 动态IP节点需要<a href="https://github.com/NewFuture/DDNS" target="_blank">配置DDNS</a>，对此类型节点，节点阻断功能会通过域名进行检测 </span>
 									</div>
 									<div class="form-group row">
 										<label for="name" class="col-md-3 col-form-label"> 节点名称 </label>
@@ -107,10 +107,10 @@
 									<div class="form-group row">
 										<label for="country_code" class="col-md-3 col-form-label"> 国家/地区 </label>
 										<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="country_code" id="country_code">
-											<option value="">请选择</option>
+											<option value="" hidden>请选择</option>
 											@if(!$country_list->isEmpty())
 												@foreach($country_list as $country)
-													<option value="{{$country->country_code}}">{{$country->country_code}} - {{$country->country_name}}</option>
+													<option value="{{$country->code}}">{{$country->code}} - {{$country->name}}</option>
 												@endforeach
 											@endif
 										</select>
@@ -258,40 +258,34 @@
 											</ul>
 										</div>
 										<div class="form-group row">
-											<label for="is_udp" class="col-md-3 col-form-label">UDP</label>
+											<label for="detectionType" class="col-md-3 col-form-label">节点阻断检测</label>
 											<ul class="col-md-9 list-unstyled list-inline">
 												<li class="list-inline-item">
 													<div class="radio-custom radio-primary">
-														<input type="radio" name="is_udp" value="1" checked>
-														<label>允许</label>
-													</div>
-												</li>
-												<li class="list-inline-item">
-													<div class="radio-custom radio-primary">
-														<input type="radio" name="is_udp" value="0">
-														<label>不允许</label>
-													</div>
-												</li>
-											</ul>
-											<span class="text-help offset-md-3"> 禁止UDP，则无法用于加速游戏 </span>
-										</div>
-										<div class="form-group row">
-											<label for="is_tcp_check" class="col-md-3 col-form-label">TCP阻断检测</label>
-											<ul class="col-md-9 list-unstyled list-inline">
-												<li class="list-inline-item">
-													<div class="radio-custom radio-primary">
-														<input type="radio" name="is_tcp_check" value="1" checked>
-														<label>开启</label>
-													</div>
-												</li>
-												<li class="list-inline-item">
-													<div class="radio-custom radio-primary">
-														<input type="radio" name="is_tcp_check" value="0">
+														<input type="radio" name="detectionType" value="0" checked/>
 														<label>关闭</label>
 													</div>
 												</li>
+												<li class="list-inline-item">
+													<div class="radio-custom radio-primary">
+														<input type="radio" name="detectionType" value="1"/>
+														<label>只检测TCP</label>
+													</div>
+												</li>
+												<li class="list-inline-item">
+													<div class="radio-custom radio-primary">
+														<input type="radio" name="detectionType" value="2"/>
+														<label>只检测ICMP</label>
+													</div>
+												</li>
+												<li class="list-inline-item">
+													<div class="radio-custom radio-primary">
+														<input type="radio" name="detectionType" value="3"/>
+														<label>检测全部</label>
+													</div>
+												</li>
 											</ul>
-											<span class="text-help offset-md-3"> 每30~60分钟随机进行TCP阻断检测 </span>
+											<span class="text-help offset-md-3"> 每30~60分钟随机进行节点阻断检测 </span>
 										</div>
 										<hr/>
 										<div class="form-group row">
@@ -314,49 +308,14 @@
 										</div>
 										<div class="single-setting hidden">
 											<div class="form-group row">
-												<label for="single_force" class="col-md-3 col-form-label">[单] 模式</label>
-												<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="single_force" id="single_force">
-													<option value="0" selected>兼容模式</option>
-													<option value="1">严格模式</option>
-												</select>
+												<label for="port" class="col-md-3 col-form-label">[单] 端口</label>
+												<input type="text" class="form-control col-md-4" name="port" value="" id="port" placeholder="443">
+												<span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
 												<span class="text-help offset-md-3"> 严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
 											</div>
 											<div class="form-group row">
-												<label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
-												<input type="text" class="form-control col-md-4" name="single_port" value="" id="single_port" placeholder="443">
-												<span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
-											</div>
-											<div class="form-group row">
-												<label for="single_passwd" class="col-md-3 col-form-label">[单] 密码</label>
-												<input type="text" class="form-control col-md-4" name="single_passwd" value="" id="single_passwd" placeholder="password">
-											</div>
-											<div class="form-group row">
-												<label for="single_method" class="col-md-3 col-form-label">[单] 加密方式</label>
-												<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="single_method" id="single_method">
-													@foreach ($method_list as $method)
-														<option value="{{$method->name}}" @if($method->is_default) selected @endif>{{$method->name}}</option>
-													@endforeach
-												</select>
-											</div>
-											<div class="form-group row">
-												<label for="single_protocol" class="col-md-3 col-form-label">[单] 协议</label>
-												<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="single_protocol" id="single_protocol">
-													<option value="origin">origin</option>
-													<option value="verify_deflate">verify_deflate</option>
-													<option value="auth_sha1_v4">auth_sha1_v4</option>
-													<option value="auth_aes128_md5">auth_aes128_md5</option>
-													<option value="auth_aes128_sha1">auth_aes128_sha1</option>
-													<option value="auth_chain_a" selected>auth_chain_a</option>
-												</select>
-											</div>
-											<div class="form-group row">
-												<label for="single_obfs" class="col-md-3 col-form-label">[单] 混淆</label>
-												<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="single_obfs" id="single_obfs">
-													<option value="plain">plain</option>
-													<option value="http_simple">http_simple</option>
-													<option value="random_head">random_head</option>
-													<option value="tls1.2_ticket_auth" selected>tls1.2_ticket_auth</option>
-												</select>
+												<label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
+												<input type="text" class="form-control col-md-4" name="passwd" value="" id="passwd" placeholder="password">
 											</div>
 										</div>
 									</div>
@@ -459,100 +418,51 @@
 	<script type="text/javascript">
         // ajax同步提交
         function Submit() {
-            var name = $('#name').val();
-            var labels = $("#labels").val();
-            var group_id = $("#group_id option:selected").val();
-            var country_code = $("#country_code option:selected").val();
-            var server = $('#server').val();
-            var ip = $('#ip').val();
-            var ipv6 = $('#ipv6').val();
-            var desc = $('#desc').val();
-            var method = $('#method').val();
-            var traffic_rate = $('#traffic_rate').val();
-            var protocol = $('#protocol').val();
-            var protocol_param = $('#protocol_param').val();
-            var obfs = $('#obfs').val();
-            var obfs_param = $('#obfs_param').val();
-            var bandwidth = $('#bandwidth').val();
-            var traffic = $('#traffic').val();
-            var monitor_url = $('#monitor_url').val();
-            var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
-            var is_nat = $("input:radio[name='is_nat']:checked").val();
-            var is_transit = $("input:radio[name='is_transit']:checked").val();
-            var ssh_port = $('#ssh_port').val();
-            var compatible = $("input:radio[name='compatible']:checked").val();
-            var single = $("input:radio[name='single']:checked").val();
-            var single_force = $('#single_force').val();
-            var single_port = $('#single_port').val();
-            var single_passwd = $('#single_passwd').val();
-            var single_method = $('#single_method').val();
-            var single_protocol = $('#single_protocol').val();
-            var single_obfs = $('#single_obfs').val();
-            var sort = $('#sort').val();
-            var status = $("input:radio[name='status']:checked").val();
-            var is_tcp_check = $("input:radio[name='is_tcp_check']:checked").val();
-
-            var service = $("input:radio[name='service']:checked").val();
-            var v2_alter_id = $('#v2_alter_id').val();
-            var v2_port = $('#v2_port').val();
-            var v2_method = $("#v2_method option:selected").val();
-            var v2_net = $('#v2_net').val();
-            var v2_type = $('#v2_type').val();
-            var v2_host = $('#v2_host').val();
-            var v2_path = $('#v2_path').val();
-            var v2_tls = $("input:radio[name='v2_tls']:checked").val();
-            var v2_insider_port = $('#v2_insider_port').val();
-            var v2_outsider_port = $('#v2_outsider_port').val();
-
             $.ajax({
                 type: "POST",
                 url: "/admin/addNode",
                 async: false,
                 data: {
                     _token: '{{csrf_token()}}',
-                    name: name,
-                    labels: labels,
-                    group_id: group_id,
-                    country_code: country_code,
-                    server: server,
-                    ip: ip,
-                    ipv6: ipv6,
-                    desc: desc,
-                    method: method,
-                    traffic_rate: traffic_rate,
-                    protocol: protocol,
-                    protocol_param: protocol_param,
-                    obfs: obfs,
-                    obfs_param: obfs_param,
-                    bandwidth: bandwidth,
-                    traffic: traffic,
-                    monitor_url: monitor_url,
-                    is_subscribe: is_subscribe,
-                    is_nat: is_nat,
-                    is_transit: is_transit,
-                    ssh_port: ssh_port,
-                    compatible: compatible,
-                    single: single,
-                    single_force: single_force,
-                    single_port: single_port,
-                    single_passwd: single_passwd,
-                    single_method: single_method,
-                    single_protocol: single_protocol,
-                    single_obfs: single_obfs,
-                    sort: sort,
-                    status: status,
-                    is_tcp_check: is_tcp_check,
-                    type: service,
-                    v2_alter_id: v2_alter_id,
-                    v2_port: v2_port,
-                    v2_method: v2_method,
-                    v2_net: v2_net,
-                    v2_type: v2_type,
-                    v2_host: v2_host,
-                    v2_path: v2_path,
-                    v2_tls: v2_tls,
-                    v2_insider_port: v2_insider_port,
-                    v2_outsider_port: v2_outsider_port
+                    name: $('#name').val(),
+                    labels: $('#labels').val(),
+                    group_id: $('#group_id option:selected').val(),
+                    country_code: $('#country_code option:selected').val(),
+                    server: $('#server').val(),
+                    ip: $('#ip').val(),
+                    ipv6: $('#ipv6').val(),
+                    desc: $('#desc').val(),
+                    method: $('#method').val(),
+                    traffic_rate: $('#traffic_rate').val(),
+                    protocol: $('#protocol').val(),
+                    protocol_param: $('#protocol_param').val(),
+                    obfs: $('#obfs').val(),
+                    obfs_param: $('#obfs_param').val(),
+                    bandwidth: $('#bandwidth').val(),
+                    traffic: $('#traffic').val(),
+                    monitor_url: $('#monitor_url').val(),
+                    is_subscribe: $("input:radio[name='is_subscribe']:checked").val(),
+                    is_ddns: $("input:radio[name='is_ddns']:checked").val(),
+                    is_transit: $("input:radio[name='is_transit']:checked").val(),
+                    ssh_port: $('#ssh_port').val(),
+                    compatible: $("input:radio[name='compatible']:checked").val(),
+                    single: $("input:radio[name='single']:checked").val(),
+                    port: $('#port').val(),
+                    passwd: $('#passwd').val(),
+                    sort: $('#sort').val(),
+                    status: $("input:radio[name='status']:checked").val(),
+                    detectionType: $("input:radio[name='detectionType']:checked").val(),
+                    type: $("input:radio[name='service']:checked").val(),
+                    v2_alter_id: $('#v2_alter_id').val(),
+                    v2_port: $('#v2_port').val(),
+                    v2_method: $("#v2_method option:selected").val(),
+                    v2_net: $('#v2_net').val(),
+                    v2_type: $('#v2_type').val(),
+                    v2_host: $('#v2_host').val(),
+                    v2_path: $('#v2_path').val(),
+                    v2_tls: $("input:radio[name='v2_tls']:checked").val(),
+                    v2_insider_port: $('#v2_insider_port').val(),
+                    v2_outsider_port: $('#v2_outsider_port').val()
                 },
                 dataType: 'json',
                 success: function (ret) {
@@ -569,8 +479,7 @@
 
         // 设置单端口多用户
         $("input:radio[name='single']").on('change', function () {
-            const single = parseInt($(this).val());
-            if (single) {
+            if (parseInt($(this).val())) {
                 $(".single-setting").show();
             } else {
                 $(".single-setting").hide();
@@ -579,8 +488,7 @@
 
         // 设置服务类型
         $("input:radio[name='service']").on('change', function () {
-            const service = parseInt($(this).val());
-            if (service === 1) {
+            if (parseInt($(this).val()) === 1) {
                 $(".ssr-setting").show();
                 $(".v2ray-setting").hide();
             } else {
@@ -589,10 +497,9 @@
             }
         });
 
-        // 设置是否为NAT
-        $("input:radio[name='is_nat']").on('change', function () {
-            const is_nat = parseInt($(this).val());
-            if (is_nat === 1) {
+        // 设置是否使用DDNS
+        $("input:radio[name='is_ddns']").on('change', function () {
+            if (parseInt($(this).val()) === 1) {
                 $("#ip").val("1.1.1.1").attr("readonly", "readonly");
                 $("#server").attr("required", "required");
             } else {

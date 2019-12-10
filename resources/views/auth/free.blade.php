@@ -44,7 +44,7 @@
 	</div>
 	@if(\App\Components\Helpers::systemConfig()['is_invite_register'] && \App\Components\Helpers::systemConfig()['is_free_code'])
 		<div class="mt-20">
-			<button class="btn btn-danger btn-lg float-left" onclick="login()">{{trans('auth.back')}}</button>
+			<a href="/login" class="btn btn-danger btn-lg float-left">{{trans('auth.back')}}</a>
 			<nav class="Page navigation float-right">
 				{{$inviteList->links()}}
 			</nav>

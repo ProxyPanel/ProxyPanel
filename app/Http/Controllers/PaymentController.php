@@ -57,20 +57,11 @@ class PaymentController extends Controller
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：尚有未支付的订单，请先去支付']);
 		}
 
-		// 限购控制
-		$strategy = self::$systemConfig['goods_purchase_limit_strategy'];
-		if($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))){
-			$noneExpireOrderExist = Order::uid()->where('status', '>=', 0)->where('is_expire', 0)->where('goods_id', $goods_id)->exists();
-			if($noneExpireOrderExist){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：商品不可重复购买']);
-			}
-		}
-
 		// 单个商品限购
-		if($goods->is_limit == 1){
-			$noneExpireOrderExist = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->exists();
-			if($noneExpireOrderExist){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：此商品每人限购1次']);
+		if($goods->limit_num){
+			$count = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->count();
+			if($count >= $goods->limit_num){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
 			}
 		}
 
@@ -103,7 +94,7 @@ class PaymentController extends Controller
 
 			foreach($existOrderList as $vo){
 				if($vo->goods->days > $goods->days){
-					return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您已存在有效期更长的套餐，只能购买流量包']);
+					return Response::json(['status' => 'info', 'title' => '套餐冲突', 'message' => '是否将本次套餐存为 【预支付】？套餐会在已有套餐失效后生效，或者您可以手动激活套餐']);
 				}
 			}
 		}
@@ -162,37 +153,37 @@ class PaymentController extends Controller
 			}elseif(self::$systemConfig['is_f2fpay']){
 				// TODO：goods表里增加一个字段用于自定义商品付款时展示的商品名称，
 				// TODO：这里增加一个随机商品列表，根据goods的价格随机取值
-				$result = Charge::run("ali_qr", ['use_sandbox' => FALSE, "partner" => self::$systemConfig['f2fpay_app_id'], 'app_id' => self::$systemConfig['f2fpay_app_id'], 'sign_type' => 'RSA2', 'ali_public_key' => self::$systemConfig['f2fpay_public_key'], 'rsa_private_key' => self::$systemConfig['f2fpay_private_key'], 'notify_url' => self::$systemConfig['website_url']."/api/f2fpay", // 异步回调接口
-				                                 'return_url'  => self::$systemConfig['website_url'], 'return_raw' => FALSE], ['body' => '', 'subject' => self::$systemConfig['f2fpay_subject_name'], 'order_no' => $orderSn, 'amount' => $amount,]);
-			}
+					$result = Charge::run("ali_qr", ['use_sandbox' => FALSE, "partner" => self::$systemConfig['f2fpay_app_id'], 'app_id' => self::$systemConfig['f2fpay_app_id'], 'sign_type' => 'RSA2', 'ali_public_key' => self::$systemConfig['f2fpay_public_key'], 'rsa_private_key' => self::$systemConfig['f2fpay_private_key'], 'notify_url' => self::$systemConfig['website_url']."/api/f2fpay", // 异步回调接口
+					                                 'return_url'  => self::$systemConfig['website_url'], 'return_raw' => FALSE], ['body' => '', 'subject' => self::$systemConfig['f2fpay_subject_name'], 'order_no' => $orderSn, 'amount' => $amount,]);
+				}
 
-			$payment = new Payment();
-			$payment->sn = $sn;
-			$payment->user_id = Auth::user()->id;
-			$payment->oid = $order->oid;
-			$payment->order_sn = $orderSn;
-			$payment->pay_way = 1;
-			$payment->amount = $amount;
-			if(self::$systemConfig['is_youzan']){
-				$payment->qr_id = $result['response']['qr_id'];
-				$payment->qr_url = $result['response']['qr_url'];
-				$payment->qr_code = $result['response']['qr_code'];
-				$payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
-			}elseif(self::$systemConfig['is_alipay']){
-				$payment->qr_code = $result;
-			}elseif(self::$systemConfig['is_f2fpay']){
-				$payment->qr_code = $result;
-				$payment->qr_url = 'http://qr.topscan.com/api.php?text='.$result.'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';
-				$payment->qr_local_url = $payment->qr_url;
-			}
-			$payment->status = 0;
-			$payment->save();
+				$payment = new Payment();
+				$payment->sn = $sn;
+				$payment->user_id = Auth::user()->id;
+				$payment->oid = $order->oid;
+				$payment->order_sn = $orderSn;
+				$payment->pay_way = 1;
+				$payment->amount = $amount;
+				if(self::$systemConfig['is_youzan']){
+					$payment->qr_id = $result['response']['qr_id'];
+					$payment->qr_url = $result['response']['qr_url'];
+					$payment->qr_code = $result['response']['qr_code'];
+					$payment->qr_local_url = $this->base64ImageSaver($result['response']['qr_code']);
+				}elseif(self::$systemConfig['is_alipay']){
+					$payment->qr_code = $result;
+				}elseif(self::$systemConfig['is_f2fpay']){
+					$payment->qr_code = $result;
+					$payment->qr_url = 'http://qr.topscan.com/api.php?text='.$result.'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';
+					$payment->qr_local_url = $payment->qr_url;
+				}
+				$payment->status = 0;
+				$payment->save();
 
-			// 优惠券置为已使用
-			if(!empty($coupon)){
-				if($coupon->usage == 1){
-					$coupon->status = 1;
-					$coupon->save();
+				// 优惠券置为已使用
+				if(!empty($coupon)){
+					if($coupon->usage == 1){
+						$coupon->status = 1;
+						$coupon->save();
 				}
 
 				Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '在线支付使用');

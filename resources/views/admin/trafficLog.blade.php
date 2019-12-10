@@ -18,7 +18,7 @@
 						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-3">
-						<input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}" placeholder="端口"/>
+						<input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}" placeholder="用户端口"/>
 					</div>
 					<div class="form-group col-lg-3 col-sm-5">
 						<select class="form-control" name="nodeId" id="nodeId" onChange="Search()">
@@ -104,11 +104,7 @@
 
         // 搜索
         function Search() {
-            const port = $("#port").val();
-            const user_id = $("#user_id").val();
-            const username = $("#username").val();
-            const nodeId = $("#nodeId option:selected").val();
-            window.location.href = '/admin/trafficLog' + '?port=' + port + '&user_id=' + user_id + '&username=' + username + '&nodeId=' + nodeId;
+            window.location.href = '/admin/trafficLog' + '?port=' + $("#port").val() + '&user_id=' + $("#user_id").val() + '&username=' + $("#username").val() + '&nodeId=' + $("#nodeId option:selected").val();
         }
 	</script>
 @endsection

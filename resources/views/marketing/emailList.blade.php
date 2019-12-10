@@ -82,9 +82,7 @@
         }
 
         function Search() {
-            const status = $("#status option:selected").val();
-
-            window.location.href = "/marketing/emailList?status=" + status;
+            window.location.href = "/marketing/emailList?status=" + $("#status option:selected").val();
         }
 	</script>
 @endsection

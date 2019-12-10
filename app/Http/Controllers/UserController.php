@@ -74,7 +74,7 @@ class UserController extends Controller
 		$view['resetDays'] = $resetDays;
 		$view['unusedTransfer'] = $unusedTransfer;
 		$view['expireTime'] = $expireTime;
-		$view['banedTime'] =  Auth::user()->ban_time != 0? date('Y-m-d H:i:s', Auth::user()->ban_time) : 0;;
+		$view['banedTime'] = Auth::user()->ban_time != 0? date('Y-m-d H:i:s', Auth::user()->ban_time) : 0;;
 		$view['unusedPercent'] = $totalTransfer > 0? round($unusedTransfer/$totalTransfer, 2) : 0;
 		$view['noticeList'] = Article::type(2)->orderBy('id', 'desc')->Paginate(1); // 公告
 		//流量异常判断
@@ -176,82 +176,63 @@ class UserController extends Controller
 		$nodeList = DB::table('ss_node')->selectRaw('ss_node.*')->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')->whereIn('ss_node_label.label_id', $userLabelIds)->where('ss_node.status', 1)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get();
 
 		$allNodes = ''; // 全部节点SSR链接，用于一键复制所有节点
-		foreach($nodeList as &$node){
+		foreach($nodeList as $node){
 			// 获取分组名称
 			$group = SsGroup::query()->where('id', $node->group_id)->first();
-
+			$host = $node->server? : $node->ip;
 			if($node->type == 1){
-				$server = $node->server? : $node->ip;
-				$port = $node->single? $node->single_port : Auth::user()->port;
-				$protocol = $node->single? $node->single_protocol : Auth::user()->protocol;
-				$method = $node->single? $node->single_method : Auth::user()->method;
-				$obfs = $node->single? $node->single_obfs : Auth::user()->obfs;
-				$passwd = $node->single? $node->single_passwd : Auth::user()->passwd;
-				$obfs_param = Auth::user()->obfs_param? Auth::user()->obfs_param : $node->obfs_param;
-				$protocol_param = $node->single? Auth::user()->port.':'.Auth::user()->passwd : Auth::user()->protocol_param;
+				$obfs_param = Auth::user()->obfs_param? : $node->obfs_param;
 				$group = empty($group)? Helpers::systemConfig()['website_name'] : $group->name;
+				if($node->single){
+					$port = $node->port;
+					$protocol = $node->protocol;
+					$method = $node->method;
+					$obfs = $node->obfs;
+					$passwd = $node->passwd;
+					$protocol_param = Auth::user()->port.':'.Auth::user()->passwd;
+				}else{
+					$port = Auth::user()->port;
+					$protocol = Auth::user()->protocol;
+					$method = Auth::user()->method;
+					$obfs = Auth::user()->obfs;
+					$passwd = Auth::user()->passwd;
+					$protocol_param = Auth::user()->protocol_param;
+				}
 
 				// 生成ssr scheme
-				$ssr_str = $server.':'.$port;
-				$ssr_str .= ':'.$protocol.':'.$method;
-				$ssr_str .= ':'.$obfs.':'.base64url_encode($passwd);
-				$ssr_str .= '/?obfsparam='.base64url_encode($obfs_param);
-				$ssr_str .= '&protoparam='.base64url_encode($protocol_param);
-				$ssr_str .= '&remarks='.base64url_encode($node->name);
-				$ssr_str .= '&group='.base64url_encode($group);
-				$ssr_str .= '&udpport=0';
-				$ssr_str .= '&uot=0';
-				$ssr_str = base64url_encode($ssr_str);
-				$ssr_scheme = 'ssr://'.$ssr_str;
-
+				$node->ssr_scheme = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
+				$allNodes .= $node->ssr_scheme.'|';
 				// 生成ss scheme
-				$ss_str = Auth::user()->method.':'.Auth::user()->passwd.'@';
-				$ss_str .= ($node->server? : $node->ip).':'.Auth::user()->port;
-				$ss_str = base64url_encode($ss_str).'#'.'VPN';
-				$ss_scheme = 'ss://'.$ss_str;
+				$node->ss_scheme = $node->compatible? 'ss://'.base64url_encode(Auth::user()->method.':'.Auth::user()->passwd.'@'.$host.':'.Auth::user()->port).'#'.$group : '';
 
 				// 生成文本配置信息
-				$txt = "服务器：".$server.PHP_EOL;
-				if($node->ipv6){
-					$txt .= "IPv6：".$node->ipv6.PHP_EOL;
-				}
-				$txt .= "远程端口：".$port.PHP_EOL;
-				$txt .= "密码：".$passwd.PHP_EOL;
-				$txt .= "加密方法：".$method.PHP_EOL;
-				$txt .= "路由：绕过局域网及中国大陆地址".PHP_EOL.PHP_EOL;
-				$txt .= "协议：".$protocol.PHP_EOL;
-				$txt .= "协议参数：".$protocol_param.PHP_EOL;
-				$txt .= "混淆方式：".$obfs.PHP_EOL;
-				$txt .= "混淆参数：".$obfs_param.PHP_EOL;
-				$txt .= "本地端口：1080".PHP_EOL;
-
-				$node->txt = $txt;
-				$node->ssr_scheme = $ssr_scheme;
-				$node->ss_scheme = $node->compatible? $ss_scheme : ''; // 节点兼容原版才显示
-
-				$allNodes .= $ssr_scheme.'|';
+				$node->txt = "服务器：".$host.PHP_EOL.
+					($node->ipv6? "IPv6：".$node->ipv6.PHP_EOL : '').
+					"远程端口：".$port.PHP_EOL.
+					"密码：".$passwd.PHP_EOL.
+					"加密方法：".$method.PHP_EOL.
+					"路由：绕过局域网及中国大陆地址".PHP_EOL.
+					"协议：".$protocol.PHP_EOL.
+					"协议参数：".$protocol_param.PHP_EOL.
+					"混淆方式：".$obfs.PHP_EOL.
+					"混淆参数：".$obfs_param.PHP_EOL.
+					"本地端口：1080".PHP_EOL;
 			}else{
 				// 生成v2ray scheme
-				$v2_json = ["v" => "2", "ps" => $node->name, "add" => $node->server? : $node->ip, "port" => $node->v2_port, "id" => Auth::user()->vmess_id, "aid" => $node->v2_alter_id, "net" => $node->v2_net, "type" => $node->v2_type, "host" => $node->v2_host, "path" => $node->v2_path, "tls" => $node->v2_tls == 1? "tls" : ""];
-				$v2_scheme = 'vmess://'.base64_encode(json_encode($v2_json, JSON_PRETTY_PRINT));
+				$node->v2_scheme = 'vmess://'.base64_encode(json_encode(["v" => "2", "ps" => $node->name, "add" => $node->server? : $node->ip, "port" => $node->v2_port, "id" => Auth::user()->vmess_id, "aid" => $node->v2_alter_id, "net" => $node->v2_net, "type" => $node->v2_type, "host" => $node->v2_host, "path" => $node->v2_path, "tls" => $node->v2_tls == 1? "tls" : ""], JSON_PRETTY_PRINT));
 
 				// 生成文本配置信息
-				$txt = "服务器：".$node->server? : $node->ip.PHP_EOL;
-				if($node->ipv6){
-					$txt .= "IPv6：".$node->ipv6.PHP_EOL;
-				}
-				$txt .= "端口：".$node->v2_port.PHP_EOL;
-				$txt .= "加密方式：".$node->v2_method.PHP_EOL;
-				$txt .= "用户ID：".Auth::user()->vmess_id.PHP_EOL;
-				$txt .= "额外ID：".$node->v2_alter_id.PHP_EOL;
-				$txt .= "传输协议：".$node->v2_net.PHP_EOL;
-				$txt .= "伪装类型：".$node->v2_type.PHP_EOL;
-				$txt .= $node->v2_host? "伪装域名：".$node->v2_host.PHP_EOL : "";
-				$txt .= $node->v2_path? "路径：".$node->v2_path.PHP_EOL : "";
-				$txt .= $node->v2_tls? "TLS：tls".PHP_EOL : "";
-
-				$node->txt = $txt;
-				$node->v2_scheme = $v2_scheme;
+				$node->txt = "服务器：".$host.PHP_EOL.
+					($node->ipv6? "IPv6：".$node->ipv6.PHP_EOL : '').
+					"端口：".$node->v2_port.PHP_EOL.
+					"加密方式：".$node->v2_method.PHP_EOL.
+					"用户ID：".Auth::user()->vmess_id.PHP_EOL.
+					"额外ID：".$node->v2_alter_id.PHP_EOL.
+					"传输协议：".$node->v2_net.PHP_EOL.
+					"伪装类型：".$node->v2_type.PHP_EOL.
+					($node->v2_host? "伪装域名：".$node->v2_host.PHP_EOL : "").
+					($node->v2_path? "路径：".$node->v2_path.PHP_EOL : "").
+					($node->v2_tls? "TLS：tls".PHP_EOL : "");
 			}
 
 			// 节点在线状态
@@ -343,8 +324,31 @@ class UserController extends Controller
 		// 余额充值商品，只取10个
 		$view['chargeGoodsList'] = Goods::type(3)->where('status', 1)->orderBy('price', 'asc')->orderBy('price', 'asc')->limit(10)->get();
 		$view['goodsList'] = Goods::query()->where('status', 1)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
+		$temp = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
+		$view['renewTraffic'] = $temp? Goods::query()->where('id', $temp->goods_id)->first()->renew : 0;
+
 
 		return Response::view('user.services', $view);
+	}
+
+	//重置流量
+	public function resetUserTraffic(Request $request)
+	{
+		$temp = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
+		$renewCost = Goods::query()->where('id', $temp->goods_id)->first()->renew;
+		if(Auth::user()->balance < $renewCost){
+			return Response::json(['status' => 'fail', 'data' => '', 'message' => '余额不足，请充值余额']);
+		}else{
+			User::uid()->update(['u' => 0, 'd' => 0]);
+
+			// 扣余额
+			User::query()->where('id', Auth::user()->id)->decrement('balance', $renewCost*100);
+
+			// 记录余额操作日志
+			$this->addUserBalanceLog(Auth::user()->id, '', Auth::user()->balance, Auth::user()->balance-$renewCost, -1*$renewCost, '用户自行重置流量');
+
+			return Response::json(['status' => 'success', 'data' => '', 'message' => '重置成功']);
+		}
 	}
 
 	// 工单
@@ -394,9 +398,9 @@ class UserController extends Controller
 			$content = "标题：【".$title."】<br>用户：".Auth::user()->username."<br>内容：".$content;
 
 			// 发邮件通知管理员
-			if(self::$systemConfig['crash_warning_email']){
-				$logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $emailTitle, $content);
-				Mail::to(self::$systemConfig['crash_warning_email'])->send(new newTicket($logId, $emailTitle, $content));
+			if(self::$systemConfig['webmaster_email']){
+				$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $emailTitle, $content);
+				Mail::to(self::$systemConfig['webmaster_email'])->send(new newTicket($logId, $emailTitle, $content));
 			}
 
 			ServerChan::send($emailTitle, $content);
@@ -442,9 +446,9 @@ class UserController extends Controller
 				$content = "标题：【".$ticket->title."】<br>用户回复：".$content;
 
 				// 发邮件通知管理员
-				if(self::$systemConfig['crash_warning_email']){
-					$logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
-					Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($logId, $title, $content));
+				if(self::$systemConfig['webmaster_email']){
+					$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
+					Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
 				}
 
 				ServerChan::send($title, $content);
@@ -480,7 +484,7 @@ class UserController extends Controller
 	public function invite(Request $request)
 	{
 		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty()){
-			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返回</a>']);
+			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
 		// 已生成的邀请码数量
 		$num = Invite::uid()->count();
@@ -517,25 +521,28 @@ class UserController extends Controller
 	public function redeemCoupon(Request $request)
 	{
 		$coupon_sn = $request->input('coupon_sn');
+		$good_price = $request->input('price');
 
 		if(empty($coupon_sn)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不能为空']);
+			return Response::json(['status' => 'fail', 'title' => '使用失败', 'message' => '请输入您的优惠劵！']);
 		}
 
 		$coupon = Coupon::query()->where('sn', $coupon_sn)->whereIn('type', [1, 2])->first();
 		if(!$coupon){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券不存在']);
+			return Response::json(['status' => 'fail', 'title' => '优惠券不存在', 'message' => '请确认优惠券是否输入正确！']);
 		}elseif($coupon->status == 1){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已使用，请换一个试试']);
+			return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已被使用！']);
 		}elseif($coupon->status == 2){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已失效，请换一个试试']);
+			return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已失效！']);
 		}elseif($coupon->available_end < time()){
 			$coupon->status = 2;
 			$coupon->save();
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券已失效，请换一个试试']);
+			return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已失效！']);
 		}elseif($coupon->available_start > time()){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该优惠券尚不可用，请换一个试试']);
+			return Response::json(['status' => 'fail', 'title' => '优惠券尚未生效', 'message' => '请等待活动正式开启']);
+		}elseif($good_price < $coupon->rule){
+			return Response::json(['status' => 'fail', 'title' => '使用条件未满足', 'message' => '请购买价格更高的套餐']);
 		}
 
 		$data = ['name' => $coupon->name, 'type' => $coupon->type, 'amount' => $coupon->amount, 'discount' => $coupon->discount];
@@ -554,20 +561,11 @@ class UserController extends Controller
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
 			}
 
-			// 限购控制：all-所有商品限购, free-价格为0的商品限购, none-不限购（默认）
-			$strategy = self::$systemConfig['goods_purchase_limit_strategy'];
-			if($strategy == 'all' || ($strategy == 'package' && $goods->type == 2) || ($strategy == 'free' && $goods->price == 0) || ($strategy == 'package&free' && ($goods->type == 2 || $goods->price == 0))){
-				$noneExpireGoodExist = Order::uid()->where('status', '>=', 0)->where('is_expire', 0)->where('goods_id', $goods_id)->exists();
-				if($noneExpireGoodExist){
-					return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品不可重复购买']);
-				}
-			}
-
-			// 单个商品限购
-			if($goods->is_limit == 1){
-				$noneExpireOrderExist = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->exists();
-				if($noneExpireOrderExist){
-					return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：此商品每人限购1次']);
+			// 商品限购
+			if($goods->limit_num){
+				$count = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->count();
+				if($count >= $goods->limit_num){
+					return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
 				}
 			}
 
@@ -587,12 +585,12 @@ class UserController extends Controller
 
 			// 价格异常判断
 			if($amount < 0){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：订单总价异常']);
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单总价异常']);
 			}
 
 			// 验证账号余额是否充足
 			if(Auth::user()->balance < $amount){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您的余额不足，请先充值']);
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '您的余额不足，请先充值']);
 			}
 
 			// 验证账号是否存在有效期更长的套餐
@@ -603,7 +601,7 @@ class UserController extends Controller
 
 				foreach($existOrderList as $vo){
 					if($vo->goods->days > $goods->days){
-						return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：您已存在有效期更长的套餐，只能购买流量包']);
+						return Response::json(['status' => 'info', 'title' => '套餐冲突', 'message' => '是否将本次套餐存为 【预支付】？套餐会在已有套餐失效后生效，或者您可以手动激活套餐']);
 					}
 				}
 			}
@@ -683,8 +681,7 @@ class UserController extends Controller
 
 				// 套餐就改流量重置日，流量包不改
 				if($goods->type == 2){
-					$traffic_reset_day = date('d');
-					User::query()->uid()->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
+					User::query()->uid()->update(['traffic_reset_day' => date('d'), 'expire_time' => $expireTime, 'enable' => 1]);
 				}else{
 					User::query()->uid()->update(['expire_time' => $expireTime, 'enable' => 1]);
 				}
@@ -750,7 +747,7 @@ class UserController extends Controller
 	public function referral(Request $request)
 	{
 		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty()){
-			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返回</a>']);
+			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
 		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic']*1048576);
 		$view['referral_percent'] = self::$systemConfig['referral_percent'];

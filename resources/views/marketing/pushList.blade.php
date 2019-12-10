@@ -128,9 +128,7 @@
 	<script type="text/javascript">
         // 发送通道消息
         function send() {
-            const _token = '{{csrf_token()}}';
             const title = $("#title").val();
-            const content = $("#content").val();
 
             if (title.trim() === '') {
                 $("#msg").show().html("标题不能为空");
@@ -141,7 +139,7 @@
             $.ajax({
                 url: '/marketing/addPushMarketing',
                 type: "POST",
-                data: {_token: _token, title: title, content: content},
+                data: {_token: '{{csrf_token()}}', title: title, content: $("#content").val()},
                 beforeSend: function () {
                     $("#msg").show().html("正在添加...");
                 },
@@ -168,8 +166,7 @@
         });
 
         function Search() {
-            const status = $("#status").val();
-            window.location.href = "/marketing/pushList?status=" + status;
+            window.location.href = "/marketing/pushList?status=" + $("#status").val();
         }
 	</script>
 @endsection

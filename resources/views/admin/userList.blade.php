@@ -94,11 +94,8 @@
 								<td> {{$user->username}} </td>
 								<td> {{$user->balance}} </td>
 								<td>
-									@if ($user->port)
-										{{$user->port}}
-									@else
-										<span class="badge badge-lg badge-danger"> 未分配 </span>
-									@endif</td>
+									{!!$user->port? : '<span class="badge badge-lg badge-danger"> 未分配 </span>'!!}
+								</td>
 								<td>
 									<a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{$user->link}}">{{$user->subscribe->code}}</a>
 								</td>
@@ -131,11 +128,11 @@
 								<td>
 									<div class="btn-group">
 										<a href="/admin/editUser/{{$user->id}}{{Request::getQueryString()? '?'.Request::getQueryString() : ''}}" class="btn btn-primary"><i class="icon wb-edit" aria-hidden="true"></i></a>
-										<a href="javascript:delUser('{{$user->id}}');" class="btn btn-danger"><i class="icon wb-trash" aria-hidden="true"></i></a>
+										<a href="javascript:delUser('{{$user->id}}','{{$user->username}}');" class="btn btn-danger"><i class="icon wb-trash" aria-hidden="true"></i></a>
 										<a href="/admin/export/{{$user->id}}" class="btn btn-primary"><i class="icon wb-code" aria-hidden="true"></i></a>
 										<a href="/admin/userMonitor/{{$user->id}}" class="btn btn-primary"><i class="icon wb-stats-bars" aria-hidden="true"></i></a>
 										<a href="/admin/onlineIPMonitor?id={{$user->id}}" class="btn btn-primary"><i class="icon wb-cloud" aria-hidden="true"></i></a>
-										<a href="javascript:resetTraffic('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-reload" aria-hidden="true"></i></a>
+										<a href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}');" class="btn btn-primary"><i class="icon wb-reload" aria-hidden="true"></i></a>
 										<a href="javascript:switchToUser('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-user" aria-hidden="true"></i></a>
 									</div>
 								</td>
@@ -209,22 +206,14 @@
 
         // 搜索
         function Search() {
-            const id = $("#id").val();
-            const username = $("#username").val();
-            const wechat = $("#wechat").val();
-            const qq = $("#qq").val();
-            const port = $("#port").val();
-            const pay_way = $("#pay_way option:selected").val();
-            const status = $("#status option:selected").val();
-            const enable = $("#enable option:selected").val();
-            window.location.href = '/admin/userList' + '?id=' + id + '&username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port + '&pay_way=' + pay_way + '&status=' + status + '&enable=' + enable;
+            window.location.href = '/admin/userList' + '?id=' + $("#id").val() + '&username=' + $("#username").val() + '&wechat=' + $("#wechat").val() + '&qq=' + $("#qq").val() + '&port=' + $("#port").val() + '&pay_way=' + $("#pay_way option:selected").val() + '&status=' + $("#status option:selected").val() + '&enable=' + $("#enable option:selected").val();
         }
 
         // 删除账号
-        function delUser(id) {
+        function delUser(id, username) {
             swal.fire({
                 title: '警告',
-                text: '确定删除账号？',
+                text: '确定删除用户 【' + username + '】 ？',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -244,10 +233,10 @@
         }
 
         // 重置流量
-        function resetTraffic(id) {
+        function resetTraffic(id, username) {
             swal.fire({
                 title: '警告',
-                text: '确定重置该用户流量吗？',
+                text: '确定重置 【' + username + '】 流量吗？',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',

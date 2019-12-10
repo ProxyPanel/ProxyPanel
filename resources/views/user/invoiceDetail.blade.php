@@ -9,7 +9,7 @@
 				<div class="row">
 					<div class="col-lg-3">
 						<h3>
-							<img src="{{\App\Components\Helpers::systemConfig()['website_logo']?\App\Components\Helpers::systemConfig()['website_logo']:'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
+							<img src="{{\App\Components\Helpers::systemConfig()['website_logo']? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
 							{{\App\Components\Helpers::systemConfig()['website_name']}}
 						</h3>
 					</div>

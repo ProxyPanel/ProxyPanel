@@ -41,7 +41,7 @@
 								<td>
 									<div class="btn-group">
 										<a href="/admin/editLabel?id={{$label->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-										<button class="btn btn-danger" onclick="delLabel('{{$label->id}}')"><i class="icon wb-trash"></i></button>
+										<button class="btn btn-danger" onclick="delLabel('{{$label->id}}','{{$label->name}}')"><i class="icon wb-trash"></i></button>
 									</div>
 								</td>
 							</tr>
@@ -70,10 +70,10 @@
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
         // 删除标签
-        function delLabel(id) {
+        function delLabel(id, name) {
             swal.fire({
                 title: '警告',
-                text: '确定删除标签?',
+                text: '确定删除标签 【' + name + '】 ?',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',

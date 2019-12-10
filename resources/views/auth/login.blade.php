@@ -1,21 +1,5 @@
 @extends('auth.layouts')
 @section('title', trans('auth.login'))
-@section('css')
-	<style type="text/css">
-		@media screen and (max-height: 575px) {
-			.g-recaptcha {
-				-webkit-transform: scale(0.81);
-				transform: scale(0.81);
-				-webkit-transform-origin: 0 0;
-				transform-origin: 0 0;
-			}
-		}
-
-		.geetest_holder.geetest_wind {
-			min-width: 245px !important;
-		}
-	</style>
-@endsection
 @section('content')
 	<form action="/login" method="post" id="login-form">
 		@if($errors->any())
@@ -36,9 +20,9 @@
 			<label class="floating-label" for="username">{{trans('auth.username')}}</label>
 		</div>
 		<div class="form-group form-material floating" data-plugin="formMaterial">
-			<input type="password" class="form-control" name="password" value="{{Request::old('password')}}" required/>
+			<input type="password" class="form-control" name="password" value="{{Request::old('password')}}" autocomplete required/>
 			<label class="floating-label" for="password">{{trans('auth.password')}}</label>
-			<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+			{{csrf_field()}}
 		</div>
 		@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
 			@case(1)<!-- Default Captcha -->
@@ -67,12 +51,12 @@
 				<input type="checkbox" id="inputCheckbox" name="remember">
 				<label for="inputCheckbox" for="remember">{{trans('auth.remember')}}</label>
 			</div>
-			<a class="float-right" href="/resetPassword">{{trans('auth.forget_password')}}</a>
+			<a href="/resetPassword" class="btn btn-xs bg-red-500 text-white float-right">{{trans('auth.forget_password')}}</a>
 		</div>
-		<button type="submit" class="btn btn-primary btn-block btn-lg mt-40">{{trans('auth.login')}}</button>
+		<button type="submit" class="btn btn-lg btn-block mt-40 bg-indigo-500 text-white">{{trans('auth.login')}}</button>
 	</form>
 	@if(\App\Components\Helpers::systemConfig()['is_register'])
-		<p>{{trans('auth.register_tip')}} <a href="/register">{{trans('auth.register')}}</a></p>
+		<p>{{trans('auth.register_tip')}} <a href="/register" class="btn btn-xs bg-purple-500 text-white">{{trans('auth.register')}} <i class="icon wb-arrow-right" aria-hidden="true"></i></a></p>
 	@endif
 @endsection
 @section('script')

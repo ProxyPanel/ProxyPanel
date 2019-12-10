@@ -42,7 +42,7 @@
 								<i class="wb-close red-400 font-size-40 mr-10"></i>
 								<span class="font-size-40 font-weight-100">{{trans('home.disabled')}}</span>
 								<p class="font-weight-300 m-0 red-500">{{trans('home.reason_traffic_exhausted')}}</p>
-							@elseif($isTrafficWarning || $banTime != 0)
+							@elseif($isTrafficWarning || $banedTime != 0)
 								<i class="wb-alert orange-400 font-size-40 mr-10"></i>
 								<span class="font-size-40 font-weight-100">{{trans('home.limited')}}</span>
 								<p class="font-weight-300 m-0 orange-500">{!!trans('home.reason_overused', ['data'=>\App\Components\Helpers::systemConfig()['traffic_ban_value']])!!}</p>
@@ -143,8 +143,7 @@
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
 								@endif
 								@if($not_paying_user)
-									<p class="card-link btn btn-outline btn-primary">
-										<i class="wb-lock mr-5"></i>购买套餐后解锁 用户交流群信息</p>
+									<p class="card-link btn btn-sm btn-primary"><i class="wb-lock mr-5"></i>购买服务后解锁</p>
 								@else
 									<div class="btn-group">
 										<a class="card-link btn btn-sm btn-pill-left btn-info" href="https://jq.qq.com/?_wv=1027&k=52AI188" target="_blank" rel="noopener">
@@ -156,20 +155,21 @@
 							</div>
 						</div>
 					</div>
+					<!--
 					<div class="col-xl-4 col-lg-6 pb-30">
-						{{--                        <div class="card card-shadow">--}}
-						{{--                            <div class="card-block p-20">--}}
-						{{--                                <h4 class="card-title"><i class="wb-info-circle blue-600 mr-10"></i>账号信息</h4>--}}
-						{{--                                <!--  TO Do--}}
-						{{--                                 添加 权限 信息--}}
-						{{--                                 添加 账号 总流量 信息--}}
-						{{--                                 -->--}}
-						{{--                            </div>--}}
-						{{--                        </div>--}}
+						<div class="card card-shadow">
+							<div class="card-block p-20">
+								<h4 class="card-title"><i class="wb-info-circle blue-600 mr-10"></i>账号信息</h4>
+								  TO Do
+								 添加 权限 信息
+								 添加 账号 总流量 信息
+							</div>
+						</div>
 					</div>
+					-->
 				</div>
 				<div class="row" data-plugin="matchHeight" data-by-row="true">
-					<div class="col-xxl-6">
+					<div class="col-xxl-6 mb-35">
 						<div class="panel panel-info panel-line h-full">
 							<div class="panel-heading">
 								<h2 class="panel-title"><i class="wb-volume-high mr-10"></i>{{trans('home.announcement')}}
@@ -371,7 +371,7 @@
             const distance = countDownDate - new Date().getTime();
             const minutes = Math.floor((distance % 3600000) / 60000);
             const seconds = Math.floor((distance % 60000) / 1000);
-            document.getElementById("countdown").innerHTML = hours + "时 " + minutes + "分 " + seconds + "秒";
+            document.getElementById("countdown").innerHTML = minutes + "分 " + seconds + "秒";
             if (distance <= 0) {
                 clearInterval(x);
                 window.location.reload();

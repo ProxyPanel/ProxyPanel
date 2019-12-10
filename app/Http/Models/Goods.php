@@ -40,6 +40,16 @@ class Goods extends Model
 		$this->attributes['price'] = $value*100;
 	}
 
+	function getRenewAttribute($value)
+	{
+		return $value/100;
+	}
+
+	function setRenewAttribute($value)
+	{
+		return $this->attributes['renew'] = $value*100;
+	}
+
 	function getTrafficLabelAttribute()
 	{
 		$traffic_label = flowAutoShow($this->attributes['traffic']*1048576);

@@ -50,30 +50,18 @@
 									<tr>
 										<td> {{$invite->id}} </td>
 										<td>
-											<a href="/register?code={{$invite->code}}" target="_blank">{{$invite->code}}</a>
+											<a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{url('/register?code='.$invite->code)}}">{{$invite->code}}</a>
 										</td>
 										<td> {{$invite->dateline}} </td>
 										<td>
-											@if($invite->uid == '0')
-												系统生成
-											@else
-												{{empty($invite->generator) ? '【账号已删除】' : $invite->generator->username}}
-											@endif
+											{{$invite->uid == 0 ? '系统生成' : (empty($invite->generator) ? '【账号已删除】' : $invite->generator->username)}}
 										</td>
 										<td>
-											@if($invite->status == '0')
-												<span class="badge badge-success">{{trans('home.invite_code_table_status_un')}}</span>
-											@elseif($invite->status == '1')
-												<span class="badge badge-danger">{{trans('home.invite_code_table_status_yes')}}</span>
-											@else
-												<span class="badge badge-default">{{trans('home.invite_code_table_status_expire')}}</span>
-											@endif
+											{!!$invite->status_label!!}
 										</td>
-										@if($invite->status == '1')
-											<td> {{empty($invite->user) ? '【账号已删除】' : $invite->user->username}} </td>
-										@else
-											<td></td>
-										@endif
+										<td>
+											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->username) : ''}}
+										</td>
 									</tr>
 								@endforeach
 							@endif
@@ -99,6 +87,7 @@
 
 @endsection
 @section('script')
+	<script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -138,5 +127,23 @@
                 }
             });
         }
+
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function () {
+            swal.fire({
+                title: '复制成功',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false
+            });
+        });
+        clipboard.on('error', function () {
+            swal.fire({
+                title: '复制失败，请手动复制',
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        });
 	</script>
 @endsection
