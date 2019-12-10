@@ -1,1 +1,2 @@
-ALTER TABLE `coupon` CHANGE `sn` `sn` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '优惠券码';
+ALTER TABLE `coupon`
+    CHANGE `sn` `sn` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '优惠券码';

@@ -51,7 +51,7 @@
 						<div class="col-md-4">
 							<input type="text" class="form-control" name="title" id="title" value="{{$article->title}}" autofocus required/>
 							<input type="hidden" name="id" value="{{$article->id}}"/>
-							<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+							{{csrf_field()}}
 						</div>
 					</div>
 					@if($article->type == 1)
@@ -76,7 +76,7 @@
 							<label class="col-form-label col-md-2" for="logo">LOGO/图标</label>
 							@if($article->type == 1)
 								<div class="col-md-4">
-									<input type="file" name="logo" id="logo" data-plugin="dropify" data-default-file=@if($article->logo) {{$article->logo}} @else /assets/images/noimage.png @endif />
+									<input type="file" name="logo" id="logo" data-plugin="dropify" data-default-file={{$article->logo?:'/assets/images/noimage.png'}} />
 									<span class="text-help"> 推荐尺寸：100x75 </span>
 								</div>
 							@else
@@ -100,8 +100,8 @@
 					</div>
 					<div class="form-actions text-right">
 						<div class="btn-group">
-							<a href="/admin/articleList" class="btn btn-danger">返回</a>
-							<button type="submit" class="btn btn-success">提交</button>
+							<a href="/admin/articleList" class="btn btn-danger">返 回</a>
+							<button type="submit" class="btn btn-success">提 交</button>
 						</div>
 					</div>
 				</form>

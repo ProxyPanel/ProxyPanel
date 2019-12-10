@@ -47,7 +47,8 @@ return [
 	'email_null'                 => '请输入邮箱账号',
 	'email_normal'               => '账号状态正常，无需激活',
 	'email_legitimate'           => '邮箱地址不合规',
-	'email_banned'               => '邮箱含有敏感词，请使用其他有效邮箱',
+	'email_banned'               => '本站屏蔽了您使用的邮箱服务商，请使用其他有效邮箱',
+	'email_invalid'              => '使用邮箱不在本站支持邮箱列表内',
 	'email_exist'                => '账号已存在，如果忘记密码请找回密码',
 	'email_notExist'             => '账号不存在，请重试',
 	'login_error'                => '邮箱或密码错误',
@@ -67,5 +68,6 @@ return [
 	'rest_password_same_fail'    => '新旧密码一样，请重新输入',
 	'rest_password_fail'         => '重设密码失败',
 	'reset_password_new'         => '新密码设置成功，请自行登录',
-	'request_error'              => '请求异常，请刷新页面后重试'
+	'request_error'              => '请求异常，请刷新页面后重试',
+	'unaccepted'                 => '请阅读用户条款和可接受使用条款，并同意'
 ];

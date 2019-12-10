@@ -23,7 +23,7 @@ class UserSubscribe extends Model
 		return $query->where('user_id', Auth::user()->id);
 	}
 
-	function User()
+	function user()
 	{
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}

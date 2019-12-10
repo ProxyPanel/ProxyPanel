@@ -103,11 +103,7 @@
 
         // 搜索
         function Search() {
-            const trade_no = $("#trade_no").val();
-            const out_trade_no = $("#out_trade_no").val();
-            const type = $("#type option:selected").val();
-            const trade_status = $("#trade_status option:selected").val();
-            window.location.href = '/payment/callbackList?out_trade_no=' + out_trade_no + '&trade_no=' + trade_no + '&type=' + type + '&trade_status=' + trade_status;
+            window.location.href = '/payment/callbackList?out_trade_no=' + $("#trade_no").val() + '&trade_no=' + $("#out_trade_no").val() + '&type=' + $("#type option:selected").val() + '&trade_status=' + $("#trade_status option:selected").val();
         }
 	</script>
 @endsection

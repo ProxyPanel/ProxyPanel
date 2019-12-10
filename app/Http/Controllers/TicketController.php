@@ -75,9 +75,9 @@ class TicketController extends Controller
 
 				// 发通知邮件
 				if(!Auth::user()->is_admin){
-					if(self::$systemConfig['crash_warning_email']){
-						$logId = Helpers::addEmailLog(self::$systemConfig['crash_warning_email'], $title, $content);
-						Mail::to(self::$systemConfig['crash_warning_email'])->send(new replyTicket($logId, $title, $content));
+					if(self::$systemConfig['webmaster_email']){
+						$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
+						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
 					}
 				}else{
 					$logId = Helpers::addEmailLog($ticket->user->username, $title, $content);

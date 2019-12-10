@@ -325,31 +325,6 @@
 
         // ajax同步提交
         function Submit() {
-            const _token = '{{csrf_token()}}';
-            const username = $('#username').val();
-            const password = $('#password').val();
-            const pay_way = $("input:radio[name='pay_way']:checked").val();
-            const status = $("input:radio[name='status']:checked").val();
-            const labels = $('#labels').val();
-            const enable_time = $('#enable_time').val();
-            const expire_time = $('#expire_time').val();
-            const wechat = $('#wechat').val();
-            const qq = $('#qq').val();
-            const remark = $('#remark').val();
-            const level = $("#level option:selected").val();
-            const port = $('#port').val();
-            const passwd = $('#passwd').val();
-            const method = $('#method').val();
-            const transfer_enable = $('#transfer_enable').val();
-            const enable = $("input:radio[name='enable']:checked").val();
-            const protocol = $('#protocol').val();
-            const protocol_param = $('#protocol_param').val();
-            const obfs = $('#obfs').val();
-            const obfs_param = $('#obfs_param').val();
-            const speed_limit_per_con = $('#speed_limit_per_con').val();
-            const speed_limit_per_user = $('#speed_limit_per_user').val();
-            const vmess_id = $('#vmess_id').val();
-
             // 用途
             let usage = '';
             $.each($("input:checkbox[name='usage']"), function () {
@@ -357,39 +332,37 @@
                     usage += $(this).val() + ',';
                 }
             });
-            usage = usage.substring(0, usage.length - 1);
 
             $.ajax({
                 type: "POST",
                 url: "/admin/addUser",
                 async: false,
                 data: {
-                    _token: _token,
-                    username: username,
-                    password: password,
-                    usage: usage,
-                    pay_way: pay_way,
-                    status: status,
-                    labels: labels,
-                    enable_time: enable_time,
-                    expire_time: expire_time,
-                    expire_time: expire_time,
-                    wechat: wechat,
-                    qq: qq,
-                    remark: remark,
-                    level: level,
-                    port: port,
-                    passwd: passwd,
-                    method: method,
-                    transfer_enable: transfer_enable,
-                    enable: enable,
-                    protocol: protocol,
-                    protocol_param: protocol_param,
-                    obfs: obfs,
-                    obfs_param: obfs_param,
-                    speed_limit_per_con: speed_limit_per_con,
-                    speed_limit_per_user: speed_limit_per_user,
-                    vmess_id: vmess_id
+                    _token: '{{csrf_token()}}',
+                    username: $('#username').val(),
+                    password: $('#password').val(),
+                    usage: usage.substring(0, usage.length - 1),
+                    pay_way: $("input:radio[name='pay_way']:checked").val(),
+                    status: $("input:radio[name='status']:checked").val(),
+                    labels: $('#labels').val(),
+                    enable_time: $('#enable_time').val(),
+                    expire_time: $('#expire_time').val(),
+                    wechat: $('#wechat').val(),
+                    qq: $('#qq').val(),
+                    remark: $('#remark').val(),
+                    level: $("#level option:selected").val(),
+                    port: $('#port').val(),
+                    passwd: $('#passwd').val(),
+                    method: $('#method').val(),
+                    transfer_enable: $('#transfer_enable').val(),
+                    enable: $("input:radio[name='enable']:checked").val(),
+                    protocol: $('#protocol').val(),
+                    protocol_param: $('#protocol_param').val(),
+                    obfs: $('#obfs').val(),
+                    obfs_param: $('#obfs_param').val(),
+                    speed_limit_per_con: $('#speed_limit_per_con').val(),
+                    speed_limit_per_user: $('#speed_limit_per_user').val(),
+                    vmess_id: $('#vmess_id').val()
                 },
                 dataType: 'json',
                 success: function (ret) {

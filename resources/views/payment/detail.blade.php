@@ -52,9 +52,7 @@
 
         // 检查支付单状态
         function getStatus() {
-            var sn = '{{$payment->sn}}';
-
-            $.get("/payment/getStatus", {sn: sn}, function (ret) {
+            $.get("/payment/getStatus", {sn: '{{$payment->sn}}'}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false})
                         .then(() => window.location.href = '/invoices')

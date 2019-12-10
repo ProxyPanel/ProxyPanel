@@ -6,6 +6,7 @@ use App\Components\Helpers;
 use App\Components\IPIP;
 use App\Components\QQWry;
 use App\Http\Models\Invite;
+use App\Http\Models\SensitiveWords;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Http\Models\UserLoginLog;
@@ -150,6 +151,7 @@ class AuthController extends Controller
 				'username'   => 'required|email|unique:user',
 				'password'   => 'required|min:6',
 				'repassword' => 'required|same:password',
+				'term'       => 'accepted'
 			], [
 				'username.required'   => trans('auth.email_null'),
 				'username.email'      => trans('auth.email_legitimate'),
@@ -157,7 +159,8 @@ class AuthController extends Controller
 				'password.required'   => trans('auth.password_null'),
 				'password.min'        => trans('auth.password_limit'),
 				'repassword.required' => trans('auth.retype_password'),
-				'repassword.same'     => trans('auth.password_same')
+				'repassword.same'     => trans('auth.password_same'),
+				'term.accepted'       => trans('auth.unaccepted')
 			]);
 
 			// 防止重复提交
@@ -172,11 +175,20 @@ class AuthController extends Controller
 				return Redirect::back()->withErrors(trans('auth.register_close'));
 			}
 
-			// 校验域名邮箱是否在敏感词中
-			$sensitiveWords = $this->sensitiveWords();
-			$usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
-			if(in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
-				return Redirect::back()->withInput()->withErrors(trans('auth.email_banned'));
+			// 校验域名邮箱黑白名单
+			if(self::$systemConfig['sensitiveType']){
+				// 校验域名邮箱是否在黑名单中
+				$sensitiveWords = $this->sensitiveWords(1);
+				$usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
+				if(in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+					return Redirect::back()->withInput()->withErrors(trans('auth.email_banned'));
+				}
+			}else{
+				$sensitiveWords = $this->sensitiveWords(2);
+				$usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
+				if(!in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+					return Redirect::back()->withInput()->withErrors(trans('auth.email_invalid'));
+				}
 			}
 
 			// 如果需要邀请注册
@@ -357,9 +369,10 @@ class AuthController extends Controller
 
 			return Redirect::to('login')->withInput();
 		}else{
+			$view['emailList'] = self::$systemConfig['sensitiveType']? NULL : SensitiveWords::query()->where('type', 2)->get();
 			Session::put('register_token', makeRandStr(16));
 
-			return Response::view('auth.register');
+			return Response::view('auth.register', $view);
 		}
 	}
 
@@ -606,11 +619,20 @@ class AuthController extends Controller
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
 		}
 
-		// 校验域名邮箱是否在敏感词中
-		$sensitiveWords = $this->sensitiveWords();
-		$usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
-		if(in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_banned')]);
+		// 校验域名邮箱黑白名单
+		if(self::$systemConfig['sensitiveType']){
+			// 校验域名邮箱是否在黑名单中
+			$sensitiveWords = $this->sensitiveWords(1);
+			$usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
+			if(in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_banned')]);
+			}
+		}else{
+			$sensitiveWords = $this->sensitiveWords(2);
+			$usernameSuffix = explode('@', $request->username); // 提取邮箱后缀
+			if(!in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_invalid')]);
+			}
 		}
 
 		// 是否开启注册发送验证码

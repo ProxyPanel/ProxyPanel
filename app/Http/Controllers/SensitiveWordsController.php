@@ -39,6 +39,7 @@ class SensitiveWordsController extends Controller
 		}
 
 		$obj = new SensitiveWords();
+		$obj->type = $request->type;
 		$obj->words = strtolower($request->words);
 		$obj->save();
 		if($obj->id){

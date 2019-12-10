@@ -116,9 +116,7 @@
 
         // 搜索
         function Search() {
-            const username = $("#username").val();
-            const status = $("#status option:selected").val();
-            window.location.href = '/admin/applyList?username=' + username + '&status=' + status;
+            window.location.href = '/admin/applyList?username=' + $("#username").val() + '&status=' + $("#status option:selected").val();
         }
 
         // 更改状态

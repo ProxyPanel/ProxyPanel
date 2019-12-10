@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @package App\Http\Models
  * @mixin Eloquent
+ * @property-read mixed $status_label
  */
 class Invite extends Model
 {
@@ -35,6 +36,25 @@ class Invite extends Model
 	function user()
 	{
 		return $this->hasOne(User::class, 'id', 'fuid');
+	}
+
+	function getStatusLabelAttribute()
+	{
+		switch($this->attributes['status']){
+			case 0:
+				$status_label = '<span class="badge badge-success">'.trans('home.invite_code_table_status_un').'</span>';
+				break;
+			case 1:
+				$status_label = '<span class="badge badge-danger">'.trans('home.invite_code_table_status_yes').'</span>';
+				break;
+			case 2:
+				$status_label = '<span class="badge badge-default">'.trans('home.invite_code_table_status_expire').'</span>';
+				break;
+			default:
+				$status_label = '<span class="badge badge-default"> 未知 </span>';
+		}
+
+		return $status_label;
 	}
 
 }

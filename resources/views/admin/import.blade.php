@@ -23,7 +23,7 @@
 			<div class="panel-body">
 				<form action="/admin/import" method="POST" enctype="multipart/form-data" class="upload-form">
 					<input type="file" id="inputUpload" name="uploadFile" data-plugin="dropify" data-default-file="" required/>
-					<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+					{{csrf_field()}}
 					<button type="submit" class="btn btn-success float-right mt-10"> 导入</button>
 				</form>
 			</div>

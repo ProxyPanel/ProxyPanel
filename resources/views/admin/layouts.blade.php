@@ -23,14 +23,12 @@
 	<!-- 插件/Plugins -->
 	<link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/vendor/intro-js/introjs.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
 	@yield('css')
 	<link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
 	<!-- 字体/Fonts -->
 	<link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/fonts/brand-icons/brand-icons.min.css" type="text/css" rel="stylesheet">
 	<link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
 	<!--[if lt IE 9]>
 	<script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script>
@@ -57,7 +55,7 @@
 			<i class="icon wb-more-horizontal" aria-hidden="true"></i>
 		</button>
 		<div class="navbar-brand navbar-brand-center">
-			<img src="{{\App\Components\Helpers::systemConfig()['website_logo']?\App\Components\Helpers::systemConfig()['website_logo']:'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
+			<img src="{{\App\Components\Helpers::systemConfig()['website_logo']? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
 			<span class="navbar-brand-text hidden-xs-down"> {{\App\Components\Helpers::systemConfig()['website_name']}}</span>
 		</div>
 	</div>
@@ -360,7 +358,6 @@
 <script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
 <!-- 插件/Plugins -->
-<script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
 <!--[if lt IE 11]>

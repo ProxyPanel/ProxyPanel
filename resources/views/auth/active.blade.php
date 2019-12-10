@@ -12,8 +12,6 @@
 		</div>
 	@endif
 	<form action="{{url(Request::getRequestUri())}}" method="post">
-		<div class="form-group form-material pt-20" data-plugin="formMaterial">
-			<button class="btn btn-lg btn-success" onclick="login()">{{trans('auth.login')}}</button>
-		</div>
+		<a href="/login" class="btn btn-lg btn-block btn-success">{{trans('auth.login')}}</a>
 	</form>
 @endsection

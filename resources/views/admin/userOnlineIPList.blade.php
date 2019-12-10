@@ -131,12 +131,7 @@
 
         // 搜索
         function Search() {
-            const id = $("#id").val();
-            const username = $("#username").val();
-            const wechat = $("#wechat").val();
-            const qq = $("#qq").val();
-            const port = $("#port").val();
-            window.location.href = '/admin/userOnlineIPList' + '?id' + id + '&username=' + username + '&wechat=' + wechat + '&qq=' + qq + '&port=' + port;
+            window.location.href = '/admin/userOnlineIPList' + '?id' + $("#id").val() + '&username=' + $("#username").val() + '&wechat=' + $("#wechat").val() + '&qq=' + $("#qq").val() + '&port=' + $("#port").val();
         }
 	</script>
 @endsection

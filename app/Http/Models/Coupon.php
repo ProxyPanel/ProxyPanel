@@ -46,4 +46,14 @@ class Coupon extends Model
 	{
 		$this->attributes['discount'] = $value/10;
 	}
+
+	function getRuleAttribute($value)
+	{
+		return $value/100;
+	}
+
+	function setRuleAttribute($value)
+	{
+		$this->attributes['rule'] = $value*100;
+	}
 }

@@ -48,7 +48,7 @@
 									@endif
 								</td>
 								<td> {{$node->name}} </td>
-								<td> {{$node->is_nat ? 'Nat' : $node->ip}} </td>
+								<td> {{$node->is_ddns ? 'DDNS' : $node->ip}} </td>
 								<td> {{$node->server}} </td>
 								<td> {{$node->uptime}} </td>
 								<td> {{$node->status? $node->load : '维护'}} </td>
@@ -63,7 +63,7 @@
 								<td>
 									<div class="btn-group">
 										<a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-										<a href="javascript:delNode({{$node->id}})" class="btn btn-danger"><i class="icon wb-trash"></i></a>
+										<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')" class="btn btn-danger"><i class="icon wb-trash"></i></a>
 										<a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
 									</div>
 								</td>
@@ -93,10 +93,10 @@
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
         // 删除节点
-        function delNode(id) {
+        function delNode(id, name) {
             swal.fire({
                 title: '警告',
-                text: '确定删除节点?',
+                text: '确定删除节点 【' + name + '】 ?',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -124,14 +124,5 @@
                 showConfirmButton: false,
             });
         }
-
-        // 修正table的dropdown
-        $('.table-scrollable').on('show.bs.dropdown', function () {
-            $('.table-scrollable').css("overflow", "inherit");
-        });
-
-        $('.table-scrollable').on('hide.bs.dropdown', function () {
-            $('.table-scrollable').css("overflow", "auto");
-        });
 	</script>
 @endsection

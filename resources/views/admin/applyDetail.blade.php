@@ -13,7 +13,7 @@
 					@elseif($info->status == 2)
 						<span class="badge badge-lg badge-success"> 已打款 </span>
 					@endif
-						<a href="/admin/applyList" class="btn btn-danger"> 返回</a>
+					<a href="/admin/applyList" class="btn btn-danger"> 返 回</a>
 				</div>
 			</div>
 			<div class="panel-body">

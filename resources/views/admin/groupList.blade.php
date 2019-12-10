@@ -35,7 +35,7 @@
 								<td>
 									<div class="btn-group">
 										<a href="/admin/editGroup/{{$group->id}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-										<button class="btn btn-danger" onclick="delGroup('{{$group->id}}')"><i class="icon wb-trash"></i></button>
+										<button class="btn btn-danger" onclick="delGroup('{{$group->id}}','{{$group->name}}')"><i class="icon wb-trash"></i></button>
 									</div>
 								</td>
 							</tr>
@@ -64,10 +64,10 @@
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
         // 删除节点分组
-        function delGroup(id) {
+        function delGroup(id, name) {
             swal.fire({
                 title: '警告',
-                text: '确定删除分组?',
+                text: '确定删除分组 【' + name + '】 ?',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',

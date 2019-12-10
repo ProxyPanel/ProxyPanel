@@ -13,6 +13,9 @@
 		<div class="panel">
 			<div class="panel-heading">
 				<h1 class="panel-title">生成卡券</h1>
+				<div class="panel-actions">
+					<a href="/coupon/couponList" class="btn btn-danger">返 回</a>
+				</div>
 			</div>
 			@if (Session::has('successMsg'))
 				<div class="alert alert-success alert-dismissible">
@@ -32,7 +35,7 @@
 						<label class="col-md-2 col-form-label" for="name">卡券名称</label>
 						<div class="col-md-4">
 							<input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
-							<input name="_token" value="{{csrf_token()}}" hidden/>
+							{{csrf_field()}}
 						</div>
 						<span class="text-help"> 会用于前端显示 </span>
 					</div>
@@ -96,6 +99,14 @@
 							<span class="input-group-text">元</span>
 						</div>
 					</div>
+					<div class="form-group row usage">
+						<label class="col-md-2 col-form-label" for="rule">条件</label>
+						<div class="col-md-4 input-group">
+							<input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" requied/>
+							<span class="input-group-text">元</span>
+						</div>
+						<span class="text-help"> 当套餐超过N值时，才能使用本优惠劵；0即使用无限制 </span>
+					</div>
 					<div class="form-group row">
 						<label class="col-md-2 col-form-label" for="num">数量</label>
 						<div class="col-md-4 input-group">
@@ -117,10 +128,7 @@
 						</div>
 					</div>
 					<div class="form-actions col-12 text-right">
-						<div class="btn-group">
-							<a href="/coupon/couponList" class="btn btn-danger">返回</a>
-							<button type="submit" class="btn btn-success">提交</button>
-						</div>
+						<button type="submit" class="btn btn-success">提 交</button>
 					</div>
 				</form>
 			</div>
@@ -139,25 +147,25 @@
         });
 
         $("input[name='type']").change(function () {
-            const type = $(this).val();
-            if (type === '2') {
-                $("#discount").attr("required", true);
-                $("#amount").attr("required", false);
-                $(".discount").show();
-                $(".usage").show();
-                $(".amount").hide();
-            } else if (type === '3') {
-                $("#discount").attr("required", false);
-                $("#amount").attr("required", true);
-                $(".discount").hide();
-                $(".usage").hide();
-                $(".amount").show();
-            } else {
-                $("#discount").attr("required", false);
-                $("#amount").attr("required", true);
-                $(".discount").hide();
-                $(".usage").show();
-                $(".amount").show();
+            switch (parseInt($(this).val())) {
+                case 2:
+                    $("#discount").attr("required", true);
+                    $("#amount").attr("required", false);
+                    $(".discount").show();
+                    $(".usage").show();
+                    $(".amount").hide();
+                case 3:
+                    $("#discount").attr("required", false);
+                    $("#amount").attr("required", true);
+                    $(".discount").hide();
+                    $(".usage").hide();
+                    $(".amount").show();
+                default:
+                    $("#discount").attr("required", false);
+                    $("#amount").attr("required", true);
+                    $(".discount").hide();
+                    $(".usage").show();
+                    $(".amount").show();
             }
         });
 	</script>

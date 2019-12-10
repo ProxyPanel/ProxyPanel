@@ -71,13 +71,6 @@
 	<script type="text/javascript">
         // 转换
         function Convert() {
-            const _token = '{{csrf_token()}}';
-            const method = $('#method').val();
-            const transfer_enable = $('#transfer_enable').val();
-            const protocol = $('#protocol').val();
-            const protocol_param = $('#protocol_param').val();
-            const obfs = $('#obfs').val();
-            const obfs_param = $('#obfs_param').val();
             const content = $('#content').val();
 
             if (content.trim() === '') {
@@ -98,13 +91,13 @@
                         url: "/admin/convert",
                         async: false,
                         data: {
-                            _token: _token,
-                            method: method,
-                            transfer_enable: transfer_enable,
-                            protocol: protocol,
-                            protocol_param: protocol_param,
-                            obfs: obfs,
-                            obfs_param: obfs_param,
+                            _token: '{{csrf_token()}}',
+                            method: $('#method').val(),
+                            transfer_enable: $('#transfer_enable').val(),
+                            protocol: $('#protocol').val(),
+                            protocol_param: $('#protocol_param').val(),
+                            obfs: $('#obfs').val(),
+                            obfs_param: $('#obfs_param').val(),
                             content: content
                         },
                         dataType: 'json',

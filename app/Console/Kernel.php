@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AutoCheckNodeTCP;
+use App\Console\Commands\NodeBlockedDetection;
 use App\Console\Commands\AutoClearLog;
 use App\Console\Commands\AutoDecGoodsTraffic;
 use App\Console\Commands\AutoJob;
@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
 		AutoClearLog::class,
 		AutoDecGoodsTraffic::class,
 		AutoResetUserTraffic::class,
-		AutoCheckNodeTCP::class,
+		NodeBlockedDetection::class,
 		AutoStatisticsNodeDailyTraffic::class,
 		AutoStatisticsNodeHourlyTraffic::class,
 		AutoStatisticsUserDailyTraffic::class,
@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
 		$schedule->command('autoClearLog')->everyThirtyMinutes();
 		$schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
 		$schedule->command('autoResetUserTraffic')->daily();
-		$schedule->command('autoCheckNodeTCP')->everyMinute();
+		$schedule->command('NodeBlockedDetection')->everyThirtyMinutes();
 		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
 		$schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
 		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');

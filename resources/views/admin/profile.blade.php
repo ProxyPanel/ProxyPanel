@@ -19,10 +19,10 @@
 			@endif
 			<div class="panel-body">
 				<form action="/admin/profile" method="post" enctype="multipart/form-data" class="form-bordered">
+					{{csrf_field()}}
 					<div class="form-group row">
 						<label for="old_password" class="col-md-2 col-form-label"> 旧密码 </label>
 						<input type="password" class="form-control col-md-5 round" name="old_password" id="old_password" autofocus required/>
-						<input type="hidden" name="_token" value="{{csrf_token()}}"/>
 					</div>
 					<div class="form-group row">
 						<label for="new_password" class="col-md-2 col-form-label"> 新密码 </label>

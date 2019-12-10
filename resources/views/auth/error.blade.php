@@ -24,13 +24,11 @@
 	<!-- 插件/Plugins -->
 	<link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/vendor/intro-js/introjs.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/examples/css/pages/errors.min.css" type="text/css" rel="stylesheet">
 	<!-- 字体/Fonts -->
 	<link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/fonts/brand-icons/brand-icons.min.css" type="text/css" rel="stylesheet">
 	<link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
 	<!--[if lt IE 9]>
 	<script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script>
@@ -48,8 +46,8 @@
 <body class="animsition page-error page-error-400 layout-full">
 <!--[if lt IE 8]>
 <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-	<a href="http://browsehappy.com/">升级您的浏览器</a> </br>You are using an <strong>outdated</strong> browser. Please
-	<a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> </br>You are using an <strong>outdated</strong> browser. Please
+	<a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
 <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
@@ -73,7 +71,6 @@
 <script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
 <!-- 插件/Plugins -->
-<script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
 <!-- 脚本/Scripts -->

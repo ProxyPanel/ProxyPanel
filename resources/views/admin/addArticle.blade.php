@@ -42,7 +42,7 @@
 						<label class="col-form-label col-md-2" for="title">标题</label>
 						<div class="col-md-4">
 							<input type="text" class="form-control" name="title" id="title" autofocus required/>
-							<input type="hidden" name="_token" value="{{csrf_token()}}">
+							{{csrf_field()}}
 						</div>
 					</div>
 					<div class="form-group row" id="summary">
@@ -78,8 +78,8 @@
 					</div>
 					<div class="form-actions text-right">
 						<div class="btn-group">
-							<a href="/admin/articleList" class="btn btn-danger">返回</a>
-							<button type="submit" class="btn btn-success">提交</button>
+							<a href="/admin/articleList" class="btn btn-danger">返 回</a>
+							<button type="submit" class="btn btn-success">提 交</button>
 						</div>
 					</div>
 				</form>
@@ -94,8 +94,7 @@
 	<script src="/assets/global/js/Plugin/summernote.js" type="text/javascript"></script>
 	<script type="text/javascript">
         $("input:radio[name='type']").on('change', function () {
-            const type = parseInt($(this).val());
-            switch (type) {
+            switch (parseInt($(this).val())) {
                 case 1:
                     $("#summary").show();
                     $("#sort").show();

@@ -53,13 +53,7 @@
 									<a href="/ticket/replyTicket?id={{$ticket->id}}" target="_blank">{{$ticket->title}}</a>
 								</td>
 								<td>
-									@if ($ticket->status == 0)
-										<span class="badge badge-lg badge-info"> 待处理 </span>
-									@elseif ($ticket->status == 1)
-										<span class="badge badge-lg badge-success"> 已回复 </span>
-									@else
-										<span class="badge badge-lg badge-default"> 已关闭 </span>
-									@endif
+									{!!$ticket->status_label!!}
 								</td>
 							</tr>
 						@endforeach
@@ -96,8 +90,7 @@
 
         // 搜索
         function Search() {
-            const username = $("#username").val();
-            window.location.href = '/ticket/ticketList?username=' + username;
+            window.location.href = '/ticket/ticketList?username=' + $("#username").val();
         }
 	</script>
 @endsection

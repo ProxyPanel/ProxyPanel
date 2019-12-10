@@ -44,7 +44,7 @@
 						<th> 售价</th>
 						<th> 排序</th>
 						<th> 热销</th>
-						<th> 限购</th>
+						<th> 限购数</th>
 						<th> 状态</th>
 						<th> 操作</th>
 					</tr>
@@ -84,11 +84,7 @@
 									@endif
 								</td>
 								<td>
-									@if($goods->is_limit)
-										<span class="badge badge-lg badge-danger">是</span>
-									@else
-										<span class="badge badge-lg badge-default">否</span>
-									@endif
+									{{$goods->limit_num}}
 								</td>
 								<td>
 									@if($goods->status)
@@ -100,7 +96,7 @@
 								<td>
 									<div class="btn-group">
 										<a href="/shop/editGoods/{{$goods->id}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-										<button class="btn btn-danger" onclick="delGoods('{{$goods->id}}')"><i class="icon wb-trash"></i></button>
+										<button class="btn btn-danger" onclick="delGoods('{{$goods->id}}','{{$goods->name}}')"><i class="icon wb-trash"></i></button>
 									</div>
 								</td>
 							</tr>
@@ -130,16 +126,14 @@
 	<script type="text/javascript">
         // 搜索
         function Search() {
-            const type = $("#type option:selected").val();
-            const status = $("#status option:selected").val();
-            window.location.href = '/shop/goodsList?type=' + type + '&status=' + status;
+            window.location.href = '/shop/goodsList?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
         }
 
         // 删除商品
-        function delGoods(id) {
+        function delGoods(id, name) {
             swal.fire({
                 title: '警告',
-                text: '确定删除该商品?',
+                text: '确定删除商品 【' + name + '】 ?',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '取消',

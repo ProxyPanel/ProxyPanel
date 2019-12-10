@@ -7,32 +7,32 @@
 	<div class="page-content container">
 		<div class="panel">
 			<div class="panel-heading">
-				<h3 class="panel-title">通用配置</h3>
+				<h1 class="panel-title"><i class="icon wb-settings" aria-hidden="true"></i>通用配置</h1>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body container-fluid">
 				<div class="nav-tabs-vertical" data-plugin="tabs">
 					<ul class="nav nav-tabs mr-25" role="tablist">
 						<li class="nav-item" role="presentation">
-							<a class="nav-link active" data-toggle="tab" href="#tab1" aria-controls="tab1" role="tab">加密</a>
+							<a class="nav-link active" data-toggle="tab" href="#method" aria-controls="method" role="tab">加密</a>
 						</li>
 						<li class="nav-item" role="presentation">
-							<a class="nav-link" data-toggle="tab" href="#tab2" aria-controls="tab2" role="tab">协议</a>
+							<a class="nav-link" data-toggle="tab" href="#protocol" aria-controls="protocol" role="tab">协议</a>
 						</li>
 						<li class="nav-item" role="presentation">
-							<a class="nav-link" data-toggle="tab" href="#tab3" aria-controls="tab3" role="tab">混淆</a>
+							<a class="nav-link" data-toggle="tab" href="#obfs" aria-controls="obfs" role="tab">混淆</a>
 						</li>
 						<li class="nav-item" role="presentation">
-							<a class="nav-link" data-toggle="tab" href="#tab4" aria-controls="tab4" role="tab">等级</a>
+							<a class="nav-link" data-toggle="tab" href="#level" aria-controls="level" role="tab">等级</a>
 						</li>
 						<li class="nav-item" role="presentation">
-							<a class="nav-link" data-toggle="tab" href="#tab5" aria-controls="tab5" role="tab">国家地区</a>
+							<a class="nav-link" data-toggle="tab" href="#country" aria-controls="country" role="tab">国家地区</a>
 						</li>
 					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active" id="tab1" role="tabpanel">
+					<div class="tab-content py-15">
+						<div class="tab-pane active" id="method" role="tabpanel">
 							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
 								<i class="icon wb-plus"></i></button>
-							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+							<table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
 								<thead class="thead-default">
 								<tr>
 									<th> 名称</th>
@@ -53,8 +53,8 @@
 													<span class='badge badge-lg badge-default'>默认</span>
 												@else
 													<div class="btn-group">
-														<button class="btn btn-primary" onclick="setDefault('1', '{{$method->id}}')">默认</button>
-														<button class="btn btn-danger" onclick="delConfig('1', '{{$method->id}}')">
+														<button class="btn btn-primary" onclick="setDefault('{{$method->id}}')">默认</button>
+														<button class="btn btn-danger" onclick="delConfig('{{$method->id}}','{{$method->name}}')">
 															<i class="icon wb-trash"></i>
 														</button>
 													</div>
@@ -66,10 +66,10 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="tab-pane" id="tab2" role="tabpanel">
+						<div class="tab-pane" id="protocol" role="tabpanel">
 							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
 								<i class="icon wb-plus"></i></button>
-							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+							<table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
 								<thead class="thead-default">
 								<tr>
 									<th> 名称</th>
@@ -77,7 +77,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($method_list->isEmpty())
+								@if($protocol_list->isEmpty())
 									<tr>
 										<td colspan="2">暂无数据</td>
 									</tr>
@@ -90,8 +90,8 @@
 													<span class="badge badge-lg badge-default">默认</span>
 												@else
 													<div class="btn-group">
-														<button class="btn btn-primary" onclick="setDefault('2', '{{$protocol->id}}')">默认</button>
-														<button class="btn btn-danger" onclick="delConfig('2', '{{$protocol->id}}')">
+														<button class="btn btn-primary" onclick="setDefault('{{$protocol->id}}')">默认</button>
+														<button class="btn btn-danger" onclick="delConfig('{{$protocol->id}}','{{$protocol->name}}')">
 															<i class="icon wb-trash"></i>
 														</button>
 													</div>
@@ -103,11 +103,10 @@
 								</tbody>
 							</table>
 						</div>
-
-						<div class="tab-pane" id="tab3" role="tabpanel">
+						<div class="tab-pane" id="obfs" role="tabpanel">
 							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal"> 新增
 								<i class="icon wb-plus"></i></button>
-							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+							<table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
 								<thead class="thead-default">
 								<tr>
 									<th> 名称</th>
@@ -127,8 +126,8 @@
 												@if($obfs->is_default)
 													<span class="badge badge-lg badge-default">默认</span>
 												@else
-													<button class="btn btn-primary" onclick="setDefault('3', '{{$obfs->id}}')">默认</button>
-													<button class="btn btn-danger" onclick="delConfig('3', '{{$obfs->id}}')">
+													<button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">默认</button>
+													<button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
 														<i class="icon wb-trash"></i>
 													</button>
 												@endif
@@ -139,10 +138,10 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="tab-pane" id="tab4" role="tabpanel">
+						<div class="tab-pane" id="level" role="tabpanel">
 							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_level_modal"> 新增
 								<i class="icon wb-plus"></i></button>
-							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+							<table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
 								<thead class="thead-default">
 								<tr>
 									<th> 等级</th>
@@ -166,8 +165,8 @@
 											</td>
 											<td>
 												<div class="btn-group">
-													<button type="button" class="btn btn-primary" onclick="updateLevel('4', '{{$level->id}}')">修改</button>
-													<button type="button" class="btn btn-danger" onclick="delLevel('4', '{{$level->id}}')">
+													<button type="button" class="btn btn-primary" onclick="updateLevel('{{$level->id}}')">修改</button>
+													<button type="button" class="btn btn-danger" onclick="delLevel('{{$level->id}}','{{$level->level_name}}')">
 														<i class="icon wb-trash"></i>
 													</button>
 												</div>
@@ -178,10 +177,10 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="tab-pane" id="tab5" role="tabpanel">
+						<div class="tab-pane" id="country" role="tabpanel">
 							<button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_country_modal"> 新增
 								<i class="icon wb-plus"></i></button>
-							<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
+							<table class="text-md-center" data-toggle="table" data-height="600" data-virtual-scroll="true" data-mobile-responsive="true">
 								<thead class="thead-default">
 								<tr>
 									<th> 图标</th>
@@ -199,20 +198,20 @@
 									@foreach($country_list as $country)
 										<tr>
 											<td>
-												<svg class="w-50 h-50 text-center" aria-hidden="true">
-													<use xlink:href="@if($country->country_code)#icon-{{$country->country_code}}@endif"></use>
+												<svg class="w-40 h-40 text-center" aria-hidden="true">
+													<use xlink:href="@if($country->code)#icon-{{$country->code}}@endif"></use>
 												</svg>
 											</td>
 											<td>
-												<input id="country_name_{{$country->id}}" name="country_name" value="{{$country->country_name}}" type="text" class="form-control">
+												<input id="country_name_{{$country->id}}" name="country_name" value="{{$country->name}}" type="text" class="form-control">
 											</td>
 											<td>
-												<input id="country_code_{{$country->id}}" name="country_code" value="{{$country->country_code}}" type="text" class="form-control">
+												<input id="country_code_{{$country->id}}" name="country_code" value="{{$country->code}}" type="text" class="form-control">
 											</td>
 											<td>
 												<div class="btn-group">
-													<button type="button" class="btn btn-primary" onclick="updateCountry('5', '{{$country->id}}')">修改</button>
-													<button type="button" class="btn btn-danger" onclick="delCountry('5', '{{$country->id}}')"><i class="icon wb-trash"></i></button>
+													<button type="button" class="btn btn-primary" onclick="updateCountry('{{$country->id}}')">修改</button>
+													<button type="button" class="btn btn-danger" onclick="delCountry('{{$country->id}}','{{$country->name}}')"><i class="icon wb-trash"></i></button>
 												</div>
 											</td>
 										</tr>
@@ -223,7 +222,6 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -253,13 +251,12 @@
 					</div>
 				</form>
 				<div class="modal-footer">
-					<button class="btn btn-danger" data-dismiss="modal">关闭</button>
-					<button class="btn btn-primary" onclick="addConfig()">提交</button>
+					<button class="btn btn-danger" data-dismiss="modal">关 闭</button>
+					<button class="btn btn-primary" onclick="addConfig()">提 交</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<div class="modal fade" id="add_level_modal" aria-hidden="true" role="dialog" tabindex="-1">
 		<div class="modal-dialog modal-simple modal-center">
 			<div class="modal-content">
@@ -281,13 +278,12 @@
 					</div>
 				</form>
 				<div class="modal-footer">
-					<button data-dismiss="modal" class="btn btn-danger">关闭</button>
-					<button class="btn btn-primary" onclick="addLevel('4')">提交</button>
+					<button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+					<button class="btn btn-primary" onclick="addLevel('4')">提 交</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<div class="modal fade" id="add_country_modal" aria-hidden="true" role="dialog" tabindex="-1">
 		<div class="modal-dialog modal-simple modal-center">
 			<div class="modal-content">
@@ -309,13 +305,12 @@
 					</div>
 				</form>
 				<div class="modal-footer">
-					<button data-dismiss="modal" class="btn btn-danger">关闭</button>
-					<button class="btn btn-primary" onclick="addCountry('5')">提交</button>
+					<button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+					<button class="btn btn-primary" onclick="addCountry('5')">提 交</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 @endsection
 @section('script')
 	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
@@ -325,7 +320,7 @@
 
 	<script type="text/javascript">
         // 添加等级
-        function addLevel(tabId) {
+        function addLevel() {
             const level = $('#add_level').val();
             const level_name = $('#add_level_name').val();
 
@@ -354,31 +349,29 @@
                         return false;
                     }
                     $("#add_level_modal").modal("hide");
-                    window.location.href = '/admin/config?tab=' + tabId;
+                    window.location.href = '/admin/config';
                 },
                 error: function () {
                     $("#level_msg").show().html("请求错误，请重试");
                 },
                 complete: function () {
+                    swal.fire({title: '添加成功', type: "success", timer: 1000, showConfirmButton: false}).then(() => window.location.reload())
                 }
             });
         }
 
         // 更新等级
-        function updateLevel(tabId, id) {
-            const level = $('#level_' + id).val();
-            const level_name = $('#level_name_' + id).val();
-
+        function updateLevel(id) {
             $.ajax({
                 type: "POST",
                 url: "/admin/updateLevel",
                 async: false,
-                data: {_token: '{{csrf_token()}}', id: id, level: level, level_name: level_name},
+                data: {_token: '{{csrf_token()}}', id: id, level: $('#level_' + id).val(), level_name: $('#level_name_' + id).val()},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                            .then(() => window.location.href = '/admin/config?tab=' + tabId)
+                            .then(() => window.location.href = '/admin/config')
                     } else {
                         swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                     }
@@ -387,9 +380,9 @@
         }
 
         // 删除等级
-        function delLevel(tabId, id) {
+        function delLevel(id, name) {
             swal.fire({
-                title: '确定删除该等级吗？',
+                title: '确定删除等级 【' + name + '】 ？',
                 type: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
@@ -400,7 +393,7 @@
                     $.post("/admin/delLevel", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                                .then(() => window.location.href = '/admin/config?tab=' + tabId)
+                                .then(() => window.location.href = '/admin/config')
                         } else {
                             swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }
@@ -410,7 +403,7 @@
         }
 
         // 添加国家/地区
-        function addCountry(tabId) {
+        function addCountry() {
             var country_name = $('#add_country_name').val();
             var country_code = $('#add_country_code').val();
 
@@ -439,18 +432,19 @@
                         return false;
                     }
                     $("#add_country_modal").modal("hide");
-                    window.location.href = '/admin/config?tab=' + tabId;
+                    window.location.href = '/admin/config';
                 },
                 error: function () {
                     $("#country_msg").show().html("请求错误，请重试");
                 },
                 complete: function () {
+                    swal.fire({title: '添加成功', type: "success", timer: 1000, showConfirmButton: false}).then(() => window.location.reload())
                 }
             });
         }
 
         // 更新国家/地区
-        function updateCountry(tabId, id) {
+        function updateCountry(id) {
             const country_name = $('#country_name_' + id).val();
             const country_code = $('#country_code_' + id).val();
 
@@ -463,18 +457,18 @@
                 success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                            .then(() => window.location.href = '/admin/config?tab=' + tabId)
+                            .then(() => window.location.href = '/admin/config')
                     } else {
-                        swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
+                        swal.fire({title: ret.message, type: "error"});
                     }
                 }
             });
         }
 
         // 删除国家/地区
-        function delCountry(tabId, id) {
+        function delCountry(id, name) {
             swal.fire({
-                title: '确定删除该国家/地区吗？',
+                title: '确定删除 【' + name + '】 信息？',
                 type: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
@@ -485,9 +479,9 @@
                     $.post("/admin/delCountry", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                                .then(() => window.location.href = '/admin/config?tab=' + tabId)
+                                .then(() => window.location.href = '/admin/config')
                         } else {
-                            swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
+                            swal.fire({title: ret.message, type: "error"});
                         }
                     });
                 }
@@ -496,7 +490,6 @@
 
         // 添加配置
         function addConfig() {
-            const _token = '{{csrf_token()}}';
             const name = $("#name").val();
             const type = $("#type").val();
 
@@ -509,7 +502,7 @@
             $.ajax({
                 url: '/admin/config',
                 type: "POST",
-                data: {_token: _token, name: name, type: type},
+                data: {_token: '{{csrf_token()}}', name: name, type: type},
                 beforeSend: function () {
                     $("#msg").show().html("正在添加");
                 },
@@ -525,14 +518,15 @@
                     $("#msg").show().html("请求错误，请重试");
                 },
                 complete: function () {
+                    swal.fire({title: '添加成功', type: "success", timer: 1000, showConfirmButton: false}).then(() => window.location.reload())
                 }
             });
         }
 
         // 删除配置
-        function delConfig(tabId, id) {
+        function delConfig(id, name) {
             swal.fire({
-                title: '确定删除配置？',
+                title: '确定删除配置 【' + name + '】 ？',
                 type: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
@@ -543,7 +537,7 @@
                     $.post("/admin/delConfig", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                                .then(() => window.location.href = '/admin/config?tab=' + tabId)
+                                .then(() => window.location.href = '/admin/config')
                         } else {
                             swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }
@@ -553,18 +547,17 @@
         }
 
         // 置为默认
-        function setDefault(tabId, id) {
-            const _token = '{{csrf_token()}}';
+        function setDefault(id) {
             $.ajax({
                 type: "POST",
                 url: "/admin/setDefaultConfig",
                 async: false,
-                data: {_token: _token, id: id},
+                data: {_token: '{{csrf_token()}}', id: id},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                            .then(() => window.location.href = '/admin/config?tab=' + tabId)
+                            .then(() => window.location.href = '/admin/config')
                     } else {
                         swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                     }

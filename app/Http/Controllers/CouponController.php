@@ -81,6 +81,7 @@ class CouponController extends Controller
 					$obj->usage = $request->usage;
 					$obj->amount = $request->type == 2? 0 : $request->amount;
 					$obj->discount = $request->type != 2? 0 : $request->discount;
+					$obj->rule = $request->rule;
 					$obj->available_start = strtotime(date('Y-m-d 00:00:00', strtotime($request->available_start)));
 					$obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($request->available_end)));
 					$obj->status = 0;
@@ -113,9 +114,9 @@ class CouponController extends Controller
 	// 导出卡券
 	public function exportCoupon(Request $request)
 	{
-		$cashCouponList = Coupon::type(1)->where('status', 0)->get();
+		$voucherList = Coupon::type(1)->where('status', 0)->get();
 		$discountCouponList = Coupon::type(2)->where('status', 0)->get();
-		$chargeCouponList = Coupon::type(3)->where('status', 0)->get();
+		$refillList = Coupon::type(3)->where('status', 0)->get();
 
 		$filename = '卡券'.date('Ymd').'.xlsx';
 		$spreadsheet = new Spreadsheet();
@@ -125,11 +126,11 @@ class CouponController extends Controller
 		$spreadsheet->setActiveSheetIndex(0);
 		$sheet = $spreadsheet->getActiveSheet();
 		$sheet->setTitle('抵用券');
-		$sheet->fromArray(['名称', '类型', '有效期', '券码', '金额（元）'], NULL);
-		foreach($cashCouponList as $k => $vo){
+		$sheet->fromArray(['名称', '类型', '有效期', '券码', '金额（元）', '使用限制（元）'], NULL);
+		foreach($voucherList as $k => $vo){
 			$usage = $vo->usage == 1? '一次性' : '重复使用';
 			$dateRange = date('Y-m-d', $vo->available_start).' ~ '.date('Y-m-d', $vo->available_end);
-			$sheet->fromArray([$vo->name, $usage, $dateRange, $vo->sn, $vo->amount], NULL, 'A'.($k+2));
+			$sheet->fromArray([$vo->name, $usage, $dateRange, $vo->sn, $vo->amount, $vo->rule], NULL, 'A'.($k+2));
 		}
 
 		// 折扣券
@@ -137,11 +138,11 @@ class CouponController extends Controller
 		$spreadsheet->setActiveSheetIndex(1);
 		$sheet = $spreadsheet->getActiveSheet();
 		$sheet->setTitle('折扣券');
-		$sheet->fromArray(['名称', '类型', '有效期', '券码', '折扣（折）'], NULL);
+		$sheet->fromArray(['名称', '类型', '有效期', '券码', '折扣（折）', '使用限制（元）'], NULL);
 		foreach($discountCouponList as $k => $vo){
 			$usage = $vo->usage == 1? '一次性' : '重复使用';
 			$dateRange = date('Y-m-d', $vo->available_start).' ~ '.date('Y-m-d', $vo->available_end);
-			$sheet->fromArray([$vo->name, $usage, $dateRange, $vo->sn, $vo->discount], NULL, 'A'.($k+2));
+			$sheet->fromArray([$vo->name, $usage, $dateRange, $vo->sn, $vo->discount, $vo->rule], NULL, 'A'.($k+2));
 		}
 
 		// 充值券
@@ -150,7 +151,7 @@ class CouponController extends Controller
 		$sheet = $spreadsheet->getActiveSheet();
 		$sheet->setTitle('充值券');
 		$sheet->fromArray(['名称', '类型', '有效期', '券码', '金额（元）'], NULL);
-		foreach($chargeCouponList as $k => $vo){
+		foreach($refillList as $k => $vo){
 			$usage = '一次性';
 			$dateRange = date('Y-m-d', $vo->available_start).' ~ '.date('Y-m-d', $vo->available_end);
 			$sheet->fromArray([$vo->name, $usage, $dateRange, $vo->sn, $vo->amount], NULL, 'A'.($k+2));

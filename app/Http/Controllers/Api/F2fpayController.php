@@ -208,12 +208,7 @@ class F2fpayController extends Controller
 
 				// 套餐就改流量重置日，流量包不改
 				if($goods->type == 2){
-					if(date('m') == 2 && date('d') == 29){
-						$traffic_reset_day = 28;
-					}else{
-						$traffic_reset_day = date('d') == 31? 30 : abs(date('d'));
-					}
-					User::query()->where('id', $order->user_id)->update(['traffic_reset_day' => $traffic_reset_day, 'expire_time' => $expireTime, 'enable' => 1]);
+					User::query()->where('id', $order->user_id)->update(['traffic_reset_day' =>  date('d'), 'expire_time' => $expireTime, 'enable' => 1]);
 				}else{
 					User::query()->where('id', $order->user_id)->update(['expire_time' => $expireTime, 'enable' => 1]);
 				}

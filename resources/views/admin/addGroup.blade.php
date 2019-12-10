@@ -16,7 +16,6 @@
 					<div class="form-group row">
 						<label class="col-form-label col-md-1" for="name">分组名称</label>
 						<input type="text" class="form-control col-md-5" name="name" value="" id="name" required/>
-						<input type="hidden" name="_token" value="{{csrf_token()}}"/>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-md-1" for="level">分组级别</label>
@@ -30,7 +29,7 @@
 						<span class="text-help offset-md-1">暂时无用&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</span>
 					</div>
 					<div class="form-actions">
-						<button type="submit" class="btn btn-success">提交</button>
+						<button type="submit" class="btn btn-success">提 交</button>
 					</div>
 				</form>
 			</div>
@@ -41,15 +40,11 @@
 	<script type="text/javascript">
         // ajax同步提交
         function Submit() {
-            const _token = '{{csrf_token()}}';
-            const name = $('#name').val();
-            const level = $("#level option:selected").val();
-
             $.ajax({
                 type: "POST",
                 url: "/admin/addGroup",
                 async: false,
-                data: {_token: _token, name: name, level: level},
+                data: {_token: '{{csrf_token()}}', name: $('#name').val(), level: $("#level option:selected").val()},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {

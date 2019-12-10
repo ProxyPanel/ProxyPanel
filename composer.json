@@ -6,7 +6,6 @@
   "type": "project",
   "require": {
     "php": "^7.1.3",
-    "barryvdh/laravel-debugbar": "^3.2",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^6.3",
     "ipip/db": "^1.0",
@@ -25,9 +24,11 @@
     "rap2hpoutre/laravel-log-viewer": "^1.0",
     "riverslei/payment": "*",
     "spatie/laravel-permission": "^2.29",
-    "youzanyun/open-sdk": "^2.0"
+    "youzanyun/open-sdk": "^2.0",
+    "ext-json": "*"
   },
   "require-dev": {
+    "barryvdh/laravel-debugbar": "^3.2",
     "barryvdh/laravel-ide-helper": "^2.6",
     "filp/whoops": "^2.0",
     "fzaninotto/faker": "^1.4",

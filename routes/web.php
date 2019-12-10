@@ -85,6 +85,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function()
 	Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 用户余额充值
 	Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
 	Route::get('subscribe/subscribeList', 'SubscribeController@subscribeList'); // 订阅码列表
+	Route::get('subscribe/subscribeLog', 'SubscribeController@subscribeLog'); // 订阅码记录
 	Route::get('subscribe/deviceList', 'SubscribeController@deviceList'); // 订阅设备列表
 	Route::post('subscribe/setSubscribeStatus', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
 	Route::post('subscribe/setDeviceStatus', 'SubscribeController@setDeviceStatus'); // 是否允许设备订阅
@@ -121,6 +122,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin']], function(){
 	Route::post('closeTicket', 'UserController@closeTicket'); // 关闭工单
 	Route::get('invoices', 'UserController@invoices'); // 订单列表
 	Route::get('invoice/{sn}', 'UserController@invoiceDetail'); // 订单明细
+	Route::post('resetUserTraffic', 'UserController@resetUserTraffic'); // 重置用户流量
 	Route::any('buy/{id}', 'UserController@buy'); // 购买商品
 	Route::post('redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
 	Route::get('invite', 'UserController@invite'); // 邀请码

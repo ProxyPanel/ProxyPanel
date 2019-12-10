@@ -16,7 +16,6 @@
 					<div class="form-group row">
 						<label for="name" class="col-form-label col-md-1">标签</label>
 						<input type="text" class="form-control col-md-6" name="name" id="name" value="{{$label->name}}" autofocus required>
-						<input type="hidden" name="_token" value="{{csrf_token()}}">
 					</div>
 					<div class="form-group row">
 						<label for="sort" class="col-form-label col-md-1">排序</label>
@@ -24,7 +23,7 @@
 						<span class="text-help offset-md-1"> 排序值越高显示时越靠前 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</span>
 					</div>
 					<div class="form-actions">
-						<button type="submit" class="btn btn-success">提交</button>
+						<button type="submit" class="btn btn-success">提 交</button>
 					</div>
 				</form>
 			</div>
@@ -35,16 +34,11 @@
 	<script type="text/javascript">
         // ajax同步提交
         function Submit() {
-            const _token = '{{csrf_token()}}';
-            const id = '{{$label->id}}';
-            const name = $('#name').val();
-            const sort = $('#sort').val();
-
             $.ajax({
                 type: "POST",
                 url: "/admin/editLabel",
                 async: false,
-                data: {_token: _token, id: id, name: name, sort: sort},
+                data: {_token: '{{csrf_token()}}', id: '{{$label->id}}', name: $('#name').val(), sort: $('#sort').val()},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {

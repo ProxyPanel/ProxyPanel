@@ -102,7 +102,7 @@
 								</td>
 								<td>
 									@if($coupon->status != '1')
-										<button class="btn btn-danger" onclick="delCoupon('{{$coupon->id}}')"><i class="icon wb-close"></i></button>
+										<button class="btn btn-danger" onclick="delCoupon('{{$coupon->id}}','{{$coupon->name}}')"><i class="icon wb-close"></i></button>
 									@endif
 								</td>
 							</tr>
@@ -140,10 +140,7 @@
 
         // 搜索
         function Search() {
-            const sn = $("#sn").val();
-            const type = $("#type").val();
-            const status = $("#status").val();
-            window.location.href = '/coupon/couponList' + '?sn=' + sn + '&type=' + type + '&status=' + status;
+            window.location.href = '/coupon/couponList' + '?sn=' + $("#sn").val() + '&type=' + $("#type").val() + '&status=' + $("#status").val();
         }
 
         // 批量导出卡券
@@ -163,9 +160,9 @@
         }
 
         // 删除卡券
-        function delCoupon(id) {
+        function delCoupon(id, name) {
             swal.fire({
-                title: '确定删除该卡券吗？',
+                title: '确定删除卡券 【' + name + '】 吗？',
                 type: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,

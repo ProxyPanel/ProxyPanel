@@ -1,7 +1,7 @@
 <script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js" type="text/javascript"></script>
 <script src="//static.geetest.com/static/tools/gt.js" type="text/javascript"></script>
 <div id="{{ $captchaid }}"></div>
-<p id="wait-{{ $captchaid }}" class="show" style="text-align:center;">{{trans('auth.captcha_loading')}}</p>
+<p id="wait-{{ $captchaid }}" class="show">{{trans('auth.captcha_loading')}}</p>
 @define use Illuminate\Support\Facades\Config
 <script>
     var geetest = function (url) {

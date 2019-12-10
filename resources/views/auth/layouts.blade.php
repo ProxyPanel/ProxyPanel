@@ -23,14 +23,12 @@
 	<!-- Plugins -->
 	<link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/vendor/intro-js/introjs.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/examples/css/pages/login-v3.css" type="text/css" rel="stylesheet">
 @yield('css')
 <!-- Fonts -->
 	<link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
-	<link href="/assets/global/fonts/brand-icons/brand-icons.min.css" type="text/css" rel="stylesheet">
 	<link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
 	<!--[if lt IE 9]>
 	<script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script> <![endif]-->
@@ -45,10 +43,10 @@
 </head>
 <body class="animsition page-login-v3 layout-full" style="position: relative;">
 <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-	<a href="http://browsehappy.com/">升级您的浏览器</a> </br>You are using an <strong>outdated</strong> browser. Please
-	<a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> </br>You are using an <strong>outdated</strong> browser. Please
+	<a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
-@if(Agent::isMobile() && Agent::isiOS() && strpos(Agent::getUserAgent(), 'MicroMessenger') !== false)
+@if(Agent::isMobile() && Agent::is('iOS') && strpos(Agent::getUserAgent(), 'MicroMessenger') !== FALSE)
 	<style type="text/css">
 		.cover-up {
 			opacity: 0.1;
@@ -64,42 +62,45 @@
 	</div>
 @endif
 <div class="page vertical-align text-center cover-up" data-animsition-in="fade-in" data-animsition-out="fade-out">
-	<div class="page-content vertical-align-middle animation-slide-top animation-duration-1">
-		<div class="panel">
-			<div class="panel-heading">
-				<div class="panel-title">
-					<div class="brand">
-						<img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']?\App\Components\Helpers::systemConfig()['website_home_logo']:'/assets/images/logo64.png'}}" class="brand-img" alt="logo"/>
-						<h3 class="brand-text">{{\App\Components\Helpers::systemConfig()['website_name']}}</h3>
+	<div class="page-content vertical-align-middle">
+		<div class="animation-slide-top animation-duration-1">
+			<div class="panel">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<div class="brand">
+							<img src="{{\App\Components\Helpers::systemConfig()['website_home_logo']? :'/assets/images/logo64.png'}}" class="brand-img" alt="logo"/>
+							<h3 class="brand-text">{{\App\Components\Helpers::systemConfig()['website_name']}}</h3>
+						</div>
+					</div>
+					<div class="ribbon ribbon-reverse ribbon-info ribbon-clip">
+						<button class="ribbon-inner btn dropdown-toggle pt-0" id="language" data-toggle="dropdown" aria-expanded="false">
+							<i class="font-size-20 wb-globe"></i>
+						</button>
+						<div class="dropdown-menu dropdown-menu-bullet" aria-labelledby="language" role="menu">
+							<a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-CN'])}}" role="menuitem">
+								<span class="flag-icon flag-icon-cn"></span>
+								简体中文</a>
+							<a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-tw'])}}" role="menuitem">
+								<span class="flag-icon flag-icon-tw"></span>
+								繁體中文</a>
+							<a class="dropdown-item" href="{{url('lang', ['locale' => 'en'])}}" role="menuitem">
+								<span class="flag-icon flag-icon-gb"></span>
+								English</a>
+							<a class="dropdown-item" href="{{url('lang', ['locale' => 'ja'])}}" role="menuitem">
+								<span class="flag-icon flag-icon-jp"></span>
+								日本語</a>
+							<a class="dropdown-item" href="{{url('lang', ['locale' => 'ko'])}}" role="menuitem">
+								<span class="flag-icon flag-icon-kr"></span>
+								한국어</a>
+						</div>
 					</div>
 				</div>
-				<div class="ribbon ribbon-reverse ribbon-info ribbon-clip">
-					<button class="ribbon-inner btn dropdown-toggle pt-0" id="language" data-toggle="dropdown" aria-expanded="false">
-						<i class="font-size-20 wb-globe"></i>
-					</button>
-					<div class="dropdown-menu dropdown-menu-bullet" aria-labelledby="language" role="menu">
-						<a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-CN'])}}" role="menuitem">
-							<span class="flag-icon flag-icon-cn"></span>
-							简体中文</a>
-						<a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-tw'])}}" role="menuitem">
-							<span class="flag-icon flag-icon-tw"></span>
-							繁體中文</a>
-						<a class="dropdown-item" href="{{url('lang', ['locale' => 'en'])}}" role="menuitem">
-							<span class="flag-icon flag-icon-gb"></span>
-							English</a>
-						<a class="dropdown-item" href="{{url('lang', ['locale' => 'ja'])}}" role="menuitem">
-							<span class="flag-icon flag-icon-jp"></span>
-							日本語</a>
-						<a class="dropdown-item" href="{{url('lang', ['locale' => 'ko'])}}" role="menuitem">
-							<span class="flag-icon flag-icon-kr"></span>
-							한국어</a>
-					</div>
+				<div class="panel-body">
+					@yield('content')
 				</div>
-			</div>
-			<div class="panel-body">
-				@yield('content')
 			</div>
 		</div>
+		@yield('modal')
 	</div>
 </div>
 <!-- 核心/Core -->
@@ -112,9 +113,7 @@
 <script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
-
 <!-- 插件/Plugins -->
-<script src="/assets/global/vendor/intro-js/intro.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/jquery-placeholder/jquery.placeholder.js" type="text/javascript"></script>
@@ -152,11 +151,6 @@
             Site.run();
         });
     })(document, window, jQuery);
-
-    // 登录
-    function login() {
-        window.location.href = '/login';
-    }
 </script>
 </body>
 </html>

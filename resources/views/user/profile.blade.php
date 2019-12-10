@@ -52,7 +52,7 @@
 									<div class="form-group row">
 										<label for="old_password" class="col-md-2 col-form-label">{{trans('home.current_password')}}</label>
 										<input type="password" class="form-control col-md-5 round" name="old_password" id="old_password" autofocus required/>
-										<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+										{{csrf_field()}}
 									</div>
 									<div class="form-group row">
 										<label for="new_password" class="col-md-2  col-form-label">{{trans('home.new_password')}}</label>
@@ -68,7 +68,7 @@
 									<div class="form-group row">
 										<label for="wechat" class="col-md-2 col-form-label">{{trans('home.wechat')}}</label>
 										<input type="text" class="form-control col-md-5 round" name="wechat" id="wechat" value="{{Auth::user()->wechat}}" required/>
-										<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+										{{csrf_field()}}
 									</div>
 									<div class="form-group row">
 										<label for="qq" class="col-md-2 col-form-label">QQ</label>
@@ -84,7 +84,7 @@
 									<div class="form-group row">
 										<label for="passwd" class="col-md-2 col-form-label"> {{trans('home.connection_password')}} </label>
 										<input type="text" class="form-control col-md-5 round" name="passwd" id="passwd" value="{{Auth::user()->passwd}}" required/>
-										<input type="hidden" name="_token" value="{{csrf_token()}}"/>
+										{{csrf_field()}}
 									</div>
 									<div class="form-actions">
 										<button type="submit" class="btn btn-info"> {{trans('home.submit')}} </button>
