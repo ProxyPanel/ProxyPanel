@@ -1,0 +1,67 @@
+// Name:            Avatar
+//
+// Component:       `avatar`
+//
+// Modifiers:       `avatar-online`
+//                  `avatar-off`
+//                  `avatar-busy`
+//                  `avatar-away`
+//                  `avatar-lg`
+//                  `avatar-sm`
+//                  `avatar-xs`
+//
+// Markup:
+//
+// <!-- avatar -->
+// <span class="avatar">
+//   <img src="" />
+//   <i></i>
+// </span>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$avatar-online-color:    $brand-success !default;
+$avatar-off-color:       $brand-dark !default;
+$avatar-busy-color:      $brand-warning !default;
+$avatar-away-color:      $brand-danger !default;
+
+$avatar-status-border:   $inverse !default;
+
+// Component: Avatar
+// ========================================================================
+
+.avatar {
+  i {
+    border: 2px solid $avatar-status-border;
+  }
+}
+
+// Status Modifier
+// ========================================================================
+
+.avatar-online {
+  i {
+    background-color: $avatar-online-color;
+  }
+}
+
+.avatar-off {
+  i {
+    background-color: $avatar-off-color;
+  }
+}
+
+.avatar-busy {
+  i {
+    background-color: $avatar-busy-color;
+  }
+}
+
+.avatar-away {
+  i {
+    background-color: $avatar-away-color;
+  }
+}

@@ -1,0 +1,200 @@
+// Name:            Modals
+//
+// Component:       `modal`
+//
+// Modifiers:       `modal-top`
+//                  `modal-center`
+//                  `modal-bottom`
+//                  `modal-sidebar`
+//                  `modal-fill-in`
+//                  `modal-primary`
+//                  `modal-success`
+//                  `modal-info`
+//                  `modal-warning`
+//                  `modal-danger`
+//                  `modal-fade-in-scale-up`
+//                  `modal-slide-in-right`
+//                  `modal-slide-from-bottom`
+//                  `modal-newspaper`
+//                  `modal-fall`
+//                  `modal-side-fall`
+//                  `modal-3d-flip-horizontal`
+//                  `modal-3d-flip-vertical`
+//                  `modal-3d-sign`
+//                  `modal-super-scaled`
+//                  `modal-just-me`
+//                  `modal-3d-slit`
+//                  `modal-rotate-from-bottom`
+//                  `modal-rotate-from-left`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$modal-sidebar-bg              : $inverse !default;
+
+$modal-fill-in-bg              : rgba(255, 255, 255, 0.95) !default;
+
+$modal-primary-color           : $inverse !default;
+$modal-primary-bg              : $brand-primary !default;
+
+$modal-success-color           : $inverse !default;
+$modal-success-bg              : $brand-success !default;
+
+$modal-info-color              : $inverse !default;
+$modal-info-bg                 : $brand-info !default;
+
+$modal-warning-color           : $inverse !default;
+$modal-warning-bg              : $brand-warning !default;
+
+$modal-danger-color            : $inverse !default;
+$modal-danger-bg               : $brand-danger !default;
+
+// Component: Modal
+// ========================================================================
+.modal-content {
+  border: none;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+// Modifier: `modal-top`
+// -------------------------
+
+// Modifier: `modal-center`
+// -------------------------
+
+// Modifier: `modal-bottom`
+// -------------------------
+
+// Modifier: `modal-sidebar`
+// -------------------------
+
+.modal-sidebar {
+  background-color: $modal-sidebar-bg;
+
+  .modal-content {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+}
+
+// Modifier: `modal-fill-in`
+// -------------------------
+
+.modal-fill-in {
+  background-color: transparent;
+
+  &.show {
+    background-color: $modal-fill-in-bg;
+  }
+
+  .modal-content {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `modal-primary`
+// -------------------------
+
+.modal-primary {
+  @include modal-styles-variant($modal-primary-color, $modal-primary-bg);
+}
+
+// Modifier: `modal-success`
+// -------------------------
+
+.modal-success {
+  @include modal-styles-variant($modal-success-color, $modal-success-bg);
+}
+
+// Modifier: `modal-info`
+// -------------------------
+
+.modal-info {
+  @include modal-styles-variant($modal-info-color, $modal-info-bg);
+}
+
+// Modifier: `modal-warning`
+// -------------------------
+
+.modal-warning {
+  @include modal-styles-variant($modal-warning-color, $modal-warning-bg);
+}
+
+// Modifier: `modal-danger`
+// -------------------------
+
+.modal-danger {
+  @include modal-styles-variant($modal-danger-color, $modal-danger-bg);
+}
+
+// Animate Modifier
+// ========================================================================
+
+.modal {
+
+  // Modifier: `modal-fade-in-scale-up`
+  // -------------------------
+  // Modifier: `modal-slide-in-right`
+  // -------------------------
+
+  // Modifier: `modal-slide-from-bottom`
+  // -------------------------
+
+  // Modifier: `modal-newspaper`
+  // -------------------------
+
+  // Modifier: `modal-fall`
+  // -------------------------
+
+  // Modifier: `modal-side-fall`
+  // -------------------------
+
+  // Modifier: `modal-3d-flip-horizontal`
+  // -------------------------
+
+  // Modifier: `modal-3d-flip-vertical`
+  // -------------------------
+
+  // Modifier: `modal-3d-sign`
+  // -------------------------
+
+  // Modifier: `modal-super-scaled`
+  // -------------------------
+
+  // Modifier: `modal-just-me`
+  // -------------------------
+
+  &.modal-just-me {
+    .modal-backdrop {
+      background-color: $inverse;
+    }
+
+    &.show {
+      background: $modal-content-bg;
+    }
+  }
+
+  // Modifier: `modal-3d-slit`
+  // -------------------------
+
+  // Modifier: `modal-rotate-from-bottom`
+  // -------------------------
+
+  // Modifier: `modal-rotate-from-left`
+  // -------------------------
+}

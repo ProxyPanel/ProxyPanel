@@ -14,8 +14,8 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="兔姬菌">
-	<meta name="copyright" content="2017-2019©兔姬菌">
-	<link href="{{asset('favicon.ico')}}" rel="shortcut icon">
+	<meta name="copyright" content="2017-2020©兔姬菌">
+	<link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
 	<!-- 样式表/Stylesheets -->
 	<link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">

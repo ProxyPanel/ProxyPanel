@@ -1,0 +1,201 @@
+// Name:            badges
+//
+// Component:       `badge`
+//
+// Modifiers:       `badge-outline`
+//                  `badge-primary`
+//                  `badge-success`
+//                  `badge-info`
+//                  `badge-warning`
+//                  `badge-danger`
+//                  `badge-dark`
+//                  `badge-lg`
+//                  `badge-sm`
+//                  `badge-radius`
+//
+// Markup:
+//
+// <!-- badge -->
+// <span class="badge">...</span>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$badge-bg: $bg-color-base !default;
+$badge-pill-padding: 3px 6px !default;
+$badge-pill-up-margin: 0 -.8em !default;
+$badge-pill-active-color: $gray-600 !default;
+$badge-pill-active-bg: $brand-default !default;
+$badge-default-color: $text-color !default;
+// $badge-default-font-size:     $font-size-base !default;
+$badge-lg-font-size: 16px !default;
+$badge-sm-font-size: 10px !default;
+$badge-sm-padding: .1em .5em .1em !default;
+$badge-round-border-radius: 1em !default;
+$badge-default-hover-color: $gray-400 !default;
+$badge-default-hover-bg: $brand-default-hover !default;
+$badge-primary-hover-bg: $brand-primary-hover !default;
+$badge-success-hover-bg: $brand-success-hover !default;
+$badge-info-hover-bg: $brand-info-hover !default;
+$badge-warning-hover-bg: $brand-warning-hover !default;
+$badge-danger-hover-bg: $brand-danger-hover !default;
+$badge-dark-bg: $brand-dark !default;
+$badge-dark-hover-bg: $brand-dark-hover !default;
+
+// Component: badge
+// ========================================================================
+
+.badge {
+  &.badge-outline {
+    color: $badge-bg;
+    background-color: transparent;
+    border-color: $badge-bg;
+  }
+
+  &.up {
+    position: relative;
+    top: -10px;
+    margin: $badge-pill-up-margin;
+    border-radius: 15px;
+  }
+}
+
+// Alternate styles: `badge-outline`
+// -------------------------
+
+.badge-outline {
+  border: 1px solid transparent;
+}
+
+// Modifier: `badge-round`
+// -------------------------
+
+.badge-round {
+  border-radius: $badge-round-border-radius;
+}
+
+// Modifier: `badge-pill`
+// -------------------------
+.badge-pill {
+  padding: $badge-pill-padding;
+
+  // Empty badges collapse automatically (not available in IE8)
+  &:empty {
+    display: none;
+  }
+
+  // Quick fix for badge-pill in buttons
+  .btn & {
+    top: 0;
+  }
+
+  .btn-xs &, .btn-group-xs > .btn & {
+    top: 0;
+    padding: 1px 5px;
+  }
+
+  // Hover state, but only for links
+  a & {
+    &:hover, &:focus {
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+
+  .list-group-item > & {
+    order: 1; //?
+    float: right; //?
+    margin-left: auto; //?
+  }
+
+  .list-group-item > & + & {
+    margin-right: 5px;
+  }
+
+  .nav-pills > li > a > & {
+    margin-left: 3px;
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `badge-default`
+// -------------------------
+
+.badge-default {
+  @include badge-styles-variant($badge-default-bg, $badge-default-hover-bg);
+  color: $badge-default-color;
+
+  &[href] {
+    &:hover, &:focus {
+      color: $badge-default-hover-color;
+    }
+  }
+
+  &.badge-outline {
+    color: $badge-default-color;
+  }
+}
+
+// Modifier: `badge-primary`
+// -------------------------
+
+.badge-primary {
+  @include badge-styles-variant($badge-primary-bg, $badge-primary-hover-bg);
+}
+
+// Modifier: `badge-success`
+// -------------------------
+
+.badge-success {
+  @include badge-styles-variant($badge-success-bg, $badge-success-hover-bg);
+}
+
+// Modifier: `badge-info`
+// -------------------------
+
+.badge-info {
+  @include badge-styles-variant($badge-info-bg, $badge-info-hover-bg);
+}
+
+// Modifier: `badge-warning`
+// -------------------------
+
+.badge-warning {
+  @include badge-styles-variant($badge-warning-bg, $badge-warning-hover-bg);
+}
+
+// Modifier: `badge-danger`
+// -------------------------
+
+.badge-danger {
+  @include badge-styles-variant($badge-danger-bg, $badge-danger-hover-bg);
+}
+
+// Modifier: `badge-dark`
+// -------------------------
+
+.badge-dark {
+  @include badge-styles-variant($badge-dark-bg, $badge-dark-hover-bg);
+  @include badge-variant($badge-dark-bg);
+}
+
+// Size Modifier
+// ========================================================================
+
+// Modifier: `badge-lg`
+// -------------------------
+
+.badge-lg {
+  font-size: $badge-lg-font-size;
+}
+
+// Modifier: `badge-sm`
+// -------------------------
+
+.badge-sm {
+  padding: $badge-sm-padding;
+  font-size: $badge-sm-font-size;
+}

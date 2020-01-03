@@ -17,6 +17,7 @@
     value: true
   });
   _exports.default = void 0;
+  _jquery = babelHelpers.interopRequireDefault(_jquery);
   _Plugin2 = babelHelpers.interopRequireDefault(_Plugin2);
   var NAME = 'highlight';
 

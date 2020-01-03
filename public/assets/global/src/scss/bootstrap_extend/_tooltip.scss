@@ -1,0 +1,128 @@
+// Name:            Tooltip
+//
+// Component:       `tooltip`
+//
+// Modifiers:       `tooltip-primary`
+//                  `tooltip-success`
+//                  `tooltip-info`
+//                  `tooltip-warning`
+//                  `tooltip-danger`
+//                  `tooltip-rotate`
+//                  `tooltip-scale`
+//
+// Markup:
+//
+// <!-- tooltip -->
+// <div class="tooltip">
+//   <div class="arrow"></div>
+//   <div class="tooltip-inner"></div>
+// </div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$tooltip-arrow-width: 8px !default;
+$tooltip-primary-color: $inverse !default;
+$tooltip-primary-bg: $brand-primary !default;
+$tooltip-success-color: $inverse !default;
+$tooltip-success-bg: $brand-success !default;
+$tooltip-info-color: $inverse !default;
+$tooltip-info-bg: $brand-info !default;
+$tooltip-warning-color: $inverse !default;
+$tooltip-warning-bg: $brand-warning !default;
+$tooltip-danger-color: $inverse !default;
+$tooltip-danger-bg: $brand-danger !default;
+
+// Component: Tooltip
+// ========================================================================
+
+.tooltip {
+
+}
+
+.bs-tooltip-bottom,
+.bs-tooltip-top,
+.tooltip-bottom,
+.tooltip-top {
+  .arrow {
+    left: 50%;
+    margin-left: -($tooltip-arrow-width - 2);
+  }
+}
+
+.bs-tooltip-bottom,
+.tooltip-bottom {
+  .arrow {
+    top: 0;
+  }
+}
+
+.bs-tooltip-top,
+.tooltip-top {
+  .arrow {
+    bottom: 0;
+  }
+}
+
+.bs-tooltip-left,
+.bs-tooltip-right,
+.tooltip-left,
+.tooltip-right {
+  .arrow {
+    top: 50%;
+    margin-top: -($tooltip-arrow-width - 2);
+  }
+}
+
+.bs-tooltip-left,
+.tooltip-left {
+  .arrow {
+    right: 0;
+  }
+}
+
+.bs-tooltip-right,
+.tooltip-right {
+  .arrow {
+    left: 0;
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `tooltip-primary`
+// -------------------------
+
+.tooltip-primary {
+  @include tooltip-variant($tooltip-primary-color, $tooltip-primary-bg);
+}
+
+// Modifier: `tooltip-success`
+// -------------------------
+
+.tooltip-success {
+  @include tooltip-variant($tooltip-success-color, $tooltip-success-bg);
+}
+
+// Modifier: `tooltip-info`
+// -------------------------
+
+.tooltip-info {
+  @include tooltip-variant($tooltip-info-color, $tooltip-info-bg);
+}
+
+// Modifier: `tooltip-warning`
+// -------------------------
+
+.tooltip-warning {
+  @include tooltip-variant($tooltip-warning-color, $tooltip-warning-bg);
+}
+
+// Modifier: `tooltip-danger`
+// -------------------------
+
+.tooltip-danger {
+  @include tooltip-variant($tooltip-danger-color, $tooltip-danger-bg);
+}

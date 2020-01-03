@@ -1,0 +1,99 @@
+/**
+ * FormValidation (http://formvalidation.io)
+ * The best jQuery plugin to validate form fields. Support Bootstrap, Foundation, Pure, SemanticUI, UIKit and custom frameworks
+ *
+ * @author      https://twitter.com/formvalidation
+ * @copyright   (c) 2013 - 2016 Nguyen Huu Phuoc
+ * @license     http://formvalidation.io/license/
+ */
+
+/* --------------------
+ * Support Foundation 5
+ * -------------------- */
+
+/* Icon position */
+.fv-form-foundation5 .fv-control-feedback {
+    right: 15px;    /* The padding-right of .columns */
+    width: 37px;    /* Same as height of input */
+    height: 37px;
+    line-height: 37px;
+}
+
+.fv-form-foundation5 .row .row:not(.collapse) .fv-control-feedback {
+    right: 8px;     /* Multiple fields in the same row, same as padding-right of .row .row .column(s) */
+}
+
+.fv-form-foundation5 .row .collapse .fv-control-feedback {
+    right: 0;
+}
+
+.fv-form-foundation5.fv-form-horizontal [type="checkbox"]~.fv-control-feedback,
+.fv-form-foundation5.fv-form-horizontal [type="radio"]~.fv-control-feedback {
+    top: -8px;      /* labelHeight/2 - iconHeight/2 */
+}
+
+/* Stacked form */
+.fv-form-foundation5 label .fv-control-feedback {
+    top: 21px;      /* Same as height of label */
+}
+
+.fv-form-foundation5 [type="checkbox"]~.fv-control-feedback,
+.fv-form-foundation5 [type="radio"]~.fv-control-feedback {
+    top: 15px;
+}
+
+/* Color */
+.fv-form-foundation5 .error .fv-control-feedback {
+    color: #f04124; /* Same as $alert-color, .error */
+}
+
+.fv-form-foundation5 .fv-has-success label,
+.fv-form-foundation5 .fv-has-success .fv-control-feedback {
+    color: #43AC6A; /* Same as $success-color */
+}
+
+/* --------------------
+ * Support Foundation 6
+ * -------------------- */
+
+/* Icon position */
+.fv-form-foundation .fv-control-feedback {
+    right: 15px;    /* The padding-right of .columns */
+    width: 39px;    /* Same as height of input */
+    height: 39px;
+    line-height: 39px;
+}
+
+.fv-form-foundation [type="checkbox"]~.fv-control-feedback,
+.fv-form-foundation [type="radio"]~.fv-control-feedback {
+    top: -7px;      /* labelHeight/2 - iconHeight/2 */
+}
+
+.fv-form-foundation .form-error {
+    display: block;
+}
+
+/* Stacked form */
+.fv-form-foundation label .fv-control-feedback,
+.fv-form-foundation fieldset [type="checkbox"]~.fv-control-feedback,
+.fv-form-foundation fieldset [type="radio"]~.fv-control-feedback {
+    top: 25px;      /* Same as height of label */
+}
+
+/* Color */
+.fv-form-foundation .fv-has-error label,
+.fv-form-foundation .fv-has-error fieldset legend,
+.fv-form-foundation .fv-has-error .fv-control-feedback {
+    color: #ec5840; /* Same as .alert */
+}
+
+.fv-form-foundation .fv-has-success label,
+.fv-form-foundation .fv-has-success fieldset legend,
+.fv-form-foundation .fv-has-success .fv-control-feedback {
+    color: #3adb76; /* Same as .success */
+}
+
+/* Tooltip */
+.fv-foundation-tooltip:before {
+    border-color: transparent transparent #0a0a0a;
+}

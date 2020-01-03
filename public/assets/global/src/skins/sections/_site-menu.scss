@@ -1,0 +1,159 @@
+.site-menu {
+
+  &-item {
+    a {
+      color: $site-menubar-color;
+    }
+  }
+
+  > .site-menu-item {
+    &.open {
+      background: $site-menu-top-open-bg;
+
+      > a {
+        color: $site-menu-top-open-color;
+        background: $site-menu-top-open-head-bg;
+      }
+
+      &.hover {
+        > a {
+          background: $site-menu-top-open-head-bg;
+        }
+      }
+    }
+
+    &.hover, &:hover {
+      // color: $site-menu-top-hover-color;
+
+      > a {
+        color: $site-menu-top-hover-color;
+        background-color: $site-menu-top-hover-bg;
+      }
+    }
+
+    &.active {
+      background: $site-menu-top-active-bg;
+
+      border-top: 1px solid $site-menu-top-active-border-color;
+      border-bottom: 1px solid $site-menu-top-active-border-color;
+
+      > a {
+        color: $site-menu-top-active-color;
+        background: $site-menu-top-active-head-bg;
+      }
+
+      &.hover {
+        > a {
+          background: $site-menu-top-active-head-bg;
+        }
+      }
+    }
+  }
+
+  .site-menu-sub {
+    background: $site-menu-sub-bg;
+
+    .site-menu-item {
+      color: $site-menu-sub-color;
+
+      &.open {
+        background: $site-menu-sub-open-bg;
+
+        > a {
+          color: $site-menu-sub-open-color;
+        }
+
+        &.hover {
+          > a {
+            background-color: transparent;
+          }
+        }
+      }
+
+      &.hover, &:hover {
+        > a {
+          color: $site-menu-sub-hover-color;
+          background-color: $site-menu-sub-hover-bg;
+        }
+      }
+
+      &.active {
+        background: $site-menu-sub-active-bg;
+
+        > a {
+          color: $site-menu-sub-active-color;
+        }
+
+        &.hover {
+          > a {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+  }
+}
+
+.site-menubar-light {
+  .site-menu {
+    &-item {
+      a {
+        color: $site-menubar-light-color;
+      }
+      &.hover, &:hover {
+        > a {
+          background: $site-menu-light-top-open-head-bg;
+        }
+      }
+    }
+    > .site-menu-item {
+      &.open {
+        background: $site-menu-light-top-open-bg;
+        > a {
+          color: $site-menu-light-sub-open-color;
+        }
+      }
+
+      &.hover, &:hover {
+        background-color: $site-menu-light-top-hover-bg;
+        > a {
+          color: $site-menu-light-top-hover-color;
+        }
+      }
+
+      &.active {
+        background: $site-menu-light-top-active-bg;
+        > a {
+          color: $site-menu-light-top-active-color;
+        }
+      }
+    }
+    .site-menu-sub {
+      .site-menu-item {
+        &.open {
+          background: $site-menu-light-sub-open-bg;
+          > a {
+            color: $site-menu-light-sub-open-color;
+          }
+        }
+
+        &.hover, &:hover {
+          background-color: $site-menu-light-sub-active-bg;
+          > a {
+            color: $site-menu-light-sub-hover-color;
+          }
+          &.open {
+            background-color: $site-menu-light-sub-open-bg;
+          }
+        }
+
+        &.active {
+          background: $site-menu-light-sub-active-bg;
+          > a {
+            color: $site-menu-light-sub-active-color;
+          }
+        }
+      }
+    }
+  }
+}

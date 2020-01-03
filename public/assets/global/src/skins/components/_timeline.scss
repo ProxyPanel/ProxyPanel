@@ -1,0 +1,53 @@
+// Name:            Timeline
+//
+// Component:       `timeline`
+//
+// Modifiers:       'timeline-simple'
+//                  'timeline-single'
+//                  'timeline-avatar'
+//                  'timeline-nav'
+//                  'timeline-nav-single'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$timeline-line-color:                  $border-color-base !default;
+
+$timeline-dot-color:                   $color-white !default;
+$timeline-dot-bg:                      $brand-primary !default;
+$timeline-dot-border:                  $color-white !default;
+
+$timeline-info-bg:                     $gray-200 !default;
+$timeline-info-border:                 $timeline-info-bg !default;
+$timeline-info-border-size:            1px !default;
+
+$timeline-period-bg:                   $page-bg !default;
+
+$timeline-nav-color:                   $color-white !default;
+$timeline-nav-bg:                      $brand-primary !default;
+$timeline-nav-hover-bg:                $brand-primary-hover !default;
+
+// Component: Timeline
+// ========================================================================
+
+.timeline {
+  &:before {
+    background-color: $timeline-line-color;
+  }
+}
+
+.timeline-period {
+  background: $timeline-period-bg;
+}
+
+.timeline-dot {
+  color: $timeline-dot-color;
+  background-color: $timeline-dot-bg;
+}
+
+.timeline-info {
+  background: $timeline-info-bg;
+  border: $timeline-info-border-size solid $timeline-info-border;
+}

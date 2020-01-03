@@ -18,10 +18,10 @@ return [
 	'submit'                 => 'Submit',
 	'request'                => 'Request',
 	'remember'               => 'Remember Me',
-	'restPassword'           => 'Reset Password',
+	'resetPassword'          => 'Reset Password',
 	'new_password'           => 'Enter a new password',
 	'forget_password'        => 'Find my Password',
-	'reset_password'         => 'Rest Password',
+	'reset_password'         => 'Reset Password',
 	'get_free_code'          => 'Click to get a free invitation code',
 	'accept_term'            => 'I have read and agree to obey',
 	'tos'                    => 'Terms of Service',
@@ -65,8 +65,8 @@ return [
 	"reset_password_close"       => '"Find my Password"function is disabled.If you need help, Please email :email',
 	'reset_password_limit'       => 'Password can only be reset :time times within 24 hours!',
 	'reset_password_success_tip' => 'Reset successfully! Please check the mailbox (the email may be in the Trash)',
-	'rest_password_same_fail'    => 'The new password is the same as the old one. Please renter',
-	'rest_password_fail'         => 'Password reset failed',
+	'reset_password_same_fail'    => 'The new password is the same as the old one. Please renter',
+	'reset_password_fail'         => 'Password reset failed',
 	'reset_password_new'         => 'The new password has been set successfully!',
 	'request_error'              => 'Request exception, Please refresh and try again'
 ];

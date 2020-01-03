@@ -1,0 +1,65 @@
+
+.page {
+  background: $page-bg;
+}
+
+.page-dark {
+  &.layout-full {
+    color: $color-white;
+
+    &:after {
+      background-color: rgba($gray-800, (60/100));
+    }
+
+    .brand {
+
+      &-text {
+        color: $color-white;
+      }
+    }
+  }
+}
+
+.page-content-table {
+
+  .table {
+
+    > tbody > tr {
+      &:hover {
+        > td {
+          background-color: $gray-100;
+        }
+      }
+
+      &:last-child {
+        td {
+          border-bottom: 1px solid $gray-200;
+        }
+      }
+    }
+  }
+}
+
+.page-copyright {
+  color: $gray-700;
+  .social {
+    .icon {
+      @include icon-color-variant($icon-alt-color, $icon-alt-hover-color, $icon-alt-active-color);
+    }
+  }
+
+  &-inverse {
+    color: $inverse;
+
+    .social {
+      .icon {
+        color: $inverse;
+
+        &:hover,
+        &:active {
+          color: rgba($inverse, (80/100));
+        }
+      }
+    }
+  }
+}

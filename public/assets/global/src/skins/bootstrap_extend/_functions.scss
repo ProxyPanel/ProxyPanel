@@ -1,0 +1,11 @@
+// get brand-name-level color
+
+@function get-color-list($name) {
+  @return map-get($brand-colors,$name);
+}
+
+@function get-brand-color($name, $level) {
+  $colors-set: get-color-list($name);
+
+  @return map-get($colors-set,$level);
+}

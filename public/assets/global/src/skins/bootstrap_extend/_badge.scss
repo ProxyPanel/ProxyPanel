@@ -1,0 +1,144 @@
+// Name:            badges
+//
+// Component:       `badge`
+//
+// Modifiers:       `badge-outline`
+//                  `badge-primary`
+//                  `badge-success`
+//                  `badge-info`
+//                  `badge-warning`
+//                  `badge-danger`
+//                  `badge-dark`
+//                  `badge-lg`
+//                  `badge-sm`
+//                  `badge-radius`
+//
+// Markup:
+//
+// <!-- badge -->
+// <span class="badge">...</span>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$badge-bg:                    $bg-color-base !default;
+
+$badge-pill-active-color:     $gray-600 !default;
+$badge-pill-active-bg:        $brand-default !default;
+
+$badge-default-color:         $text-color !default;
+// $badge-default-font-size:     $font-size-base !default;
+
+$badge-default-hover-color:   $gray-400 !default;
+$badge-default-hover-bg:      $brand-default-hover !default;
+
+$badge-primary-hover-bg:      $brand-primary-hover !default;
+
+$badge-success-hover-bg:      $brand-success-hover !default;
+
+$badge-info-hover-bg:         $brand-info-hover !default;
+
+$badge-warning-hover-bg:      $brand-warning-hover !default;
+
+$badge-danger-hover-bg:       $brand-danger-hover !default;
+
+$badge-dark-bg:               $brand-dark !default;
+$badge-dark-hover-bg:         $brand-dark-hover !default;
+
+// Component: badge
+// ========================================================================
+
+.badge {
+  &.badge-outline {
+    color: $badge-bg;
+    background-color: transparent;
+    border-color: $badge-bg;
+  }
+}
+
+// Alternate styles: `badge-outline`
+// -------------------------
+
+.badge-outline {
+  border: 1px solid transparent;
+}
+
+// Modifier: `badge-round`
+// -------------------------
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `badge-default`
+// -------------------------
+
+.badge-default {
+  @include badge-styles-variant($badge-default-bg, $badge-default-hover-bg);
+  color: $badge-default-color;
+
+  &[href] {
+    &:hover,
+    &:focus {
+      color: $badge-default-hover-color;
+    }
+  }
+
+  &.badge-outline {
+    color: $badge-default-color;
+  }
+}
+
+// Modifier: `badge-primary`
+// -------------------------
+
+.badge-primary {
+  @include badge-styles-variant($badge-primary-bg, $badge-primary-hover-bg);
+}
+
+// Modifier: `badge-success`
+// -------------------------
+
+.badge-success {
+  @include badge-styles-variant($badge-success-bg, $badge-success-hover-bg);
+}
+
+// Modifier: `badge-info`
+// -------------------------
+
+.badge-info {
+  @include badge-styles-variant($badge-info-bg, $badge-info-hover-bg);
+}
+
+// Modifier: `badge-warning`
+// -------------------------
+
+.badge-warning {
+  @include badge-styles-variant($badge-warning-bg, $badge-warning-hover-bg);
+}
+
+// Modifier: `badge-danger`
+// -------------------------
+
+.badge-danger {
+  @include badge-styles-variant($badge-danger-bg, $badge-danger-hover-bg);
+}
+
+// Modifier: `badge-dark`
+// -------------------------
+
+.badge-dark {
+  @include badge-styles-variant($badge-dark-bg, $badge-dark-hover-bg);
+  @include badge-variant($badge-dark-bg);
+}
+
+// Size Modifier
+// ========================================================================
+
+// Modifier: `badge-lg`
+// -------------------------
+
+// Modifier: `badge-sm`
+// -------------------------
+

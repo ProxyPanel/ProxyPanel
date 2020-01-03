@@ -1,0 +1,33 @@
+@import 'vars';
+
+$chart-tooltip-bg: rgba(0, 0, 0, .7);
+$chart-tooltip-color: #fff;
+
+.chartist-tooltip-wrap, .ct-chart {
+  position: relative;
+}
+
+.chartist-tooltip {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  min-width: 5em;
+  padding: 3px 8px;
+  font-size: 12px;
+  background: $chart-tooltip-bg;
+  color: $chart-tooltip-color;
+  font-weight: 400;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 3px;
+  transition: opacity .2s linear;
+  
+  &.tooltip-show {
+    opacity: 1;
+  }
+}
+
+.ct-area, .ct-line {
+  pointer-events: none;
+}

@@ -107,6 +107,18 @@
 								</div>
 							</div>
 							<div class="form-group row">
+								<label class="col-md-2 col-sm-3 col-form-label" for="reset_time">重置日</label>
+								<div class="col-xl-4 col-sm-4">
+									<div class="input-group input-daterange" data-plugin="datepicker">
+										<div class="input-group-prepend">
+											<span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
+										</div>
+										<input type="text" class="form-control" name="reset_time" id="reset_time"/>
+									</div>
+									<span class="text-help"> 账号流量重置日期 </span>
+								</div>
+							</div>
+							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label">有效期</label>
 								<div class="col-xl-8 col-sm-8">
 									<div class="input-group input-daterange" data-plugin="datepicker">
@@ -345,6 +357,7 @@
                     pay_way: $("input:radio[name='pay_way']:checked").val(),
                     status: $("input:radio[name='status']:checked").val(),
                     labels: $('#labels').val(),
+                    reset_time: $('#reset_time').val(),
                     enable_time: $('#enable_time').val(),
                     expire_time: $('#expire_time').val(),
                     wechat: $('#wechat').val(),

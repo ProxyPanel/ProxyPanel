@@ -119,6 +119,18 @@
 								</div>
 							</div>
 							<div class="form-group row">
+								<label class="col-md-2 col-sm-3 col-form-label" for="reset_time">重置日</label>
+								<div class="col-xl-4 col-sm-4">
+									<div class="input-group input-daterange" data-plugin="datepicker">
+										<div class="input-group-prepend">
+											<span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
+										</div>
+										<input type="text" class="form-control" name="reset_time" id="reset_time" @if ($user->reset_time) value="{{$user->reset_time}} @endif"/>
+									</div>
+									<span class="text-help"> 账号流量重置日期 </span>
+								</div>
+							</div>
+							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label">有效期</label>
 								<div class="col-xl-8 col-sm-8">
 									<div class="input-group input-daterange" data-plugin="datepicker">
@@ -364,7 +376,7 @@
 					<div class="alert alert-danger" style="display: none;" id="msg"></div>
 					<div class="form-group row">
 						<label class="col-md-2 col-sm-3 col-form-label" for="amount"> 充值金额 </label>
-						<input type="number" class="col-sm-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" onkeydown="if(event.keyCode==13){return false;}"/>
+						<input type="number" class="col-sm-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" onkeydown="if(event.keyCode===13){return false;}"/>
 					</div>
 				</form>
 				<div class="modal-footer">
@@ -374,7 +386,6 @@
 			</div>
 		</div>
 	</div>
-
 @endsection
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
@@ -430,6 +441,7 @@
                     balance: $('#balance').val(),
                     status: $("input:radio[name='status']:checked").val(),
                     labels: $('#labels').val(),
+                    reset_time: $('#reset_time').val(),
                     enable_time: $('#enable_time').val(),
                     expire_time: $('#expire_time').val(),
                     wechat: $('#wechat').val(),

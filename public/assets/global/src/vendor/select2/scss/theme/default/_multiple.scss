@@ -1,0 +1,111 @@
+.select2-selection--multiple {
+  background-color: white;
+  border: 1px solid $input-border-color;
+  border-radius: $border-radius;
+  cursor: text;
+
+  .select2-selection__rendered {
+    box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0 5px;
+    width: 100%;
+
+    li {
+      list-style: none;
+    }
+  }
+
+  .select2-selection__placeholder {
+    color: $input-color-placeholder;
+    float: left;
+    margin-top: 5px;
+  }
+
+  .select2-selection__clear {
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-right: 10px;
+  }
+
+  .select2-selection__choice {
+    color: $input-color;
+    background: $btn-default-bg;
+    border: 1px solid $btn-default-border;
+    border-radius: $border-radius;
+    cursor: default;
+    float: left;
+    margin: (($padding-base-vertical - pxtorem(1.8px)) 0 0 ($padding-base-horizontal/2));
+    padding: 0 $padding-base-vertical;
+  }
+
+  .select2-selection__choice__remove {
+    color: #999;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: $font-weight-bold;
+    margin-right: ($padding-base-vertical/2);
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+&[dir="rtl"] {
+  .select2-selection--multiple {
+    .select2-selection__choice, .select2-selection__placeholder, .select2-search--inline {
+      float: right;
+    }
+
+    .select2-selection__choice {
+      margin-left: 0;
+      margin-right: ($padding-base-horizontal/2);
+    }
+
+    .select2-selection__choice__remove {
+      margin-left: 2px;
+      margin-right: auto;
+    }
+  }
+}
+
+&.select2-container--focus {
+  .select2-selection--multiple {
+    border: solid $input-focus-border-color 1px;
+    outline: 0;
+  }
+}
+
+&.select2-container--disabled {
+  .select2-selection--multiple {
+    background-color: $input-bg-disabled;
+    cursor: $cursor-disabled;
+  }
+
+  .select2-selection__choice__remove {
+    display: none;
+  }
+}
+
+&.input-sm,
+.input-group-sm &,
+.form-group-sm & {
+  .select2-selection--multiple {
+    min-height: $input-height-sm;
+    .select2-selection__choice {
+      font-size: $font-size-sm;
+      line-height: $line-height-sm;
+      margin: ($padding-small-vertical - pxtorem(1px)) 0 0 ($padding-small-horizontal/2);
+      padding: 0 $padding-small-vertical;
+    }
+
+    .select2-search--inline .select2-search__field {
+      padding: 0 $padding-small-horizontal;
+      font-size: $font-size-sm;
+      height: ($input-height-sm - pxtorem(2px));
+      line-height: $line-height-sm;
+    }
+  }
+}

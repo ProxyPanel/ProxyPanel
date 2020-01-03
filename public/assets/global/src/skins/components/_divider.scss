@@ -1,0 +1,87 @@
+// Name:            Divider
+//
+// Component:       `divider`
+//
+// Modifiers:       `divider-vertical'
+//                  `divider-horizontal`
+//                  `divider-inverted`
+//                  `divider-fitted`
+//                  `divider-clearing`
+//                  `divider-section`
+//
+// Markup:
+// <div class="divider"></div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$divider-color                   : rgba($color-black, (80/100)) !default;
+$divider-dark-border             : $divider-color-base; // before : rgba(0, 0, 0, 0.1) !default;
+$divider-light-border            : rgba($color-white, (80/100)) !default;
+
+$divider-inverse-color           : $color-white !default;
+$divider-inverse-direction-color : rgba($divider-inverse-color, (90/100)) !default;
+$divider-inverse-dark-border     : rgba(0, 0, 0, 0.15) !default;
+$divider-inverse-light-border    : rgba($color-white, (15/100)) !default;
+
+// Component: Divider
+// ========================================================================
+
+.divider {
+  border-top: 1px solid $divider-dark-border;
+  border-bottom: 1px solid $divider-light-border;
+}
+
+// Direction Modifier
+// ========================================================================
+
+.divider-vertical,
+.divider-horizontal {
+  color: $divider-color;
+}
+// Modifier: `divider-vertical`
+// -------------------------
+
+.divider-vertical {
+
+  &:before,
+  &:after {
+    border-right: 1px solid $divider-light-border;
+    border-left: 1px solid $divider-dark-border;
+  }
+}
+
+// Modifier: `divider-horizontal`
+// -------------------------
+
+.divider-horizontal {
+
+  &:before,
+  &:after {
+    border-top: 1px solid $divider-dark-border;
+    border-bottom: 1px solid $divider-light-border;
+  }
+}
+
+// Modifier: `divider-inverted`
+// ========================================================================
+
+.divider-inverted {
+  color: $divider-inverse-color;
+
+  &.divider-vertical,
+  &.divider-horizontal {
+    color: $divider-inverse-direction-color;
+  }
+
+  &,
+  &:before,
+  &:after {
+    border-top-color: $divider-inverse-dark-border;
+    border-right-color: $divider-inverse-light-border;
+    border-bottom-color: $divider-inverse-light-border;
+    border-left-color: $divider-inverse-dark-border;
+  }
+}

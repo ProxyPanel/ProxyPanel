@@ -1,0 +1,128 @@
+$color-red-100: #ffeaea !default;
+$color-red-200: #fad3d3 !default;
+$color-red-300: #fab4b4 !default;
+$color-red-400: #fa9898 !default;
+$color-red-500: #fa7a7a !default;
+$color-red-600: #f96868 !default;
+$color-red-700: #e9595b !default;
+$color-red-800: #d6494b !default;
+$color-pink-100: #fce4ec !default;
+$color-pink-200: #ffccde !default;
+$color-pink-300: #fba9c6 !default;
+$color-pink-400: #fb8db4 !default;
+$color-pink-500: #f978a6 !default;
+$color-pink-600: #f96197 !default;
+$color-pink-700: #f44c87 !default;
+$color-pink-800: #e53b75 !default;
+$color-purple-100: #f6f2ff !default;
+$color-purple-200: #e3dbf4 !default;
+$color-purple-300: #d2c5ec !default;
+$color-purple-400: #bba7e4 !default;
+$color-purple-500: #a58add !default;
+$color-purple-600: #926dde !default;
+$color-purple-700: #7c51d1 !default;
+$color-purple-800: #6d45bc !default;
+$color-indigo-100: #edeff9 !default;
+$color-indigo-200: #dadef5 !default;
+$color-indigo-300: #bcc5f4 !default;
+$color-indigo-400: #9daaf3 !default;
+$color-indigo-500: #8897ec !default;
+$color-indigo-600: #677ae4 !default;
+$color-indigo-700: #5166d6 !default;
+$color-indigo-800: #465bd4 !default;
+$color-blue-100: #e8f1f8 !default;
+$color-blue-200: #d5e4f1 !default;
+$color-blue-300: #bcd8f1 !default;
+$color-blue-400: #a2caee !default;
+$color-blue-500: #89bceb !default;
+$color-blue-600: #62a8ea !default;
+$color-blue-700: #4e97d9 !default;
+$color-blue-800: #3583ca !default;
+$color-cyan-100: #ecf9fa !default;
+$color-cyan-200: #d3eff2 !default;
+$color-cyan-300: #baeaef !default;
+$color-cyan-400: #9ae1e9 !default;
+$color-cyan-500: #77d6e1 !default;
+$color-cyan-600: #57c7d4 !default;
+$color-cyan-700: #47b8c6 !default;
+$color-cyan-800: #37a9b7 !default;
+$color-teal-100: #ecfdfc !default;
+$color-teal-200: #cdf4f1 !default;
+$color-teal-300: #99e1da !default;
+$color-teal-400: #79d1c9 !default;
+$color-teal-500: #56bfb5 !default;
+$color-teal-600: #3aa99e !default;
+$color-teal-700: #269b8f !default;
+$color-teal-800: #178d81 !default;
+$color-green-100: #e7faf2 !default;
+$color-green-200: #bfedd8 !default;
+$color-green-300: #9fe5c5 !default;
+$color-green-400: #7dd3ae !default;
+$color-green-500: #5cd29d !default;
+$color-green-600: #46be8a !default;
+$color-green-700: #36ab7a !default;
+$color-green-800: #279566 !default;
+$color-light-green-100: #f1f7ea !default;
+$color-light-green-200: #e0ecd1 !default;
+$color-light-green-300: #cadfb1 !default;
+$color-light-green-400: #bad896 !default;
+$color-light-green-500: #acd57c !default;
+$color-light-green-600: #9ece67 !default;
+$color-light-green-700: #83b944 !default;
+$color-light-green-800: #70a532 !default;
+$color-yellow-100: #fffae7 !default;
+$color-yellow-200: #f9eec1 !default;
+$color-yellow-300: #f6e7a9 !default;
+$color-yellow-400: #f8e59b !default;
+$color-yellow-500: #f7e083 !default;
+$color-yellow-600: #f7da64 !default;
+$color-yellow-700: #f9cd48 !default;
+$color-yellow-800: #fbc02d !default;
+$color-orange-100: #fff3e6 !default;
+$color-orange-200: #ffddb9 !default;
+$color-orange-300: #fbce9d !default;
+$color-orange-400: #f6be80 !default;
+$color-orange-500: #f4b066 !default;
+$color-orange-600: #f2a654 !default;
+$color-orange-700: #ec9940 !default;
+$color-orange-800: #e98f2e !default;
+$color-brown-100: #fae6df !default;
+$color-brown-200: #e2bdaf !default;
+$color-brown-300: #d3aa9c !default;
+$color-brown-400: #b98e7e !default;
+$color-brown-500: #a17768 !default;
+$color-brown-600: #8d6658 !default;
+$color-brown-700: #7d5b4f !default;
+$color-brown-800: #715146 !default;
+$color-grey-100: #fafafa !default;
+$color-grey-200: #eee !default;
+$color-grey-300: #e0e0e0 !default;
+$color-grey-400: #bdbdbd !default;
+$color-grey-500: #9e9e9e !default;
+$color-grey-600: #757575 !default;
+$color-grey-700: #616161 !default;
+$color-grey-800: #424242 !default;
+$color-blue-grey-100: #f3f7f9 !default;
+$color-blue-grey-200: #e4eaec !default;
+$color-blue-grey-300: #ccd5db !default;
+$color-blue-grey-400: #a3afb7 !default;
+$color-blue-grey-500: #76838f !default;
+$color-blue-grey-600: #526069 !default;
+$color-blue-grey-700: #37474f !default;
+$color-blue-grey-800: #263238 !default;
+$color-lists: (
+  "red": (
+    "100": $color-red-100, "200": $color-red-200, "300": $color-red-300, "400": $color-red-400, "500": $color-red-500, "600": $color-red-600, "700": $color-red-700, "800": $color-red-800, ), "pink": (
+      "100": $color-pink-100, "200": $color-pink-200, "300": $color-pink-300, "400": $color-pink-400, "500": $color-pink-500, "600": $color-pink-600, "700": $color-pink-700, "800": $color-pink-800, ), "purple": (
+        "100": $color-purple-100, "200": $color-purple-200, "300": $color-purple-300, "400": $color-purple-400, "500": $color-purple-500, "600": $color-purple-600, "700": $color-purple-700, "800": $color-purple-800, ), "indigo": (
+          "100": $color-indigo-100, "200": $color-indigo-200, "300": $color-indigo-300, "400": $color-indigo-400, "500": $color-indigo-500, "600": $color-indigo-600, "700": $color-indigo-700, "800": $color-indigo-800, ), "blue": (
+            "100": $color-blue-100, "200": $color-blue-200, "300": $color-blue-300, "400": $color-blue-400, "500": $color-blue-500, "600": $color-blue-600, "700": $color-blue-700, "800": $color-blue-800, ), "cyan": (
+              "100": $color-cyan-100, "200": $color-cyan-200, "300": $color-cyan-300, "400": $color-cyan-400, "500": $color-cyan-500, "600": $color-cyan-600, "700": $color-cyan-700, "800": $color-cyan-800, ), "teal": (
+                "100": $color-teal-100, "200": $color-teal-200, "300": $color-teal-300, "400": $color-teal-400, "500": $color-teal-500, "600": $color-teal-600, "700": $color-teal-700, "800": $color-teal-800, ), "green": (
+                  "100": $color-green-100, "200": $color-green-200, "300": $color-green-300, "400": $color-green-400, "500": $color-green-500, "600": $color-green-600, "700": $color-green-700, "800": $color-green-800, ), "light-green": (
+                    "100": $color-light-green-100, "200": $color-light-green-200, "300": $color-light-green-300, "400": $color-light-green-400, "500": $color-light-green-500, "600": $color-light-green-600, "700": $color-light-green-700, "800": $color-light-green-800, ), "yellow": (
+                      "100": $color-yellow-100, "200": $color-yellow-200, "300": $color-yellow-300, "400": $color-yellow-400, "500": $color-yellow-500, "600": $color-yellow-600, "700": $color-yellow-700, "800": $color-yellow-800, ), "orange": (
+                        "100": $color-orange-100, "200": $color-orange-200, "300": $color-orange-300, "400": $color-orange-400, "500": $color-orange-500, "600": $color-orange-600, "700": $color-orange-700, "800": $color-orange-800, ), "brown": (
+                          "100": $color-brown-100, "200": $color-brown-200, "300": $color-brown-300, "400": $color-brown-400, "500": $color-brown-500, "600": $color-brown-600, "700": $color-brown-700, "800": $color-brown-800, ), "grey": (
+                            "100": $color-grey-100, "200": $color-grey-200, "300": $color-grey-300, "400": $color-grey-400, "500": $color-grey-500, "600": $color-grey-600, "700": $color-grey-700, "800": $color-grey-800, ), "blue-grey": (
+                              "100": $color-blue-grey-100, "200": $color-blue-grey-200, "300": $color-blue-grey-300, "400": $color-blue-grey-400, "500": $color-blue-grey-500, "600": $color-blue-grey-600, "700": $color-blue-grey-700, "800": $color-blue-grey-800, ), ) !default;

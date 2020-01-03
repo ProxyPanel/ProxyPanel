@@ -275,30 +275,16 @@ class AuthController extends Controller
 			$transfer_enable = $referral_uid? (self::$systemConfig['default_traffic']+self::$systemConfig['referral_traffic'])*1048576 : self::$systemConfig['default_traffic']*1048576;
 
 			// 创建新用户
-			$user = new User();
-			$user->username = $request->username;
-			$user->password = Hash::make($request->password);
-			$user->port = $port;
-			$user->passwd = makeRandStr();
-			$user->vmess_id = createGuid();
-			$user->transfer_enable = $transfer_enable;
-			$user->method = Helpers::getDefaultMethod();
-			$user->protocol = Helpers::getDefaultProtocol();
-			$user->obfs = Helpers::getDefaultObfs();
-			$user->enable_time = date('Y-m-d H:i:s');
-			$user->expire_time = date('Y-m-d H:i:s', strtotime("+".self::$systemConfig['default_days']." days"));
-			$user->reg_ip = getClientIp();
-			$user->referral_uid = $referral_uid;
-			$user->save();
+			$uid = Helpers::addUser($request->username, Hash::make($request->password), $transfer_enable, self::$systemConfig['default_days'], $referral_uid);
 
 			// 注册失败，抛出异常
-			if(!$user->id){
+			if(!$uid){
 				return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
 			}
 
 			// 生成订阅码
 			$subscribe = new UserSubscribe();
-			$subscribe->user_id = $user->id;
+			$subscribe->user_id = $uid;
 			$subscribe->code = Helpers::makeSubscribeCode();
 			$subscribe->times = 0;
 			$subscribe->save();
@@ -315,7 +301,7 @@ class AuthController extends Controller
 				$labels = explode(',', self::$systemConfig['initial_labels_for_user']);
 				foreach($labels as $label){
 					$userLabel = new UserLabel();
-					$userLabel->user_id = $user->id;
+					$userLabel->user_id = $uid;
 					$userLabel->label_id = $label;
 					$userLabel->save();
 				}
@@ -323,48 +309,39 @@ class AuthController extends Controller
 
 			// 更新邀请码
 			if(self::$systemConfig['is_invite_register'] && $affArr['code_id']){
-				Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $user->id, 'status' => 1]);
+				Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $uid, 'status' => 1]);
 			}
 
 			// 清除邀请人Cookie
 			Cookie::unqueue('register_aff');
 
-			if(self::$systemConfig['is_verify_register']){
+
+			// 发送激活邮件
+			if(!self::$systemConfig['is_verify_register'] && self::$systemConfig['is_active_register']){
+				// 生成激活账号的地址
+				$token = md5(self::$systemConfig['website_name'].$request->username.microtime());
+				$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
+				$this->addVerify($uid, $token);
+
+				$logId = Helpers::addEmailLog($request->username, '注册激活', '请求地址：'.$activeUserUrl);
+				Mail::to($request->username)->send(new activeUser($logId, $activeUserUrl));
+
+				Session::flash('regSuccessMsg', trans('auth.register_success_tip'));
+			}else{
+				// 则直接给推荐人加流量
 				if($referral_uid){
 					$transfer_enable = self::$systemConfig['referral_traffic']*1048576;
-
-					User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
-					User::query()->where('id', $referral_uid)->update(['status' => 1, 'enable' => 1]);
+					$referralUser = User::query()->where('id', $referral_uid)->first();
+					if($referralUser){
+						if($referralUser->expire_time >= date('Y-m-d')){
+							User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
+						}
+					}
 				}
 
-				User::query()->where('id', $user->id)->update(['status' => 1, 'enable' => 1]);
+				User::query()->where('id', $uid)->update(['status' => 1, 'enable' => 1]);
 
 				Session::flash('regSuccessMsg', trans('auth.register_success'));
-			}else{
-				// 发送激活邮件
-				if(self::$systemConfig['is_active_register']){
-					// 生成激活账号的地址
-					$token = md5(self::$systemConfig['website_name'].$request->username.microtime());
-					$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
-					$this->addVerify($user->id, $token);
-
-					$logId = Helpers::addEmailLog($request->username, '注册激活', '请求地址：'.$activeUserUrl);
-					Mail::to($request->username)->send(new activeUser($logId, $activeUserUrl));
-
-					Session::flash('regSuccessMsg', trans('auth.register_success_tip'));
-				}else{
-					// 如果不需要激活，则直接给推荐人加流量
-					if($referral_uid){
-						$transfer_enable = self::$systemConfig['referral_traffic']*1048576;
-
-						User::query()->where('id', $referral_uid)->increment('transfer_enable', $transfer_enable);
-						User::query()->where('id', $referral_uid)->update(['status' => 1, 'enable' => 1]);
-					}
-
-					User::query()->where('id', $user->id)->update(['status' => 1, 'enable' => 1]);
-
-					Session::flash('regSuccessMsg', trans('auth.register_success'));
-				}
 			}
 
 			return Redirect::to('login')->withInput();
@@ -409,13 +386,7 @@ class AuthController extends Controller
 			}
 
 			// 生成取回密码的地址
-			$token = md5(self::$systemConfig['website_name'].$request->username.microtime());
-			$verify = new Verify();
-			$verify->type = 1;
-			$verify->user_id = $user->id;
-			$verify->token = $token;
-			$verify->status = 0;
-			$verify->save();
+			$token = $this->addVerifyUrl($user->id, $request->username);
 
 			// 发送邮件
 			$resetPasswordUrl = self::$systemConfig['website_url'].'/reset/'.$token;
@@ -459,13 +430,13 @@ class AuthController extends Controller
 			}elseif($verify->user->status < 0){
 				return Redirect::back()->withErrors(trans('auth.email_banned'));
 			}elseif(Hash::check($request->password, $verify->user->password)){
-				return Redirect::back()->withErrors(trans('auth.rest_password_same_fail'));
+				return Redirect::back()->withErrors(trans('auth.reset_password_same_fail'));
 			}
 
 			// 更新密码
 			$ret = User::query()->where('id', $verify->user_id)->update(['password' => Hash::make($request->password)]);
 			if(!$ret){
-				return Redirect::back()->withErrors(trans('auth.rest_password_fail'));
+				return Redirect::back()->withErrors(trans('auth.reset_password_fail'));
 			}
 
 			// 置为已使用
@@ -525,13 +496,7 @@ class AuthController extends Controller
 			}
 
 			// 生成激活账号的地址
-			$token = md5(self::$systemConfig['website_name'].$request->username.microtime());
-			$verify = new Verify();
-			$verify->type = 1;
-			$verify->user_id = $user->id;
-			$verify->token = $token;
-			$verify->status = 0;
-			$verify->save();
+			$token = $this->addVerifyUrl($user->id, $request->username);
 
 			// 发送邮件
 			$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
@@ -784,5 +749,19 @@ class AuthController extends Controller
 		$verify->code = $code;
 		$verify->status = 0;
 		$verify->save();
+	}
+
+	// 生成激活账号的地址
+	private function addVerifyUrl($uid, $username)
+	{
+		$token = md5(self::$systemConfig['website_name'].$username.microtime());
+		$verify = new Verify();
+		$verify->type = 1;
+		$verify->user_id = $uid;
+		$verify->token = $token;
+		$verify->status = 0;
+		$verify->save();
+
+		return $token;
 	}
 }

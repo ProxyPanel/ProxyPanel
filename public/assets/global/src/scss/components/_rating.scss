@@ -1,0 +1,93 @@
+// Name:            Rating
+//
+// Component:       `rating`
+//
+// Modifiers:       'rating-disabled'
+//                  'rating-sm'
+//                  'rating-lg'
+//                  'rating-hg'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$rating-size: $font-size-base !default;
+$rating-size-sm: $font-size-sm !default;
+$rating-size-lg: $font-size-lg !default;
+$rating-color: $gray-300 !default;
+$rating-active-color: $color-orange-600 !default;
+$rating-hover-color: $color-orange-600 !default;
+$rating-active-hover-color: $rating-hover-color !default;
+
+// Component: Rating
+// ========================================================================
+
+.rating {
+  display: inline-block;
+  margin: 0 .5rem 0 0;
+  font-size: 0;
+  vertical-align: middle;
+
+  &::before {
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    content: "";
+  }
+
+  &.hover .icon.active {
+    opacity: .5;
+  }
+
+  .icon {
+    width: 1em;
+    height: auto;
+    padding: 0;
+    margin: 0 10px 0 0;
+    font-size: $rating-size;
+    color: $rating-color;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &::before {
+      transition: color .3s ease, opacity .3s ease;
+    }
+
+    &.active {
+      color: $rating-active-color !important;
+
+      &.hover {
+        color: $rating-active-hover-color !important;
+        opacity: 1;
+      }
+    }
+
+    &.hover {
+      color: $rating-hover-color !important;
+      opacity: 1;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+// Modifier: `rating-disabled`
+// ========================================================================
+
+.rating-disabled .icon {
+  cursor: default;
+}
+
+// Size Modifier
+// ========================================================================
+
+.rating-sm .icon {
+  font-size: $rating-size-sm;
+}
+
+.rating-lg .icon {
+  font-size: $rating-size-lg;
+}

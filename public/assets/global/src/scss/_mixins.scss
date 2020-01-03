@@ -1,0 +1,94 @@
+// Mixins
+// --------------------------------------------------
+// Bootstrap's mixins
+// @import 'bootstrap/mixins';
+// Toggles
+//
+// Used in conjunction with global variables to enable certain theme features.
+
+// v4-dev remove
+// @mixin border-radius($radius: $border-radius) {
+//   @if $enable-rounded {
+//     border-radius: $radius;
+//   }
+// }
+
+// @mixin box-shadow($shadow...) {
+//   @if $enable-shadows {
+//     box-shadow: $shadow;
+//   }
+// }
+
+// @mixin transition($transition...) {
+//   @if $enable-transitions {
+//     @if length($transition) == 0 {
+//       transition: $transition-base;
+//     } @else {
+//       transition: $transition;
+//     }
+//   }
+// }
+
+// Utilities
+@import "mixins/breakpoints";
+@import "mixins/hover";
+@import "mixins/image";
+@import "mixins/badge";
+@import "mixins/resize";
+@import "mixins/screen-reader";
+@import "mixins/size";
+@import "mixins/reset-text";
+@import "mixins/text-emphasis";
+@import "mixins/text-hide";
+@import "mixins/text-truncate";
+@import "mixins/visibility";
+
+// // Components
+@import "mixins/alert";
+@import "mixins/buttons";
+@import "mixins/caret";
+@import "mixins/pagination";
+@import "mixins/lists";
+@import "mixins/list-group";
+@import "mixins/nav-divider";
+@import "mixins/forms";
+@import "mixins/table-row";
+
+// // Skins
+@import "mixins/background-variant";
+@import "mixins/border-radius";
+@import "mixins/box-shadow";
+@import "mixins/gradients";
+@import "mixins/transition";
+
+// // Layout
+@import "mixins/clearfix";
+@import "mixins/grid-framework";
+@import "mixins/grid";
+@import "mixins/float";
+
+// extend mixins
+@import "mixins_extend/cards";
+@import "mixins_extend/icon";
+@import "mixins_extend/hamburger";
+@import "mixins_extend/shadow";
+@import "mixins_extend/transform";
+@import "mixins_extend/forms";
+@import "mixins_extend/progress-bars";
+@import "mixins_extend/text-break";
+@import "mixins_extend/font-weight";
+@import "mixins_extend/z-index";
+@import "mixins_extend/tab-focus";
+@import "mixins_extend/px2rem";
+@import "mixins_extend/table-row";
+@import "mixins_extend/table-thead";
+@import "mixins_extend/alerts";
+@import "mixins_extend/buttons";
+@import "mixins_extend/dropdowns";
+@import "mixins_extend/modals";
+@import "mixins_extend/navs";
+@import "mixins_extend/popovers";
+@import "mixins_extend/badges";
+@import "mixins_extend/tooltip";
+@import "mixins_extend/blockquote";
+@import "mixins_extend/list-group";

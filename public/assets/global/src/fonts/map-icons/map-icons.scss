@@ -1,0 +1,18 @@
+/**
+ * Map Icons, 3.0.3
+ * Created by [object Object]
+ * https://github.com/scottdejonge/Map-Icons#readme
+ * ISC License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$map-icon-css-prefix}-"],
+[class*=" #{$map-icon-css-prefix}-"] {
+  font-family: '#{$map-icon-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

@@ -1,0 +1,17 @@
+@mixin hamburger-arrow-left() {
+  transform: rotate(180deg);
+
+  &::before {
+    width: .6em;
+    transform: translate3d(.45em, .1em, 0) rotate(45deg);
+  }
+
+  .hamburger-bar {
+    border-radius: .2em;
+  }
+
+  &::after {
+    width: .6em;
+    transform: translate3d(.45em, -.1em, 0) rotate(-45deg);
+  }
+}

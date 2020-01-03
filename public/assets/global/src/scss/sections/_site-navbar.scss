@@ -1,0 +1,58 @@
+.site-navbar {
+  background-color: $site-navbar-header-bg;
+
+  .navbar-header {
+    @include media-breakpoint-up(md) {
+      width: $site-menubar-unfold-width;
+    }
+    color: $site-navbar-header-color;
+    background-color: transparent;
+
+    .navbar-toggler {
+      color: $site-navbar-header-color;
+    }
+
+    .hamburger {
+      &::before, &::after, .hamburger-bar {
+        background-color: $site-navbar-header-color;
+      }
+    }
+
+    .navbar-brand {
+      font-family: $brand-font-family;
+      color: $site-navbar-brand-color;
+      cursor: pointer;
+    }
+  }
+
+  .navbar-container {
+    @include media-breakpoint-up(md) {
+      margin-left: $site-menubar-unfold-width;
+    }
+    background-color: $inverse;
+  }
+
+  &.navbar-inverse {
+    .navbar-container {
+      background-color: transparent;
+    }
+  }
+}
+
+// for navbar fixed
+//===============================================
+@include media-breakpoint-down(sm) {
+  .site-navbar.navbar {
+    .navbar-header {
+      flex: 1 1 auto;
+    }
+
+    .navbar-collapse {
+      flex: 1 1 100%;
+    }
+
+    .navbar-search {
+      flex: 1 1 100%;
+    }
+  }
+}

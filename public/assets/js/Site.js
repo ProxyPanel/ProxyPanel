@@ -18,7 +18,7 @@
   });
   _exports.run = run;
   _exports.getInstance = getInstance;
-  _exports.Site = _exports.default = void 0;
+  _exports.default = _exports.Site = void 0;
   _jquery = babelHelpers.interopRequireDefault(_jquery);
   _Base2 = babelHelpers.interopRequireDefault(_Base2);
   _Menubar = babelHelpers.interopRequireDefault(_Menubar);

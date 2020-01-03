@@ -1,0 +1,116 @@
+@import 'vars';
+
+//jquery-selective
+.addMember {
+  .avatar {
+    display: inline-block;
+    width: 30px;
+  }
+
+  &-items {
+    display: inline-block;
+    padding-left: 0;
+    margin-bottom: 0;
+    vertical-align: middle;
+    list-style: none;
+  }
+
+  &-item {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+
+    &:hover {
+      .addMember-remove {
+        display: block;
+      }
+    }
+  }
+
+  &-remove {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    display: none;
+    font-size: 10px;
+    line-height: 1;
+    color: $color-red-500;
+    cursor: pointer;
+    background-color: $inverse;
+    border-radius: 50%;
+  }
+
+  &-trigger {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+
+    &-button {
+      width: 30px;
+      height: 30px;
+      line-height: 28px;
+      color: $inverse;
+      text-align: center;
+      cursor: pointer;
+      background-color: #dcdfe3;
+      border-radius: 50%;
+
+      &:hover {
+        background-color: #e6e9ed;
+      }
+    }
+
+    &-dropdown {
+      position: absolute;
+      top: 0;
+      left: 45px;
+      z-index: $zindex-dropdown;
+      display: none;
+      padding: 1px;
+      background-color: $inverse;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+
+      &:before {
+        position: absolute;
+        top: 6px;
+        left: -19px;
+        display: block;
+        width: 0;
+        height: 0;
+        content: "";
+        border-color: transparent #fff transparent transparent;
+        border-style: solid;
+        border-width: 10px;
+      }
+    }
+
+    &.addMember-active {
+      .addMember-trigger-dropdown {
+        display: block;
+      }
+    }
+  }
+
+  &-list {
+    max-height: 260px;
+    padding-left: 0;
+    margin-bottom: 0;
+    overflow-y: auto;
+    list-style: none;
+
+    &-item {
+      padding: 8px 20px;
+      margin-bottom: 1px;
+      white-space: nowrap;
+      cursor: pointer;
+
+      > .avatar {
+        margin-right: 10px;
+      }
+
+      &.addMember-selected, &:hover {
+        background-color: $gray-100;
+      }
+    }
+  }
+}

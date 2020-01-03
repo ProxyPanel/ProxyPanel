@@ -1,0 +1,284 @@
+// Name:            Example
+//
+// Component:       `example`
+//
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$example-title-text-shadow: $color-white !default;
+$example-title-span-color: #ed5565 !default;
+$example-typography-note-color: #aab2bd !default;
+$example-well-bg: $page-bg !default;
+
+// Component: Example
+// ========================================================================
+.example-wrap {
+  margin-bottom: 80px;
+
+  .example-wrap {
+    margin-bottom: 0;
+  }
+}
+
+.example {
+  @include clearfix(); // add
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  &::before {
+    display: table;
+    content: "";
+  }
+}
+
+// Modifier: `example-title`
+// ========================================================================
+
+.example-title {
+  text-transform: uppercase;
+}
+
+h4.example-title {
+  font-size: 14px;
+}
+
+h3.example-title {
+  font-size: 18px;
+}
+
+// Panel
+// ========================================================================
+
+.panel-body {
+  > .example-wrap:last-child {
+    margin-bottom: 0;
+  }
+
+  > .row:last-child {
+    > [class*="col-"]:last-child {
+      .example-wrap:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// Modifier: `example-well`
+// ========================================================================
+
+.example-well {
+  position: relative;
+  margin-bottom: 30px;
+  background-color: $example-well-bg;
+
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 100%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// Modifier: `example-dropdown`
+// ========================================================================
+
+.example-dropdown {
+  .dropdown, .dropup {
+    @include clearfix();
+
+    > .dropdown-toggle {
+      float: left;
+    }
+
+    > .dropdown-menu {
+      position: static;
+      display: block;
+      clear: left;
+    }
+
+    > .dropdown-menu-right {
+      float: right;
+      clear: right;
+    }
+  }
+}
+
+// Modifier: `example-tooltip`
+// ========================================================================
+
+.example-tooltip {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+
+  .tooltip {
+    position: relative;
+    margin-right: 25px;
+    opacity: 1;
+
+    &.bs-tooltip-bottom, &.bs-tooltip-top {
+      .arrow {
+        left: 50%;
+      }
+    }
+
+    &.bs-tooltip-bottom {
+      .arrow {
+        top: 0;
+      }
+    }
+
+    &.bs-tooltip-top {
+      .arrow {
+        bottom: 0;
+      }
+    }
+
+    &.bs-tooltip-left, &.bs-tooltip-right {
+      .arrow {
+        top: 50%;
+      }
+    }
+
+    &.bs-tooltip-left {
+      .arrow {
+        right: 0;
+      }
+    }
+
+    &.bs-tooltip-right {
+      .arrow {
+        left: 0;
+      }
+    }
+  }
+}
+
+// Modifier: `example-grid`
+// ========================================================================
+
+.example-grid .example-col, .example-blocks .example-col {
+  min-height: 0;
+  padding: 10px 15px 12px;
+  background-color: $example-well-bg;
+  border-radius: 0;
+}
+
+.example-grid .example-col {
+  margin-bottom: 20px;
+}
+
+.example-grid .example-col .example-col {
+  margin-top: 20px;
+  margin-bottom: 0;
+  background-color: darken($example-well-bg, 5%);
+}
+
+// Modifier: `example-popover`
+// ========================================================================
+
+.example-popover {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+
+  .popover {
+    position: relative;
+    display: block;
+    margin-right: 25px;
+  }
+}
+
+// Modifier: `example-buttons`
+// ========================================================================
+
+.example-buttons {
+  .btn, .btn-group, .btn-group-vertical {
+    margin-right: 15px;
+    margin-bottom: 20px;
+  }
+
+  .btn-group-vertical, .btn-group {
+    .btn, .btn-group, .btn-group-vertical {
+      margin-right: 0;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Modifier: `example-box`
+// ========================================================================
+
+.example-box {
+  position: relative;
+  padding: 45px 15px 15px;
+  margin-right: 0;
+  margin-left: 0;
+  border: 1px solid $border-color-base;
+
+  &::after {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: $font-size-sm;
+    color: #959595;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    content: "Example";
+  }
+}
+// Modifier: `example-avatars`
+// ========================================================================
+
+.example-avatars {
+  .avatar {
+    margin-right: 20px;
+    margin-bottom: 20px;
+
+    &:last-child {
+      margin-right: 20px;
+    }
+  }
+}
+
+// Modifier: `example-typography`
+// ========================================================================
+
+.example-typography {
+  position: relative;
+  padding-left: 25%;
+
+  .heading-note, .text-note {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    display: block;
+    width: 260px;
+    font-size: 13px;
+    font-weight: $font-weight-normal;
+    line-height: 13px;
+    color: $example-typography-note-color;
+  }
+
+  .text-note {
+    top: 10px;
+    bottom: auto;
+  }
+}
+
+// Modifier: `example-typography`
+// ========================================================================
+.example-responsive {
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+  min-height: .01%; // Workaround for IE9 bug (see https://github.com/twbs/bootstrap/issues/14837)
+  overflow-x: auto;
+}

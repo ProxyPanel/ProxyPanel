@@ -1,0 +1,112 @@
+@import 'vars';
+
+// Variables
+// ========================================================================
+$gauge-width: 200px;
+$gauge-label-font-size: 24px;
+$gauge-label-color: $gray-700;
+$gauge-sm-width: 150px;
+$gauge-sm-label-font-size: 18px;
+$gauge-lg-width: 300px;
+$gauge-lg-label-font-size: 36px;
+$donut-width: 200px;
+$donut-label-font-size: 24px;
+$donut-label-color: $gray-700;
+$donut-sm-width: 150px;
+$donut-sm-label-font-size: 18px;
+$donut-lg-width: 300px;
+$donut-lg-label-font-size: 36px;
+
+// Component: Gauge
+// ========================================================================
+
+.gauge {
+  position: relative;
+  text-align: center;
+
+  canvas {
+    display: inline-block;
+    width: $gauge-width;
+    max-width: 100%;
+  }
+
+  &-label {
+    position: absolute;
+    bottom: 15%;
+    width: 100%;
+    font-size: $gauge-label-font-size;
+    font-weight: $font-weight-bold;
+    color: $gauge-label-color;
+  }
+}
+
+// Size Modifiers
+// ========================================================================
+
+.gauge-sm {
+  canvas {
+    width: $gauge-sm-width;
+  }
+
+  .gauge-label {
+    font-size: $gauge-sm-label-font-size;
+  }
+}
+
+.gauge-lg {
+  canvas {
+    width: $gauge-lg-width;
+  }
+
+  .gauge-label {
+    font-size: $gauge-lg-label-font-size;
+  }
+}
+
+// Component: Donut
+// ========================================================================
+
+.donut {
+  position: relative;
+  text-align: center;
+
+  canvas {
+    display: inline-block;
+    width: $donut-width;
+    max-width: 100%;
+  }
+
+  &-label {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    font-size: $donut-label-font-size;
+    font-weight: $font-weight-bold;
+    color: $donut-label-color;
+    transform: translateY(-50%);
+  }
+}
+
+// Size Modifiers
+// ========================================================================
+
+.donut-sm {
+  canvas {
+    width: $donut-sm-width;
+  }
+
+  .donut-label {
+    font-size: $donut-sm-label-font-size;
+  }
+}
+
+.donut-lg {
+  canvas {
+    width: $donut-lg-width;
+  }
+
+  .donut-label {
+    font-size: $donut-lg-label-font-size;
+  }
+}
+

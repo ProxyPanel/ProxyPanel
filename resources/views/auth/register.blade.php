@@ -279,7 +279,7 @@
 					<button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close" style="position:absolute;">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">{{\App\Components\Helpers::systemConfig()['website_name']}} - {{trans('auth.aup')}}  <small>2019年11月28日10:49</small></h4>
+					<h4 class="modal-title">{{\App\Components\Helpers::systemConfig()['website_name']}} - {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>
 				</div>
 				<div class="modal-body">
 					<p class="mt-15">以下是本站的可接受使用策略（AUP）。在使用本站的服务之前，您必须同意此协议，您也同意要求您的最终用户遵守此协议。本站保留随时修改本协议的权力。您同意您将定期访问本页面查看最新协议，您继续使用本站服务代表您继续同意本协议。</p>

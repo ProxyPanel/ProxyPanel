@@ -25,7 +25,8 @@
     "riverslei/payment": "*",
     "spatie/laravel-permission": "^2.29",
     "youzanyun/open-sdk": "^2.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-curl": "*"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.2",

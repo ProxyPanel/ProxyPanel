@@ -1,0 +1,370 @@
+// Name:            Forms
+//
+// Component:       `form`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$form-control-round-border-radius: 200px !default;
+$input-search-font-size: 16px !default;
+$input-search-icon-width: $input-height !default;
+$input-search-icon-line-height: $input-height !default;
+$input-search-icon-z-index: $zindex-base !default;
+
+// Component: Form
+// ========================================================================
+
+.form-control {
+  // }
+  box-sizing: border-box;
+  height: $input-height; // for ie-s
+  font-weight: $font-weight-light;
+  border-color: $input-border; // add from---v3
+  box-shadow: none; // for remove iphone-safari input box-shadow inset
+  transition: box-shadow .25s linear, border .25s linear, color .25s linear, background-color .25s linear;
+  // &:not(select) {//remove ios default style but select triangle'problem also
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  // Placeholder
+  &::placeholder {
+    font-weight: $font-weight-light;
+  }
+}
+
+// Unified style for select
+select.form-control {
+  padding-right: 30px;
+  background: $input-bg url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAFCAYAAABB9hwOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiNWZkMzNlMC0zNTcxLTI4NDgtYjA3NC01ZTRhN2RjMWVmNjEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTUxRUI3MDdEQjk4MTFFNUI1NDA5QTcyNTlFQzRERTYiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTUxRUI3MDZEQjk4MTFFNUI1NDA5QTcyNTlFQzRERTYiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6ZWNiNjQzMjYtNDc1Yi01OTQxLWIxYjItNDVkZjU5YjZlODA2IiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6N2RlYzI2YWMtZGI5OC0xMWU1LWIwMjgtY2ZhNDhhOGNjNWY1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+AXTIGgAAAFRJREFUeNpidI1KSWFgYDBlwASngXjOrqWzGcgBTEC8DIjfo4m/h4qTDUAGfwPi+UD8Hyr2H8r/RqnBIHATiPdC2XuhfIoACxJ7PRDzQmmKAUCAAQDxOxHyb4DjOAAAAABJRU5ErkJggg==) no-repeat center right;
+}
+
+select[multiple].form-control {
+  padding-right: $input-btn-padding-x;
+  background-image: none;
+}
+
+// for state focus
+.form-control.focus, .form-control:focus {
+  outline: 0;
+}
+
+// size
+.form-control-sm {
+  height: $input-height-sm;
+}
+
+.form-control-lg {
+  height: $input-height-lg;
+}
+
+// stylelint-disable no-duplicate-selectors
+// select.form-control-lg {
+//   &:not([size]):not([multiple]) {
+//     height: $input-height-lg;
+//   }
+// }
+
+// select.form-control-sm {
+//   &:not([size]):not([multiple]) {
+//     height: $input-height-sm;
+//   }
+// }
+
+select.form-control {
+  &[size],
+  &[multiple] {
+    height: auto;
+  }
+}
+
+textarea.form-control {
+  height: auto;
+}
+// stylelint-enable no-duplicate-selectors
+
+// form-control-label
+.form-group {
+  .form-control-label {
+    padding: $input-btn-padding-y 0;
+
+    &-lg {
+      padding: $input-btn-padding-y-lg 0;
+      font-size: $font-size-lg;
+    }
+
+    &-sm {
+      padding: $input-btn-padding-y-sm 0;
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// // states
+// .has-success {
+//   @include form-control-extend-validation($form-success-text, $form-success-text, $form-success-bg);
+// }
+
+// .has-warning {
+//   @include form-control-extend-validation($form-warning-text, $form-warning-text, $form-warning-bg);
+// }
+
+// // .has-error class was replace by .has-danger(v4)
+// .has-danger {
+//   @include form-control-extend-validation($form-danger-text, $form-danger-text, $form-danger-bg);
+// }
+
+// form-group
+.form-group {
+  margin-bottom: $form-group-margin-bottom;
+
+  &.has-feedback.no-label {
+    .form-control-feedback {
+      top: 0;
+    }
+  }
+
+  &.has-feedback.left-feedback {
+    .form-control-feedback {
+      right: auto;
+      left: 0;
+    }
+
+    .form-control {
+      padding-right: 13px;
+      padding-left: 50px;
+    }
+  }
+}
+
+// Modifier: `form-style`
+// -------------------------
+.form-control.square {
+  border-radius: 0;
+}
+
+.form-control.round {
+  border-radius: $form-control-round-border-radius;
+}
+// no-resize textarea
+textarea.form-control.no-resize {
+  resize: none;
+}
+
+// Modifier: `input-group-file`
+// ----------------------------
+.input-group-file {
+  input[type="text"] {
+    background-color: $input-bg;
+  }
+
+  .btn-file {
+    position: relative;
+    overflow: hidden;
+    line-height: inherit;
+
+    &.btn-outline {
+      border: 1px solid $input-border;
+      border-left: none;
+
+      &:hover {
+        border-left: none;
+      }
+    }
+
+    .icon {
+      margin: 0 3px;
+      line-height: inherit;
+    }
+
+    input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      min-width: 100%;
+      min-height: 100%;
+      text-align: 0;
+      cursor: pointer;
+      opacity: 0;
+    }
+  }
+}
+
+// Modifier: `help-block`
+// "help-block" was replace by "text-help" in alpha2
+// alpha3 instead of it with <small class="text-muted">
+// Here retain it for some js plugin style it
+// ----------------------
+.text-help {
+  display: block; // add v3
+  margin-top: 7px;
+  margin-bottom: 8px;
+  color: lighten($text-color, 25%); // add v3
+
+  .icon {
+    margin: 0 5px;
+  }
+}
+
+// Input Search
+// ========================================================================
+.input-search-close {
+  color: $close-color;
+  text-shadow: $close-text-shadow;
+  opacity: .2;
+
+  &.icon {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  &:hover, &:focus {
+    color: $close-color;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+  }
+}
+
+button.input-search-close {
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+
+  &:focus {
+    outline: 0 none; // (remove focus outline style)
+  }
+}
+
+.input-search {
+  position: relative;
+
+  .form-control {
+    border-radius: $form-control-round-border-radius;
+  }
+
+  .input-search-icon, .input-search-close {
+    position: absolute;
+    top: 50%;
+    z-index: $input-search-icon-z-index;
+    width: $input-search-icon-width;
+    transform: translateY(-50%);
+  }
+
+  .input-search-close {
+    right: ($input-search-font-size / 2);
+  }
+
+  .input-search-icon + .form-control {
+    padding-left: ($input-search-icon-width + ($padding-base-horizontal / 2));
+  }
+
+  .input-search-icon {
+    left: ($input-search-font-size / 2);
+    font-size: $input-search-font-size;
+    color: $input-placeholder-color;
+    text-align: center;
+    pointer-events: none;
+  }
+}
+
+.input-search-btn + .form-control {
+  padding-right: 50px;
+}
+
+.input-search-btn {
+  position: absolute;
+  top: 0;
+  right: ($input-search-font-size / 2);
+  height: 100%;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-radius: 0 $form-control-round-border-radius $form-control-round-border-radius 0;
+
+  .icon {
+    margin: 0 3px;
+  }
+}
+
+button.input-search-btn {
+  &,
+  &:focus {
+    outline: 0; // (remove focus outline style)
+  }
+}
+
+.input-search-dark {
+  .input-search-icon {
+    color: $gray-500;
+  }
+
+  .form-control {
+    background: $gray-100;
+    box-shadow: none;
+
+    &:focus {
+      background-color: $input-focus-bg;
+    }
+  }
+}
+
+// Inline forms
+// ========================================================================
+.form-inline {
+  @include media-breakpoint-down(sm) {
+    .form-group {
+      margin-right: 0;
+    }
+  }
+
+  .form-group {
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .form-control-label {
+    margin-right: 5px;
+  }
+}
+
+// Horizontal forms
+// ========================================================================
+.form-horizontal .form-control-label {
+  padding-right: 15px;
+  padding-left: 15px;
+  font-size: $font-size-base;
+}
+
+@include media-breakpoint-up(md) {
+  .form-horizontal .form-control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+  }
+
+  .form-horizontal {
+    .form-control-lg {
+      padding-top: 11px;
+      font-size: pxtorem(18px);
+    }
+
+    .form-control-sm {
+      padding-top: 7px;
+      font-size: pxtorem(12px);
+    }
+  }
+}
+
+//for remove ie11 Pseudo class text
+input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}

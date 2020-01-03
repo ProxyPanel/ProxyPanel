@@ -1,0 +1,126 @@
+
+
+// Checkboxes
+// ========================================================================
+.checkbox-custom {
+
+  label {
+
+    &::before {
+      border: 1px solid $input-border;
+      background-color: $color-white;
+    }
+
+    &::after {
+      color: $input-color;
+    }
+  }
+
+  input[type="checkbox"],
+  input[type="radio"]{
+
+    &:focus + label::before {
+      @include tab-focus();
+    }
+
+    &:checked + label::before {
+      border-color: $input-border;
+    }
+
+    &:disabled + label {
+
+      &::before {
+        background-color:  $gray-100;
+        border-color: $input-border;
+      }
+    }
+  }
+}
+
+// Checkbox Color Modifier
+// ========================================================================
+
+@mixin checkbox-variant($color){
+  input[type="checkbox"]:checked + label,
+  input[type="radio"]:checked + label {
+    &::before {
+      background-color: $color;
+      border-color: $color;
+    }
+    &::after {
+      color: $color-white;
+    }
+  }
+}
+
+.checkbox-default {
+  input[type="checkbox"]:checked + label,
+  input[type="radio"]:checked + label {
+    &::before {
+      background-color: $color-white;
+      border-color: $input-border;
+    }
+    &::after {
+      color: $brand-primary;
+    }
+  }
+}
+
+.checkbox-primary {
+  @include checkbox-variant($brand-primary);
+}
+.checkbox-danger {
+  @include checkbox-variant($brand-danger);
+}
+.checkbox-info {
+  @include checkbox-variant($brand-info);
+}
+.checkbox-warning {
+  @include checkbox-variant($brand-warning);
+}
+.checkbox-success {
+  @include checkbox-variant($brand-success);
+}
+
+// Rdios Color Modifier
+// ========================================================================
+
+@mixin radio-variant($color){
+  input[type="radio"]:checked + label {
+    &::before {
+      // background-color: $color;
+      border-color: $color;
+    }
+    &::after {
+      border-color: $color-white;
+    }
+  }
+}
+
+.radio-default {
+  input[type="radio"]:checked + label {
+    &::before {
+      background-color: $color-white;
+      border-color: $input-border;
+    }
+    &::after {
+      border-color: $brand-primary;
+    }
+  }
+}
+
+.radio-primary {
+  @include radio-variant($brand-primary);
+}
+.radio-danger {
+  @include radio-variant($brand-danger);
+}
+.radio-info {
+  @include radio-variant($brand-info);
+}
+.radio-warning {
+  @include radio-variant($brand-warning);
+}
+.radio-success {
+  @include radio-variant($brand-success);
+}

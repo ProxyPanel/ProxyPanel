@@ -1,0 +1,164 @@
+// Variables
+// ========================================================================
+$blockquote-font-size: 20px !default;
+$blockquote-color: $gray-600 !default;
+$blockquote-styles-padding: 15px 20px !default;
+$blockquote-success-border: $brand-success !default;
+$blockquote-info-border: $brand-info !default;
+$blockquote-warning-border: $brand-warning !default;
+$blockquote-danger-border: $brand-danger !default;
+
+// Component: Typography
+// ========================================================================
+
+// Headings
+// -------------------------
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  text-shadow: $headings-text-shadow;
+
+  .icon:first-child {
+    margin-right: .5em;
+  }
+}
+
+h1, h2, h3, .h1, .h2, .h3 {
+  margin-top: 22px;
+  margin-bottom: 11px;
+}
+
+h4, h5, h6, .h4, .h5, .h6 {
+  margin-top: 11px;
+  margin-bottom: 11px;
+}
+
+// Emphasis & misc
+// -------------------------
+
+mark, .mark {
+  color: $state-warning-text;
+  border-radius: $border-radius-small;
+}
+
+// Drop Cap
+// -------------------------
+
+.drop-cap {
+  float: left;
+  padding: 5px;
+  margin-right: 5px;
+  font-family: Georgia;
+  font-size: 60px;
+  line-height: 50px;
+  color: $gray-800;
+
+  &-reversed {
+    color: $inverse;
+    background-color: $gray-800;
+  }
+}
+
+.list-icons {
+  padding-left: 10px;
+  margin-left: 0;
+  list-style: none;
+
+  > li {
+    margin-top: 6px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    i {
+      float: left;
+      width: 1em;
+      margin: 0 6px 0 0;
+    }
+  }
+}
+
+// Component: Blockquote
+// ========================================================================
+
+.blockquote {
+  padding: ($line-height-computed / 2) $line-height-computed;
+  font-size: $blockquote-font-size;
+  color: $blockquote-color;
+  border-left: 2px solid $blockquote-border-color;
+
+  p:last-child {
+    margin: 0;
+  }
+
+  &-success {
+    @include blockquote-variant($blockquote-success-border);
+  }
+
+  &-info {
+    @include blockquote-variant($blockquote-info-border);
+  }
+
+  &-warning {
+    @include blockquote-variant($blockquote-warning-border);
+  }
+
+  &-danger {
+    @include blockquote-variant($blockquote-danger-border);
+  }
+}
+
+// Opposite alignment of blockquote
+.blockquote-reverse {
+  padding-right: $spacer;
+  padding-left: 0;
+  text-align: right;
+  border-right: 2px solid $blockquote-border-color;
+  border-left: 0;
+  border-left: none;
+}
+
+.blockquote-reverse .blockquote-footer {
+  &::before {
+    content: "";
+  }
+
+  &::after {
+    content: "\00A0 \2014"; // nbsp, em dash
+  }
+}
+
+.custom-blockquote {
+  padding: $blockquote-styles-padding;
+  border-left-width: 4px;
+  border-radius: $border-radius;
+
+  &.blockquote-reverse {
+    border-right-width: 4px;
+  }
+}
+// Component: Horizontal description lists (from--v3)
+// ========================================================================
+// Defaults to being stacked without any of the below styles applied, until the
+// grid breakpoint is reached (default of ~768px).
+
+// .dl-horizontal {
+//   margin: 0 0 22px;
+
+//   dd {
+//     @extend clearfix(all); // Clear the floated `dt` if an empty `dd` is present
+//   }
+
+//   @include media-breakpoint-up(md) {
+//     dt {
+//       float: left;
+//       width: ($dl-horizontal-offset - 20px);
+//       clear: left;
+//       text-align: right;
+//       overflow: hidden;
+//     }
+
+//     dd {
+//       margin-left: $dl-horizontal-offset;
+//     }
+//   }
+// }

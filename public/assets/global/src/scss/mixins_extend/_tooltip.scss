@@ -1,0 +1,22 @@
+@mixin tooltip-variant($color, $bg) {
+  .tooltip-inner {
+    color: $color;
+    background-color: $bg;
+  }
+
+  &.bs-tooltip-top .arrow::before, &.tooltip-top .arrow::before {
+    border-top-color: $bg;
+  }
+
+  &.bs-tooltip-right .arrow::before, &.tooltip-right .arrow::before {
+    border-right-color: $bg;
+  }
+
+  &.bs-tooltip-bottom .arrow::before, &.tooltip-bottom .arrow::before {
+    border-bottom-color: $bg;
+  }
+
+  &.bs-tooltip-left .arrow::before, &.tooltip-left .arrow::before {
+    border-left-color: $bg;
+  }
+}

@@ -1,0 +1,9 @@
+$icon-font-path: "" !default;
+$icon-font-name: "glyphicons-halflings-regular" !default;
+$icon-font-svg-id: "glyphicons_halflingsregular" !default;
+
+[class^="glyphicon-"], [class*=" glyphicon-"] {
+  font-family: "Glyphicons Halflings";
+  font-style: normal;
+}
+@import "../bootstrap/glyphicons";

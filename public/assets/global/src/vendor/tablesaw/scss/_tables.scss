@@ -1,0 +1,30 @@
+.tablesaw {
+	width: 100%;
+	max-width: 100%;
+	empty-cells: show;
+	border-collapse: collapse;
+	border: 0;
+	padding: 0;
+
+	//add for v4a6-dev 20170303 ---Kevin_y
+
+  &.tablesaw-swipe .tablesaw-cell-persist {
+    border-right: 0;
+  }
+
+  //---Kevin_y
+}
+.tablesaw * {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+// .tablesaw th,
+// .tablesaw td {
+//   padding: .5em .7em;
+// }
+// .tablesaw thead tr:first-child th {
+//   padding-top: .9em;
+//   padding-bottom: .7em;
+// }

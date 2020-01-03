@@ -1,0 +1,40 @@
+// core
+.breadcrumb {
+  list-style: none;
+
+  > li {
+    display: inline-block;
+  }
+
+  .is-hidden {
+    display: none;
+  }
+
+  &-ellipsis {
+    display: inline-block;
+  }
+
+  &-dropdown {
+    display: inline-block;
+  }
+}
+
+// style
+.breadcrumb {
+  // padding: 8px 15px;
+  // margin-bottom: 20px;
+  // background-color: #f3f4f5;
+  // border-radius: 3px;
+
+  // > li {
+  //   + li:before {
+  //     content: "/\00a0";
+  //     padding: 0 5px;
+  //     color: #ccc;
+  //   }
+  // }
+
+  > li.breadcrumb-ellipsis.is-hidden + li:before {
+    display: none;
+  }
+}

@@ -1,0 +1,79 @@
+// Hamburger Menu Icon
+// -------------------------
+$hamburger-size: 17px !default;
+
+.hamburger {
+  font-size: $hamburger-size;
+  vertical-align: middle;
+
+  &, &::before, .hamburger-bar, &::after {
+    transition: transform .2s ease-in-out;
+  }
+
+  &::before, &::after {
+    content: "";
+  }
+
+  &::before, .hamburger-bar, &::after {
+    display: block;
+    width: 1em;
+    height: .1em;
+    margin: 0;
+    background: $text-color;
+    border-radius: 1px;
+
+    .navbar-default & {
+      background: $navbar-default-toggle-icon-bar-bg;
+    }
+
+    .navbar-inverse & {
+      background: $navbar-inverse-toggle-icon-bar-bg;
+    }
+  }
+
+  .hamburger-bar {
+    margin: .2em 0;
+  }
+}
+
+// Hamburger Menu Close style
+// -------------------------
+.hamburger-close {
+  &::before {
+    transform: rotate(45deg);
+    transform-origin: 8%;
+  }
+
+  .hamburger-bar {
+    opacity: 0;
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+    transform-origin: 8%;
+  }
+}
+
+.hamburger-close {
+  &.hided, &.collapsed {
+    &::before {
+      transform: rotate(0);
+    }
+
+    .hamburger-bar {
+      opacity: 1;
+    }
+
+    &::after {
+      transform: rotate(0);
+    }
+  }
+}
+
+// Hamburger Menu Arrow Left style
+// -------------------------------
+.hamburger-arrow-left {
+  &.collapsed {
+    @include hamburger-arrow-left();
+  }
+}

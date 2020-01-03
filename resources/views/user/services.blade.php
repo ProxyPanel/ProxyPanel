@@ -54,10 +54,12 @@
 													<span class="ribbon-inner h-auto">热<br>销</span>
 												</div>
 											@endif
-											<div class="pricing-price text-white">
+											<div class="pricing-price text-white @if($goods->type == 1) text-center @endif">
 												<span class="pricing-currency">¥</span>
 												<span class="pricing-amount">{{$goods->price}}</span>
-												<span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
+												@if($goods->type == 2)
+													<span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
+												@endif
 											</div>
 											@if($goods->info)
 												<p class="px-30 pb-25 text-center">{{$goods->desc}}</p>
@@ -65,11 +67,7 @@
 										</div>
 										<ul class="pricing-features">
 											<li>
-												@if($goods->type == 2)
-													<strong>{{$goods->traffic_label}}</strong> {{trans('home.account_bandwidth_usage')}}/{{trans('home.month')}}
-												@elseif($goods->type == 1)
-													<strong>{{$goods->traffic_label}}</strong> {{trans('home.account_bandwidth_usage')}}/{{$goods->days}} {{trans('home.day')}}
-												@endif
+												<strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}{!!$goods->type == 1? ' <code>'.$dataPlusDays.'</code> '.trans('home.day'):'/'.trans('home.month')!!}
 											</li>
 											<li>
 												<strong>{{trans('home.service_unlimited')}}</strong> {{trans('home.service_device')}}
@@ -99,10 +97,10 @@
 				<div class="modal-body">
 					<div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
 					<form action="#" method="post">
-						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])))
+						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])))
 							<div class="mb-15 w-p50">
 								<select class="form-control" name="charge_type" id="charge_type">
-									@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+									@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
 										<option value="1" selected>{{trans('home.online_pay')}}</option>
 									@endif
 									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
@@ -112,7 +110,7 @@
 								</select>
 							</div>
 						@endif
-						@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+						@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
 							<div class="form-group row" id="charge_balance">
 								<label for="online_pay" class="offset-md-2 col-md-2 col-form-label">充值金额</label>
 								<div class="col-md-6">
@@ -125,7 +123,7 @@
 							</div>
 						@endif
 						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
-							<div class="text-center" id="charge_qrcode" @if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan']|| \App\Components\Helpers::systemConfig()['is_f2fpay']))style="display: none;" @endif>
+							<div class="text-center" id="charge_qrcode" @if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))style="display: none;" @endif>
 								<div class="row">
 									<p class="col-md-12 mb-10">付款时，请
 										<mark>备注邮箱账号</mark>
@@ -146,7 +144,7 @@
 								</div>
 							</div>
 						@endif
-						<div class="form-group row" id="charge_coupon_code" @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode']|| ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_youzan']|| \App\Components\Helpers::systemConfig()['is_f2fpay']))) style="display: none;" @endif>
+						<div class="form-group row" id="charge_coupon_code" @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode']|| ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))) style="display: none;" @endif>
 							<label for="charge_coupon" class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
 							<div class="col-md-6">
 								<input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">

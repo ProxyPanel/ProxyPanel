@@ -1,0 +1,671 @@
+// Icons
+// -------------------------
+.#{$io-css-prefix}-account-login:before {
+	content: $io-var-account-login;
+}
+.#{$io-css-prefix}-account-logout:before {
+	content: $io-var-account-logout;
+}
+.#{$io-css-prefix}-action-redo:before {
+	content: $io-var-action-redo;
+}
+.#{$io-css-prefix}-action-undo:before {
+	content: $io-var-action-undo;
+}
+.#{$io-css-prefix}-align-center:before {
+	content: $io-var-align-center;
+}
+.#{$io-css-prefix}-align-left:before {
+	content: $io-var-align-left;
+}
+.#{$io-css-prefix}-align-right:before {
+	content: $io-var-align-right;
+}
+.#{$io-css-prefix}-aperture:before {
+	content: $io-var-aperture;
+}
+.#{$io-css-prefix}-arrow-bottom:before {
+	content: $io-var-arrow-bottom;
+}
+.#{$io-css-prefix}-arrow-circle-bottom:before {
+	content: $io-var-arrow-circle-bottom;
+}
+.#{$io-css-prefix}-arrow-circle-left:before {
+	content: $io-var-arrow-circle-left;
+}
+.#{$io-css-prefix}-arrow-circle-right:before {
+	content: $io-var-arrow-circle-right;
+}
+.#{$io-css-prefix}-arrow-circle-top:before {
+	content: $io-var-arrow-circle-top;
+}
+.#{$io-css-prefix}-arrow-left:before {
+	content: $io-var-arrow-left;
+}
+.#{$io-css-prefix}-arrow-right:before {
+	content: $io-var-arrow-right;
+}
+.#{$io-css-prefix}-arrow-thick-bottom:before {
+	content: $io-var-arrow-thick-bottom;
+}
+.#{$io-css-prefix}-arrow-thick-left:before {
+	content: $io-var-arrow-thick-left;
+}
+.#{$io-css-prefix}-arrow-thick-right:before {
+	content: $io-var-arrow-thick-right;
+}
+.#{$io-css-prefix}-arrow-thick-top:before {
+	content: $io-var-arrow-thick-top;
+}
+.#{$io-css-prefix}-arrow-top:before {
+	content: $io-var-arrow-top;
+}
+.#{$io-css-prefix}-audio-spectrum:before {
+	content: $io-var-audio-spectrum;
+}
+.#{$io-css-prefix}-audio:before {
+	content: $io-var-audio;
+}
+.#{$io-css-prefix}-badge:before {
+	content: $io-var-badge;
+}
+.#{$io-css-prefix}-ban:before {
+	content: $io-var-ban;
+}
+.#{$io-css-prefix}-bar-chart:before {
+	content: $io-var-bar-chart;
+}
+.#{$io-css-prefix}-basket:before {
+	content: $io-var-basket;
+}
+.#{$io-css-prefix}-battery-empty:before {
+	content: $io-var-battery-empty;
+}
+.#{$io-css-prefix}-battery-full:before {
+	content: $io-var-battery-full;
+}
+.#{$io-css-prefix}-beaker:before {
+	content: $io-var-beaker;
+}
+.#{$io-css-prefix}-bell:before {
+	content: $io-var-bell;
+}
+.#{$io-css-prefix}-bluetooth:before {
+	content: $io-var-bluetooth;
+}
+.#{$io-css-prefix}-bold:before {
+	content: $io-var-bold;
+}
+.#{$io-css-prefix}-bolt:before {
+	content: $io-var-bolt;
+}
+.#{$io-css-prefix}-book:before {
+	content: $io-var-book;
+}
+.#{$io-css-prefix}-bookmark:before {
+	content: $io-var-bookmark;
+}
+.#{$io-css-prefix}-box:before {
+	content: $io-var-box;
+}
+.#{$io-css-prefix}-briefcase:before {
+	content: $io-var-briefcase;
+}
+.#{$io-css-prefix}-british-pound:before {
+	content: $io-var-british-pound;
+}
+.#{$io-css-prefix}-browser:before {
+	content: $io-var-browser;
+}
+.#{$io-css-prefix}-brush:before {
+	content: $io-var-brush;
+}
+.#{$io-css-prefix}-bug:before {
+	content: $io-var-bug;
+}
+.#{$io-css-prefix}-bullhorn:before {
+	content: $io-var-bullhorn;
+}
+.#{$io-css-prefix}-calculator:before {
+	content: $io-var-calculator;
+}
+.#{$io-css-prefix}-calendar:before {
+	content: $io-var-calendar;
+}
+.#{$io-css-prefix}-camera-slr:before {
+	content: $io-var-camera-slr;
+}
+.#{$io-css-prefix}-caret-bottom:before {
+	content: $io-var-caret-bottom;
+}
+.#{$io-css-prefix}-caret-left:before {
+	content: $io-var-caret-left;
+}
+.#{$io-css-prefix}-caret-right:before {
+	content: $io-var-caret-right;
+}
+.#{$io-css-prefix}-caret-top:before {
+	content: $io-var-caret-top;
+}
+.#{$io-css-prefix}-cart:before {
+	content: $io-var-cart;
+}
+.#{$io-css-prefix}-chat:before {
+	content: $io-var-chat;
+}
+.#{$io-css-prefix}-check:before {
+	content: $io-var-check;
+}
+.#{$io-css-prefix}-chevron-bottom:before {
+	content: $io-var-chevron-bottom;
+}
+.#{$io-css-prefix}-chevron-left:before {
+	content: $io-var-chevron-left;
+}
+.#{$io-css-prefix}-chevron-right:before {
+	content: $io-var-chevron-right;
+}
+.#{$io-css-prefix}-chevron-top:before {
+	content: $io-var-chevron-top;
+}
+.#{$io-css-prefix}-circle-check:before {
+	content: $io-var-circle-check;
+}
+.#{$io-css-prefix}-circle-x:before {
+	content: $io-var-circle-x;
+}
+.#{$io-css-prefix}-clipboard:before {
+	content: $io-var-clipboard;
+}
+.#{$io-css-prefix}-clock:before {
+	content: $io-var-clock;
+}
+.#{$io-css-prefix}-cloud-download:before {
+	content: $io-var-cloud-download;
+}
+.#{$io-css-prefix}-cloud-upload:before {
+	content: $io-var-cloud-upload;
+}
+.#{$io-css-prefix}-cloud:before {
+	content: $io-var-cloud;
+}
+.#{$io-css-prefix}-cloudy:before {
+	content: $io-var-cloudy;
+}
+.#{$io-css-prefix}-code:before {
+	content: $io-var-code;
+}
+.#{$io-css-prefix}-cog:before {
+	content: $io-var-cog;
+}
+.#{$io-css-prefix}-collapse-down:before {
+	content: $io-var-collapse-down;
+}
+.#{$io-css-prefix}-collapse-left:before {
+	content: $io-var-collapse-left;
+}
+.#{$io-css-prefix}-collapse-right:before {
+	content: $io-var-collapse-right;
+}
+.#{$io-css-prefix}-collapse-up:before {
+	content: $io-var-collapse-up;
+}
+.#{$io-css-prefix}-command:before {
+	content: $io-var-command;
+}
+.#{$io-css-prefix}-comment-square:before {
+	content: $io-var-comment-square;
+}
+.#{$io-css-prefix}-compass:before {
+	content: $io-var-compass;
+}
+.#{$io-css-prefix}-contrast:before {
+	content: $io-var-contrast;
+}
+.#{$io-css-prefix}-copywriting:before {
+	content: $io-var-copywriting;
+}
+.#{$io-css-prefix}-credit-card:before {
+	content: $io-var-credit-card;
+}
+.#{$io-css-prefix}-crop:before {
+	content: $io-var-crop;
+}
+.#{$io-css-prefix}-dashboard:before {
+	content: $io-var-dashboard;
+}
+.#{$io-css-prefix}-data-transfer-download:before {
+	content: $io-var-data-transfer-download;
+}
+.#{$io-css-prefix}-data-transfer-upload:before {
+	content: $io-var-data-transfer-upload;
+}
+.#{$io-css-prefix}-delete:before {
+	content: $io-var-delete;
+}
+.#{$io-css-prefix}-dial:before {
+	content: $io-var-dial;
+}
+.#{$io-css-prefix}-document:before {
+	content: $io-var-document;
+}
+.#{$io-css-prefix}-dollar:before {
+	content: $io-var-dollar;
+}
+.#{$io-css-prefix}-double-quote-sans-left:before {
+	content: $io-var-double-quote-sans-left;
+}
+.#{$io-css-prefix}-double-quote-sans-right:before {
+	content: $io-var-double-quote-sans-right;
+}
+.#{$io-css-prefix}-double-quote-serif-left:before {
+	content: $io-var-double-quote-serif-left;
+}
+.#{$io-css-prefix}-double-quote-serif-right:before {
+	content: $io-var-double-quote-serif-right;
+}
+.#{$io-css-prefix}-droplet:before {
+	content: $io-var-droplet;
+}
+.#{$io-css-prefix}-eject:before {
+	content: $io-var-eject;
+}
+.#{$io-css-prefix}-elevator:before {
+	content: $io-var-elevator;
+}
+.#{$io-css-prefix}-ellipses:before {
+	content: $io-var-ellipses;
+}
+.#{$io-css-prefix}-envelope-closed:before {
+	content: $io-var-envelope-closed;
+}
+.#{$io-css-prefix}-envelope-open:before {
+	content: $io-var-envelope-open;
+}
+.#{$io-css-prefix}-euro:before {
+	content: $io-var-euro;
+}
+.#{$io-css-prefix}-excerpt:before {
+	content: $io-var-excerpt;
+}
+.#{$io-css-prefix}-expand-down:before {
+	content: $io-var-expand-down;
+}
+.#{$io-css-prefix}-expand-left:before {
+	content: $io-var-expand-left;
+}
+.#{$io-css-prefix}-expand-right:before {
+	content: $io-var-expand-right;
+}
+.#{$io-css-prefix}-expand-up:before {
+	content: $io-var-expand-up;
+}
+.#{$io-css-prefix}-external-link:before {
+	content: $io-var-external-link;
+}
+.#{$io-css-prefix}-eye:before {
+	content: $io-var-eye;
+}
+.#{$io-css-prefix}-eyedropper:before {
+	content: $io-var-eyedropper;
+}
+.#{$io-css-prefix}-file:before {
+	content: $io-var-file;
+}
+.#{$io-css-prefix}-fire:before {
+	content: $io-var-fire;
+}
+.#{$io-css-prefix}-flag:before {
+	content: $io-var-flag;
+}
+.#{$io-css-prefix}-flash:before {
+	content: $io-var-flash;
+}
+.#{$io-css-prefix}-folder:before {
+	content: $io-var-folder;
+}
+.#{$io-css-prefix}-fork:before {
+	content: $io-var-fork;
+}
+.#{$io-css-prefix}-fullscreen-enter:before {
+	content: $io-var-fullscreen-enter;
+}
+.#{$io-css-prefix}-fullscreen-exit:before {
+	content: $io-var-fullscreen-exit;
+}
+.#{$io-css-prefix}-globe:before {
+	content: $io-var-globe;
+}
+.#{$io-css-prefix}-graph:before {
+	content: $io-var-graph;
+}
+.#{$io-css-prefix}-grid-four-up:before {
+	content: $io-var-grid-four-up;
+}
+.#{$io-css-prefix}-grid-three-up:before {
+	content: $io-var-grid-three-up;
+}
+.#{$io-css-prefix}-grid-two-up:before {
+	content: $io-var-grid-two-up;
+}
+.#{$io-css-prefix}-hard-drive:before {
+	content: $io-var-hard-drive;
+}
+.#{$io-css-prefix}-header:before {
+	content: $io-var-header;
+}
+.#{$io-css-prefix}-headphones:before {
+	content: $io-var-headphones;
+}
+.#{$io-css-prefix}-heart:before {
+	content: $io-var-heart;
+}
+.#{$io-css-prefix}-home:before {
+	content: $io-var-home;
+}
+.#{$io-css-prefix}-image:before {
+	content: $io-var-image;
+}
+.#{$io-css-prefix}-inbox:before {
+	content: $io-var-inbox;
+}
+.#{$io-css-prefix}-infinity:before {
+	content: $io-var-infinity;
+}
+.#{$io-css-prefix}-info:before {
+	content: $io-var-info;
+}
+.#{$io-css-prefix}-italic:before {
+	content: $io-var-italic;
+}
+.#{$io-css-prefix}-justify-center:before {
+	content: $io-var-justify-center;
+}
+.#{$io-css-prefix}-justify-left:before {
+	content: $io-var-justify-left;
+}
+.#{$io-css-prefix}-justify-right:before {
+	content: $io-var-justify-right;
+}
+.#{$io-css-prefix}-key:before {
+	content: $io-var-key;
+}
+.#{$io-css-prefix}-laptop:before {
+	content: $io-var-laptop;
+}
+.#{$io-css-prefix}-layers:before {
+	content: $io-var-layers;
+}
+.#{$io-css-prefix}-lightbulb:before {
+	content: $io-var-lightbulb;
+}
+.#{$io-css-prefix}-link-broken:before {
+	content: $io-var-link-broken;
+}
+.#{$io-css-prefix}-link-intact:before {
+	content: $io-var-link-intact;
+}
+.#{$io-css-prefix}-list-rich:before {
+	content: $io-var-list-rich;
+}
+.#{$io-css-prefix}-list:before {
+	content: $io-var-list;
+}
+.#{$io-css-prefix}-location:before {
+	content: $io-var-location;
+}
+.#{$io-css-prefix}-lock-locked:before {
+	content: $io-var-lock-locked;
+}
+.#{$io-css-prefix}-lock-unlocked:before {
+	content: $io-var-lock-unlocked;
+}
+.#{$io-css-prefix}-loop-circular:before {
+	content: $io-var-loop-circular;
+}
+.#{$io-css-prefix}-loop-square:before {
+	content: $io-var-loop-square;
+}
+.#{$io-css-prefix}-loop:before {
+	content: $io-var-loop;
+}
+.#{$io-css-prefix}-magnifying-glass:before {
+	content: $io-var-magnifying-glass;
+}
+.#{$io-css-prefix}-map-marker:before {
+	content: $io-var-map-marker;
+}
+.#{$io-css-prefix}-map:before {
+	content: $io-var-map;
+}
+.#{$io-css-prefix}-media-pause:before {
+	content: $io-var-media-pause;
+}
+.#{$io-css-prefix}-media-play:before {
+	content: $io-var-media-play;
+}
+.#{$io-css-prefix}-media-record:before {
+	content: $io-var-media-record;
+}
+.#{$io-css-prefix}-media-skip-backward:before {
+	content: $io-var-media-skip-backward;
+}
+.#{$io-css-prefix}-media-skip-forward:before {
+	content: $io-var-media-skip-forward;
+}
+.#{$io-css-prefix}-media-step-backward:before {
+	content: $io-var-media-step-backward;
+}
+.#{$io-css-prefix}-media-step-forward:before {
+	content: $io-var-media-step-forward;
+}
+.#{$io-css-prefix}-media-stop:before {
+	content: $io-var-media-stop;
+}
+.#{$io-css-prefix}-medical-cross:before {
+	content: $io-var-medical-cross;
+}
+.#{$io-css-prefix}-menu:before {
+	content: $io-var-menu;
+}
+.#{$io-css-prefix}-microphone:before {
+	content: $io-var-microphone;
+}
+.#{$io-css-prefix}-minus:before {
+	content: $io-var-minus;
+}
+.#{$io-css-prefix}-monitor:before {
+	content: $io-var-monitor;
+}
+.#{$io-css-prefix}-moon:before {
+	content: $io-var-moon;
+}
+.#{$io-css-prefix}-move:before {
+	content: $io-var-move;
+}
+.#{$io-css-prefix}-musical-note:before {
+	content: $io-var-musical-note;
+}
+.#{$io-css-prefix}-paperclip:before {
+	content: $io-var-paperclip;
+}
+.#{$io-css-prefix}-pencil:before {
+	content: $io-var-pencil;
+}
+.#{$io-css-prefix}-people:before {
+	content: $io-var-people;
+}
+.#{$io-css-prefix}-person:before {
+	content: $io-var-person;
+}
+.#{$io-css-prefix}-phone:before {
+	content: $io-var-phone;
+}
+.#{$io-css-prefix}-pie-chart:before {
+	content: $io-var-pie-chart;
+}
+.#{$io-css-prefix}-pin:before {
+	content: $io-var-pin;
+}
+.#{$io-css-prefix}-play-circle:before {
+	content: $io-var-play-circle;
+}
+.#{$io-css-prefix}-plus:before {
+	content: $io-var-plus;
+}
+.#{$io-css-prefix}-power-standby:before {
+	content: $io-var-power-standby;
+}
+.#{$io-css-prefix}-print:before {
+	content: $io-var-print;
+}
+.#{$io-css-prefix}-project:before {
+	content: $io-var-project;
+}
+.#{$io-css-prefix}-pulse:before {
+	content: $io-var-pulse;
+}
+.#{$io-css-prefix}-puzzle-piece:before {
+	content: $io-var-puzzle-piece;
+}
+.#{$io-css-prefix}-question-mark:before {
+	content: $io-var-question-mark;
+}
+.#{$io-css-prefix}-rain:before {
+	content: $io-var-rain;
+}
+.#{$io-css-prefix}-random:before {
+	content: $io-var-random;
+}
+.#{$io-css-prefix}-reload:before {
+	content: $io-var-reload;
+}
+.#{$io-css-prefix}-resize-both:before {
+	content: $io-var-resize-both;
+}
+.#{$io-css-prefix}-resize-height:before {
+	content: $io-var-resize-height;
+}
+.#{$io-css-prefix}-resize-width:before {
+	content: $io-var-resize-width;
+}
+.#{$io-css-prefix}-rss-alt:before {
+	content: $io-var-rss-alt;
+}
+.#{$io-css-prefix}-rss:before {
+	content: $io-var-rss;
+}
+.#{$io-css-prefix}-script:before {
+	content: $io-var-script;
+}
+.#{$io-css-prefix}-share-boxed:before {
+	content: $io-var-share-boxed;
+}
+.#{$io-css-prefix}-share:before {
+	content: $io-var-share;
+}
+.#{$io-css-prefix}-shield:before {
+	content: $io-var-shield;
+}
+.#{$io-css-prefix}-signal:before {
+	content: $io-var-signal;
+}
+.#{$io-css-prefix}-signpost:before {
+	content: $io-var-signpost;
+}
+.#{$io-css-prefix}-sort-ascending:before {
+	content: $io-var-sort-ascending;
+}
+.#{$io-css-prefix}-sort-descending:before {
+	content: $io-var-sort-descending;
+}
+.#{$io-css-prefix}-spreadsheet:before {
+	content: $io-var-spreadsheet;
+}
+.#{$io-css-prefix}-star:before {
+	content: $io-var-star;
+}
+.#{$io-css-prefix}-sun:before {
+	content: $io-var-sun;
+}
+.#{$io-css-prefix}-tablet:before {
+	content: $io-var-tablet;
+}
+.#{$io-css-prefix}-tag:before {
+	content: $io-var-tag;
+}
+.#{$io-css-prefix}-tags:before {
+	content: $io-var-tags;
+}
+.#{$io-css-prefix}-target:before {
+	content: $io-var-target;
+}
+.#{$io-css-prefix}-task:before {
+	content: $io-var-task;
+}
+.#{$io-css-prefix}-terminal:before {
+	content: $io-var-terminal;
+}
+.#{$io-css-prefix}-text:before {
+	content: $io-var-text;
+}
+.#{$io-css-prefix}-thumb-down:before {
+	content: $io-var-thumb-down;
+}
+.#{$io-css-prefix}-thumb-up:before {
+	content: $io-var-thumb-up;
+}
+.#{$io-css-prefix}-timer:before {
+	content: $io-var-timer;
+}
+.#{$io-css-prefix}-transfer:before {
+	content: $io-var-transfer;
+}
+.#{$io-css-prefix}-trash:before {
+	content: $io-var-trash;
+}
+.#{$io-css-prefix}-underline:before {
+	content: $io-var-underline;
+}
+.#{$io-css-prefix}-vertical-align-bottom:before {
+	content: $io-var-vertical-align-bottom;
+}
+.#{$io-css-prefix}-vertical-align-center:before {
+	content: $io-var-vertical-align-center;
+}
+.#{$io-css-prefix}-vertical-align-top:before {
+	content: $io-var-vertical-align-top;
+}
+.#{$io-css-prefix}-video:before {
+	content: $io-var-video;
+}
+.#{$io-css-prefix}-volume-high:before {
+	content: $io-var-volume-high;
+}
+.#{$io-css-prefix}-volume-low:before {
+	content: $io-var-volume-low;
+}
+.#{$io-css-prefix}-volume-off:before {
+	content: $io-var-volume-off;
+}
+.#{$io-css-prefix}-warning:before {
+	content: $io-var-warning;
+}
+.#{$io-css-prefix}-wifi:before {
+	content: $io-var-wifi;
+}
+.#{$io-css-prefix}-wrench:before {
+	content: $io-var-wrench;
+}
+.#{$io-css-prefix}-x:before {
+	content: $io-var-x;
+}
+.#{$io-css-prefix}-yen:before {
+	content: $io-var-yen;
+}
+.#{$io-css-prefix}-zoom-in:before {
+	content: $io-var-zoom-in;
+}
+.#{$io-css-prefix}-zoom-out:before {
+	content: $io-var-zoom-out;
+}

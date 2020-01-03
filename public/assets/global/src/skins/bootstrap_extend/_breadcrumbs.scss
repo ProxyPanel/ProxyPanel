@@ -1,0 +1,29 @@
+// Name:            Breadcrumb
+// Description:     Defines styles for a breadcrumb navigation
+//
+// Component:       `breadcrumb`
+//
+// Modifiers:       `breadcrumb-arrow`
+//
+// Markup:
+//
+// <!-- breadcrumb -->
+// <ol class="breadcrumb">
+//     <li><a href=""></a></li>
+//     <li class="active"></li>
+// </ol>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+// Component: breadcrumb
+// ========================================================================
+
+.breadcrumb {
+  background-color: transparent;   // add  from---v3
+}
+
+// Modifier: `breadcrumb-arrow`
+// -------------------------

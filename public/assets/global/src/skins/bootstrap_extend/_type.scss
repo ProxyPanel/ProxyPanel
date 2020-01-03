@@ -1,0 +1,95 @@
+
+// Variables
+// ========================================================================
+$blockquote-color:                 $gray-600 !default;
+
+$blockquote-success-border:        $brand-success !default;
+$blockquote-info-border:           $brand-info !default;
+$blockquote-warning-border:        $brand-warning !default;
+$blockquote-danger-border:         $brand-danger !default;
+
+// Component: Typography
+// ========================================================================
+
+// Headings
+// -------------------------
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  text-shadow: $headings-text-shadow;
+}
+
+// Emphasis & misc
+// -------------------------
+
+mark,
+.mark {
+  color: $state-warning-text;
+}
+
+// Drop Cap
+// -------------------------
+
+.drop-cap {
+  color: $gray-800;
+
+  &-reversed {
+    color: $inverse;
+    background-color: $gray-800;
+  }
+}
+
+// Component: Blockquote
+// ========================================================================
+
+.blockquote {
+  color: $blockquote-color;
+  border-left: 2px solid $blockquote-border-color;
+
+  &-success {
+    @include blockquote-variant($blockquote-success-border);
+  }
+  &-info {
+    @include blockquote-variant($blockquote-info-border);
+  }
+  &-warning {
+    @include blockquote-variant($blockquote-warning-border);
+  }
+  &-danger {
+    @include blockquote-variant($blockquote-danger-border);
+  }
+}
+
+// from v4a6 (v4b removed .blockquote-reverse)
+// Opposite alignment of blockquote
+.blockquote-reverse {
+  border-right: 2px solid $blockquote-border-color;
+  border-left: 0;
+  border-left: none;
+}
+// Component: Horizontal description lists (from--v3)
+// ========================================================================
+// Defaults to being stacked without any of the below styles applied, until the
+// grid breakpoint is reached (default of ~768px).
+
+// .dl-horizontal {
+//   margin: 0 0 22px;
+
+//   dd {
+//     @extend clearfix(all); // Clear the floated `dt` if an empty `dd` is present
+//   }
+
+//   @include media-breakpoint-up(md) {
+//     dt {
+//       float: left;
+//       width: ($dl-horizontal-offset - 20px);
+//       clear: left;
+//       text-align: right;
+//       overflow: hidden;
+//     }
+
+//     dd {
+//       margin-left: $dl-horizontal-offset;
+//     }
+//   }
+// }
+

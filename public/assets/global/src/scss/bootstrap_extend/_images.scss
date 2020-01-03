@@ -1,0 +1,58 @@
+// Name:             Image
+// Component:        'img'
+//
+// Variables
+// ========================================================================
+$img-bordered-padding: 3px !default;
+$img-bordered-border-color: $border-color-base !default;
+$img-bordered-primary-border: $brand-primary !default;
+$img-bordered-purple-border: $color-purple !default;
+$img-bordered-red-border: $color-red !default;
+$img-bordered-green-border: $color-green-400 !default;
+$img-bordered-orange-border: $color-orange !default;
+
+// Component: Img-bordered
+// ========================================================================
+
+.img-bordered {
+  padding: $img-bordered-padding;
+  border: 1px solid $img-bordered-border-color;
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `img-bordered-primary`
+// -------------------------
+
+.img-bordered-primary {
+  border-color: $img-bordered-primary-border !important;
+}
+
+// Modifier: `img-bordered-purple`
+// -------------------------
+
+.img-bordered-purple {
+  border-color: $img-bordered-purple-border !important;
+}
+
+// Modifier: `img-bordered-red`
+// -------------------------
+
+.img-bordered-red {
+  border-color: $img-bordered-red-border !important;
+}
+
+// Modifier: `img-bordered-green`
+// -------------------------
+
+.img-bordered-green {
+  border-color: $img-bordered-green-border !important;
+}
+
+// Modifier: `img-bordered-orange`
+// -------------------------
+
+.img-bordered-orange {
+  border-color: $img-bordered-orange-border !important;
+}

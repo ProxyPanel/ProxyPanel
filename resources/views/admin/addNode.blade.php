@@ -499,7 +499,7 @@
 
         // 设置是否使用DDNS
         $("input:radio[name='is_ddns']").on('change', function () {
-            if (parseInt($(this).val()) === 1) {
+            if (parseInt($(this).val())) {
                 $("#ip").val("1.1.1.1").attr("readonly", "readonly");
                 $("#server").attr("required", "required");
             } else {

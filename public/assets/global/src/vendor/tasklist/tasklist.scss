@@ -1,0 +1,61 @@
+@import 'vars';
+
+// Name:            List task
+//
+// Component:       `list-task`
+//
+// Modifiers:       'list-group-item-success'
+//                  'list-group-item-info'
+//                  'list-group-item-warning'
+//                  'list-group-item-danger'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$list-tasks-done-bg: $gray-100;
+$list-tasks-done-success-bg: rgba($brand-success, (10/100));
+$list-tasks-done-info-bg: rgba($brand-info, (10/100));
+$list-tasks-done-warning-bg: rgba($brand-warning, (10/100));
+$list-tasks-done-danger-bg: rgba($brand-danger, (10/100));
+
+// Component: List task
+// ========================================================================
+
+.list-task {
+  .task-item-checkbox {
+    float: left;
+    width: 30px;
+  }
+
+  .task-done {
+    background-color: $list-tasks-done-bg;
+
+    &.list-group-item span {
+      text-decoration: line-through;
+    }
+
+    &.list-group-item .label {
+      text-decoration: none;
+    }
+  }
+
+  // Color Modifier
+  // ========================================================================
+
+  .list-group-item-success {
+    background-color: $list-tasks-done-success-bg;
+  }
+
+  .list-group-item-info {
+    background-color: $list-tasks-done-info-bg;
+  }
+
+  .list-group-item-warning {
+    background-color: $list-tasks-done-warning-bg;
+  }
+
+  .list-group-item-danger {
+    background-color: $list-tasks-done-danger-bg;
+  }
+}

@@ -1,0 +1,207 @@
+// Name:            Card
+//
+// Component:       `card`
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$card-shadow:                    0 1px 1px rgba(0, 0, 0, .05) !default;
+
+$card-actions-link-color:        $gray-400 !default;
+$card-actions-link-hover-color:  $gray-300 !default;
+
+$card-posts-horizontal-border:   $border-color-base !default;
+
+// $card-margin-bottom:             2.143rem !default;
+
+// $card-header-padding:            $card-spacer-x;
+
+// Component: Card
+// ========================================================================
+.card {
+  border: none;
+  box-shadow: none;
+
+  .cover {
+    border-bottom: none;
+  }
+}
+
+.card-header, .card-footer {
+  border: none;
+  box-shadow: none;
+}
+
+// Modifier: `card-inverse`
+// -------------------------
+.card-inverse {
+  @include card-inverse;
+}
+
+// Modifier: `card-bordered`
+// -------------------------
+.card-bordered {
+  border: $card-border-width solid $card-border-color;
+}
+
+// .card-header-no-border {
+//   border: none;
+// }
+
+// .card-footer-no-border {
+//   border: none;
+// }
+
+.card-header-bordered {
+  border-bottom: $card-border-width solid $card-border-color;
+}
+
+.card-footer-bordered {
+  border-top: $card-border-width solid $card-border-color;
+}
+
+// Modifier: `card transparent`
+// -------------------------
+.card-transparent {
+  background-color: transparent;
+}
+
+.card-header-transparent {
+  background-color: transparent;
+}
+
+.card-footer-transparent {
+  background-color: transparent;
+}
+
+// Modifier: `card-shadow`
+// -------------------------
+
+.card-shadow {
+  box-shadow: $card-shadow;
+}
+
+// .card-header-shadow {
+//   box-shadow: 0 $card-border-width 0 0 $card-border-color;
+// }
+
+// .card-footer-shadow {
+//   box-shadow: 0 (-$card-border-width) 0 0 $card-border-color;
+// }
+
+// Component: Card block
+// ========================================================================
+
+// Strucutes
+// ========================================================================
+
+.card-text {
+  &.type-link {
+    a {
+      color: $gray-400;
+
+      &:hover {
+        color: $gray-300;
+      }
+
+      + a:before {
+        background-color: $gray-400;
+      }
+    }
+  }
+}
+
+// Card Watermark
+// ========================================================================
+
+.card-watermark {
+
+  &.darker {
+    color: black;
+  }
+
+  &.lighter {
+    color: white;
+  }
+}
+
+// Card divider
+// ========================================================================
+
+.card-divider {
+  &:after {
+    background-color: $inverse;
+  }
+}
+
+// card Actions
+// ========================================================================
+
+.card-actions {
+  a {
+    color: $card-actions-link-color;
+
+    &.active, &:hover, &:focus {
+      color: $card-actions-link-hover-color;
+    }
+  }
+}
+
+.card-actions-sidebar {
+  a {
+    border-right: 1px solid $card-posts-horizontal-border;
+
+    + a {
+      border-top: 1px solid $card-posts-horizontal-border;
+    }
+  }
+}
+
+// Card image
+
+// Card Two Column
+// ========================================================================
+
+// Background variations
+// ========================================================================
+
+.card-default {
+  @include card-variant($brand-default, $brand-default);
+}
+
+//add by kevin_y 20160920
+
+//end
+
+//add for remodel card size --kevin_y 20160921
+
+// end
+
+//add card-header-actions --kevin_y 20160921
+
+// @include media-breakpoint-down(xs) {
+//   .card-header-actions {
+//     float: none;
+//     margin: 10px 0;
+//   }
+// }
+
+// fix listgroup in card next card-header & card-footer
+// // --fish 20170322
+
+// the same as above
+// --fish 20170322
+// .card {
+//   > *:not(:first-child) {
+//     border-top-left-radius: 0;
+//     border-top-right-radius: 0;
+//   }
+
+//   > *:not(:last-child) {
+//     border-bottom-left-radius: 0;
+//     border-bottom-right-radius: 0;
+//   }
+// }
+
+// fix card-block + card-block

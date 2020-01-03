@@ -1,0 +1,14 @@
+@mixin modal-styles-variant($color, $bg) {
+  .modal-header {
+    background-color: $bg;
+    border-radius: $border-radius-large $border-radius-large 0 0;
+
+    * {
+      color: $color;
+    }
+
+    .close {
+      opacity: .6;
+    }
+  }
+}

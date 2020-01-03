@@ -1,0 +1,15 @@
+
+.site-gridmenu {
+  background-color: $site-gridmenu-bg;
+
+  li {
+    > a {
+      color: $site-gridmenu-color;
+    }
+
+    &:hover > a {
+      color: $site-gridmenu-hover-color;
+      background-color: $site-gridmenu-hover-bg;
+    }
+  }
+}

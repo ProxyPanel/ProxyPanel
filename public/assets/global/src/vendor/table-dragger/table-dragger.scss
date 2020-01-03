@@ -1,0 +1,88 @@
+@import "vars";
+
+.table-dragger-handle {
+  @include make-icon();
+  margin-left: .3em;
+  font-family: "#{$wb-font-family}";
+
+  &:before {
+    content: "#{$wb-var-move}";
+  }
+}
+
+.sindu_dragger {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.sindu_handle {
+  cursor: move;
+}
+
+.sindu_dragger table {
+  background: $gray-100;
+}
+
+.sindu_dragger li {
+  padding: 0;
+  margin: 0;
+  text-align: inherit;
+  list-style: none;
+}
+
+.sindu_dragger li table, .sindu_dragger tr, .sindu_dragger th, .sindu_dragger td {
+  box-sizing: border-box;
+}
+
+.gu-mirror {
+  list-style: none;
+}
+
+.sindu_dragger.sindu_column li {
+  float: left;
+}
+
+.sindu_dragging .sindu_origin_table {
+  visibility: hidden;
+}
+
+.gu-mirror {
+  position: fixed !important;
+  z-index: 9999 !important;
+  margin: 0 !important;
+  opacity: .8;
+}
+
+.gu-mirror li {
+  padding: 0;
+  margin: 0;
+  text-align: inherit;
+  list-style: none;
+}
+
+.gu-mirror table {
+  background: $gray-200;
+}
+
+.gu-mirror li table, .gu-mirror tr, .gu-mirror th, .gu-mirror td {
+  box-sizing: border-box;
+}
+
+.gu-hide {
+  display: none !important;
+}
+
+.gu-unselectable {
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: .5;
+}
+
+.sindu_dragger table {
+  background: transparent !important;
+}

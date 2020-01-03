@@ -1,0 +1,14 @@
+// Font path
+// --------------------------
+@font-face {
+
+  font-family: '#{$f7-font-family}';
+  src: url('#{$f7-font-path}/#{$f7-font-file}.eot?v=#{$f7-version}');
+  src: url('#{$f7-font-path}/#{$f7-font-file}.eot?#iefix&v=#{$f7-version}') format('embedded-opentype'),
+    url('#{$f7-font-path}/#{$f7-font-file}.woff2?v=#{$f7-version}') format('woff2'),
+    url('#{$f7-font-path}/#{$f7-font-file}.woff?v=#{$f7-version}') format('woff'),
+    url('#{$f7-font-path}/#{$f7-font-file}.ttf?v=#{$f7-version}') format('truetype'),
+;
+  font-weight: normal;
+  font-style: normal;
+}

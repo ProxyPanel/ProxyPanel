@@ -147,25 +147,24 @@
         });
 
         $("input[name='type']").change(function () {
-            switch (parseInt($(this).val())) {
-                case 2:
-                    $("#discount").attr("required", true);
-                    $("#amount").attr("required", false);
-                    $(".discount").show();
-                    $(".usage").show();
-                    $(".amount").hide();
-                case 3:
-                    $("#discount").attr("required", false);
-                    $("#amount").attr("required", true);
-                    $(".discount").hide();
-                    $(".usage").hide();
-                    $(".amount").show();
-                default:
-                    $("#discount").attr("required", false);
-                    $("#amount").attr("required", true);
-                    $(".discount").hide();
-                    $(".usage").show();
-                    $(".amount").show();
+            if ($(this).val() === '2') {
+                $("#discount").attr("required", true);
+                $("#amount").attr("required", false);
+                $(".discount").show();
+                $(".usage").show();
+                $(".amount").hide();
+            } else if ($(this).val() === '3') {
+                $("#discount").attr("required", false);
+                $("#amount").attr("required", true);
+                $(".discount").hide();
+                $(".usage").hide();
+                $(".amount").show();
+            } else {
+                $("#discount").attr("required", false);
+                $("#amount").attr("required", true);
+                $(".discount").hide();
+                $(".usage").show();
+                $(".amount").show();
             }
         });
 	</script>

@@ -1,0 +1,218 @@
+// Name:            Testimonial
+//
+// Component:       `testimonial`
+//
+// Modifiers:       'testimonial-reverse'
+//                  'testimonial-top'
+//                  'testimonial-carousel'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$testimonial-content-bg: $bg-color-base !default;
+$testimonial-content-border: $border-color-base !default;
+$testimonial-control-color: $gray-300 !default;
+$testimonial-control-hover-color: $hover-color-base !default;
+
+// Component: Testimonial
+// ========================================================================
+
+.testimonial {
+  margin: 3px 3px $line-height-computed;
+}
+
+.testimonial-ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.testimonial-item {
+  float: left;
+  padding: 0 15px 30px;
+  margin: 0;
+}
+
+.testimonial-content {
+  position: relative;
+  padding: 15px 20px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  background-color: $testimonial-content-bg;
+  border-radius: $border-radius;
+
+  &::before {
+    position: absolute;
+    bottom: -7px;
+    left: 33px;
+    display: block;
+    width: 14px;
+    height: 14px;
+    content: "";
+    background-color: $testimonial-content-bg;
+    transform: rotate(45deg);
+  }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.testimonial-image {
+  position: relative;
+  float: left;
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+.testimonial-author {
+  display: block;
+  margin-left: 75px;
+  font-size: 18px;
+}
+
+.testimonial-company {
+  display: block;
+  margin-left: 75px;
+  font-size: $font-size-sm;
+  opacity: .8;
+}
+
+.testimonial-control {
+  a {
+    color: $testimonial-control-color;
+
+    &:hover {
+      color: $testimonial-control-hover-color;
+      text-decoration: none;
+    }
+  }
+}
+
+// Modifier: `testimonial-reverse`
+// ========================================================================
+
+.testimonial-reverse {
+  .testimonial-content {
+    &::before {
+      right: 33px;
+      left: auto;
+    }
+  }
+
+  .testimonial-image {
+    float: right;
+    margin-right: 20px;
+    margin-left: 0;
+  }
+
+  .testimonial-author, .testimonial-company {
+    margin-right: 75px;
+    margin-left: 0;
+    text-align: right;
+  }
+}
+
+// Modifier: `testimonial-top`
+// ========================================================================
+
+.testimonial-top {
+  .testimonial-item {
+    padding: 30px 15px 0;
+  }
+
+  .testimonial-content {
+    margin-top: 30px;
+    margin-bottom: 10px;
+
+    &::before {
+      top: -7px;
+      bottom: auto;
+    }
+  }
+}
+
+// Modifier: `testimonial-carousel`
+// ========================================================================
+
+.testimonial.carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  .testimonial-item {
+    position: relative;
+    display: none;
+    width: 100%;
+    padding: 10px;
+    transition: left .6s ease-in-out 0s;
+
+    &.active, &.next, &.prev {
+      display: block;
+    }
+
+    &.next, &.prev {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    &.next {
+      left: 100%;
+    }
+
+    &.prev {
+      left: -100%;
+    }
+
+    &.next.left, &.prev.right {
+      left: 0;
+    }
+
+    &.active {
+      left: 0;
+    }
+
+    &.active.left {
+      left: -100%;
+    }
+
+    &.active.right {
+      left: 100%;
+    }
+  }
+
+  .testimonial-content {
+    padding: 10px;
+  }
+
+  .testimonial-control {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+
+    > * {
+      margin-left: 10px;
+    }
+  }
+
+  &.testimonial-reverse {
+    .testimonial-control {
+      right: auto;
+      left: 10px;
+
+      > * {
+        margin-right: 10px;
+        margin-left: 0;
+      }
+    }
+  }
+
+  &.testimonial-top {
+    .testimonial-control {
+      top: 20px;
+      bottom: auto;
+    }
+  }
+}

@@ -1,16 +1,16 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("/Plugin/editlist", ["exports", "jquery", "bootbox", "Plugin"], factory);
+    define("/Plugin/editlist", ["exports", "jquery", "Plugin"], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("jquery"), require("bootbox"), require("Plugin"));
+    factory(exports, require("jquery"), require("Plugin"));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.jQuery, global.bootbox, global.Plugin);
+    factory(mod.exports, global.jQuery, global.Plugin);
     global.PluginEditlist = mod.exports;
   }
-})(this, function (_exports, _jquery, _bootbox, _Plugin2) {
+})(this, function (_exports, _jquery, _Plugin2) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -18,7 +18,6 @@
   });
   _exports.default = void 0;
   _jquery = babelHelpers.interopRequireDefault(_jquery);
-  _bootbox = babelHelpers.interopRequireDefault(_bootbox);
   _Plugin2 = babelHelpers.interopRequireDefault(_Plugin2);
   var pluginName = 'editlist';
   var defaults = {};
@@ -57,11 +56,11 @@
           self.disable();
         });
         this.$delBtn.on('click', function () {
-          if (typeof _bootbox.default === 'undefined') {
+          if (typeof bootbox === 'undefined') {
             return;
           }
 
-          _bootbox.default.dialog({
+          bootbox.dialog({
             message: 'Do you want to delete the contact?',
             buttons: {
               success: {

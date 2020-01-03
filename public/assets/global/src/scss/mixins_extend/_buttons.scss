@@ -1,0 +1,204 @@
+@mixin btn-raised-shadow() {
+  @include shadow($btn-raised-shadow-top, $btn-raised-shadow-bottom);
+  transition: box-shadow .25s cubic-bezier(.4, 0, .2, 1);
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle,
+  .show > &.dropdown-toggle {
+    @include shadow($btn-raised-shadow-active-top, $btn-raised-shadow-active-bottom);
+  }
+}
+
+@mixin btn-tagged-variant($padding-right, $tag-padding-vertical, $tag-padding-horizontal) {
+  padding: 0 $padding-right 0 0;
+
+  .btn-tag {
+    padding: $tag-padding-vertical $tag-padding-horizontal;
+    // margin-right: ($padding-right - pxtorem(3px));
+    margin-right: $tag-padding-horizontal;
+  }
+}
+
+@mixin button-direction-states-variant($tag, $map, $background, $hover-border, $active-border) {
+  &.btn-#{$tag} {
+    &::before {
+      border-#{$map}-color: $background;
+    }
+
+    &:hover,
+    &.hover,
+    &:focus,
+    &.focus {
+      &::before {
+        border-#{$map}-color: $hover-border;
+      }
+    }
+
+    &.active,
+    &:active,
+    .open > &.dropdown-toggle,
+    .show > &.dropdown-toggle {
+      &::before {
+        border-#{$map}-color: $active-border;
+      }
+    }
+  }
+}
+
+@mixin button-direction-variant($background, $hover-border, $active-border) {
+  $direction: ("up": "bottom", "right": "left", "bottom": "top", "left": "right");
+
+  @each $tag, $map in $direction {
+    @include button-direction-states-variant($tag, $map, $background, $hover-border, $active-border);
+  }
+}
+
+@mixin button-styles-variant($styles) {
+  $styles_list: map-get($btn-styles, $styles);
+  $color: map-get($styles_list, "color") !default;
+  $background: map-get($styles_list, "bg") !default;
+  $border: map-get($styles_list, "border") !default;
+  $hover-bg: map-get($styles_list, "hover-bg") !default;
+  $hover-border: map-get($styles_list, "hover-border") !default;
+  $active-bg: map-get($styles_list, "active-bg") !default;
+  $active-border: map-get($styles_list, "active-border") !default;
+  $disabled-color: map-get($styles_list, "disabled-color") !default;
+  $disabled-bg: map-get($styles_list, "disabled-bg") !default;
+  $disabled-border: map-get($styles_list, "disabled-border") !default;
+
+  @include button-direction-variant($background, $hover-bg, $active-bg);
+  // color: color-yiq($background);
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+  box-shadow: none;
+
+  &:hover,
+  &.hover,
+  &:focus,
+  &.focus {
+    color: $color;
+    background-color: $hover-bg;
+    border-color: $hover-border;
+    box-shadow: none;
+  }
+
+  // &:active,
+  // &.active,
+  &:not([disabled]):not(.disabled):active,
+  &:not([disabled]):not(.disabled).active,
+  .open > &.dropdown-toggle,
+  .show > &.dropdown-toggle {
+    color: $color;
+    background-color: $active-bg;
+    border-color: $active-border;
+    box-shadow: none;
+
+    &:hover, &.hover, &:focus, &.focus {
+      color: $color;
+      background-color: $active-bg;
+      border-color: $active-border;
+      box-shadow: none; // for focus no outline(shadow) 181106
+    }
+  }
+
+  &.disabled, &[disabled], fieldset[disabled] & {
+    &, &:hover, &.hover, &:focus, &.focus, &:active, &.active {
+      color: $disabled-color;
+      background-color: $disabled-bg;
+      border-color: $disabled-border;
+    }
+  }
+
+  .badge-pill {
+    color: $background;
+    background-color: $color;
+  }
+
+  &.btn-flat {
+    color: $background;
+
+    &:hover,
+    &.hover,
+    &:focus,
+    &.focus {
+      color: $color;
+    }
+  }
+}
+
+@mixin button-outline-styles-variant($styles) {
+  $styles_list: map-get($btn-styles, $styles);
+  $color: null;
+  $hover-color: null;
+  $hover-bg: null;
+  $border: null;
+  $active-bg: null;
+
+  @if $styles == "default" {
+    $color: map-get($styles_list, "color") !default;
+    $hover-color: map-get($styles_list, "color") !default;
+    $hover-bg: rgba($color, (10/100)) !default;
+    $border: $border-color-base !default;
+    $active-bg: map-get($styles_list, "active-bg") !default;
+  } @else {
+    $color: map-get($styles_list, "bg") !default;
+    $hover-bg: map-get($styles_list, "bg") !default;
+    $border: map-get($styles_list, "bg") !default;
+    $hover-color: map-get($styles_list, "color") !default;
+    $active-bg: map-get($styles_list, "active-bg") !default;
+  }
+
+  @include button-direction-variant($hover-bg, $hover-bg, $active-bg);
+  color: $color;
+  background-color: transparent;
+  border-color: $border;
+
+  &:hover,
+  &.hover,
+  &:focus,
+  &.focus,
+  // &:active,
+  // &.active,
+  &:not([disabled]):not(.disabled):active,
+  &:not([disabled]):not(.disabled).active,
+  .open > &.dropdown-toggle,
+  .show > &.dropdown-toggle {
+    color: $hover-color;
+    background-color: $hover-bg;
+    border-color: $border;
+
+    .badge-pill {
+      color: $color;
+      background-color: $hover-color;
+    }
+  }
+}
+
+@mixin button-pure-variant($color, $active-color) {
+  color: $color;
+
+  &:hover,
+  &.hover,
+  &:focus,
+  &.focus,
+  &:active,
+  &.active,
+  &:not([disabled]):not(.disabled):active,
+  &:not([disabled]):not(.disabled).active,
+  .open > &.dropdown-toggle,
+  .show > &.dropdown-toggle {
+    color: $active-color;
+
+    &:hover, &.hover, &:focus, &.focus {
+      color: $active-color;
+    }
+
+    .badge-pill {
+      color: $active-color;
+    }
+  }
+}

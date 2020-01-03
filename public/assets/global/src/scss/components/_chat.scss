@@ -1,0 +1,124 @@
+// Name:            Chat
+//
+// Component:       `chat`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$chat-content-bg: $brand-primary !default;
+$chat-content-color: $color-white !default;
+$chat-content-padding: 8px 15px !default;
+$chat-left-content-bg: darken($bg-color-base, 6%) !default;
+$chat-left-content-color: $text-color !default;
+$chat-time-color: rgba(255, 255, 255, .6) !default;
+$chat-left-time-color: $prompt-color !default;
+
+// Component: Chat
+// ========================================================================
+
+.chat-box {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: $inverse;
+}
+
+.chats {
+  padding: 30px 15px;
+}
+
+.chat-avatar {
+  float: right;
+
+  .avatar {
+    width: 30px;
+  }
+}
+
+.chat-body {
+  display: block;
+  margin: 10px 30px 0 0;
+  overflow: hidden;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.chat-content {
+  position: relative;
+  display: block;
+  float: right;
+  padding: $chat-content-padding;
+  margin: 0 20px 10px 0;
+  clear: both;
+  color: $chat-content-color;
+  background-color: $chat-content-bg;
+  border-radius: $border-radius-large;
+
+  &::before {
+    position: absolute;
+    top: 10px;
+    right: -10px;
+    width: 0;
+    height: 0;
+    content: "";
+    border: 5px solid transparent;
+    border-left-color: $chat-content-bg;
+  }
+
+  p {
+    margin-bottom: .5rem;
+  }
+
+  & > p:last-child {
+    margin-bottom: 0;
+  }
+
+  & + &::before {
+    border-color: transparent;
+  }
+}
+
+.chat-time {
+  display: block;
+  margin-top: 8px;
+  color: $chat-time-color;
+}
+
+// Modifier: `chat-left`
+// ========================================================================
+
+.chat-left {
+  .chat-avatar {
+    float: left;
+  }
+
+  .chat-body {
+    margin-right: 0;
+    margin-left: 30px;
+  }
+
+  .chat-content {
+    float: left;
+    margin: 0 0 10px 20px;
+    color: $chat-left-content-color;
+    background-color: $chat-left-content-bg;
+
+    &::before {
+      right: auto;
+      left: -10px;
+      border-right-color: $chat-left-content-bg;
+      border-left-color: transparent;
+    }
+  }
+
+  .chat-content + .chat-content::before {
+    border-color: transparent;
+  }
+
+  .chat-time {
+    color: $chat-left-time-color;
+  }
+}

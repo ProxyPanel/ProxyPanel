@@ -1,0 +1,68 @@
+//
+// Grid system
+// --------------------------------------------------
+
+// Container widths
+//
+// Set the container width, and override it for fixed navbars in media queries.
+
+@include media-breakpoint-up(xxl) {
+  .container {
+    max-width: map-get($container-max-widths, xxl);
+  }
+}
+
+// Gird
+// ========================================================================
+.row.no-space {
+  margin-right: 0;
+  margin-left: 0;
+
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.row-lg {
+  margin-right: ($grid-lg-gutter-width / -2);
+  margin-left: ($grid-lg-gutter-width / -2);
+}
+
+@mixin make-grid-columns-extend($columns: $grid-columns, $gutter: $grid-gutter-width, $gutter-lg: $grid-lg-gutter-width, $breakpoints: $grid-breakpoints) {
+  @each $breakpoint in map-keys($breakpoints) {
+    $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+    @for $i from 1 through $columns {
+      // .col-#{$breakpoint}-#{$i} {
+      //   @extend %grid-column-padding;
+      //   // @extend %grid-columns-extend;
+      // }
+      .row-lg > .col#{$infix}-#{$i} {
+        @extend %grid-column-lg-padding;
+        // @extend %grid-columns-extend;
+      }
+    }
+
+    .row-lg > .col#{$infix} {
+      @extend %grid-column-lg-padding;
+    }
+  }
+  // %grid-columns-extend {
+  //   position: relative;
+  //   min-height: 1px;
+  // }
+
+  // %grid-column-padding {
+  //   // Inner gutter via padding
+  //   padding-left: ($gutter / 2);
+  //   padding-right: ($gutter / 2);
+  // }
+
+  %grid-column-lg-padding {
+    padding-right: ($gutter-lg / 2);
+    padding-left: ($gutter-lg / 2);
+  }
+}
+
+@include make-grid-columns-extend();

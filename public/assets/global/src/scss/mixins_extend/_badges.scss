@@ -1,0 +1,15 @@
+@mixin badge-styles-variant($color, $hover-color) {
+  color: color-yiq($color);
+  background-color: $color;
+  &[href] {
+    &:hover, &:focus {
+      background-color: $hover-color;
+    }
+  }
+
+  &.badge-outline {
+    color: $color;
+    background-color: transparent;
+    border-color: $color;
+  }
+}

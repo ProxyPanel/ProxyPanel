@@ -1,0 +1,11 @@
+.c3-grid line {
+  stroke: $gray-400;
+}
+.c3-grid text {
+  fill: #aaa;
+}
+.c3-xgrid, .c3-ygrid {
+  stroke-dasharray: 3 3;
+}
+.c3-xgrid-focus {
+}

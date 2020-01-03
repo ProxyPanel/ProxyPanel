@@ -1,0 +1,57 @@
+// px ~ rem
+//
+$font-size-root: 14px !default;
+
+// pxToRem
+@function pxtorem($px) {
+  $base: null !default;
+
+  @if unit($font-size-root) == "px" {
+    $base: $font-size-root;
+  } @else if unit($font-size-root) == "%" {
+    $base: ($font-size-root / 100%) * 16px;
+  } @else if unit($font-size-root) == "" {
+    $base: $font-size-root * 16px;
+  }
+
+  @return (floor(ceil(($px / $base) * 1000)) / 1000) * 1rem;
+}
+
+// remToPx
+@function remtopx($rem) {
+  $base: null !default;
+
+  @if unit($font-size-root) == "px" {
+    $base: $font-size-root;
+  } @else if unit($font-size-root) == "%" {
+    $base: ($font-size-root / 100%) * 16px;
+  } @else if unit($font-size-root) == "" {
+    $base: $font-size-root * 16px;
+  }
+
+  @return ($rem / 1rem) * $base;
+}
+
+// get brand-name-level color
+//
+// @function get-color-list($name) {
+//   @return map-get($brand-colors,$name);
+// }
+
+// @function get-brand-color($name, $level) {
+//   $colors-set: get-color-list($name);
+
+//   @return map-get($colors-set,$level);
+// }
+
+// get brand-name-level color
+// @function get-brand-color($name: "info", $level: "500", $colors-set: $brand-colors) {
+//   $name-colors: map-get($colors-set,$name);
+//   @return map-get($name-colors,$level);
+// }
+
+// // get brand-name-status color
+// @function get-brand-status($name: "primary", $status: "normal", $status-set: $brand-status) {
+//   $name-status: map-get($status-set,$name);
+// 	@return map-get($name-status,$status);
+// }

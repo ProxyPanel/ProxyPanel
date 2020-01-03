@@ -1,0 +1,288 @@
+// Name:            Steps
+//
+// Component:       `steps`
+//                  'step-icon'
+//                  'step-number'
+//                  'step-title'
+//                  'step-desc'
+//
+// Modifiers:       'current'
+//                  'done'
+//                  'error'
+//                  'disabled'
+//                  'steps-vertical'
+//                  'steps-lg'
+//                  'steps-sm'
+//                  'steps-xs'
+//
+// Markup:
+// <div class="step done">
+//   <span class="step-number">1</span>
+//   <div class="step-desc">
+//     <span class="step-title">Title</span>
+//     <p>Some desc text</p>
+//   </div>
+// </div>
+// ========================================================================
+
+// Variables
+// ========================================================================
+$steps-margin-bottom: $line-height-computed !default;
+$step-padding-horizontal: 20px !default;
+$step-padding-vertical: 12px !default;
+$step-vertical-padding-horizontal: 20px !default;
+$step-vertical-padding-vertical: 18px !default;
+$step-color: $gray-400 !default;
+$step-bg: $bg-color-base !default;
+$step-number-bg: $gray-200 !default;
+$step-number-color: $inverse !default;
+$step-current-color: $inverse !default;
+$step-current-bg: $brand-primary !default;
+$step-done-color: $inverse !default;
+$step-done-bg: $brand-success !default;
+$step-error-color: $inverse !default;
+$step-error-bg: $brand-danger !default;
+$step-disabled-color: $gray-300 !default;
+$step-font-size: inherit !default;
+$step-title-font-size: 20px !default;
+$step-icon-font-size: $step-title-font-size !default;
+$step-number-font-size: 24px !default;
+$step-number-size: 40px !default;
+$step-lg-padding-horizontal: 20px !default;
+$step-lg-padding-vertical: 20px !default;
+$step-lg-font-size: 16px !default;
+$step-lg-title-font-size: 22px !default;
+$step-lg-icon-font-size: $step-lg-title-font-size !default;
+$step-lg-number-font-size: 28px !default;
+$step-lg-number-size: 46px !default;
+$step-sm-font-size: 12px !default;
+$step-sm-title-font-size: 18px !default;
+$step-sm-icon-font-size: $step-sm-title-font-size !default;
+$step-sm-number-font-size: 24px !default;
+$step-sm-number-size: 30px !default;
+$step-xs-font-size: 10px !default;
+$step-xs-title-font-size: 16px !default;
+$step-xs-icon-font-size: $step-xs-title-font-size !default;
+$step-xs-number-font-size: 20px !default;
+$step-xs-number-size: 24px !default;
+
+// Component: steps
+// ========================================================================
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 $steps-margin-bottom;
+}
+
+.step {
+  position: relative;
+  padding: $step-padding-vertical $step-padding-horizontal;
+  margin: 0;
+  font-size: $step-font-size;
+  color: $step-color;
+  vertical-align: top;
+  background-color: $step-bg;
+  border-radius: 0;
+}
+
+.step-icon {
+  float: left;
+  margin-right: .5em;
+  font-size: $step-icon-font-size;
+}
+
+.step-number {
+  position: absolute;
+  top: 50%;
+  left: $step-padding-horizontal;
+  width: $step-number-size;
+  height: $step-number-size;
+  font-size: $step-number-font-size;
+  line-height: $step-number-size;
+  color: $step-number-color;
+  text-align: center;
+  background: $step-number-bg;
+  border-radius: 50%;
+  transform: translateY(-50%);
+
+  & ~ .step-desc {
+    min-height: $step-number-size;
+    margin-left: ($step-number-size + 10px);
+  }
+}
+
+.step-title {
+  margin-bottom: 0;
+  font-size: $step-title-font-size;
+  color: $subtitle-color;
+  //.text-truncate();
+}
+
+.step-desc {
+  text-align: left;
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+// Modifier: `step-vertical`
+// ========================================================================
+
+.steps-vertical {
+  // @if $enable-flex {
+  flex-direction: column;
+  // } @else {
+  //   .step {
+  //     &,
+  //     &[class*="col-"] {
+  //       width: 100%;
+  //       float: none;
+  //     }
+
+  //     display: block;
+  //     padding: $step-vertical-padding-vertical $step-vertical-padding-horizontal;
+  //   }
+  // }
+}
+
+// State Modifier
+// ========================================================================
+.step {
+  &.current, &.active {
+    color: $step-current-color;
+    background-color: $step-current-bg;
+
+    .step-title {
+      color: $step-current-color;
+    }
+
+    .step-number {
+      color: $step-current-bg;
+      background-color: $step-current-color;
+    }
+  }
+
+  &.disabled {
+    color: $step-disabled-color;
+    pointer-events: none;
+    cursor: auto;
+
+    .step-title {
+      color: $step-disabled-color;
+    }
+
+    .step-number {
+      background-color: $step-disabled-color;
+    }
+  }
+
+  &.error {
+    color: $step-error-color;
+    background-color: $step-error-bg;
+
+    .step-title {
+      color: $step-error-color;
+    }
+
+    .step-number {
+      color: $step-error-bg;
+      background-color: $step-error-color;
+    }
+  }
+
+  &.done {
+    color: $step-done-color;
+    background-color: $step-done-bg;
+
+    .step-title {
+      color: $step-done-color;
+    }
+
+    .step-number {
+      color: $step-done-bg;
+      background-color: $step-done-color;
+    }
+  }
+}
+// Size Modifier
+// ========================================================================
+
+.steps-lg {
+  .step {
+    padding: $step-lg-padding-vertical $step-lg-padding-horizontal;
+    font-size: $step-lg-font-size;
+
+    &-icon {
+      font-size: $step-lg-icon-font-size;
+    }
+
+    &-title {
+      font-size: $step-lg-title-font-size;
+    }
+
+    &-number {
+      width: $step-lg-number-size;
+      height: $step-lg-number-size;
+      font-size: $step-lg-number-font-size;
+      line-height: $step-lg-number-size;
+
+      ~ .step-desc {
+        min-height: $step-lg-number-size;
+        margin-left: ($step-lg-number-size + 10px);
+      }
+    }
+  }
+}
+
+.steps-sm {
+  .step {
+    font-size: $step-sm-font-size;
+
+    &-icon {
+      font-size: $step-sm-icon-font-size;
+    }
+
+    &-title {
+      font-size: $step-sm-title-font-size;
+    }
+
+    &-number {
+      width: $step-sm-number-size;
+      height: $step-sm-number-size;
+      font-size: $step-sm-number-font-size;
+      line-height: $step-sm-number-size;
+
+      ~ .step-desc {
+        min-height: $step-sm-number-size;
+        margin-left: ($step-sm-number-size + 10px);
+      }
+    }
+  }
+}
+
+.steps-xs {
+  .step {
+    font-size: $step-xs-font-size;
+
+    &-icon {
+      font-size: $step-xs-icon-font-size;
+    }
+
+    &-title {
+      font-size: $step-xs-title-font-size;
+    }
+
+    &-number {
+      width: $step-xs-number-size;
+      height: $step-xs-number-size;
+      font-size: $step-xs-number-font-size;
+      line-height: $step-xs-number-size;
+
+      ~ .step-desc {
+        min-height: $step-xs-number-size;
+        margin-left: ($step-xs-number-size + 10px);
+      }
+    }
+  }
+}

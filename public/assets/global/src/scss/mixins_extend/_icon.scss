@@ -1,0 +1,42 @@
+// Mixins
+// --------------------------
+@mixin make-icon() {
+  position: relative;
+  // top: 1px;
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  transform: translate(0, 0); // ensures no half-pixel rendering in firefox
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  speak: none;
+  //font-size: inherit;
+  text-rendering: auto; // optimizelegibility throws things off #1094
+}
+
+@mixin icon-rotate($degrees, $rotation) {
+  filter: progid:dximagetransform.microsoft.basicimage(rotation=$rotation);
+  transform: rotate($degrees);
+}
+
+@mixin icon-flip($horiz, $vert, $rotation) {
+  filter: progid:dximagetransform.microsoft.basicimage(rotation=$rotation, mirror=1);
+  transform: scale($horiz, $vert);
+}
+
+@mixin icon-fixed-width() {
+  width: 1em;
+  text-align: center;
+}
+
+@mixin icon-color-variant($color, $hover-color, $active-color) {
+  color: $color;
+
+  &:hover, &:focus {
+    color: $hover-color;
+  }
+
+  &.active, &:active {
+    color: $active-color;
+  }
+}

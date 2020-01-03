@@ -1,0 +1,48 @@
+// Name:            Pricing Table
+//
+// Component:       `pricing-table`
+//
+// Modifiers:       'pricing-header'
+//                  'pricing-price'
+//                  'pricing-currency'
+//                  'pricing-period'
+//                  'pricing-title'
+//                  'pricing-features'
+//                  'pricing-footer'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$pricing-table-border:             $border-color-base !default;
+
+$pricing-table-column-bg:          $bg-color-base !default;
+$pricing-table-column-featured-bg: $color-white !default;
+
+// Component: Pricing Table
+// ========================================================================
+
+.pricing-table {
+
+  @include clearfix();
+  [class*="pricing-column"] {
+    background-color: $pricing-table-column-bg;
+    border: 1px solid $pricing-table-border;
+
+    &:last-child {
+      border-right: 1px solid $pricing-table-border;
+    }
+
+    &.featured {
+      background-color: $pricing-table-column-featured-bg;
+      border-right: 1px solid $pricing-table-border;
+    }
+  }
+
+  // Modifier: `pricing-header`
+  // ========================================================================
+  .pricing-header {
+    border-bottom: 1px solid $pricing-table-border;
+  }
+}

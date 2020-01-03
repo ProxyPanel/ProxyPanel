@@ -1,0 +1,19 @@
+// Hamburger Menu Icon
+// -------------------------
+
+.hamburger {
+
+  &:before,
+  .hamburger-bar,
+  &:after {
+
+    background: $text-color;
+
+    .navbar-default & {
+      background: $navbar-default-toggle-icon-bar-bg;
+    }
+    .navbar-inverse & {
+      background: $navbar-inverse-toggle-icon-bar-bg;
+    }
+  }
+}

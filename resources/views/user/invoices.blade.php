@@ -20,6 +20,7 @@
 						<th> {{trans('home.invoice_table_create_date')}} </th>
 						<th> {{trans('home.invoice_table_expire_at')}} </th>
 						<th> {{trans('home.invoice_table_status')}} </th>
+						<th> {{trans('home.invoice_table_actions')}} </th>
 					</tr>
 					</thead>
 					<tbody>
@@ -37,33 +38,42 @@
 								<td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
 								<td>￥{{$order->amount}}</td>
 								<td>{{$order->created_at}}</td>
-								<td>{{empty($order->goods) ? '' : ($order->goods->type == 3 ? '' : $order->expire_at)}}</td>
+								<td>{{empty($order->goods) ? '' : $order->goods->type == 3 || $order->status == 3 ? '' : $order->expire_at}}</td>
 								<td>
-									@if(!$order->is_expire)
-										@if($order->status == -1)
-											<a href="javascript:" class="btn btn-sm btn-default disabled"> {{trans('home.invoice_table_closed')}} </a>
-										@elseif($order->status == 0)
-											<a href="javascript:" class="btn btn-sm btn-dark disabled"> {{trans('home.invoice_table_wait_payment')}} </a>
-											@if(!empty($order->payment))
-												@if(!empty($order->payment->jump_url))
-													<a href="{{$order->payment->jump_url}}" target="_blank" class="btn btn-sm btn-danger">{{trans('home.pay')}}</a>
-												@else
-													<a href="/payment/{{$order->payment->sn}}" target="_blank" class="btn btn-sm btn-danger">{{trans('home.pay')}}</a>
-												@endif
-											@endif
-										@elseif($order->status == 1)
-											<a href="javascript:" class="btn btn-sm btn-dark disabled"> {{trans('home.invoice_table_wait_confirm')}} </a>
-										@elseif($order->status == 2)
-											@if(!empty($order->goods) && $order->goods->type == 3)
-												<a href="javascript:" class="btn btn-sm btn-success disabled"> 支付成功 </a>
-											@else
-												<a href="javascript:" class="btn btn-sm btn-success disabled"> {{trans('home.invoice_table_wait_active')}} </a>
-											@endif
+									@switch($order->status)
+										@case(-1)
+										<span class="badge badge-default">{{trans('home.invoice_status_closed')}}</span>
+										@break
+										@case(0)
+										<span class="badge badge-danger">{{trans('home.invoice_status_wait_payment')}}</span>
+										@break
+										@case(1)
+										<span class="badge badge-info">{{trans('home.invoice_status_wait_confirm')}}</span>
+										@break
+										@case(2)
+										@if (!empty($order->goods) && $order->goods->type == 3)
+											<span class="badge badge-default">{{trans('home.invoice_status_payment_confirm')}}</span>
 										@else
-											<a href="javascript:" class="btn btn-sm btn-default disabled"> {{trans('home.invoice_table_expired')}} </a>
+											@if($order->is_expire)
+												<span class="badge badge-default">{{trans('home.invoice_table_expired')}}</span>
+											@else
+												<span class="badge badge-success">{{trans('home.invoice_table_active')}}</span>
+											@endif
 										@endif
-									@else
-										<a href="javascript:" class="btn btn-sm btn-default disabled"> {{trans('home.invoice_table_expired')}} </a>
+										@break
+										@case(3)
+										<span class="badge badge-info">{{trans('home.invoice_table_prepay')}}</span>
+								@break
+								@endswitch
+								<td>
+									@if($order->status == 0 && !empty($order->payment))
+										@if(!empty($order->payment->jump_url))
+											<a href="{{$order->payment->jump_url}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+										@elseif(!empty($order->payment->sn))
+											<a href="/payment/{{$order->payment->sn}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+										@endif
+									@elseif ($order->status == 3)
+										<button onclick="activeOrder('{{$order->oid}}')" class="btn btn-success">{{trans('home.invoice_table_start')}}</button>
 									@endif
 								</td>
 							</tr>
@@ -87,4 +97,34 @@
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+        function activeOrder(oid) {
+            swal.fire({
+                title: '是否提前激活本套餐？',
+                html: '套餐激活后：<br>先前套餐将直接失效！<br>过期日期将由本日重新开始计算！',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/activeOrder",
+                        async: false,
+                        data: {_token: '{{csrf_token()}}', oid: oid},
+                        dataType: 'json',
+                        success: function (ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                                    .then(() => window.location.reload())
+                            } else {
+                                swal.fire({title: ret.message, type: 'error'});
+                            }
+                        }
+                    });
+                }
+            })
+        }
+	</script>
 @endsection

@@ -1,0 +1,75 @@
+// Name:            Overlay
+// Description:     Defines styles for image overlays
+//
+// Component:       `overlay`
+//
+// Sub-objects:     `overlay-figure`
+//                  `overlay-panel`
+//                  `overlay-hover`
+//                  `overlay-icon`
+//                  `overlay-anchor`
+//
+// Modifier:        `overlay-background`
+//                  `overlay-image`
+//                  `overlay-top`
+//                  `overlay-bottom`
+//                  `overlay-left`
+//                  `overlay-right`
+//                  `overlay-fade`
+//                  `overlay-scale`
+//                  `overlay-spin`
+//                  `overlay-grayscale`
+//                  `overlay-slide-top`
+//                  `overlay-slide-bottom`
+//                  `overlay-slide-left`
+//
+// Markup:
+//
+// <!-- overlay -->
+// <a class="overlay" href="">
+//     <img src="" alt="">
+//     <div class="overlay-panel"></div>
+// </a>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$overlay-panel-color:                $inverse !default;
+
+$overlay-panel-background:           rgba(0, 0, 0, 0.5) !default;
+
+$overlay-icon-color:                 $inverse !default;
+
+$overlay-panel-link-color:           inherit !default;
+
+/* ========================================================================
+   Component: Overlay
+ ========================================================================== */
+
+/* Sub-object `overlay-panel`
+ ========================================================================== */
+
+.overlay-panel {
+  color: $overlay-panel-color;
+
+  a:not([class]) {
+    color: $overlay-panel-link-color;
+  }
+}
+
+/* Modifier `overlay-background`
+ ========================================================================== */
+
+.overlay-background {
+  background: $overlay-panel-background;
+}
+
+/* Sub-object `overlay-icon`
+ ========================================================================== */
+.overlay-icon {
+  .icon {
+    color: $overlay-icon-color;
+  }
+}

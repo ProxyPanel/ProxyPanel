@@ -1,0 +1,271 @@
+// Name:            Progress
+//
+// Component:       `progress`
+//
+// Modifiers:       `progress-bar-indicating`
+//                  `progress-skill`
+//                  `progress-lg`
+//                  `progress-sm`
+//                  `progress-xs`
+//                  `progress-square`
+//                  `progress-circle`
+//                  `contextual-progress`
+//
+// Markup:
+//
+// <!-- progress -->
+// <div class="progress">
+//   <div class="progress-bar"></div>
+// </div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$progress-bar-height: 15px !default;
+$progress-bar-xs-height: 4px !default;
+$progress-bar-sm-height: 10px !default;
+$progress-bar-lg-height: $line-height-computed !default;
+$progress-vertical-bar-width: 15px !default;
+$progress-vertical-bar-xs-width: 4px !default;
+$progress-vertical-bar-sm-width: 10px !default;
+$progress-vertical-bar-lg-width: 25px !default;
+$progress-bar-indicating-active-bg: $inverse !default;
+$progress-round: 1000px !default;
+$progress-vertical-min-height: 250px !default;
+$progress-vertical-margin-right: 30px !default;
+$progress-skill-color: $subtitle-color !default;
+
+// Component: Progress
+// ========================================================================
+
+// Outer container
+.progress {
+  height: $progress-bar-height;
+  margin-bottom: $line-height-computed;
+  overflow: hidden;
+  background-color: $progress-bg;
+  border-radius: $progress-border-radius;
+}
+
+// Bar of progress
+.progress-bar {
+  float: left;
+  width: 0%;
+  height: 100%;
+  font-size: $font-size-sm;
+  line-height: $progress-bar-height;
+  color: $progress-bar-color;
+  text-align: center;
+  background-color: $progress-bar-bg;
+  transition: width .6s ease;
+}
+
+// Color Variations
+// -------------------------
+
+.progress-bar-success {
+  @include progress-bar-variant($progress-bar-success-bg);
+}
+
+.progress-bar-info {
+  @include progress-bar-variant($progress-bar-info-bg);
+}
+
+.progress-bar-warning {
+  @include progress-bar-variant($progress-bar-warning-bg);
+}
+
+.progress-bar-danger {
+  @include progress-bar-variant($progress-bar-danger-bg);
+}
+
+// Modifier: `.progress-striped or progress-bar-striped`
+// ----------------------------------------------------
+
+.progress-striped .progress-bar, .progress-bar-striped {
+  @include gradient-striped;
+  background-size: 40px 40px;
+}
+
+// Modifier: `.progress.active or .progress-bar.active`
+// -------------------------------------------------------------------------
+// Call animation for the actived progress-striped
+
+// .progress-animated .progress-bar,
+.progress.active .progress-bar, .progress-bar.active {
+  animation: progress-bar-stripes 2s linear infinite;
+}
+
+// Modifier: `progress-square`
+// -------------------------
+
+.progress-square {
+  border-radius: 0;
+}
+
+// Modifier: `progress-circle`
+// -------------------------
+
+.progress-circle {
+  border-radius: $progress-round;
+}
+
+// Vertical
+// --------
+.progress-vertical {
+  position: relative;
+  display: inline-block;
+  width: $progress-vertical-bar-width;
+  height: $progress-vertical-min-height;
+  min-height: $progress-vertical-min-height;
+  margin-right: $progress-vertical-margin-right;
+  margin-bottom: 0;
+
+  .progress-bar {
+    width: 100%;
+  }
+}
+
+// Modifier: `progress-bar-indicating`
+// -------------------------
+
+.progress-bar-indicating {
+  &.active {
+    position: relative;
+    animation: none;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      content: "";
+      background-color: $progress-bar-indicating-active-bg;
+      border-radius: inherit;
+      opacity: 0;
+      animation: progress-active 3s ease 0s infinite;
+
+      .progress-vertical & {
+        animation-name: progress-vertical-active;
+      }
+    }
+  }
+}
+
+// Modifier: `progress-skill`
+// ========================================================================
+
+.progress-skill {
+  position: relative;
+
+  .progress-bar {
+    > span {
+      position: absolute;
+      top: 0;
+      right: 10px;
+      color: $progress-skill-color;
+    }
+  }
+}
+
+// Size Modifier
+// ========================================================================
+
+.progress-lg {
+  height: $progress-bar-lg-height;
+
+  &.progress-vertical {
+    width: $progress-vertical-bar-lg-width;
+  }
+
+  .progress-bar {
+    line-height: $progress-bar-lg-height;
+  }
+}
+
+.progress-sm {
+  height: $progress-bar-sm-height;
+
+  &.progress-vertical {
+    width: $progress-vertical-bar-sm-width;
+  }
+
+  .progress-bar {
+    line-height: $progress-bar-sm-height;
+  }
+}
+
+.progress-xs {
+  height: $progress-bar-xs-height;
+  border-radius: 1px;
+
+  &.progress-vertical {
+    width: $progress-vertical-bar-xs-width;
+  }
+
+  .progress-bar {
+    line-height: $progress-bar-xs-height;
+  }
+}
+
+// Modifier: `contextual-progress`
+// ========================================================================
+
+.contextual-progress {
+  margin: 20px 0;
+
+  .progress-title {
+    float: left;
+  }
+
+  .progress-label {
+    position: relative;
+    float: right;
+  }
+
+  .progress {
+    height: 2px;
+    margin: 5px 0;
+  }
+}
+
+// Progress Animation
+// ========================================================================
+
+// Bar animations
+// -------------------------
+@keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@keyframes progress-active {
+  0% {
+    width: 0;
+    opacity: .4;
+  }
+
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes progress-vertical-active {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+
+  100% {
+    top: 175px;
+    opacity: .4;
+  }
+}

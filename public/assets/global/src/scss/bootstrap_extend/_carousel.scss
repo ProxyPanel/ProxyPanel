@@ -1,0 +1,132 @@
+// Name:            Carousel
+//
+// Component:       `carousel`
+//
+// Modifiers:       `carousel-indicators-scaleup`
+//                  `carousel-indicators-fillin`
+//                  `carousel-indicators-fall`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$carousel-caption-title-font-size: 20px !default;
+$carousel-caption-title-color: $inverse !default;
+$carousel-control-hover-opacity: .4 !default;
+$carousel-control-icon-size: $carousel-control-font-size !default;
+$carousel-control-screen-icon-size: 24px !default;
+$carousel-control-screen-icon-font-size: $carousel-control-screen-icon-size !default;
+$carousel-indicators-list-margin: 3px !default;
+$carousel-indicators-list-bg-color: rgba(255, 255, 255, .3) !default;
+$carousel-indicators-list-border-radius: 10px !default;
+
+// Component: Carousel
+// ========================================================================
+
+.carousel-control-next, .carousel-control-prev {
+  @include hover-focus {
+    opacity: $carousel-control-hover-opacity;
+  }
+  min-width: 50px;
+
+  // In order to add icons by myself
+  &-icon {
+    z-index: 5;
+    background-image: none;
+  }
+}
+
+.carousel-caption {
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+  }
+}
+
+.carousel-indicators {
+  li {
+    cursor: pointer;
+    background-color: $carousel-indicators-list-bg-color;
+    border-radius: $carousel-indicators-list-border-radius;
+  }
+}
+
+// Animate Modifier
+// ========================================================================
+
+// Modifier: `carousel-indicators-scaleup`
+// -------------------------
+
+.carousel-indicators-scaleup {
+  li {
+    border: none;
+    transition: transform .3s ease 0s, background-color .3s ease 0s;
+  }
+
+  .active {
+    transform: scale(1.5);
+  }
+}
+
+// Modifier: `carousel-indicators-fillin`
+// -------------------------
+
+.carousel-indicators-fillin {
+  li {
+    background-color: transparent;
+    box-shadow: 0 0 0 2px #fff inset;
+    transition: box-shadow .3s ease 0s;
+  }
+
+  .active {
+    box-shadow: 0 0 0 8px #fff inset;
+  }
+}
+
+// Modifier: `carousel-indicators-fall`
+// -------------------------
+
+.carousel-indicators-fall {
+  li {
+    position: relative;
+    transition: transform .3s ease 0s, background-color .3s ease 0s;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      visibility: hidden;
+      content: "";
+      background-color: rgba(0, 0, 0, .3);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity .3s ease 0s, visibility 0s ease .3s;
+      transform: translate(0%, -200%);
+    }
+  }
+
+  .active {
+    background-color: transparent;
+    transform: translate(0, 200%);
+
+    &::after {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity .3s ease 0s;
+    }
+  }
+}
+
+// Media Modifier
+// ========================================================================
+
+@include media-breakpoint-up(md) {
+  .carousel-control-next, .carousel-control-prev {
+    &-icon {
+      width: $carousel-control-screen-icon-size;
+      height: $carousel-control-screen-icon-size;
+      font-size: $carousel-control-screen-icon-font-size;
+    }
+  }
+}

@@ -1,0 +1,26 @@
+// Vertical aligns
+// ========================================================================
+.vertical-align {
+  font-size: 0;
+
+  &::before {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    content: "";
+  }
+
+  &-middle, &-bottom {
+    display: inline-block;
+    max-width: 100%;
+    font-size: $font-size-base;
+  }
+
+  &-middle {
+    vertical-align: middle;
+  }
+
+  &-bottom {
+    vertical-align: bottom;
+  }
+}

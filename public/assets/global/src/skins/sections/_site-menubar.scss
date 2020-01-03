@@ -1,0 +1,43 @@
+
+.site-menubar {
+  background: $site-menubar-bg;
+  color: $site-menubar-color;
+
+  &.site-menubar-light {
+    background: $site-menubar-light-bg;
+
+    .scrollable-inverse.scrollable .scrollable-bar-handle {
+      background: rgba($gray-400, (60/100));
+    }
+  }
+}
+
+.site-menubar-section {
+  > h4, > h5 {
+    color: $site-menubar-section-title-color;
+  }
+}
+
+.site-menubar-footer {
+  > a {
+    color: $site-menubar-footer-color;
+    background-color: $site-menubar-footer-link-bg;
+
+    &:hover,
+    &:focus {
+      background-color: $site-menubar-footer-link-hover-bg;
+    }
+  }
+}
+
+.site-menubar-light {
+  .site-menubar-footer {
+    > a {
+      background-color: $site-menubar-light-footer-link-bg;
+      &:hover,
+      &:focus {
+        background-color: $site-menubar-light-footer-link-hover-bg;
+      }
+    }
+  }
+}

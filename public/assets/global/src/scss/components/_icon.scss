@@ -1,0 +1,268 @@
+// Name:            Icon
+//
+// Component:       `icon`
+//
+// Modifiers:       'icon-circle'
+//                  'icon-color'
+//                  'icon-color-alt'
+//                  'icon-lg'
+//                  'icon-2x'
+//                  'icon-3x'
+//                  'icon-4x'
+//                  'icon-5x'
+//                  'icon-fw'
+//                  'icon-ul'
+//                  'icon-border'
+//                  'icon-spin'
+//                  'icon-spin-reverse'
+//                  'icon-rotate'
+//                  'icon-flip'
+//                  'icon-stack'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$icon-border-color: $gray-200 !default;
+$icon-inverse: $inverse !default;
+$icon-li-width: (30em / 14) !default;
+
+// Component: Icon
+// ========================================================================
+
+.icon {
+  @include make-icon();
+  line-height: 1;
+
+  &.float-left {
+    margin-right: .3em;
+  }
+
+  &.float-right {
+    margin-left: .3em;
+  }
+}
+
+// Modifier: `icon-circle`
+// ========================================================================
+
+.icon-circle {
+  position: relative;
+  margin: .5em;
+
+  &::before {
+    position: relative;
+    // z-index: 1;
+    z-index: $zindex-base;
+  }
+
+  &::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    // z-index: 0;
+    z-index: $zindex-init;
+    width: 2em;
+    height: 2em;
+    content: "";
+    background-color: inherit;
+    border-radius: 100%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// Size Modifier
+// ========================================================================
+
+.icon-lg {
+  font-size: (4em / 3);
+  vertical-align: -15%;
+}
+
+.icon-2x {
+  font-size: 2em;
+}
+
+.icon-3x {
+  font-size: 3em;
+}
+
+.icon-4x {
+  font-size: 4em;
+}
+
+.icon-5x {
+  font-size: 5em;
+}
+
+// Modifier: `icon-fw`
+// ========================================================================
+
+.icon-fw {
+  width: (18em / 14);
+  text-align: center;
+}
+
+// Modifier: `icon-ul`
+// ========================================================================
+
+.icon-ul {
+  padding-left: 0;
+  margin-left: $icon-li-width;
+  list-style-type: none;
+
+  > li {
+    position: relative;
+  }
+}
+
+.icon-li {
+  position: absolute;
+  top: (2em / 14);
+  left: -$icon-li-width;
+  width: $icon-li-width;
+  text-align: center;
+
+  &.icon-lg {
+    left: (- $icon-li-width + (4em / 14));
+  }
+}
+
+// Modifier: `icon-border`
+// ========================================================================
+
+.icon-border {
+  padding: .2em .25em .15em;
+  border: solid .08em $icon-border-color;
+  border-radius: .1em;
+}
+
+// Animate Modifier
+// ========================================================================
+
+// Modifier: `icon-spin`
+// -------------------------
+
+.icon-spin {
+  animation: icon-spin 2s infinite linear;
+
+  &-reverse {
+    animation: icon-spin-reverse 2s infinite linear;
+  }
+}
+
+// Modifier: `icon-rotate`
+// -------------------------
+
+.icon-rotate {
+  &-90 {
+    @include icon-rotate(90deg, 1);
+  }
+
+  &-180 {
+    @include icon-rotate(180deg, 2);
+  }
+
+  &-270 {
+    @include icon-rotate(270deg, 3);
+  }
+}
+
+// Modifier: `icon-flip`
+// -------------------------
+
+.icon-flip {
+  &-horizontal {
+    @include icon-flip(-1, 1, 0);
+  }
+
+  &-vertical {
+    @include icon-flip(1, -1, 2);
+  }
+}
+
+// Modifier: `icon-stack`
+// ========================================================================
+
+.icon-stack {
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  vertical-align: middle;
+
+  &-1x, &-2x {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  &-1x {
+    line-height: inherit;
+  }
+
+  &-2x {
+    font-size: 2em;
+  }
+
+  &-inverse {
+    color: $icon-inverse;
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `icon-color`
+// -------------------------
+
+.icon-color {
+  @include icon-color-variant($icon-color, $icon-hover-color, $icon-active-color);
+}
+
+// Modifier: `icon-color-alt`
+// -------------------------
+
+.icon-color-alt {
+  @include icon-color-variant($icon-alt-color, $icon-alt-hover-color, $icon-alt-active-color);
+}
+
+// Hook for IE8-9
+// ========================================================================
+
+:root {
+  &-rotate-90, &-rotate-180, &-rotate-270, &-flip-horizontal, &-flip-vertical {
+    filter: none;
+  }
+}
+
+// Keyframes Modifier
+// ========================================================================
+
+// Modifier: `icon-spin`
+// -------------------------
+
+@keyframes icon-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+// Modifier: `icon-spin-reverse`
+// -------------------------
+
+@keyframes icon-spin-reverse {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-359deg);
+  }
+}

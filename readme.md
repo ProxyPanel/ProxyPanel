@@ -2,8 +2,9 @@
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,VNET
 
 - [Demo](https://demo.ssrpanel.com) 待添加 coming soon
-- [Issues](https://github.com/ssrpanel/SSRPanel/issues) 待添加 coming soon
-- [WIKI](https://github.com/ssrpanel/SSRPanel/wiki) 待添加 coming soon
+- [Issues](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/issues) 
+- [WIKI](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/wiki)
+- [Update Log](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
 
 ## Requirements
 - PHP 7.1.3 +

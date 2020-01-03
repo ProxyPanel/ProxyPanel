@@ -1,0 +1,13 @@
+// Core Class Definition
+// -------------------------
+[class^="#{$map-icon-css-prefix}-"], [class*=" #{$map-icon-css-prefix}-"] {
+  display: inline-block;
+  font: normal normal normal 14px/1 '#{$map-icon-font-family}';
+  //font-size: inherit;
+  speak: none;
+  text-rendering: auto;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translate(0, 0); // ensures no half-pixel rendering in firefox
+}

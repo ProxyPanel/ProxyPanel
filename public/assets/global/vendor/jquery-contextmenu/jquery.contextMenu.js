@@ -1,17 +1,17 @@
 /**
- * jQuery contextMenu v2.7.0 - Plugin for simple contextMenu handling
+ * jQuery contextMenu v2.8.0 - Plugin for simple contextMenu handling
  *
- * Version: v2.7.0
+ * Version: v2.8.0
  *
  * Authors: Björn Brala (SWIS.nl), Rodney Rehm, Addy Osmani (patches for FF)
  * Web: http://swisnl.github.io/jQuery-contextMenu/
  *
- * Copyright (c) 2011-2018 SWIS BV and contributors
+ * Copyright (c) 2011-2019 SWIS BV and contributors
  *
  * Licensed under
  *   MIT License http://www.opensource.org/licenses/mit-license
  *
- * Date: 2018-10-02T14:29:27.777Z
+ * Date: 2019-01-16T15:45:48.370Z
  */
 
 // jscs:disable
@@ -239,6 +239,7 @@
             },
             // events
             events: {
+                preShow: $.noop,
                 show: $.noop,
                 hide: $.noop,
                 activated: $.noop
@@ -278,6 +279,11 @@
             // contextmenu show dispatcher
             contextmenu: function (e) {
                 var $this = $(this);
+                
+                //Show browser context-menu when preShow returns false
+                if (e.data.events.preShow($this,e) === false) {
+                    return;
+                }
 
                 // disable actual context-menu if we are using the right mouse button as the trigger
                 if (e.data.trigger === 'right') {

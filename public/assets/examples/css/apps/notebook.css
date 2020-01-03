@@ -25,6 +25,7 @@
     border-radius: 0;
     margin-bottom: 0;
     white-space: normal;
+    width: 100%;
     z-index: 0; }
     .app-notebook-list .list-group .list-group-item:hover {
       color: #76838f;
@@ -47,7 +48,8 @@
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 2; }
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; }
     .app-notebook-list .list-group .list-group-item::-moz-selection,
     .app-notebook-list .list-group .list-group-item .list-group-item-heading::-moz-selection,
     .app-notebook-list .list-group .list-group-item .list-group-item-text::-moz-selection {

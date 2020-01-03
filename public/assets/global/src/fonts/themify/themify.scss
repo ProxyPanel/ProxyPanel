@@ -1,0 +1,18 @@
+/**
+ * Themify icons, 1.0.1
+ * Created by Themify
+ * http://themify.me/themify-icons
+ * MIT License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$ti-css-prefix}-"],
+[class*=" #{$ti-css-prefix}-"] {
+  font-family: '#{$ti-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

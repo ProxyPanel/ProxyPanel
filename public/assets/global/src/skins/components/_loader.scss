@@ -1,0 +1,175 @@
+// Name:            Loader
+//
+// Component:       `loader`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$animsition-loading-spinner-bg: $gray-400 !default;
+$index-loader-color: #fff !default;
+// Component: Loader
+// ========================================================================
+
+// Modifier: `loader-default`
+// -------------------------
+.loader-default {
+  background-color: $animsition-loading-spinner-bg;
+}
+
+// Modifier: `loader-grill`
+// -------------------------
+.loader-grill {
+  background: $animsition-loading-spinner-bg;
+
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-circle`
+// -------------------------
+.loader-circle {
+  border-top: .125em solid rgba($animsition-loading-spinner-bg, (50/100));
+  border-right: .125em solid rgba($animsition-loading-spinner-bg, (50/100));
+  border-bottom: .125em solid rgba($animsition-loading-spinner-bg, (50/100));
+  border-left: .125em solid $animsition-loading-spinner-bg;
+}
+
+// Modifier: `loader-dot`
+// -------------------------
+.loader-dot {
+
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-bounce`
+// -------------------------
+.loader-bounce {
+
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+
+// Modifier: `loader-cube`
+// -------------------------
+.loader-cube {
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+// Modifier: `loader-rotate-plane`
+// -------------------------
+.loader-rotate-plane {
+  background: $animsition-loading-spinner-bg;
+}
+// Modifier: `loader-folding-cube`
+// -------------------------
+.loader-folding-cube {
+  &:before,
+  &:after {
+    background: $animsition-loading-spinner-bg;
+  }
+}
+// Modifier: `index loading`
+// ========================================================================
+.loader-overlay {
+  background:$color-primary-600;
+}
+.loader-content {
+  h2 {
+    color: $index-loader-color;
+  }
+}
+.loader-index{
+  > div {
+    background:$index-loader-color;
+  }
+}
+// Keyframes
+// ========================================================================
+
+@keyframes default-grill {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0 $animsition-loading-spinner-bg;
+  }
+  40% {
+    box-shadow: 0 -.25em $animsition-loading-spinner-bg;
+  }
+}
+
+@keyframes loader-round-circle {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 .2em $animsition-loading-spinner-bg, 2em -2em 0 0 $animsition-loading-spinner-bg, 3em 0 0 -.5em $animsition-loading-spinner-bg, 2em 2em 0 -.5em $animsition-loading-spinner-bg, 0 3em 0 -.5em $animsition-loading-spinner-bg, -2em 2em 0 -.5em $animsition-loading-spinner-bg, -3em 0 0 -.5em $animsition-loading-spinner-bg, -2em -2em 0 0 $animsition-loading-spinner-bg;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0 $animsition-loading-spinner-bg, 2em -2em 0 .2em $animsition-loading-spinner-bg, 3em 0 0 0 $animsition-loading-spinner-bg, 2em 2em 0 -.5em $animsition-loading-spinner-bg, 0 3em 0 -.5em $animsition-loading-spinner-bg, -2em 2em 0 -.5em $animsition-loading-spinner-bg, -3em 0 0 -.5em $animsition-loading-spinner-bg, -2em -2em 0 -.5em $animsition-loading-spinner-bg;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -.5em $animsition-loading-spinner-bg, 2em -2em 0 0 $animsition-loading-spinner-bg, 3em 0 0 .2em $animsition-loading-spinner-bg, 2em 2em 0 0 $animsition-loading-spinner-bg, 0 3em 0 -.5em $animsition-loading-spinner-bg, -2em 2em 0 -.5em $animsition-loading-spinner-bg, -3em 0 0 -.5em $animsition-loading-spinner-bg, -2em -2em 0 -.5em $animsition-loading-spinner-bg;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -.5em $animsition-loading-spinner-bg, 2em -2em 0 -.5em $animsition-loading-spinner-bg, 3em 0 0 0 $animsition-loading-spinner-bg, 2em 2em 0 .2em $animsition-loading-spinner-bg, 0 3em 0 0 $animsition-loading-spinner-bg, -2em 2em 0 -.5em $animsition-loading-spinner-bg, -3em 0 0 -.5em $animsition-loading-spinner-bg, -2em -2em 0 -.5em $animsition-loading-spinner-bg;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -.5em $animsition-loading-spinner-bg, 2em -2em 0 -.5em $animsition-loading-spinner-bg, 3em 0 0 -.5em $animsition-loading-spinner-bg, 2em 2em 0 0 $animsition-loading-spinner-bg, 0 3em 0 .2em $animsition-loading-spinner-bg, -2em 2em 0 0 $animsition-loading-spinner-bg, -3em 0 0 -.5em $animsition-loading-spinner-bg, -2em -2em 0 -.5em $animsition-loading-spinner-bg;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -.5em $animsition-loading-spinner-bg, 2em -2em 0 -.5em $animsition-loading-spinner-bg, 3em 0 0 -.5em $animsition-loading-spinner-bg, 2em 2em 0 -.5em $animsition-loading-spinner-bg, 0 3em 0 0 $animsition-loading-spinner-bg, -2em 2em 0 .2em $animsition-loading-spinner-bg, -3em 0 0 0 $animsition-loading-spinner-bg, -2em -2em 0 -.5em $animsition-loading-spinner-bg;
+  }
+  75% {
+    box-shadow: 0 -3em 0 -.5em $animsition-loading-spinner-bg, 2em -2em 0 -.5em $animsition-loading-spinner-bg, 3em 0 0 -.5em $animsition-loading-spinner-bg, 2em 2em 0 -.5em $animsition-loading-spinner-bg, 0 3em 0 -.5em $animsition-loading-spinner-bg, -2em 2em 0 0 $animsition-loading-spinner-bg, -3em 0 0 .2em $animsition-loading-spinner-bg, -2em -2em 0 0 $animsition-loading-spinner-bg;
+  }
+  87.5% {
+    box-shadow: 0 -3em 0 0 $animsition-loading-spinner-bg, 2em -2em 0 -.5em $animsition-loading-spinner-bg, 3em 0 0 -.5em $animsition-loading-spinner-bg, 2em 2em 0 -.5em $animsition-loading-spinner-bg, 0 3em 0 -.5em $animsition-loading-spinner-bg, -2em 2em 0 0 $animsition-loading-spinner-bg, -3em 0 0 0 $animsition-loading-spinner-bg, -2em -2em 0 .2em $animsition-loading-spinner-bg;
+  }
+}
+
+@keyframes loader-tadpole {
+  0% {
+    box-shadow: 0 -.83em 0 -.4em $animsition-loading-spinner-bg, 0 -.83em 0 -.42em $animsition-loading-spinner-bg, 0 -.83em 0 -.44em $animsition-loading-spinner-bg, 0 -.83em 0 -.46em $animsition-loading-spinner-bg, 0 -.83em 0 -.477em $animsition-loading-spinner-bg;
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  5%,
+  95% {
+    box-shadow: 0 -.83em 0 -.4em $animsition-loading-spinner-bg, 0 -.83em 0 -.42em $animsition-loading-spinner-bg, 0 -.83em 0 -.44em $animsition-loading-spinner-bg, 0 -.83em 0 -.46em $animsition-loading-spinner-bg, 0 -.83em 0 -.477em $animsition-loading-spinner-bg;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -.83em 0 -.4em $animsition-loading-spinner-bg, -.087em -.825em 0 -.42em $animsition-loading-spinner-bg, -.173em -.812em 0 -.44em $animsition-loading-spinner-bg, -.256em -.789em 0 -.46em $animsition-loading-spinner-bg, -.297em -.775em 0 -.477em $animsition-loading-spinner-bg;
+  }
+  20% {
+    box-shadow: 0 -.83em 0 -.4em $animsition-loading-spinner-bg, -.338em -.758em 0 -.42em $animsition-loading-spinner-bg, -.555em -.617em 0 -.44em $animsition-loading-spinner-bg, -.671em -.488em 0 -.46em $animsition-loading-spinner-bg, -.749em -.34em 0 -.477em $animsition-loading-spinner-bg;
+  }
+  38% {
+    box-shadow: 0 -.83em 0 -.4em $animsition-loading-spinner-bg, -.377em -.74em 0 -.42em $animsition-loading-spinner-bg, -.645em -.522em 0 -.44em $animsition-loading-spinner-bg, -.775em -.297em 0 -.46em $animsition-loading-spinner-bg, -.82em -.09em 0 -.477em $animsition-loading-spinner-bg;
+  }
+  100% {
+    box-shadow: 0 -.83em 0 -.4em $animsition-loading-spinner-bg, 0 -.83em 0 -.42em $animsition-loading-spinner-bg, 0 -.83em 0 -.44em $animsition-loading-spinner-bg, 0 -.83em 0 -.46em $animsition-loading-spinner-bg, 0 -.83em 0 -.477em $animsition-loading-spinner-bg;
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-ellipsis {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 .625em 0 -.325em $animsition-loading-spinner-bg;
+  }
+  40% {
+    box-shadow: 0 .625em 0 0 $animsition-loading-spinner-bg;
+  }
+}

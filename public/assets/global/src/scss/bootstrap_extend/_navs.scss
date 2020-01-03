@@ -1,0 +1,556 @@
+// Name:            Nav
+//
+// Component:       `nav`
+//
+// Modifiers:       `nav-justified`
+//                  `nav-tabs-bottom`
+//                  `nav-tabs-solid`
+//                  `nav-tabs-reverse`
+//                  `nav-tabs-line`
+//                  `nav-tabs-vertical`
+//                  `nav-tabs-inverse`
+//                  `nav-tabs-lg`
+//                  `nav-tabs-sm`
+//
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$nav-tabs-color: $text-color !default;
+$nav-tabs-active-bg: $brand-primary !default;
+$nav-tabs-active-border: $brand-primary !default;
+$nav-tabs-solid-color: $text-color !default;
+$nav-tabs-solid-bg: $gray-100 !default;
+$nav-tabs-solid-border: $gray-100 !default;
+$nav-tabs-solid-content-padding: pxtorem(20px) !default;
+$nav-tabs-vertical-solid-content-padding: pxtorem(20px) !default;
+$nav-tabs-line-border: $border-color-base !default;
+$nav-tabs-line-hover-border: $gray-300 !default;
+$nav-tabs-line-active-color: $brand-primary !default;
+$nav-tabs-line-active-border: $brand-primary !default;
+$nav-tabs-line-link-padding: $nav-padding-vertical pxtorem(20px) !default;
+$nav-tabs-sm-padding: pxtorem(5px) pxtorem(10px) !default;
+$nav-tabs-sm-font-size: $font-size-sm !default;
+$nav-tabs-sm-line-height: $line-height-sm !default;
+$nav-tabs-lg-padding: pxtorem(12px) pxtorem(20px) !default;
+$nav-tabs-lg-font-size: $font-size-lg !default;
+$nav-tabs-lg-line-height: $line-height-lg !default;
+$nav-tabs-inverse-bg: $inverse !default;
+$nav-tabs-inverse-border: $inverse !default;
+$nav-quick-margin-bottom: $line-height-computed !default;
+$nav-quick-bg: $inverse !default;
+$nav-quick-hover-bg: $bg-color-base !default;
+$nav-quick-border-radius: $border-radius !default;
+$nav-quick-box-shadow: 0 1px 1px rgba(0, 0, 0, .05) !default;
+$nav-quick-icon-font-size: (2 * $font-size-icon) !default;
+$nav-quick-vertical-padding: pxtorem(16px) !default;
+$nav-quick-lg-icon-font-size: (2.5 * $font-size-icon) !default;
+$nav-quick-lg-vertical-padding: pxtorem(22px) !default;
+$nav-quick-sm-icon-font-size: (1.5 * $font-size-icon) !default;
+$nav-quick-sm-vertical-padding: pxtorem(12px) !default;
+$nav-quick-border-color: $border-color-base !default;
+
+// Component: Nav
+// ========================================================================
+
+.nav-link {
+  position: relative;
+  display: block;
+  padding: pxtorem(10px) pxtorem(15px);
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus, &:hover {
+    background-color: $nav-link-hover-bg;
+  }
+
+  &.disabled {
+    &:focus, &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .close {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  // Open dropdowns
+  // .open > & {
+  //   &,
+  //   &:hover,
+  //   &:focus {
+  //     border-color: transparent;
+  //   }
+  // }
+}
+
+// Component: `nav-quick`
+// ========================================================================
+.nav-quick {
+  padding: 0;
+  margin-right: 0;
+  margin-bottom: $nav-quick-margin-bottom;
+  margin-left: 0;
+  background-color: $nav-quick-bg;
+  border-radius: $nav-quick-border-radius;
+  box-shadow: $nav-quick-box-shadow;
+
+  .nav-item {
+    position: relative;
+    display: block;
+    padding: 0;
+    text-align: center;
+    list-style: none;
+  }
+
+  .nav-link {
+    padding: $nav-quick-vertical-padding 0;
+    color: $nav-tabs-color;
+
+    .icon {
+      display: block;
+      margin-bottom: .2rem;
+      font-size: $nav-quick-icon-font-size;
+    }
+  }
+
+  .badge, .badge-pill {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  &-sm {
+    .nav-link {
+      padding: $nav-quick-sm-vertical-padding 0;
+
+      .icon {
+        font-size: $nav-quick-sm-icon-font-size;
+      }
+    }
+  }
+
+  &-lg {
+    .nav-link {
+      padding: $nav-quick-lg-vertical-padding 0;
+
+      .icon {
+        font-size: $nav-quick-lg-icon-font-size;
+      }
+    }
+  }
+
+  &-bordered {
+    border-top: 1px solid $nav-quick-border-color;
+    border-left: 1px solid $nav-quick-border-color;
+
+    .nav-item {
+      border-right: 1px solid $nav-quick-border-color;
+      border-bottom: 1px solid $nav-quick-border-color;
+    }
+  }
+}
+
+// Component: `nav-tabs`
+// ========================================================================
+.nav-tabs {
+  .nav-link {
+    color: $nav-tabs-color;
+    transition: .25s;
+
+    > .icon {
+      margin-right: .5em;
+      line-height: 1;
+    }
+  }
+
+  .nav-link.active, .nav-item.show .nav-link, .nav-item.open .nav-link {
+    @include plain-hover-focus {
+      border-color: transparent;
+      border-bottom-color: $nav-tabs-active-border;
+    }
+  }
+
+  .dropup .dropdown-menu {
+    @include border-bottom-radius(0);
+    margin-bottom: -$nav-tabs-border-width;
+  }
+}
+
+.nav-pills {
+  .nav-link {
+    transition: border .2s linear 0s, color .2s linear 0s, background-color .2s linear 0s;
+  }
+}
+
+.nav-pills-rounded .nav-link {
+  // add
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-right: 5px;
+  margin-left: 5px;
+  border-radius: 1000px;
+}
+
+// Modifier: `nav-tabs-bottom`
+// -------------------------
+
+.nav-tabs.nav-tabs-bottom {
+  border-top: 1px solid $nav-tabs-border-color;
+  border-bottom: none;
+
+  .nav-item {
+    margin-top: -1px;
+    margin-bottom: 0;
+  }
+
+  .nav-link {
+    border-radius: 0 0 $border-radius-large $border-radius-large;
+
+    &:hover, &:focus {
+      border-top-color: $nav-tabs-border-color;
+      border-bottom-color: transparent;
+    }
+  }
+}
+
+// Modifier: `nav-tabs-reverse`
+// -------------------------
+
+.nav-tabs-reverse {
+  .nav-item {
+    float: right;
+
+    + .nav-item {
+      margin-right: 2px;
+      margin-left: 0;
+    }
+  }
+}
+
+// Modifier: `nav-tabs-solid`
+// ========================================================================
+
+.nav-tabs-solid {
+  border-bottom-color: $nav-tabs-solid-border;
+
+  .nav-link {
+    &:hover {
+      border-color: transparent;
+    }
+  }
+
+  .nav-link.active, .nav-item.show .nav-link, .nav-item.open .nav-link {
+    @include plain-hover-focus {
+      color: $nav-tabs-solid-color;
+      background-color: $nav-tabs-solid-bg;
+      border-color: transparent;
+    }
+  }
+
+  & ~ .tab-content {
+    padding: $nav-tabs-solid-content-padding;
+    background-color: $nav-tabs-solid-bg;
+  }
+
+  &.nav-tabs-bottom {
+    .nav-link {
+      &.active {
+        &, &:hover, &:focus {
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+// Modifier: `nav-tabs-line`
+// ========================================================================
+
+.nav-tabs-line {
+  position: relative;
+
+  .nav-link {
+    padding: $nav-tabs-line-link-padding;
+    border-bottom: 2px solid transparent;
+
+    &:hover, &:focus {
+      background-color: transparent;
+    }
+
+    &:hover {
+      border-bottom-color: $nav-tabs-line-hover-border;
+    }
+  }
+
+  .nav-link.active, .nav-item.show .nav-link, .nav-item.open .nav-link {
+    @include plain-hover-focus {
+      color: $nav-tabs-line-active-color;
+      background-color: transparent;
+      border-bottom: 2px solid $nav-tabs-line-active-border;
+    }
+  }
+
+  .dropdown-menu {
+    margin-top: 0;
+  }
+
+  .dropup .dropdown-menu {
+    margin-bottom: 0;
+  }
+
+  // Open dropdowns
+  .nav-item.open > .nav-link, .nav-item.show > .nav-link {
+    @include plain-hover-focus {
+      border-bottom-color: $nav-tabs-active-border;
+    }
+  }
+
+  &.nav-tabs-bottom {
+    .nav-link {
+      border-top: 2px solid transparent;
+      border-bottom: none;
+
+      &:hover {
+        border-top-color: $nav-tabs-line-hover-border;
+        border-bottom-color: transparent;
+      }
+    }
+
+    .nav-link.active, .nav-item.open .nav-link, .nav-item.show .nav-link {
+      @include plain-hover-focus {
+        border-top: 2px solid $nav-tabs-line-active-border;
+        border-bottom: none;
+      }
+    }
+
+    .nav-item.open > .nav-link, .nav-item.show > .nav-link {
+      @include plain-hover-focus {
+        border-top-color: $nav-tabs-active-border;
+      }
+    }
+  }
+}
+
+// CLASS [tab-line-top]
+// ========================================================================
+.tabs-line-top {
+  border-bottom: 1px solid $nav-tabs-line-border;
+
+  .nav-link, .nav-item .nav-link {
+    bottom: -1px;
+    border-top: 2px solid transparent;
+    border-bottom-color: transparent;
+
+    &:hover {
+      border-top: 2px solid $nav-tabs-line-hover-border;
+      border-bottom-color: transparent;
+    }
+  }
+
+  .nav-link.active, .nav-item.open .nav-link, .nav-item.show .nav-link {
+    @include plain-hover-focus {
+      color: $nav-tabs-line-active-color;
+      background-color: transparent;
+      border-top: 2px solid $nav-tabs-line-active-border;
+      border-right: 1px solid $nav-tabs-line-border;
+      border-bottom: 1px solid #fff;
+      border-left: 1px solid $nav-tabs-line-border;
+    }
+  }
+}
+
+// Modifier: `nav-tabs-vertical`
+// ========================================================================
+
+.nav-tabs-vertical {
+  @include clearfix();
+
+  .nav-tabs {
+    flex-direction: column;
+    float: left;
+    border-right: 1px solid $nav-tabs-border-color;
+    border-bottom: none;
+
+    .nav-item {
+      float: none;
+      margin-right: -1px;
+      margin-bottom: 2px;
+      margin-left: 0;
+    }
+
+    .nav-link {
+      border-radius: $border-radius-large 0 0 $border-radius-large;
+
+      &:hover {
+        border-right-color: $nav-tabs-border-color;
+        border-bottom-color: transparent;
+      }
+
+      &.active {
+        &, &:focus, &:hover {
+          border-right-color: $nav-tabs-active-border;
+          border-bottom-color: transparent;
+        }
+      }
+    }
+  }
+
+  .nav-tabs-reverse {
+    float: right;
+    border-right: none;
+    border-left: 1px solid $nav-tabs-border-color;
+
+    .nav-item {
+      margin-right: 0;
+      margin-left: -1px;
+    }
+
+    .nav-link {
+      border-radius: 0 $border-radius-large $border-radius-large 0;
+
+      &:hover {
+        border-right-color: transparent;
+        border-left-color: $nav-tabs-border-color;
+      }
+
+      &.active {
+        &, &:focus, &:hover {
+          border-right-color: transparent;
+          border-left-color: $nav-tabs-active-border;
+        }
+      }
+    }
+  }
+
+  .nav-tabs-solid {
+    border-right-color: $nav-tabs-solid-border;
+
+    .nav-link {
+      &:hover {
+        border-color: transparent;
+      }
+
+      &.active {
+        &, &:focus, &:hover {
+          border-color: transparent;
+        }
+      }
+    }
+
+    & + .tab-content {
+      padding: $nav-tabs-vertical-solid-content-padding;
+    }
+
+    &.nav-tabs-reverse {
+      border-left-color: $nav-tabs-solid-border;
+    }
+  }
+
+  .nav-tabs-line {
+    .nav-link {
+      border-right: 2px solid transparent;
+      border-bottom: none;
+
+      &:hover {
+        border-right-color: $nav-tabs-line-hover-border;
+      }
+
+      &.active {
+        &, &:hover, &:focus {
+          border-right: 2px solid $nav-tabs-line-active-border;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  .nav-tabs-line.nav-tabs-reverse {
+    .nav-link {
+      border-right-width: 1px;
+      border-left: 2px solid transparent;
+
+      &:hover {
+        border-color: transparent;
+        border-left-color: $nav-tabs-line-hover-border;
+      }
+
+      &.active {
+        &, &:hover, &:focus {
+          border-right: 1px solid transparent;
+          border-left: 2px solid $nav-tabs-line-active-border;
+        }
+      }
+    }
+  }
+
+  .tab-content {
+    overflow: hidden;
+  }
+}
+
+// Modifier: `nav-tabs-inverse`
+// ========================================================================
+
+.nav-tabs-inverse {
+  .nav-link.active {
+    &, &:hover, &:focus {
+      border-color: transparent;
+    }
+  }
+
+  .nav-tabs-solid {
+    border-bottom-color: $nav-tabs-inverse-border;
+
+    .nav-link.active {
+      &, &:hover, &:focus {
+        color: $nav-tabs-color;
+        background-color: $nav-tabs-inverse-bg;
+      }
+    }
+  }
+
+  &.nav-tabs-vertical {
+    .nav-link.active {
+      &, &:hover, &:focus {
+        border-color: transparent;
+      }
+    }
+
+    .nav-tabs-solid {
+      border-right-color: $nav-tabs-inverse-border;
+
+      &.nav-tabs-reverse {
+        border-left-color: $nav-tabs-inverse-border;
+      }
+    }
+  }
+
+  .tab-content {
+    background: $nav-tabs-inverse-bg;
+  }
+}
+
+// Modifier: `nav-tabs-animate`
+// ========================================================================
+.nav-tabs-animate {
+  .tab-content {
+    overflow: hidden;
+  }
+}
+
+// Size Modifier
+// ========================================================================
+
+.nav-tabs-lg {
+  @include nav-tabs-size($nav-tabs-lg-font-size, $nav-tabs-lg-line-height, $nav-tabs-lg-padding);
+}
+
+.nav-tabs-sm {
+  @include nav-tabs-size($nav-tabs-sm-font-size, $nav-tabs-sm-line-height, $nav-tabs-sm-padding);
+}

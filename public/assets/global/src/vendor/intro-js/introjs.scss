@@ -1,0 +1,439 @@
+@import 'vars';
+// z-index
+//introjs-helperNumberLayer > introjs-disableInteraction > introjs-tooltipReferenceLayer > introjs-showElement > introjs-helperLayer > introjs-overlay
+$introjs-overlay-z-index: $zindex-fullscreen + 1; // the highest of site;
+$introjs-fixParent-z-index: auto;
+$introjs-showElement-z-index: $introjs-overlay-z-index + 100;// higher than $introjs-overlay-z-index
+$introjs-disableInteraction-z-index: $introjs-showElement-z-index + 200;// higher than $introjs-showElement-z-index
+$introjs-helperLayer-z-index: $introjs-showElement-z-index - 1;// lower than $introjs-showElement-z-index
+$introjs-tooltipReferenceLayer-z-index: $introjs-showElement-z-index + 1;
+$introjs-helperNumberLayer-z-index: $introjs-disableInteraction-z-index + 100;
+$introjs-helperLayer-bg: transparent;
+$introjs-helperLayer-border-color: $brand-primary;
+
+.introjs-overlay {
+  position: absolute;
+  // z-index: 999999;
+  z-index: $introjs-overlay-z-index;
+  background-color: #000;
+  opacity: 0;
+  -webkit-transition: all .3s ease-out;
+  -moz-transition: all .3s ease-out;
+  -ms-transition: all .3s ease-out;
+  -o-transition: all .3s ease-out;
+  transition: all .3s ease-out;
+}
+
+.introjs-fixParent {
+  position: absolute !important;
+  z-index: $introjs-fixParent-z-index !important;
+  opacity: 1 !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -o-transform: none !important;
+  transform: none !important;
+}
+
+.introjs-showElement, tr.introjs-showElement > td, tr.introjs-showElement > th {
+  // z-index: 9999999 !important;
+  z-index: $introjs-showElement-z-index !important;
+}
+
+.introjs-disableInteraction {
+  position: absolute;
+  // z-index: 99999999 !important;
+  z-index: $introjs-disableInteraction-z-index !important;
+}
+
+.introjs-relativePosition, tr.introjs-showElement > td, tr.introjs-showElement > th {
+  position: relative;
+}
+
+.introjs-helperLayer {
+  position: absolute;
+  // z-index: 9999998;
+  z-index: $introjs-helperLayer-z-index;
+  background-color: $introjs-helperLayer-bg;
+  border: 1px solid #777;
+  border: 1px solid $introjs-helperLayer-border-color;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, .4);
+  -webkit-transition: all .3s ease-out;
+  -moz-transition: all .3s ease-out;
+  -ms-transition: all .3s ease-out;
+  -o-transition: all .3s ease-out;
+  transition: all .3s ease-out;
+}
+
+.introjs-tooltipReferenceLayer {
+  position: absolute;
+  // z-index: 10000000;
+  z-index: $introjs-tooltipReferenceLayer-z-index;
+  background-color: transparent;
+  -webkit-transition: all .3s ease-out;
+  -moz-transition: all .3s ease-out;
+  -ms-transition: all .3s ease-out;
+  -o-transition: all .3s ease-out;
+  transition: all .3s ease-out;
+}
+
+.introjs-helperLayer *, .introjs-helperLayer *:before, .introjs-helperLayer *:after {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  -o-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+.introjs-helperNumberLayer {
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  // z-index: 9999999999 !important;
+  z-index: $introjs-helperNumberLayer-z-index !important;
+  width: 20px;
+  height: 20px;
+  padding: 4px;
+  font-family: Arial, verdana, tahoma;
+  font-size: 13px;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  color: white;
+  text-align: center;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
+  background: $color-blue-600; /* Old browsers */
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .4);
+}
+
+.introjs-arrow {
+  position: absolute;
+  display: none !important;
+  content: "";
+  border: 5px solid white;
+}
+
+.introjs-arrow.top {
+  top: -10px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: white;
+  border-left-color: transparent;
+}
+
+.introjs-arrow.top-right {
+  top: -10px;
+  right: 10px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: white;
+  border-left-color: transparent;
+}
+
+.introjs-arrow.top-middle {
+  top: -10px;
+  left: 50%;
+  margin-left: -5px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: white;
+  border-left-color: transparent;
+}
+
+.introjs-arrow.right {
+  top: 10px;
+  right: -10px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: white;
+}
+
+.introjs-arrow.right-bottom {
+  right: -10px;
+  bottom: 10px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: white;
+}
+
+.introjs-arrow.bottom {
+  bottom: -10px;
+  border-top-color: white;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+
+.introjs-arrow.left {
+  top: 10px;
+  left: -10px;
+  border-top-color: transparent;
+  border-right-color: white;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+
+.introjs-arrow.left-bottom {
+  bottom: 10px;
+  left: -10px;
+  border-top-color: transparent;
+  border-right-color: white;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+
+.introjs-tooltip {
+  position: absolute;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 10px;
+  font-size: 30px;
+  color: #fff;
+  background-color: transparent;
+  -webkit-transition: opacity .1s ease-out;
+  -moz-transition: opacity .1s ease-out;
+  -ms-transition: opacity .1s ease-out;
+  -o-transition: opacity .1s ease-out;
+  transition: opacity .1s ease-out;
+
+  .content {
+    display: block;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+}
+
+.introjs-tooltipbuttons {
+  margin-top: 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/*
+ Buttons style by http://nicolasgallagher.com/lab/css3-github-buttons/
+ Changed by Afshin Mehrabani
+*/
+
+.introjs-skipbutton {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  margin: 0;
+  margin-right: 5px;
+  font-size: 24px;
+  color: #fff !important;
+  text-align: center;
+  text-shadow: none;
+  background: $color-red-600 !important;
+  border: none;
+  border-radius: 100%;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, .15);
+
+  i {
+    line-height: 56px;
+  }
+
+  &:hover {
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, .15);
+  }
+
+  &:active, &:focus {
+    background: $color-red-600;
+  }
+}
+
+.introjs-prevbutton, .introjs-nextbutton {
+  padding: 8px 18px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #fff;
+  text-decoration: none;
+  background-color: $color-blue-600;
+  border: 1px solid transparent;
+  border-radius: 1000px;
+  -webkit-transition: border .2s linear, color .2s linear, width .2s linear, background-color .2s linear;
+  -o-transition: border .2s linear, color .2s linear, width .2s linear, background-color .2s linear;
+  transition: border .2s linear, color .2s linear, width .2s linear, background-color .2s linear;
+  -webkit-font-smoothing: subpixel-antialiased;
+
+  &:hover, &:active, &:focus {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  &.introjs-disabled {
+    color: $gray-400 !important;
+    cursor: not-allowed;
+    background: transparent !important;
+    border: 1px solid;
+  }
+}
+
+.introjs-prevbutton {
+  float: left;
+
+  i {
+    margin-right: 10px;
+  }
+}
+
+.introjs-nextbutton {
+  float: right;
+
+  i {
+    margin-left: 10px;
+  }
+}
+
+.introjs-disabled, .introjs-disabled:hover, .introjs-disabled:focus {
+  text-decoration: none;
+}
+
+.introjs-bullets {
+  text-align: center;
+}
+
+.introjs-bullets ul {
+  display: inline-block;
+  padding: 0;
+  margin: 15px auto 0;
+  clear: both;
+}
+
+.introjs-bullets ul li {
+  float: left;
+  margin: 0 2px;
+  list-style: none;
+}
+
+.introjs-bullets ul li a {
+  display: block;
+  width: 6px;
+  height: 6px;
+  text-decoration: none;
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.introjs-bullets ul li a:hover {
+  background: #999;
+}
+
+.introjs-bullets ul li a.active {
+  background: #999;
+}
+
+.introjs-progress {
+  height: 10px;
+  margin: 10px 0 5px;
+  overflow: hidden;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+}
+
+.introjs-progressbar {
+  float: left;
+  width: 0;
+  height: 100%;
+  font-size: 10px;
+  line-height: 10px;
+  text-align: center;
+  background-color: #08c;
+}
+
+.introjsFloatingElement {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
+.introjs-fixedTooltip {
+  position: fixed;
+}
+
+.introjs-hint {
+  position: absolute;
+  width: 20px;
+  height: 15px;
+  background: 0 0;
+}
+
+.introjs-hidehint {
+  display: none;
+}
+
+.introjs-fixedhint {
+  position: fixed;
+}
+
+.introjs-hint:hover > .introjs-hint-pulse {
+  border: 5px solid rgba(60, 60, 60, .57);
+}
+
+.introjs-hint-pulse {
+  position: absolute;
+  z-index: 10;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(136, 136, 136, .24);
+  border: 5px solid rgba(60, 60, 60, .27);
+  border-radius: 30px;
+  -webkit-transition: all .2s ease-out;
+  -o-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+}
+
+.introjs-hint-dot {
+  position: absolute;
+  top: -25px;
+  left: -25px;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  background: 0 0;
+  border: 10px solid rgba(146, 146, 146, .36);
+  border-radius: 60px;
+  opacity: 0;
+  -webkit-animation: introjspulse 3s ease-out;
+  -o-animation: introjspulse 3s ease-out;
+  animation: introjspulse 3s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes introjspulse {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+  }
+
+  25% {
+    opacity: .1;
+    -webkit-transform: scale(0);
+  }
+
+  50% {
+    opacity: .3;
+    -webkit-transform: scale(.1);
+  }
+
+  75% {
+    opacity: .5;
+    -webkit-transform: scale(.5);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(1);
+  }
+}

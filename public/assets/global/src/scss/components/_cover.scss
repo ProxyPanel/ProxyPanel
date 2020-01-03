@@ -1,0 +1,92 @@
+// Name:            Cover
+//
+// Component:       `cover`
+//
+// Modifiers:       `cover-background'
+//                  `cover-image`
+//                  `cover-quote`
+//                  `cover-gallery`
+//                  `cover-iframe`
+//
+// ========================================================================
+
+// Component: Cover
+// ========================================================================
+
+.cover {
+  overflow: hidden;
+}
+
+// Modifier: `cover-background`
+// ========================================================================
+
+.cover-background {
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+// Modifier: `cover-image`
+// ========================================================================
+
+.cover-image {
+  width: 100%;
+}
+
+// Modifier: `cover-quote`
+// ========================================================================
+.cover-quote, .blockquote.cover-quote {
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 0;
+  border-left: none;
+
+  &::before, &::after {
+    position: absolute;
+    top: -20px;
+    font-size: 4em;
+  }
+
+  &::before {
+    left: 0;
+    content: open-quote;
+  }
+
+  &::after {
+    right: 0;
+    visibility: hidden;
+    content: close-quote;
+  }
+
+  &.blockquote-reverse {
+    padding-right: 35px;
+    padding-left: 20px;
+    border-right: none;
+
+    &::before {
+      right: 0;
+      left: auto;
+      content: close-quote;
+    }
+  }
+}
+
+// Modifier: `cover-gallery`
+// ========================================================================
+
+.cover-gallery {
+  .carousel-inner {
+    img {
+      width: 100%;
+    }
+  }
+}
+
+// Modifier: `cover-iframe`
+// ========================================================================
+
+.cover-iframe {
+  width: 100%;
+  border: 0 none;
+}

@@ -53,7 +53,7 @@
 											</td>
 											<td> {{$invite->dateline}} </td>
 											<td>
-												{!!$invite->$status_label!!}
+											{!!$invite->status_label!!}
 											</td>
 											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->username) : ''}}
 										</tr>

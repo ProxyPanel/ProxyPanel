@@ -1,0 +1,18 @@
+/**
+ * Stroke Icons 7, 1.2.0
+ * Created by The Pixeden Team
+ * http://themes-pixeden.com/font-demos/7-stroke/
+
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$pe-css-prefix}-"],
+[class*=" #{$pe-css-prefix}-"] {
+  font-family: '#{$pe-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

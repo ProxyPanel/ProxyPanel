@@ -1,0 +1,61 @@
+// Name:            Table
+//
+// Component:       `table`
+//
+// Modifiers:       `table-row`
+//                  `table-thead`
+//                  `table-bordered`
+//                  `table-section`
+//
+// ========================================================================
+
+// Component: Table
+// ========================================================================
+
+.table {
+  color: $gray-500;
+
+  thead th,
+  tfoot th {
+    color: $gray-600;
+  }
+
+  thead:first-child {
+    th {
+      border-top: none;
+    }
+  }
+}
+
+// Table-row Color Modifier
+// ========================================================================
+@include table-row-variants(active, $table-active-bg, inherit);
+@include table-row-variants(success, $state-success-bg, $inverse);
+@include table-row-variants(info, $state-info-bg, $inverse);
+@include table-row-variants(warning, $state-warning-bg, $inverse);
+@include table-row-variants(danger, $state-danger-bg, $inverse);
+
+// table-thead Color Modifier
+// ========================================================================
+@include table-thead-variant(default, $bg-color-base, inherit);
+@include table-thead-variant(primary, $brand-primary, $inverse);
+@include table-thead-variant(success, $brand-success, $inverse);
+@include table-thead-variant(info, $brand-info, $inverse);
+@include table-thead-variant(warning, $brand-warning, $inverse);
+@include table-thead-variant(danger, $brand-danger, $inverse);
+@include table-thead-variant(dark, $gray-600, $inverse);
+@include table-thead-variant(gray, $gray-300, $gray-600);
+
+// Modifier: `table-bordered`
+// ========================================================================
+
+// Modifier: `table-section`
+// ========================================================================
+.table-section {
+
+  &.active {
+    tr {
+      background-color: $table-active-bg;
+    }
+  }
+}

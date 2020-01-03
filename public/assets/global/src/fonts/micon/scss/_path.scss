@@ -1,0 +1,14 @@
+// Font path
+// --------------------------
+@font-face {
+
+  font-family: '#{$mi-font-family}';
+  src: url('#{$mi-font-path}/#{$mi-font-file}.eot?v=#{$mi-version}');
+  src: url('#{$mi-font-path}/#{$mi-font-file}.eot?#iefix&v=#{$mi-version}') format('embedded-opentype'),
+    url('#{$mi-font-path}/#{$mi-font-file}.woff2?v=#{$mi-version}') format('woff2'),
+    url('#{$mi-font-path}/#{$mi-font-file}.woff?v=#{$mi-version}') format('woff'),
+    url('#{$mi-font-path}/#{$mi-font-file}.ttf?v=#{$mi-version}') format('truetype'),
+    url('#{$mi-font-path}/#{$mi-font-file}.svg?v=#{$mi-version}##{$mi-font-file}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

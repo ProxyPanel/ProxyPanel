@@ -1,0 +1,176 @@
+// Name:            Table
+//
+// Component:       `table`
+//
+// Modifiers:       `table-row`
+//                  `table-thead`
+//                  `table-bordered`
+//                  `table-section`
+//
+// ========================================================================
+
+// Component: Table
+// ========================================================================
+
+.table {
+  color: $gray-500;
+
+  th {
+    font-weight: $font-weight-medium;
+  }
+
+  thead th, tfoot th {
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    border-bottom-width: $table-border-width;
+  }
+
+  tbody + tbody {
+    border-top-width: $table-border-width;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  th, td {
+    > .checkbox-custom:only-child {
+      margin-top: 0;
+      margin-bottom: 0;
+      text-align: center;
+    }
+  }
+
+  thead:first-child {
+    th {
+      border-top: none;
+    }
+  }
+
+  .cell-30 {
+    width: 30px;
+  }
+
+  .cell-40 {
+    width: 40px;
+  }
+
+  .cell-50 {
+    width: 50px;
+  }
+
+  .cell-60 {
+    width: 60px;
+  }
+
+  .cell-80 {
+    width: 80px;
+  }
+
+  .cell-100 {
+    width: 100px;
+  }
+
+  .cell-120 {
+    width: 120px;
+  }
+
+  .cell-130 {
+    width: 130px;
+  }
+
+  .cell-150 {
+    width: 150px;
+  }
+
+  .cell-180 {
+    width: 180px;
+  }
+
+  .cell-200 {
+    width: 200px;
+  }
+
+  .cell-250 {
+    width: 250px;
+  }
+
+  .cell-300 {
+    width: 300px;
+  }
+}
+
+// Table-row Color Modifier
+// ========================================================================
+@include table-row-variants(active, $table-active-bg, inherit);
+@include table-row-variants(success, $state-success-bg, $inverse);
+@include table-row-variants(info, $state-info-bg, $inverse);
+@include table-row-variants(warning, $state-warning-bg, $inverse);
+@include table-row-variants(danger, $state-danger-bg, $inverse);
+
+// table-thead Color Modifier
+// ========================================================================
+@include table-thead-variant(default, $bg-color-base, inherit);
+@include table-thead-variant(primary, $brand-primary, $inverse);
+@include table-thead-variant(success, $brand-success, $inverse);
+@include table-thead-variant(info, $brand-info, $inverse);
+@include table-thead-variant(warning, $brand-warning, $inverse);
+@include table-thead-variant(danger, $brand-danger, $inverse);
+@include table-thead-variant(dark, $gray-600, $inverse);
+@include table-thead-variant(gray, $gray-300, $gray-600);
+
+// Modifier: `table-bordered`
+// ========================================================================
+
+.table-bordered {
+  thead {
+    &:first-child th {
+      border-top: $table-border-width solid $table-border-color;
+    }
+
+    th, td {
+      border-bottom-width: $table-border-width;
+    }
+  }
+}
+
+// Modifier: `table-section`
+// ========================================================================
+.table-section {
+  & + tbody {
+    display: none;
+  }
+
+  &-arrow {
+    @include make-icon();
+    position: relative;
+    font-family: "#{$wb-font-family}";
+    text-align: center;
+    transition: transform .15s;
+
+    &::before {
+      content: "#{$wb-var-chevron-down}";
+    }
+  }
+
+  &.active {
+    tr {
+      background-color: $table-active-bg;
+    }
+
+    + tbody {
+      display: table-row-group;
+    }
+
+    .table-section-arrow {
+      transform: rotate(-180deg);
+    }
+  }
+}
+
+// col[class*="col-"] in table
+table col[class*="col-"] {
+  position: static; // Prevent border hiding in Firefox and IE9-11 (see https://github.com/twbs/bootstrap/issues/11623)
+  display: table-column;
+  float: none;
+}

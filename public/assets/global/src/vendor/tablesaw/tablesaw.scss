@@ -1,0 +1,26 @@
+@import 'vars';
+@import 'scss/tables';
+@import 'scss/tables.toolbar';
+@import 'scss/tables.skin';
+@import 'scss/tables.stack';
+@import 'scss/tables.stack-default-breakpoint';
+@import 'scss/tables.swipetoggle';
+@import 'scss/tables.columntoggle';
+@import 'scss/tables.sortable';
+@import 'scss/tables.minimap';
+
+// fix email-#36-responsive tabele toolbar dropdown unworking 
+.tablesaw-bar .tablesaw-columntoggle-popup {
+  .btn-group {
+    display: inline-block;
+  }
+}
+
+.tablesaw {
+	tfoot,
+	thead {
+		th {
+			font-weight: $font-weight-medium;
+		}
+	}
+}

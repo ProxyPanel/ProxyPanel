@@ -1,0 +1,124 @@
+// Name:            Forms
+//
+// Component:       `form`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+// Component: Form
+// ========================================================================
+
+.form-control {
+  // }
+  border-color: $input-border; // add from---v3
+  box-shadow: none; // for remove iphone-safari input box-shadow inset
+  transition: box-shadow .25s linear, border .25s linear, color .25s linear, background-color .25s linear;
+  // &:not(select) {//remove ios default style but select triangle'problem also
+}
+
+// Unified style for select
+select.form-control {
+  background: $input-bg url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAFCAYAAABB9hwOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiNWZkMzNlMC0zNTcxLTI4NDgtYjA3NC01ZTRhN2RjMWVmNjEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTUxRUI3MDdEQjk4MTFFNUI1NDA5QTcyNTlFQzRERTYiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTUxRUI3MDZEQjk4MTFFNUI1NDA5QTcyNTlFQzRERTYiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6ZWNiNjQzMjYtNDc1Yi01OTQxLWIxYjItNDVkZjU5YjZlODA2IiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6N2RlYzI2YWMtZGI5OC0xMWU1LWIwMjgtY2ZhNDhhOGNjNWY1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+AXTIGgAAAFRJREFUeNpidI1KSWFgYDBlwASngXjOrqWzGcgBTEC8DIjfo4m/h4qTDUAGfwPi+UD8Hyr2H8r/RqnBIHATiPdC2XuhfIoACxJ7PRDzQmmKAUCAAQDxOxHyb4DjOAAAAABJRU5ErkJggg==) no-repeat center right;
+}
+
+// // states
+// .has-success {
+//   @include form-control-extend-validation($form-success-text, $form-success-text, $form-success-bg);
+// }
+
+// .has-warning {
+//   @include form-control-extend-validation($form-warning-text, $form-warning-text, $form-warning-bg);
+// }
+
+// // .has-error class was replace by .has-danger(v4)
+// .has-danger {
+//   @include form-control-extend-validation($form-danger-text, $form-danger-text, $form-danger-bg);
+// }
+
+// form-group
+
+// Modifier: `form-style`
+// -------------------------
+
+// no-resize textarea
+
+// Modifier: `input-group-file`
+// ----------------------------
+.input-group-file {
+  input[type="text"] {
+    background-color: $input-bg;
+  }
+
+  .btn-file {
+    &.btn-outline {
+      border: 1px solid $input-border;
+      border-left: none;
+
+      &:hover {
+        border-left: none;
+      }
+    }
+  }
+}
+
+// Modifier: `help-block`
+// "help-block" was replace by "text-help" in alpha2
+// alpha3 instead of it with <small class="text-muted">
+// Here retain it for some js plugin style it
+// ----------------------
+.text-help {
+  color: lighten($text-color, 25%); // add v3
+}
+
+// Input Search
+// ========================================================================
+.input-search-close {
+  color: $close-color;
+  text-shadow: $close-text-shadow;
+
+  &:hover, &:focus {
+    color: $close-color;
+  }
+}
+
+button.input-search-close {
+  background: transparent;
+  border: 0;
+}
+
+.input-search {
+  .input-search-icon {
+    color: $input-placeholder-color;
+  }
+}
+
+.input-search-btn {
+  background: transparent;
+  border: none;
+}
+
+.input-search-dark {
+  .input-search-icon {
+    color: $gray-500;
+  }
+
+  .form-control {
+    background: $gray-100;
+    box-shadow: none;
+
+    &:focus {
+      background-color: $input-focus-bg;
+    }
+  }
+}
+
+// Inline forms
+// ========================================================================
+
+// Horizontal forms
+// ========================================================================
+
+//for remove ie11 Pseudo class text
+

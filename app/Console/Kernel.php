@@ -2,21 +2,17 @@
 
 namespace App\Console;
 
-use App\Console\Commands\NodeBlockedDetection;
 use App\Console\Commands\AutoClearLog;
-use App\Console\Commands\AutoDecGoodsTraffic;
 use App\Console\Commands\AutoJob;
 use App\Console\Commands\AutoReportNode;
-use App\Console\Commands\AutoResetUserTraffic;
 use App\Console\Commands\AutoStatisticsNodeDailyTraffic;
 use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
 use App\Console\Commands\AutoStatisticsUserDailyTraffic;
 use App\Console\Commands\AutoStatisticsUserHourlyTraffic;
-use App\Console\Commands\upgradeUserLabels;
-use App\Console\Commands\upgradeUserPassword;
-use App\Console\Commands\upgradeUserSpeedLimit;
-use App\Console\Commands\upgradeUserSubscribe;
-use App\Console\Commands\upgradeUserVmessId;
+use App\Console\Commands\DailyJob;
+use App\Console\Commands\NodeBlockedDetection;
+use App\Console\Commands\ServiceTimer;
+use App\Console\Commands\upgradeUserResetTime;
 use App\Console\Commands\UserExpireAutoWarning;
 use App\Console\Commands\UserTrafficAbnormalAutoWarning;
 use App\Console\Commands\UserTrafficAutoWarning;
@@ -31,24 +27,20 @@ class Kernel extends ConsoleKernel
 	 * @var array
 	 */
 	protected $commands = [
-		AutoJob::class,
 		AutoClearLog::class,
-		AutoDecGoodsTraffic::class,
-		AutoResetUserTraffic::class,
-		NodeBlockedDetection::class,
+		AutoJob::class,
+		AutoReportNode::class,
 		AutoStatisticsNodeDailyTraffic::class,
 		AutoStatisticsNodeHourlyTraffic::class,
 		AutoStatisticsUserDailyTraffic::class,
 		AutoStatisticsUserHourlyTraffic::class,
-		UserTrafficAbnormalAutoWarning::class,
+		DailyJob::class,
+		NodeBlockedDetection::class,
+		ServiceTimer::class,
+		upgradeUserResetTime::class,
 		UserExpireAutoWarning::class,
+		UserTrafficAbnormalAutoWarning::class,
 		UserTrafficAutoWarning::class,
-		upgradeUserLabels::class,
-		upgradeUserPassword::class,
-		upgradeUserSpeedLimit::class,
-		upgradeUserSubscribe::class,
-		upgradeUserVmessId::class,
-		AutoReportNode::class,
 	];
 
 	/**
@@ -61,18 +53,18 @@ class Kernel extends ConsoleKernel
 	protected function schedule(Schedule $schedule)
 	{
 		$schedule->command('autoJob')->everyMinute();
+		$schedule->command('serviceTimer')->everyTenMinutes();
 		$schedule->command('autoClearLog')->everyThirtyMinutes();
-		$schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
-		$schedule->command('autoResetUserTraffic')->daily();
-		$schedule->command('NodeBlockedDetection')->everyThirtyMinutes();
-		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
+		$schedule->command('nodeBlockedDetection')->everyThirtyMinutes();
 		$schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
-		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
 		$schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
 		$schedule->command('userTrafficAbnormalAutoWarning')->hourly();
-		$schedule->command('userExpireAutoWarning')->dailyAt('20:00');
-		$schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
+		$schedule->command('dailyJob')->daily();
 		$schedule->command('autoReportNode')->dailyAt('09:00');
+		$schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
+		$schedule->command('userExpireAutoWarning')->dailyAt('20:00');
+		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
+		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
 	}
 
 	/**

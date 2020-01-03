@@ -1,0 +1,275 @@
+// Name:            Panel
+//
+// Component:       `panel`
+//
+// Modifiers:       `panel-heading`
+//                  `panel-body`
+//                  `panel-footer`
+//                  `panel-title`
+//                  `panel-dec`
+//                  `panel-actions`
+//                  `panel-toolbar`
+//                  `panel-bordered`
+//                  `panel-footer-chart`
+//                  `panel-control`
+//                  `panel-dark`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$panel-desc-color                        : $gray-500 !default;
+$panel-desc-font-size                    : $font-size-base !default;
+
+$panel-toolbar-color                     : $gray-400 !default;
+$panel-toolbar-color-hover               : $gray-500 !default;
+$panel-toolbar-bg                        : transparent !default;
+$panel-toolbar-border                    : $panel-inner-border !default;
+
+$panel-dark-text                         : $color-white !default;
+$panel-dark-border                       : $brand-dark !default;
+$panel-dark-heading-bg                   : $brand-dark !default;
+$panel-action-color                      : $gray-400 !default;
+$panel-action-active-color               : $gray-600 !default;
+$panel-action-hover-color                : $gray-600 !default;
+
+$panel-colored-title-color               : $inverse !default;
+$panel-colored-action-color              : $inverse !default;
+
+// Component: Panel
+// ========================================================================
+
+.panel {
+  background-color: $panel-bg;
+}
+
+// Panel Heading
+// ========================================================================
+.panel-heading {
+  // --20160810--fish add tab-in-panel-heading
+  &-tab {
+    background-color: $brand-primary;
+    > .nav-tabs {
+      .nav-link {
+        &.hover,
+        &:hover {
+          color: $text-color;
+        }
+        &.active,
+        &:active {
+          color: $text-color;
+          background-color: $color-white;
+        }
+      }
+    }
+  }
+}
+  // end--20160810--fish
+// Panel Footer
+// ========================================================================
+
+.panel-footer {
+  background-color: $panel-footer-bg;
+
+  .table + & {
+    border-color: $panel-inner-border;
+  }
+}
+
+// Panel Title
+// ========================================================================
+
+.panel-title {
+  color: $headings-color;
+
+  small,
+  .small {
+    color: $panel-desc-color;
+  }
+}
+
+// Panel Desc
+// ========================================================================
+
+.panel-desc {
+  color: $panel-desc-color;
+}
+
+// Panel Actions
+// ========================================================================
+
+.panel-actions {
+
+  .panel-action {
+    color: $panel-action-color;
+
+    &:hover {
+      color: $panel-action-hover-color;
+    }
+
+    &:active {
+      color: $panel-action-active-color;
+    }
+  }
+}
+
+// Panel Toolbar
+// ========================================================================
+.panel-toolbar {
+  background-color: $panel-toolbar-bg;
+  border-bottom: 1px solid $panel-toolbar-border;
+  border-top: 1px solid $panel-toolbar-border;
+
+  .btn {
+    color: $panel-toolbar-color;
+
+    &:hover, &:active, &.active {
+      color: $panel-toolbar-color-hover;
+    }
+  }
+}
+
+// Modifier: `panel-bordered`
+// ========================================================================
+
+.panel-bordered {
+  > .panel-heading {
+    border-bottom: 1px solid $panel-inner-border;
+  }
+
+  > .panel-footer {
+    border-top: 1px solid $panel-inner-border;
+  }
+}
+
+// In Panels
+// ========================================================================
+
+.panel {
+
+  > .panel-body + .table,
+  > .panel-body + .table-responsive,
+  > .table + .panel-body,
+  > .table-responsive + .panel-body {
+    border-top: 1px solid $table-border-color;
+  }
+
+  > .table > tbody:first-child > tr:first-child th,
+  > .table > tbody:first-child > tr:first-child td {
+    border-top: 1px solid $panel-inner-border;
+  }
+}
+
+// Modifier: `Contextual variations`
+// --------------------------------
+
+@mixin panel-variant($border, $heading-text-color, $heading-bg-color, $heading-border) {
+
+  .panel-heading {
+    color: $heading-text-color;
+    background-color: $heading-bg-color;
+
+    + .panel-collapse > .panel-body {
+      border-top-color: $border;
+    }
+    .badge-pill {
+      color: $heading-bg-color;
+      background-color: $heading-text-color;
+    }
+  }
+  .panel-title {
+    color: $heading-text-color;
+  }
+  .panel-action {
+    color: $heading-text-color;
+  }
+  .panel-footer {
+    + .panel-collapse > .panel-body {
+      border-bottom-color: $border;
+    }
+  }
+}
+
+.panel-default {
+  @include panel-variant($panel-default-border, $panel-default-text, $panel-default-heading-bg, $panel-default-border);
+  .panel-title {
+    color: $headings-color;
+  }
+}
+.panel-primary {
+  @include panel-variant($panel-primary-border, $panel-primary-text, $panel-primary-heading-bg, $panel-primary-border);
+}
+.panel-success {
+  @include panel-variant($panel-success-border, $panel-success-text, $panel-success-heading-bg, $panel-success-border);
+}
+.panel-info {
+  @include panel-variant($panel-info-border, $panel-info-text, $panel-info-heading-bg, $panel-info-border);
+}
+.panel-warning {
+  @include panel-variant($panel-warning-border, $panel-warning-text, $panel-warning-heading-bg, $panel-warning-border);
+}
+.panel-danger {
+  @include panel-variant($panel-danger-border, $panel-danger-text, $panel-danger-heading-bg, $panel-danger-border);
+}
+
+.panel-dark {
+  @include panel-variant($panel-dark-border, $panel-dark-text, $panel-dark-heading-bg, $panel-dark-border);
+}
+
+// Panel-line
+// ========================================================================
+
+@mixin panel-line-variant($heading-border-color) {
+  .panel-heading {
+    color: $heading-border-color;
+    border-top-color: $heading-border-color;
+    background: transparent;
+  }
+
+  .panel-title {
+    color: $heading-border-color;
+  }
+
+  .panel-action {
+    color: $heading-border-color;
+  }
+}
+
+.panel-line {
+  &.panel-default {
+    @include panel-line-variant($panel-default-heading-bg);
+
+    .panel-title {
+      color: $headings-color;
+    }
+
+    .panel-action {
+      color: $panel-action-color;
+    }
+  }
+
+  &.panel-primary {
+    @include panel-line-variant($panel-primary-heading-bg);
+  }
+
+  &.panel-success {
+    @include panel-line-variant($panel-success-heading-bg);
+  }
+
+  &.panel-info {
+    @include panel-line-variant($panel-info-heading-bg);
+  }
+
+  &.panel-warning {
+    @include panel-line-variant($panel-warning-heading-bg);
+  }
+
+  &.panel-danger {
+    @include panel-line-variant($panel-danger-heading-bg);
+  }
+
+  &.panel-dark {
+    @include panel-line-variant($panel-dark-heading-bg);
+  }
+}

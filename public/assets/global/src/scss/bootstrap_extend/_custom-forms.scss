@@ -1,0 +1,32 @@
+// scss-lint:disable PropertyCount
+
+//colors
+@mixin custom-control-variant($state, $checkedBg, $color, $checkedShadow) {
+  .custom-control-#{$state} {
+    .custom-control-input {
+      &:checked ~ .custom-control-indicator {
+        @include box-shadow($checkedShadow);
+        color: $color;
+        background-color: $checkedBg;
+      }
+
+      &:focus ~ .custom-control-indicator {
+        // the mixin is not used here to make sure there is feedback
+        box-shadow: 0 0 0 .075rem #fff, 0 0 0 .2rem $checkedBg;
+      }
+
+      // &:active ~ .custom-control-indicator {
+      //   color: $activeColor;
+      //   background-color: $activeBg;
+      //   @include box-shadow($activeShadow);
+      // }
+    }
+  }
+}
+
+@include custom-control-variant(primary, $brand-primary, $inverse, none);
+@include custom-control-variant(success, $brand-success, $inverse, none);
+@include custom-control-variant(info, $brand-info, $inverse, none);
+@include custom-control-variant(warning, $brand-warning, $inverse, none);
+@include custom-control-variant(danger, $brand-danger, $inverse, none);
+@include custom-control-variant(dark, $gray-500, $inverse, none);

@@ -1,0 +1,1658 @@
+// Variables
+// =============================================================================
+// Copy settings from this file into the provided `var-customs.scss` to override
+
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Table of Contents
+//
+// Color system
+// Options
+// Spacing
+// Body
+// Links
+// Typography
+// Iconography
+// Components
+// Tables
+// Buttons
+// Forms
+// Dropdowns
+// Z-index master list
+// Grid columns
+// Grid breakpoints
+// Container sizes
+// Navbar
+// Navs
+// Pagination
+// Jumbotron
+// Form states and alerts
+// Cards
+// Tooltips
+// Popovers
+// Tags
+// Modals
+// Alerts
+// Progress bars
+// List group
+// Badges
+// Breadcrumbs
+// Carousel
+// Close
+// Code
+// Shadow
+// avatar
+
+// Colors
+// ======
+//
+
+// --rc-start
+$transparent: rgba(0, 0, 0, 0);
+$color-black: #000;
+$color-white: #fff;
+$color-red: $color-red-600 !default;
+$color-pink: $color-pink-600 !default;
+$color-purple: $color-purple-600 !default;
+$color-indigo: $color-indigo-600 !default;
+$color-blue: $color-blue-600 !default;
+$color-cyan: $color-cyan-600 !default;
+$color-teal: $color-teal-600 !default;
+$color-green: $color-green-600 !default;
+$color-light-green: $color-light-green-600 !default;
+$color-yellow: $color-yellow-600 !default;
+$color-orange: $color-orange-600 !default;
+$color-brown: $color-brown-600 !default;
+$color-grey: $color-grey-600 !default;
+$color-blue-grey: $color-blue-grey-600 !default;
+
+// Primary color
+//
+$color-primary: "blue" !default;
+
+$color-primary-list: map-get($color-lists, $color-primary) !default;
+$color-primary-100: map-get($color-primary-list, "100") !default;
+$color-primary-200: map-get($color-primary-list, "200") !default;
+$color-primary-300: map-get($color-primary-list, "300") !default;
+$color-primary-400: map-get($color-primary-list, "400") !default;
+$color-primary-500: map-get($color-primary-list, "500") !default;
+$color-primary-600: map-get($color-primary-list, "600") !default;
+$color-primary-700: map-get($color-primary-list, "700") !default;
+$color-primary-800: map-get($color-primary-list, "800") !default;
+$color-primary-900: map-get($color-primary-list, "900") !default;
+// --rc-end
+
+// --v4b-start
+$white: $color-white;
+$gray-100: $color-blue-grey-100;
+$gray-200: $color-blue-grey-200;
+$gray-300: $color-blue-grey-300;
+$gray-400: $color-blue-grey-400;
+$gray-500: $color-blue-grey-500;
+$gray-600: $color-blue-grey-600;
+$gray-700: $color-blue-grey-700;
+$gray-800: $color-blue-grey-800;
+$gray-900: $color-blue-grey-900;
+
+// for <= v4a
+$gray-base: $gray-800;
+$gray-darkest: $gray-700;
+$gray-darker: $gray-600;
+$gray-dark: $gray-500;
+$gray: $gray-400;
+$gray-light: $gray-300;
+$gray-lighter: $gray-200;
+$gray-lightest: $gray-100;
+
+$black: $color-black;
+
+$grays: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$grays: map-merge(
+  (
+    "100": $gray-100,
+    "200": $gray-200,
+    "300": $gray-300,
+    "400": $gray-400,
+    "500": $gray-500,
+    "600": $gray-600,
+    "700": $gray-700,
+    "800": $gray-800,
+    "900": $gray-900
+  ),
+  $grays
+);
+
+$blue: $color-blue;
+$indigo: $color-indigo;
+$purple: $color-purple;
+$pink: $color-pink;
+$red: $color-red;
+$orange: $color-orange;
+$yellow: $color-yellow;
+$green: $color-green;
+$teal: $color-teal;
+$cyan: $color-cyan;
+
+$colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$colors: map-merge(
+  (
+    "blue":       $blue,
+    "indigo":     $indigo,
+    "purple":     $purple,
+    "pink":       $pink,
+    "red":        $red,
+    "orange":     $orange,
+    "yellow":     $yellow,
+    "green":      $green,
+    "teal":       $teal,
+    "cyan":       $cyan,
+    "white":      $white,
+    "gray":       $gray-400,
+    "gray-dark":  $gray-500
+  ),
+  $colors
+);
+
+$primary: $color-primary-600;
+$secondary: $color-blue-grey-600;
+$success: $color-green-600;
+$info: $color-cyan-600;
+$warning: $color-orange-600;
+$danger: $color-red-600;
+$light: $gray-100;
+$dark: $gray-800;
+
+$theme-colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$theme-colors: map-merge(
+  (
+    "primary":    $primary,
+    "secondary":  $secondary,
+    "success":    $success,
+    "info":       $info,
+    "warning":    $warning,
+    "danger":     $danger,
+    "light":      $light,
+    "dark":       $dark
+  ),
+  $theme-colors
+);
+
+// Set a specific jump point for requesting color jumps
+$theme-color-interval: 8%;
+// --v4b-end
+
+// o                      : v4+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+$yiq-contrasted-threshold: 150;
+
+// Customize the light and dark text colors for use in our YIQ color contrast function.
+$yiq-text-dark: $gray-900;
+$yiq-text-light: $white;
+// e                      : v4+
+
+// Gray color
+//
+// $gray-base             : $color-blue-grey-800;
+// $gray-darkest          : $color-blue-grey-700;
+// $gray-darker           : $color-blue-grey-600;
+// $gray-dark             : $color-blue-grey-500;
+// $gray                  : $color-blue-grey-400;
+// $gray-light            : $color-blue-grey-300;
+// $gray-lighter          : $color-blue-grey-200;
+// $gray-lightest         : $color-blue-grey-100;
+
+// --rc--start
+$inverse: $color-white;
+// --rc--end
+
+// --v4a--start
+$brand-inverse: $gray-500;
+// --v4a--ends
+
+// --rc && v4a--start
+// Brand color
+//
+$brand-default: $gray-200;
+$brand-default-hover: $gray-100;
+$brand-default-active: $gray-300;
+$brand-default-100: $gray-100;
+
+$brand-primary: $color-primary-600;
+$brand-primary-hover: $color-primary-500;
+$brand-primary-active: $color-primary-700;
+$brand-primary-400: $color-primary-400;
+$brand-primary-100: $color-primary-100;
+
+$brand-success: $color-green-600;
+$brand-success-hover: $color-green-500;
+$brand-success-active: $color-green-700;
+$brand-success-400: $color-green-400;
+$brand-success-100: $color-green-100;
+
+$brand-info: $color-cyan-600;
+$brand-info-hover: $color-cyan-500;
+$brand-info-active: $color-cyan-700;
+$brand-info-400: $color-cyan-400;
+$brand-info-100: $color-cyan-100;
+
+$brand-warning: $color-orange-600;
+$brand-warning-hover: $color-orange-500;
+$brand-warning-active: $color-orange-700;
+$brand-warning-400: $color-orange-400;
+$brand-warning-100: $color-orange-100;
+
+$brand-danger: $color-red-600;
+$brand-danger-hover: $color-red-500;
+$brand-danger-active: $color-red-700;
+$brand-danger-400: $color-red-400;
+$brand-danger-100: $color-red-100;
+
+$brand-dark: $gray-600;
+$brand-dark-hover: $gray-500;
+$brand-dark-active: $gray-700;
+$brand-dark-100: $color-blue-100;
+
+$color-tab-focus: rgba($brand-primary, (60/100));
+// --rc && v4a--end
+
+// --v4a-start
+// Text color
+//
+$title-color: $color-blue-grey-700 !default;
+$subtitle-color: $color-blue-grey-600 !default;
+$text-color: $color-blue-grey-500 !default;
+$prompt-color: $color-blue-grey-400 !default;
+
+// Status color
+//
+$active-color-base: $color-primary-700;
+$normal-color-base: $color-primary-600;
+$hover-color-base: $color-primary-500;
+$bg-color-base: $gray-100;
+$disabled-color-base: $gray-200;
+// --v4a-end
+
+// Options
+// =======
+// Quickly modify global styling by enabling or disabling optional features.
+//
+$enable-caret: true;//beta2 add
+$enable-rounded: true;
+$enable-shadows: true;
+$enable-gradients: false;
+$enable-transitions: true;
+$enable-hover-media-query: false;// v4:Deprecated, no longer affects any compiled CSS
+$enable-grid-classes: true;
+$enable-print-styles: true;
+
+// Spacing
+// =======
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+
+$spacer: pxtorem(16px) !default;
+$spacers: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$spacers: map-merge(
+  (
+    0: 0,
+    1: ($spacer * .25),
+    2: ($spacer * .5),
+    3: $spacer,
+    4: ($spacer * 1.5),
+    5: ($spacer * 3)
+  ),
+  $spacers
+);
+
+// This variable affects the `.h-*` and `.w-*` classes.
+$sizes: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$sizes: map-merge(
+  (
+    25: 25%,
+    50: 50%,
+    75: 75%,
+    100: 100%,
+    auto: auto
+  ),
+  $sizes
+);
+
+// Body
+// ====
+// Settings for the `<body>` element.
+//
+$body-bg: $color-white;
+$body-color: $gray-500;
+
+// Links
+// =====
+//
+$link-color: $normal-color-base;
+$link-hover-color: $hover-color-base;
+$link-active-color: $active-color-base !default;
+$link-decoration: none;
+$link-hover-decoration: none;
+
+// Paragraphs
+// ==========
+// Style p element.
+//
+$paragraph-margin-bottom:   1rem;
+
+// Border
+// ======
+//
+// --v4a--start
+$border-width: 1px;
+$border-color: $gray-200;//beta2 add
+$border-color-base: $border-color;
+// --v4a--end
+
+// Grid breakpoints
+// ================
+// Define the minimum and maximum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+//
+$grid-breakpoints: (
+  // Extra small screen / phone
+  xs: 0,
+  // Small screen / phone
+  sm: 480px,
+  // Medium screen / tablet
+  md: 768px,
+  // Large screen / desktop
+  lg: 992px,
+  // Extra large screen / desktop
+  xl: 1200px,
+  // Extra large screen / wide desktop
+  xxl: 1600px
+);
+@include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
+@include _assert-starts-at-zero($grid-breakpoints);
+
+// Container sizes
+// ===============
+// Define the maximum width of `.container` for different screen sizes.
+//
+$container-max-widths: (
+  sm: 606px,
+  md: 750px,
+  lg: 970px,
+  xl: 1170px,
+  xxl: 1340px
+);
+@include _assert-ascending($container-max-widths, "$container-max-widths");
+
+// 30 + or - ?
+// sm: 576 + 30
+// md: 720 + 30
+// lg: 940 + 30
+// xl: 1140 + 30
+// xxl: 1310 + 30
+
+// Grid columns
+// ============
+// Define your custom responsive grid.
+//
+//** Number of columns in the grid.
+$grid-columns: 12;
+$grid-gutter-width: pxtorem(30px);
+$grid-lg-gutter-width: pxtorem(50px);
+
+//** Padding between columns. Gets divided in half for the left and right.
+// $grid-gutter-width-base : pxtorem(30px);
+// $grid-lg-gutter-width   : pxtorem(50px);
+
+// $grid-gutter-widths: (
+//   xs: $grid-gutter-width-base,
+//   sm: $grid-gutter-width-base,
+//   md: $grid-gutter-width-base,
+//   lg: $grid-gutter-width-base,
+//   xl: $grid-gutter-width-base,
+//   xxl: $grid-gutter-width-base
+// );
+
+// Typography
+// ==========
+// Font, line-height, and color for body text, headings, and more.
+//
+// stylelint-disable value-keyword-case
+$use-font-family: "Roboto";
+// $font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-sans-serif: $use-font-family, sans-serif;//rc--
+// Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
+$font-family-monospace: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+$font-family-serif: Georgia, "Times New Roman", Times, serif;
+
+$font-family-base: $font-family-sans-serif;
+$font-size-root: 14px;
+// stylelint-enable value-keyword-case
+
+// $font-size-base         : 1rem;
+$font-size-base: pxtorem(14px);
+$font-size-lg: pxtorem(18px);// ~18px
+$font-size-sm: pxtorem(12px);// ~12px
+$font-size-xs: pxtorem(10px) !default;// ~10px  v4b remove it;
+$font-size-large: $font-size-lg;// ~18px for v3 plugin
+$font-size-small: $font-size-sm;// ~12px for v3 plugin
+
+// --v4a--start
+// $font-size-h1:               pxtorem(36px);// ~36px
+// $font-size-h2:               pxtorem(30px);// ~30px
+// $font-size-h3:               pxtorem(24px);// ~24px
+// $font-size-h4:               pxtorem(18px);// ~18px
+// $font-size-h5:               pxtorem(14px);
+// $font-size-h6:               pxtorem(12px);// ~12px
+// --v4a--end
+
+// --v4b1--start
+$h1-font-size: pxtorem(36px);// ~36px
+$h2-font-size: pxtorem(30px);// ~30px
+$h3-font-size: pxtorem(24px);// ~24px
+$h4-font-size: pxtorem(18px);// ~18px
+$h5-font-size: pxtorem(14px);
+$h6-font-size: pxtorem(12px);// ~12px
+// --v4b2--start
+$font-size-icon: pxtorem(16px);
+$font-weight-override: false;
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-base: $font-weight-normal;
+
+// Unit-less `line-height` for use in components like buttons.
+$line-height: 1.57142857;
+$line-height-base: $line-height; // 22/14 cumstom
+
+// Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+// $line-height-computed : round(($font-size-base * $line-height-base)); // font-size 14px~22px; 16px~24px;
+$line-height-computed: round((14px * $line-height-base)); // font-size 14px~22px; 16px~24px;
+
+// By default, this inherits from the `<body>`.
+$headings-margin-bottom: ($spacer / 2);
+$headings-font-family: $font-family-base;
+// $headings-font-weight : $font-weight-light;
+$headings-line-height: 1.2;
+$headings-color: $title-color;
+$headings-text-shadow: rgba($black, .15) 0 0 1px;
+$headings-small-color: $prompt-color;
+// @import 'fonts/Roboto';
+
+// Type
+// ====
+//
+$lead-font-size: pxtorem(20px);
+$lead-font-weight: 300;
+$small-font-size: 80%;
+$text-muted: $gray-400;
+$abbr-border-color: $gray-200;
+
+//** Blockquote
+$blockquote-small-color: $prompt-color;
+$blockquote-font-size: ($font-size-base * 1.25);
+$blockquote-border-color: $border-color-base; // v4b remove it
+$blockquote-border-width: .285rem; //~4px; // v4b remove it
+
+//** Horizontal line color.
+$hr-border-color: $border-color-base;
+$hr-border-width: $border-width;
+
+$mark-padding: .23rem;//~3.2px
+$mark-bg: $brand-warning;
+$dt-font-weight: $font-weight-bold;
+$kbd-box-shadow: inset 0 -.1rem 0 rgba($black, .25);
+$nested-kbd-font-weight: $font-weight-bold;
+$list-inline-padding: .5rem;
+
+$hr-margin-y: $spacer !default;
+
+// display
+$display1-size: 6rem;
+$display2-size: 5.5rem;
+$display3-size: 4.5rem;
+$display4-size: 3.5rem;
+$display1-weight: 300;
+$display2-weight: 300;
+$display3-weight: 300;
+$display4-weight: 300;
+$display-line-height: $headings-line-height;
+// Iconography
+// ===========
+// Specify custom location and filename of the included Glyphicons icon font. Useful for those including Bootstrap via Bower.
+//
+// Load fonts from this directory.
+$icon-font-path: "../fonts/";
+// File name for all font files.
+$icon-font-name: "glyphicons-halflings-regular";
+// Element ID within SVG icon file.
+$icon-font-svg-id: "glyphicons_halflingsregular";
+$icon-color: rgba($gray-700, (40/100));
+$icon-hover-color: rgba($gray-700, (60/100));
+$icon-active-color: $gray-700;
+$icon-alt-color: rgba($gray-700, (60/100));
+$icon-alt-hover-color: rgba($gray-700, (80/100));
+$icon-alt-active-color: $gray-700;
+
+// Components
+// ==========
+// Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
+//
+$padding-base-vertical: pxtorem(6px);
+$padding-base-horizontal: pxtorem(14px);
+$padding-large-vertical: pxtorem(10px);
+$padding-large-horizontal: pxtorem(18px);
+$padding-small-vertical: pxtorem(6px);
+$padding-small-horizontal: pxtorem(12px);
+$padding-xs-vertical: pxtorem(1px);
+$padding-xs-horizontal: pxtorem(5px);
+
+$line-height-large: $line-height-lg; // for v3 plugin
+$line-height-small: $line-height-sm; // for v3 plugin
+$line-height-lg: (4 / 3); // extra decimals for Win 8.1 Chrome
+$line-height-sm: 1.5;
+
+$border-radius: pxtorem(3px); // ~3px
+$border-radius-lg: pxtorem(4px); // ~4px
+$border-radius-sm: pxtorem(2px); // ~2px
+$border-radius-base: $border-radius; // for v3 plugin
+$border-radius-large: $border-radius-lg; // for v3 plugin
+$border-radius-small: $border-radius-sm; // for v3 plugin
+
+// bv4.1.3 add
+$box-shadow-sm: 0 .125rem .25rem rgba($black, .075);
+$box-shadow: 0 .5rem 1rem rgba($black, .15);
+$box-shadow-lg: 0 1rem 3rem rgba($black, .175);
+
+// Global color for active items (e.g., navs or dropdowns).
+// Global background color for active items (e.g., navs or dropdowns).
+$component-active-color: $inverse; // v4: $white
+$component-active-bg: $active-color-base;
+
+// Width of the `border` for generating carets that indicator dropdowns.
+$caret-width: pxtorem(4px);
+$caret-width-lg: pxtorem(5px);// --fish--v4a6-remove it;
+$caret-width-base: $caret-width;
+$caret-width-large: $caret-width-lg;
+
+//--fish--v4a6-newadd
+$transition-base: all .2s ease-in-out;
+$transition-fade: opacity .15s linear;
+$transition-collapse: height .35s ease;
+//--fish--end
+$border-color-base: $gray-200;// v4a && rc-- v4b removed
+$divider-color-base: $gray-200;
+
+//** Horizontal offset for forms and lists.
+$component-offset-horizontal: 180px;
+
+//** Page header border color
+$page-header-border-color: transparent;
+//** Width of horizontal description list titles
+$dl-horizontal-offset: $component-offset-horizontal;
+
+// Tables
+// ======
+// Customizes the `.table` component with basic values, each used across all table variations.
+//
+// Padding for `<th>`s and `<td>`s.
+$table-cell-padding: pxtorem(8px); // ~8px
+$table-cell-padding-sm: pxtorem(5px);
+
+// Padding for cells in `.table-condensed`.
+$table-condensed-cell-padding: pxtorem(5px); // ~5px
+
+// Default background color used for all tables.
+$table-bg: transparent;
+$table-accent-bg: rgba($bg-color-base, (30/100));
+$table-hover-bg: $bg-color-base;
+$table-active-bg: $table-hover-bg;
+
+$table-head-bg: $gray-200;
+$table-head-color: $gray-400;
+
+// Border color for table and cell borders.
+$table-border-width: $border-width;
+$table-border-color: $border-color-base;
+
+$table-dark-bg: $gray-900;
+$table-dark-accent-bg: rgba($white, .05);
+$table-dark-hover-bg: rgba($white, .075);
+$table-dark-border-color: lighten($gray-900, 7.5%);
+$table-dark-color: $body-bg;
+
+$table-striped-order: odd;
+
+$table-caption-color: $text-muted;
+
+// Buttons + Forms
+// ===============
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+//
+$input-btn-padding-x: $padding-base-horizontal;
+$input-btn-padding-y: $padding-base-vertical;
+$input-btn-line-height: $line-height-base;
+
+$input-btn-focus-width: pxtorem(2px);
+$input-btn-focus-color: rgba($brand-primary, .25);
+$input-btn-focus-box-shadow: 0 0 0 $input-btn-focus-width $input-btn-focus-color;
+
+$input-btn-padding-x-sm: $padding-small-horizontal;
+$input-btn-padding-y-sm: $padding-small-vertical;
+$input-btn-line-height-sm: $line-height-sm;
+
+$input-btn-padding-x-lg: $padding-large-horizontal;
+$input-btn-padding-y-lg: $padding-large-vertical;
+$input-btn-line-height-lg: $line-height-lg;
+
+$input-btn-border-width: $border-width;
+
+// Buttons
+// =======
+// For each of Bootstrap's buttons, define text, background, and border color.
+//
+$btn-padding-y: $input-btn-padding-y;
+$btn-padding-x: $input-btn-padding-x;
+$btn-line-height: $input-btn-line-height;
+
+$btn-padding-y-sm: $input-btn-padding-y-sm;
+$btn-padding-x-sm: $input-btn-padding-x-sm;
+$btn-line-height-sm: $input-btn-line-height-sm;
+
+$btn-padding-y-lg: $input-btn-padding-y-lg;
+$btn-padding-x-lg: $input-btn-padding-x-lg;
+$btn-line-height-lg: $input-btn-line-height-lg;
+
+$btn-border-width: $input-btn-border-width;
+
+$btn-font-weight: $font-weight-normal;
+$btn-box-shadow: inset 0 1px 0 rgba($white, .15), 0 1px 1px rgba($black, .075);
+$btn-focus-width: $input-btn-focus-width;
+$btn-focus-box-shadow: $input-btn-focus-box-shadow;
+$btn-disabled-opacity: .65;
+$btn-active-box-shadow: inset 0 3px 5px rgba($black, .125);
+
+// -- v4a6 && rc --start
+$btn-default-color: $text-color;
+$btn-default-bg: $brand-default;
+$btn-default-border: $border-color-base;
+$btn-default-border-color: $btn-default-border;
+$btn-default-hover-bg: $brand-default-hover;
+$btn-default-hover-border: $btn-default-hover-bg;
+$btn-default-active-bg: $brand-default-active;
+$btn-default-active-border: $btn-default-active-bg;
+$btn-primary-color: $inverse;
+$btn-primary-bg: $brand-primary;
+$btn-primary-border: $btn-primary-bg;
+$btn-primary-border-color: $btn-primary-border;
+$btn-primary-hover-bg: $brand-primary-hover;
+$btn-primary-hover-border: $btn-primary-hover-bg;
+$btn-primary-active-bg: $brand-primary-active;
+$btn-primary-active-border: $btn-primary-active-bg;
+$btn-success-color: $inverse;
+$btn-success-bg: $brand-success;
+$btn-success-border: $btn-success-bg;
+$btn-success-border-color: $btn-success-border;
+$btn-success-hover-bg: $brand-success-hover;
+$btn-success-hover-border: $btn-success-hover-bg;
+$btn-success-active-bg: $brand-success-active;
+$btn-success-active-border: $btn-success-active-bg;
+$btn-info-color: $inverse;
+$btn-info-bg: $brand-info;
+$btn-info-border: $btn-info-bg;
+$btn-info-border-color: $btn-info-border;
+$btn-info-hover-bg: $brand-info-hover;
+$btn-info-hover-border: $btn-info-hover-bg;
+$btn-info-active-bg: $brand-info-active;
+$btn-info-active-border: $btn-info-active-bg;
+$btn-warning-color: $inverse;
+$btn-warning-bg: $brand-warning;
+$btn-warning-border: $btn-warning-bg;
+$btn-warning-border-color: $btn-warning-border;
+$btn-warning-hover-bg: $brand-warning-hover;
+$btn-warning-hover-border: $btn-warning-hover-bg;
+$btn-warning-active-bg: $brand-warning-active;
+$btn-warning-active-border: $btn-warning-active-bg;
+$btn-danger-color: $inverse;
+$btn-danger-bg: $brand-danger;
+$btn-danger-border: $btn-danger-bg;
+$btn-danger-border-color: $btn-danger-border;
+$btn-danger-hover-bg: $brand-danger-hover;
+$btn-danger-hover-border: $btn-danger-hover-bg;
+$btn-danger-active-bg: $brand-danger-active;
+$btn-danger-active-border: $btn-danger-active-bg;
+$btn-dark-color: $inverse;
+$btn-dark-bg: $brand-dark;
+$btn-dark-border: $btn-dark-bg;
+$btn-dark-border-color: $btn-dark-border;
+$btn-dark-hover-bg: $brand-dark-hover;
+$btn-dark-hover-border: $btn-dark-hover-bg;
+$btn-dark-active-bg: $brand-dark-active;
+$btn-dark-active-border: $btn-dark-active-bg;
+
+$btn-link-disabled-color: $gray-400;
+$btn-block-spacing-y: pxtorem(8px);//5px;
+
+// $btn-toolbar-margin:             pxtorem(8px);//5px;
+
+// $split-btn-dropdown-toggle-padding-x:     8px;
+// $split-btn-lg-dropdown-toggle-padding-x: 12px;
+
+// Allows for customizing button radius independently from global border radius
+$btn-border-radius: $border-radius;
+$btn-border-radius-lg: $border-radius-lg;
+$btn-border-radius-sm: $border-radius-sm;
+$btn-transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+// Forms
+// =====
+//
+
+$label-margin-bottom: .5rem;
+
+$input-padding-y: $input-btn-padding-y;
+$input-padding-x: $input-btn-padding-x;
+$input-line-height: $input-btn-line-height;
+
+$input-padding-y-sm: $input-btn-padding-y-sm;
+$input-padding-x-sm: $input-btn-padding-x-sm;
+$input-line-height-sm: $input-btn-line-height-sm;
+
+$input-padding-y-lg: $input-btn-padding-y-lg;
+$input-padding-x-lg: $input-btn-padding-x-lg;
+$input-line-height-lg: $input-btn-line-height-lg;
+
+$input-bg: $inverse;
+$input-disabled-bg: $gray-100;
+
+// $input-bg-disabled     : $gray-100;// v3 plugins select2 and bootstrap-markdown
+$input-color: $text-color;
+$input-border: $border-color-base;// v4a && v4b removed
+$input-border-color: $border-color-base;
+$input-btn-border-width: $input-btn-border-width; // For form controls and buttons
+$input-border-width: $border-width;
+$input-box-shadow: inset 0 1px 1px rgba($black, .075);
+$input-border-radius: $border-radius;
+$input-border-radius-lg: $border-radius-lg;
+$input-border-radius-sm: $border-radius-sm;
+
+$input-focus-bg: $input-bg;
+$input-focus-border-color: $brand-primary;
+$input-focus-box-shadow: $input-box-shadow, 0 0 8px rgba(102, 175, 233, .6) s;//v4beta2 removeit
+$input-focus-color: $input-color;
+$input-focus-width: $input-btn-focus-width;
+$input-focus-box-shadow: $input-btn-focus-box-shadow;
+
+$input-placeholder-color: $prompt-color;
+$input-plaintext-color: $body-color;
+
+$input-border-radius-large: $border-radius-lg;
+$input-border-radius-small: $border-radius-sm;
+
+$input-height-border: $input-border-width * 2;
+$input-height-inner: ($font-size-base * $input-btn-line-height) + ($input-btn-padding-y * 2);
+$input-height: calc(#{$input-height-inner} + #{$input-height-border});
+$input-height-inner-sm: ($font-size-sm * $input-btn-line-height-sm) + ($input-btn-padding-y-sm * 2);
+$input-height-sm: calc(#{$input-height-inner-sm} + #{$input-height-border});
+$input-height-inner-lg: ($font-size-sm * $input-btn-line-height-lg) + ($input-btn-padding-y-lg * 2);
+$input-height-lg: calc(#{$input-height-inner-lg} + #{$input-height-border});
+
+// for v3 plugin && rc-- starts
+//** Default `.form-control` height
+$input-height-base: (pxtorem($line-height-computed) + ($input-btn-padding-y * 2) + pxtorem($input-height-border));//($line-height-computed + ($input-padding-y * 2) + 2);
+//** Large `.form-control` height
+$input-height-large: (pxtorem(ceil(17.5px * $line-height-large)) + ($padding-large-vertical * 2) + pxtorem($input-height-border));//(ceil(17.5px * $line-height-large) + ($padding-large-vertical * 2) + 2);
+//** Small `.form-control` height
+$input-height-small: (pxtorem(floor(11.9px * $line-height-small)) + ($padding-small-vertical * 2) + pxtorem($input-height-border));//(floor(11.9px * $line-height-small) + ($padding-small-vertical * 2) + 2);
+$input-height: (pxtorem($line-height-computed) + ($input-btn-padding-y * 2) + pxtorem($input-height-border));
+$input-height-lg: (($font-size-lg * $input-btn-line-height-lg) + ($input-btn-padding-y-lg * 2) + pxtorem($input-height-border));
+$input-height-sm: (($font-size-sm * $input-btn-line-height-sm) + ($input-btn-padding-y-sm * 2) + pxtorem($input-height-border));
+// && rc-- end
+
+$input-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+$form-text-margin-top: pxtorem(4px);
+// $form-check-margin-bottom      : pxtorem(8px);
+$form-check-input-gutter: pxtorem(20px);
+$form-check-input-margin-y: 4px;//pxtorem(4px);
+$form-check-input-margin-x: 4px;//pxtorem(4px);
+$form-check-inline-margin-x: pxtorem(12px);
+$form-check-inline-input-margin-x: .3125rem;
+
+//** `.form-group` margin
+$form-group-margin-bottom: pxtorem(20px); // ~20px
+$legend-color: inherit;
+$legend-border-color: transparent;
+
+$input-group-addon-color: $input-color;
+$input-group-addon-bg: $gray-200;
+$input-group-addon-border-color: $input-border-color;
+
+//** Disabled cursor for form controls and buttons.
+$cursor-disabled: not-allowed;// v4b1-removed
+
+// // Custom forms
+// //
+// $custom-forms-transition:               background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+// $custom-control-gutter:                 1.5rem;
+// $custom-control-spacer-x:               1rem;
+
+// $custom-control-indicator-size:         1rem;
+// $custom-control-indicator-bg:           $gray-300;
+// $custom-control-indicator-bg-size:      50% 50%;
+// $custom-control-indicator-box-shadow:   inset 0 .25rem .25rem rgba($black, .1);
+
+// $custom-control-indicator-disabled-bg:          $gray-200;
+// $custom-control-label-disabled-color:           $gray-600;
+
+// $custom-control-indicator-checked-color:        $component-active-color;
+// $custom-control-indicator-checked-bg:           $component-active-bg;
+// $custom-control-indicator-checked-disabled-bg:  rgba(theme-color("primary"), .5);
+// $custom-control-indicator-checked-box-shadow:   none;
+
+// $custom-control-indicator-focus-box-shadow:     0 0 0 1px $body-bg, $input-btn-focus-box-shadow;
+
+// $custom-control-indicator-active-color:         $component-active-color;
+// $custom-control-indicator-active-bg:            lighten($component-active-bg, 35%);
+// $custom-control-indicator-active-box-shadow:    none;
+
+// $custom-checkbox-indicator-border-radius:       $border-radius;
+// $custom-checkbox-indicator-icon-checked:        str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='#{$custom-control-indicator-checked-color}' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E"), "#", "%23");
+
+// $custom-checkbox-indicator-indeterminate-bg:          $component-active-bg;
+// $custom-checkbox-indicator-indeterminate-color:       $custom-control-indicator-checked-color;
+// $custom-checkbox-indicator-icon-indeterminate:        str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath stroke='#{$custom-checkbox-indicator-indeterminate-color}' d='M0 2h4'/%3E%3C/svg%3E"), "#", "%23");
+// $custom-checkbox-indicator-indeterminate-box-shadow:  none;
+
+// $custom-radio-indicator-border-radius:          50%;
+// $custom-radio-indicator-icon-checked:           str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='#{$custom-control-indicator-checked-color}'/%3E%3C/svg%3E"), "#", "%23");
+
+// $custom-select-padding-y:           .375rem;
+// $custom-select-padding-x:           .75rem;
+// $custom-select-height:              $input-height;
+// $custom-select-indicator-padding:   1rem; // Extra padding to account for the presence of the background-image based indicator
+// $custom-select-line-height:         $input-btn-line-height;
+// $custom-select-color:               $input-color;
+// $custom-select-disabled-color:      $gray-600;
+// $custom-select-bg:                  $input-bg;
+// $custom-select-disabled-bg:         $gray-200;
+// $custom-select-bg-size:             8px 10px; // In pixels because image dimensions
+// $custom-select-indicator-color:     $gray-800;
+// $custom-select-indicator:           str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E"), "#", "%23");
+// $custom-select-border-width:        $input-btn-border-width;
+// $custom-select-border-color:        $input-border-color;
+// $custom-select-border-radius:       $border-radius;
+// $custom-select-box-shadow:          inset 0 1px 2px rgba($black, .075);
+
+// $custom-select-focus-border-color:  $input-focus-border-color;
+// $custom-select-focus-width:         $input-btn-focus-width;
+// $custom-select-focus-box-shadow:    0 0 0 $custom-select-focus-width rgba($custom-select-focus-border-color, .5);
+
+// $custom-select-font-size-sm:        75%;
+// $custom-select-height-sm:           $input-height-sm;
+
+// $custom-select-font-size-lg:        125%;
+// $custom-select-height-lg:           $input-height-lg;
+
+// $custom-range-track-width:          100%;
+// $custom-range-track-height:         .5rem;
+// $custom-range-track-cursor:         pointer;
+// $custom-range-track-bg:             $gray-300;
+// $custom-range-track-border-radius:  1rem;
+// $custom-range-track-box-shadow:     inset 0 .25rem .25rem rgba($black, .1);
+
+// $custom-range-thumb-width:                   1rem;
+// $custom-range-thumb-height:                  $custom-range-thumb-width;
+// $custom-range-thumb-bg:                      $component-active-bg;
+// $custom-range-thumb-border:                  0;
+// $custom-range-thumb-border-radius:           1rem;
+// $custom-range-thumb-box-shadow:              0 .1rem .25rem rgba($black, .1);
+// $custom-range-thumb-focus-box-shadow:        0 0 0 1px $body-bg, $input-btn-focus-box-shadow;
+// $custom-range-thumb-focus-box-shadow-width:  $input-btn-focus-width; // For focus box shadow issue in IE/Edge
+// $custom-range-thumb-active-bg:               lighten($component-active-bg, 35%);
+
+// $custom-file-height:                $input-height;
+// $custom-file-height-inner:          $input-height-inner;
+// $custom-file-focus-border-color:    $input-focus-border-color;
+// $custom-file-focus-box-shadow:      $input-btn-focus-box-shadow;
+// $custom-file-disabled-bg:           $input-disabled-bg;
+
+// $custom-file-padding-y:             $input-btn-padding-y;
+// $custom-file-padding-x:             $input-btn-padding-x;
+// $custom-file-line-height:           $input-btn-line-height;
+// $custom-file-color:                 $input-color;
+// $custom-file-bg:                    $input-bg;
+// $custom-file-border-width:          $input-btn-border-width;
+// $custom-file-border-color:          $input-border-color;
+// $custom-file-border-radius:         $input-border-radius;
+// $custom-file-box-shadow:            $input-box-shadow;
+// $custom-file-button-color:          $custom-file-color;
+// $custom-file-button-bg:             $input-group-addon-bg;
+// $custom-file-text: (
+//   en: "Browse"
+// );
+
+// rc--start
+$form-control-default-box-shadow: inset 0 1px 1px rgba($black, .075);
+$form-control-focus-box-shadow: $form-control-default-box-shadow, 0 0 8px fade($input-focus-border-color, .6);
+$form-control-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+// rc--end
+
+// Form validation
+$form-feedback-margin-top: $form-text-margin-top;
+$form-feedback-font-size: $small-font-size;
+$form-feedback-valid-color: $brand-success;
+$form-feedback-invalid-color: $brand-danger;
+
+// Dropdowns
+// =========
+// Dropdown menu container and contents.
+//
+//** Background for the dropdown menu.
+$dropdown-min-width: 160px;
+$dropdown-padding-y: 5px;
+// $dropdown-margin-top       : 5px; // 2px
+$dropdown-spacer: 5px; // v4b1 rename from $dropdown-margin-top
+$dropdown-bg: #fff;
+$dropdown-border-color: $border-color-base;
+$dropdown-border-radius: $border-radius;
+$dropdown-border-width: $border-width;
+$dropdown-divider-bg: $divider-color-base;
+$dropdown-box-shadow: 0 3px 12px rgba($black, .05); // 0 6px 12px rgba($black,.175)
+$dropdown-border: $dropdown-border-color; // v4b removed
+
+//** Dropdown menu `border-color` **for IE8**.// for v3 plugin
+$dropdown-fallback-border: #ccc; // v4a6 && v4b removed
+$dropdown-fallback-divider: #f6f7f8;
+
+//** Dropdown link text color.
+$dropdown-link-color: $text-color;
+$dropdown-link-hover-color: $text-color;
+$dropdown-link-hover-bg: $bg-color-base;
+
+//** Active dropdown menu item.
+$dropdown-link-active-color: $text-color;//$component-active-color;
+$dropdown-link-active-bg: $bg-color-base;//$component-active-bg;
+
+//** Disabled dropdown menu item background color.
+$dropdown-link-disabled-color: $disabled-color-base;
+$dropdown-item-padding-x: pxtorem(15px);
+$dropdown-item-padding-y: pxtorem(8px);
+
+// $dropdown-link-padding     : $dropdown-item-padding-x $dropdown-item-padding-y;  // v4a6 && v4b change to $dropdown-item-padding-x,-y //for v3 pulgins
+$dropdown-item-border-radius: $border-radius !default; // rc--
+
+//** Text color for headers within dropdown menus.
+$dropdown-header-color: $title-color;
+
+//** Deprecated `$dropdown-caret-color` as of v3.1.0 // v4a & v4b removed
+$dropdown-caret-color: $text-color;
+$dropdown-menu-shadow: 0 3px 12px rgba($black, .05);
+$dropup-menu-shadow: 0 -3px 12px rgba($black, .05);
+
+// Z-index master list
+// ===================
+// Warning: Avoid customizing these values. They're used for a bird's eye view
+// of components dependent on the z-axis and are designed to all work together.
+//
+// Note: These variables are not generated into the Customizer.
+//
+//$zindex-navbar:            1000;
+//$zindex-dropdown:          1000;
+//$zindex-popover:           1060;
+//$zindex-tooltip:           1070;
+//$zindex-navbar-fixed:      1030;
+//$zindex-navbar-sticky
+//$zindex-modal-background:  1040;
+//$zindex-modal:             1050;
+$zindex-fullscreen: 9999;
+$zindex-tooltip: 1900;
+$zindex-popover: 1800;
+$zindex-modal: 1700;
+$zindex-modal-bg: 1600;// v4a6-rename zindex-modal-backdrop
+$zindex-modal-backdrop: 1600;// v4a6-add
+$zindex-navbar-fixed: 1500;// v4a6-remove or rename
+$zindex-navbar-sticky: $zindex-navbar-fixed;// v4a6-remove or rename
+$zindex-fixed: 1500; // v4a6-add
+$zindex-sticky: $zindex-fixed; // v4a6-add
+$zindex-menubar: 1400;// v4a6-remove
+$zindex-overlay: 1300;// v4a6-remove
+$zindex-dropdown: 1200;
+$zindex-navbar: 1200;
+$zindex-dropdown-backdrop: 1000;
+$zindex-header: 1100;
+$zindex-footer: 1000;
+$zindex-base: 1;
+$zindex-init: 0;
+$zindex-below: -1;
+$zindex-modal-background: $zindex-modal-bg;// for v3
+
+// Navs
+// ====
+// nav & nav-tab & nav-pills
+//
+$nav-item-margin: 2px !default; // .2rem
+$nav-item-inline-spacer: 1rem !default;
+
+// v4a & v4b add
+$nav-link-padding-y: pxtorem(10px);
+$nav-link-padding-x: pxtorem(20px);
+
+// rc--
+$nav-padding-vertical: $nav-link-padding-y !default;
+$nav-link-padding: $nav-link-padding-y $nav-link-padding-x !default;
+$nav-link-hover-bg: $bg-color-base !default;
+
+$nav-link-disabled-color: $gray-400;
+$nav-link-disabled-hover-color: $gray-400 !default;
+$nav-link-disabled-hover-bg: transparent !default;
+
+// rc--
+// $nav-open-link-hover-color            : #fff;
+
+// Tabs
+$nav-tabs-border-color: $divider-color-base;
+$nav-tabs-border-width: $border-width;
+$nav-tabs-border-radius: $border-radius;
+$nav-tabs-link-hover-border-color: transparent;
+$nav-tabs-link-border-width: $border-width;
+
+// rc-- start
+$nav-tabs-link-active-hover-bg: $brand-primary !default; // $body-bg,$brand-primary
+$nav-tabs-link-active-hover-color: $inverse !default; // $link-active-color
+$nav-tabs-link-active-hover-border-color: $border-color-base !default;
+// rc-- end
+
+$nav-tabs-link-active-color: $nav-tabs-link-active-hover-color;
+$nav-tabs-link-active-bg: $nav-tabs-link-active-hover-bg;
+$nav-tabs-link-active-border-color: $nav-tabs-link-active-hover-border-color;
+
+// Pills
+$nav-pills-border-radius: $border-radius;
+$nav-pills-link-active-color: $component-active-color; // liulin
+$nav-pills-link-active-bg: $brand-primary; // liulin
+
+// Divider
+$nav-divider-color: $gray-200;
+$nav-divider-margin-y: ($spacer / 2);
+
+// Navbar
+// ======
+//
+// Basics of a navbar
+$navbar-height: pxtorem(66px);
+$navbar-border-radius: $border-radius;
+$navbar-padding-x: ($grid-gutter-width / 2);
+$navbar-padding-y: (($navbar-height - pxtorem($line-height-computed)) / 2);
+
+$navbar-nav-link-padding-x:         .5rem;
+
+$navbar-brand-padding-y: 4px;
+$navbar-toggler-padding-x: .75rem;
+$navbar-toggler-padding-y: .25rem;
+$navbar-toggler-font-size: $font-size-lg;
+$navbar-toggler-border-radius: $btn-border-radius;
+
+$navbar-inverse-color: rgba($white, .5);
+$navbar-inverse-hover-color: rgba($white, .75);
+$navbar-inverse-active-color: rgba($white, 1);
+$navbar-inverse-disabled-color: rgba($white, .25);
+//v4b rename $navbar-dark-toggler-icon-bg : str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23");
+$navbar-inverse-toggler-bg: str-replace(url("data:image/svg+xml;charset=utf8, %3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-inverse-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E"), "#", "%23");
+$navbar-inverse-toggler-border: rgba($white, .1);// v4a6-newadd
+$navbar-inverse-toggler-border-color: $navbar-inverse-toggler-border;
+
+// $navbar-dark-color                  : rgba($white,.5);
+// $navbar-dark-hover-color            : rgba($white,.75);
+// $navbar-dark-active-color           : rgba($white,1);
+// $navbar-dark-disabled-color         : rgba($white,.25);
+// $navbar-dark-toggler-icon-bg        : str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23");
+// $navbar-dark-toggler-border-color   : rgba($white,.1);
+$navbar-light-color: rgba($black, .3);
+$navbar-light-hover-color: rgba($black, .6);
+$navbar-light-active-color: rgba($black, .8);
+$navbar-light-disabled-color: rgba($black, .15);
+$navbar-light-toggler-icon-bg: str-replace(url("data:image/svg+xml;charset=utf8, %3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23");
+// v4b rename $navbar-light-toggler-bg : str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E"), "#", "%23");
+$navbar-light-toggler-border: rgba($black, .1);// v4a6-newadd
+$navbar-light-toggler-border-color: $navbar-light-toggler-border;
+
+$navbar-collapse-max-height: pxtorem(340px);
+$navbar-brand-padding-horizontal: pxtorem(20px);
+$navbar-brand-logo-height: pxtorem(32px);
+
+$navbar-default-color: $text-color;
+$navbar-default-bg: $inverse;
+$navbar-default-border: $border-color-base;
+
+// Navbar links
+$navbar-default-link-color: $text-color;
+$navbar-default-link-hover-color: $gray-600;
+$navbar-default-link-hover-bg: rgba($gray-100, (30/100));
+$navbar-default-link-active-color: $navbar-default-link-hover-color;
+$navbar-default-link-active-bg: rgba($gray-100, (60/100));
+$navbar-default-link-disabled-color: $disabled-color-base;
+$navbar-default-link-disabled-bg: transparent;
+
+// Navbar brand label
+$navbar-default-brand-color: $title-color;
+$navbar-default-brand-hover-color: $navbar-default-brand-color;
+$navbar-default-brand-hover-bg: none;
+
+// Navbar toggle
+$navbar-default-toggle-hover-bg: $navbar-default-link-hover-bg;
+$navbar-default-toggle-icon-bar-bg: $navbar-default-color;
+$navbar-default-toggle-border-color: transparent;
+
+// Inverted navbar
+// Reset inverted navbar basics
+$navbar-inverse-color: $inverse;
+$navbar-inverse-bg: $brand-primary;
+$navbar-inverse-border: rgba($black, .1);
+
+// Inverted navbar links
+$navbar-inverse-link-color: $inverse;
+$navbar-inverse-link-hover-color: $inverse;
+$navbar-inverse-link-hover-bg: rgba($black, .1);
+$navbar-inverse-link-active-color: $navbar-inverse-link-hover-color;
+$navbar-inverse-link-active-bg: $navbar-inverse-link-hover-bg;
+$navbar-inverse-link-disabled-color: $inverse;// v4a6-remove
+$navbar-inverse-link-disabled-bg: transparent; // v4a6-remove
+
+// Inverted navbar brand label
+$navbar-inverse-brand-color: $navbar-inverse-link-color;
+$navbar-inverse-brand-hover-color: $inverse;
+$navbar-inverse-brand-hover-bg: none;
+
+// Inverted navbar toggle
+$navbar-inverse-toggle-hover-bg: $navbar-inverse-link-hover-bg;
+$navbar-inverse-toggle-icon-bar-bg: $inverse;
+$navbar-inverse-toggle-border-color: transparent;
+
+// Navbar Small
+$navbar-small-height: pxtorem(60px);
+$navbar-small-padding-vertical: (($navbar-small-height - pxtorem($line-height-computed)) / 2);
+
+// Pagination
+// ==========
+//
+$pagination-padding-x: pxtorem(15px);
+$pagination-padding-y: pxtorem(9px);
+$pagination-padding-x-sm: pxtorem(11px);
+$pagination-padding-y-sm: $padding-small-vertical;
+$pagination-padding-x-lg: pxtorem(17px);
+$pagination-padding-y-lg: $padding-large-vertical;
+
+$pagination-line-height: $line-height-base;
+$pagination-color: $text-color;
+$pagination-bg: transparent;
+$pagination-border-width: $border-width;
+$pagination-border-color: $border-color-base;
+$pagination-border: $pagination-border-color;
+
+$pagination-hover-color: $link-hover-color;
+$pagination-hover-bg: $bg-color-base;
+$pagination-hover-border: $border-color-base;// for v3
+$pagination-hover-border-color: $border-color-base;
+
+$pagination-focus-box-shadow: $input-btn-focus-box-shadow;
+$pagination-focus-outline: 0;
+
+$pagination-active-color: $inverse;
+$pagination-active-bg: $brand-primary;
+$pagination-active-border: $pagination-active-bg;// for v3
+$pagination-active-border-color: $pagination-active-bg;
+
+$pagination-disabled-color: $gray-300;
+$pagination-disabled-bg: transparent;
+$pagination-disabled-border: $border-color-base;// for v3
+$pagination-disabled-border-color: $border-color-base;
+
+// Jumbotron
+// =========
+//
+$jumbotron-padding: pxtorem(20px);
+$jumbotron-bg: $gray-200;
+
+// rc--
+$jumbotron-color: inherit;
+$jumbotron-heading-color: inherit;
+$jumbotron-font-size: ceil(($font-size-base * 1.5));
+$jumbotron-heading-font-size: ceil(($font-size-base * 4.5));
+
+// Form states and alerts
+// ======================
+// Define colors for form feedback states and, by default, alerts.
+// v4b removed
+
+// v3 && rc -- start
+$form-success-text: $brand-success; // $brand-success;
+$form-info-text: $brand-info; //$brand-info;
+$form-warning-text: $brand-warning; //$brand-warning;
+$form-danger-text: $brand-danger; //$brand-danger;
+$form-success-bg: $inverse;
+$form-info-bg: $inverse;
+$form-warning-bg: $inverse;
+$form-danger-bg: $inverse;
+// v3 && rc -- end
+
+// v4b removed --start
+$state-success-text: $inverse;
+$state-success-bg: $brand-success;
+$state-success-border: darken(adjust-hue($state-success-bg, -10), 5%);
+$state-success-border-color: $state-success-border;
+$state-info-text: $inverse;
+$state-info-bg: $brand-info; //$brand-info;
+$state-info-border: darken(adjust-hue($state-info-bg, -10), 7%);
+$state-info-border-color: $state-info-border;
+$state-warning-text: $inverse;
+$state-warning-bg: $brand-warning; //$brand-warning;
+$state-warning-border: darken(adjust-hue($state-warning-bg, -10), 3%);
+$state-warning-border-color: $state-warning-border;
+$state-danger-text: $inverse;
+$state-danger-bg: $brand-danger; //$brand-danger;
+$state-danger-border: darken(adjust-hue($state-danger-bg, -10), 3%);
+$state-danger-border-color: $state-danger-border;
+$state-dark-text: $inverse;
+$state-dark-bg: $brand-dark; //$brand-dark;
+$state-dark-border: darken(adjust-hue($state-dark-bg, -10), 3%);
+$state-dark-border-color: $state-dark-border;
+// v4b removed --end
+
+// Cards
+// =====
+//
+$card-spacer-x: pxtorem(20px);
+$card-spacer-y: pxtorem(12px);
+$card-border-width: 1px;
+$card-border-radius: $border-radius;
+$card-border-color: $border-color-base;
+// v4b rename next line $card-border-radius-inner= calc(#{$card-border-radius} - #{$card-border-width});
+$card-inner-border-radius: calc(#{$card-border-radius} - #{$card-border-width});
+$card-cap-bg: $gray-100;
+$card-bg: #fff;
+$card-link-hover-color: #fff; // rc --
+$card-img-overlay-padding: pxtorem(20px);//20px 1.25*16
+
+$card-group-margin: pxtorem(10px);//.625rem;
+$card-deck-margin: $card-group-margin;//.625rem;
+
+$card-columns-count: 3;
+$card-columns-gap: pxtorem(20px);//1.25rem;
+$card-columns-margin: $card-spacer-y;
+$card-columns-sm-up-column-gap: pxtorem(20px);//1.25rem; // v4a6-rename to $card-columns-gap
+
+// card spacer size
+$card-sm-spacer-x: pxtorem(15px);
+$card-sm-spacer-y: $card-spacer-y;
+$card-md-spacer-x: pxtorem(25px);
+$card-md-spacer-y: pxtorem(30px);
+$card-lg-spacer-x: pxtorem(30px);
+$card-lg-spacer-y: pxtorem(30px);
+
+// Tooltips
+// ========
+//
+$tooltip-font-size: $font-size-sm;
+$tooltip-max-width: 200px;
+$tooltip-color: $inverse;
+$tooltip-bg: rgba($black, .8);
+$tooltip-border-radius: $border-radius;
+$tooltip-opacity: .9;
+$tooltip-padding-y: 6px; // 3px
+$tooltip-padding-x: 12px; // 8px
+$tooltip-margin: 3px; // v4b chage value to 0;
+
+//** Tooltip arrow width
+$tooltip-arrow-width: 8px;
+$tooltip-arrow-height: 4px;
+//** Tooltip arrow color
+$tooltip-arrow-color: $tooltip-bg;
+
+// Popovers
+// ========
+//
+$popover-font-size: $font-size-sm;
+$popover-bg: $inverse;
+$popover-max-width: 276px;
+$popover-border-color: rgba($gray-300, (80/100));
+$popover-border-radius: $border-radius-lg;
+$popover-border-width: $border-width;
+
+//** Popover fallback border color
+$popover-fallback-border-color: $gray-200;
+
+$popover-header-bg: $bg-color-base;//darken($popover-bg, 3%);
+$popover-header-color: $headings-color;
+$popover-header-padding-y: 8px;
+$popover-header-padding-x: 14px;
+$popover-body-color: $body-color;
+$popover-body-padding-y: 20px;
+$popover-body-padding-x: 20px;
+
+//** Popover arrow
+$popover-arrow-width: 16px;
+$popover-arrow-height: 8px;
+$popover-arrow-color: $popover-bg;
+
+//** Popover outer arrow
+$popover-arrow-outer-width: ($popover-arrow-width + 1);
+// $popover-arrow-outer-color       : fade-in($popover-border-color, .05);
+$popover-arrow-outer-color: $popover-border-color;
+
+// v3 && rc--
+//** Popover outer arrow fallback color
+$popover-arrow-outer-fallback-color: darken($popover-fallback-border-color, 20%);
+$popover-box-shadow: 0 5px 10px rgba($black, .2);
+$popover-shadow: 0 2px 6px rgba($black, .05);
+
+// Badges
+// ====
+//
+// v4b removed && rc remain-- start
+$badge-default-bg: $brand-default;
+$badge-primary-bg: $brand-primary;
+$badge-success-bg: $brand-success;
+$badge-info-bg: $brand-info;
+$badge-warning-bg: $brand-warning;
+$badge-danger-bg: $brand-danger;
+// v4b removed && rc remain-- end
+$badge-color: #fff;
+// $badge-link-hover-color : #fff; // v4b removed
+$badge-font-size: 75%;
+$badge-font-weight: $font-weight-normal; // bold
+$badge-padding-x: .6em; // .4em
+$badge-padding-y: .25em;
+
+$badge-border-radius: $border-radius;//beta2 add
+
+$badge-pill-padding-x: .6em;
+// Use a higher than normal value to ensure completely rounded edges when
+// customizing padding or font-size on labels.
+$badge-pill-border-radius: 10rem;
+
+// Modals
+// ======
+//
+// Padding applied to the modal body
+$modal-inner-padding: 20px; // 15px
+$modal-dialog-margin: 10px;
+$modal-dialog-margin-y-sm-up: 30px;
+$modal-title-padding: 15px 20px;
+$modal-title-line-height: $line-height-base;
+$modal-content-bg: #fff;
+$modal-content-border-color: transparent;
+$modal-content-border-width: $border-width;
+$modal-content-border-radius: $border-radius-lg;
+$modal-content-box-shadow-xs: 0 2px 12px rgba($black, .2); // 0 3px 9px rgba($black,.5)
+$modal-content-box-shadow-sm-up: 0 2px 12px rgba($black, .2); // 0 5px 15px rgba($black,.5);
+
+//** Modal content border color **for IE8**
+$modal-content-fallback-border-color: #999;
+$modal-backdrop-bg: #000;
+$modal-backdrop-opacity: .5;
+$modal-header-border-color: $border-color-base;
+$modal-footer-border-color: $modal-header-border-color;
+$modal-header-border-width: $modal-content-border-width;
+$modal-footer-border-width: $modal-header-border-width;
+$modal-header-padding: 15px; //v4a6 newadd
+$modal-content-shadow: 0 2px 12px rgba($black, .2);
+$modal-lg: 900px; //v4a6 change to 800px;
+$modal-md: 600px; //v4a6 change to 500px;
+$modal-sm: 300px;
+$modal-transition: transform .3s ease-out; //v4a6 newadd
+
+// Alerts
+// ======
+// Define alert colors, border radius, and padding.
+//
+$alert-padding: 15px;
+$alert-padding-x: 20px;//1.25rem;
+$alert-padding-y: 12px;// .75rem;
+$alert-margin-bottom: $spacer; //// v4a6 newadd
+$alert-border-radius: $border-radius;
+$alert-link-font-weight: $font-weight-bold;
+$alert-border-width: $border-width;
+
+$alert-bg-level: -10;
+$alert-border-level: -9;
+$alert-color-level: 6;
+
+// v4b removed && rc remain-- start
+$alert-primary-bg: rgba($brand-primary-100, (80/100));
+$alert-primary-text: $brand-primary;
+$alert-primary-border: $brand-primary-100;
+$alert-primary-border-color: $alert-primary-border;
+$alert-success-bg: rgba($brand-success-100, (80/100));
+$alert-success-text: $brand-success;
+$alert-success-border: $brand-success-100;
+$alert-success-border-color: $alert-success-border;
+$alert-info-bg: rgba($brand-info-100, (80/100));
+$alert-info-text: $brand-info;
+$alert-info-border: $brand-info-100;
+$alert-info-border-color: $alert-info-border;
+$alert-warning-bg: rgba($brand-warning-100, (80/100));
+$alert-warning-text: $brand-warning;
+$alert-warning-border: $brand-warning-100;
+$alert-warning-border-color: $alert-warning-border;
+$alert-danger-bg: rgba($brand-danger-100, (80/100));
+$alert-danger-text: $brand-danger;
+$alert-danger-border: $brand-danger-100;
+$alert-danger-border-color: $alert-danger-border;
+// v4b removed && rc remain-- end
+
+// Progress bars (rc--)
+// =============
+//
+$progress-bg: $brand-default;
+$progress-bar-color: #fff;
+$progress-border-radius: $border-radius;
+$progress-box-shadow: inset 0 .1rem .1rem rgba($black, .1);
+$progress-bar-bg: $brand-primary;
+$progress-bar-success-bg: $brand-success;
+$progress-bar-warning-bg: $brand-warning;
+$progress-bar-danger-bg: $brand-danger;
+$progress-bar-info-bg: $brand-info;
+
+// v4a6 && v4b for rebulid progress bars
+// $progress-height:               1rem;
+// $progress-font-size:            .75rem;
+// $progress-bg:                   $gray-200;
+// $progress-border-radius:        $border-radius;
+// $progress-box-shadow:           inset 0 .1rem .1rem rgba($black,.1);
+// $progress-bar-color:            $white;
+// $progress-bar-bg:               $brand-primary;
+// $progress-bar-animation-timing: 1s linear infinite;
+// $progress-bar-transition:       width .6s ease;
+// v4a6 -end
+
+// List group
+// ==========
+//
+// $list-group-color              : $body-color;// v4a6 newadd // v4b removed
+$list-group-bg: #fff;
+$list-group-border-color: transparent;
+$list-group-border-width: $border-width;
+$list-group-border-radius: $border-radius;
+$list-group-item-padding-x: 1.25rem;
+$list-group-item-padding-y: .75rem;
+
+// for v3-
+$list-group-border: $list-group-border-color;
+$list-group-hover-bg: $bg-color-base;
+$list-group-active-color: $brand-primary;
+$list-group-active-bg: transparent;
+$list-group-active-border: $list-group-active-bg;// v3
+$list-group-active-border-color: $list-group-active-bg;// v4a && v4b
+$list-group-active-text-color: lighten($list-group-active-color, 40%);
+$list-group-disabled-color: $disabled-color-base;
+$list-group-disabled-bg: transparent;
+$list-group-disabled-text-color: $list-group-disabled-color;
+
+// v4a6
+// $list-group-link-color         : $text-color;
+// $list-group-link-hover-color   : $text-color;
+// $list-group-link-heading-color : $title-color;
+
+// $list-group-link-active-color  : $list-group-color;
+// $list-group-link-active-bg     : $gray-200;
+
+// v4b rename
+$list-group-action-color: $text-color;
+$list-group-action-hover-color: $text-color;
+$list-group-action-heading-color: $title-color;
+$list-group-action-active-color: $body-color;
+$list-group-action-active-bg: $gray-200;
+
+// $list-group-item-heading-margin-bottom: 5px; removed
+
+// Wells
+// =====
+//
+$well-bg: $gray-100;
+$well-border: $gray-200;
+
+// Image thumbnails
+// ================
+//
+$thumbnail-padding: .25rem;
+$thumbnail-bg: $body-bg;
+$thumbnail-border-width: $border-width;
+$thumbnail-border-color: #ddd;
+$thumbnail-border-radius: $border-radius;
+$thumbnail-box-shadow: 0 1px 2px rgba($black, .075);
+$thumbnail-transition: all .2s ease-in-out;
+
+// Figures
+$figure-caption-font-size: 90%;
+$figure-caption-color: $gray-300;//v4a6 newadd
+
+// Breadcrumbs
+// ===========
+//
+// v3 & rc --
+$breadcrumb-padding-vertical: pxtorem(8px);
+$breadcrumb-padding-horizontal: pxtorem(10px);
+$breadcrumb-padding-y: .75rem;
+$breadcrumb-padding-x: 1rem;
+$breadcrumb-item-padding: .5rem;
+
+$breadcrumb-margin-bottom: 1rem;//v4beta2 add
+
+//** Breadcrumb background color
+$breadcrumb-bg: transparent;
+$breadcrumb-divider-color: $gray-300;
+$breadcrumb-active-color: $text-color;
+$breadcrumb-divider: quote("/");
+$breadcrumb-border-radius: $border-radius;
+$breadcrumb-color: $link-color;
+// for v3
+$breadcrumb-separator: $breadcrumb-divider;
+
+// Media objects (a3 new add)
+// =============
+//
+$media-margin-top: 15px;
+$media-heading-margin-bottom: 5px;
+$media-alignment-padding-x: 20px; // 10px
+
+// Carousel
+// ========
+//
+$carousel-text-shadow: 0 1px 2px rgba($black, .6);
+$carousel-control-color: #fff;
+$carousel-control-width: 15%;
+$carousel-control-opacity: 0;
+$carousel-control-sm-up-size: 30px;
+$carousel-control-font-size: 16px;
+$carousel-indicator-size: 10px;
+$carousel-indicator-active-size: 12px;
+$carousel-indicator-border-color: #fff;
+$carousel-indicator-width: 10px;
+$carousel-indicator-height: 10px;
+$carousel-indicator-spacer: 3px;
+$carousel-indicator-active-bg: #fff;
+$carousel-caption-width: 70%;
+$carousel-caption-color: #fff;
+$carousel-caption-sm-up-width: 60%;
+
+// v4a6 rename it to control-icon-width,as follow;
+$carousel-icon-width: 20px;
+$carousel-control-icon-width: 20px;
+$carousel-control-prev-icon-bg: str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='#{$carousel-control-color}' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E"), "#", "%23") !default;
+$carousel-control-next-icon-bg: str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='#{$carousel-control-color}' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E"), "#", "%23") !default;
+$carousel-transition: transform .6s ease-in-out;
+
+// Close
+// =====
+//
+$close-font-size: $font-size-root * 1.5; //v4a6-newadd
+$close-font-weight: $font-weight-bold;
+$close-color: #000;
+$close-text-shadow: none;
+
+// Code
+// ====
+//
+$code-font-size: 90%;
+$code-padding-x: .3rem;
+$code-padding-y: .15rem;
+$code-color: mix($color-primary-800, $text-color, 50%);
+$code-bg: rgba($color-primary-100, (10/100));
+$code-border-color: $color-primary-300;
+
+$kbd-font-size: $code-font-size;
+$kbd-padding-y: .2rem;
+$kbd-padding-x: .4rem;
+$kbd-color: $inverse;
+$kbd-bg: $brand-primary;
+
+$pre-bg: $inverse;
+$pre-color: inherit;
+$pre-border-color: mix($brand-primary, $inverse, 12%);
+$pre-scrollable-max-height: 340px;
+
+// Shadow(rc)
+// ==========
+//
+// shadow-1
+$shadow-1-top: 0 0 1px rgba($black, .2);
+$shadow-1-bottom: 0 1px 2px rgba($black, .22);
+// shadow-2
+$shadow-2-top: 0 0 2px rgba($black, .18);
+$shadow-2-bottom: 0 2px 4px rgba($black, .21);
+// shadow-3
+$shadow-3-top: 0 0 3px rgba($black, .15);
+$shadow-3-bottom: 0 3px 6px rgba($black, .2);
+// shadow-4
+$shadow-4-top: 0 0 5px rgba($black, .12);
+$shadow-4-bottom: 0 5px 8px rgba($black, .18);
+// shadow-5
+$shadow-5-top: 0 0 6px rgba($black, .1);
+$shadow-5-bottom: 0 6px 10px rgba($black, .15);
+
+// avatar
+// ======
+//
+$avatar-size: 40px;
+$avatar-status-size: 10px;
+$avatar-size-sm: 30px;
+$avatar-status-size-sm: 8px;
+$avatar-size-lg: 50px;
+$avatar-status-size-lg: 12px;
+$avatar-size-xs: 20px;
+$avatar-status-size-xs: 7px;
+
+// Printing
+// ========
+//
+$print-page-size:                   a3;
+$print-body-min-width:              map-get($grid-breakpoints, "lg");

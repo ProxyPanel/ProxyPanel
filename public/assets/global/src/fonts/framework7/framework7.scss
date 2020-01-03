@@ -1,0 +1,18 @@
+/**
+ * Framework7 Icons, 0.8.9
+ * Created by [object Object]
+ * http://framework7.io/icons/
+ * MIT License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$f7-css-prefix}-"],
+[class*=" #{$f7-css-prefix}-"] {
+  font-family: '#{$f7-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

@@ -1,0 +1,162 @@
+// Width and Height
+// ========================================================================
+
+// variable
+// -----------------------
+// $as_sizes: 20, 30, 40, 50, 60, 80, 100, 120, 150, 160, 200, 250, 300, 350, 400, 450, 500 !default;
+// $as_percentages: (
+//   p5: 5%,
+//   p10: 10%,
+//   p15: 15%,
+//   p20: 20%,
+//   p30: 30%,
+//   p50: 50%,
+//   p75: 75%,
+//   p100: 100%
+// );
+// $grid-sizes: 'xs', 'sm', 'md', 'lg', 'xl' !default;
+// $width-grid-pc: 'xs', 'sm', 'md' !default;
+
+// @each $prop, $abbrev in (width: w, height: h) {
+//   // it's for all width
+//   @each $size in $as_sizes {
+//     .#{$abbrev}-#{$size} {
+//       #{$prop}: $size * 1px !important;
+//     }
+//   }
+
+//   @each $p_size, $p_length in $as_percentages {
+//     .#{$abbrev}-#{$p_size} { #{$prop}: $p_length !important; }
+//   }
+
+//   // it's for grid-area
+//   @each $grid-size in $grid-sizes {
+//     @include media-breakpoint-only($grid-size) {
+//       @each $size in $as_sizes {
+//         .#{$abbrev}-#{$grid-size}-#{$size} {
+//           #{$prop}: $size * 1px !important;
+//         }
+//       }
+
+//       @each $p_size, $p_length in $as_percentages {
+//         .#{$abbrev}-#{$grid-size}-#{$p_size} { #{$prop}: $p_length !important; }
+//       }
+
+//       // it's for pc-full
+//       @if $prop == 'width' {
+//         @if index($width-grid-pc, $grid-size) {
+//           .w-#{$grid-size}-100pc {
+//             width: 100% !important;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// variable
+// -----------------------
+$as_sizes: 20, 30, 40, 50, 60, 80, 100, 120, 150, 160, 200, 250, 300, 350, 400, 450, 500 !default;
+$as_percentages: (
+  p5: 5%,
+  p10: 10%,
+  p15: 15%,
+  p20: 20%,
+  p25: 25%,
+  p30: 30%,
+  p33: 33.3333%,
+  p50: 50%,
+  p75: 75%,
+  p100: 100%
+);
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    @each $prop, $abbrev in (width: w, height: h) {
+      @each $length in $as_sizes {
+        $value: if($length != 0, $length * 1px, 0);
+
+        .#{$abbrev}#{$infix}-#{$length} {
+          #{$prop}: $value !important;
+        }
+      }
+
+      @each $p_size, $p_length in $as_percentages {
+        .#{$abbrev}#{$infix}-#{$p_size} {
+          #{$prop}: $p_length !important;
+        }
+      }
+    }
+
+    // Some special w/h utils
+    .w#{$infix}-auto {
+      width: auto !important;
+    }
+
+    .h#{$infix}-auto {
+      height: auto !important;
+    }
+
+    .w#{$infix}-full {
+      width: 100% !important;
+    }
+
+    .h#{$infix}-full {
+      height: 100% !important;
+    }
+    // .mw#{$infix}-full {max-width:    100% !important;}
+    // .mh#{$infix}-full {max-height:    100% !important;}
+  }
+  @include media-breakpoint-only($breakpoint) {
+    @each $prop, $abbrev in (width: w, height: h) {
+      @each $length in $as_sizes {
+        $value: if($length != 0, $length * 1px, 0);
+
+        .#{$abbrev}-only-#{$breakpoint}-#{$length} {
+          #{$prop}: $value !important;
+        }
+      }
+
+      @each $p_size, $p_length in $as_percentages {
+        .#{$abbrev}-only-#{$breakpoint}-#{$p_size} {
+          #{$prop}: $p_length !important;
+        }
+      }
+    }
+
+    // Some special w/h utils
+    .w-only-#{$breakpoint}-auto {
+      width: auto !important;
+    }
+
+    .h-only-#{$breakpoint}-auto {
+      height: auto !important;
+    }
+
+    .w-only-#{$breakpoint}-full {
+      width: 100% !important;
+    }
+
+    .h-only-#{$breakpoint}-full {
+      height: 100% !important;
+    }
+  }
+}
+
+// .h-full {
+//   height: 100% !important;
+// }
+
+// .w-full {
+//   width: 100% !important;
+// }
+
+.mw-100 {
+  max-width: 100% !important;
+}
+
+.mh-100 {
+  max-height: 100% !important;
+}

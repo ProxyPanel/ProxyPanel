@@ -1,0 +1,770 @@
+// Icons
+// -------------------------
+.#{$f7-css-prefix}-add:before {
+	content: $f7-var-add;
+}
+.#{$f7-css-prefix}-add_round:before {
+	content: $f7-var-add_round;
+}
+.#{$f7-css-prefix}-add_round_fill:before {
+	content: $f7-var-add_round_fill;
+}
+.#{$f7-css-prefix}-alarm:before {
+	content: $f7-var-alarm;
+}
+.#{$f7-css-prefix}-alarm_fill:before {
+	content: $f7-var-alarm_fill;
+}
+.#{$f7-css-prefix}-albums:before {
+	content: $f7-var-albums;
+}
+.#{$f7-css-prefix}-albums_fill:before {
+	content: $f7-var-albums_fill;
+}
+.#{$f7-css-prefix}-arrow_down:before {
+	content: $f7-var-arrow_down;
+}
+.#{$f7-css-prefix}-arrow_down_fill:before {
+	content: $f7-var-arrow_down_fill;
+}
+.#{$f7-css-prefix}-arrow_left:before {
+	content: $f7-var-arrow_left;
+}
+.#{$f7-css-prefix}-arrow_left_fill:before {
+	content: $f7-var-arrow_left_fill;
+}
+.#{$f7-css-prefix}-arrow_right:before {
+	content: $f7-var-arrow_right;
+}
+.#{$f7-css-prefix}-arrow_right_fill:before {
+	content: $f7-var-arrow_right_fill;
+}
+.#{$f7-css-prefix}-arrow_up:before {
+	content: $f7-var-arrow_up;
+}
+.#{$f7-css-prefix}-arrow_up_fill:before {
+	content: $f7-var-arrow_up_fill;
+}
+.#{$f7-css-prefix}-at:before {
+	content: $f7-var-at;
+}
+.#{$f7-css-prefix}-at_fill:before {
+	content: $f7-var-at_fill;
+}
+.#{$f7-css-prefix}-bag:before {
+	content: $f7-var-bag;
+}
+.#{$f7-css-prefix}-bag_fill:before {
+	content: $f7-var-bag_fill;
+}
+.#{$f7-css-prefix}-bars:before {
+	content: $f7-var-bars;
+}
+.#{$f7-css-prefix}-bell:before {
+	content: $f7-var-bell;
+}
+.#{$f7-css-prefix}-bell_fill:before {
+	content: $f7-var-bell_fill;
+}
+.#{$f7-css-prefix}-bolt:before {
+	content: $f7-var-bolt;
+}
+.#{$f7-css-prefix}-bolt_fill:before {
+	content: $f7-var-bolt_fill;
+}
+.#{$f7-css-prefix}-bolt_round:before {
+	content: $f7-var-bolt_round;
+}
+.#{$f7-css-prefix}-bolt_round_fill:before {
+	content: $f7-var-bolt_round_fill;
+}
+.#{$f7-css-prefix}-book:before {
+	content: $f7-var-book;
+}
+.#{$f7-css-prefix}-book_fill:before {
+	content: $f7-var-book_fill;
+}
+.#{$f7-css-prefix}-bookmark:before {
+	content: $f7-var-bookmark;
+}
+.#{$f7-css-prefix}-bookmark_fill:before {
+	content: $f7-var-bookmark_fill;
+}
+.#{$f7-css-prefix}-box:before {
+	content: $f7-var-box;
+}
+.#{$f7-css-prefix}-box_fill:before {
+	content: $f7-var-box_fill;
+}
+.#{$f7-css-prefix}-briefcase:before {
+	content: $f7-var-briefcase;
+}
+.#{$f7-css-prefix}-briefcase_fill:before {
+	content: $f7-var-briefcase_fill;
+}
+.#{$f7-css-prefix}-calendar:before {
+	content: $f7-var-calendar;
+}
+.#{$f7-css-prefix}-calendar_fill:before {
+	content: $f7-var-calendar_fill;
+}
+.#{$f7-css-prefix}-camera:before {
+	content: $f7-var-camera;
+}
+.#{$f7-css-prefix}-camera_fill:before {
+	content: $f7-var-camera_fill;
+}
+.#{$f7-css-prefix}-card:before {
+	content: $f7-var-card;
+}
+.#{$f7-css-prefix}-card_fill:before {
+	content: $f7-var-card_fill;
+}
+.#{$f7-css-prefix}-chat:before {
+	content: $f7-var-chat;
+}
+.#{$f7-css-prefix}-chat_fill:before {
+	content: $f7-var-chat_fill;
+}
+.#{$f7-css-prefix}-chats:before {
+	content: $f7-var-chats;
+}
+.#{$f7-css-prefix}-chats_fill:before {
+	content: $f7-var-chats_fill;
+}
+.#{$f7-css-prefix}-check:before {
+	content: $f7-var-check;
+}
+.#{$f7-css-prefix}-check_round:before {
+	content: $f7-var-check_round;
+}
+.#{$f7-css-prefix}-check_round_fill:before {
+	content: $f7-var-check_round_fill;
+}
+.#{$f7-css-prefix}-chevron_down:before {
+	content: $f7-var-chevron_down;
+}
+.#{$f7-css-prefix}-chevron_left:before {
+	content: $f7-var-chevron_left;
+}
+.#{$f7-css-prefix}-chevron_right:before {
+	content: $f7-var-chevron_right;
+}
+.#{$f7-css-prefix}-chevron_up:before {
+	content: $f7-var-chevron_up;
+}
+.#{$f7-css-prefix}-circle:before {
+	content: $f7-var-circle;
+}
+.#{$f7-css-prefix}-circle_fill:before {
+	content: $f7-var-circle_fill;
+}
+.#{$f7-css-prefix}-circle_half:before {
+	content: $f7-var-circle_half;
+}
+.#{$f7-css-prefix}-close:before {
+	content: $f7-var-close;
+}
+.#{$f7-css-prefix}-close_round:before {
+	content: $f7-var-close_round;
+}
+.#{$f7-css-prefix}-close_round_fill:before {
+	content: $f7-var-close_round_fill;
+}
+.#{$f7-css-prefix}-cloud:before {
+	content: $f7-var-cloud;
+}
+.#{$f7-css-prefix}-cloud_download:before {
+	content: $f7-var-cloud_download;
+}
+.#{$f7-css-prefix}-cloud_download_fill:before {
+	content: $f7-var-cloud_download_fill;
+}
+.#{$f7-css-prefix}-cloud_fill:before {
+	content: $f7-var-cloud_fill;
+}
+.#{$f7-css-prefix}-cloud_upload:before {
+	content: $f7-var-cloud_upload;
+}
+.#{$f7-css-prefix}-cloud_upload_fill:before {
+	content: $f7-var-cloud_upload_fill;
+}
+.#{$f7-css-prefix}-collection:before {
+	content: $f7-var-collection;
+}
+.#{$f7-css-prefix}-collection_fill:before {
+	content: $f7-var-collection_fill;
+}
+.#{$f7-css-prefix}-compass:before {
+	content: $f7-var-compass;
+}
+.#{$f7-css-prefix}-compass_fill:before {
+	content: $f7-var-compass_fill;
+}
+.#{$f7-css-prefix}-compose:before {
+	content: $f7-var-compose;
+}
+.#{$f7-css-prefix}-compose_fill:before {
+	content: $f7-var-compose_fill;
+}
+.#{$f7-css-prefix}-data:before {
+	content: $f7-var-data;
+}
+.#{$f7-css-prefix}-data_fill:before {
+	content: $f7-var-data_fill;
+}
+.#{$f7-css-prefix}-delete:before {
+	content: $f7-var-delete;
+}
+.#{$f7-css-prefix}-delete_round:before {
+	content: $f7-var-delete_round;
+}
+.#{$f7-css-prefix}-delete_round_fill:before {
+	content: $f7-var-delete_round_fill;
+}
+.#{$f7-css-prefix}-document:before {
+	content: $f7-var-document;
+}
+.#{$f7-css-prefix}-document_fill:before {
+	content: $f7-var-document_fill;
+}
+.#{$f7-css-prefix}-document_text:before {
+	content: $f7-var-document_text;
+}
+.#{$f7-css-prefix}-document_text_fill:before {
+	content: $f7-var-document_text_fill;
+}
+.#{$f7-css-prefix}-down:before {
+	content: $f7-var-down;
+}
+.#{$f7-css-prefix}-download:before {
+	content: $f7-var-download;
+}
+.#{$f7-css-prefix}-download_fill:before {
+	content: $f7-var-download_fill;
+}
+.#{$f7-css-prefix}-download_round:before {
+	content: $f7-var-download_round;
+}
+.#{$f7-css-prefix}-download_round_fill:before {
+	content: $f7-var-download_round_fill;
+}
+.#{$f7-css-prefix}-drawer:before {
+	content: $f7-var-drawer;
+}
+.#{$f7-css-prefix}-drawer_fill:before {
+	content: $f7-var-drawer_fill;
+}
+.#{$f7-css-prefix}-drawers:before {
+	content: $f7-var-drawers;
+}
+.#{$f7-css-prefix}-drawers_fill:before {
+	content: $f7-var-drawers_fill;
+}
+.#{$f7-css-prefix}-email:before {
+	content: $f7-var-email;
+}
+.#{$f7-css-prefix}-email_fill:before {
+	content: $f7-var-email_fill;
+}
+.#{$f7-css-prefix}-eye:before {
+	content: $f7-var-eye;
+}
+.#{$f7-css-prefix}-eye_fill:before {
+	content: $f7-var-eye_fill;
+}
+.#{$f7-css-prefix}-fastforward:before {
+	content: $f7-var-fastforward;
+}
+.#{$f7-css-prefix}-fastforward_fill:before {
+	content: $f7-var-fastforward_fill;
+}
+.#{$f7-css-prefix}-fastforward_round:before {
+	content: $f7-var-fastforward_round;
+}
+.#{$f7-css-prefix}-fastforward_round_fill:before {
+	content: $f7-var-fastforward_round_fill;
+}
+.#{$f7-css-prefix}-favorites:before {
+	content: $f7-var-favorites;
+}
+.#{$f7-css-prefix}-favorites_fill:before {
+	content: $f7-var-favorites_fill;
+}
+.#{$f7-css-prefix}-film:before {
+	content: $f7-var-film;
+}
+.#{$f7-css-prefix}-film_fill:before {
+	content: $f7-var-film_fill;
+}
+.#{$f7-css-prefix}-filter:before {
+	content: $f7-var-filter;
+}
+.#{$f7-css-prefix}-filter-fill:before {
+	content: $f7-var-filter-fill;
+}
+.#{$f7-css-prefix}-flag:before {
+	content: $f7-var-flag;
+}
+.#{$f7-css-prefix}-flag_fill:before {
+	content: $f7-var-flag_fill;
+}
+.#{$f7-css-prefix}-folder:before {
+	content: $f7-var-folder;
+}
+.#{$f7-css-prefix}-folder_fill:before {
+	content: $f7-var-folder_fill;
+}
+.#{$f7-css-prefix}-forward:before {
+	content: $f7-var-forward;
+}
+.#{$f7-css-prefix}-forward_fill:before {
+	content: $f7-var-forward_fill;
+}
+.#{$f7-css-prefix}-gear:before {
+	content: $f7-var-gear;
+}
+.#{$f7-css-prefix}-gear_fill:before {
+	content: $f7-var-gear_fill;
+}
+.#{$f7-css-prefix}-graph_round:before {
+	content: $f7-var-graph_round;
+}
+.#{$f7-css-prefix}-graph_round_fill:before {
+	content: $f7-var-graph_round_fill;
+}
+.#{$f7-css-prefix}-graph_square:before {
+	content: $f7-var-graph_square;
+}
+.#{$f7-css-prefix}-graph_square_fill:before {
+	content: $f7-var-graph_square_fill;
+}
+.#{$f7-css-prefix}-heart:before {
+	content: $f7-var-heart;
+}
+.#{$f7-css-prefix}-heart_fill:before {
+	content: $f7-var-heart_fill;
+}
+.#{$f7-css-prefix}-help:before {
+	content: $f7-var-help;
+}
+.#{$f7-css-prefix}-help_fill:before {
+	content: $f7-var-help_fill;
+}
+.#{$f7-css-prefix}-home:before {
+	content: $f7-var-home;
+}
+.#{$f7-css-prefix}-home_fill:before {
+	content: $f7-var-home_fill;
+}
+.#{$f7-css-prefix}-images:before {
+	content: $f7-var-images;
+}
+.#{$f7-css-prefix}-images_fill:before {
+	content: $f7-var-images_fill;
+}
+.#{$f7-css-prefix}-info:before {
+	content: $f7-var-info;
+}
+.#{$f7-css-prefix}-info_fill:before {
+	content: $f7-var-info_fill;
+}
+.#{$f7-css-prefix}-keyboard:before {
+	content: $f7-var-keyboard;
+}
+.#{$f7-css-prefix}-keyboard_fill:before {
+	content: $f7-var-keyboard_fill;
+}
+.#{$f7-css-prefix}-layers:before {
+	content: $f7-var-layers;
+}
+.#{$f7-css-prefix}-layers_fill:before {
+	content: $f7-var-layers_fill;
+}
+.#{$f7-css-prefix}-left:before {
+	content: $f7-var-left;
+}
+.#{$f7-css-prefix}-list:before {
+	content: $f7-var-list;
+}
+.#{$f7-css-prefix}-list_fill:before {
+	content: $f7-var-list_fill;
+}
+.#{$f7-css-prefix}-lock:before {
+	content: $f7-var-lock;
+}
+.#{$f7-css-prefix}-lock_fill:before {
+	content: $f7-var-lock_fill;
+}
+.#{$f7-css-prefix}-login:before {
+	content: $f7-var-login;
+}
+.#{$f7-css-prefix}-login_fill:before {
+	content: $f7-var-login_fill;
+}
+.#{$f7-css-prefix}-logout:before {
+	content: $f7-var-logout;
+}
+.#{$f7-css-prefix}-logout_fill:before {
+	content: $f7-var-logout_fill;
+}
+.#{$f7-css-prefix}-menu:before {
+	content: $f7-var-menu;
+}
+.#{$f7-css-prefix}-mic:before {
+	content: $f7-var-mic;
+}
+.#{$f7-css-prefix}-mic_fill:before {
+	content: $f7-var-mic_fill;
+}
+.#{$f7-css-prefix}-money_dollar:before {
+	content: $f7-var-money_dollar;
+}
+.#{$f7-css-prefix}-money_dollar_fill:before {
+	content: $f7-var-money_dollar_fill;
+}
+.#{$f7-css-prefix}-money_euro:before {
+	content: $f7-var-money_euro;
+}
+.#{$f7-css-prefix}-money_euro_fill:before {
+	content: $f7-var-money_euro_fill;
+}
+.#{$f7-css-prefix}-money_pound:before {
+	content: $f7-var-money_pound;
+}
+.#{$f7-css-prefix}-money_pound_fill:before {
+	content: $f7-var-money_pound_fill;
+}
+.#{$f7-css-prefix}-money_rubl:before {
+	content: $f7-var-money_rubl;
+}
+.#{$f7-css-prefix}-money_rubl_fill:before {
+	content: $f7-var-money_rubl_fill;
+}
+.#{$f7-css-prefix}-money_yen:before {
+	content: $f7-var-money_yen;
+}
+.#{$f7-css-prefix}-money_yen_fill:before {
+	content: $f7-var-money_yen_fill;
+}
+.#{$f7-css-prefix}-more:before {
+	content: $f7-var-more;
+}
+.#{$f7-css-prefix}-more_round:before {
+	content: $f7-var-more_round;
+}
+.#{$f7-css-prefix}-more_round_fill:before {
+	content: $f7-var-more_round_fill;
+}
+.#{$f7-css-prefix}-more_vertical:before {
+	content: $f7-var-more_vertical;
+}
+.#{$f7-css-prefix}-more_vertical_round:before {
+	content: $f7-var-more_vertical_round;
+}
+.#{$f7-css-prefix}-more_vertical_round_fill:before {
+	content: $f7-var-more_vertical_round_fill;
+}
+.#{$f7-css-prefix}-navigation:before {
+	content: $f7-var-navigation;
+}
+.#{$f7-css-prefix}-navigation_fill:before {
+	content: $f7-var-navigation_fill;
+}
+.#{$f7-css-prefix}-paper_plane:before {
+	content: $f7-var-paper_plane;
+}
+.#{$f7-css-prefix}-paper_plane_fill:before {
+	content: $f7-var-paper_plane_fill;
+}
+.#{$f7-css-prefix}-pause:before {
+	content: $f7-var-pause;
+}
+.#{$f7-css-prefix}-pause_fill:before {
+	content: $f7-var-pause_fill;
+}
+.#{$f7-css-prefix}-pause_round:before {
+	content: $f7-var-pause_round;
+}
+.#{$f7-css-prefix}-pause_round_fill:before {
+	content: $f7-var-pause_round_fill;
+}
+.#{$f7-css-prefix}-person:before {
+	content: $f7-var-person;
+}
+.#{$f7-css-prefix}-person_fill:before {
+	content: $f7-var-person_fill;
+}
+.#{$f7-css-prefix}-persons:before {
+	content: $f7-var-persons;
+}
+.#{$f7-css-prefix}-persons_fill:before {
+	content: $f7-var-persons_fill;
+}
+.#{$f7-css-prefix}-phone:before {
+	content: $f7-var-phone;
+}
+.#{$f7-css-prefix}-phone_fill:before {
+	content: $f7-var-phone_fill;
+}
+.#{$f7-css-prefix}-phone_round:before {
+	content: $f7-var-phone_round;
+}
+.#{$f7-css-prefix}-phone_round_fill:before {
+	content: $f7-var-phone_round_fill;
+}
+.#{$f7-css-prefix}-photos:before {
+	content: $f7-var-photos;
+}
+.#{$f7-css-prefix}-photos_fill:before {
+	content: $f7-var-photos_fill;
+}
+.#{$f7-css-prefix}-pie:before {
+	content: $f7-var-pie;
+}
+.#{$f7-css-prefix}-pie_fill:before {
+	content: $f7-var-pie_fill;
+}
+.#{$f7-css-prefix}-play:before {
+	content: $f7-var-play;
+}
+.#{$f7-css-prefix}-play_fill:before {
+	content: $f7-var-play_fill;
+}
+.#{$f7-css-prefix}-play_round:before {
+	content: $f7-var-play_round;
+}
+.#{$f7-css-prefix}-play_round_fill:before {
+	content: $f7-var-play_round_fill;
+}
+.#{$f7-css-prefix}-radio:before {
+	content: $f7-var-radio;
+}
+.#{$f7-css-prefix}-redo:before {
+	content: $f7-var-redo;
+}
+.#{$f7-css-prefix}-refresh:before {
+	content: $f7-var-refresh;
+}
+.#{$f7-css-prefix}-refresh_round:before {
+	content: $f7-var-refresh_round;
+}
+.#{$f7-css-prefix}-refresh_round_fill:before {
+	content: $f7-var-refresh_round_fill;
+}
+.#{$f7-css-prefix}-reload:before {
+	content: $f7-var-reload;
+}
+.#{$f7-css-prefix}-reload_round:before {
+	content: $f7-var-reload_round;
+}
+.#{$f7-css-prefix}-reload_round_fill:before {
+	content: $f7-var-reload_round_fill;
+}
+.#{$f7-css-prefix}-reply:before {
+	content: $f7-var-reply;
+}
+.#{$f7-css-prefix}-reply_fill:before {
+	content: $f7-var-reply_fill;
+}
+.#{$f7-css-prefix}-rewind:before {
+	content: $f7-var-rewind;
+}
+.#{$f7-css-prefix}-rewind_fill:before {
+	content: $f7-var-rewind_fill;
+}
+.#{$f7-css-prefix}-rewind_round:before {
+	content: $f7-var-rewind_round;
+}
+.#{$f7-css-prefix}-rewind_round_fill:before {
+	content: $f7-var-rewind_round_fill;
+}
+.#{$f7-css-prefix}-right:before {
+	content: $f7-var-right;
+}
+.#{$f7-css-prefix}-search:before {
+	content: $f7-var-search;
+}
+.#{$f7-css-prefix}-search_strong:before {
+	content: $f7-var-search_strong;
+}
+.#{$f7-css-prefix}-settings:before {
+	content: $f7-var-settings;
+}
+.#{$f7-css-prefix}-settings_fill:before {
+	content: $f7-var-settings_fill;
+}
+.#{$f7-css-prefix}-share:before {
+	content: $f7-var-share;
+}
+.#{$f7-css-prefix}-share_fill:before {
+	content: $f7-var-share_fill;
+}
+.#{$f7-css-prefix}-social_facebook:before {
+	content: $f7-var-social_facebook;
+}
+.#{$f7-css-prefix}-social_facebook_fill:before {
+	content: $f7-var-social_facebook_fill;
+}
+.#{$f7-css-prefix}-social_github:before {
+	content: $f7-var-social_github;
+}
+.#{$f7-css-prefix}-social_github_fill:before {
+	content: $f7-var-social_github_fill;
+}
+.#{$f7-css-prefix}-social_googleplus:before {
+	content: $f7-var-social_googleplus;
+}
+.#{$f7-css-prefix}-social_instagram:before {
+	content: $f7-var-social_instagram;
+}
+.#{$f7-css-prefix}-social_instagram_fill:before {
+	content: $f7-var-social_instagram_fill;
+}
+.#{$f7-css-prefix}-social_linkedin:before {
+	content: $f7-var-social_linkedin;
+}
+.#{$f7-css-prefix}-social_linkedin_fill:before {
+	content: $f7-var-social_linkedin_fill;
+}
+.#{$f7-css-prefix}-social_rss:before {
+	content: $f7-var-social_rss;
+}
+.#{$f7-css-prefix}-social_rss_fill:before {
+	content: $f7-var-social_rss_fill;
+}
+.#{$f7-css-prefix}-social_twitter:before {
+	content: $f7-var-social_twitter;
+}
+.#{$f7-css-prefix}-social_twitter_fill:before {
+	content: $f7-var-social_twitter_fill;
+}
+.#{$f7-css-prefix}-sort:before {
+	content: $f7-var-sort;
+}
+.#{$f7-css-prefix}-sort_fill:before {
+	content: $f7-var-sort_fill;
+}
+.#{$f7-css-prefix}-star:before {
+	content: $f7-var-star;
+}
+.#{$f7-css-prefix}-star_fill:before {
+	content: $f7-var-star_fill;
+}
+.#{$f7-css-prefix}-star_half:before {
+	content: $f7-var-star_half;
+}
+.#{$f7-css-prefix}-stopwatch:before {
+	content: $f7-var-stopwatch;
+}
+.#{$f7-css-prefix}-stopwatch_fill:before {
+	content: $f7-var-stopwatch_fill;
+}
+.#{$f7-css-prefix}-tabs:before {
+	content: $f7-var-tabs;
+}
+.#{$f7-css-prefix}-tabs_fill:before {
+	content: $f7-var-tabs_fill;
+}
+.#{$f7-css-prefix}-tags:before {
+	content: $f7-var-tags;
+}
+.#{$f7-css-prefix}-tags_fill:before {
+	content: $f7-var-tags_fill;
+}
+.#{$f7-css-prefix}-tape:before {
+	content: $f7-var-tape;
+}
+.#{$f7-css-prefix}-tape_fill:before {
+	content: $f7-var-tape_fill;
+}
+.#{$f7-css-prefix}-ticket:before {
+	content: $f7-var-ticket;
+}
+.#{$f7-css-prefix}-ticket_fill:before {
+	content: $f7-var-ticket_fill;
+}
+.#{$f7-css-prefix}-time:before {
+	content: $f7-var-time;
+}
+.#{$f7-css-prefix}-time_fill:before {
+	content: $f7-var-time_fill;
+}
+.#{$f7-css-prefix}-timer:before {
+	content: $f7-var-timer;
+}
+.#{$f7-css-prefix}-timer_fill:before {
+	content: $f7-var-timer_fill;
+}
+.#{$f7-css-prefix}-today:before {
+	content: $f7-var-today;
+}
+.#{$f7-css-prefix}-today_fill:before {
+	content: $f7-var-today_fill;
+}
+.#{$f7-css-prefix}-trash:before {
+	content: $f7-var-trash;
+}
+.#{$f7-css-prefix}-trash_fill:before {
+	content: $f7-var-trash_fill;
+}
+.#{$f7-css-prefix}-tune:before {
+	content: $f7-var-tune;
+}
+.#{$f7-css-prefix}-tune_fill:before {
+	content: $f7-var-tune_fill;
+}
+.#{$f7-css-prefix}-undo:before {
+	content: $f7-var-undo;
+}
+.#{$f7-css-prefix}-unlock:before {
+	content: $f7-var-unlock;
+}
+.#{$f7-css-prefix}-unlock_fill:before {
+	content: $f7-var-unlock_fill;
+}
+.#{$f7-css-prefix}-up:before {
+	content: $f7-var-up;
+}
+.#{$f7-css-prefix}-videocam:before {
+	content: $f7-var-videocam;
+}
+.#{$f7-css-prefix}-videocam_fill:before {
+	content: $f7-var-videocam_fill;
+}
+.#{$f7-css-prefix}-videocam_round:before {
+	content: $f7-var-videocam_round;
+}
+.#{$f7-css-prefix}-videocam_round_fill:before {
+	content: $f7-var-videocam_round_fill;
+}
+.#{$f7-css-prefix}-volume:before {
+	content: $f7-var-volume;
+}
+.#{$f7-css-prefix}-volume_fill:before {
+	content: $f7-var-volume_fill;
+}
+.#{$f7-css-prefix}-volume_low:before {
+	content: $f7-var-volume_low;
+}
+.#{$f7-css-prefix}-volume_low_fill:before {
+	content: $f7-var-volume_low_fill;
+}
+.#{$f7-css-prefix}-volume_mute:before {
+	content: $f7-var-volume_mute;
+}
+.#{$f7-css-prefix}-volume_mute_fill:before {
+	content: $f7-var-volume_mute_fill;
+}
+.#{$f7-css-prefix}-world:before {
+	content: $f7-var-world;
+}
+.#{$f7-css-prefix}-world_fill:before {
+	content: $f7-var-world_fill;
+}
+.#{$f7-css-prefix}-zoom_in:before {
+	content: $f7-var-zoom_in;
+}
+.#{$f7-css-prefix}-zoom_out:before {
+	content: $f7-var-zoom_out;
+}

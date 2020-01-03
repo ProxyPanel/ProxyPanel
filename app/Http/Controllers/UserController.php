@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Callback;
 use App\Components\Helpers;
 use App\Components\ServerChan;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
-use App\Http\Models\GoodsLabel;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\ReferralApply;
@@ -48,6 +48,7 @@ use Validator;
  */
 class UserController extends Controller
 {
+	use Callback;
 	protected static $systemConfig;
 
 	function __construct()
@@ -60,30 +61,20 @@ class UserController extends Controller
 		$totalTransfer = Auth::user()->transfer_enable;
 		$usedTransfer = Auth::user()->u+Auth::user()->d;
 		$unusedTransfer = $totalTransfer-$usedTransfer > 0? $totalTransfer-$usedTransfer : 0;
-		$userRestDay = Auth::user()->traffic_reset_day;
 		$expireTime = Auth::user()->expire_time;
-		$last_day = date('t');
-		$today = date('d');
-		if($userRestDay > $today){
-			$resetDays = $userRestDay > $last_day? $last_day-$today : $userRestDay-$today;
-		}else{
-			$next_last_day = date('t', strtotime('next month'));
-			$resetDays = $userRestDay > $next_last_day? $last_day-$today+$next_last_day : $last_day-$today+$userRestDay;
-		}
-		$view['remainDays'] = date('Y-m-d') < $expireTime? (strtotime($expireTime)-strtotime(date('Y-m-d')))/86400 : 0;
-		$view['resetDays'] = $resetDays;
+		$view['remainDays'] = $expireTime < date('Y-m-d') ? -1 : (strtotime($expireTime)-strtotime(date('Y-m-d')))/86400;
+		$view['resetDays'] = Auth::user()->reset_time? round((strtotime(Auth::user()->reset_time)-strtotime(date('Y-m-d')))/86400) : 0;
 		$view['unusedTransfer'] = $unusedTransfer;
 		$view['expireTime'] = $expireTime;
-		$view['banedTime'] = Auth::user()->ban_time != 0? date('Y-m-d H:i:s', Auth::user()->ban_time) : 0;;
+		$view['banedTime'] = Auth::user()->ban_time? date('Y-m-d H:i:s', Auth::user()->ban_time) : 0;
 		$view['unusedPercent'] = $totalTransfer > 0? round($unusedTransfer/$totalTransfer, 2) : 0;
 		$view['noticeList'] = Article::type(2)->orderBy('id', 'desc')->Paginate(1); // 公告
 		//流量异常判断
 		$hourlyTraffic = UserTrafficHourly::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->sum('total');
-		$view['isTrafficWarning'] = $hourlyTraffic < (self::$systemConfig['traffic_ban_value']*1073741824)? 0 : 1;
+		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$systemConfig['traffic_ban_value']*1073741824)? : 0;
 		//付费用户判断
-		$view['not_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty();
+		$view['not_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist();
 		$view['userLoginLog'] = UserLoginLog::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->first(); // 近期登录日志
-
 
 		$dailyData = [];
 		$hourlyData = [];
@@ -103,7 +94,7 @@ class UserController extends Controller
 
 		// 节点一天内的流量
 		$userTrafficHourly = UserTrafficHourly::query()->where('user_id', Auth::user()->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
-		$hourlyTotal = date('H', time());
+		$hourlyTotal = date('H');
 		$hourlyCount = count($userTrafficHourly);
 		for($x = 0; $x < $hourlyTotal-$hourlyCount; $x++){
 			$hourlyData[$x] = 0;
@@ -324,15 +315,17 @@ class UserController extends Controller
 		// 余额充值商品，只取10个
 		$view['chargeGoodsList'] = Goods::type(3)->where('status', 1)->orderBy('price', 'asc')->orderBy('price', 'asc')->limit(10)->get();
 		$view['goodsList'] = Goods::query()->where('status', 1)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
-		$temp = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
-		$view['renewTraffic'] = $temp? Goods::query()->where('id', $temp->goods_id)->first()->renew : 0;
-
+		$renewPrice = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
+		$view['renewTraffic'] = $renewPrice? $renewPrice->renew : 0;
+		// 有重置日时按照重置日为标准，否者就以过期日为标准
+		$dataPlusDays = Auth::user()->reset_time? Auth::user()->reset_time : Auth::user()->expire_time;
+		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays)-strtotime(date('Y-m-d')))/86400) : 0;
 
 		return Response::view('user.services', $view);
 	}
 
 	//重置流量
-	public function resetUserTraffic(Request $request)
+	public function resetUserTraffic()
 	{
 		$temp = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
 		$renewCost = Goods::query()->where('id', $temp->goods_id)->first()->renew;
@@ -367,8 +360,23 @@ class UserController extends Controller
 		return Response::view('user.invoices', $view);
 	}
 
+	public function activeOrder(Request $request)
+	{
+		$oid = $request->input('oid');
+		$prepaidOrder = Order::query()->where('oid', $oid)->first();
+		if(!$prepaidOrder){
+			return Response::json(['status' => 'fail', 'data' => '', 'message' => '查无此单！']);
+		}
+		if($prepaidOrder->status != 3){
+			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非预支付订单，无需再次启动！']);
+		}
+		$this->activePrepaidOrder($oid);
+
+		return Response::json(['status' => 'success', 'data' => '', 'message' => '激活成功']);
+	}
+
 	// 订单明细
-	public function invoiceDetail(Request $request, $sn)
+	public function invoiceDetail($sn)
 	{
 		$view['order'] = Order::uid()->with(['goods', 'coupon', 'payment'])->where('order_sn', $sn)->firstOrFail();
 
@@ -483,13 +491,11 @@ class UserController extends Controller
 	// 邀请码
 	public function invite(Request $request)
 	{
-		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty()){
+		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist()){
 			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
-		// 已生成的邀请码数量
-		$num = Invite::uid()->count();
 
-		$view['num'] = self::$systemConfig['invite_num']-$num <= 0? 0 : self::$systemConfig['invite_num']-$num; // 还可以生成的邀请码数量
+		$view['num'] = Auth::user()->invite_num; // 还可以生成的邀请码数量
 		$view['inviteList'] = Invite::uid()->with(['generator', 'user'])->paginate(10); // 邀请码列表
 		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic']*1048576);
 		$view['referral_percent'] = self::$systemConfig['referral_percent'];
@@ -500,10 +506,8 @@ class UserController extends Controller
 	// 生成邀请码
 	public function makeInvite(Request $request)
 	{
-		// 已生成的邀请码数量
-		$num = Invite::uid()->count();
-		if($num >= self::$systemConfig['invite_num']){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：最多只能生成'.self::$systemConfig['invite_num'].'个邀请码']);
+		if(Auth::user()->invite_num <= 0){
+			return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：已无邀请码生成名额']);
 		}
 
 		$obj = new Invite();
@@ -513,6 +517,8 @@ class UserController extends Controller
 		$obj->status = 0;
 		$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$systemConfig['user_invite_days']." days"));
 		$obj->save();
+
+		User::uid()->decrement('invite_num', 1);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
 	}
@@ -553,200 +559,24 @@ class UserController extends Controller
 	// 购买服务
 	public function buy(Request $request, $goods_id)
 	{
-		$coupon_sn = $request->input('coupon_sn');
-		// 余额支付
-		if($request->isMethod('POST')){
-			$goods = Goods::query()->with(['label'])->where('status', 1)->where('id', $goods_id)->first();
-			if(!$goods){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：商品或服务已下架']);
-			}
-
-			// 商品限购
-			if($goods->limit_num){
-				$count = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->count();
-				if($count >= $goods->limit_num){
-					return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
-				}
-			}
-
-			// 使用优惠券
-			if(!empty($coupon_sn)){
-				$coupon = Coupon::query()->where('status', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
-				if(!$coupon){
-					return Response::json(['status' => 'fail', 'data' => '', 'message' => '优惠券不存在']);
-				}
-
-				// 计算实际应支付总价
-				$amount = $coupon->type == 2? $goods->price*$coupon->discount/10 : $goods->price-$coupon->amount;
-				$amount = $amount > 0? $amount : 0;
-			}else{
-				$amount = $goods->price;
-			}
-
-			// 价格异常判断
-			if($amount < 0){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单总价异常']);
-			}
-
-			// 验证账号余额是否充足
-			if(Auth::user()->balance < $amount){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '您的余额不足，请先充值']);
-			}
-
-			// 验证账号是否存在有效期更长的套餐
-			if($goods->type == 2){
-				$existOrderList = Order::uid()->with('goods')->whereHas('goods', function($q){
-					$q->where('type', 2);
-				})->where('is_expire', 0)->where('status', 2)->get();
-
-				foreach($existOrderList as $vo){
-					if($vo->goods->days > $goods->days){
-						return Response::json(['status' => 'info', 'title' => '套餐冲突', 'message' => '是否将本次套餐存为 【预支付】？套餐会在已有套餐失效后生效，或者您可以手动激活套餐']);
-					}
-				}
-			}
-
-			DB::beginTransaction();
-			try{
-				// 生成订单
-				$order = new Order();
-				$order->order_sn = date('ymdHis').mt_rand(100000, 999999);
-				$order->user_id = Auth::user()->id;
-				$order->goods_id = $goods_id;
-				$order->coupon_id = !empty($coupon)? $coupon->id : 0;
-				$order->origin_amount = $goods->price;
-				$order->amount = $amount;
-				$order->expire_at = date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
-				$order->is_expire = 0;
-				$order->pay_way = 1;
-				$order->status = 2;
-				$order->save();
-
-				// 扣余额
-				User::query()->where('id', Auth::user()->id)->decrement('balance', $amount*100);
-
-				// 记录余额操作日志
-				$this->addUserBalanceLog(Auth::user()->id, $order->oid, Auth::user()->balance, Auth::user()->balance-$amount, -1*$amount, '购买商品：'.$goods->name);
-
-				// 优惠券置为已使用
-				if(!empty($coupon)){
-					if($coupon->usage == 1){
-						$coupon->status = 1;
-						$coupon->save();
-					}
-
-					// 写入日志
-					Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '余额支付订单使用');
-				}
-
-				// 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，重置用户已用流量为0
-				if($goods->type == 2){
-					$existOrderList = Order::query()->with('goods')->whereHas('goods', function($q){
-						$q->where('type', 2);
-					})->where('user_id', Auth::user()->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->where('status', 2)->get();
-
-					foreach($existOrderList as $vo){
-						Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-
-						// 先判断，防止手动扣减过流量的用户流量被扣成负数
-						if($order->user->transfer_enable-$vo->goods->traffic*1048576 <= 0){
-							// 写入用户流量变动记录
-							Helpers::addUserTrafficModifyLog(Auth::user()->id, $order->oid, 0, 0, '[余额支付]用户购买套餐，先扣减之前套餐的流量(扣完)');
-
-							User::query()->where('id', Auth::user()->id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
-						}else{
-							// 写入用户流量变动记录
-							$user = User::query()->uid()->first(); // 重新取出user信息
-							Helpers::addUserTrafficModifyLog(Auth::user()->id, $order->oid, $user->transfer_enable, ($user->transfer_enable-$vo->goods->traffic*1048576), '[余额支付]用户购买套餐，先扣减之前套餐的流量(未扣完)');
-
-							User::query()->uid()->update(['u' => 0, 'd' => 0]);
-							User::query()->uid()->decrement('transfer_enable', $vo->goods->traffic*1048576);
-						}
-					}
-				}
-
-				// 写入用户流量变动记录
-				$user = User::query()->uid()->first(); // 重新取出user信息
-				Helpers::addUserTrafficModifyLog($user->id, $order->oid, $user->transfer_enable, ($user->transfer_enable+$goods->traffic*1048576), '[余额支付]用户购买商品，加上流量');
-
-				// 把商品的流量加到账号上
-				User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic*1048576);
-
-				// 计算账号过期时间
-				if($user->expire_time < date('Y-m-d', strtotime("+".$goods->days." days"))){
-					$expireTime = date('Y-m-d', strtotime("+".$goods->days." days"));
-				}else{
-					$expireTime = $user->expire_time;
-				}
-
-				// 套餐就改流量重置日，流量包不改
-				if($goods->type == 2){
-					User::query()->uid()->update(['traffic_reset_day' => date('d'), 'expire_time' => $expireTime, 'enable' => 1]);
-				}else{
-					User::query()->uid()->update(['expire_time' => $expireTime, 'enable' => 1]);
-				}
-
-				// 写入用户标签
-				if($goods->label){
-					// 用户默认标签
-					$defaultLabels = [];
-					if(self::$systemConfig['initial_labels_for_user']){
-						$defaultLabels = explode(',', self::$systemConfig['initial_labels_for_user']);
-					}
-
-					// 取出现有的标签
-					$userLabels = UserLabel::query()->where('user_id', Auth::user()->id)->pluck('label_id')->toArray();
-					$goodsLabels = GoodsLabel::query()->where('goods_id', $goods_id)->pluck('label_id')->toArray();
-
-					// 标签去重
-					$newUserLabels = array_values(array_unique(array_merge($userLabels, $goodsLabels, $defaultLabels)));
-
-					// 删除用户所有标签
-					UserLabel::query()->where('user_id', Auth::user()->id)->delete();
-
-					// 生成标签
-					foreach($newUserLabels as $vo){
-						$obj = new UserLabel();
-						$obj->user_id = Auth::user()->id;
-						$obj->label_id = $vo;
-						$obj->save();
-					}
-				}
-
-				// 写入返利日志
-				if($user->referral_uid){
-					$this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount*self::$systemConfig['referral_percent']);
-				}
-
-				// 取消重复返利
-				User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
-
-				DB::commit();
-
-				return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
-			} catch(Exception $e){
-				Log::error('支付订单失败：'.$e);
-
-				DB::rollBack();
-
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '支付失败：'.$e->getMessage()]);
-			}
-		}else{
-			$goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
-			if(empty($goods)){
-				return Redirect::to('services');
-			}
-
-			$view['goods'] = $goods;
-
-			return Response::view('user.buy', $view);
+		$goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
+		if(empty($goods)){
+			return Redirect::to('services');
 		}
+		// 有重置日时按照重置日为标准，否者就以过期日为标准
+		$dataPlusDays = Auth::user()->reset_time? Auth::user()->reset_time : Auth::user()->expire_time;
+		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays)-strtotime(date('Y-m-d')))/86400) : 0;
+		$view['activePlan'] = Order::uid()->with(['goods'])->where('is_expire', 0)->where('status', 2)->whereHas('goods', function($q){ $q->where('type', 2); })->exists();
+
+		$view['goods'] = $goods;
+
+		return Response::view('user.buy', $view);
 	}
 
 	// 推广返利
 	public function referral(Request $request)
 	{
-		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty()){
+		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist()){
 			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
 		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic']*1048576);
@@ -809,7 +639,7 @@ class UserController extends Controller
 		$view['articleList'] = Article::type(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
 
 		//付费用户判断
-		$view['not_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty();
+		$view['not_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist();
 		//客户端安装
 		$view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/ipa.plist';
 		$view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/ipa.plist';

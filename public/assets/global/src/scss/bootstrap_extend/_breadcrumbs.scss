@@ -1,0 +1,76 @@
+// Name:            Breadcrumb
+// Description:     Defines styles for a breadcrumb navigation
+//
+// Component:       `breadcrumb`
+//
+// Modifiers:       `breadcrumb-arrow`
+//
+// Markup:
+//
+// <!-- breadcrumb -->
+// <ol class="breadcrumb">
+//     <li><a href=""></a></li>
+//     <li class="active"></li>
+// </ol>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$breadcrumb-margin-bottom: 10px !default;
+$breadcrumb-arrow-separator: "\00bb" !default;
+$breadcrumb-icon-margin-right: 10px !default;
+
+// Component: breadcrumb
+// ========================================================================
+
+.breadcrumb {
+  margin-bottom: $breadcrumb-margin-bottom;
+  background-color: transparent; // add  from---v3
+
+  .is-hidden {
+    display: none;
+  }
+
+  &-ellipsis {
+    display: inline-block;
+  }
+
+  &-dropdown {
+    display: inline-block;
+  }
+
+  &.breadcrumb-right {
+    > li.breadcrumb-ellipsis.is-hidden + li::before {
+      display: none;
+    }
+  }
+
+  &.breadcrumb-left {
+    .breadcrumb-dropdown, .breadcrumb-ellipsis {
+      float: left;
+    }
+  }
+}
+
+.breadcrumb-item {
+  + .breadcrumb-item::before {
+    padding: 0 5px;
+  }
+
+  .icon {
+    text-decoration: none;
+
+    &::before {
+      margin-right: $breadcrumb-icon-margin-right;
+    }
+  }
+}
+
+// Modifier: `breadcrumb-arrow`
+// ----------------------------
+.breadcrumb-arrow {
+  > .breadcrumb-item + .breadcrumb-item::before {
+    content: "#{$breadcrumb-arrow-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
+  }
+}

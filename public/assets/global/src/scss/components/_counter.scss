@@ -1,0 +1,95 @@
+// Name:            Counter
+//
+// Component:       `counter`
+//
+// Modifiers:       'counter-lg'
+//                  'counter-md'
+//                  'counter-sm'
+//                  'counter-xs'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$counter-number-color: $gray-700 !default;
+$counter-number-font-size: 20px !default;
+$counter-icon-font-size: $counter-number-font-size !default;
+$counter-lg-number-font-size: 40px !default;
+$counter-md-number-font-size: 30px !default;
+$counter-sm-number-font-size: 14px !default;
+$counter-lg-icon-font-size: $counter-lg-number-font-size !default;
+$counter-md-icon-font-size: $counter-md-number-font-size !default;
+$counter-sm-icon-font-size: $counter-sm-number-font-size !default;
+$counter-inverse-color: $inverse !default;
+
+// Component: Counter
+// ========================================================================
+
+.counter {
+  text-align: center;
+
+  & > .counter-number, .counter-number-group {
+    font-size: $counter-number-font-size;
+    color: $counter-number-color;
+  }
+}
+
+.counter-label {
+  display: block;
+}
+
+.counter-icon {
+  font-size: $counter-icon-font-size;
+}
+
+// Size Modifier
+// ========================================================================
+
+.counter-lg {
+  & > .counter-number, .counter-number-group {
+    font-size: $counter-lg-number-font-size;
+  }
+
+  .counter-icon {
+    font-size: $counter-lg-icon-font-size;
+  }
+}
+
+.counter-md {
+  & > .counter-number, .counter-number-group {
+    font-size: $counter-md-number-font-size;
+  }
+
+  .counter-icon {
+    font-size: $counter-md-icon-font-size;
+  }
+}
+
+.counter-sm {
+  & > .counter-number, .counter-number-group {
+    font-size: $counter-sm-number-font-size;
+  }
+
+  .counter-icon {
+    font-size: $counter-sm-icon-font-size;
+  }
+
+  .counter-number-related + .counter-number, .counter-number + .counter-number-related {
+    margin-left: 0;
+  }
+}
+
+// Modifier: 'counter-inverse'
+// ========================================================================
+
+.counter-inverse {
+  color: $counter-inverse-color;
+
+  & > .counter-number, .counter-number-group {
+    color: $counter-inverse-color;
+  }
+
+  .counter-icon {
+    color: $counter-inverse-color;
+  }
+}

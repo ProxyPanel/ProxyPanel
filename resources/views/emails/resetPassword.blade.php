@@ -811,7 +811,7 @@
 							<div style="Margin-left: 20px;Margin-right: 20px;">
 								<div class="btn btn--flat btn--large" style="Margin-bottom: 20px;text-align: center;">
 									<![if !mso]><a style="border-radius: 4px;display: inline-block;font-size: 14px;font-weight: bold;line-height: 24px;padding: 12px 24px;text-align: center;text-decoration: none !important;transition: opacity 0.1s ease-in;color: #ffffff !important;background-color: #2e74bf;font-family: Ubuntu, sans-serif;" href="{{$resetPasswordUrl}}">&#37325;&#32622;&#23494;&#30721;</a><![endif]>
-									<!--[if mso]><p style="line-height:0;margin:0;">&nbsp;</p>
+								<!--[if mso]><p style="line-height:0;margin:0;">&nbsp;</p>
 									<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{$resetPasswordUrl}}" style="width:104px" arcsize="9%" fillcolor="#2E74BF" stroke="f">
 										<v:textbox style="mso-fit-shape-to-text:t" inset="0px,11px,0px,11px">
 											<center style="font-size:14px;line-height:24px;color:#FFFFFF;font-family:Ubuntu,sans-serif;font-weight:bold;mso-line-height-rule:exactly;mso-text-raise:4px">&#37325;&#32622;&#23494;&#30721;</center>

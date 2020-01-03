@@ -36,7 +36,6 @@ use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\UserTrafficLog;
 use App\Http\Models\UserTrafficModifyLog;
 use Auth;
-use Cache;
 use DB;
 use Exception;
 use Hash;
@@ -89,20 +88,15 @@ class AdminController extends Controller
 			}
 		}
 		$view['flowAbnormalUserCount'] = User::query()->whereIn('id', $tempUsers)->count();
-
-
 		$view['nodeCount'] = SsNode::query()->count();
 		$view['unnormalNodeCount'] = SsNode::query()->where('status', 0)->count();
-
 		$flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
 		$view['flowCount'] = flowAutoShow($flowCount);
 		$totalFlowCount = SsNodeTrafficDaily::query()->sum('total');
 		$view['totalFlowCount'] = flowAutoShow($totalFlowCount);
-
 		$view['totalBalance'] = User::query()->sum('balance')/100;
 		$view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount')/100;
 		$view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount')/100;
-
 		$view['totalOrder'] = Order::query()->count();
 		$view['totalOnlinePayOrder'] = Order::query()->where('pay_way', 2)->count();
 		$view['totalSuccessOrder'] = Order::query()->where('status', 2)->count();
@@ -168,7 +162,7 @@ class AdminController extends Controller
 
 		// 临近过期提醒
 		if($expireWarning){
-			$query->where('expire_time', '>=', date('Y-m-d', strtotime("now")))->where('expire_time', '<=', date('Y-m-d', strtotime("+".self::$systemConfig['expire_days']." days")));
+			$query->where('expire_time', '>=', date('Y-m-d'))->where('expire_time', '<=', date('Y-m-d', strtotime("+".self::$systemConfig['expire_days']." days")));
 		}
 
 		// 当前在线
@@ -199,11 +193,11 @@ class AdminController extends Controller
 		foreach($userList as $user){
 			$user->transfer_enable = flowAutoShow($user->transfer_enable);
 			$user->used_flow = flowAutoShow($user->u+$user->d);
-			if($user->expire_time < date('Y-m-d', strtotime("now"))){
+			if($user->expire_time < date('Y-m-d')){
 				$user->expireWarning = -1; // 已过期
-			}elseif($user->expire_time == date('Y-m-d', strtotime("now"))){
+			}elseif($user->expire_time == date('Y-m-d')){
 				$user->expireWarning = 0; // 今天过期
-			}elseif($user->expire_time > date('Y-m-d', strtotime("now")) && $user->expire_time <= date('Y-m-d', strtotime("+30 days"))){
+			}elseif($user->expire_time > date('Y-m-d') && $user->expire_time <= date('Y-m-d', strtotime("+30 days"))){
 				$user->expireWarning = 1; // 最近一个月过期
 			}else{
 				$user->expireWarning = 2; // 大于一个月过期
@@ -264,7 +258,7 @@ class AdminController extends Controller
 			$user->is_admin = 0;
 			$user->reg_ip = getClientIp();
 			$user->referral_uid = 0;
-			$user->traffic_reset_day = 0;
+			$user->reset_time = $request->input('reset_time') > date('Y-m-d')? $request->input('reset_time') : NULL;
 			$user->status = $request->input('status')? : 1;
 			$user->save();
 
@@ -303,39 +297,17 @@ class AdminController extends Controller
 	// 批量生成账号
 	public function batchAddUsers(Request $request)
 	{
+		$amount = $request->input('amount');
 		DB::beginTransaction();
 		try{
-			for($i = 0; $i < 5; $i++){
+			for($i = 0; $i < $amount; $i++){
+				$uid = Helpers::addUser('批量生成-'.makeRandStr(), Hash::make(makeRandStr()), toGB(1024), 365);
 				// 生成一个可用端口
-				$port = self::$systemConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
 
-				$user = new User();
-				$user->username = '批量生成-'.makeRandStr();
-				$user->password = Hash::make(makeRandStr());
-				$user->port = $port;
-				$user->passwd = makeRandStr();
-				$user->vmess_id = createGuid();
-				$user->enable = 1;
-				$user->method = Helpers::getDefaultMethod();
-				$user->protocol = Helpers::getDefaultProtocol();
-				$user->protocol_param = '';
-				$user->obfs = Helpers::getDefaultObfs();
-				$user->obfs_param = '';
-				$user->usage = 1;
-				$user->transfer_enable = toGB(1024);
-				$user->enable_time = date('Y-m-d');
-				$user->expire_time = date('Y-m-d', strtotime("+365 days"));
-				$user->remark = '';
-				$user->reg_ip = getClientIp();
-				$user->referral_uid = 0;
-				$user->traffic_reset_day = 0;
-				$user->status = 1;
-				$user->save();
-
-				if($user->id){
+				if($uid){
 					// 生成订阅码
 					$subscribe = new UserSubscribe();
-					$subscribe->user_id = $user->id;
+					$subscribe->user_id = $uid;
 					$subscribe->code = Helpers::makeSubscribeCode();
 					$subscribe->times = 0;
 					$subscribe->save();
@@ -343,11 +315,11 @@ class AdminController extends Controller
 					// 初始化默认标签
 					if(!empty(self::$systemConfig['initial_labels_for_user'])){
 						$labels = explode(',', self::$systemConfig['initial_labels_for_user']);
-						$this->makeUserLabels($user->id, $labels);
+						$this->makeUserLabels($uid, $labels);
 					}
 
 					// 写入用户流量变动记录
-					Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB(1024), '后台批量生成用户');
+					Helpers::addUserTrafficModifyLog($uid, 0, 0, toGB(1024), '后台批量生成用户');
 				}
 			}
 
@@ -390,6 +362,7 @@ class AdminController extends Controller
 			$remark = str_replace("eval", "", str_replace("atob", "", $request->input('remark')));
 			$level = $request->input('level');
 			$is_admin = $request->input('is_admin');
+			$reset_time = $request->input('reset_time');
 
 			// 校验username是否已存在
 			$exists = User::query()->where('id', '<>', $id)->where('username', $username)->first();
@@ -408,7 +381,7 @@ class AdminController extends Controller
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统默认管理员不可取消']);
 			}
 
-			if(!$request->input('usage')){
+			if(!$usage){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '请至少选择一种用途']);
 			}
 
@@ -419,7 +392,8 @@ class AdminController extends Controller
 			try{
 				$data = [
 					'username'             => $username,
-					'port'                 => $port, 'passwd' => $passwd,
+					'port'                 => $port,
+					'passwd'               => $passwd,
 					'vmess_id'             => $vmess_id,
 					'transfer_enable'      => toGB($transfer_enable),
 					'enable'               => $status < 0? 0 : $enable,
@@ -435,6 +409,7 @@ class AdminController extends Controller
 					'usage'                => $usage,
 					'pay_way'              => $pay_way,
 					'status'               => $status,
+					'reset_time'           => empty($reset_time)? NULL : $reset_time,
 					'enable_time'          => empty($enable_time)? date('Y-m-d') : $enable_time,
 					'expire_time'          => empty($expire_time)? date('Y-m-d', strtotime("+365 days")) : $expire_time,
 					'remark'               => $remark,
@@ -1969,16 +1944,11 @@ EOF;
 
 		// 演示环境禁止修改特定配置项
 		if(env('APP_DEMO')){
-			$denyConfig = ['website_url', 'min_rand_traffic', 'max_rand_traffic', 'push_bear_send_key', 'push_bear_qrcode', 'youzan_client_id', 'youzan_client_secret', 'kdt_id', 'is_forbid_china', 'alipay_partner', 'alipay_key', 'alipay_transport', 'alipay_sign_type', 'alipay_private_key', 'alipay_public_key', 'website_security_code'];
+			$denyConfig = ['website_url', 'min_rand_traffic', 'max_rand_traffic', 'push_bear_send_key', 'push_bear_qrcode', 'is_forbid_china', 'alipay_partner', 'alipay_key', 'alipay_transport', 'alipay_sign_type', 'alipay_private_key', 'alipay_public_key', 'website_security_code'];
 
 			if(in_array($name, $denyConfig)){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '演示环境禁止修改该配置']);
 			}
-		}
-
-		// 如果更改了有赞云任何一个配置，则删除有赞云的授权缓存，防止出现client_id错误
-		if(in_array($name, ['youzan_client_id', 'youzan_client_secret', 'kdt_id'])){
-			Cache::forget('YZY_TOKEN');
 		}
 
 		// 如果是返利比例，则需要除100
@@ -1986,39 +1956,16 @@ EOF;
 			$value = intval($value)/100;
 		}
 
-		// 用有赞云支付则不可用支付宝国际和支付宝当面付
-		if(in_array($name, ['is_youzan'])){
-			$is_alipay = Config::query()->where('name', 'is_alipay')->first();
-			if($is_alipay->value){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝国际支付】']);
-			}
-
-			$is_f2fpay = Config::query()->where('name', 'is_f2fpay')->first();
-			if($is_f2fpay->value){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝当面付】']);
-			}
-		}
-
-		// 用支付国际则不可用有赞云支付和支付宝当面付
+		// 用支付国际则不可用支付宝当面付
 		if(in_array($name, ['is_alipay'])){
-			$is_youzan = Config::query()->where('name', 'is_youzan')->first();
-			if($is_youzan->value){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
-			}
-
 			$is_f2fpay = Config::query()->where('name', 'is_f2fpay')->first();
 			if($is_f2fpay->value){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝当面付】']);
 			}
 		}
 
-		// 用支付宝当面则不可用有赞云支付和支付宝国际
+		// 用支付宝当面则不可用支付宝国际
 		if(in_array($name, ['is_f2fpay'])){
-			$is_youzan = Config::query()->where('name', 'is_youzan')->first();
-			if($is_youzan->value){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【有赞云支付】']);
-			}
-
 			$is_alipay = Config::query()->where('name', 'is_alipay')->first();
 			if($is_alipay->value){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝国际支付】']);

@@ -88,7 +88,7 @@
 						</button>
 						<span class="font-weight-400">{{trans('home.account_expire')}}</span>
 						<div class="content-text text-center mb-0">
-							@if($remainDays != 0)
+							@if($remainDays != -1)
 								<span class="font-size-40 font-weight-100">{{$remainDays}} {{trans('home.day')}}</span>
 								<p class="blue-grey-500 font-weight-300 m-0">{{$expireTime}}</p>
 							@else

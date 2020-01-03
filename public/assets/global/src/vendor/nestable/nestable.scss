@@ -1,0 +1,260 @@
+@import 'vars';
+
+// Variables
+// ========================================================================
+$nestable-padding-vertical: 6px;
+$nestable-padding-horizontal: 10px;
+$nestable-line-height: $line-height-computed;
+$nestable-border-color: $border-color-base;
+$nestable-handle-margin-vertical: 5px;
+$nestable-nesting-padding: 30px;
+$nestable-handle-bg: $inverse;
+$nestable-handle-border-color: $border-color-base;
+$nestable-handle-hover-color: $hover-color-base;
+$nestable-handle-hover-bg: $bg-color-base;
+$nestable-content-border-color: $nestable-handle-border-color;
+$nestable-content-bg: $inverse;
+$nestable-content-padding: 10px;
+$nestable-placeholder-border-color: $border-color-base;
+$nestable-placeholder-bg: $bg-color-base;
+$nestable-empty-border-color: $border-color-base;
+$nestable-empty-bg: $bg-color-base;
+$nestable-alt-handle-width: 30px;
+$dd-dragel-z-index: $zindex-overlay;
+
+// Component: Nestable
+// ========================================================================
+
+.dd {
+  position: relative;
+  display: block;
+  padding: 0;
+  margin: 0;
+  line-height: $nestable-line-height;
+  // max-width: 600px;
+  list-style: none;
+}
+
+.dd-list {
+  position: relative;
+  display: block;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  .dd-list {
+    padding-left: $nestable-nesting-padding;
+  }
+}
+
+.dd-item, .dd-empty, .dd-placeholder {
+  position: relative;
+  display: block;
+  min-height: $nestable-line-height;
+  padding: 0;
+  margin: 0;
+  line-height: $nestable-line-height;
+}
+
+// Nestable Handle
+// -------------------------
+.dd-handle {
+  box-sizing: border-box;
+  display: block;
+  height: 2 * $nestable-padding-vertical + $line-height-computed;
+  padding: $nestable-padding-vertical $nestable-padding-horizontal;
+  margin: $nestable-handle-margin-vertical 0;
+  text-decoration: none;
+  background: $nestable-handle-bg;
+  border: 1px solid $nestable-handle-border-color;
+  border-radius: $border-radius;
+
+  &:hover {
+    color: $nestable-handle-hover-color;
+    background: $nestable-handle-hover-bg;
+  }
+}
+
+.dd-content {
+  padding: $nestable-content-padding;
+  margin-top: -$nestable-handle-margin-vertical;
+  background: $nestable-content-bg;
+  border: 1px solid $nestable-content-border-color;
+  border-top: 0;
+}
+
+// Nestable Item
+// -------------------------
+.dd-item {
+  > button {
+    position: relative;
+    float: left;
+    width: 25px;
+    height: $nestable-line-height;
+    padding: 0;
+    margin: $nestable-padding-vertical 0;
+    overflow: hidden;
+    line-height: 1;
+    text-align: center;
+    text-indent: 100%;
+    white-space: nowrap;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+
+    &:before {
+      position: absolute;
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-indent: 0;
+    }
+
+    &.dd-expand:before {
+      content: "+";
+    }
+
+    &.dd-collapse:before {
+      content: "-";
+    }
+  }
+}
+
+// expand
+.dd-expand {
+  display: none;
+}
+
+// collapsed
+.dd-collapsed {
+  .dd-list {
+    display: none;
+  }
+
+  .dd-collapse {
+    display: none;
+  }
+
+  .dd-expand {
+    display: block;
+  }
+}
+
+// Dragel
+.dd-dragel {
+  position: absolute;
+  // z-index: 9999;
+  z-index: $dd-dragel-z-index;
+  pointer-events: none;
+
+  > .dd-item {
+    .dd-handle {
+      margin-top: 0;
+    }
+  }
+
+  .dd-handle {
+    box-shadow: 1px 3px 5px 0 rgba(0, 0, 0, .1);
+  }
+}
+
+// Empty and placeholder
+// -------------------------
+
+.dd-empty, .dd-placeholder {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 5px 0;
+}
+
+.dd-placeholder {
+  min-height: 30px;
+  background: $nestable-placeholder-bg;
+  border: 1px dashed $nestable-placeholder-border-color;
+}
+
+.dd-empty {
+  min-height: 100px;
+  background-color: $nestable-empty-bg;
+  background-position: 0 0, 30px 30px;
+  background-size: 60px 60px;
+  border: 1px dashed $nestable-empty-border-color;
+}
+
+// Alternate styles
+// with icon handle
+// ========================================================================
+
+.dd-item-alt {
+  .dd-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: $nestable-alt-handle-width;
+    margin: 0;
+    font-family: "#{$wb-font-family}";
+    font-style: normal;
+    font-weight: normal;
+    text-align: center;
+    cursor: pointer;
+    background: transparent;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    -o-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+    text-rendering: auto;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    &:before {
+      position: relative;
+      top: auto;
+      content: "#{$wb-var-sort-vertical}";
+    }
+
+    &:hover {
+      background: $nestable-handle-hover-bg;
+    }
+  }
+
+  > button {
+    margin-left: $nestable-alt-handle-width;
+  }
+
+  .dd-content {
+    $padding-left: $nestable-padding-horizontal + $nestable-alt-handle-width;
+    box-sizing: border-box;
+    display: block;
+    height: 2 * $nestable-padding-vertical + $line-height-computed;
+    padding: $nestable-padding-vertical $nestable-padding-horizontal $nestable-padding-vertical $padding-left;
+    margin: $nestable-handle-margin-vertical 0;
+    text-decoration: none;
+    background: $nestable-handle-bg;
+    border: 1px solid $nestable-handle-border-color;
+    border-radius: $border-radius;
+
+    &:hover {
+      color: $nestable-handle-hover-color;
+      background: $nestable-handle-hover-bg;
+    }
+  }
+}
+
+// Items with media
+// ========================================================================
+
+.dd-item-with-media {
+  .dd-handle {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .dd-content {
+    border-bottom-right-radius: $border-radius-base;
+    border-bottom-left-radius: $border-radius-base;
+  }
+}

@@ -20,7 +20,7 @@
   _exports.getPlugin = getPlugin;
   _exports.getDefaults = getDefaults;
   _exports.pluginFactory = pluginFactory;
-  _exports.Plugin = _exports.default = void 0;
+  _exports.default = _exports.Plugin = void 0;
   _jquery = babelHelpers.interopRequireDefault(_jquery);
   var plugins = {};
   var apis = {};

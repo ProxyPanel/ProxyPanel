@@ -1,0 +1,148 @@
+@import 'vars';
+
+// var
+//================================================================
+$ms-border: $input-border;
+$multi-select-hover-bg: $brand-primary-hover;
+$ms-optgroup-label-color: $text-color;
+$multi-select-disabled-bg: $disabled-color-base;
+
+// multi-select
+//================================================================
+
+.ms-container {
+  // background: transparent url('images/switch.png') no-repeat 50% 50%;
+  // width: 100%;
+  // min-width: 400px;
+  // width: 400px;
+  &:before {
+    position: relative;
+    top: 68px;
+    left: 3.5%;
+    display: inline-block;
+    font-family: $wb-font-family;
+    font-size: inherit;
+    font-style: normal;
+    font-weight: normal;
+    content: $wb-var-loop;
+    transform: translate(0, 0);
+    text-rendering: auto;
+  }
+}
+
+.ms-container:after {
+  display: block;
+  height: 0;
+  min-height: 0;
+  clear: both;
+  font-size: 0;
+  line-height: 0;
+  visibility: hidden;
+  content: ".";
+}
+
+.ms-container .ms-selectable, .ms-container .ms-selection {
+  float: left;
+  width: 45%;
+  color: $text-color;
+  background: #fff;
+}
+
+.ms-container .ms-selection {
+  float: right;
+}
+
+.ms-container .ms-list {
+  position: relative;
+  height: 160px;
+  padding: 3px;
+  overflow-y: auto;
+  border: 1px solid $ms-border;
+  border-radius: $border-radius;
+  -moz-transition: border linear .2s, box-shadow linear .2s;
+  -o-transition: border linear .2s, box-shadow linear .2s;
+  -ms-transition: border linear .2s, box-shadow linear .2s;
+  -webkit-transition: border linear .2s, box-shadow linear .2s;
+  transition: border linear .2s, box-shadow linear .2s;
+}
+
+.ms-container .ms-list.ms-focus {
+  border-color: rgba(82, 168, 236, .8);
+  outline: 0;
+  outline: thin dotted \9;
+}
+
+.ms-container ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.ms-container .ms-optgroup-container {
+  width: 100%;
+}
+
+.ms-container .ms-optgroup-label {
+  padding: 5px 0 0 7px;
+  margin: 0;
+  font-weight: $font-weight-medium;
+  color: $ms-optgroup-label-color;
+  cursor: pointer;//#999;
+}
+
+.ms-container .ms-selectable li.ms-elem-selectable, .ms-container .ms-selection li.ms-elem-selection {
+  // border-bottom: 1px $ms-border solid;
+  padding: 5px 10px 5px 20px;
+}
+
+.ms-container .ms-selectable li.ms-hover, .ms-container .ms-selection li.ms-hover {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: $multi-select-hover-bg;
+}
+
+.ms-container .ms-selectable li.disabled, .ms-container .ms-selection li.disabled {
+  color: $text-color;
+  cursor: text;
+  background-color: $multi-select-disabled-bg;
+}
+
+@include media-breakpoint-up(xl) {
+  .ms-container {
+    width: 450px;
+  }
+}
+
+@include media-breakpoint-only(lg) {
+  .ms-container {
+    width: 350px;
+  }
+}
+
+@include media-breakpoint-between(sm, md) {
+  .ms-container {
+    width: 100%;
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .ms-container {
+    width: 100%;
+
+    &:before {
+      top: 190px;
+      left: 50%;
+      margin-left: -8px;
+    }
+
+    .ms-selectable, .ms-selection {
+      display: block;
+      width: 100%;
+    }
+
+    .ms-selectable {
+      margin-bottom: 40px;
+    }
+  }
+}

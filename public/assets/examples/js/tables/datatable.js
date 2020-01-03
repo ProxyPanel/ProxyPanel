@@ -194,7 +194,11 @@
         this.datatable.order([0, 'asc']).draw(); // always show fields
       },
       rowCancel: function rowCancel($row) {
-        var $actions, data, $cancel;
+        var _self = this,
+            $actions,
+            i,
+            data,
+            $cancel;
 
         if ($row.hasClass('adding')) {
           this.rowRemove($row);

@@ -1,0 +1,659 @@
+// Icons
+// -------------------------
+.#{$wi-css-prefix}-day-sunny:before {
+	content: $wi-var-day-sunny;
+}
+.#{$wi-css-prefix}-day-cloudy:before {
+	content: $wi-var-day-cloudy;
+}
+.#{$wi-css-prefix}-day-cloudy-gusts:before {
+	content: $wi-var-day-cloudy-gusts;
+}
+.#{$wi-css-prefix}-day-cloudy-windy:before {
+	content: $wi-var-day-cloudy-windy;
+}
+.#{$wi-css-prefix}-day-fog:before {
+	content: $wi-var-day-fog;
+}
+.#{$wi-css-prefix}-day-hail:before {
+	content: $wi-var-day-hail;
+}
+.#{$wi-css-prefix}-day-haze:before {
+	content: $wi-var-day-haze;
+}
+.#{$wi-css-prefix}-day-lightning:before {
+	content: $wi-var-day-lightning;
+}
+.#{$wi-css-prefix}-day-rain:before {
+	content: $wi-var-day-rain;
+}
+.#{$wi-css-prefix}-day-rain-mix:before {
+	content: $wi-var-day-rain-mix;
+}
+.#{$wi-css-prefix}-day-rain-wind:before {
+	content: $wi-var-day-rain-wind;
+}
+.#{$wi-css-prefix}-day-showers:before {
+	content: $wi-var-day-showers;
+}
+.#{$wi-css-prefix}-day-sleet:before {
+	content: $wi-var-day-sleet;
+}
+.#{$wi-css-prefix}-day-sleet-storm:before {
+	content: $wi-var-day-sleet-storm;
+}
+.#{$wi-css-prefix}-day-snow:before {
+	content: $wi-var-day-snow;
+}
+.#{$wi-css-prefix}-day-snow-thunderstorm:before {
+	content: $wi-var-day-snow-thunderstorm;
+}
+.#{$wi-css-prefix}-day-snow-wind:before {
+	content: $wi-var-day-snow-wind;
+}
+.#{$wi-css-prefix}-day-sprinkle:before {
+	content: $wi-var-day-sprinkle;
+}
+.#{$wi-css-prefix}-day-storm-showers:before {
+	content: $wi-var-day-storm-showers;
+}
+.#{$wi-css-prefix}-day-sunny-overcast:before {
+	content: $wi-var-day-sunny-overcast;
+}
+.#{$wi-css-prefix}-day-thunderstorm:before {
+	content: $wi-var-day-thunderstorm;
+}
+.#{$wi-css-prefix}-day-windy:before {
+	content: $wi-var-day-windy;
+}
+.#{$wi-css-prefix}-solar-eclipse:before {
+	content: $wi-var-solar-eclipse;
+}
+.#{$wi-css-prefix}-hot:before {
+	content: $wi-var-hot;
+}
+.#{$wi-css-prefix}-day-cloudy-high:before {
+	content: $wi-var-day-cloudy-high;
+}
+.#{$wi-css-prefix}-day-light-wind:before {
+	content: $wi-var-day-light-wind;
+}
+.#{$wi-css-prefix}-night-clear:before {
+	content: $wi-var-night-clear;
+}
+.#{$wi-css-prefix}-night-alt-cloudy:before {
+	content: $wi-var-night-alt-cloudy;
+}
+.#{$wi-css-prefix}-night-alt-cloudy-gusts:before {
+	content: $wi-var-night-alt-cloudy-gusts;
+}
+.#{$wi-css-prefix}-night-alt-cloudy-windy:before {
+	content: $wi-var-night-alt-cloudy-windy;
+}
+.#{$wi-css-prefix}-night-alt-hail:before {
+	content: $wi-var-night-alt-hail;
+}
+.#{$wi-css-prefix}-night-alt-lightning:before {
+	content: $wi-var-night-alt-lightning;
+}
+.#{$wi-css-prefix}-night-alt-rain:before {
+	content: $wi-var-night-alt-rain;
+}
+.#{$wi-css-prefix}-night-alt-rain-mix:before {
+	content: $wi-var-night-alt-rain-mix;
+}
+.#{$wi-css-prefix}-night-alt-rain-wind:before {
+	content: $wi-var-night-alt-rain-wind;
+}
+.#{$wi-css-prefix}-night-alt-showers:before {
+	content: $wi-var-night-alt-showers;
+}
+.#{$wi-css-prefix}-night-alt-sleet:before {
+	content: $wi-var-night-alt-sleet;
+}
+.#{$wi-css-prefix}-night-alt-sleet-storm:before {
+	content: $wi-var-night-alt-sleet-storm;
+}
+.#{$wi-css-prefix}-night-alt-snow:before {
+	content: $wi-var-night-alt-snow;
+}
+.#{$wi-css-prefix}-night-alt-snow-thunderstorm:before {
+	content: $wi-var-night-alt-snow-thunderstorm;
+}
+.#{$wi-css-prefix}-night-alt-snow-wind:before {
+	content: $wi-var-night-alt-snow-wind;
+}
+.#{$wi-css-prefix}-night-alt-sprinkle:before {
+	content: $wi-var-night-alt-sprinkle;
+}
+.#{$wi-css-prefix}-night-alt-storm-showers:before {
+	content: $wi-var-night-alt-storm-showers;
+}
+.#{$wi-css-prefix}-night-alt-thunderstorm:before {
+	content: $wi-var-night-alt-thunderstorm;
+}
+.#{$wi-css-prefix}-night-cloudy:before {
+	content: $wi-var-night-cloudy;
+}
+.#{$wi-css-prefix}-night-cloudy-gusts:before {
+	content: $wi-var-night-cloudy-gusts;
+}
+.#{$wi-css-prefix}-night-cloudy-windy:before {
+	content: $wi-var-night-cloudy-windy;
+}
+.#{$wi-css-prefix}-night-fog:before {
+	content: $wi-var-night-fog;
+}
+.#{$wi-css-prefix}-night-hail:before {
+	content: $wi-var-night-hail;
+}
+.#{$wi-css-prefix}-night-lightning:before {
+	content: $wi-var-night-lightning;
+}
+.#{$wi-css-prefix}-night-partly-cloudy:before {
+	content: $wi-var-night-partly-cloudy;
+}
+.#{$wi-css-prefix}-night-rain:before {
+	content: $wi-var-night-rain;
+}
+.#{$wi-css-prefix}-night-rain-mix:before {
+	content: $wi-var-night-rain-mix;
+}
+.#{$wi-css-prefix}-night-rain-wind:before {
+	content: $wi-var-night-rain-wind;
+}
+.#{$wi-css-prefix}-night-showers:before {
+	content: $wi-var-night-showers;
+}
+.#{$wi-css-prefix}-night-sleet:before {
+	content: $wi-var-night-sleet;
+}
+.#{$wi-css-prefix}-night-sleet-storm:before {
+	content: $wi-var-night-sleet-storm;
+}
+.#{$wi-css-prefix}-night-snow:before {
+	content: $wi-var-night-snow;
+}
+.#{$wi-css-prefix}-night-snow-thunderstorm:before {
+	content: $wi-var-night-snow-thunderstorm;
+}
+.#{$wi-css-prefix}-night-snow-wind:before {
+	content: $wi-var-night-snow-wind;
+}
+.#{$wi-css-prefix}-night-sprinkle:before {
+	content: $wi-var-night-sprinkle;
+}
+.#{$wi-css-prefix}-night-storm-showers:before {
+	content: $wi-var-night-storm-showers;
+}
+.#{$wi-css-prefix}-night-thunderstorm:before {
+	content: $wi-var-night-thunderstorm;
+}
+.#{$wi-css-prefix}-lunar-eclipse:before {
+	content: $wi-var-lunar-eclipse;
+}
+.#{$wi-css-prefix}-stars:before {
+	content: $wi-var-stars;
+}
+.#{$wi-css-prefix}-storm-showers:before {
+	content: $wi-var-storm-showers;
+}
+.#{$wi-css-prefix}-thunderstorm:before {
+	content: $wi-var-thunderstorm;
+}
+.#{$wi-css-prefix}-night-alt-cloudy-high:before {
+	content: $wi-var-night-alt-cloudy-high;
+}
+.#{$wi-css-prefix}-night-cloudy-high:before {
+	content: $wi-var-night-cloudy-high;
+}
+.#{$wi-css-prefix}-night-alt-partly-cloudy:before {
+	content: $wi-var-night-alt-partly-cloudy;
+}
+.#{$wi-css-prefix}-cloud:before {
+	content: $wi-var-cloud;
+}
+.#{$wi-css-prefix}-cloudy:before {
+	content: $wi-var-cloudy;
+}
+.#{$wi-css-prefix}-cloudy-gusts:before {
+	content: $wi-var-cloudy-gusts;
+}
+.#{$wi-css-prefix}-cloudy-windy:before {
+	content: $wi-var-cloudy-windy;
+}
+.#{$wi-css-prefix}-fog:before {
+	content: $wi-var-fog;
+}
+.#{$wi-css-prefix}-hail:before {
+	content: $wi-var-hail;
+}
+.#{$wi-css-prefix}-rain:before {
+	content: $wi-var-rain;
+}
+.#{$wi-css-prefix}-rain-mix:before {
+	content: $wi-var-rain-mix;
+}
+.#{$wi-css-prefix}-rain-wind:before {
+	content: $wi-var-rain-wind;
+}
+.#{$wi-css-prefix}-showers:before {
+	content: $wi-var-showers;
+}
+.#{$wi-css-prefix}-sleet:before {
+	content: $wi-var-sleet;
+}
+.#{$wi-css-prefix}-snow:before {
+	content: $wi-var-snow;
+}
+.#{$wi-css-prefix}-sprinkle:before {
+	content: $wi-var-sprinkle;
+}
+.#{$wi-css-prefix}-snow-wind:before {
+	content: $wi-var-snow-wind;
+}
+.#{$wi-css-prefix}-smog:before {
+	content: $wi-var-smog;
+}
+.#{$wi-css-prefix}-smoke:before {
+	content: $wi-var-smoke;
+}
+.#{$wi-css-prefix}-lightning:before {
+	content: $wi-var-lightning;
+}
+.#{$wi-css-prefix}-raindrops:before {
+	content: $wi-var-raindrops;
+}
+.#{$wi-css-prefix}-raindrop:before {
+	content: $wi-var-raindrop;
+}
+.#{$wi-css-prefix}-dust:before {
+	content: $wi-var-dust;
+}
+.#{$wi-css-prefix}-snowflake-cold:before {
+	content: $wi-var-snowflake-cold;
+}
+.#{$wi-css-prefix}-windy:before {
+	content: $wi-var-windy;
+}
+.#{$wi-css-prefix}-strong-wind:before {
+	content: $wi-var-strong-wind;
+}
+.#{$wi-css-prefix}-sandstorm:before {
+	content: $wi-var-sandstorm;
+}
+.#{$wi-css-prefix}-earthquake:before {
+	content: $wi-var-earthquake;
+}
+.#{$wi-css-prefix}-fire:before {
+	content: $wi-var-fire;
+}
+.#{$wi-css-prefix}-flood:before {
+	content: $wi-var-flood;
+}
+.#{$wi-css-prefix}-meteor:before {
+	content: $wi-var-meteor;
+}
+.#{$wi-css-prefix}-tsunami:before {
+	content: $wi-var-tsunami;
+}
+.#{$wi-css-prefix}-volcano:before {
+	content: $wi-var-volcano;
+}
+.#{$wi-css-prefix}-hurricane:before {
+	content: $wi-var-hurricane;
+}
+.#{$wi-css-prefix}-tornado:before {
+	content: $wi-var-tornado;
+}
+.#{$wi-css-prefix}-small-craft-advisory:before {
+	content: $wi-var-small-craft-advisory;
+}
+.#{$wi-css-prefix}-gale-warning:before {
+	content: $wi-var-gale-warning;
+}
+.#{$wi-css-prefix}-storm-warning:before {
+	content: $wi-var-storm-warning;
+}
+.#{$wi-css-prefix}-hurricane-warning:before {
+	content: $wi-var-hurricane-warning;
+}
+.#{$wi-css-prefix}-wind-direction:before {
+	content: $wi-var-wind-direction;
+}
+.#{$wi-css-prefix}-alien:before {
+	content: $wi-var-alien;
+}
+.#{$wi-css-prefix}-celsius:before {
+	content: $wi-var-celsius;
+}
+.#{$wi-css-prefix}-fahrenheit:before {
+	content: $wi-var-fahrenheit;
+}
+.#{$wi-css-prefix}-degrees:before {
+	content: $wi-var-degrees;
+}
+.#{$wi-css-prefix}-thermometer:before {
+	content: $wi-var-thermometer;
+}
+.#{$wi-css-prefix}-thermometer-exterior:before {
+	content: $wi-var-thermometer-exterior;
+}
+.#{$wi-css-prefix}-thermometer-internal:before {
+	content: $wi-var-thermometer-internal;
+}
+.#{$wi-css-prefix}-cloud-down:before {
+	content: $wi-var-cloud-down;
+}
+.#{$wi-css-prefix}-cloud-up:before {
+	content: $wi-var-cloud-up;
+}
+.#{$wi-css-prefix}-cloud-refresh:before {
+	content: $wi-var-cloud-refresh;
+}
+.#{$wi-css-prefix}-horizon:before {
+	content: $wi-var-horizon;
+}
+.#{$wi-css-prefix}-horizon-alt:before {
+	content: $wi-var-horizon-alt;
+}
+.#{$wi-css-prefix}-sunrise:before {
+	content: $wi-var-sunrise;
+}
+.#{$wi-css-prefix}-sunset:before {
+	content: $wi-var-sunset;
+}
+.#{$wi-css-prefix}-moonrise:before {
+	content: $wi-var-moonrise;
+}
+.#{$wi-css-prefix}-moonset:before {
+	content: $wi-var-moonset;
+}
+.#{$wi-css-prefix}-refresh:before {
+	content: $wi-var-refresh;
+}
+.#{$wi-css-prefix}-refresh-alt:before {
+	content: $wi-var-refresh-alt;
+}
+.#{$wi-css-prefix}-umbrella:before {
+	content: $wi-var-umbrella;
+}
+.#{$wi-css-prefix}-barometer:before {
+	content: $wi-var-barometer;
+}
+.#{$wi-css-prefix}-humidity:before {
+	content: $wi-var-humidity;
+}
+.#{$wi-css-prefix}-na:before {
+	content: $wi-var-na;
+}
+.#{$wi-css-prefix}-train:before {
+	content: $wi-var-train;
+}
+.#{$wi-css-prefix}-moon-new:before {
+	content: $wi-var-moon-new;
+}
+.#{$wi-css-prefix}-moon-waxing-crescent-1:before {
+	content: $wi-var-moon-waxing-crescent-1;
+}
+.#{$wi-css-prefix}-moon-waxing-crescent-2:before {
+	content: $wi-var-moon-waxing-crescent-2;
+}
+.#{$wi-css-prefix}-moon-waxing-crescent-3:before {
+	content: $wi-var-moon-waxing-crescent-3;
+}
+.#{$wi-css-prefix}-moon-waxing-crescent-4:before {
+	content: $wi-var-moon-waxing-crescent-4;
+}
+.#{$wi-css-prefix}-moon-waxing-crescent-5:before {
+	content: $wi-var-moon-waxing-crescent-5;
+}
+.#{$wi-css-prefix}-moon-waxing-crescent-6:before {
+	content: $wi-var-moon-waxing-crescent-6;
+}
+.#{$wi-css-prefix}-moon-first-quarter:before {
+	content: $wi-var-moon-first-quarter;
+}
+.#{$wi-css-prefix}-moon-waxing-gibbous-1:before {
+	content: $wi-var-moon-waxing-gibbous-1;
+}
+.#{$wi-css-prefix}-moon-waxing-gibbous-2:before {
+	content: $wi-var-moon-waxing-gibbous-2;
+}
+.#{$wi-css-prefix}-moon-waxing-gibbous-3:before {
+	content: $wi-var-moon-waxing-gibbous-3;
+}
+.#{$wi-css-prefix}-moon-waxing-gibbous-4:before {
+	content: $wi-var-moon-waxing-gibbous-4;
+}
+.#{$wi-css-prefix}-moon-waxing-gibbous-5:before {
+	content: $wi-var-moon-waxing-gibbous-5;
+}
+.#{$wi-css-prefix}-moon-waxing-gibbous-6:before {
+	content: $wi-var-moon-waxing-gibbous-6;
+}
+.#{$wi-css-prefix}-moon-full:before {
+	content: $wi-var-moon-full;
+}
+.#{$wi-css-prefix}-moon-waning-gibbous-1:before {
+	content: $wi-var-moon-waning-gibbous-1;
+}
+.#{$wi-css-prefix}-moon-waning-gibbous-2:before {
+	content: $wi-var-moon-waning-gibbous-2;
+}
+.#{$wi-css-prefix}-moon-waning-gibbous-3:before {
+	content: $wi-var-moon-waning-gibbous-3;
+}
+.#{$wi-css-prefix}-moon-waning-gibbous-4:before {
+	content: $wi-var-moon-waning-gibbous-4;
+}
+.#{$wi-css-prefix}-moon-waning-gibbous-5:before {
+	content: $wi-var-moon-waning-gibbous-5;
+}
+.#{$wi-css-prefix}-moon-waning-gibbous-6:before {
+	content: $wi-var-moon-waning-gibbous-6;
+}
+.#{$wi-css-prefix}-moon-third-quarter:before {
+	content: $wi-var-moon-third-quarter;
+}
+.#{$wi-css-prefix}-moon-waning-crescent-1:before {
+	content: $wi-var-moon-waning-crescent-1;
+}
+.#{$wi-css-prefix}-moon-waning-crescent-2:before {
+	content: $wi-var-moon-waning-crescent-2;
+}
+.#{$wi-css-prefix}-moon-waning-crescent-3:before {
+	content: $wi-var-moon-waning-crescent-3;
+}
+.#{$wi-css-prefix}-moon-waning-crescent-4:before {
+	content: $wi-var-moon-waning-crescent-4;
+}
+.#{$wi-css-prefix}-moon-waning-crescent-5:before {
+	content: $wi-var-moon-waning-crescent-5;
+}
+.#{$wi-css-prefix}-moon-waning-crescent-6:before {
+	content: $wi-var-moon-waning-crescent-6;
+}
+.#{$wi-css-prefix}-moon-alt-new:before {
+	content: $wi-var-moon-alt-new;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-crescent-1:before {
+	content: $wi-var-moon-alt-waxing-crescent-1;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-crescent-2:before {
+	content: $wi-var-moon-alt-waxing-crescent-2;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-crescent-3:before {
+	content: $wi-var-moon-alt-waxing-crescent-3;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-crescent-4:before {
+	content: $wi-var-moon-alt-waxing-crescent-4;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-crescent-5:before {
+	content: $wi-var-moon-alt-waxing-crescent-5;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-crescent-6:before {
+	content: $wi-var-moon-alt-waxing-crescent-6;
+}
+.#{$wi-css-prefix}-moon-alt-first-quarter:before {
+	content: $wi-var-moon-alt-first-quarter;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-gibbous-1:before {
+	content: $wi-var-moon-alt-waxing-gibbous-1;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-gibbous-2:before {
+	content: $wi-var-moon-alt-waxing-gibbous-2;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-gibbous-3:before {
+	content: $wi-var-moon-alt-waxing-gibbous-3;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-gibbous-4:before {
+	content: $wi-var-moon-alt-waxing-gibbous-4;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-gibbous-5:before {
+	content: $wi-var-moon-alt-waxing-gibbous-5;
+}
+.#{$wi-css-prefix}-moon-alt-waxing-gibbous-6:before {
+	content: $wi-var-moon-alt-waxing-gibbous-6;
+}
+.#{$wi-css-prefix}-moon-alt-full:before {
+	content: $wi-var-moon-alt-full;
+}
+.#{$wi-css-prefix}-moon-alt-waning-gibbous-1:before {
+	content: $wi-var-moon-alt-waning-gibbous-1;
+}
+.#{$wi-css-prefix}-moon-alt-waning-gibbous-2:before {
+	content: $wi-var-moon-alt-waning-gibbous-2;
+}
+.#{$wi-css-prefix}-moon-alt-waning-gibbous-3:before {
+	content: $wi-var-moon-alt-waning-gibbous-3;
+}
+.#{$wi-css-prefix}-moon-alt-waning-gibbous-4:before {
+	content: $wi-var-moon-alt-waning-gibbous-4;
+}
+.#{$wi-css-prefix}-moon-alt-waning-gibbous-5:before {
+	content: $wi-var-moon-alt-waning-gibbous-5;
+}
+.#{$wi-css-prefix}-moon-alt-waning-gibbous-6:before {
+	content: $wi-var-moon-alt-waning-gibbous-6;
+}
+.#{$wi-css-prefix}-moon-alt-third-quarter:before {
+	content: $wi-var-moon-alt-third-quarter;
+}
+.#{$wi-css-prefix}-moon-alt-waning-crescent-1:before {
+	content: $wi-var-moon-alt-waning-crescent-1;
+}
+.#{$wi-css-prefix}-moon-alt-waning-crescent-2:before {
+	content: $wi-var-moon-alt-waning-crescent-2;
+}
+.#{$wi-css-prefix}-moon-alt-waning-crescent-3:before {
+	content: $wi-var-moon-alt-waning-crescent-3;
+}
+.#{$wi-css-prefix}-moon-alt-waning-crescent-4:before {
+	content: $wi-var-moon-alt-waning-crescent-4;
+}
+.#{$wi-css-prefix}-moon-alt-waning-crescent-5:before {
+	content: $wi-var-moon-alt-waning-crescent-5;
+}
+.#{$wi-css-prefix}-moon-alt-waning-crescent-6:before {
+	content: $wi-var-moon-alt-waning-crescent-6;
+}
+.#{$wi-css-prefix}-time-1:before {
+	content: $wi-var-time-1;
+}
+.#{$wi-css-prefix}-time-2:before {
+	content: $wi-var-time-2;
+}
+.#{$wi-css-prefix}-time-3:before {
+	content: $wi-var-time-3;
+}
+.#{$wi-css-prefix}-time-4:before {
+	content: $wi-var-time-4;
+}
+.#{$wi-css-prefix}-time-5:before {
+	content: $wi-var-time-5;
+}
+.#{$wi-css-prefix}-time-6:before {
+	content: $wi-var-time-6;
+}
+.#{$wi-css-prefix}-time-7:before {
+	content: $wi-var-time-7;
+}
+.#{$wi-css-prefix}-time-8:before {
+	content: $wi-var-time-8;
+}
+.#{$wi-css-prefix}-time-9:before {
+	content: $wi-var-time-9;
+}
+.#{$wi-css-prefix}-time-10:before {
+	content: $wi-var-time-10;
+}
+.#{$wi-css-prefix}-time-11:before {
+	content: $wi-var-time-11;
+}
+.#{$wi-css-prefix}-time-12:before {
+	content: $wi-var-time-12;
+}
+.#{$wi-css-prefix}-direction-up:before {
+	content: $wi-var-direction-up;
+}
+.#{$wi-css-prefix}-direction-up-right:before {
+	content: $wi-var-direction-up-right;
+}
+.#{$wi-css-prefix}-direction-right:before {
+	content: $wi-var-direction-right;
+}
+.#{$wi-css-prefix}-direction-down-right:before {
+	content: $wi-var-direction-down-right;
+}
+.#{$wi-css-prefix}-direction-down:before {
+	content: $wi-var-direction-down;
+}
+.#{$wi-css-prefix}-direction-down-left:before {
+	content: $wi-var-direction-down-left;
+}
+.#{$wi-css-prefix}-direction-left:before {
+	content: $wi-var-direction-left;
+}
+.#{$wi-css-prefix}-direction-up-left:before {
+	content: $wi-var-direction-up-left;
+}
+.#{$wi-css-prefix}-wind-beaufort-0:before {
+	content: $wi-var-wind-beaufort-0;
+}
+.#{$wi-css-prefix}-wind-beaufort-1:before {
+	content: $wi-var-wind-beaufort-1;
+}
+.#{$wi-css-prefix}-wind-beaufort-2:before {
+	content: $wi-var-wind-beaufort-2;
+}
+.#{$wi-css-prefix}-wind-beaufort-3:before {
+	content: $wi-var-wind-beaufort-3;
+}
+.#{$wi-css-prefix}-wind-beaufort-4:before {
+	content: $wi-var-wind-beaufort-4;
+}
+.#{$wi-css-prefix}-wind-beaufort-5:before {
+	content: $wi-var-wind-beaufort-5;
+}
+.#{$wi-css-prefix}-wind-beaufort-6:before {
+	content: $wi-var-wind-beaufort-6;
+}
+.#{$wi-css-prefix}-wind-beaufort-7:before {
+	content: $wi-var-wind-beaufort-7;
+}
+.#{$wi-css-prefix}-wind-beaufort-8:before {
+	content: $wi-var-wind-beaufort-8;
+}
+.#{$wi-css-prefix}-wind-beaufort-9:before {
+	content: $wi-var-wind-beaufort-9;
+}
+.#{$wi-css-prefix}-wind-beaufort-10:before {
+	content: $wi-var-wind-beaufort-10;
+}
+.#{$wi-css-prefix}-wind-beaufort-11:before {
+	content: $wi-var-wind-beaufort-11;
+}
+.#{$wi-css-prefix}-wind-beaufort-12:before {
+	content: $wi-var-wind-beaufort-12;
+}

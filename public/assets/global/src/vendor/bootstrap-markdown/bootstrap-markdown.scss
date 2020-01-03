@@ -1,0 +1,262 @@
+@import 'vars';
+// var
+// =============================================================
+$md-header-bg: $bg-color-base;
+$md-border: $input-border;
+$md-edit-bg: $color-white;
+$md-text-color: $text-color;
+$md-btn-color: $gray-400;
+$md-btn-active-color: $gray-700;
+$md-control-color: $gray-200;
+$md-control-active-color: $gray-500;
+$md-btn-divider-color: $gray-200;
+
+//                               z-index
+$md-fullscreen-z-index: $zindex-fullscreen;
+$md-fullscreen-controls-z-index: $zindex-overlay;
+$md-preview-bg: #fff;
+
+// for v4a-v4b;
+$input-bg-disabled: $input-disabled-bg;
+
+// Bootstrap-Markdown.less
+// =============================================================
+
+.md-editor {
+
+  // Hover state
+  $color: $input-focus-border-color;
+  $color-rgba: rgba(red($color), green($color), blue($color), .6);
+  display: block;
+  border: 1px solid $md-border;
+  border-radius: $border-radius;
+
+  > .md-header, .md-footer {
+    display: block;
+    padding: 6px 4px;
+    background: $md-header-bg;
+    border-radius: $border-radius $border-radius 0 0;
+  }
+
+  > .md-header {
+    margin: 0;
+  }
+
+  > .md-preview {
+    min-height: 8px;
+    padding: 10px;
+    overflow: auto;
+    background: $md-preview-bg;
+    border-top: 1px dashed transparent;
+    border-bottom: 1px solid transparent;
+    border-radius: 0 0 $border-radius $border-radius;
+  }
+
+  > textarea {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    // outline: thin dotted  \9; /* IE6-9 */
+    margin: 0;
+    font-family: $font-family-monospace;
+    font-size: $font-size-base;
+    background: $md-edit-bg;
+    border: 0;
+    border-top: 1px dashed transparent;
+    border-bottom: 1px solid transparent;
+    border-radius: 0 0 $border-radius $border-radius;
+    outline: 0;
+    box-shadow: none;
+
+    &:focus {
+      background: $input-bg;
+      box-shadow: none;
+    }
+  }
+
+  &.active {
+    border-color: $md-border;
+    outline: 0;
+    // @include box-shadow(inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px #{$color-rgba});
+  }
+
+  .md-controls {
+    float: right;
+    padding: 3px;
+
+    .md-control {
+      right: 5px;
+      padding: 3px 3px 3px 10px;
+      color: $md-control-color;
+
+      &:hover {
+        color: $md-control-active-color;
+      }
+    }
+  }
+
+  // fullscreen mode styles
+  &.md-fullscreen-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    // z-index: 99999;
+    // @include z-index(fullscreen);
+    z-index: $md-fullscreen-z-index;
+    width: 100%;
+    height: 100%;
+    padding: 60px 30px 15px;
+    background: #fff !important;
+    border: 0 !important;
+
+    .md-footer {
+      display: none;
+    }
+
+    .md-input, .md-preview {
+      height: 100% !important;
+      padding: 20px !important;
+      margin: 0 auto !important;
+      font-size: 20px !important;
+      line-height: 1.6em !important;
+      color: #999;
+      resize: none !important;
+      background: #fff !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .md-preview {
+      overflow: auto;
+      color: #333;
+    }
+
+    .md-input {
+      &:hover, &:focus {
+        color: #333;
+        background: #fff !important;
+      }
+    }
+
+    .md-header {
+      position: fixed;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      background: none;
+    }
+
+    .btn-group {
+      float: none;
+    }
+
+    .btn {
+      color: #b3b3b3;
+      background: none;
+      border: 0;
+
+      &:hover, &:focus, &.active, &:active {
+        color: #333;
+        box-shadow: none;
+      }
+    }
+
+    .md-fullscreen-controls {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1002;
+      display: block;
+      text-align: right;
+
+      a {
+        width: 30px;
+        height: 30px;
+        margin: 10px;
+        clear: right;
+        color: #b3b3b3;
+        text-align: center;
+
+        &:hover {
+          color: #333;
+          text-decoration: none;
+        }
+      }
+    }
+
+    .md-editor {
+      position: relative;
+      height: 100% !important;
+    }
+  }
+
+  .md-fullscreen-controls {
+    display: none;
+  }
+}
+
+.md-nooverflow {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
+.md-editor .btn-toolbar {
+  .btn-group {
+    position: relative;
+    margin-left: 20px;
+
+    &:first-child {
+      margin-left: 0;
+
+      &:after {
+        display: none;
+      }
+    }
+
+    &:after {
+      position: absolute;
+      top: 2px;
+      left: -17px;
+      width: 2px;
+      height: 30px;
+      margin: 0 5px;
+      content: "";
+      background: $md-btn-divider-color;
+    }
+  }
+
+  .btn-group .btn-default {
+    color: $md-btn-color;
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+
+    &:hover {
+      color: $md-btn-active-color;
+      background-color: transparent;
+      background-image: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    &.active, &:active {
+      color: $md-btn-active-color;
+      background-color: transparent;
+      background-image: none;
+      border: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.md-footer {
+  .icon-ok {
+    font-family: "#{$wb-font-family}";
+
+    &:before {
+      content: "#{$wb-var-check}";
+    }
+  }
+}

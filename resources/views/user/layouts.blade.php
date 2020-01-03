@@ -15,7 +15,7 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="兔姬菌">
 	<meta name="copyright" content="2017-2019©兔姬菌">
-	<link href="{{asset('favicon.ico')}}" rel="shortcut icon">
+	<link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
 	<!-- 样式表/Stylesheets -->
 	<link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
@@ -170,7 +170,7 @@
 					<span class="site-menu-title">{{trans('home.invoices')}}</span>
 				</a>
 			</li>
-			@if(!\App\Http\Models\Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->get()->isEmpty())
+			@if(!\App\Http\Models\Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist())
 				@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
 					<li class="site-menu-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}">
 						<a href="/invite">

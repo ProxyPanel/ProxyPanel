@@ -1,0 +1,159 @@
+// Name:            Pricing Table
+//
+// Component:       `pricing-table`
+//
+// Modifiers:       'pricing-header'
+//                  'pricing-price'
+//                  'pricing-currency'
+//                  'pricing-period'
+//                  'pricing-title'
+//                  'pricing-features'
+//                  'pricing-footer'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$pricing-table-border: $border-color-base !default;
+$pricing-table-column-bg: $bg-color-base !default;
+$pricing-table-column-featured-bg: $color-white !default;
+$pricing-table-price-font-size: 48px !default;
+
+// Component: Pricing Table
+// ========================================================================
+
+.pricing-table {
+  @include clearfix();
+  padding-top: 30px;
+  text-align: center;
+
+  [class*="pricing-column"] {
+    float: left;
+    width: 100%;
+    margin-bottom: 30px;
+    background-color: $pricing-table-column-bg;
+    border: 1px solid $pricing-table-border;
+    border-right: none;
+
+    &:last-child {
+      border-right: 1px solid $pricing-table-border;
+    }
+
+    &.featured {
+      position: relative;
+      margin-right: -1px;
+      background-color: $pricing-table-column-featured-bg;
+      border-right: 1px solid $pricing-table-border;
+    }
+  }
+
+  // Modifier: `pricing-header`
+  // ========================================================================
+  .pricing-header {
+    padding-bottom: 24px;
+    margin: 30px 30px 25px;
+    border-bottom: 1px solid $pricing-table-border;
+  }
+
+  // Modifier: `pricing-price`
+  // ========================================================================
+  .pricing-price {
+    font-size: $pricing-table-price-font-size;
+  }
+
+  // Modifier: `pricing-currency`
+  // ========================================================================
+  .pricing-currency {
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: -10px;
+    font-size: 20px;
+    vertical-align: top;
+  }
+
+  // Modifier: `pricing-period`
+  // ========================================================================
+  .pricing-period {
+    font-size: 16px;
+  }
+
+  // Modifier: `pricing-title`
+  // ========================================================================
+  .pricing-title {
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  // Modifier: `pricing-features`
+  // ========================================================================
+  .pricing-features {
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: block;
+      margin-bottom: 20px;
+      font-size: 14px;
+      list-style: none;
+    }
+  }
+
+  // Modifier: `pricing-footer`
+  // ========================================================================
+  .pricing-footer {
+    padding: 20px 0;
+    margin: 25px 30px 30px;
+  }
+}
+
+// Responsive
+// ========================================================================
+
+@include media-breakpoint-up(md) {
+  .pricing-table {
+    .pricing-column {
+      &-three {
+        width: 33.33%;
+
+        &.featured {
+          top: -30px;
+          padding-top: 30px;
+          padding-bottom: 30px;
+          margin-bottom: -30px;
+        }
+      }
+
+      &-four {
+        width: 50%;
+      }
+
+      &-five {
+        width: 50%;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-up(xl) {
+  .pricing-table {
+    .pricing-column {
+      &-four {
+        width: 25%;
+      }
+
+      &-five {
+        width: 20%;
+      }
+
+      &-four, &-five {
+        &.featured {
+          top: -30px;
+          padding-top: 30px;
+          padding-bottom: 30px;
+          margin-bottom: -30px;
+        }
+      }
+    }
+  }
+}

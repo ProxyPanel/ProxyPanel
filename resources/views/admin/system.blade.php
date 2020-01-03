@@ -904,54 +904,6 @@
 						</div>
 						<div class="tab-pane" id="payment" role="tabpanel">
 							<form action="#" method="post" role="form" class="form-horizontal">
-								<div class="form-row pb-70">
-									<div class="form-group col-md-12">
-										<div class="alert alert-info text-center">
-											<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span></button>
-											请在<a href="https://console.youzanyun.com/login" target="_blank" style="color: red;"> 有赞云 </a>设置应用的推送网址为：{{$website_url . '/api/yzy'}}
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_youzan">有赞支付</label>
-											<span class="col-md-9"><input type="checkbox" id="is_youzan" data-on-color="primary" data-off-color="danger" data-on-text="启用" data-off-text="关闭" data-base-class="bootstrap-switch" @if($is_youzan) checked @endif></span>
-											<span class="text-help offset-md-3"> 请先到 <a href="https://console.youzanyun.com/dashboard">有赞云</a> 申请client_id和client_secret（<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E6%9C%89%E8%B5%9E%E4%BA%91%E6%94%AF%E4%BB%98" target="_blank">申请教程</a>） </span>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="kdt_id">授权店铺id</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="text" class="form-control" name="kdt_id" id="kdt_id" value="{{$kdt_id}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setKdtId()">修改</button></span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="youzan_client_id">Client_id</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="text" class="form-control" name="youzan_client_id" id="youzan_client_id" value="{{$youzan_client_id}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setYouzanClientId()">修改</button></span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="youzan_client_secret">Client_secret</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="text" class="form-control" name="youzan_client_secret" id="youzan_client_secret" value="{{$youzan_client_secret}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="setYouzanClientSecret()">修改</button></span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
 								<div class="row pb-70">
 									<div class="form-group col-lg-6">
 										<div class="row">
@@ -1684,24 +1636,6 @@
             }
         });
 
-        // 启用、禁用有赞云
-        $('#is_youzan').on({
-            'switchChange.bootstrapSwitch': function (event, state) {
-                $.post("/admin/setConfig", {
-                    _token: '{{csrf_token()}}',
-                    name: 'is_youzan',
-                    value: state ? 1 : 0
-                }, function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                            .then(() => window.location.reload())
-                    } else {
-                        swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
-                    }
-                });
-            }
-        });
-
         // 启用、禁用alipay国际
         $('#is_alipay').on({
             'switchChange.bootstrapSwitch': function (event, state) {
@@ -1900,50 +1834,6 @@
                 _token: '{{csrf_token()}}',
                 name: 'subscribe_ban_times',
                 value: subscribe_ban_times
-            }, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                        .then(() => window.location.reload())
-                } else {
-                    swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
-                }
-            });
-        }
-
-        // 设置有赞云的kdt_id
-        function setKdtId() {
-            $.post("/admin/setConfig", {_token: '{{csrf_token()}}', name: 'kdt_id', value: $("#kdt_id").val()}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                        .then(() => window.location.reload())
-                } else {
-                    swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
-                }
-            });
-        }
-
-        // 设置有赞云的client_id
-        function setYouzanClientId() {
-            $.post("/admin/setConfig", {
-                _token: '{{csrf_token()}}',
-                name: 'youzan_client_id',
-                value: $("#youzan_client_id").val()
-            }, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                        .then(() => window.location.reload())
-                } else {
-                    swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
-                }
-            });
-        }
-
-        // 设置有赞云的client_secret
-        function setYouzanClientSecret() {
-            $.post("/admin/setConfig", {
-                _token: '{{csrf_token()}}',
-                name: 'youzan_client_secret',
-                value: $("#youzan_client_secret").val()
             }, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})

@@ -38,6 +38,7 @@
 			</div>
 			<div class="panel-body">
 				<form action="/shop/addGoods" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+					{{csrf_field()}}
 					<div class="form-row">
 						<div class="col-lg-6 col-md-12">
 							<div class="form-group row">
@@ -62,7 +63,6 @@
 								<label class="col-md-3 col-form-label" for="name">名称</label>
 								<div class="col-md-6">
 									<input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
-									{{csrf_field()}}
 								</div>
 							</div>
 							<div class="form-group row package-money">
@@ -76,7 +76,7 @@
 							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="price">售价</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="price" id="price" value="{{Request::old('price')}}" required/>
+									<input type="text" class="form-control" name="price" id="price" value="{{Request::old('price')}}" required/>
 									<span class="input-group-text">元</span>
 								</div>
 							</div>
@@ -87,6 +87,14 @@
 									<span class="input-group-text">元</span>
 								</div>
 								<span class="offset-md-3 text-help"> 用户自行重置流量价格, <code>0</code> 时代表改该商品不提供重置功能 </span>
+							</div>
+							<div class="form-group row package-renew" style="display: none">
+								<label class="col-md-3 col-form-label" for="period">重置周期</label>
+								<div class="col-md-4 input-group">
+									<input type="number" class="form-control" name="period" id="period" value="{{Request::old('period')? :30}}" required/>
+									<span class="input-group-text">天</span>
+								</div>
+								<span class="offset-md-3 text-help"> 套餐流量会每N天重置 </span>
 							</div>
 							<div class="form-group row package-money">
 								<label class="col-md-3 col-form-label" for="limit_num">限购数量</label>
@@ -107,7 +115,7 @@
 								</div>
 								<span class="offset-md-3 text-help"> 自动给购买此商品的用户打上相应的标签 </span>
 							</div>
-							<div class="form-group row package-money">
+							<div class="form-group row package-renew" style="display: none">
 								<label class="col-md-3 col-form-label" for="days">有效期</label>
 								<div class="col-md-3 input-group">
 									<input type="number" class="form-control" name="days" id="days" value="{{Request::old('days')? :30}}" required/>

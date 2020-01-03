@@ -1,0 +1,13 @@
+
+.page-description {
+  color: $headings-small-color;
+}
+
+.page-header {
+  background: $page-header-bg;
+}
+
+.page-header-bordered {
+  background-color: $inverse;
+  border-bottom: 1px solid $page-header-border-color;
+}

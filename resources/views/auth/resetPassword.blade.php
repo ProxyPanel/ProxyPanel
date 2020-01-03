@@ -1,5 +1,5 @@
 @extends('auth.layouts')
-@section('title', trans('auth.restPassword'))
+@section('title', trans('auth.resetPassword'))
 @section('content')
 	@if (Session::get('successMsg'))
 		<div class="alert alert-success">
@@ -14,7 +14,7 @@
 	<form method="post" action="/resetPassword">
 		@if(\App\Components\Helpers::systemConfig()['is_reset_password'])
 			<div class="form-title">
-				{{trans('auth.restPassword')}}
+				{{trans('auth.resetPassword')}}
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
 				<input type="email" class="form-control" name="username" value="{{Request::old('username')}}" required="required" autofocus="autofocus"/>

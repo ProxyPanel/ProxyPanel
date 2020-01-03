@@ -1,0 +1,10 @@
+/*!
+ * FormValidation (http://formvalidation.io)
+ * The best jQuery plugin to validate form fields. Support Bootstrap, Foundation, Pure, SemanticUI, UIKit and custom frameworks
+ *
+ * @version     v0.8.1, built on 2016-07-29 1:10:56 AM
+ * @author      https://twitter.com/formvalidation
+ * @copyright   (c) 2013 - 2016 Nguyen Huu Phuoc
+ * @license     http://formvalidation.io/license/
+ */
+!function(a){FormValidation.Framework.Foundation5=function(b,c){c=a.extend(!0,{button:{selector:'[type="submit"]:not([formnovalidate])',disabled:"disabled"},err:{clazz:"error",parent:"^.*((small|medium|large)-[0-9]+)\\s.*(columns).*$"},icon:{valid:null,invalid:null,validating:null,feedback:"fv-control-feedback"},row:{selector:".row",valid:"fv-has-success",invalid:"error",feedback:"fv-has-feedback"}},c),FormValidation.Base.apply(this,[b,c])},FormValidation.Framework.Foundation5.prototype=a.extend({},FormValidation.Base.prototype,{_fixIcon:function(a,b){var c=this._namespace,d=a.attr("type"),e=a.attr("data-"+c+"-field"),f=this.options.fields[e].row||this.options.row.selector;a.closest(f);if("checkbox"===d||"radio"===d){var g=b.next();g.is("label")&&b.insertAfter(g)}},_createTooltip:function(a,b,c){var d=this,e=a.data("fv.icon");e&&(e.attr("title",b).css({cursor:"pointer"}).off("mouseenter.container.fv focusin.container.fv").on("mouseenter.container.fv",function(){d._showTooltip(a,c)}).off("mouseleave.container.fv focusout.container.fv").on("mouseleave.container.fv focusout.container.fv",function(){d._hideTooltip(a,c)}),Foundation.libs.tooltip.create(e),e.data("fv.foundation.tooltip",e))},_destroyTooltip:function(a,b){var c=a.data("fv.icon");if(c){c.css({cursor:""});var d=c.data("fv.foundation.tooltip");d&&(d.off(".fndtn.tooltip"),Foundation.libs.tooltip.hide(d),c.removeData("fv.foundation.tooltip"))}},_hideTooltip:function(a,b){var c=a.data("fv.icon");if(c){c.css({cursor:""});var d=c.data("fv.foundation.tooltip");d&&Foundation.libs.tooltip.hide(d)}},_showTooltip:function(a,b){var c=a.data("fv.icon");if(c){var d=c.data("fv.foundation.tooltip");d&&(c.css({cursor:"pointer"}),Foundation.libs.tooltip.show(d))}}})}(jQuery);

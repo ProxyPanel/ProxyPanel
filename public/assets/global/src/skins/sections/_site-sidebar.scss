@@ -1,0 +1,39 @@
+//
+// Site Sidebar
+// ========================================================================
+
+// Component: Site Sidebar
+// ========================================================================
+.site-sidebar {
+  .conversation {
+    &-header {
+      border-bottom: 1px solid $divider-color-base;
+    }
+
+    &-more,
+    &-return {
+      color: $icon-color;
+
+      &:hover,
+      &:focus {
+        color: $icon-hover-color;
+      }
+
+      &:active {
+        color: $icon-active-color;
+      }
+    }
+
+    &-title {
+      color: $gray-700;
+    }
+
+    &-reply {
+      border-top: 1px solid $divider-color-base;
+
+      .form-control {
+        border-right: 1px solid $input-border;
+      }
+    }
+  }
+}

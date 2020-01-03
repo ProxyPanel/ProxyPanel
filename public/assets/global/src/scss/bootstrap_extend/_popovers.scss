@@ -1,0 +1,238 @@
+// Name:            Popover
+//
+// Component:       `popover`
+//
+// Modifiers:       `popover-primary`
+//                  `popover-success`
+//                  `popover-info`
+//                  `popover-warning`
+//                  `popover-danger`
+//                  `popover-rotate`
+//                  `popover-scale`
+//
+// Markup:
+//
+// <!-- popover -->
+// <div class="popover">
+//   <div class="arrow"></div>
+//   <h3 class="popover-title"></h3>
+//   <div class="popover-content"></div>
+// </div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$popover-primary-color: $inverse !default;
+$popover-primary-bg: $brand-primary !default;
+$popover-primary-border: $brand-primary !default;
+$popover-success-color: $inverse !default;
+$popover-success-bg: $brand-success !default;
+$popover-success-border: $brand-success !default;
+$popover-info-color: $inverse !default;
+$popover-info-bg: $brand-info !default;
+$popover-info-border: $brand-info !default;
+$popover-warning-color: $inverse !default;
+$popover-warning-bg: $brand-warning !default;
+$popover-warning-border: $brand-warning !default;
+$popover-danger-color: $inverse !default;
+$popover-danger-bg: $brand-danger !default;
+$popover-danger-border: $brand-danger !default;
+
+// Component: Popover
+// ========================================================================
+
+.popover {
+  padding: 0;
+  box-shadow: $popover-shadow;
+}
+
+.bs-popover-top {
+  margin-bottom: $popover-arrow-height;
+
+  .arrow {
+    bottom: 0;
+    left: 50%;
+    margin: 0;
+  }
+
+  .arrow::before,
+  .arrow::after {
+    border-bottom-width: 0;
+  }
+
+  .arrow::before {
+    bottom: -$popover-arrow-height;
+    margin-left: -$popover-arrow-width/2;
+    border-top-color: $popover-arrow-outer-color;
+  }
+
+  .arrow::after {
+    bottom: calc((#{$popover-arrow-height} - #{$popover-border-width}) * -1);
+    margin-left: -$popover-arrow-width/2;
+    border-top-color: $popover-arrow-color;
+  }
+}
+
+.bs-popover-right {
+  margin-left: $popover-arrow-height;
+
+  .arrow {
+    top: 50%;
+    left: 0;
+    margin: 0;
+  }
+
+  .arrow::before,
+  .arrow::after {
+    margin-top: -$popover-arrow-width/2;
+    border-left-width: 0;
+  }
+
+  .arrow::before {
+    left: -$popover-arrow-height;
+    border-right-color: $popover-arrow-outer-color;
+  }
+
+  .arrow::after {
+    left: calc((#{$popover-arrow-height} - #{$popover-border-width}) * -1);
+    border-right-color: $popover-arrow-color;
+  }
+}
+
+.bs-popover-bottom {
+  margin-top: $popover-arrow-height;
+
+  .arrow {
+    top: 0;
+    left: 50%;
+    margin: 0;
+  }
+
+  .arrow::before,
+  .arrow::after {
+    margin-left: -$popover-arrow-width/2;
+    border-top-width: 0;
+  }
+
+  .arrow::before {
+    top: -$popover-arrow-height;
+    border-bottom-color: $popover-arrow-outer-color;
+  }
+
+  .arrow::after {
+    top: calc((#{$popover-arrow-height} - #{$popover-border-width}) * -1);
+    border-bottom-color: $popover-header-bg;
+  }
+
+  // This will remove the popover-header's border just below the arrow
+  .popover-header::before {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    display: block;
+    width: 20px;
+    margin-left: -10px;
+    content: "";
+    border-bottom: $popover-border-width solid $popover-header-bg;
+  }
+}
+
+.bs-popover-left {
+  margin-right: $popover-arrow-height;
+
+  .arrow {
+    top: 50%;
+    right: 0;
+    margin: 0;
+  }
+
+  .arrow::before,
+  .arrow::after {
+    margin-top: -$popover-arrow-width/2;
+    border-right-width: 0;
+  }
+
+  .arrow::before {
+    right: -$popover-arrow-height;
+    border-left-color: $popover-arrow-outer-color;
+  }
+
+  .arrow::after {
+    right: calc((#{$popover-arrow-height} - #{$popover-border-width}) * -1);
+    border-left-color: $popover-arrow-color;
+  }
+}
+
+.popover-top {
+  @extend .bs-popover-top;
+}
+.popover-bottom {
+  @extend .bs-popover-bottom;
+}
+.popover-left {
+  @extend .bs-popover-left;
+}
+.popover-right {
+  @extend .bs-popover-right;
+}
+
+.popover-auto {
+  &[x-placement^="top"] {
+    @extend .bs-popover-top;
+  }
+  &[x-placement^="right"] {
+    @extend .bs-popover-right;
+  }
+  &[x-placement^="bottom"] {
+    @extend .bs-popover-bottom;
+  }
+  &[x-placement^="left"] {
+    @extend .bs-popover-left;
+  }
+}
+
+.popover-header {
+  margin: 0;
+  // background-color: $popover-header-bg;
+  // border-bottom: $popover-border-width solid darken($popover-header-bg, 5%);
+  // $offset-border-width: calc(#{$border-radius-lg} - #{$popover-border-width});
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `popover-primary`
+// -------------------------
+
+.popover-primary {
+  @include popover-variant($popover-primary-color, $popover-primary-bg, $popover-primary-border);
+}
+
+// Modifier: `popover-success`
+// -------------------------
+
+.popover-success {
+  @include popover-variant($popover-success-color, $popover-success-bg, $popover-success-border);
+}
+
+// Modifier: `popover-info`
+// -------------------------
+
+.popover-info {
+  @include popover-variant($popover-info-color, $popover-info-bg, $popover-info-border);
+}
+
+// Modifier: `popover-warning`
+// -------------------------
+
+.popover-warning {
+  @include popover-variant($popover-warning-color, $popover-warning-bg, $popover-warning-border);
+}
+
+// Modifier: `popover-danger`
+// -------------------------
+
+.popover-danger {
+  @include popover-variant($popover-danger-color, $popover-danger-bg, $popover-danger-border);
+}

@@ -1,0 +1,18 @@
+/**
+ * OpenWeb Icons, 1.4.3
+ * Created by Matthias Pfefferle
+ * http://pfefferle.github.io/openwebicons/
+ * OFL-1.1 License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$owi-css-prefix}-"],
+[class*=" #{$owi-css-prefix}-"] {
+  font-family: '#{$owi-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

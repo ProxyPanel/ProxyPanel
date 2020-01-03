@@ -1,0 +1,90 @@
+
+  .select2-selection--multiple {
+    box-sizing: border-box;
+
+    cursor: pointer;
+    display: block;
+
+    min-height: 32px;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    .select2-selection__rendered {
+      display: inline-block;
+      overflow: hidden;
+      padding-left: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .select2-search--inline {
+    float: left;
+
+    .select2-search__field {
+      box-sizing: border-box;
+      border: none;
+      font-size: 100%;
+      margin-top: 5px;
+      padding: 0;
+
+      &::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+      }
+    }
+  }
+
+//color tag
+//=============================================================================
+.select2-primary .select2-container--default .select2-selection--multiple .select2-selection__choice,
+.select2-results__otption .select2-results__otption--highlighted {
+  color: $color-white;
+  background: $brand-primary;
+  border-color: $brand-primary;
+  .select2-selection__choice__remove {
+    color: $color-white;
+  }
+}
+
+.select2-success .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background: $brand-success;
+  color: $color-white;
+  border-color: $brand-success;
+  .select2-selection__choice__remove {
+    color: $color-white;
+  }
+}
+
+.select2-info .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background: $brand-info;
+  color: $color-white;
+  border-color: $brand-info;
+  .select2-selection__choice__remove {
+    color: $color-white;
+  }
+}
+
+.select2-warning .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background: $brand-warning;
+  color: $color-white;
+  border-color: $brand-warning;
+  .select2-selection__choice__remove {
+    color: $color-white;
+  }
+}
+
+.select2-danger .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background: $brand-danger;
+  color: $color-white;
+  border-color: $brand-danger;
+  .select2-selection__choice__remove {
+    color: $color-white;
+  }
+}
+
+//for aria-selected-true;
+// .select2-container--default .select2-results__option[aria-selected="true"] {
+//   background-color: ;
+//   color: ;
+// }

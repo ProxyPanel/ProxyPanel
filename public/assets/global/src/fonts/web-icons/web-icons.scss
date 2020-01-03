@@ -1,0 +1,18 @@
+/**
+ * Web Icons, 0.2.4
+ * Created by amazingSurge
+ * https://github.com/amazingSurge/web-icons
+ * MIT License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$wb-css-prefix}-"],
+[class*=" #{$wb-css-prefix}-"] {
+  font-family: '#{$wb-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

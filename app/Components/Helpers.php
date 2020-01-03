@@ -78,7 +78,7 @@ class Helpers
 		$config = self::systemConfig();
 		$port = $config['min_port'];
 
-		$exists_port = User::query()->where('port', '>=', $config['min_port'])->pluck('port')->toArray();
+		$exists_port = User::query()->where('port', '>=', $port)->pluck('port')->toArray();
 		while(in_array($port, $exists_port) || in_array($port, self::$denyPorts)){
 			$port = $port+1;
 		}
@@ -119,6 +119,44 @@ class Helpers
 		}
 
 		return $code;
+	}
+
+	/**
+	 * 添加用户
+	 *
+	 * @param string $username        用户邮箱
+	 * @param string $password        用户密码
+	 * @param string $transfer_enable 可用流量
+	 * @param int    $data            可使用天数
+	 * @param int    $referral_uid    邀请人
+	 * @return int
+	 */
+	public static function addUser($username, $password, $transfer_enable, $data, $referral_uid = 0)
+	{
+		$user = new User();
+		$user->username = $username;
+		$user->password = $password;
+		// 生成一个可用端口
+		$user->port = self::systemConfig()['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
+		$user->passwd = makeRandStr();
+		$user->vmess_id = createGuid();
+		$user->enable = 1;
+		$user->method = Helpers::getDefaultMethod();
+		$user->protocol = Helpers::getDefaultProtocol();
+		$user->protocol_param = '';
+		$user->obfs = Helpers::getDefaultObfs();
+		$user->obfs_param = '';
+		$user->usage = 1;
+		$user->transfer_enable = $transfer_enable; // 新创建的账号给1，防止定时任务执行时发现u + d >= transfer_enable被判为流量超限而封禁
+		$user->enable_time = date('Y-m-d');
+		$user->expire_time = date('Y-m-d', strtotime("+".$data." days"));
+		$user->reg_ip = getClientIp();
+		$user->referral_uid = $referral_uid;
+		$user->reset_time = NULL;
+		$user->status = 1;
+		$user->save();
+
+		return $user->id;
 	}
 
 	/**
