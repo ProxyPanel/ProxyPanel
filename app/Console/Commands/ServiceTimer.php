@@ -41,7 +41,8 @@ class ServiceTimer extends Command
 	// 扣减用户到期商品的流量
 	private function decGoodsTraffic()
 	{
-		$orderList = Order::query()->with(['user', 'goods'])->where('status', 2)->where('is_expire', 0)->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
+		//获取失效的套餐
+		$orderList = Order::query()->with(['goods'])->where('status', 2)->where('is_expire', 0)->whereHas('goods', function($q){ $q->where('type', 2); })->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
 		if($orderList->isNotEmpty()){
 			DB::beginTransaction();
 			try{
