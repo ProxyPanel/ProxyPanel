@@ -76,7 +76,7 @@ trait Callback
 					$order->status = 2;
 					$order->save();
 					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $user->transfer_enable+$goods->traffic*1048576, '[在线支付]加上用户购买的套餐流量');
-					$user->increment('transfer_enable', $goods->traffic*1048576);
+					User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic*1048576);
 					break;
 				case 2:
 					$activePlan = Order::query()
@@ -153,7 +153,7 @@ trait Callback
 				case 3:
 					$order->status = 2;
 					$order->save();
-					$user->increment('balance', $goods->price*100);
+					User::query()->where('id', $order->user_id)->increment('balance', $goods->price*100);
 
 					// 余额变动记录日志
 					$this->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance+$goods->price, $goods->price, '用户在线充值');

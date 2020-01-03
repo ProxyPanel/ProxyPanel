@@ -71,7 +71,7 @@ class AutoJob extends Command
 	private function closeOrders()
 	{
 		// 关闭超时未支付的在线支付订单（在线支付收款二维码超过30分钟自动关闭，关闭后无法再支付，所以我们限制15分钟内必须付款）
-		$paymentList = Payment::query()->with(['order', 'order.coupon'])->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
+		$paymentList = Payment::query()->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
 		if($paymentList->isNotEmpty()){
 			DB::beginTransaction();
 			try{
