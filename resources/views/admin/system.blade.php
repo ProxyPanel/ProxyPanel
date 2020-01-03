@@ -450,7 +450,7 @@
 											<label class="col-md-3 col-form-label" for="admin_invite_days">管理员-邀请码有效期</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input class="form-control" type="number" id="admin_invite_days" name="admin_invite_days" value="{{$admin_invite_days}}"/>
+													<input type="number" class="form-control" name="admin_invite_days" id="admin_invite_days" value="{{$admin_invite_days}}"/>
 													<div class="input-group-append">
 													</div>
 													<span class="input-group-text">天</span>

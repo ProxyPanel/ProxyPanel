@@ -52,7 +52,7 @@
 					<div class="row">
 						<div class="col-lg-3 pl-30">
 							<div class="input-group">
-								<input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}"/>
+								<input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}"/>
 								<div class="input-group-btn">
 									<button type="submit" class="btn btn-info" onclick="redeemCoupon()"><i class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}</button>
 								</div>

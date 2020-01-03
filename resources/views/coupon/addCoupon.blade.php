@@ -87,7 +87,7 @@
 					<div class="form-group row discount" style="display: none;">
 						<label class="col-md-2 col-form-label" for="discount">折扣</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="discount" id="discount" value="{{Request::old('discount')}}"/>
+							<input type="number" class="form-control" name="discount" id="discount" value="{{Request::old('discount')}}" step="0.1"/>
 							<span class="input-group-text">折</span>
 						</div>
 						<span class="text-help"> 范围为 1 ~ 9.9折，即 10% ~ 99% </span>
@@ -95,14 +95,14 @@
 					<div class="form-group row amount">
 						<label class="col-md-2 col-form-label" for="amount">金额</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="amount" id="amount" value="{{Request::old('amount')}}" required/>
+							<input type="number" class="form-control" name="amount" id="amount" value="{{Request::old('amount')}}" step="0.01" required/>
 							<span class="input-group-text">元</span>
 						</div>
 					</div>
 					<div class="form-group row usage">
 						<label class="col-md-2 col-form-label" for="rule">条件</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" requied/>
+							<input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" step="0.01" requied/>
 							<span class="input-group-text">元</span>
 						</div>
 						<span class="text-help"> 当套餐超过N值时，才能使用本优惠劵；0即使用无限制 </span>

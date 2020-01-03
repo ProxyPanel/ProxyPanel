@@ -79,12 +79,12 @@
 									</div>
 									<div class="form-group row">
 										<label for="ssh_port" class="col-md-3 col-form-label"> SSH端口 </label>
-										<input type="number" class="form-control col-md-4" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
+										<input type="number" class="form-control col-md-4" name="ssh_port" id="ssh_port" value="{{$node->ssh_port}}" placeholder="服务器SSH端口" required>
 										<span class="text-help offset-md-3">请务必正确填写此值，否则TCP阻断检测可能误报</span>
 									</div>
 									<div class="form-group row">
 										<label for="traffic_rate" class="col-md-3 col-form-label"> 流量比例 </label>
-										<input type="number" class="form-control col-md-4" name="traffic_rate" value="{{$node->traffic_rate}}" id="traffic_rate" required>
+										<input type="number" class="form-control col-md-4" name="traffic_rate" id="traffic_rate" value="{{$node->traffic_rate}}" step="0.01" required>
 										<span class="text-help offset-md-3"> 举例：0.1用100M结算10M，5用100M结算500M </span>
 									</div>
 									<div class="form-group row">

@@ -62,7 +62,7 @@
 				<div class="panel-footer pb-30">
 					<form>
 						<div class="input-group">
-							<input id="editor" type="text" class="form-control" placeholder="{{trans('home.ticket_reply_placeholder')}}"/>
+							<input type="text" class="form-control" id="editor" placeholder="{{trans('home.ticket_reply_placeholder')}}"/>
 							<span class="input-group-btn">
                                 <button type="button" class="btn btn-primary" onclick="replyTicket()"> {{trans('home.ticket_reply')}}</button>
                             </span>

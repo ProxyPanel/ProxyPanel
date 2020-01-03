@@ -96,7 +96,7 @@
 								<div class="row">
 									<label for="title" class="col-md-2 control-label"> 标题 </label>
 									<div class="col-md-6">
-										<input type="text" class="form-control" name="title" id="title" placeholder="">
+										<input type="text" class="form-control" name="title" id="title"/>
 									</div>
 								</div>
 							</div>

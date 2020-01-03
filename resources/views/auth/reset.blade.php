@@ -21,12 +21,12 @@
 				{{trans('auth.resetPassword')}}
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input class="form-control" type="password" autocomplete="off" name="password" value="" required/>
+				<input class="form-control" type="password" autocomplete="off" name="password" required/>
 				<label class="floating-label" for="password">{{trans('auth.new_password')}}</label>
 				{{csrf_field()}}
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input class="form-control" type="password" autocomplete="off" name="repassword" value="" required/>
+				<input class="form-control" type="password" autocomplete="off" name="repassword" required/>
 				<label class="floating-label" for="repassword">{{trans('auth.retype_password')}}</label>
 			</div>
 		@endif

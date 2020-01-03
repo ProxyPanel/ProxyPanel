@@ -40,7 +40,7 @@
 			@if(\App\Components\Helpers::systemConfig()['is_verify_register'])
 				<div class="form-group form-material floating" data-plugin="formMaterial">
 					<div class="input-group" data-plugin="inputGroupFile">
-						<input type="text" class="form-control" autocomplete="off" name="verify_code" value="{{Request::old('verify_code')}}" required/>
+						<input type="text" class="form-control" name="verify_code" value="{{Request::old('verify_code')}}" required/>
 						<label class="floating-label" for="verify_code">{{trans('auth.captcha')}}</label>
 						<span class="input-group-btn">
                             <span class="btn btn-success" id="sendCode" onclick="sendVerifyCode()">
@@ -51,11 +51,11 @@
 				</div>
 			@endif
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input type="password" class="form-control" autocomplete="off" name="password" value="" required/>
+				<input type="password" class="form-control" autocomplete="off" name="password" required/>
 				<label class="floating-label" for="password">{{trans('auth.password')}}</label>
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input type="password" class="form-control" autocomplete="off" name="repassword" value="" required/>
+				<input type="password" class="form-control" autocomplete="off" name="repassword" required/>
 				<label class="floating-label" for="repassword">{{trans('auth.retype_password')}}</label>
 			</div>
 			@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
@@ -73,7 +73,7 @@
 				@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
 					@case(1)<!-- Default Captcha -->
 					<div class="form-group form-material floating input-group" data-plugin="formMaterial">
-						<input type="text" class="form-control" name="captcha" value="" required/>
+						<input type="text" class="form-control" name="captcha" required/>
 						<label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
 						<img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
 					</div>

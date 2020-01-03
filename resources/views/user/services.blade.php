@@ -26,7 +26,7 @@
 							<div class="content-text text-center mb-0">
 								<span class="font-size-20 font-weight-100">需要 <code>{{$renewTraffic}}</code> 元</span>
 								<br/>
-								<button class="btn btn-danger" onclick="resetTraffic()">重置</button>
+								<button class="btn btn-danger mt-10" onclick="resetTraffic()">重置</button>
 							</div>
 						</div>
 					</div>
