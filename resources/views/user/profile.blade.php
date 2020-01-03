@@ -72,7 +72,7 @@
 									</div>
 									<div class="form-group row">
 										<label for="qq" class="col-md-2 col-form-label">QQ</label>
-										<input type="text" class="form-control col-md-5 round" name="qq" id="qq" value="{{Auth::user()->qq}}" required/>
+										<input type="number" class="form-control col-md-5 round" name="qq" id="qq" value="{{Auth::user()->qq}}" required/>
 									</div>
 									<div class="form-actions">
 										<button type="submit" class="btn btn-info">{{trans('home.submit')}}</button>

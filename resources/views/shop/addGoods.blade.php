@@ -76,14 +76,14 @@
 							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="price">售价</label>
 								<div class="col-md-4 input-group">
-									<input type="text" class="form-control" name="price" id="price" value="{{Request::old('price')}}" required/>
+									<input type="number" class="form-control" name="price" id="price" value="{{Request::old('price')}}" step="0.01" required/>
 									<span class="input-group-text">元</span>
 								</div>
 							</div>
 							<div class="form-group row package-renew" style="display: none">
 								<label class="col-md-3 col-form-label" for="renew">流量重置价格</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="renew" id="renew" value="{{Request::old('renew')? :0}}" required/>
+									<input type="number" class="form-control" name="renew" id="renew" value="{{Request::old('renew')? :0}}" step="0.01" required/>
 									<span class="input-group-text">元</span>
 								</div>
 								<span class="offset-md-3 text-help"> 用户自行重置流量价格, <code>0</code> 时代表改该商品不提供重置功能 </span>

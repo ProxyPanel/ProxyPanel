@@ -14,7 +14,7 @@ class Curl
 	{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -24,9 +24,9 @@ class Curl
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		}
 
-		$res = curl_exec($ch);
+		$result = curl_exec($ch);
 		curl_close($ch);
 
-		return $res;
+		return $result;
 	}
 }

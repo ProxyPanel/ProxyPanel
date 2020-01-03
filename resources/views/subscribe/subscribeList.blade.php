@@ -11,7 +11,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-2 col-sm-6">
-						<input type="text" class="form-control" name="user_id" id="user_id" value="{{Request::get('user_id')}}" placeholder="ID"/>
+						<input type="number" class="form-control" name="user_id" id="user_id" value="{{Request::get('user_id')}}" placeholder="ID"/>
 					</div>
 					<div class="form-group col-lg-4 col-sm-6">
 						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>

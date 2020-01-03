@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Components\Curl;
 use App\Components\Helpers;
 use App\Components\ServerChan;
 use App\Http\Models\SsNode;
@@ -128,9 +129,9 @@ class NodeBlockedDetection extends Command
 		$checkName = $type? 'ICMP' : 'TCP';
 
 		try{
-			$ret = json_decode($this->curlRequest($url), TRUE);
+			$ret = json_decode(Curl::send($url), TRUE);
 			if(!$ret){
-				Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：");
+				Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：".$url);
 
 				return FALSE;
 			}elseif(!$ret['success']){
@@ -171,9 +172,5 @@ class NodeBlockedDetection extends Command
 			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId, $nodeName, $nodeServer));
 		}
 		ServerChan::send($title, $content);
-	}
-
-	private function curlRequest(string $url)
-	{
 	}
 }

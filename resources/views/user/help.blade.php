@@ -76,239 +76,327 @@
 												<div class="nav-tabs-horizontal" data-plugin="tabs">
 													<ul class="nav nav-tabs nav-tabs-line mr-25" role="tablist">
 														<li class="nav-item" role="presentation">
-															<a class="nav-link active" data-toggle="tab" href="#tab_1" aria-controls="tab_1" role="tab" aria-expanded="true">
+															<a class="nav-link active" data-toggle="tab" href="#android_client" aria-controls="android_client" role="tab" aria-expanded="true">
 																<i class="icon fa-android" aria-hidden="true"></i>Android</a>
 														</li>
 														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#tab_2" aria-controls="tab_2" role="tab">
+															<a class="nav-link" data-toggle="tab" href="#shadowrocket_client" aria-controls="shadowrocket_client" role="tab">
 																<i class="icon fa-apple" aria-hidden="true"></i>iOS-小火箭<span class="badge badge-danger up">推荐</span></a>
 														</li>
 														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#tab_3" aria-controls="tab_3" role="tab">
+															<a class="nav-link" data-toggle="tab" href="#quantumult_client" aria-controls="quantumult_client" role="tab">
+																<i class="icon fa-apple" aria-hidden="true"></i>iOS-Quantumult<span class="badge badge-danger up">进阶</span></a>
+														</li>
+														<li class="nav-item" role="presentation">
+															<a class="nav-link" data-toggle="tab" href="#windows_client" aria-controls="windows_client" role="tab">
 																<i class="icon fa-windows" aria-hidden="true"></i>Windows</a>
 														</li>
 														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#tab_4" aria-controls="tab_4" role="tab">
-																<i class="icon fa-windows" aria-hidden="true"></i>Windows<span class="badge badge-info up">游戏</span></a>
+															<a class="nav-link" data-toggle="tab" href="#game_client_sstap" aria-controls="game_client_sstap" role="tab">
+																<i class="icon fa-windows" aria-hidden="true"></i>Windows-SSTAP<span class="badge badge-info up">游戏</span></a>
 														</li>
 														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#tab_5" aria-controls="tab_5" role="tab">
+															<a class="nav-link" data-toggle="tab" href="#game_client_netch" aria-controls="game_client_netch" role="tab">
+																<i class="icon fa-windows" aria-hidden="true"></i>Windows-Netch<span class="badge badge-info up">游戏推荐</span></a>
+														</li>
+														<li class="nav-item" role="presentation">
+															<a class="nav-link" data-toggle="tab" href="#macos_client" aria-controls="macos_client" role="tab">
 																<i class="icon fa-apple" aria-hidden="true"></i>MacOS</a>
-														</li>
-														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#tab_6" aria-controls="tab_6" role="tab">
-																<i class="icon fa-apple" aria-hidden="true"></i>iOS-Quantumult<span class="badge badge-danger up">进阶</span></a>
 														</li>
 													</ul>
 													<div class="tab-content py-15">
-														<div class="tab-pane active" id="tab_1" role="tabpanel">
-															<ol>
-																<li>
-																	<a class="btn btn-xs btn-primary" href="#"><i
-																				class="icon fa-hand-o-right"
-																				aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left"
-																		   aria-hidden="true"></i></a>
-																</li>
-																<li>
-																	<button
-																			class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard"
-																			data-clipboard-action="copy"
-																			data-clipboard-text="{{$link}}"><span><i
-																					class="icon wb-copy"
-																					aria-hidden="true"></i>点击复制订阅地址</span>
-																	</button>
-																</li>
-																<li>
-																	待添加
-																</li>
-															</ol>
+														<div class="tab-pane active" id="android_client" role="tabpanel">
+															@if(Agent::isAndroidOS())
+																<ol>
+																	<li>
+																		<a class="btn btn-xs btn-primary" href="/clients/Otaku_android.apk"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
+																			<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 安装 -> 启动
+																	</li>
+																	<li>点击软件左上方<code>Otaku SSR</code>进入主界面 -> 点击右下角
+																		<code class="blue-600 icon fa-plus-circle" aria-hidden="true"></code> 图标
+																		-> 点击<code>添加/升级SSR订阅</code>
+																	</li>
+																	<li>点击<code>添加订阅地址</code> ->
+																		<button class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}"><span><i class="icon wb-copy" aria-hidden="true"></i>点击复制订阅地址</span></button>
+																		-> 粘贴进输入框 ->
+																		<code>确定</code> -> <code>确定并更新</code></li>
+																	<li>软件刷新线路信息(未出现的话，请重启软件) -> 选择线路 -> 点击界面右上角
+																		<code class="icon md-airplane-off" aria-hidden="true"></code> 启动代理
+																	</li>
+																	<li>享受您的加速服务吧！</li>
+																	<li>关闭代理：再次点击
+																		<code class="icon md-airplane" aria-hidden="true"></code> 关闭代理
+																	</li>
+																</ol>
+															@else
+																<div class="alert alert-info text-center font-size-20" role="alert">
+																	本教程只能在
+																	<mark>安卓设备</mark>
+																	下浏览
+																</div>
+															@endif
 														</div>
-														<div class="tab-pane" id="tab_2" role="tabpanel">
-															<ol>
-																<li>
-																	<a class="btn btn-xs btn-primary" href="#"><i
-																				class="icon fa-hand-o-right"
-																				aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left"
-																		   aria-hidden="true"></i></a>
-																</li>
-																@if (\App\Components\Helpers::systemConfig()['AppStore_id'] && \App\Components\Helpers::systemConfig()['AppStore_password'])
-																	<div class="alert alert-info" role="alert"
-																	     style="width: fit-content">
-																		@if($is_paying_user)
-																			<i class="icon wb-lock"></i>
-																			<mark>由于iOS的特殊性，我们只为付费用户提供iOS的共享账号用于安装客户端
-																				或者自行购买 Quantumult
-																			</mark>
-																			<br>
-																			请购买服务后
-																			<code>刷新界面</code>再来获取共享的苹果账号
-																		@else
-																			<i class="wb-unlock"></i>
-																			首次安装软件可能会需要苹果ID激活软件，请输入以下账号信息：
-																			<br>
-																			账号（Apple ID）：
-																			<code
-																					id="accountId">{{\App\Components\Helpers::systemConfig()['AppStore_id']}}</code>
-																			<button
-																					class="btn btn-xs btn-primary mt-clipboard"
-																					data-clipboard-target="#accountId"
-																					data-clipboard-action="copy"><i
-																						class="wb-copy"></i></button>
-																			<br> 密码：
-																			<code
-																					id="accountPasswd">{{\App\Components\Helpers::systemConfig()['AppStore_password']}}</code>
-																			<button
-																					class="btn btn-xs btn-primary mt-clipboard"
-																					data-clipboard-target="#accountPasswd"
-																					data-clipboard-action="copy"><i
-																						class="wb-copy"></i></button>
+														<div class="tab-pane" id="shadowrocket_client" role="tabpanel">
+															@if(Agent::is('iOS'))
+																<ol>
+																	<li>
+																		<a class="btn btn-xs btn-primary" href="{{$Shadowrocket_install}}"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
+																			<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 弹窗选<code>安装</code> -> 等待下载 -> 启动
+																	</li>
+																	<li>返回手机主界面 -> 等待Shadowrocket下载/安装完毕 -> 进入软件</li>
+																	@if (\App\Components\Helpers::systemConfig()['AppStore_id'] && \App\Components\Helpers::systemConfig()['AppStore_password'])
+																		<div class="alert alert-info" role="alert" style="width: fit-content">
+																			@if($not_paying_user)
+																				<i class="icon wb-lock" aria-hidden="true"></i>
+																				<mark>由于iOS的特殊性，我们只为付费用户提供iOS的共享账号用于安装客户端 或者 自行购买 Shadowrocket</mark>
+																				<br>
+																				请购买服务后
+																				<code>刷新界面</code>再来获取共享的苹果账号
+																			@else
+																				<i class="wb-unlock" aria-hidden="true"></i> 首次安装软件可能会需要苹果ID激活软件，请输入以下账号信息：
+																				<br>
+																				账号（Apple ID）：
+																				<code id="accountId">{{\App\Components\Helpers::systemConfig()['AppStore_id']}}</code>
+																				<button class="btn btn-xs btn-primary mt-clipboard" data-clipboard-target="#accountId" data-clipboard-action="copy"><i class="wb-copy" aria-hidden="true"></i></button>
+																				<br> 密码：
+																				<code id="accountPasswd">{{\App\Components\Helpers::systemConfig()['AppStore_password']}}</code>
+																				<button class="btn btn-xs btn-primary mt-clipboard" data-clipboard-target="#accountPasswd" data-clipboard-action="copy"><i class="wb-copy" aria-hidden="true"></i></button>
+																			@endif
+																		</div>
+																	@endif
+																	<li>如果软件跳出登录信息（请看上面信息框） ->
+																		<a class="btn btn-xs btn-primary" href="{{$Shadowrocket_link}}">点击自动设置软件</a>
+																	</li>
+																	<li>等待软件线路更新 (如果线路未出现，请向左滑订阅标签 ->
+																		<code>更新</code>) -> 选择线路 -> 点击开关按钮，运行代理（按钮与'未连接'同一行）
+																	</li>
+																	<li>享受您的加速服务吧！</li>
+																	<li>关闭代理：再次点击开关按钮即可</li>
+																</ol>
+															@else
+																<div class="alert alert-info text-center font-size-20" role="alert">
+																	本教程只能在
+																	<mark>iOS设备</mark>
+																	下浏览
+																</div>
+															@endif
+														</div>
+														<div class="tab-pane" id="quantumult_client" role="tabpanel">
+															@if(Agent::is('iOS'))
+																<ol>
+																	<ol>
+																		<li>
+																			<a class="btn btn-xs btn-primary" href="{{$Quantumult_install}}"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
+																				<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 弹窗选<code>安装</code> -> 等待下载 -> 启动
+																		</li>
+																		<li>返回手机主界面 -> 等待Quantumult下载/安装完毕 -> 进入软件</li>
+																		@if (\App\Components\Helpers::systemConfig()['AppStore_id'] && \App\Components\Helpers::systemConfig()['AppStore_password'])
+																			<div class="alert alert-info" role="alert" style="width: fit-content">
+																				@if($not_paying_user)
+																					<i class="icon wb-lock" aria-hidden="true"></i>
+																					<mark>由于iOS的特殊性，我们只为付费用户提供iOS的共享账号用于安装客户端 或者自行购买 Quantumult</mark>
+																					<br>
+																					请购买服务后
+																					<code>刷新界面</code>再来获取共享的苹果账号
+																				@else
+																					<i class="wb-unlock" aria-hidden="true"></i> 首次安装软件可能会需要苹果ID激活软件，请输入以下账号信息：
+																					<br>
+																					账号（Apple ID）：
+																					<code id="accountId">{{\App\Components\Helpers::systemConfig()['AppStore_id']}}</code>
+																					<button class="btn btn-xs btn-primary mt-clipboard" data-clipboard-target="#accountId" data-clipboard-action="copy"><i class="wb-copy" aria-hidden="true"></i></button>
+																					<br> 密码：
+																					<code id="accountPasswd">{{\App\Components\Helpers::systemConfig()['AppStore_password']}}</code>
+																					<button class="btn btn-xs btn-primary mt-clipboard" data-clipboard-target="#accountPasswd" data-clipboard-action="copy"><i class="wb-copy" aria-hidden="true"></i></button>
+																				@endif
+																			</div>
 																		@endif
-																	</div>
-																@endif
+																		<li>如果软件跳出登录信息（请看上面信息框）->
+																			<a class="btn btn-xs btn-primary" href="{{$Quantumult_linkOut}}">自动设置-访问海外</a> |
+																			<a class="btn btn-xs btn-primary" href="{{$Quantumult_linkIn}}">自动设置-访问国内</a> 转跳至软件进行快速设置 -> 任何提示选择<code>确认|允许</code>
+																		</li>
+																		<li>等待软件线路更新 -> 后台关闭软件 -> 重新打开软件 -> 点击底部菜单栏中间的黑色图标 -> 选择线路 -> 点击软件上方 Quantumult 旁的按钮，开启代理</li>
+																		<li>享受您的加速服务吧！</li>
+																		<li>关闭代理：点击开关按钮，关闭按钮</li>
+																	</ol>
+																</ol>
+															@else
+																<div class="alert alert-info text-center font-size-20" role="alert">
+																	本教程只能在
+																	<mark>iOS设备</mark>
+																	下浏览
+																</div>
+															@endif
+														</div>
+														<div class="tab-pane" id="windows_client" role="tabpanel">
+															<ol>
 																<li>
-																	<button
-																			class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard"
-																			data-clipboard-action="copy"
-																			data-clipboard-text="{{$link}}"><span><i
-																					class="icon wb-copy"
-																					aria-hidden="true"></i>点击复制订阅地址</span>
-																	</button>
+																	<a class="btn btn-xs btn-primary" href="/clients/OtakuSSR.exe"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
+																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> |
+																	<a class="btn btn-xs btn-danger" href="/clients/OtakuSSR_XP.exe"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载 XP 版本
+																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 启动
+																</li>
+																<li>在右下角任务栏中找到软件并右键点击 -> 在菜单中选择<code>订阅</code> -> 点击<code>订阅设置</code>
+																</li>
+																<li>点击新出现界面上的<code>添加</code>按钮 ->
+																	<button class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}"><span><i class="icon wb-copy" aria-hidden="true"></i>点击复制订阅地址</span></button>
+																	=> 黏贴到<code>网址</code>的输入框内 => 点击<code>确定</code>
+																</li>
+																<li>再次右键图标 -> <code>订阅</code> ->
+																	<code>更新订阅(不通过代理)</code>更新软件的线路信息
+																</li>
+																<li>提示“更新成功”后，再次右键图标 -> <code>服务器</code> ->
+																	<code>御宅云</code> -> 选择线路
+																</li>
+																<li>再次右键图标 ->
+																	<code>PAC</code> -> 点击<code>更新PAC为 代理常见被墙域名</code> -> 提示“更新成功”
+																</li>
+																<li>再次右键图标 ->
+																	<code>代理模式</code> -> 点击<code>智能</code>
+																</li>
+																<li>代理开启完成，享受您的加速服务吧！</li>
+																<li>关闭代理：右键图标 -> 点击<code>退出</code></li>
+															</ol>
+														</div>
+														<div class="tab-pane" id="game_client_sstap" role="tabpanel">
+															<ol>
+																<li>
+																	<a class="btn btn-xs btn-primary" href="/clients/Windows_game.exe"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
+																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 安装(确认安装一切) -> 启动
+																</li>
+																<li>在软件主界面找到并点击
+																	<code class="icon md-settings"></code> 图标 -> 点击<code>SSR订阅</code> -> 点击<code>SSR订阅管理</code>
 																</li>
 																<li>
-																	待添加
+																	<button class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}"><span><i class="icon wb-copy" aria-hidden="true"></i>点击复制订阅地址</span></button>
+																	-> 黏贴到<code>URL</code>输入框中 -> 点击<code>添加</code>再关闭设置界面
+																</li>
+																<li>点击
+																	<code class="fa fa-gear"></code> -> 选择<code>SSR订阅</code> -> 点击<code>手动更新SSR订阅</code>更新软件的线路信息
+																</li>
+																<li>更新成功后，在主界面中<strong>代理</strong>选项中选择线路 -> 在<strong>模式</strong>选项中选择代理规则
+																</li>
+																<li>最后，点击<code>连接</code></li>
+																<li>享受您的加速服务吧！</li>
+																<li>关闭代理：在主界面点击<code>断开连接</code>再关闭软件！<strong>直接关闭软件会造成电脑网卡错误！！！</strong>
 																</li>
 															</ol>
 														</div>
-														<div class="tab-pane" id="tab_3" role="tabpanel">
+														<div class="tab-pane" id="game_client_netch" role="tabpanel">
 															<ol>
 																<li>
-																	<a class="btn btn-xs btn-primary" href="#"><i
-																				class="icon fa-hand-o-right"
-																				aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left"
-																		   aria-hidden="true"></i></a>
+																	<a class="btn btn-xs btn-primary" href="/clients/Netch.x64.7z"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载 X64 版本客户端 ←推荐下这个
+																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> | <a class="btn btn-xs btn-danger" href="/clients/Netch.x86.7z"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载 X32 版本客户端
+																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 解压文件 -> 启动 Netch.exe 文件
+																</li>
+																<li>在右下角任务栏中找到软件并双击左键-> 点击<code>订阅</code> -> 点击<code>管理订阅链接</code>
 																</li>
 																<li>
-																	<button
-																			class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard"
-																			data-clipboard-action="copy"
-																			data-clipboard-text="{{$link}}"><span><i
-																					class="icon wb-copy"
-																					aria-hidden="true"></i>点击复制订阅地址</span>
-																	</button>
+																	<button class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}"><span><i class="icon wb-copy" aria-hidden="true"></i>点击复制订阅地址</span></button>
+																	-> 黏贴到<code>链接</code>输入框中 -> <code>备注</code>填入 {{\App\Components\Helpers::systemConfig()['website_name']}} ->点击<code>添加</code>->再点击<code>保存</code>-> <code>确定</code>
 																</li>
-																<li>
-																	待添加
+																<li>再次点击<code>订阅</code> -> 点击<code>从订阅链接更新服务器</code> -> 弹出“正在后台更新中”的弹窗-> 等待“更新完成”的弹窗
+																</li>
+																<li>更新成功后，在主界面中在<strong>服务器</strong>选择框中选择线路 -> 在<strong>模式</strong>选择框中选择代理模式
+																</li>
+																<li>最后，点击<code>启动</code></li>
+																<li>享受您的加速服务吧！</li>
+																<li>关闭代理：在主界面点击<code>停止</code>再关闭软件！
 																</li>
 															</ol>
 														</div>
-														<div class="tab-pane" id="tab_4" role="tabpanel">
+														<div class="tab-pane" id="macos_client" role="tabpanel">
 															<ol>
 																<li>
-																	<a class="btn btn-xs btn-primary" href="#"><i
-																				class="icon fa-hand-o-right"
-																				aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left"
-																		   aria-hidden="true"></i></a>
+																	<a class="btn btn-xs btn-primary" href="/clients/Otaku_MacOS.dmg"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
+																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 安装 -> 启动
+																</li>
+																<li>单击状态栏中的
+																	<i class="icon fa-paper-plane" aria-hidden="true"></i> 图标 -> 选择<code>服务器</code> -> 点击<code>编辑订阅</code>
 																</li>
 																<li>
-																	<button
-																			class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard"
-																			data-clipboard-action="copy"
-																			data-clipboard-text="{{$link}}"><span><i
-																					class="icon wb-copy"
-																					aria-hidden="true"></i>点击复制订阅地址</span>
-																	</button>
+																	<button class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}"><span><i class="icon wb-copy" aria-hidden="true"></i>点击复制订阅地址</span></button>
+																	-> 黏贴至<code>订阅地址</code>输入框中 ->
+																	<code>OK</code></li>
+																<li>单击<i class="icon fa-paper-plane" aria-hidden="true"></i> ->
+																	<code>服务器</code> ->
+																	<code>手动更新订阅</code>更新软件的线路信息
 																</li>
-																<li>
-																	待添加
+																<li>更新成功后，单击
+																	<i class="icon fa-paper-plane" aria-hidden="true"></i> ->
+																	<code>服务器</code> ->
+																	<code>御宅云</code> -> 选择线路
+																</li>
+																<li>单击
+																	<i class="icon fa-paper-plane" aria-hidden="true"></i> -> 点击<code>PAC自动模式</code>
+																</li>
+																<li>享受您的加速服务吧！</li>
+																<li>关闭代理：单击
+																	<i class="icon fa-paper-plane" aria-hidden="true"></i> -> 点击<code>退出</code>
 																</li>
 															</ol>
 														</div>
-														<div class="tab-pane" id="tab_5" role="tabpanel">
-															<ol>
-																<li>
-																	<a class="btn btn-xs btn-primary"
-																	   href="#"><i
-																				class="icon fa-hand-o-right"
-																				aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left"
-																		   aria-hidden="true"></i></a>
-																</li>
-																<li>
-																	<button
-																			class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard"
-																			data-clipboard-action="copy"
-																			data-clipboard-text="{{$link}}"><span><i
-																					class="icon wb-copy"
-																					aria-hidden="true"></i>点击复制订阅地址</span>
-																	</button>
-																</li>
-																<li>
-																	待添加
-																</li>
-															</ol>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="panel">
+										<div class="panel-heading" id="question-3" role="tab">
+											<a class="panel-title" aria-controls="answer-3" aria-expanded="false" data-toggle="collapse" href="#answer-3" data-parent="#accordion1"><i class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
+											</a>
+										</div>
+										<div class="panel-collapse collapse" id="answer-3" aria-labelledby="question-3" role="tabpanel">
+											<div class="panel-body">
+												<div class="nav-tabs-horizontal" data-plugin="tabs">
+													<ul class="nav nav-tabs" role="tablist">
+														<li class="nav-item" role="presentation">
+															<a class="nav-link active" data-toggle="tab" href="#android" aria-controls="android" role="tab">
+																<i class="icon fa-android" aria-hidden="true"></i>Android</a>
+														</li>
+														<li class="nav-item" role="presentation">
+															<a class="nav-link" data-toggle="tab" href="#ios" aria-controls="ios" role="tab">
+																<i class="icon fa-apple" aria-hidden="true"></i>iOS</a>
+														</li>
+														<li class="nav-item" role="presentation">
+															<a class="nav-link" data-toggle="tab" href="#Windows" aria-controls="Windows" role="tab">
+																<i class="icon fa-windows" aria-hidden="true"></i>Windows</a>
+														</li>
+														<li class="nav-item" role="presentation">
+															<a class="nav-link" data-toggle="tab" href="#MacOS" aria-controls="MacOS" role="tab">
+																<i class="icon fa-apple" aria-hidden="true"></i>MacOS</a>
+														</li>
+													</ul>
+													<div class="tab-content pt-20">
+														<div class="tab-pane active" id="android" role="tabpanel">
+															暂无
 														</div>
-														<div class="tab-pane" id="tab_6" role="tabpanel">
-
+														<div class="tab-pane" id="ios" role="tabpanel">
+															<h4>Q: 软件安装后，闪退？</h4>
+															<p>A: 闪退的情况大概分以下三种</p>
 															<ol>
-																<li>
-																	<a class="btn btn-xs btn-primary" href="#"><i
-																				class="icon fa-hand-o-right"
-																				aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left"
-																		   aria-hidden="true"></i></a>
+																<li>安装完成后，一打开就秒退。
+																	<br> 解决办法：登陆网站上提供的对应ID，先在苹果商店搜索安装最新版，运行一次后，在通过网站直接覆盖安装。
 																</li>
-																@if (\App\Components\Helpers::systemConfig()['AppStore_id'] && \App\Components\Helpers::systemConfig()['AppStore_password'])
-																	<div class="alert alert-info" role="alert"
-																	     style="width: fit-content">
-																		@if($is_paying_user)
-																			<i class="icon wb-lock"></i>
-																			<mark>由于iOS的特殊性，我们只为付费用户提供iOS的共享账号用于安装客户端
-																				或者自行购买 Quantumult
-																			</mark>
-																			<br>
-																			请购买服务后
-																			<code>刷新界面</code>再来获取共享的苹果账号
-																		@else
-																			<i class="wb-unlock"></i>
-																			首次安装软件可能会需要苹果ID激活软件，请输入以下账号信息：
-																			<br>
-																			账号（Apple ID）：
-																			<code
-																					id="accountId">{{\App\Components\Helpers::systemConfig()['AppStore_id']}}</code>
-																			<button
-																					class="btn btn-xs btn-primary mt-clipboard"
-																					data-clipboard-target="#accountId"
-																					data-clipboard-action="copy"><i
-																						class="wb-copy"></i></button>
-																			<br> 密码：
-																			<code
-																					id="accountPasswd">{{\App\Components\Helpers::systemConfig()['AppStore_password']}}</code>
-																			<button
-																					class="btn btn-xs btn-primary mt-clipboard"
-																					data-clipboard-target="#accountPasswd"
-																					data-clipboard-action="copy"><i
-																						class="wb-copy"></i></button>
-																		@endif
-																	</div>
-																@endif
-																<li>
-																	<button
-																			class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard"
-																			data-clipboard-action="copy"
-																			data-clipboard-text="{{$link}}"><span><i
-																					class="icon wb-copy"
-																					aria-hidden="true"></i>点击复制订阅地址</span>
-																	</button>
+																<li>打开软件，且弹出ID验证框，输入ID后闪退。
+																	<br> 解决办法：同上。
 																</li>
-																<li>
-																	待添加
+																<li>打开软件，运行一段时间后闪退。
+																	<br> 这类问题，一般是因为软件的适配性引起的，基本无解。
 																</li>
 															</ol>
-
+															<h4>Q: 软件安装失败？</h4>
+															<p>A: 出现此类问题，绝大多数是你的网络不好，更换个网络即可，最好使用数据流量进行下载。</p>
+														</div>
+														<div class="tab-pane" id="Windows" role="tabpanel">
+															{{--                                                            <h4>Q: PAC 更新失败</h4>--}}
+															{{--                                                            <p>A: 这个情况都是PC链接访问网站不稳定造成的！--}}
+															{{--                                                                <br>--}}
+															{{--                                                                解决方案： 手动下载--}}
+															{{--                                                            </p>--}}
+															暂无
+														</div>
+														<div class="tab-pane" id="MacOS" role="tabpanel">
+															暂无
 														</div>
 													</div>
 												</div>

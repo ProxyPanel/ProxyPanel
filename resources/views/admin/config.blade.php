@@ -158,10 +158,10 @@
 									@foreach($level_list as $level)
 										<tr>
 											<td>
-												<input id="level_{{$level->id}}" name="level" value="{{$level->level}}" type="text" class="form-control">
+												<input type="text" class="form-control" name="level" id="level_{{$level->id}}" value="{{$level->level}}"/>
 											</td>
 											<td>
-												<input id="level_name_{{$level->id}}" name="level_name" value="{{$level->level_name}}" type="text" class="form-control">
+												<input type="text" class="form-control" name="level_name" id="level_name_{{$level->id}}" value="{{$level->level_name}}"/>
 											</td>
 											<td>
 												<div class="btn-group">
@@ -203,10 +203,10 @@
 												</svg>
 											</td>
 											<td>
-												<input id="country_name_{{$country->id}}" name="country_name" value="{{$country->name}}" type="text" class="form-control">
+												<input type="text" class="form-control" name="country_name" id="country_name_{{$country->id}}" value="{{$country->name}}"/>
 											</td>
 											<td>
-												<input id="country_code_{{$country->id}}" name="country_code" value="{{$country->code}}" type="text" class="form-control">
+												<input type="text" class="form-control" name="country_code" id="country_code_{{$country->id}}" value="{{$country->code}}"/>
 											</td>
 											<td>
 												<div class="btn-group">

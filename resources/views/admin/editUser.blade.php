@@ -26,7 +26,7 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label" for="password">密码</label>
 								<div class="col-xl-6 col-sm-8">
-									<input type="text" class="form-control" name="password" value="" id="password" placeholder="不填则不变" autocomplete="off"/>
+									<input type="text" class="form-control" name="password" id="password" placeholder="不填则不变" autocomplete="off"/>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -234,7 +234,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="port">端口</label>
 								<div class="col-xl-5 col-sm-8">
 									<div class="input-group">
-										<input class="form-control" type="number" name="port" value="{{$user->port}}" id="port"/>
+										<input type="number" class="form-control" name="port" value="{{$user->port}}" id="port"/>
 										<span class="input-group-append"><button class="btn btn-success" type="button" onclick="makePort()"> <i class="icon wb-refresh"></i> </button></span>
 									</div>
 								</div>
@@ -376,7 +376,7 @@
 					<div class="alert alert-danger" style="display: none;" id="msg"></div>
 					<div class="form-group row">
 						<label class="col-md-2 col-sm-3 col-form-label" for="amount"> 充值金额 </label>
-						<input type="number" class="col-sm-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" onkeydown="if(event.keyCode===13){return false;}"/>
+						<input type="number" class="col-sm-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" step="0.01" onkeydown="if(event.keyCode===13){return false;}"/>
 					</div>
 				</form>
 				<div class="modal-footer">

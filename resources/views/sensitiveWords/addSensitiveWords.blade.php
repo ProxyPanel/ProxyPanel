@@ -16,7 +16,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-md-2">敏感词</label>
 						<div class="col-md-5">
-							<input type="text" class="form-control" name="words" value="" id="words" required/>
+							<input type="text" class="form-control" name="words" id="words" required/>
 						</div>
 					</div>
 					<div class="form-actions">

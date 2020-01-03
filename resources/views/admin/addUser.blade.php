@@ -23,7 +23,7 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label" for="password">密码</label>
 								<div class="col-xl-6 col-sm-8">
-									<input type="text" class="form-control" name="password" value="" id="password" value="" placeholder="留空则自动生成随机密码" autocomplete="off"/>
+									<input type="text" class="form-control" name="password" value="" id="password" placeholder="留空则自动生成随机密码" autocomplete="off"/>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -196,7 +196,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="port">端口</label>
 								<div class="col-xl-5 col-sm-8">
 									<div class="input-group">
-										<input class="form-control" type="number" name="port" value="{{$last_port}}" id="port"/>
+										<input type="number" class="form-control" name="port" value="{{$last_port}}" id="port"/>
 										<span class="input-group-append"><button class="btn btn-success" type="button" onclick="makePort()"> <i class="icon wb-refresh"></i> </button></span>
 									</div>
 								</div>
@@ -205,7 +205,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="passwd">密码</label>
 								<div class="col-xl-5 col-sm-8">
 									<div class="input-group">
-										<input class="form-control" type="text" name="passwd" id="passwd" placeholder="留空则自动生成随机密码" autocomplete="off"/>
+										<input type="text" class="form-control" name="passwd" id="passwd" placeholder="留空则自动生成随机密码" autocomplete="off"/>
 										<span class="input-group-append"><button class="btn btn-success" type="button" onclick="makePasswd()"> <i class="icon wb-refresh"></i> </button></span>
 									</div>
 								</div>
@@ -286,7 +286,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="speed_limit_per_con">单连接限速</label>
 								<div class="col-xl-6 col-sm-8">
 									<div class="input-group">
-										<input type="text" class="form-control" name="speed_limit_per_con" id="speed_limit_per_con" value="10737418240" autocomplete="off"/>
+										<input type="number" class="form-control" name="speed_limit_per_con" id="speed_limit_per_con" value="10737418240" autocomplete="off"/>
 										<span class="input-group-text">Byte</span>
 									</div>
 									<span class="text-help"> 为 0 时不限速 </span>
@@ -296,7 +296,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="speed_limit_per_user">单用户限速</label>
 								<div class="col-xl-6 col-sm-8">
 									<div class="input-group">
-										<input type="text" class="form-control" name="speed_limit_per_user" id="speed_limit_per_user" value="10737418240" autocomplete="off"/>
+										<input type="number" class="form-control" name="speed_limit_per_user" id="speed_limit_per_user" value="10737418240" autocomplete="off"/>
 										<span class="input-group-text">Byte</span>
 									</div>
 									<span class="text-help">为 0 时不限速 </span>
@@ -307,7 +307,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="vmess_id">VMess UUID</label>
 								<div class="col-xl-6 col-sm-8">
 									<div class="input-group">
-										<input class="form-control" type="text" name="vmess_id" id="vmess_id" value="{{createGuid()}}" autocomplete="off"/>
+										<input type="text" class="form-control" name="vmess_id" id="vmess_id" value="{{createGuid()}}" autocomplete="off"/>
 										<span class="input-group-append"><button class="btn btn-success" type="button" onclick="makeVmessId()"> <i class="icon wb-refresh"></i> </button></span>
 									</div>
 									<span class="text-help"> V2Ray的账户ID </span>

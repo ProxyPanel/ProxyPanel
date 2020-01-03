@@ -65,7 +65,7 @@
 					<div class="form-group row">
 						<label class="col-md-2 col-form-label" for="price">售价</label>
 						<div class="col-md-4 input-group">
-							<input type="text" class="form-control" name="price" id="price" value="{{$goods->price}}" required/>
+							<input type="number" class="form-control" name="price" id="price" value="{{$goods->price}}" step="0.01" required/>
 							<span class="input-group-text">元</span>
 						</div>
 					</div>
@@ -87,7 +87,7 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="renew">流量重置价格</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="renew" id="renew" value="{{$goods->renew}}"/>
+									<input type="number" class="form-control" name="renew" id="renew" value="{{$goods->renew}}" step="0.01"/>
 									<span class="input-group-text">元</span>
 								</div>
 							</div>

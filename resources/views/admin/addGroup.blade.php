@@ -15,7 +15,7 @@
 				<form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return Submit()">
 					<div class="form-group row">
 						<label class="col-form-label col-md-1" for="name">分组名称</label>
-						<input type="text" class="form-control col-md-5" name="name" value="" id="name" required/>
+						<input type="text" class="form-control col-md-5" name="name" id="name" required/>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-md-1" for="level">分组级别</label>

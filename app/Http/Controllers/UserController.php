@@ -62,7 +62,7 @@ class UserController extends Controller
 		$usedTransfer = Auth::user()->u+Auth::user()->d;
 		$unusedTransfer = $totalTransfer-$usedTransfer > 0? $totalTransfer-$usedTransfer : 0;
 		$expireTime = Auth::user()->expire_time;
-		$view['remainDays'] = $expireTime < date('Y-m-d') ? -1 : (strtotime($expireTime)-strtotime(date('Y-m-d')))/86400;
+		$view['remainDays'] = $expireTime < date('Y-m-d')? -1 : (strtotime($expireTime)-strtotime(date('Y-m-d')))/86400;
 		$view['resetDays'] = Auth::user()->reset_time? round((strtotime(Auth::user()->reset_time)-strtotime(date('Y-m-d')))/86400) : 0;
 		$view['unusedTransfer'] = $unusedTransfer;
 		$view['expireTime'] = $expireTime;
@@ -315,8 +315,9 @@ class UserController extends Controller
 		// 余额充值商品，只取10个
 		$view['chargeGoodsList'] = Goods::type(3)->where('status', 1)->orderBy('price', 'asc')->orderBy('price', 'asc')->limit(10)->get();
 		$view['goodsList'] = Goods::query()->where('status', 1)->where('type', '<=', '2')->orderBy('type', 'desc')->orderBy('sort', 'desc')->paginate(10)->appends($request->except('page'));
-		$renewPrice = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
-		$view['renewTraffic'] = $renewPrice? $renewPrice->renew : 0;
+		$renewOrder = Order:: query()->with(['goods'])->where('user_id', Auth::user()->id)->where('status', 2)->where('is_expire', 0)->whereHas('goods', function($q){ $q->where('type', 2); })->first();
+		$renewPrice = Goods::query()->where('id', $renewOrder->goods_id)->first();
+		$view['renewTraffic'] = $renewPrice->renew? : 0;
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = Auth::user()->reset_time? Auth::user()->reset_time : Auth::user()->expire_time;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays)-strtotime(date('Y-m-d')))/86400) : 0;

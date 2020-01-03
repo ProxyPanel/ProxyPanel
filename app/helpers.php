@@ -1,5 +1,7 @@
 <?php
 
+use App\Components\Curl;
+
 // 生成SS密码
 if(!function_exists('makeRandStr')){
 	function makeRandStr($length = 6, $isNumbers = FALSE)
@@ -196,18 +198,7 @@ if(!function_exists('getIPv6')){
 		$url = 'https://api.ip.sb/geoip/'.$ip;
 
 		try{
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_POST, 0);
-
-			$result = curl_exec($ch);
-			curl_close($ch);
-
-			$result = json_decode($result, TRUE);
+			$result = json_decode(Curl::send($url), TRUE);
 			if(!is_array($result) || isset($result['code'])){
 				throw new Exception('解析IPv6异常：'.$ip);
 			}

@@ -83,7 +83,7 @@
 									</div>
 									<div class="form-group row">
 										<label for="traffic_rate" class="col-md-3 col-form-label"> 流量比例 </label>
-										<input type="text" class="form-control col-md-4" name="traffic_rate" value="1.0" id="traffic_rate" required>
+										<input type="number" class="form-control col-md-4" name="traffic_rate" value="1.0" id="traffic_rate"number step="0.01" required>
 										<span class="text-help offset-md-3"> 举例：0.1用100M结算10M，5用100M结算500M </span>
 									</div>
 									<div class="form-group row">
@@ -121,7 +121,7 @@
 									</div>
 									<div class="form-group row">
 										<label for="sort" class="col-md-3 col-form-label">排序</label>
-										<input type="text" class="form-control col-md-4" name="sort" value="1" id="sort">
+										<input type="text" class="form-control col-md-4" name="sort" id="sort" value="1"/>
 										<span class="text-help offset-md-3"> 排序值越大排越前 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span>
 									</div>
 									<div class="form-group row">
@@ -309,13 +309,13 @@
 										<div class="single-setting hidden">
 											<div class="form-group row">
 												<label for="port" class="col-md-3 col-form-label">[单] 端口</label>
-												<input type="text" class="form-control col-md-4" name="port" value="" id="port" placeholder="443">
+												<input type="number" class="form-control col-md-4" name="port" value="443" id="port"/>
 												<span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
 												<span class="text-help offset-md-3"> 严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
 											</div>
 											<div class="form-group row">
 												<label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
-												<input type="text" class="form-control col-md-4" name="passwd" value="" id="passwd" placeholder="password">
+												<input type="text" class="form-control col-md-4" name="passwd" id="passwd" placeholder="password">
 											</div>
 										</div>
 									</div>
@@ -323,11 +323,11 @@
 									<div class="v2ray-setting hidden">
 										<div class="form-group row">
 											<label for="v2_alter_id" class="col-md-3 col-form-label">额外ID</label>
-											<input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id" placeholder="16">
+											<input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id"/>
 										</div>
 										<div class="form-group row">
 											<label for="v2_port" class="col-md-3 col-form-label">端口</label>
-											<input type="text" class="form-control col-md-4" name="v2_port" value="10087" id="v2_port" placeholder="10087">
+											<input type="number" class="form-control col-md-4" name="v2_port" value="10087" id="v2_port"/>
 										</div>
 										<div class="form-group row">
 											<label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
@@ -389,13 +389,13 @@
 										</div>
 										<div class="form-group row">
 											<label for="v2_insider_port" class="col-md-3 col-form-label">内部端口</label>
-											<input type="text" class="form-control col-md-4" name="v2_insider_port" value="10550" id="v2_insider_port" placeholder="10550">
+											<input type="number" class="form-control col-md-4" name="v2_insider_port" id="v2_insider_port" value="10550"/>
 											<span class="text-help offset-md-3"> 内部监听，当端口为0时启用，仅支持<a href="https://github.com/rico93/pay-v2ray-sspanel-v3-mod_Uim-plugin/" target="_blank">rico93版</a> </span>
 
 										</div>
 										<div class="form-group row">
 											<label for="v2_outsider_port" class="col-md-3 col-form-label">内部端口</label>
-											<input type="text" class="form-control col-md-4" name="v2_outsider_port" value="443" id="v2_outsider_port" placeholder="443">
+											<input type="number" class="form-control col-md-4" name="v2_outsider_port" id="v2_outsider_port" value="443"/>
 											<span class="text-help offset-md-3"> 外部覆盖，当端口为0时启用，仅支持<a href="https://github.com/rico93/pay-v2ray-sspanel-v3-mod_Uim-plugin/" target="_blank">rico93版</a> </span>
 										</div>
 									</div>
