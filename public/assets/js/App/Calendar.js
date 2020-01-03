@@ -18,7 +18,7 @@
   });
   _exports.run = run;
   _exports.getInstance = getInstance;
-  _exports.AppCalendar = _exports.default = void 0;
+  _exports.default = _exports.AppCalendar = void 0;
   _Site2 = babelHelpers.interopRequireDefault(_Site2);
 
   var AppCalendar =

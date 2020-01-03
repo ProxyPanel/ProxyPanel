@@ -1,0 +1,149 @@
+// Text
+// =======================================================
+
+// Text break
+.text-break {
+  @include text-break();
+}
+
+// Alignment
+.text-top {
+  vertical-align: top !important;
+}
+
+.text-middle {
+  vertical-align: middle !important;
+}
+
+.text-bottom {
+  vertical-align: bottom !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+// Font weight Helpers
+.font-weight-unset {
+  font-weight: unset !important;
+}
+
+.font-weight-100 {
+  font-weight: 100 !important;
+}
+
+.font-weight-200 {
+  font-weight: 200 !important;
+}
+
+.font-weight-300 {
+  font-weight: 300 !important;
+}
+
+.font-weight-400 {
+  font-weight: 400 !important;
+}
+
+.font-weight-500 {
+  font-weight: 500 !important;
+}
+
+.font-weight-600 {
+  font-weight: 600 !important;
+}
+
+.font-weight-700 {
+  font-weight: 700 !important;
+}
+
+.font-weight-800 {
+  font-weight: 800 !important;
+}
+
+.font-weight-900 {
+  font-weight: 900 !important;
+}
+
+.font-weight-light {
+  font-weight: $font-weight-light !important;
+}
+
+.font-weight-normal {
+  font-weight: $font-weight-normal !important;
+}
+
+.font-weight-medium {
+  font-weight: $font-weight-medium !important;
+}
+
+.font-weight-bold {
+  font-weight: $font-weight-bold !important;
+}
+
+// Font Size Helpers
+.font-size-0 {
+  font-size: 0 !important;
+}
+
+.font-size-10 {
+  font-size: 10px !important;
+}
+
+.font-size-12 {
+  font-size: 12px !important;
+}
+
+.font-size-14 {
+  font-size: 14px !important;
+}
+
+.font-size-16 {
+  font-size: 16px !important;
+}
+
+.font-size-18 {
+  font-size: 18px !important;
+}
+
+.font-size-20 {
+  font-size: 20px !important;
+}
+
+.font-size-24 {
+  font-size: 24px !important;
+}
+
+.font-size-26 {
+  font-size: 26px !important;
+}
+
+.font-size-30 {
+  font-size: 30px !important;
+}
+
+.font-size-40 {
+  font-size: 40px !important;
+}
+
+.font-size-50 {
+  font-size: 50px !important;
+}
+
+.font-size-60 {
+  font-size: 60px !important;
+}
+
+.font-size-70 {
+  font-size: 70px !important;
+}
+
+.font-size-80 {
+  font-size: 80px !important;
+}

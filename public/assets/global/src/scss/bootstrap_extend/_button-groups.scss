@@ -1,0 +1,59 @@
+// Name:            Button groups
+//
+// Component:       `btn-group`
+//
+// ========================================================================
+
+// Component: Button groups
+// ========================================================================
+
+.btn-group {
+  .btn ~ .dropdown-toggle {
+    padding-right: .8em;
+    padding-left: .8em;
+    margin-left: -1px;
+
+    &::after {
+      margin-left: 0;
+    }
+  }
+}
+
+.btn-group.open .dropdown-toggle {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05);
+}
+
+.btn-group:focus .dropdown-toggle {
+  transition: .25s;
+}
+
+// add from---v3
+
+// Justified button groups
+// ----------------------
+
+.btn-group-justified {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+
+  > .btn, > .btn-group {
+    display: table-cell;
+    float: none;
+    width: 1%;
+  }
+
+  > .btn-group .btn {
+    width: 100%;
+  }
+
+  > .btn-group .dropdown-menu {
+    left: auto;
+  }
+}
+
+.btn-group-xs > .btn {
+  @extend .btn-xs;
+}
+// add end

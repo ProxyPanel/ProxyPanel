@@ -1,0 +1,96 @@
+@import 'vars';
+
+// z-index
+$fv-control-feedback-z-index: $zindex-base + 1;// v2 Ensure icon is above input groups
+
+// formValidation
+// ==================================================
+
+.fv-has-feedback {
+  position: relative;
+}
+
+.fv-control-feedback {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: $fv-control-feedback-z-index;
+  display: block;
+  text-align: center;
+}
+
+.fv-help-block {
+  display: block;
+}
+
+/* Hide the clear icon for field using placeholder attribute on IE10/11 */
+.fv-form [placeholder]::-ms-clear {
+  display: none;
+}
+
+/* -------------------
+ * Support Bootstrap 3
+ * ------------------- */
+
+.fv-form-bootstrap .help-block {
+  margin-bottom: 0;
+}
+
+.fv-form-bootstrap .tooltip-inner {
+  text-align: left;
+}
+
+.fv-form-bootstrap .fv-bootstrap-icon-input-group {
+  z-index: 100;
+}
+
+/* Inline form */
+.form-inline.fv-form-bootstrap .form-group {
+  vertical-align: top;
+}
+
+/* -------------------------
+ * Support Bootstrap 4 alpha
+ * ------------------------- */
+
+.fv-form-bootstrap4 .fv-control-feedback {
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+}
+
+/* For horizontal form */
+.fv-form-bootstrap4 .form-group.row .fv-control-feedback {
+  right: 15px;
+}
+
+.fv-form-bootstrap4 .form-group.row .form-check ~ .fv-control-feedback {
+  top: -7px; /* labelHeight/2 - iconHeight/2 */
+}
+
+/* Inline form */
+.fv-form-bootstrap4.form-inline .form-group {
+  vertical-align: top;
+}
+
+/* Stacked form */
+.fv-form-bootstrap4:not(.form-inline) label ~ .fv-control-feedback {
+  top: 32px;
+}
+
+/* Without label */
+.fv-form-bootstrap4:not(.form-inline) label.sr-only ~ .fv-control-feedback {
+  top: -7px; /* labelHeight/2 - iconHeight/2 */
+}
+
+.fv-form-bootstrap4:not(.form-inline) .form-check ~ .fv-control-feedback {
+  top: 25px; /* labelHeight + checkboxHeight/2 - iconHeight/2 */
+}
+
+.fv-form-bootstrap4 .has-success label, .fv-form-bootstrap4 .has-success .fv-control-feedback {
+  color: #5cb85c;
+}
+
+.fv-form-bootstrap4 .has-warning label, .fv-form-bootstrap4 .has-warning .fv-control-feedback {
+  color: #f0ad4e;
+}

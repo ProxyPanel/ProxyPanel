@@ -1,0 +1,510 @@
+// Name:            Buttons
+//
+// Component:       `btn`
+//
+// Modifiers:       `btn-block`
+//                  `btn-outline`
+//                  `btn-lg`
+//                  `btn-sm`
+//                  `btn-xs`
+//                  `btn-squared`
+//                  `btn-round`
+//                  `btn-default`
+//                  `btn-primary`
+//                  `btn-success`
+//                  `btn-info`
+//                  `btn-warning`
+//                  `btn-danger`
+//                  `btn-dark`
+//                  `btn-flat`
+//                  `btn-icon`
+//                  `btn-raised`
+//                  `btn-floating`
+//                  `btn-animate`
+//                  `btn-tagged`
+//                  `btn-pill-left`
+//                  `btn-pill-right`
+//                  `btn-direction`
+//                  `btn-pure`
+//
+// Markup:
+//
+// <!-- button -->
+// <button type="button" class="btn">...</button>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$btn-tagged-padding-horizontal: pxtorem(8px) !default;
+$btn-tagged-xs-padding-horizontal: pxtorem(4px) !default;
+$btn-tagged-sm-padding-horizontal: pxtorem(6px) !default;
+$btn-tagged-lg-padding-horizontal: pxtorem(14px) !default;
+$btn-tagged-tag-bgColor: rgba(0, 0, 0, .15) !default;
+$btn-color: $inverse !default;
+$btn-bg: transparent !default;
+$btn-border: $border-color-base !default;
+$btn-default-disabled-color: $btn-default-color !default;
+$btn-default-disabled-bg: $gray-100 !default;
+$btn-default-disabled-border: $btn-default-disabled-bg !default;
+$btn-primary-disabled-color: $color-white !default;
+$btn-primary-disabled-bg: $color-primary-400 !default;
+$btn-primary-disabled-border: $btn-primary-disabled-bg !default;
+$btn-success-disabled-color: $color-white !default;
+$btn-success-disabled-bg: $color-green-400 !default;
+$btn-success-disabled-border: $btn-success-disabled-bg !default;
+$btn-info-disabled-color: $color-white !default;
+$btn-info-disabled-bg: $color-cyan-400 !default;
+$btn-info-disabled-border: $btn-info-disabled-bg !default;
+$btn-warning-disabled-color: $color-white !default;
+$btn-warning-disabled-bg: $color-orange-400 !default;
+$btn-warning-disabled-border: $btn-warning-disabled-bg !default;
+$btn-danger-disabled-color: $color-white !default;
+$btn-danger-disabled-bg: $color-red-400 !default;
+$btn-danger-disabled-border: $btn-danger-disabled-bg !default;
+$btn-dark-disabled-color: $color-white !default;
+$btn-dark-disabled-bg: $gray-400 !default;
+$btn-dark-disabled-border: $btn-dark-disabled-bg !default;
+$btn-with-icon-margin: -1px 3px 0 !default;
+$btn-raised-shadow-top: $shadow-2-top !default;
+$btn-raised-shadow-bottom: $shadow-2-bottom !default;
+$btn-raised-shadow-active-top: $shadow-3-top !default;
+$btn-raised-shadow-active-bottom: $shadow-3-bottom !default;
+$btn-flat-disabled-color: $gray-400 !default;
+$btn-icon-xs-font-size: $font-size-sm !default;
+$btn-icon-sm-font-size: $font-size-base !default;
+$btn-icon-lg-font-size: pxtorem(20px) !default;
+$btn-floating-size: pxtorem(56px) !default;
+$btn-floating-padding: pxtorem(14px) !default;
+$btn-floating-font-size: pxtorem(24px) !default;
+$btn-floating-shadow: $shadow-5-bottom !default;
+$btn-floating-xs-size: pxtorem(30px) !default;
+
+/*$btn-floating-xs-padding:                10px !default;*/
+$btn-floating-xs-font-size: pxtorem(13px) !default;
+$btn-floating-sm-size: pxtorem(40px) !default;
+
+/*$btn-floating-sm-padding:                13px !default;*/
+$btn-floating-sm-font-size: pxtorem(15px) !default;
+$btn-floating-lg-size: pxtorem(70px) !default;
+
+/*$btn-floating-lg-padding:                15px !default;*/
+$btn-floating-lg-font-size: pxtorem(30px) !default;
+$btn-animate-side-padding: pxtorem(8px) pxtorem(28px) !default;
+$btn-animate-side-xs-padding: pxtorem(3px) pxtorem(14px) !default;
+$btn-animate-side-sm-padding: pxtorem(6px) pxtorem(22px) !default;
+$btn-animate-side-lg-padding: pxtorem(10px) pxtorem(33px) !default;
+$btn-animate-vertical-icon-font-size: pxtorem(24px) !default;
+$btn-animate-vertical-xs-icon-font-size: pxtorem(18px) !default;
+$btn-animate-vertical-sm-icon-font-size: pxtorem(21px) !default;
+$btn-animate-vertical-lg-icon-font-size: pxtorem(37px) !default;
+$btn-inverse-color: $text-color !default;
+$btn-inverse-bg: $inverse !default;
+$btn-inverse-border: $btn-default-border !default;
+$btn-inverse-hover-bg: $inverse !default;
+$btn-inverse-hover-border: $btn-default-hover-border !default;
+$btn-inverse-active-bg: $inverse !default;
+$btn-inverse-active-border: $btn-default-active-border !default;
+$btn-inverse-disabled-color: $gray-300 !default;
+$btn-inverse-disabled-bg: $inverse !default;
+$btn-inverse-disabled-border: $btn-dark-disabled-bg !default;
+$btn-pure-default-color: $gray-400 !default;
+$btn-pure-default-hover-color: $gray-300 !default;
+$btn-pure-primary-color: $brand-primary !default;
+$btn-pure-primary-hover-color: $brand-primary-400 !default;
+$btn-pure-success-color: $brand-success !default;
+$btn-pure-success-hover-color: $brand-success-400 !default;
+$btn-pure-info-color: $brand-info !default;
+$btn-pure-info-hover-color: $brand-info-400 !default;
+$btn-pure-warning-color: $brand-warning !default;
+$btn-pure-warning-hover-color: $brand-warning-400 !default;
+$btn-pure-danger-color: $brand-danger !default;
+$btn-pure-danger-hover-color: $brand-danger-400 !default;
+$btn-pure-dark-color: $brand-dark !default;
+$btn-pure-dark-hover-color: $brand-dark-hover !default;
+$btn-pure-inverse-color: $inverse !default;
+$btn-pure-inverse-hover-color: $btn-inverse-hover-bg !default;
+
+$btn-styles: (
+  'default': (
+    'color': $btn-default-color,
+    'bg': $btn-default-bg,
+    'border': $btn-default-border,
+    'hover-bg': $btn-default-hover-bg,
+    'hover-border': $btn-default-hover-border,
+    'active-bg': $btn-default-active-bg,
+    'active-border': $btn-default-active-border,
+    'disabled-color': $btn-default-disabled-color,
+    'disabled-bg': $btn-default-disabled-bg,
+    'disabled-border': $btn-default-disabled-border
+  ),
+  'primary': (
+    'color': $btn-primary-color,
+    'bg': $btn-primary-bg,
+    'border': $btn-primary-border,
+    'hover-bg': $btn-primary-hover-bg,
+    'hover-border': $btn-primary-hover-border,
+    'active-bg': $btn-primary-active-bg,
+    'active-border': $btn-primary-active-border,
+    'disabled-color': $btn-primary-disabled-color,
+    'disabled-bg': $btn-primary-disabled-bg,
+    'disabled-border': $btn-primary-disabled-border
+  ),
+  'success': (
+    'color': $btn-success-color,
+    'bg': $btn-success-bg,
+    'border': $btn-success-border,
+    'hover-bg': $btn-success-hover-bg,
+    'hover-border': $btn-success-hover-border,
+    'active-bg': $btn-success-active-bg,
+    'active-border': $btn-success-active-border,
+    'disabled-color': $btn-success-disabled-color,
+    'disabled-bg': $btn-success-disabled-bg,
+    'disabled-border': $btn-success-disabled-border
+  ),
+  'info': (
+    'color': $btn-info-color,
+    'bg': $btn-info-bg,
+    'border': $btn-info-border,
+    'hover-bg': $btn-info-hover-bg,
+    'hover-border': $btn-info-hover-border,
+    'active-bg': $btn-info-active-bg,
+    'active-border': $btn-info-active-border,
+    'disabled-color': $btn-info-disabled-color,
+    'disabled-bg': $btn-info-disabled-bg,
+    'disabled-border': $btn-info-disabled-border
+  ),
+  'warning': (
+    'color': $btn-warning-color,
+    'bg': $btn-warning-bg,
+    'border': $btn-warning-border,
+    'hover-bg': $btn-warning-hover-bg,
+    'hover-border': $btn-warning-hover-border,
+    'active-bg': $btn-warning-active-bg,
+    'active-border': $btn-warning-active-border,
+    'disabled-color': $btn-warning-disabled-color,
+    'disabled-bg': $btn-warning-disabled-bg,
+    'disabled-border': $btn-warning-disabled-border
+  ),
+  'danger': (
+    'color': $btn-danger-color,
+    'bg': $btn-danger-bg,
+    'border': $btn-danger-border,
+    'hover-bg': $btn-danger-hover-bg,
+    'hover-border': $btn-danger-hover-border,
+    'active-bg': $btn-danger-active-bg,
+    'active-border': $btn-danger-active-border,
+    'disabled-color': $btn-danger-disabled-color,
+    'disabled-bg': $btn-danger-disabled-bg,
+    'disabled-border': $btn-danger-disabled-border
+  ),
+  'inverse': (
+    'color': $btn-inverse-color,
+    'bg': $btn-inverse-bg,
+    'border': $btn-inverse-border,
+    'hover-bg': $btn-inverse-hover-bg,
+    'hover-border': $btn-inverse-hover-border,
+    'active-bg': $btn-inverse-active-bg,
+    'active-border': $btn-inverse-active-border,
+    'disabled-color': $btn-inverse-disabled-color,
+    'disabled-bg': $btn-inverse-disabled-bg,
+    'disabled-border': $btn-inverse-disabled-border
+  ),
+  'dark': (
+    'color': $btn-dark-color,
+    'bg': $btn-dark-bg,
+    'border': $btn-dark-border,
+    'hover-bg': $btn-dark-hover-bg,
+    'hover-border': $btn-dark-hover-border,
+    'active-bg': $btn-dark-active-bg,
+    'active-border': $btn-dark-active-border,
+    'disabled-color': $btn-dark-disabled-color,
+    'disabled-bg': $btn-dark-disabled-bg,
+    'disabled-border': $btn-dark-disabled-border
+  )
+) !default;
+
+// Component: Button
+// ========================================================================
+.btn {
+  &:active,
+  &.active,
+  &:focus,
+  &.focus {
+    box-shadow: none;
+  }
+
+  &:not([disabled]):not(.disabled):active,
+  &:not([disabled]):not(.disabled).active {
+   box-shadow: none;
+  }
+}
+// Modifier: `btn-block`
+// -------------------------
+
+// Modifier: `btn-outline`
+// ========================================================================
+
+.btn-outline {
+  &-default,
+  &.btn-default {
+    @include button-outline-styles-variant("default");
+  }
+
+  &-primary,
+  &.btn-primary {
+    @include button-outline-styles-variant("primary");
+  }
+
+  &-success,
+  &.btn-success {
+    @include button-outline-styles-variant("success");
+  }
+
+  &-info,
+  &.btn-info {
+    @include button-outline-styles-variant("info");
+  }
+
+  &-warning,
+  &.btn-warning {
+    @include button-outline-styles-variant("warning");
+  }
+
+  &-danger,
+  &.btn-danger {
+    @include button-outline-styles-variant("danger");
+  }
+
+  &-dark,
+  &.btn-dark {
+    @include button-outline-styles-variant("dark");
+  }
+
+  &-inverse,
+  &.btn-inverse {
+    @include button-outline-styles-variant("inverse");
+  }
+}
+
+// Size Modifier
+// ========================================================================
+
+// Border Radius Modifier
+// ========================================================================
+
+// Modifier: `btn-squared`
+// -------------------------
+
+// Modifier: `btn-round`
+// -------------------------
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `btn-primary`
+// -------------------------
+
+.btn-primary {
+  @include button-styles-variant('primary');
+}
+
+// Modifier: `btn-success`
+// -------------------------
+
+.btn-success {
+  @include button-styles-variant('success');
+}
+
+// Modifier: `btn-info`
+// -------------------------
+
+.btn-info {
+  @include button-styles-variant('info');
+}
+
+// Modifier: `btn-warning`
+// -------------------------
+
+.btn-warning {
+  @include button-styles-variant('warning');
+}
+
+// Modifier: `btn-danger`
+// -------------------------
+
+.btn-danger {
+  @include button-styles-variant('danger');
+}
+
+// Modifier: `btn-default`
+// -------------------------
+
+.btn-default {
+  // @include button-variant($btn-default-color, $btn-default-bg, $btn-default-border);
+  @include button-styles-variant('default');
+}
+
+// Modifier: `btn-inverse`
+// -------------------------
+
+.btn-inverse {
+  // @include button-variant($btn-inverse-color, $btn-inverse-bg, $btn-inverse-border);
+  @include button-styles-variant('inverse');
+}
+
+// Modifier: `btn-dark`
+// -------------------------
+
+.btn-dark {
+  // @include button-variant($btn-dark-color, $btn-dark-bg, $btn-dark-border);
+  @include button-styles-variant('dark');
+}
+
+// Modifier: `btn-flat`
+// ========================================================================
+
+.btn-flat {
+  background: none;
+  border: none;
+  box-shadow: none;
+
+  &.disabled {
+    color: $btn-flat-disabled-color;
+  }
+}
+
+// Modifier: `btn-icon`
+// ========================================================================
+
+.btn-icon, .btn.icon {
+  &.disabled {
+    color: $btn-flat-disabled-color;
+  }
+}
+
+// Modifier: `btn-raised`
+// ========================================================================
+
+.btn-raised {
+  @include btn-raised-shadow();
+
+  &.disabled, &[disabled], fieldset[disabled] & {
+    box-shadow: none;
+  }
+}
+
+// Modifier: `btn-floating`
+// ========================================================================
+
+.btn-floating {
+  box-shadow: $btn-floating-shadow;
+}
+
+// Modifier: `btn-animate`
+// ========================================================================
+
+// Modifier: `btn-tagged`
+// ========================================================================
+
+.btn-tag {
+  background-color: $btn-tagged-tag-bgColor;
+}
+
+// Pill Modifier
+// ========================================================================
+
+// Direction Modifier
+// ========================================================================
+
+.btn-direction {
+  &:before {
+    border: 8px solid transparent;
+  }
+}
+
+// Modifier: `btn-up`
+// -------------------------
+
+.btn-up:before {
+  border-bottom-color: $border-color-base;
+}
+
+// Modifier: `btn-right`
+// -------------------------
+
+.btn-right:before {
+  border-left-color: $border-color-base;
+}
+
+// Modifier: `btn-bottom`
+// -------------------------
+
+.btn-bottom:before {
+  border-top-color: $border-color-base;
+}
+
+// Modifier: `btn-left`
+// -------------------------
+
+.btn-left:before {
+  border-right-color: $border-color-base;
+}
+
+// Modifier: `btn-pure`
+// ========================================================================
+
+.btn-pure {
+  &,
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle,
+  &[disabled],
+  fieldset[disabled] & {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+
+    &:hover,
+    &:focus,
+    &.focus {
+      background-color: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  &.btn-default {
+    @include button-pure-variant($btn-pure-default-color, $btn-pure-default-hover-color);
+  }
+
+  &.btn-primary {
+    @include button-pure-variant($btn-pure-primary-color, $btn-pure-primary-hover-color);
+  }
+
+  &.btn-success {
+    @include button-pure-variant($btn-pure-success-color, $btn-pure-success-hover-color);
+  }
+
+  &.btn-info {
+    @include button-pure-variant($btn-pure-info-color, $btn-pure-info-hover-color);
+  }
+
+  &.btn-warning {
+    @include button-pure-variant($btn-pure-warning-color, $btn-pure-warning-hover-color);
+  }
+
+  &.btn-danger {
+    @include button-pure-variant($btn-pure-danger-color, $btn-pure-danger-hover-color);
+  }
+
+  &.btn-dark {
+    @include button-pure-variant($btn-pure-dark-color, $btn-pure-dark-hover-color);
+  }
+
+  &.btn-inverse {
+    @include button-pure-variant($btn-pure-inverse-color, $btn-pure-inverse-hover-color);
+  }
+}

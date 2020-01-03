@@ -1,0 +1,479 @@
+@import 'vars';
+$trigger-width: $input-height - pxtorem(2px);
+$trigger-height: $input-height - pxtorem(2px);
+$saturation-size: 175px;
+$hue-alpha-width: 20px;
+$hue-alpha-height: 175px;
+$line-color: $border-color-base;
+$active-color: $input-focus-border-color;
+$wheel-size: 20px;
+$wheel-pointer-size: 5px;
+$inner-border-color: rgba(0, 0, 0, .05);
+$colorInput-dropdown-bg: $dropdown-bg;
+$colorInput-dropdown-border: $dropdown-border-color;
+$colorInput-dropdown-shadow: $dropdown-box-shadow;
+$colorInput-trigger-border-size: 4px;
+$colorInput-trigger-border-color: $gray-100;
+$colorInput-clear-color: $gray-300;
+
+// z-index
+$colorpicker-dropdown-z-index: $zindex-fullscreen;//500002;
+
+// core
+.colorInputUi {
+  &-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  &_hideInput {
+    display: none;
+  }
+
+  &_hideInput &-clear {
+    display: none;
+  }
+
+  &-dropdown {
+    position: absolute;
+    z-index: $colorpicker-dropdown-z-index;
+    display: none;
+    user-select: none;
+
+    &, & * {
+      box-sizing: content-box;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  &_open {
+    display: block;
+  }
+
+  &-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: $colorpicker-dropdown-z-index - 1;
+    width: 100%;
+    height: 100%;
+  }
+
+  &-trigger {
+    position: relative;
+    display: inline-block;
+    width: $trigger-width;
+    height: $trigger-height;
+    cursor: pointer;
+    background-image: url("transparent.png");
+
+    span {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &-wrap &-trigger {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    border-radius: 0 $input-border-radius $input-border-radius 0;
+  }
+
+  &-input, &-trigger {
+    vertical-align: middle;
+  }
+
+  &-clear {
+    // @include make-icon();
+    position: absolute;
+    top: 50%;
+    right: $trigger-width + pxtorem(5px);
+    display: none;
+    font-family: $wb-font-family;
+    font-style: normal;
+    font-weight: normal;
+    color: $colorInput-clear-color;
+    transition: color .1s ease-in;
+    transform: translateY(-50%);
+    text-rendering: auto;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    &, &:hover, &:active {
+      text-decoration: none;
+    }
+
+    &:after {
+      content: $wb-var-close;
+    }
+  }
+
+  // &-input:focus + &-clear,
+  &-wrap:hover &-clear {
+    display: inline-block;
+  }
+
+  &-preview {
+    float: left;
+    list-style: none;
+
+    li {
+      display: inline-block;
+      vertical-align: top;
+      background-image: url("transparent.png");
+      span {
+        display: block;
+        height: 100%;
+      }
+      // *display: inline;
+      // *zoom: 1;
+    }
+
+    &-previous {
+      cursor: pointer;
+    }
+  }
+
+  &-palettes {
+    ul {
+      display: block;
+
+      &:before, &:after {
+        display: table;
+        content: "";
+      }
+
+      &:after {
+        clear: both;
+      }
+    }
+
+    li {
+      display: block;
+      float: left;
+      overflow: hidden;
+      text-indent: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+      background-image: url("transparent.png");
+      span {
+        display: block;
+        height: 100%;
+      }
+    }
+  }
+
+  &-saturation {
+    //cursor: crosshair;
+    position: relative;
+    display: inline-block;
+    // *display: inline;
+    // *zoom: 1;
+
+    width: $saturation-size;
+    height: $saturation-size;
+    clear: both;
+    background-image: url("saturation.png");
+
+    i {
+      position: absolute;
+    }
+  }
+
+  &-hue, &-alpha {
+    position: relative;
+    display: inline-block;
+
+    // *display: inline;
+    // *zoom: 1;
+    width: $hue-alpha-width;
+    height: $hue-alpha-height;
+    cursor: pointer;
+
+    i {
+      position: absolute;
+      cursor: row-resize;
+    }
+  }
+
+  &-hue {
+    background-image: url("hue.png");
+  }
+
+  &-alpha {
+    background-image: url("alpha.png");
+  }
+
+  &-buttons, &-gradient-control {
+    a {
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+
+  &-gradient {
+    display: none;
+
+    &_enable {
+      display: block;
+    }
+
+    &-preview {
+      float: left;
+      height: 20px;
+    }
+
+    &-markers {
+      position: relative;
+      width: 100%;
+      outline: none;
+    }
+
+    &-marker {
+      position: absolute;
+      outline: none;
+    }
+
+    &-wheel {
+      position: relative;
+      float: left;
+      width: $wheel-size;
+      height: $wheel-size;
+      border: 1px solid $line-color;
+      border-radius: 100%;
+
+      i {
+        position: absolute;
+        width: $wheel-pointer-size;
+        height: $wheel-pointer-size;
+        border-radius: 100%;
+      }
+    }
+
+    &-angle {
+      float: left;
+    }
+  }
+}
+
+// skin
+.colorInputUi {
+  &-dropdown {
+    min-width: 205px;
+    max-width: 235px;
+    padding: 10px;
+    margin: 5px 0;
+    background: $colorInput-dropdown-bg;
+    border: 1px solid $colorInput-dropdown-border;
+    box-shadow: $colorInput-dropdown-shadow;
+
+    [data-mode="palettes"] & {
+      min-width: auto;
+      max-width: auto;
+    }
+
+    input {
+      @include form-control-focus();
+      color: $input-color;
+      background-color: $input-bg;
+      background-image: none;
+      border: 1px solid $input-border;
+      border-radius: $input-border-radius;
+      transition: box-shadow .25s linear, border .25s linear, color .25s linear, background-color .25s linear;
+      -webkit-appearance: none;
+    }
+  }
+
+  &-trigger {
+    border: $colorInput-trigger-border-size solid $colorInput-trigger-border-color;
+    border-left-width: $colorInput-trigger-border-size + 1px;
+
+    &:before {
+      position: absolute;
+      top: o;
+      left: -1px;
+      width: 1px;
+      height: 100%;
+      pointer-events: none;
+      content: "";
+      background: $input-border;
+    }
+  }
+
+  &-saturation {
+    box-shadow: inset 0 0 0 1px $inner-border-color;
+    i {
+      width: 5px;
+      height: 5px;
+      margin-top: -2px;
+      margin-left: -2px;
+      border: 2px solid #fff;
+      border-radius: 100%;
+    }
+  }
+
+  &-hue, &-alpha {
+    margin-left: 10px;
+    box-shadow: inset 0 0 0 1px $inner-border-color;
+
+    i {
+      left: -2px;
+      width: 20px;
+      height: 2px;
+      margin-top: -2px;
+      border: 2px solid #fff;
+    }
+  }
+
+  &-preview {
+    position: relative;
+    height: 33px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+
+    &:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      content: "";
+      box-shadow: inset 0 0 0 1px $inner-border-color;
+    }
+
+    li {
+      width: 48px;
+      height: 33px;
+    }
+  }
+
+  &-hex {
+    width: 100px;
+    border-color: $inner-border-color;
+  }
+
+  &-palettes {
+    li {
+      width: 21px;
+      height: 15px;
+      margin-right: 6px;
+      margin-bottom: 3px;
+
+      span {
+        box-sizing: border-box;
+        border: 1px solid $inner-border-color;
+      }
+
+      &:nth-child(5n) {
+        margin-right: 0;
+
+        [data-mode="palettes"] & {
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+
+  &-buttons, &-gradient-control {
+    float: right;
+
+    a {
+      margin-left: 5px;
+    }
+  }
+
+  &-gradient {
+    padding-top: 20px;
+    margin-top: 10px;
+    border-top: 1px solid $inner-border-color;
+
+    &-preview {
+      position: relative;
+      width: 160px;
+      border: 1px solid $inner-border-color;
+
+      &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        content: "";
+        background-image: url("transparent.png");
+      }
+    }
+
+    &-markers {
+      top: -16px;
+      display: block;
+      width: 160px;
+      height: 16px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    &-marker {
+      width: 10px;
+      height: 10px;
+      margin-left: -6px;
+      background: #fff;
+      border: 1px solid $line-color;
+
+      span {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      i {
+        position: absolute;
+        bottom: -3px;
+        left: 2px;
+        width: 4px;
+        height: 4px;
+        background: #fff;
+        border: 1px solid transparent;
+        border-right-color: $inner-border-color;
+        border-bottom-color: $inner-border-color;
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
+
+      &_active {
+        z-index: 1;
+        border: 2px solid $active-color;
+
+        i {
+          left: 1px;
+          border: 2px solid transparent;
+          border-right-color: $active-color;
+          border-bottom-color: $active-color;
+        }
+      }
+    }
+
+    &-wheel {
+      margin-left: 10px;
+
+      i {
+        background-color: darken($line-color, 20%);
+      }
+    }
+
+    &-angle {
+      width: 28px;
+      margin-left: 10px;
+    }
+  }
+}

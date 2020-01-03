@@ -1,5 +1,5 @@
 @extends('auth.layouts')
-@section('title', trans('auth.restPassword'))
+@section('title', trans('auth.resetPassword'))
 @section('content')
 	<form action="{{url(Request::getRequestUri())}}" method="post" class="register-form">
 		@if(Session::get('successMsg'))
@@ -18,7 +18,7 @@
 			</div>
 		@else
 			<div class="form-title">
-				{{trans('auth.restPassword')}}
+				{{trans('auth.resetPassword')}}
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
 				<input class="form-control" type="password" autocomplete="off" name="password" value="" required/>

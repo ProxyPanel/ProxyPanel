@@ -1,6 +1,7 @@
 @extends('admin.layouts')
 @section('css')
 	<link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/custom/range.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
 	<div class="page-content container-fluid">
@@ -176,15 +177,20 @@
         // 批量生成账号
         function batchAddUsers() {
             swal.fire({
-                title: '注意',
-                text: '将自动生成5个账号，确定继续吗？',
+                title: '用户生成数量',
+                input: 'range',
+                inputAttributes: {
+                    min: 1,
+                    max: 10,
+                },
+                inputValue: 1,
                 type: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post("/admin/batchAddUsers", {_token: '{{csrf_token()}}'}, function (ret) {
+                    $.post("/admin/batchAddUsers", {_token: '{{csrf_token()}}', amount: result.value}, function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
                                 .then(() => window.location.reload())

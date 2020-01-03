@@ -18,7 +18,7 @@
   });
   _exports.run = run;
   _exports.getInstance = getInstance;
-  _exports.AppTravel = _exports.default = void 0;
+  _exports.default = _exports.AppTravel = void 0;
   _Site2 = babelHelpers.interopRequireDefault(_Site2);
 
   var Map =

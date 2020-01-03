@@ -18,7 +18,7 @@
   });
   _exports.run = run;
   _exports.getInstance = getInstance;
-  _exports.AppContacts = _exports.default = void 0;
+  _exports.default = _exports.AppContacts = void 0;
   _BaseApp2 = babelHelpers.interopRequireDefault(_BaseApp2);
 
   var AppContacts =

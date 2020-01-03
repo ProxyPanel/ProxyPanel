@@ -1,0 +1,854 @@
+// Icons
+// -------------------------
+.#{$entypo-css-prefix}-note:before {
+	content: $entypo-var-note;
+}
+.#{$entypo-css-prefix}-note-beamed:before {
+	content: $entypo-var-note-beamed;
+}
+.#{$entypo-css-prefix}-music:before {
+	content: $entypo-var-music;
+}
+.#{$entypo-css-prefix}-search:before {
+	content: $entypo-var-search;
+}
+.#{$entypo-css-prefix}-flashlight:before {
+	content: $entypo-var-flashlight;
+}
+.#{$entypo-css-prefix}-mail:before {
+	content: $entypo-var-mail;
+}
+.#{$entypo-css-prefix}-heart:before {
+	content: $entypo-var-heart;
+}
+.#{$entypo-css-prefix}-heart-empty:before {
+	content: $entypo-var-heart-empty;
+}
+.#{$entypo-css-prefix}-star:before {
+	content: $entypo-var-star;
+}
+.#{$entypo-css-prefix}-star-empty:before {
+	content: $entypo-var-star-empty;
+}
+.#{$entypo-css-prefix}-user:before {
+	content: $entypo-var-user;
+}
+.#{$entypo-css-prefix}-users:before {
+	content: $entypo-var-users;
+}
+.#{$entypo-css-prefix}-user-add:before {
+	content: $entypo-var-user-add;
+}
+.#{$entypo-css-prefix}-video:before {
+	content: $entypo-var-video;
+}
+.#{$entypo-css-prefix}-picture:before {
+	content: $entypo-var-picture;
+}
+.#{$entypo-css-prefix}-camera:before {
+	content: $entypo-var-camera;
+}
+.#{$entypo-css-prefix}-layout:before {
+	content: $entypo-var-layout;
+}
+.#{$entypo-css-prefix}-menu:before {
+	content: $entypo-var-menu;
+}
+.#{$entypo-css-prefix}-check:before {
+	content: $entypo-var-check;
+}
+.#{$entypo-css-prefix}-cancel:before {
+	content: $entypo-var-cancel;
+}
+.#{$entypo-css-prefix}-cancel-circled:before {
+	content: $entypo-var-cancel-circled;
+}
+.#{$entypo-css-prefix}-cancel-squared:before {
+	content: $entypo-var-cancel-squared;
+}
+.#{$entypo-css-prefix}-plus:before {
+	content: $entypo-var-plus;
+}
+.#{$entypo-css-prefix}-plus-circled:before {
+	content: $entypo-var-plus-circled;
+}
+.#{$entypo-css-prefix}-plus-squared:before {
+	content: $entypo-var-plus-squared;
+}
+.#{$entypo-css-prefix}-minus:before {
+	content: $entypo-var-minus;
+}
+.#{$entypo-css-prefix}-minus-circled:before {
+	content: $entypo-var-minus-circled;
+}
+.#{$entypo-css-prefix}-minus-squared:before {
+	content: $entypo-var-minus-squared;
+}
+.#{$entypo-css-prefix}-help:before {
+	content: $entypo-var-help;
+}
+.#{$entypo-css-prefix}-help-circled:before {
+	content: $entypo-var-help-circled;
+}
+.#{$entypo-css-prefix}-info:before {
+	content: $entypo-var-info;
+}
+.#{$entypo-css-prefix}-info-circled:before {
+	content: $entypo-var-info-circled;
+}
+.#{$entypo-css-prefix}-back:before {
+	content: $entypo-var-back;
+}
+.#{$entypo-css-prefix}-home:before {
+	content: $entypo-var-home;
+}
+.#{$entypo-css-prefix}-link:before {
+	content: $entypo-var-link;
+}
+.#{$entypo-css-prefix}-attach:before {
+	content: $entypo-var-attach;
+}
+.#{$entypo-css-prefix}-lock:before {
+	content: $entypo-var-lock;
+}
+.#{$entypo-css-prefix}-lock-open:before {
+	content: $entypo-var-lock-open;
+}
+.#{$entypo-css-prefix}-eye:before {
+	content: $entypo-var-eye;
+}
+.#{$entypo-css-prefix}-tag:before {
+	content: $entypo-var-tag;
+}
+.#{$entypo-css-prefix}-bookmark:before {
+	content: $entypo-var-bookmark;
+}
+.#{$entypo-css-prefix}-bookmarks:before {
+	content: $entypo-var-bookmarks;
+}
+.#{$entypo-css-prefix}-flag:before {
+	content: $entypo-var-flag;
+}
+.#{$entypo-css-prefix}-thumbs-up:before {
+	content: $entypo-var-thumbs-up;
+}
+.#{$entypo-css-prefix}-thumbs-down:before {
+	content: $entypo-var-thumbs-down;
+}
+.#{$entypo-css-prefix}-download:before {
+	content: $entypo-var-download;
+}
+.#{$entypo-css-prefix}-upload:before {
+	content: $entypo-var-upload;
+}
+.#{$entypo-css-prefix}-upload-cloud:before {
+	content: $entypo-var-upload-cloud;
+}
+.#{$entypo-css-prefix}-reply:before {
+	content: $entypo-var-reply;
+}
+.#{$entypo-css-prefix}-reply-all:before {
+	content: $entypo-var-reply-all;
+}
+.#{$entypo-css-prefix}-forward:before {
+	content: $entypo-var-forward;
+}
+.#{$entypo-css-prefix}-quote:before {
+	content: $entypo-var-quote;
+}
+.#{$entypo-css-prefix}-code:before {
+	content: $entypo-var-code;
+}
+.#{$entypo-css-prefix}-export:before {
+	content: $entypo-var-export;
+}
+.#{$entypo-css-prefix}-pencil:before {
+	content: $entypo-var-pencil;
+}
+.#{$entypo-css-prefix}-feather:before {
+	content: $entypo-var-feather;
+}
+.#{$entypo-css-prefix}-print:before {
+	content: $entypo-var-print;
+}
+.#{$entypo-css-prefix}-retweet:before {
+	content: $entypo-var-retweet;
+}
+.#{$entypo-css-prefix}-keyboard:before {
+	content: $entypo-var-keyboard;
+}
+.#{$entypo-css-prefix}-comment:before {
+	content: $entypo-var-comment;
+}
+.#{$entypo-css-prefix}-chat:before {
+	content: $entypo-var-chat;
+}
+.#{$entypo-css-prefix}-bell:before {
+	content: $entypo-var-bell;
+}
+.#{$entypo-css-prefix}-attention:before {
+	content: $entypo-var-attention;
+}
+.#{$entypo-css-prefix}-alert:before {
+	content: $entypo-var-alert;
+}
+.#{$entypo-css-prefix}-vcard:before {
+	content: $entypo-var-vcard;
+}
+.#{$entypo-css-prefix}-address:before {
+	content: $entypo-var-address;
+}
+.#{$entypo-css-prefix}-location:before {
+	content: $entypo-var-location;
+}
+.#{$entypo-css-prefix}-map:before {
+	content: $entypo-var-map;
+}
+.#{$entypo-css-prefix}-direction:before {
+	content: $entypo-var-direction;
+}
+.#{$entypo-css-prefix}-compass:before {
+	content: $entypo-var-compass;
+}
+.#{$entypo-css-prefix}-cup:before {
+	content: $entypo-var-cup;
+}
+.#{$entypo-css-prefix}-trash:before {
+	content: $entypo-var-trash;
+}
+.#{$entypo-css-prefix}-doc:before {
+	content: $entypo-var-doc;
+}
+.#{$entypo-css-prefix}-docs:before {
+	content: $entypo-var-docs;
+}
+.#{$entypo-css-prefix}-doc-landscape:before {
+	content: $entypo-var-doc-landscape;
+}
+.#{$entypo-css-prefix}-doc-text:before {
+	content: $entypo-var-doc-text;
+}
+.#{$entypo-css-prefix}-doc-text-inv:before {
+	content: $entypo-var-doc-text-inv;
+}
+.#{$entypo-css-prefix}-newspaper:before {
+	content: $entypo-var-newspaper;
+}
+.#{$entypo-css-prefix}-book-open:before {
+	content: $entypo-var-book-open;
+}
+.#{$entypo-css-prefix}-book:before {
+	content: $entypo-var-book;
+}
+.#{$entypo-css-prefix}-folder:before {
+	content: $entypo-var-folder;
+}
+.#{$entypo-css-prefix}-archive:before {
+	content: $entypo-var-archive;
+}
+.#{$entypo-css-prefix}-box:before {
+	content: $entypo-var-box;
+}
+.#{$entypo-css-prefix}-rss:before {
+	content: $entypo-var-rss;
+}
+.#{$entypo-css-prefix}-phone:before {
+	content: $entypo-var-phone;
+}
+.#{$entypo-css-prefix}-cog:before {
+	content: $entypo-var-cog;
+}
+.#{$entypo-css-prefix}-tools:before {
+	content: $entypo-var-tools;
+}
+.#{$entypo-css-prefix}-share:before {
+	content: $entypo-var-share;
+}
+.#{$entypo-css-prefix}-shareable:before {
+	content: $entypo-var-shareable;
+}
+.#{$entypo-css-prefix}-basket:before {
+	content: $entypo-var-basket;
+}
+.#{$entypo-css-prefix}-bag:before {
+	content: $entypo-var-bag;
+}
+.#{$entypo-css-prefix}-calendar:before {
+	content: $entypo-var-calendar;
+}
+.#{$entypo-css-prefix}-login:before {
+	content: $entypo-var-login;
+}
+.#{$entypo-css-prefix}-logout:before {
+	content: $entypo-var-logout;
+}
+.#{$entypo-css-prefix}-mic:before {
+	content: $entypo-var-mic;
+}
+.#{$entypo-css-prefix}-mute:before {
+	content: $entypo-var-mute;
+}
+.#{$entypo-css-prefix}-sound:before {
+	content: $entypo-var-sound;
+}
+.#{$entypo-css-prefix}-volume:before {
+	content: $entypo-var-volume;
+}
+.#{$entypo-css-prefix}-clock:before {
+	content: $entypo-var-clock;
+}
+.#{$entypo-css-prefix}-hourglass:before {
+	content: $entypo-var-hourglass;
+}
+.#{$entypo-css-prefix}-lamp:before {
+	content: $entypo-var-lamp;
+}
+.#{$entypo-css-prefix}-light-down:before {
+	content: $entypo-var-light-down;
+}
+.#{$entypo-css-prefix}-light-up:before {
+	content: $entypo-var-light-up;
+}
+.#{$entypo-css-prefix}-adjust:before {
+	content: $entypo-var-adjust;
+}
+.#{$entypo-css-prefix}-block:before {
+	content: $entypo-var-block;
+}
+.#{$entypo-css-prefix}-resize-full:before {
+	content: $entypo-var-resize-full;
+}
+.#{$entypo-css-prefix}-resize-small:before {
+	content: $entypo-var-resize-small;
+}
+.#{$entypo-css-prefix}-popup:before {
+	content: $entypo-var-popup;
+}
+.#{$entypo-css-prefix}-publish:before {
+	content: $entypo-var-publish;
+}
+.#{$entypo-css-prefix}-window:before {
+	content: $entypo-var-window;
+}
+.#{$entypo-css-prefix}-arrow-combo:before {
+	content: $entypo-var-arrow-combo;
+}
+.#{$entypo-css-prefix}-down-circled:before {
+	content: $entypo-var-down-circled;
+}
+.#{$entypo-css-prefix}-left-circled:before {
+	content: $entypo-var-left-circled;
+}
+.#{$entypo-css-prefix}-right-circled:before {
+	content: $entypo-var-right-circled;
+}
+.#{$entypo-css-prefix}-up-circled:before {
+	content: $entypo-var-up-circled;
+}
+.#{$entypo-css-prefix}-down-open:before {
+	content: $entypo-var-down-open;
+}
+.#{$entypo-css-prefix}-left-open:before {
+	content: $entypo-var-left-open;
+}
+.#{$entypo-css-prefix}-right-open:before {
+	content: $entypo-var-right-open;
+}
+.#{$entypo-css-prefix}-up-open:before {
+	content: $entypo-var-up-open;
+}
+.#{$entypo-css-prefix}-down-open-mini:before {
+	content: $entypo-var-down-open-mini;
+}
+.#{$entypo-css-prefix}-left-open-mini:before {
+	content: $entypo-var-left-open-mini;
+}
+.#{$entypo-css-prefix}-right-open-mini:before {
+	content: $entypo-var-right-open-mini;
+}
+.#{$entypo-css-prefix}-up-open-mini:before {
+	content: $entypo-var-up-open-mini;
+}
+.#{$entypo-css-prefix}-down-open-big:before {
+	content: $entypo-var-down-open-big;
+}
+.#{$entypo-css-prefix}-left-open-big:before {
+	content: $entypo-var-left-open-big;
+}
+.#{$entypo-css-prefix}-right-open-big:before {
+	content: $entypo-var-right-open-big;
+}
+.#{$entypo-css-prefix}-up-open-big:before {
+	content: $entypo-var-up-open-big;
+}
+.#{$entypo-css-prefix}-down:before {
+	content: $entypo-var-down;
+}
+.#{$entypo-css-prefix}-left:before {
+	content: $entypo-var-left;
+}
+.#{$entypo-css-prefix}-right:before {
+	content: $entypo-var-right;
+}
+.#{$entypo-css-prefix}-up:before {
+	content: $entypo-var-up;
+}
+.#{$entypo-css-prefix}-down-dir:before {
+	content: $entypo-var-down-dir;
+}
+.#{$entypo-css-prefix}-left-dir:before {
+	content: $entypo-var-left-dir;
+}
+.#{$entypo-css-prefix}-right-dir:before {
+	content: $entypo-var-right-dir;
+}
+.#{$entypo-css-prefix}-up-dir:before {
+	content: $entypo-var-up-dir;
+}
+.#{$entypo-css-prefix}-down-bold:before {
+	content: $entypo-var-down-bold;
+}
+.#{$entypo-css-prefix}-left-bold:before {
+	content: $entypo-var-left-bold;
+}
+.#{$entypo-css-prefix}-right-bold:before {
+	content: $entypo-var-right-bold;
+}
+.#{$entypo-css-prefix}-up-bold:before {
+	content: $entypo-var-up-bold;
+}
+.#{$entypo-css-prefix}-down-thin:before {
+	content: $entypo-var-down-thin;
+}
+.#{$entypo-css-prefix}-left-thin:before {
+	content: $entypo-var-left-thin;
+}
+.#{$entypo-css-prefix}-right-thin:before {
+	content: $entypo-var-right-thin;
+}
+.#{$entypo-css-prefix}-up-thin:before {
+	content: $entypo-var-up-thin;
+}
+.#{$entypo-css-prefix}-ccw:before {
+	content: $entypo-var-ccw;
+}
+.#{$entypo-css-prefix}-cw:before {
+	content: $entypo-var-cw;
+}
+.#{$entypo-css-prefix}-arrows-ccw:before {
+	content: $entypo-var-arrows-ccw;
+}
+.#{$entypo-css-prefix}-level-down:before {
+	content: $entypo-var-level-down;
+}
+.#{$entypo-css-prefix}-level-up:before {
+	content: $entypo-var-level-up;
+}
+.#{$entypo-css-prefix}-shuffle:before {
+	content: $entypo-var-shuffle;
+}
+.#{$entypo-css-prefix}-loop:before {
+	content: $entypo-var-loop;
+}
+.#{$entypo-css-prefix}-switch:before {
+	content: $entypo-var-switch;
+}
+.#{$entypo-css-prefix}-play:before {
+	content: $entypo-var-play;
+}
+.#{$entypo-css-prefix}-stop:before {
+	content: $entypo-var-stop;
+}
+.#{$entypo-css-prefix}-pause:before {
+	content: $entypo-var-pause;
+}
+.#{$entypo-css-prefix}-record:before {
+	content: $entypo-var-record;
+}
+.#{$entypo-css-prefix}-to-end:before {
+	content: $entypo-var-to-end;
+}
+.#{$entypo-css-prefix}-to-start:before {
+	content: $entypo-var-to-start;
+}
+.#{$entypo-css-prefix}-fast-forward:before {
+	content: $entypo-var-fast-forward;
+}
+.#{$entypo-css-prefix}-fast-backward:before {
+	content: $entypo-var-fast-backward;
+}
+.#{$entypo-css-prefix}-progress-0:before {
+	content: $entypo-var-progress-0;
+}
+.#{$entypo-css-prefix}-progress-1:before {
+	content: $entypo-var-progress-1;
+}
+.#{$entypo-css-prefix}-progress-2:before {
+	content: $entypo-var-progress-2;
+}
+.#{$entypo-css-prefix}-progress-3:before {
+	content: $entypo-var-progress-3;
+}
+.#{$entypo-css-prefix}-target:before {
+	content: $entypo-var-target;
+}
+.#{$entypo-css-prefix}-palette:before {
+	content: $entypo-var-palette;
+}
+.#{$entypo-css-prefix}-list:before {
+	content: $entypo-var-list;
+}
+.#{$entypo-css-prefix}-list-add:before {
+	content: $entypo-var-list-add;
+}
+.#{$entypo-css-prefix}-signal:before {
+	content: $entypo-var-signal;
+}
+.#{$entypo-css-prefix}-trophy:before {
+	content: $entypo-var-trophy;
+}
+.#{$entypo-css-prefix}-battery:before {
+	content: $entypo-var-battery;
+}
+.#{$entypo-css-prefix}-back-in-time:before {
+	content: $entypo-var-back-in-time;
+}
+.#{$entypo-css-prefix}-monitor:before {
+	content: $entypo-var-monitor;
+}
+.#{$entypo-css-prefix}-mobile:before {
+	content: $entypo-var-mobile;
+}
+.#{$entypo-css-prefix}-network:before {
+	content: $entypo-var-network;
+}
+.#{$entypo-css-prefix}-cd:before {
+	content: $entypo-var-cd;
+}
+.#{$entypo-css-prefix}-inbox:before {
+	content: $entypo-var-inbox;
+}
+.#{$entypo-css-prefix}-install:before {
+	content: $entypo-var-install;
+}
+.#{$entypo-css-prefix}-globe:before {
+	content: $entypo-var-globe;
+}
+.#{$entypo-css-prefix}-cloud:before {
+	content: $entypo-var-cloud;
+}
+.#{$entypo-css-prefix}-cloud-thunder:before {
+	content: $entypo-var-cloud-thunder;
+}
+.#{$entypo-css-prefix}-flash:before {
+	content: $entypo-var-flash;
+}
+.#{$entypo-css-prefix}-moon:before {
+	content: $entypo-var-moon;
+}
+.#{$entypo-css-prefix}-flight:before {
+	content: $entypo-var-flight;
+}
+.#{$entypo-css-prefix}-paper-plane:before {
+	content: $entypo-var-paper-plane;
+}
+.#{$entypo-css-prefix}-leaf:before {
+	content: $entypo-var-leaf;
+}
+.#{$entypo-css-prefix}-lifebuoy:before {
+	content: $entypo-var-lifebuoy;
+}
+.#{$entypo-css-prefix}-mouse:before {
+	content: $entypo-var-mouse;
+}
+.#{$entypo-css-prefix}-briefcase:before {
+	content: $entypo-var-briefcase;
+}
+.#{$entypo-css-prefix}-suitcase:before {
+	content: $entypo-var-suitcase;
+}
+.#{$entypo-css-prefix}-dot:before {
+	content: $entypo-var-dot;
+}
+.#{$entypo-css-prefix}-dot-2:before {
+	content: $entypo-var-dot-2;
+}
+.#{$entypo-css-prefix}-dot-3:before {
+	content: $entypo-var-dot-3;
+}
+.#{$entypo-css-prefix}-brush:before {
+	content: $entypo-var-brush;
+}
+.#{$entypo-css-prefix}-magnet:before {
+	content: $entypo-var-magnet;
+}
+.#{$entypo-css-prefix}-infinity:before {
+	content: $entypo-var-infinity;
+}
+.#{$entypo-css-prefix}-erase:before {
+	content: $entypo-var-erase;
+}
+.#{$entypo-css-prefix}-chart-pie:before {
+	content: $entypo-var-chart-pie;
+}
+.#{$entypo-css-prefix}-chart-line:before {
+	content: $entypo-var-chart-line;
+}
+.#{$entypo-css-prefix}-chart-bar:before {
+	content: $entypo-var-chart-bar;
+}
+.#{$entypo-css-prefix}-chart-area:before {
+	content: $entypo-var-chart-area;
+}
+.#{$entypo-css-prefix}-tape:before {
+	content: $entypo-var-tape;
+}
+.#{$entypo-css-prefix}-graduation-cap:before {
+	content: $entypo-var-graduation-cap;
+}
+.#{$entypo-css-prefix}-language:before {
+	content: $entypo-var-language;
+}
+.#{$entypo-css-prefix}-ticket:before {
+	content: $entypo-var-ticket;
+}
+.#{$entypo-css-prefix}-water:before {
+	content: $entypo-var-water;
+}
+.#{$entypo-css-prefix}-droplet:before {
+	content: $entypo-var-droplet;
+}
+.#{$entypo-css-prefix}-air:before {
+	content: $entypo-var-air;
+}
+.#{$entypo-css-prefix}-credit-card:before {
+	content: $entypo-var-credit-card;
+}
+.#{$entypo-css-prefix}-floppy:before {
+	content: $entypo-var-floppy;
+}
+.#{$entypo-css-prefix}-clipboard:before {
+	content: $entypo-var-clipboard;
+}
+.#{$entypo-css-prefix}-megaphone:before {
+	content: $entypo-var-megaphone;
+}
+.#{$entypo-css-prefix}-database:before {
+	content: $entypo-var-database;
+}
+.#{$entypo-css-prefix}-drive:before {
+	content: $entypo-var-drive;
+}
+.#{$entypo-css-prefix}-bucket:before {
+	content: $entypo-var-bucket;
+}
+.#{$entypo-css-prefix}-thermometer:before {
+	content: $entypo-var-thermometer;
+}
+.#{$entypo-css-prefix}-key:before {
+	content: $entypo-var-key;
+}
+.#{$entypo-css-prefix}-flow-cascade:before {
+	content: $entypo-var-flow-cascade;
+}
+.#{$entypo-css-prefix}-flow-branch:before {
+	content: $entypo-var-flow-branch;
+}
+.#{$entypo-css-prefix}-flow-tree:before {
+	content: $entypo-var-flow-tree;
+}
+.#{$entypo-css-prefix}-flow-line:before {
+	content: $entypo-var-flow-line;
+}
+.#{$entypo-css-prefix}-flow-parallel:before {
+	content: $entypo-var-flow-parallel;
+}
+.#{$entypo-css-prefix}-rocket:before {
+	content: $entypo-var-rocket;
+}
+.#{$entypo-css-prefix}-gauge:before {
+	content: $entypo-var-gauge;
+}
+.#{$entypo-css-prefix}-traffic-cone:before {
+	content: $entypo-var-traffic-cone;
+}
+.#{$entypo-css-prefix}-cc:before {
+	content: $entypo-var-cc;
+}
+.#{$entypo-css-prefix}-cc-by:before {
+	content: $entypo-var-cc-by;
+}
+.#{$entypo-css-prefix}-cc-nc:before {
+	content: $entypo-var-cc-nc;
+}
+.#{$entypo-css-prefix}-cc-nc-eu:before {
+	content: $entypo-var-cc-nc-eu;
+}
+.#{$entypo-css-prefix}-cc-nc-jp:before {
+	content: $entypo-var-cc-nc-jp;
+}
+.#{$entypo-css-prefix}-cc-sa:before {
+	content: $entypo-var-cc-sa;
+}
+.#{$entypo-css-prefix}-cc-nd:before {
+	content: $entypo-var-cc-nd;
+}
+.#{$entypo-css-prefix}-cc-pd:before {
+	content: $entypo-var-cc-pd;
+}
+.#{$entypo-css-prefix}-cc-zero:before {
+	content: $entypo-var-cc-zero;
+}
+.#{$entypo-css-prefix}-cc-share:before {
+	content: $entypo-var-cc-share;
+}
+.#{$entypo-css-prefix}-cc-remix:before {
+	content: $entypo-var-cc-remix;
+}
+.#{$entypo-css-prefix}-github:before {
+	content: $entypo-var-github;
+}
+.#{$entypo-css-prefix}-github-circled:before {
+	content: $entypo-var-github-circled;
+}
+.#{$entypo-css-prefix}-flickr:before {
+	content: $entypo-var-flickr;
+}
+.#{$entypo-css-prefix}-flickr-circled:before {
+	content: $entypo-var-flickr-circled;
+}
+.#{$entypo-css-prefix}-vimeo:before {
+	content: $entypo-var-vimeo;
+}
+.#{$entypo-css-prefix}-vimeo-circled:before {
+	content: $entypo-var-vimeo-circled;
+}
+.#{$entypo-css-prefix}-twitter:before {
+	content: $entypo-var-twitter;
+}
+.#{$entypo-css-prefix}-twitter-circled:before {
+	content: $entypo-var-twitter-circled;
+}
+.#{$entypo-css-prefix}-facebook:before {
+	content: $entypo-var-facebook;
+}
+.#{$entypo-css-prefix}-facebook-circled:before {
+	content: $entypo-var-facebook-circled;
+}
+.#{$entypo-css-prefix}-facebook-squared:before {
+	content: $entypo-var-facebook-squared;
+}
+.#{$entypo-css-prefix}-gplus:before {
+	content: $entypo-var-gplus;
+}
+.#{$entypo-css-prefix}-gplus-circled:before {
+	content: $entypo-var-gplus-circled;
+}
+.#{$entypo-css-prefix}-pinterest:before {
+	content: $entypo-var-pinterest;
+}
+.#{$entypo-css-prefix}-pinterest-circled:before {
+	content: $entypo-var-pinterest-circled;
+}
+.#{$entypo-css-prefix}-tumblr:before {
+	content: $entypo-var-tumblr;
+}
+.#{$entypo-css-prefix}-tumblr-circled:before {
+	content: $entypo-var-tumblr-circled;
+}
+.#{$entypo-css-prefix}-linkedin:before {
+	content: $entypo-var-linkedin;
+}
+.#{$entypo-css-prefix}-linkedin-circled:before {
+	content: $entypo-var-linkedin-circled;
+}
+.#{$entypo-css-prefix}-dribbble:before {
+	content: $entypo-var-dribbble;
+}
+.#{$entypo-css-prefix}-dribbble-circled:before {
+	content: $entypo-var-dribbble-circled;
+}
+.#{$entypo-css-prefix}-stumbleupon:before {
+	content: $entypo-var-stumbleupon;
+}
+.#{$entypo-css-prefix}-stumbleupon-circled:before {
+	content: $entypo-var-stumbleupon-circled;
+}
+.#{$entypo-css-prefix}-lastfm:before {
+	content: $entypo-var-lastfm;
+}
+.#{$entypo-css-prefix}-lastfm-circled:before {
+	content: $entypo-var-lastfm-circled;
+}
+.#{$entypo-css-prefix}-rdio:before {
+	content: $entypo-var-rdio;
+}
+.#{$entypo-css-prefix}-rdio-circled:before {
+	content: $entypo-var-rdio-circled;
+}
+.#{$entypo-css-prefix}-spotify:before {
+	content: $entypo-var-spotify;
+}
+.#{$entypo-css-prefix}-spotify-circled:before {
+	content: $entypo-var-spotify-circled;
+}
+.#{$entypo-css-prefix}-qq:before {
+	content: $entypo-var-qq;
+}
+.#{$entypo-css-prefix}-instagrem:before {
+	content: $entypo-var-instagrem;
+}
+.#{$entypo-css-prefix}-dropbox:before {
+	content: $entypo-var-dropbox;
+}
+.#{$entypo-css-prefix}-evernote:before {
+	content: $entypo-var-evernote;
+}
+.#{$entypo-css-prefix}-flattr:before {
+	content: $entypo-var-flattr;
+}
+.#{$entypo-css-prefix}-skype:before {
+	content: $entypo-var-skype;
+}
+.#{$entypo-css-prefix}-skype-circled:before {
+	content: $entypo-var-skype-circled;
+}
+.#{$entypo-css-prefix}-renren:before {
+	content: $entypo-var-renren;
+}
+.#{$entypo-css-prefix}-sina-weibo:before {
+	content: $entypo-var-sina-weibo;
+}
+.#{$entypo-css-prefix}-paypal:before {
+	content: $entypo-var-paypal;
+}
+.#{$entypo-css-prefix}-picasa:before {
+	content: $entypo-var-picasa;
+}
+.#{$entypo-css-prefix}-soundcloud:before {
+	content: $entypo-var-soundcloud;
+}
+.#{$entypo-css-prefix}-mixi:before {
+	content: $entypo-var-mixi;
+}
+.#{$entypo-css-prefix}-behance:before {
+	content: $entypo-var-behance;
+}
+.#{$entypo-css-prefix}-google-circles:before {
+	content: $entypo-var-google-circles;
+}
+.#{$entypo-css-prefix}-vkontakte:before {
+	content: $entypo-var-vkontakte;
+}
+.#{$entypo-css-prefix}-smashing:before {
+	content: $entypo-var-smashing;
+}
+.#{$entypo-css-prefix}-sweden:before {
+	content: $entypo-var-sweden;
+}
+.#{$entypo-css-prefix}-db-shape:before {
+	content: $entypo-var-db-shape;
+}
+.#{$entypo-css-prefix}-logo-db:before {
+	content: $entypo-var-logo-db;
+}

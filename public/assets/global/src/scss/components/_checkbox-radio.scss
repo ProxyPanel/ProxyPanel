@@ -1,0 +1,503 @@
+// Variables
+// ========================================================================
+$checkbox-size: 20px !default;
+$checkbox-icon-size: 12px !default;
+$checkbox-label-gap: 10px !default;
+$checkbox-sm-size: 18px !default;
+$checkbox-sm-icon-size: 10px !default;
+$checkbox-sm-label-gap: 8px !default;
+$checkbox-lg-size: 24px !default;
+$checkbox-lg-icon-size: 14px !default;
+$checkbox-lg-label-gap: 12px !default;
+$checkbox-inline-gap: 20px !default;
+$radio-size: 20px !default;
+$radio-icon-size: 6px !default;
+$radio-border-width: 2px !default;
+$radio-label-gap: 10px !default;
+$radio-sm-size: 18px !default;
+$radio-sm-icon-size: 4px !default;
+$radio-sm-border-width: 2px !default;
+$radio-sm-label-gap: 8px !default;
+$radio-lg-size: 24px !default;
+$radio-lg-icon-size: 8px !default;
+$radio-lg-border-width: 2px !default;
+$radio-lg-label-gap: 12px !default;
+$radio-inline-gap: 20px !default;
+
+// Checkboxes & Radios
+// ========================================================================
+.radio-custom, .checkbox-custom {
+  position: relative;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  label {
+    min-height: $line-height-computed; // Ensure the input doesn't jump when there is no text
+    margin-bottom: 0;
+    font-weight: $font-weight-normal;
+    cursor: pointer;
+
+    // &:empty {
+    //   min-height: auto;
+    //   margin-top: -$line-height-computed;
+    // }
+  }
+}
+
+.radio-custom input[type="radio"], .checkbox-custom input[type="checkbox"] {
+  position: absolute;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: -20px;
+}
+
+.radio-custom, .checkbox-custom {
+  &.disabled, fieldset[disabled] & {
+    label {
+      cursor: $cursor-disabled;
+    }
+  }
+}
+
+.input-group-addon {
+  .radio-custom, .checkbox-custom {
+    margin: 0;
+  }
+}
+
+// Checkboxes
+// ========================================================================
+.checkbox-custom {
+  padding-left: $checkbox-size;
+
+  label {
+    position: relative;
+    display: inline-block;
+    padding-left: $checkbox-label-gap;
+    vertical-align: middle;
+
+    &:empty {
+      padding-left: 0;
+    }
+
+    &::before {
+      position: absolute;
+      left: 0;
+      display: inline-block;
+      width: $checkbox-size;
+      height: $checkbox-size;
+      margin-left: -$checkbox-size;
+      content: "";
+      background-color: $color-white;
+      border: 1px solid $input-border;
+      border-radius: $input-border-radius;
+      transition: all .3s ease-in-out 0s;
+    }
+
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      width: $checkbox-size;
+      height: $checkbox-size;
+      padding-top: 1px;
+      margin-left: -$checkbox-size;
+      font-size: $checkbox-icon-size;
+      line-height: $checkbox-size;
+      color: $input-color;
+      text-align: center;
+    }
+  }
+
+  input[type="checkbox"], input[type="radio"] {
+    z-index: 1;
+    width: $checkbox-size;
+    height: $checkbox-size;
+    cursor: pointer;
+    opacity: 0;
+
+    &:focus + label::before, &:focus + input[type="hidden"] + label::before {
+      @include tab-focus();
+    }
+
+    &:checked + label::before, &:checked + input[type="hidden"] + label::before {
+      border-color: $input-border;
+      border-width: ($checkbox-size / 2);
+      transition: all 300ms ease-in-out 0s;
+    }
+
+    &:checked + label::after, &:checked + input[type="hidden"] + label::after {
+      font-family: $wb-font-family;
+      content: $wb-var-check;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    &:disabled + label, &:disabled + input[type="hidden"] + label {
+      opacity: .65;
+
+      &::before {
+        cursor: not-allowed;
+        background-color: $input-disabled-bg;
+        border-color: $input-border;
+        border-width: 1px;
+      }
+    }
+  }
+
+  &.checkbox-circle label::before {
+    border-radius: 50%;
+  }
+
+  &.checkbox-inline {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.checkbox-inline + .checkbox-inline {
+  margin-left: $checkbox-inline-gap;
+}
+
+// Checkbox Color Modifier
+// ========================================================================
+
+@mixin checkbox-variant($color) {
+  input[type="checkbox"]:checked + label, input[type="checkbox"]:checked + input[type="hidden"] + label, input[type="radio"]:checked + label, input[type="radio"]:checked + input[type="hidden"] + label {
+    &::before {
+      background-color: $color;
+      border-color: $color;
+    }
+
+    &::after {
+      color: $color-white;
+    }
+  }
+}
+
+.checkbox-default {
+  input[type="checkbox"]:checked + label, input[type="checkbox"]:checked + input[type="hidden"] + label, input[type="radio"]:checked + label, input[type="radio"]:checked + input[type="hidden"] + label {
+    &::before {
+      background-color: $color-white;
+      border-color: $input-border;
+      border-width: 1px;
+    }
+
+    &::after {
+      color: $brand-primary;
+    }
+  }
+}
+
+.checkbox-primary {
+  @include checkbox-variant($brand-primary);
+}
+
+.checkbox-danger {
+  @include checkbox-variant($brand-danger);
+}
+
+.checkbox-info {
+  @include checkbox-variant($brand-info);
+}
+
+.checkbox-warning {
+  @include checkbox-variant($brand-warning);
+}
+
+.checkbox-success {
+  @include checkbox-variant($brand-success);
+}
+
+// Checkbox Size Modifier
+// ========================================================================
+@mixin checkbox-size($size, $icon-size, $label-gap) {
+  padding-left: $size;
+
+  label {
+    padding-left: $label-gap;
+
+    &:empty {
+      padding-left: 0;
+    }
+
+    &::before, &::after {
+      width: $size;
+      height: $size;
+      margin-left: -$size;
+    }
+
+    &::after {
+      font-size: $icon-size;
+      line-height: $size;
+    }
+  }
+
+  input[type="checkbox"], input[type="radio"] {
+    width: $size;
+    height: $size;
+
+    &:checked + label::before, &:checked + input[type="hidden"] + label::before {
+      border-width: ($size / 2);
+    }
+  }
+}
+
+.checkbox-sm {
+  @include checkbox-size($checkbox-sm-size, $checkbox-sm-icon-size, $checkbox-sm-label-gap);
+}
+
+.checkbox-lg {
+  @include checkbox-size($checkbox-lg-size, $checkbox-lg-icon-size, $checkbox-lg-label-gap);
+}
+
+// Radios
+// ========================================================================
+
+.radio-custom {
+  padding-left: $radio-size;
+
+  label {
+    position: relative;
+    display: inline-block;
+    padding-left: $radio-label-gap;
+    vertical-align: middle;
+
+    &:empty {
+      padding-left: 0;
+    }
+
+    &::before {
+      position: absolute;
+      left: 0;
+      display: inline-block;
+      width: $radio-size;
+      height: $radio-size;
+      margin-left: -$radio-size;
+      content: "";
+      background-color: $color-white;
+      border: 1px solid $input-border;
+      border-radius: 50%;
+      transition: border 300ms ease-in-out 0s, color 300ms ease-in-out 0s;
+    }
+
+    &::after {
+      position: absolute;
+      top: (($radio-size - $radio-icon-size) / 2);
+      left: (($radio-size - $radio-icon-size) / 2);
+      display: inline-block;
+      width: $radio-icon-size;
+      height: $radio-icon-size;
+      margin-left: -$radio-size;
+      content: " ";
+      background-color: transparent;
+      border: $radio-border-width solid $gray-500;
+      border-radius: 50%;
+      transition: .1s cubic-bezier(.8, -.33, .2, 1.33);
+      transform: scale(0, 0);
+      //curve - http://cubic-bezier.com/#.8,-0.33,.2,1.33
+    }
+  }
+
+  input[type="radio"] {
+    z-index: 1;
+    width: $radio-size;
+    height: $radio-size;
+    cursor: pointer;
+    opacity: 0;
+
+    &:focus + label::before, &:focus + input[type="hidden"] + label::before {
+      @include tab-focus();
+    }
+
+    &:checked + label::before, &:checked + input[type="hidden"] + label::before {
+      border-color: $input-border;
+      border-width: ($radio-size / 2);
+    }
+
+    &:checked + label::after, &:checked + input[type="hidden"] + label::after {
+      transform: scale(1, 1);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    &:disabled + label, &:disabled + input[type="hidden"] + label {
+      opacity: .65;
+
+      &::before {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &.radio-inline {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.radio-inline + .radio-inline {
+  margin-left: $radio-inline-gap;
+}
+
+// Rdios Color Modifier
+// ========================================================================
+
+@mixin radio-variant($color) {
+  input[type="radio"]:checked + label, input[type="radio"]:checked + input[type="hidden"] + label {
+    &::before {
+      // background-color: $color;
+      border-color: $color;
+    }
+
+    &::after {
+      border-color: $color-white;
+    }
+  }
+}
+
+.radio-default {
+  input[type="radio"]:checked + label, input[type="radio"]:checked + input[type="hidden"] + label {
+    &::before {
+      background-color: $color-white;
+      border-color: $input-border;
+      border-width: 1px;
+    }
+
+    &::after {
+      border-color: $brand-primary;
+    }
+  }
+}
+
+.radio-primary {
+  @include radio-variant($brand-primary);
+}
+
+.radio-danger {
+  @include radio-variant($brand-danger);
+}
+
+.radio-info {
+  @include radio-variant($brand-info);
+}
+
+.radio-warning {
+  @include radio-variant($brand-warning);
+}
+
+.radio-success {
+  @include radio-variant($brand-success);
+}
+
+// Rdios Size Modifier
+// ========================================================================
+@mixin radio-size($size, $icon-size, $border-width, $label-gap) {
+  padding-left: $size;
+
+  label {
+    padding-left: $label-gap;
+
+    &:empty {
+      padding-left: 0;
+    }
+
+    &::before {
+      width: $size;
+      height: $size;
+      margin-left: -$radio-size;
+    }
+
+    &::after {
+      top: (($size - $icon-size) / 2);
+      left: (($size - $icon-size) / 2);
+      width: $icon-size;
+      height: $icon-size;
+      margin-left: -$radio-size;
+      border-width: $border-width;
+    }
+  }
+
+  input[type="radio"] {
+    width: $size;
+    height: $size;
+
+    &:checked + label::before, &:checked + input[type="hidden"] + label::before {
+      border-width: ($size / 2);
+    }
+  }
+}
+
+.radio-sm {
+  @include radio-size($radio-sm-size, $radio-sm-icon-size, $radio-sm-border-width, $radio-sm-label-gap);
+}
+
+.radio-lg {
+  @include radio-size($radio-lg-size, $radio-lg-icon-size, $radio-lg-border-width, $radio-lg-label-gap);
+}
+
+// Form inline
+// ========================================================================
+.form-inline {
+  @include media-breakpoint-up(md) {
+    .radio-custom, .checkbox-custom {
+      display: inline-block;
+      margin-top: 0;
+      margin-bottom: 0;
+      vertical-align: middle;
+
+      label {
+        padding-left: 0;
+      }
+    }
+
+    .radio-custom input[type="radio"], .checkbox-custom input[type="checkbox"] {
+      position: relative;
+      margin-left: 0;
+    }
+
+    .radio-custom {
+      label {
+        padding-left: $radio-label-gap;
+      }
+    }
+
+    .checkbox-custom {
+      label {
+        padding-left: $checkbox-label-gap;
+      }
+    }
+
+    .checkbox-custom input[type="checkbox"] {
+      position: absolute;
+      margin-left: -$checkbox-size;
+    }
+
+    .radio-custom input[type="radio"] {
+      position: absolute;
+      margin-left: -$radio-size;
+    }
+  }
+}
+
+// Horizontal forms
+// ========================================================================
+.form-horizontal {
+  .radio-custom, .checkbox-custom {
+    padding-top: ($padding-base-vertical + pxtorem(1px));
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .radio-custom, .checkbox-custom {
+    min-height: (pxtorem($line-height-computed) + $padding-base-vertical + pxtorem(1px));
+  }
+}

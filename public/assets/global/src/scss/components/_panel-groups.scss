@@ -1,0 +1,164 @@
+// Name:            Accordion
+//
+// Component:       `accordion`
+//
+// Modifiers:       'panel-group-continuous'
+//                  'panel-group-simple'
+//
+// Markup:
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$accordion-panel-title-font-size: $font-size-base !default;
+$accordion-panel-color: $text-color !default;
+$accordion-panel-border: $border-color-base !default;
+$accordion-panel-radius: $panel-border-radius !default;
+$accordion-panel-title-padding: 15px 30px !default;
+$accordion-panel-body-padding: 15px 30px !default;
+
+// Component: Accordion
+// ========================================================================
+
+.panel-group {
+  margin-bottom: $line-height-computed;
+
+  // Tighten up margin so it's only between panels
+  .panel {
+    margin-bottom: 0;
+    border-radius: $panel-border-radius;
+    box-shadow: none;
+
+    + .panel {
+      margin-top: 10px;
+    }
+  }
+
+  .panel-title {
+    position: relative;
+    padding: $accordion-panel-title-padding;
+    font-size: $accordion-panel-title-font-size;
+
+    &::before, &::after {
+      position: absolute;
+      top: 15px;
+      right: 30px;
+      font-family: $wb-font-family;
+      transition: all 300ms linear 0s;
+    }
+
+    &::before {
+      content: $wb-var-plus;
+    }
+
+    &::after {
+      content: $wb-var-minus;
+    }
+
+    &[aria-expanded="false"] {
+      &::before {
+        opacity: .4;
+      }
+
+      &::after {
+        opacity: 0;
+        transform: rotate(-180deg);
+      }
+    }
+
+    &[aria-expanded="true"] {
+      &::before {
+        opacity: 0;
+        transform: rotate(180deg);
+      }
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    &:hover, &:focus {
+      color: $accordion-panel-color;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .panel-heading {
+    border-bottom: 0;
+
+    + .panel-collapse {
+      margin: 0;
+
+      > .list-group {
+        border-top: 1px solid $panel-inner-border;
+      }
+    }
+  }
+
+  .panel-collapse .panel-body {
+    padding: $accordion-panel-body-padding;
+  }
+
+  .panel-footer {
+    border-top: 0;
+
+    + .panel-collapse .panel-body {
+      border-bottom: 1px solid $panel-inner-border;
+    }
+  }
+}
+
+// Modifier: `panel-group-continuous`
+// ========================================================================
+
+.panel-group-continuous {
+  .panel {
+    border-radius: 0;
+
+    &:first-child {
+      border-radius: $accordion-panel-radius $accordion-panel-radius 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 $accordion-panel-radius $accordion-panel-radius;
+    }
+  }
+
+  .panel + .panel {
+    margin-top: 0;
+    border-top: 1px solid $accordion-panel-border;
+  }
+}
+
+// Modifier: `panel-group-simple`
+// ========================================================================
+
+.panel-group-simple {
+  .panel {
+    background: transparent;
+  }
+
+  .panel-title {
+    padding-bottom: 10px;
+    padding-left: 0;
+
+    &::before, &::after {
+      right: 5px;
+    }
+  }
+
+  .panel-collapse .panel-body {
+    padding-top: 10px;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .panel + .panel {
+    margin-top: 0;
+  }
+}

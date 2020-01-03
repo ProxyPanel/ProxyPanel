@@ -1,0 +1,44 @@
+// Name:            Counter
+//
+// Component:       `counter`
+//
+// Modifiers:       'counter-lg'
+//                  'counter-md'
+//                  'counter-sm'
+//                  'counter-xs'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$counter-number-color:        $gray-700 !default;
+
+$counter-inverse-color:       $inverse !default;
+
+// Component: Counter
+// ========================================================================
+
+.counter {
+
+  & > .counter-number,
+  .counter-number-group {
+    color: $counter-number-color;
+  }
+}
+
+// Modifier: 'counter-inverse'
+// ========================================================================
+
+.counter-inverse {
+  color: $counter-inverse-color;
+
+  & > .counter-number,
+  .counter-number-group {
+    color: $counter-inverse-color;
+  }
+
+  .counter-icon {
+    color: $counter-inverse-color;
+  }
+}

@@ -1,0 +1,352 @@
+$form-material-focus-text: $brand-primary !default;
+$form-material-danger-text: $form-danger-text !default;
+$form-material-warning-text: $form-warning-text !default;
+$form-material-success-text: $form-success-text !default;
+$form-material-info-text: $form-info-text !default;
+$form-material-underline-color: $gray-200 !default;
+$form-material-floating-label-color: $gray-500 !default;
+$form-material-floating-label-size-ratio: 80 / 100 !default;
+$form-material-floating-margin-top: 20px !default;
+$form-material-floating-margin-bottom: 20px !default;
+$form-material-disabled-floating-label-color: $gray-300 !default;
+$form-material-disabled-underline-color: $gray-300 !default;
+$form-material-disabled-placeholder-color: $gray-300 !default;
+
+// Mixins
+// ========================================================================
+@mixin form-material-floating-label-size($font-size, $line-height, $ratio: $form-material-floating-label-size-ratio) {
+  ~ .floating-label {
+    top: ($font-size * ($line-height - 1));
+    font-size: $font-size;
+  }
+
+  &:focus, &.focus, &:not(.empty) {
+    ~ .floating-label {
+      top: ($ratio *  - $font-size);
+      font-size: ($ratio * $font-size);
+    }
+  }
+
+  &:-webkit-autofill {
+    ~ .floating-label {
+      top: ($ratio *  - $font-size);
+      font-size: ($ratio * $font-size);
+    }
+  }
+}
+
+@mixin form-material-control-validation($text-color, $border-color: $form-material-underline-color) {
+  .form-control {
+    // box-shadow: none;
+
+    &:focus, &.focus, &:not(.empty) {
+      @include form-material-control-underline($text-color, $border-color);
+
+      .no-cssgradients & {
+        background: transparent;
+        border-bottom: 2px solid $text-color;
+      }
+    }
+
+    &:-webkit-autofill {
+      @include form-material-control-underline($text-color, $border-color);
+
+      .no-cssgradients & {
+        background: transparent;
+        border-bottom: 2px solid $text-color;
+      }
+    }
+
+    &:not(.empty) {
+      background-size: 100% 2px, 100% 1px;
+    }
+  }
+
+  .form-control-label {
+    color: $text-color;
+  }
+
+  .form-control {
+    &:focus, &.focus, &:not(.empty) {
+      ~ .floating-label {
+        color: $text-color;
+      }
+    }
+
+    &:-webkit-autofill {
+      ~ .floating-label {
+        color: $text-color;
+      }
+    }
+  }
+}
+
+@mixin form-material-control-underline($text-color, $border-color) {
+  background-image: linear-gradient($text-color, $text-color), linear-gradient($border-color, $border-color);
+}
+
+// Form material
+// ========================================================================
+.form-material {
+  position: relative;
+
+  &.floating {
+    margin-top: $form-material-floating-margin-top;
+    margin-bottom: $form-material-floating-margin-bottom;
+
+    & + & {
+      margin-top: ($form-material-floating-margin-top + $form-material-floating-margin-bottom);
+    }
+  }
+
+  .form-control {
+    padding-right: 0;
+    padding-left: 0;
+    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0);
+    background-repeat: no-repeat;
+    background-position: center bottom, center calc(100% - 1px);
+    background-size: 0 2px, 100% 1px;
+    transition: background 0s ease-out;
+
+    &, &:focus, &.focus {
+      @include form-material-control-underline($form-material-focus-text, $form-material-underline-color);
+      float: none;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .no-cssgradients & {
+      border-bottom: 2px solid $form-material-underline-color;
+    }
+
+    &::-webkit-input-placeholder {
+      color: $input-placeholder-color;
+    }
+
+    &::-moz-placeholder {
+      color: $input-placeholder-color;
+    }
+
+    &:-ms-input-placeholder {
+      color: $input-placeholder-color;
+    }
+
+    &:disabled {
+      &::-webkit-input-placeholder {
+        color: $form-material-disabled-placeholder-color;
+      }
+
+      &::-moz-placeholder {
+        color: $form-material-disabled-placeholder-color;
+      }
+
+      &:-ms-input-placeholder {
+        color: $form-material-disabled-placeholder-color;
+      }
+    }
+
+    &:focus, &.focus {
+      background-size: 100% 2px, 100% 1px;
+      outline: none;
+      transition-duration: .3s;
+
+      .no-cssgradients & {
+        background: transparent;
+        border-bottom: 2px solid $form-material-focus-text;
+      }
+    }
+
+    &:disabled, &[disabled], fieldset[disabled] & {
+      background: transparent;
+      background: rgba(0, 0, 0, 0);
+      border-bottom: 1px dashed $form-material-disabled-underline-color;
+
+      ~ .floating-label {
+        color: $form-material-disabled-floating-label-color;
+      }
+    }
+  }
+
+  textarea.form-control, select[multiple], select[size] {
+    height: auto;
+  }
+
+  .form-control-label {
+    font-weight: $font-weight-bold;
+  }
+
+  &.form-group .form-control-label {
+    // padding: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .floating-label {
+    position: absolute;
+    left: 0;
+    font-size: $font-size-base;
+    color: $form-material-floating-label-color;
+    pointer-events: none;
+    transition: .3s ease all;
+
+    &.floating-label-static {
+      position: relative;
+      top: auto;
+      display: block;
+    }
+  }
+
+  [class*="col-"] {
+    > .floating-label {
+      left: ($grid-gutter-width / 2);
+    }
+  }
+
+  // Input sizes
+  .form-control {
+    @include form-material-floating-label-size($font-size-base, $line-height-base);
+
+    // input small
+    &-sm {
+      @include form-material-floating-label-size($font-size-sm, $line-height-sm);
+    }
+
+    // input large
+    &-lg {
+      @include form-material-floating-label-size($font-size-lg, $line-height-lg);
+    }
+  }
+
+  .form-control {
+    &:focus, &.focus, &:not(.empty) {
+      ~ .floating-label {
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    &:-webkit-autofill {
+      ~ .floating-label {
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    &:focus, &.focus {
+      ~ .floating-label {
+        color: $form-material-focus-text;
+      }
+    }
+  }
+
+  // Textarea
+  textarea.form-control {
+    padding-bottom: $padding-base-vertical;
+    resize: none;
+  }
+
+  &.floating {
+    textarea.form-control {
+      padding-top: $padding-base-vertical;
+    }
+  }
+
+  // Select
+  select.form-control {
+    border: 0;
+    border-radius: 0;
+  }
+
+  &:not(.floating) {
+    .form-control-label + select[multiple] {
+      margin-top: 5px;
+    }
+  }
+
+  // Hints
+  .hint {
+    position: absolute;
+    display: none;
+    font-size: 80%;
+  }
+
+  .form-control {
+    &:focus, &.focus {
+      ~ .hint {
+        display: block;
+      }
+    }
+  }
+
+  // Invalid
+  .form-control {
+    &:not(.empty):invalid, &.focus:invalid {
+      ~ .floating-label {
+        color: $form-material-danger-text;
+      }
+    }
+  }
+
+  .form-control:invalid {
+    @include form-material-control-underline($form-material-danger-text, $form-material-underline-color);
+  }
+
+  // States
+  // &.form-group {
+  &.has-warning {
+    @include form-material-control-validation($form-material-warning-text, $form-material-underline-color);
+  }
+
+  &.has-danger {
+    @include form-material-control-validation($form-material-danger-text, $form-material-underline-color);
+  }
+
+  &.has-success {
+    @include form-material-control-validation($form-material-success-text, $form-material-underline-color);
+  }
+
+  &.has-info {
+    @include form-material-control-validation($form-material-info-text, $form-material-underline-color);
+  }
+  // }
+
+  .input-group {
+    .form-control-wrap {
+      flex: 1 1 auto;
+      margin-right: 5px;
+      margin-left: 5px;
+
+      .form-control {
+        float: none;
+        width: 100%;
+      }
+    }
+
+    .input-group-addon {
+      background: transparent;
+      border: 0;
+    }
+
+    .input-group-btn .btn {
+      margin: 0;
+      border-radius: $border-radius-large;
+    }
+  }
+
+  // Input files (kinda hack)
+  input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+.form-control-wrap {
+  position: relative;
+}

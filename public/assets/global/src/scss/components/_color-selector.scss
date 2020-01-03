@@ -1,0 +1,105 @@
+// Name:            Color Selector
+//
+// Component:       `color-selector`
+//
+// Markup:
+//
+// <ul class="color-selector">
+//   <li>
+//     <input type="radio" />
+//     <label></label>
+//   </li>
+// </ul>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$color-selector-bg: $brand-primary !default;
+$color-selector-checked-label-color: $inverse !default;
+$color-selector-disabled-bg: $disabled-color-base !default;
+
+// z-index
+$color-selector-z-index: $zindex-base !default;
+
+// Component: color-selector
+// ========================================================================
+
+.color-selector {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  > li {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 0 8px 8px 0;
+    background-color: $color-selector-bg;
+    border-radius: 100%;
+
+    &:hover {
+      opacity: .8;
+    }
+
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: inline-block;
+      width: inherit;
+      height: inherit;
+      content: "";
+      background: inherit;
+      border: 1px solid rgba(0, 0, 0, .1);
+      border-radius: inherit;
+    }
+
+    input[type="radio"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: $color-selector-z-index;
+      width: inherit;
+      height: inherit;
+      cursor: pointer;
+      border-radius: inherit;
+      opacity: 0;
+
+      &:disabled {
+        cursor: $cursor-disabled;
+      }
+    }
+
+    label {
+      position: relative;
+      margin-bottom: .4rem;
+      font-family: $wb-font-family;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+    }
+
+    input[type="radio"]:checked + label::after {
+      position: absolute;
+      top: 0;
+      left: 8px;
+      display: inline-block;
+      margin-top: -2px;
+      font-size: 16px;
+      line-height: 1;
+      color: $color-selector-checked-label-color;
+      content: $wb-var-check;
+    }
+
+    &.color-selector-disabled {
+      background-color: $color-selector-disabled-bg !important;
+
+      input[type="radio"]:disabled {
+        cursor: $cursor-disabled;
+      }
+    }
+  }
+}

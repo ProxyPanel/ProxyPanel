@@ -1,0 +1,17 @@
+//
+// Close icons
+// --------------------------------------------------
+
+.close {
+  &.icon {
+    font-size: inherit;
+  }
+}
+
+button.close {
+  cursor: pointer;
+
+  &:focus {
+    outline: none; // (remove focus outline style)
+  }
+}

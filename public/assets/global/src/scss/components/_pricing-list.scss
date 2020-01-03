@@ -1,0 +1,102 @@
+// Name:            Pricing List
+//
+// Component:       `pricing-list`
+//
+// Modifiers:       'pricing-header'
+//                  'pricing-title'
+//                  'pricing-price'
+//                  'pricing-period'
+//                  'pricing-features'
+//                  'pricing-footer'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$pricing-list-margin-bottom: $line-height-computed !default;
+$pricing-list-border-color: $border-color-base !default;
+$pricing-list-border-radius: $border-radius !default;
+$pricing-list-title-font-size: $font-size-base !default;
+$pricing-list-price-font-size: (1.5 * $h1-font-size) !default;
+$pricing-list-period-font-size: $font-size-base !default;
+$pricing-list-title-padding: 15px 30px !default;
+$pricing-list-price-padding: 20px 30px !default;
+$pricing-list-features-padding: 0 18px !default;
+$pricing-list-features-item-padding: 15px !default;
+$pricing-list-footer-padding: 30px !default;
+
+// Component: Pricing List
+// ========================================================================
+
+.pricing-list {
+  margin-bottom: $pricing-list-margin-bottom;
+  text-align: center;
+  border: 1px solid $pricing-list-border-color;
+  border-radius: $pricing-list-border-radius;
+
+  [class^="bg-"], [class*="bg-"] {
+    &, * {
+      color: $inverse;
+    }
+  }
+
+  // Modifier: `pricing-header`
+  // ========================================================================
+  .pricing-header {
+    border-bottom: 1px solid $pricing-list-border-color;
+    border-radius: $pricing-list-border-radius $pricing-list-border-radius 0 0;
+  }
+
+  // Modifier: `pricing-title`
+  // ========================================================================
+  .pricing-title {
+    padding: $pricing-list-title-padding;
+    font-size: $pricing-list-title-font-size;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: $pricing-list-border-radius $pricing-list-border-radius 0 0;
+  }
+
+  // Modifier: `pricing-price`
+  // ========================================================================
+  .pricing-price {
+    padding: $pricing-list-price-padding;
+    margin: 0;
+    font-size: $pricing-list-price-font-size;
+    font-weight: $font-weight-bold;
+    color: $title-color;
+  }
+
+  // Modifier: `pricing-period`
+  // ========================================================================
+  .pricing-period {
+    font-size: $pricing-list-period-font-size;
+    font-weight: $font-weight-normal;
+  }
+
+  // Modifier: `pricing-features`
+  // ========================================================================
+  .pricing-features {
+    padding: $pricing-list-features-padding;
+    margin: 0;
+
+    li {
+      display: block;
+      padding: $pricing-list-features-item-padding;
+      list-style: none;
+      border-top: 1px dashed $pricing-list-border-color;
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+  }
+
+  // Modifier: `pricing-footer`
+  // ========================================================================
+  .pricing-footer {
+    padding: $pricing-list-footer-padding;
+    border-radius: 0 0 $pricing-list-border-radius $pricing-list-border-radius;
+  }
+}

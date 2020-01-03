@@ -1,0 +1,175 @@
+// https://github.com/fk/select2-bootstrap-theme
+
+@import "mixins";
+
+.select2-container--default {
+  display: block;
+
+  .select2-selection {
+    @include form-control-defaults();
+    outline: 0;
+  }
+
+  .select2-search--dropdown {
+      .select2-search__field {
+          @include form-control-defaults();
+      }
+  }
+
+  .select2-search__field {
+    outline: 0;
+
+    &::-webkit-input-placeholder {
+        color: $input-color-placeholder;
+    }
+
+    &:-moz-placeholder {
+        color: $input-color-placeholder;
+    }
+
+    &::-moz-placeholder {
+        color: $input-color-placeholder;
+        opacity: 1;
+    }
+
+    &:-ms-input-placeholder {
+        color: $input-color-placeholder;
+    }
+  }
+
+  .select2-results__option {
+    &[role=group] {
+      padding: 0;
+    }
+
+    &[aria-disabled=true] {
+      color: $dropdown-link-disabled-color;
+      cursor: $cursor-disabled;
+    }
+
+    &[aria-selected=true] {
+      background-color: $dropdown-link-hover-bg;
+      color: $dropdown-link-hover-color;
+    }
+
+    .select2-results__option {
+      padding: $padding-base-vertical $padding-base-horizontal;
+
+      .select2-results__group {
+        padding-left: 0;
+      }
+
+      .select2-results__option {
+        margin-left: -$padding-base-horizontal;
+        padding-left: $padding-base-horizontal*2;
+
+        .select2-results__option {
+          margin-left: -$padding-base-horizontal*2;
+          padding-left: $padding-base-horizontal*3;
+
+          .select2-results__option {
+            margin-left: -$padding-base-horizontal*3;
+            padding-left: $padding-base-horizontal*4;
+
+            .select2-results__option {
+              margin-left: -$padding-base-horizontal*4;
+              padding-left: $padding-base-horizontal*5;
+
+              .select2-results__option {
+                margin-left: -$padding-base-horizontal*5;
+                padding-left: $padding-base-horizontal*6;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &--highlighted[aria-selected] {
+      background-color: $dropdown-link-active-bg;
+      color: $dropdown-link-active-color;
+    }
+  }
+
+  .select2-results__group {
+    color: $dropdown-header-color;
+    display: block;
+    cursor: default;
+    padding: $padding-base-vertical $padding-base-horizontal;
+    font-size: $font-size-sm;
+    line-height: $line-height-base;
+    white-space: nowrap;
+  }
+
+  &.select2-container--open {
+    .select2-selection {
+      box-shadow: $form-control-focus-box-shadow;
+      transition: $form-control-transition;
+      border-color: $input-focus-border-color;
+      
+      .select2-selection__arrow b {
+        border-color: transparent transparent $dropdown-arrow-color transparent;
+        border-width: 0 $caret-width $caret-width $caret-width;
+      }
+    }
+
+    &.select2-container--above {
+      .select2-selection {
+        @include border-top-radius(0);
+        border-top-color: transparent;
+      }
+    }
+    
+    &.select2-container--below {
+      .select2-selection {
+        @include border-bottom-radius(0);
+        border-bottom-color: transparent;
+      }
+    }
+  }
+
+  &.input-sm,
+  &.input-lg {
+    border-radius: 0;
+    font-size: 12px;
+    height: auto;
+    line-height: 1;
+    padding: 0;
+  }
+
+  @import "dropdown";
+  @import "single";
+  @import "multiple";
+
+  &.input-lg.select2-container--open {
+   @include dropdown-arrow();
+  }
+  
+  .input-group-lg & {
+    &.select2-container--open {
+      @include dropdown-arrow();
+    }
+  }
+
+  .input-group & {
+    display: table;
+    table-layout: fixed;
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    margin-bottom: 0;
+  }
+}
+
+.has-warning {
+  @include validation-state-focus($form-warning-text);
+}
+
+.has-error {
+  @include validation-state-focus($form-danger-text);
+}
+
+.has-success {
+  @include validation-state-focus($form-success-text);
+}

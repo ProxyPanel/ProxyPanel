@@ -1,0 +1,61 @@
+/* FontAwesome Icons - We're not actually using FontAwesome classes but instead provide a simple mapping from FontAwesome to FooTable class names. */
+.fooicon {
+	display: inline-block;
+	font-size: inherit;
+	font-family: FontAwesome !important;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transform: translate(0, 0);
+}
+.fooicon:before,
+.fooicon:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.fooicon-loader:before {
+	content: "\f01e";
+}
+.fooicon-plus:before {
+	content: "\f067";
+}
+.fooicon-minus:before {
+	content: "\f068";
+}
+.fooicon-search:before {
+	content: "\f002";
+}
+.fooicon-remove:before {
+	content: "\f00d";
+}
+.fooicon-sort:before {
+	content: "\f0dc";
+}
+.fooicon-sort-asc:before {
+	content: "\f160";
+}
+.fooicon-sort-desc:before {
+	content: "\f161";
+}
+.fooicon-pencil:before {
+	content: "\f040";
+}
+.fooicon-trash:before {
+	content: "\f1f8";
+}
+.fooicon-eye-close:before {
+	content: "\f070";
+}
+.fooicon-flash:before {
+	content: "\f0e7";
+}
+.fooicon-cog:before {
+	content: "\f013";
+}
+.fooicon-stats:before {
+	content: "\f080";
+}

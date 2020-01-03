@@ -1,0 +1,18 @@
+/**
+ * Font Awesome, 4.7.0
+ * Created by Dave Gandy
+ * http://fontawesome.io/
+ * (OFL-1.1 AND MIT) License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$fa-css-prefix}-"],
+[class*=" #{$fa-css-prefix}-"] {
+  font-family: '#{$fa-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

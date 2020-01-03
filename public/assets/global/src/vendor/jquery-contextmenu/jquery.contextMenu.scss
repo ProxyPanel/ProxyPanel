@@ -1,0 +1,238 @@
+/*!
+ * jQuery contextMenu - Plugin for simple contextMenu handling
+ *
+ * Version: v@VERSION
+ *
+ * Authors: Björn Brala (SWIS.nl), Rodney Rehm, Addy Osmani (patches for FF)
+ * Web: http://swisnl.github.io/jQuery-contextMenu/
+ *
+ * Copyright (c) 2011-@YEAR SWIS BV and contributors
+ *
+ * Licensed under
+ *   MIT License http://www.opensource.org/licenses/mit-license
+ *
+ * Date: @DATE
+ */
+@import 'vars';
+@import "scss/variables";
+
+// $context-menu-icons: (
+// add: "",// wb-add-file
+
+// copy: "",
+
+// cut: "", // wb-sisscs
+
+// delete: "",// wb-close
+
+// edit: "",
+
+// loading: "",// wb-refresh
+
+// paste: "",// wb-clipboard
+
+// quit: "",// wb-power
+// );
+
+// Container Sizing
+$context-menu-min-width: $dropdown-min-width;
+// $context-menu-max-width: $context-menu-min-width * 2;
+$context-menu-container-padding: $dropdown-padding-y 5px;
+$context-menu-container-margin: .3em;
+$context-menu-border-radius: $border-radius;
+
+// Container Color
+$context-menu-background-color: $dropdown-bg;
+$context-menu-border-width: $dropdown-border-width;
+$context-menu-border-color: $dropdown-border-color;
+$context-menu-box-shadow: $dropdown-box-shadow;
+
+// Item Default
+$context-menu-item-padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+$context-menu-text-color: $dropdown-link-color;
+$context-menu-item-color: $context-menu-background-color;
+
+// Item Hover
+$context-menu-item-color-hover: $dropdown-link-hover-bg;
+$context-menu-text-color-hover: $dropdown-link-hover-color;
+
+// Item Disabled
+$context-menu-item-color-disabled: $context-menu-item-color;
+$context-menu-text-color-disabled: $dropdown-link-disabled-color;
+
+// Submenu
+$context-menu-submenu-arrow-color: $context-menu-text-color;
+
+// Separator
+$context-menu-separator-height: 1px;
+$context-menu-separator-style: solid;
+$context-menu-separator-color: $dropdown-divider-bg;
+$context-menu-separator-margin: .35em 0;
+
+// Icons
+// $context-menu-icon-font-path: '../../fonts/web-icons';
+// $context-menu-icon-font-name: 'Web Icons';
+$context-menu-icon-size: 1rem;
+$context-menu-icon-color: $text-color;
+$context-menu-icon-color-hover: $context-menu-text-color-hover;
+@import "scss/icons/mixins";
+@import "scss/icons";
+
+.context-menu-icon {
+  @include base-context-menu-icon($wb-font-family);
+
+  &.context-menu-hover:before {
+    color: $context-menu-icon-color-hover;
+  }
+
+  &.context-menu-disabled::before {
+    color: $context-menu-text-color-disabled;
+  }
+
+  &.context-menu-icon-loading:before {
+    animation: cm-spin 2s infinite;
+  }
+
+  &.context-menu-icon--fa {
+
+    @include base-context-menu-icon(FontAwesome);
+    display: list-item;
+    font-family: inherit;
+
+    &.context-menu-hover:before {
+      color: $context-menu-icon-color-hover;
+    }
+
+    &.context-menu-disabled::before {
+      color: $context-menu-text-color-disabled;
+    }
+  }
+}
+
+.context-menu-list {
+  position: absolute;
+  display: inline-block;
+  min-width: $context-menu-min-width;
+  max-width: $context-menu-max-width;
+  padding: $context-menu-container-padding;
+  margin: $context-menu-container-margin;
+  font-family: $context-menu-font-family;
+  font-size: $context-menu-font-size;
+  list-style-type: none;
+  background: $context-menu-background-color;
+  border: $context-menu-border-width $context-menu-border-style $context-menu-border-color;
+  border-radius: $context-menu-border-radius;
+  box-shadow: $context-menu-box-shadow;
+}
+
+.context-menu-item {
+  position: relative;
+  padding: $context-menu-item-padding;
+  color: $context-menu-text-color;
+  user-select: none;
+  background-color: $context-menu-background-color;
+}
+
+.context-menu-separator {
+  padding: 0;
+  margin: $context-menu-separator-margin;
+  border-bottom: $context-menu-separator-height $context-menu-separator-style $context-menu-separator-color;
+}
+
+.context-menu-item > label > input, .context-menu-item > label > textarea {
+  user-select: text;
+}
+
+.context-menu-item.context-menu-hover {
+  color: $context-menu-text-color-hover;
+  cursor: pointer;
+  background-color: $context-menu-item-color-hover;
+}
+
+.context-menu-item.context-menu-disabled {
+  color: $context-menu-text-color-disabled;
+  cursor: default;
+  background-color: $context-menu-item-color-disabled;
+}
+
+.context-menu-input.context-menu-hover {
+  color: $context-menu-text-color;
+  cursor: default;
+}
+
+.context-menu-submenu:after {
+  position: absolute;
+  top: 50%;
+  right: .5em;
+  z-index: 1;
+  width: 0;
+  height: 0;
+  content: "";
+  border-color: transparent transparent transparent $context-menu-submenu-arrow-color;
+  border-style: solid;
+  border-width: .25em 0 .25em .25em;
+  transform: translateY(-50%);
+}
+
+/**
+ * Inputs
+ */
+.context-menu-item.context-menu-input {
+  padding: .3em .6em;
+}
+
+/* vertically align inside labels */
+.context-menu-input > label > * {
+  vertical-align: top;
+}
+
+/* position checkboxes and radios as icons */
+.context-menu-input > label > input[type="checkbox"], .context-menu-input > label > input[type="radio"] {
+  position: relative;
+  top: .12em;
+  margin-right: .4em;
+}
+
+.context-menu-input > label {
+  margin: 0;
+}
+
+.context-menu-input > label, .context-menu-input > label > input[type="text"], .context-menu-input > label > textarea, .context-menu-input > label > select {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+}
+
+.context-menu-input > label > textarea {
+  height: 7em;
+}
+
+.context-menu-item > .context-menu-list {
+  top: .3em;
+
+  /* re-positioned by js */
+  right: -.3em;
+  display: none;
+}
+
+.context-menu-item.context-menu-visible > .context-menu-list {
+  display: block;
+}
+
+.context-menu-accesskey {
+  text-decoration: underline;
+}
+
+// for --
+.context-menu-extend-icon {
+  display: block !important;
+
+  &:before {
+    position: static;
+    text-align: left;
+  }
+
+  > span {
+    margin-left: .5em;
+  }
+}

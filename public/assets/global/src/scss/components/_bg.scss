@@ -1,0 +1,82 @@
+// Name:            Background color
+//
+// Component:       `background-color`
+//
+// Modifiers:       `bg-white`
+//                  `bg-primary`
+//                  `bg-success`
+//                  `bg-info`
+//                  `bg-warning`
+//                  `bg-danger`
+//                  `bg-dark`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$bg-white-color: $text-color !default;
+$bg-white-bg: $color-white !default;
+$bg-primary-color: $inverse !default;
+$bg-primary-bg: $brand-primary !default;
+$bg-success-color: $inverse !default;
+$bg-success-bg: $brand-success !default;
+$bg-info-color: $inverse !default;
+$bg-info-bg: $brand-info !default;
+$bg-warning-color: $inverse !default;
+$bg-warning-bg: $brand-warning !default;
+$bg-danger-color: $inverse !default;
+$bg-danger-bg: $brand-danger !default;
+$bg-dark-color: $inverse !default;
+$bg-dark-bg: $brand-dark !default;
+
+// Mixins
+// ========================================================================
+
+@mixin bg-variant($parent, $color, $bg) {
+  color: $color;
+  background-color: $bg;
+
+  &:hover {
+    background-color: lighten($bg, 10%);
+  }
+
+  a, a#{$parent} {
+    color: $color;
+
+    &:hover {
+      color: $color;
+    }
+  }
+}
+
+// Component: Background color
+// ========================================================================
+
+.bg-white {
+  color: $bg-white-color;
+  background-color: $bg-white-bg;
+}
+
+.bg-primary {
+  @include bg-variant(".bg-primary", $bg-primary-color, $bg-primary-bg);
+}
+
+.bg-success {
+  @include bg-variant(".bg-primary", $bg-success-color, $bg-success-bg);
+}
+
+.bg-info {
+  @include bg-variant(".bg-info", $bg-info-color, $bg-info-bg);
+}
+
+.bg-warning {
+  @include bg-variant(".bg-warning", $bg-warning-color, $bg-warning-bg);
+}
+
+.bg-danger {
+  @include bg-variant(".bg-danger", $bg-danger-color, $bg-danger-bg);
+}
+
+.bg-dark {
+  @include bg-variant(".bg-dark", $bg-dark-color, $bg-dark-bg);
+}

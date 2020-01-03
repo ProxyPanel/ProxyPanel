@@ -1,0 +1,92 @@
+// Name:            Media
+//
+// Component:       `media`
+//
+// Modifiers:
+//
+//
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+// @media-border:             $divider-color-base;
+$media-meta-color: $text-muted !default;
+$media-meta-font-size: $font-size-sm !default;
+// @media-padding-vertical:   30px;
+$media-list-spacing: 15px !default;
+
+// Component: Media
+// ========================================================================
+
+.media {
+  // padding: @media-padding-vertical 0;
+  // margin-top: 0;
+  // border-bottom: 1px solid @media-border;
+
+  .media {
+    padding-bottom: 0;
+    // margin-top: 25px;
+    // border-top: 1px solid @media-border;
+    border-bottom: none;
+  }
+}
+
+.media-body {
+  overflow: auto;
+}
+
+.media-meta {
+  margin-bottom: 3px;
+  font-size: $media-meta-font-size;
+  color: $media-meta-color;
+}
+
+// Media list
+// ========================================================================
+.media-list {
+  padding-left: 0;
+  list-style: none;
+
+  & > .media {
+    margin-top: $media-list-spacing;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  // .media-body > .media:first-child {
+  //   margin-top: $media-list-spacing;
+  // }
+}
+
+// Media Modifier
+// ========================================================================
+
+@include media-breakpoint-up(md) {
+  .media {
+    &-body {
+      overflow: hidden;
+    }
+
+    .media {
+      margin-left: 0;
+    }
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .media {
+    flex-direction: column;
+
+    > div:first-child {
+      margin-bottom: 5px;
+    }
+
+    .media {
+      padding-left: 15px;
+    }
+  }
+}

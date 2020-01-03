@@ -1,0 +1,13 @@
+// Font path
+// --------------------------
+@font-face {
+  font-family: '#{$bd-font-family}';
+  src: url('#{$bd-font-path}/#{$bd-font-file}.eot?v=#{$bd-version}');
+  src: url('#{$bd-font-path}/#{$bd-font-file}.eot?#iefix&v=#{$bd-version}') format('embedded-opentype'),
+  url('#{$bd-font-path}/#{$bd-font-file}.woff2?v=#{$bd-version}') format('woff2'),
+  url('#{$bd-font-path}/#{$bd-font-file}.woff?v=#{$bd-version}') format('woff'),
+  url('#{$bd-font-path}/#{$bd-font-file}.ttf?v=#{$bd-version}') format('truetype'),
+  url('#{$bd-font-path}/#{$bd-font-file}.svg?v=#{$bd-version}##{$bd-font-file}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

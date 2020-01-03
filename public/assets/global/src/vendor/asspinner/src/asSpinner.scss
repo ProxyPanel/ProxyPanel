@@ -1,0 +1,31 @@
+.asSpinner {
+	position: relative;
+	display: inline-block;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	
+	input {
+		width: 100px;
+		height: 20px;
+		background-color: #fff;
+	}
+
+	&-up, &-down {
+		position: absolute;
+		top: 0;
+
+		width: 20px;
+		height: 20px;
+		
+		background-color: red;
+	}
+
+	&-down {
+	  left: -20px;
+	}
+
+	&-up {
+	  right: -20px;
+	}
+}

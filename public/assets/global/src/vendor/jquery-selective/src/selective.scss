@@ -1,0 +1,220 @@
+
+$namespace: car;
+$namespace2: addMember;
+
+.#{$namespace}-trigger-button {
+  cursor: pointer;
+  -moz-box-sizing: content-box;
+  background: linear-gradient(to bottom, rgb(241, 241, 241), rgb(223, 223, 223) 70%, rgb(218, 218, 218)) repeat scroll 0 0 rgb(223, 223, 223);
+  border-color: rgb(206, 206, 206) rgb(186, 186, 186) rgb(168, 168, 168);
+  border-radius: 3px 3px 2px 2px;
+  border-style: solid;
+  border-width: 1px 1px 0;
+  box-shadow: 0 1px rgb(253, 253, 253) inset, 0 0 0 1px rgb(234, 234, 234) inset, 0 1px rgb(168, 168, 168), 0 3px rgb(187, 187, 187), 0 4px rgb(168, 168, 168), 0 5px 2px rgba(0, 0, 0, 0.25);
+  color: rgb(85, 85, 85);
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 0 5px;
+  outline: 0 none;
+  padding: 0 12px;
+  text-decoration: none;
+  text-shadow: 0 1px white;
+  vertical-align: baseline;
+
+  &:hover {
+    background: none repeat scroll 0 0 rgb(223, 223, 223);
+    border-top-color: rgb(201, 201, 201);
+  }
+
+  &:active, &.#{$namespace}-active {
+    background: none repeat scroll 0 0 rgb(223, 223, 223);
+    border-top-color: rgb(201, 201, 201);
+    border-radius: 3px 3px 3px 3px;
+    border-width: 0;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3) inset, 0 1px 1px rgba(0, 0, 0, 0.4) inset, 0 1px white;
+    margin-bottom: 0;
+    padding: 1px 13px 0;
+    vertical-align: -5px;
+  }
+}
+
+.#{$namespace}-list {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  border: 1px solid gray;
+}
+
+.#{$namespace}-trigger-dropdown {
+  width: 200px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  z-index: 99;
+}
+.#{$namespace}-list-item {
+  padding: 4px 10px;
+  &:hover {
+    background-color: rgb(236, 242, 247);
+  }
+  &:active, &.#{$namespace}-selected {
+    background-color: rgb(50, 185, 226);
+  }
+}
+
+.#{$namespace}-trigger {
+  display: inline-block;
+  vertical-align: middle;
+  &.#{$namespace}-active {
+    .#{$namespace}-trigger-button {
+      background: none repeat scroll 0 0 rgb(223, 223, 223);
+      border-top-color: rgb(201, 201, 201);
+      border-radius: 3px 3px 3px 3px;
+      border-width: 0;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.3) inset, 0 1px 1px rgba(0, 0, 0, 0.4) inset, 0 1px white;
+      margin-bottom: 0;
+      padding: 1px 13px 0;
+      vertical-align: -5px;
+    }
+    .#{$namespace}-trigger-dropdown {
+      display: block;
+    }
+  }
+}
+
+.#{$namespace}-items {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  display: inline-block;
+}
+
+.#{$namespace}-item {
+  display: inline-block;
+  border: 1px solid gray;
+  padding: 4px 14px;
+  position: relative;
+}
+
+.#{$namespace}-remove {
+  position: absolute;
+  line-height: 1;
+  right: 2px;
+  top: 0px;
+  cursor: pointer;
+}
+
+
+.#{$namespace2}-trigger-button {
+  background: url("../images/img-add-user.png") no-repeat scroll center center / 100% 100% transparent;
+  border: 3px solid rgb(255, 255, 255);
+  border-radius: 1000px 1000px 1000px 1000px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: inline-block;
+  height: 34px;
+  width: 34px;
+
+  &:active, &.#{$namespace2}-active {
+    background-image: url("../images/img-add-user-hover.png");
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.#{$namespace2}-list-wrap {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.#{$namespace2}-list {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  // max-height: 300px;
+  // overflow: auto;
+}
+
+.#{$namespace2}-trigger-dropdown {
+  width: 200px;
+  display: none;
+  position: absolute;
+  border: 1px solid gray;
+  background-color: white;
+  z-index: 99;
+}
+
+.#{$namespace2}-search {
+  width: 100%;
+}
+
+.#{$namespace2}-list-item {
+  padding: 4px 10px;
+  &:hover {
+    background-color: rgb(236, 242, 247);
+  }
+  &:active, &.#{$namespace2}-selected {
+    background-color: rgb(50, 185, 226);
+  }
+}
+
+.#{$namespace2}-trigger {
+  display: inline-block;
+  vertical-align: middle;
+  &.#{$namespace2}-active {
+    .#{$namespace2}-trigger-button {
+
+      background-image: url("../images/img-add-user-hover.png");
+      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+    .#{$namespace2}-trigger-dropdown {
+      display: block;
+    }
+  }
+}
+
+.#{$namespace2}-items {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  display: inline-block;
+}
+
+.#{$namespace2}-item {
+  display: inline-block;
+  border: 1px solid gray;
+  padding: 4px 14px;
+  position: relative;
+}
+
+.#{$namespace2}-remove {
+  position: absolute;
+  line-height: 1;
+  right: 2px;
+  top: 0px;
+  cursor: pointer;
+}
+
+.avatarSmall {
+  border: 3px solid rgb(255, 255, 255);
+  border-radius: 1000px 1000px 1000px 1000px;
+  box-shadow: 0 3px 2px 0 rgba(89, 89, 89, 0.08);
+  height: 34px;
+  width: 34px;
+}
+
+.#{$namespace2}-remove {
+  background-image: url("../images/icon-avatarRemove-small.png");
+  // display: none;
+  height: 15px;
+  line-height: 15px;
+  right: 0;
+  top: -2px;
+  width: 15px;
+  &:hover {
+    // display: block;
+    background-image: url("../images/icon-avatarRemove-small-hover.png");
+  }
+}

@@ -1,0 +1,101 @@
+.page-aside {
+  border-right: 1px solid $border-color-base;
+  background: $page-aside-bg;
+}
+
+.page-aside-right {
+  .page-aside {
+    .page-aside-inner {
+      border-left: 1px solid $gray-200;
+    }
+  }
+}
+
+// Page Aside Section
+// ------------------
+.page-aside-section {
+
+  &:after {
+    border-bottom: 1px solid $gray-200
+  }
+}
+
+// Page Aside Title
+// ----------------
+.page-aside-title {
+  color: $gray-600;
+}
+
+// List group
+// ----------
+.page-aside {
+  .list-group {
+
+    &-item {
+
+      .icon {
+        color: $gray-400;
+      }
+
+      &:hover, &:focus {
+        background-color: $gray-100;
+        color: $brand-primary;
+
+        > .icon {
+          color: $brand-primary;
+        }
+      }
+
+      &.active {
+        color: $brand-primary;
+
+        > .icon {
+          color: $brand-primary;
+        }
+
+        &:hover, &:focus {
+          background-color: $gray-100;
+          color: $brand-primary;
+
+          > .icon {
+            color: $brand-primary;
+          }
+        }
+      }
+    }
+
+    &.has-actions {
+      .list-group-item {
+
+        .item-actions {
+
+          .btn-icon {
+
+            &:hover {
+              .icon {
+                color: $brand-primary;
+              }
+            }
+          }
+        }
+
+        &:hover {
+          .item-actions {
+            .icon {
+              color: $gray-500;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .page-aside {
+
+    .page-aside-inner {
+      border-right: 1px solid $gray-200;
+    }
+  }
+}

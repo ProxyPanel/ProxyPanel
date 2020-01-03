@@ -1,0 +1,604 @@
+@import 'vars';
+$toolbar-bg: $gray-200;
+$toolbar-hover-bg: $gray-300;
+$toolbar-border-radius: $border-radius-large;
+$toolbar-arrow-width: $popover-arrow-width;
+$toolbar-arrow-color: $toolbar-bg;
+$toolbar-color: $gray-500;
+$toolbar-hover-color: $inverse;
+$toolbar-light-bg: $gray-100;
+$toolbar-light-hover-bg: $gray-200;
+$toolbar-dark-bg: $gray-500;
+$toolbar-hover-bg: $gray-600;
+
+.btn-toolbar {
+  display: block;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  text-align: center;
+  background: $toolbar-dark-bg;
+  border-radius: 6px;
+  transition: none;
+}
+
+.btn-toolbar > i {
+  font-size: 16px;
+  color: $toolbar-color;
+}
+
+.btn-toolbar:hover {
+  cursor: pointer;
+  background: $btn-primary-hover-bg;
+}
+
+.btn-toolbar:hover > i {
+  color: white;
+}
+
+.btn-toolbar-primary {
+  background-color: $btn-primary-bg;
+}
+
+.btn-toolbar-primary.pressed {
+  background-color: $btn-primary-hover-bg;
+}
+
+.btn-toolbar-primary:hover {
+  background-color: $btn-primary-hover-bg;
+}
+
+.btn-toolbar-primary > i {
+  color: white;
+}
+
+.btn-toolbar-danger {
+  background-color: $btn-danger-bg;
+}
+
+.btn-toolbar-danger.pressed {
+  background-color: $btn-danger-hover-bg;
+}
+
+.btn-toolbar-danger:hover {
+  background-color: $btn-danger-hover-bg;
+}
+
+.btn-toolbar-danger > i {
+  color: white;
+}
+
+.btn-toolbar-warning {
+  background-color: $btn-warning-bg;
+}
+
+.btn-toolbar-warning.pressed {
+  background-color: $btn-warning-hover-bg;
+}
+
+.btn-toolbar-warning:hover {
+  background-color: $btn-warning-hover-bg;
+}
+
+.btn-toolbar-warning > i {
+  color: white;
+}
+
+.btn-toolbar-info {
+  background-color: $btn-info-bg;
+}
+
+.btn-toolbar-info.pressed {
+  background-color: $btn-info-hover-bg;
+}
+
+.btn-toolbar-info:hover {
+  background-color: $btn-info-hover-bg;
+}
+
+.btn-toolbar-info > i {
+  color: white;
+}
+
+.btn-toolbar-success {
+  background-color: $btn-success-bg;
+}
+
+.btn-toolbar-success.pressed {
+  background-color: $btn-success-hover-bg;
+}
+
+.btn-toolbar-success:hover {
+  background-color: $btn-success-hover-bg;
+}
+
+.btn-toolbar-success > i {
+  color: white;
+}
+
+.btn-toolbar-info-o {
+  background-color: $btn-dark-bg;
+}
+
+.btn-toolbar-info-o.pressed {
+  background-color: $btn-dark-hover-bg;
+}
+
+.btn-toolbar-info-o:hover {
+  background-color: $btn-dark-hover-bg;
+}
+
+.btn-toolbar-info-o > i {
+  color: white;
+}
+
+.btn-toolbar-light {
+  background-color: $toolbar-light-bg;
+}
+
+.btn-toolbar-light.pressed {
+  background-color: $toolbar-light-hover-bg;
+}
+
+.btn-toolbar-light:hover {
+  background-color: $toolbar-light-hover-bg;
+}
+
+.btn-toolbar-light > i {
+  color: white;
+}
+
+.btn-toolbar-dark {
+  background-color: $toolbar-dark-bg;
+}
+
+.btn-toolbar-dark.pressed {
+  background-color: $toolbar-hover-bg;
+}
+
+.btn-toolbar-dark:hover {
+  background-color: $toolbar-hover-bg;
+}
+
+.btn-toolbar-dark > i {
+  color: white;
+}
+
+.tool-container {
+  position: absolute;
+  box-sizing: content-box;
+  background-color: $toolbar-bg;
+  background-size: 100% 100%;
+  border-radius: 6px;
+}
+
+.tool-container.tool-top, .tool-container.tool-bottom {
+  height: 40px;
+  border-bottom: 0 solid #beb8b8;
+}
+
+.tool-container.tool-top .tool-item, .tool-container.tool-bottom .tool-item {
+  float: left;
+  border-right: 0;
+  border-left: 0;
+}
+
+.tool-item {
+  box-sizing: content-box;
+  display: block;
+  width: 20px;
+  height: 100%;
+  height: 20px;
+  padding: 10px;
+  text-align: center;
+  transition: none;
+}
+
+.tool-item > .icon {
+  color: $toolbar-color;
+}
+
+.tool-item.selected, .tool-item:hover {
+  background: $btn-primary-hover-bg;
+}
+
+.tool-item.selected > .icon, .tool-item:hover > .icon {
+  color: white;
+}
+
+.tool-top .tool-item:first-child:hover, .tool-bottom .tool-item:first-child:hover {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.tool-top .tool-item:last-child:hover, .tool-bottom .tool-item:last-child:hover {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.tool-vertical-top .tool-item:first-child:hover, .tool-vertical-bottom .tool-item:first-child:hover, .tool-right .tool-item:first-child:hover, .tool-left .tool-item:first-child:hover {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.tool-vertical-top .tool-item:last-child:hover, .tool-vertical-bottom .tool-item:last-child:hover, .tool-right .tool-item:last-child:hover, .tool-left .tool-item:last-child:hover {
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.tool-container .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 7px;
+}
+
+.tool-container.tool-top .arrow {
+  bottom: -14px;
+  left: 50%;
+  margin-left: -7px;
+  border-color: $toolbar-bg transparent transparent;
+}
+
+.tool-container.tool-bottom .arrow {
+  top: -14px;
+  left: 50%;
+  margin-left: -7px;
+  border-color: transparent transparent $toolbar-bg;
+}
+
+.tool-container.tool-left .arrow {
+  top: 50%;
+  right: -14px;
+  margin-top: -7px;
+  border-color: transparent transparent transparent $toolbar-bg;
+}
+
+.tool-container.tool-right .arrow {
+  top: 50%;
+  left: -14px;
+  margin-top: -7px;
+  border-color: transparent $toolbar-bg transparent transparent;
+}
+
+.toolbar-primary {
+  background-color: $btn-primary-hover-bg;
+}
+
+.toolbar-primary.tool-top .arrow {
+  border-color: $btn-primary-hover-bg transparent transparent;
+}
+
+.toolbar-primary.tool-bottom .arrow {
+  border-color: transparent transparent $btn-primary-hover-bg;
+}
+
+.toolbar-primary.tool-left .arrow {
+  border-color: transparent transparent transparent $btn-primary-hover-bg;
+}
+
+.toolbar-primary.tool-right .arrow {
+  border-color: transparent $btn-primary-hover-bg transparent transparent;
+}
+
+.toolbar-primary .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-primary .tool-item.selected, .toolbar-primary .tool-item:hover {
+  color: white;
+  background: $btn-primary-bg;
+}
+
+.toolbar-danger {
+  background-color: $btn-danger-hover-bg;
+}
+
+.toolbar-danger.tool-top .arrow {
+  border-color: $btn-danger-hover-bg transparent transparent;
+}
+
+.toolbar-danger.tool-bottom .arrow {
+  border-color: transparent transparent $btn-danger-hover-bg;
+}
+
+.toolbar-danger.tool-left .arrow {
+  border-color: transparent transparent transparent $btn-danger-hover-bg;
+}
+
+.toolbar-danger.tool-right .arrow {
+  border-color: transparent $btn-danger-hover-bg transparent transparent;
+}
+
+.toolbar-danger .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-danger .tool-item.selected, .toolbar-danger .tool-item:hover {
+  color: white;
+  background: $btn-danger-bg;
+}
+
+.toolbar-warning {
+  background-color: $btn-warning-bg;
+}
+
+.toolbar-warning.tool-top .arrow {
+  border-color: $btn-warning-bg transparent transparent;
+}
+
+.toolbar-warning.tool-bottom .arrow {
+  border-color: transparent transparent $btn-warning-bg;
+}
+
+.toolbar-warning.tool-left .arrow {
+  border-color: transparent transparent transparent $btn-warning-bg;
+}
+
+.toolbar-warning.tool-right .arrow {
+  border-color: transparent $btn-warning-bg transparent transparent;
+}
+
+.toolbar-warning .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-warning .tool-item.selected, .toolbar-warning .tool-item:hover {
+  color: white;
+  background: $btn-warning-hover-bg;
+}
+
+.toolbar-info {
+  background-color: $btn-info-bg;
+}
+
+.toolbar-info.tool-top .arrow {
+  border-color: $btn-info-bg transparent transparent;
+}
+
+.toolbar-info.tool-bottom .arrow {
+  border-color: transparent transparent $btn-info-bg;
+}
+
+.toolbar-info.tool-left .arrow {
+  border-color: transparent transparent transparent $btn-info-bg;
+}
+
+.toolbar-info.tool-right .arrow {
+  border-color: transparent $btn-info-bg transparent transparent;
+}
+
+.toolbar-info .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-info .tool-item.selected, .toolbar-info .tool-item:hover {
+  color: white;
+  background: $btn-info-hover-bg;
+}
+
+.toolbar-success {
+  background-color: $btn-success-bg;
+}
+
+.toolbar-success.tool-top .arrow {
+  border-color: $btn-success-bg transparent transparent;
+}
+
+.toolbar-success.tool-bottom .arrow {
+  border-color: transparent transparent $btn-success-bg;
+}
+
+.toolbar-success.tool-left .arrow {
+  border-color: transparent transparent transparent $btn-success-bg;
+}
+
+.toolbar-success.tool-right .arrow {
+  border-color: transparent $btn-success-bg transparent transparent;
+}
+
+.toolbar-success .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-success .tool-item.selected, .toolbar-success .tool-item:hover {
+  color: white;
+  background: $btn-success-hover-bg;
+}
+
+.toolbar-info-o {
+  background-color: $btn-dark-bg;
+}
+
+.toolbar-info-o.tool-top .arrow {
+  border-color: $btn-dark-bg transparent transparent;
+}
+
+.toolbar-info-o.tool-bottom .arrow {
+  border-color: transparent transparent $btn-dark-bg;
+}
+
+.toolbar-info-o.tool-left .arrow {
+  border-color: transparent transparent transparent $btn-dark-bg;
+}
+
+.toolbar-info-o.tool-right .arrow {
+  border-color: transparent $btn-dark-bg transparent transparent;
+}
+
+.toolbar-info-o .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-info-o .tool-item.selected, .toolbar-info-o .tool-item:hover {
+  color: white;
+  background: $btn-dark-hover-bg;
+}
+
+.toolbar-light {
+  background-color: $toolbar-light-bg;
+}
+
+.toolbar-light.tool-top .arrow {
+  border-color: $toolbar-light-bg transparent transparent;
+}
+
+.toolbar-light.tool-bottom .arrow {
+  border-color: transparent transparent $toolbar-light-bg;
+}
+
+.toolbar-light.tool-left .arrow {
+  border-color: transparent transparent transparent $toolbar-light-bg;
+}
+
+.toolbar-light.tool-right .arrow {
+  border-color: transparent $toolbar-light-bg transparent transparent;
+}
+
+.toolbar-light .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-light .tool-item.selected, .toolbar-light .tool-item:hover {
+  color: white;
+  background: $toolbar-light-hover-bg;
+}
+
+.toolbar-dark {
+  background-color: $toolbar-dark-bg;
+}
+
+.toolbar-dark.tool-top .arrow {
+  border-color: $toolbar-dark-bg transparent transparent;
+}
+
+.toolbar-dark.tool-bottom .arrow {
+  border-color: transparent transparent $toolbar-dark-bg;
+}
+
+.toolbar-dark.tool-left .arrow {
+  border-color: transparent transparent transparent $toolbar-dark-bg;
+}
+
+.toolbar-dark.tool-right .arrow {
+  border-color: transparent $toolbar-dark-bg transparent transparent;
+}
+
+.toolbar-dark .tool-item > .icon {
+  color: white;
+}
+
+.toolbar-dark .tool-item.selected, .toolbar-dark .tool-item:hover {
+  color: white;
+  background: $toolbar-hover-bg;
+}
+
+.animate-standard {
+  -webkit-animation: standardAnimate .3s 1 ease;
+}
+
+.animate-flyin {
+  -webkit-animation: rotateAnimate .5s 1 ease;
+}
+
+.animate-grow {
+  -webkit-animation: growAnimate .4s 1 ease;
+}
+
+.animate-flip {
+  -webkit-animation: flipAnimate .4s 1 ease;
+}
+
+.animate-bounce {
+  -webkit-animation: bounceAnimate .4s 1 ease-out;
+}
+
+@-webkit-keyframes rotateAnimate {
+  from {
+    opacity: 0;
+    transform: rotate(180deg) translate(-120px);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(0deg) translate(0);
+  }
+}
+
+@-webkit-keyframes standardAnimate {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes growAnimate {
+  0% {
+    opacity: 0;
+    transform: scale(0) translateY(40px);
+  }
+
+  70% {
+    transform: scale(1.5) translate(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translate(0);
+  }
+}
+
+@-webkit-keyframes rotate2Animate {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg);
+    transform-origin: 0% 100%;
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+}
+
+@-webkit-keyframes flipAnimate {
+  from {
+    opacity: 0;
+    transform: rotate3d(2, 2, 2, 180deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+}
+
+@-webkit-keyframes bounceAnimate {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  30% {
+    transform: translateY(-40px);
+  }
+
+  70% {
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hidden {
+  display: none;
+}

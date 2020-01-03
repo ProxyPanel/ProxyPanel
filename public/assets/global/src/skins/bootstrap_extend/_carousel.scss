@@ -1,0 +1,79 @@
+// Name:            Carousel
+//
+// Component:       `carousel`
+//
+// Modifiers:       `carousel-indicators-scaleup`
+//                  `carousel-indicators-fillin`
+//                  `carousel-indicators-fall`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$carousel-caption-title-color:            $inverse !default;
+
+$carousel-indicators-list-bg-color:       rgba(255, 255, 255, 0.3) !default;
+
+// Component: Carousel
+// ========================================================================
+
+.carousel-caption {
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+  }
+}
+
+.carousel-indicators {
+  li {
+    background-color: $carousel-indicators-list-bg-color;
+  }
+}
+
+// Animate Modifier
+// ========================================================================
+
+// Modifier: `carousel-indicators-scaleup`
+// -------------------------
+
+.carousel-indicators-scaleup {
+  li {
+    border: none;
+    transition: transform 0.3s ease 0s, background-color 0.3s ease 0s;
+  }
+}
+
+// Modifier: `carousel-indicators-fillin`
+// -------------------------
+
+.carousel-indicators-fillin {
+  li {
+    background-color: transparent;
+    box-shadow: 0 0 0 2px #fff inset;
+    transition: box-shadow .3s ease 0s;
+  }
+
+  .active {
+    box-shadow: 0 0 0 8px #fff inset;
+  }
+}
+
+// Modifier: `carousel-indicators-fall`
+// -------------------------
+
+.carousel-indicators-fall {
+  li {
+    transition: transform 0.3s ease 0s, background-color 0.3s ease 0s;
+
+    &:after {
+      background-color: rgba(0, 0, 0, .3);
+    }
+  }
+
+  .active {
+    background-color: transparent;
+  }
+}
+
+// Media Modifier
+// ========================================================================

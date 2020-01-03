@@ -1,0 +1,40 @@
+@import 'vars';
+
+// Name:            Sortable
+// ========================================================================
+
+// Variables
+// ========================================================================
+$list-group-sortable-placeholder-bg: $bg-color-base;
+$list-group-sortable-placeholder-border: $border-color-base;
+$sortable-placeholder-height: 42px !default;
+$list-task-sortable-placeholder-height: 65px !default;
+
+// Component: Sortable
+// ========================================================================
+
+.sortable > *, .sortable-with-handle .sortable-handle {
+  cursor: move;
+}
+
+.sortable-placeholder {
+  display: block;
+  height: $sortable-placeholder-height;
+  margin-top: 1px;
+  background-color: $list-group-sortable-placeholder-bg;
+  border: 1px dashed $border-color-base;
+}
+
+.sortable, .sortable-with-handle {
+  &.list-group-gap {
+    .sortable-placeholder {
+      margin-bottom: 2px;
+    }
+  }
+}
+
+.sortable.list-task {
+  .sortable-placeholder {
+    height: $list-task-sortable-placeholder-height;
+  }
+}

@@ -1,0 +1,130 @@
+// Name:            Popover
+//
+// Component:       `popover`
+//
+// Modifiers:       `popover-primary`
+//                  `popover-success`
+//                  `popover-info`
+//                  `popover-warning`
+//                  `popover-danger`
+//                  `popover-rotate`
+//                  `popover-scale`
+//
+// Markup:
+//
+// <!-- popover -->
+// <div class="popover">
+//   <div class="arrow"></div>
+//   <h3 class="popover-title"></h3>
+//   <div class="popover-content"></div>
+// </div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$popover-primary-color: $inverse !default;
+$popover-primary-bg: $brand-primary !default;
+$popover-primary-border: $brand-primary !default;
+$popover-success-color: $inverse !default;
+$popover-success-bg: $brand-success !default;
+$popover-success-border: $brand-success !default;
+$popover-info-color: $inverse !default;
+$popover-info-bg: $brand-info !default;
+$popover-info-border: $brand-info !default;
+$popover-warning-color: $inverse !default;
+$popover-warning-bg: $brand-warning !default;
+$popover-warning-border: $brand-warning !default;
+$popover-danger-color: $inverse !default;
+$popover-danger-bg: $brand-danger !default;
+$popover-danger-border: $brand-danger !default;
+
+// Component: Popover
+// ========================================================================
+
+.popover {
+  box-shadow: $popover-shadow;
+
+  &.bs-popover-top {
+    .arrow::before {
+      border-top-color: $popover-arrow-outer-color;
+    }
+
+    .arrow::after {
+      border-top-color: $popover-arrow-color;
+    }
+  }
+
+  &.bs-popover-right {
+    .arrow::before {
+      border-right-color: $popover-arrow-outer-color;
+    }
+
+    .arrow::after {
+      border-right-color: $popover-arrow-color;
+    }
+  }
+
+  &.bs-popover-bottom {
+    .arrow::before {
+      border-bottom-color: $popover-arrow-outer-color;
+    }
+
+    .arrow::after {
+      border-bottom-color: $popover-header-bg;
+    }
+
+    // This will remove the popover-header's border just below the arrow
+    .popover-header::before {
+      border-bottom: $popover-border-width solid $popover-header-bg;
+    }
+  }
+
+  &.bs-popover-left {
+    .arrow::before {
+      border-left-color: $popover-arrow-outer-color;
+    }
+
+    .arrow::after {
+      border-left-color: $popover-arrow-color;
+    }
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `popover-primary`
+// -------------------------
+
+.popover-primary {
+  @include popover-variant($popover-primary-color, $popover-primary-bg, $popover-primary-border);
+}
+
+// Modifier: `popover-success`
+// -------------------------
+
+.popover-success {
+  @include popover-variant($popover-success-color, $popover-success-bg, $popover-success-border);
+}
+
+// Modifier: `popover-info`
+// -------------------------
+
+.popover-info {
+  @include popover-variant($popover-info-color, $popover-info-bg, $popover-info-border);
+}
+
+// Modifier: `popover-warning`
+// -------------------------
+
+.popover-warning {
+  @include popover-variant($popover-warning-color, $popover-warning-bg, $popover-warning-border);
+}
+
+// Modifier: `popover-danger`
+// -------------------------
+
+.popover-danger {
+  @include popover-variant($popover-danger-color, $popover-danger-bg, $popover-danger-border);
+}

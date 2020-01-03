@@ -1,0 +1,11 @@
+@mixin transform($transform) {
+  transform: $transform;
+}
+
+@mixin transform-style($transform-style) {
+  transform-style: $transform-style;
+}
+
+@mixin translate($x, $y) {
+  transform: translate($x, $y);
+}

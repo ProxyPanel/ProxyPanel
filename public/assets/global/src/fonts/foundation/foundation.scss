@@ -1,0 +1,18 @@
+/**
+ * Foundation Icons, 3.0.0
+ * Created by ZURB
+ * http://zurb.com/playground/foundation-icon-fonts-3
+ * MIT License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$fi-css-prefix}-"],
+[class*=" #{$fi-css-prefix}-"] {
+  font-family: '#{$fi-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

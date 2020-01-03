@@ -10,7 +10,7 @@
 				<div class="row">
 					<div class="col-2"></div>
 					<div class="alert alert-info col-8 text-center">
-						请使用<strong class="red-600">支付宝@if(\App\Components\Helpers::systemConfig()['is_youzan']) 、微信 @endif </strong>扫描二维码进行支付
+						请使用<strong class="red-600"> 支付宝 </strong>扫描二维码进行支付
 					</div>
 					<div class="col-2"></div>
 					<div class="col-2"></div>
@@ -40,25 +40,27 @@
 @endsection
 @section('script')
 	<script type="text/javascript">
-        // 每800毫秒查询一次订单状态
         $(document).ready(function () {
             // 支付宝直接跳转支付
 			@if(\App\Components\Helpers::systemConfig()['is_alipay'])
                 document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
             document.forms['alipaysubmit'].submit();
 			@endif
-            setInterval("getStatus()", 800);
+            getStatus();
         });
 
         // 检查支付单状态
         function getStatus() {
             $.get("/payment/getStatus", {sn: '{{$payment->sn}}'}, function (ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false})
+                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
                         .then(() => window.location.href = '/invoices')
                 } else if (ret.status === 'error') {
-                    swal.fire({title: ret.message, type: "error", timer: 1500, showConfirmButton: false})
+                    swal.fire({title: ret.message, type: "error", timer: 1000, showConfirmButton: false})
                         .then(() => window.location.href = '/invoices')
+                } else {
+                    // 无结果时，每2秒查询一次订单状态
+                    setInterval("getStatus()", 2000);
                 }
             });
         }

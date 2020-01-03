@@ -1,0 +1,11 @@
+@import "vars";
+
+$icon-font-path: "";
+
+[class^="glyphicon-"],
+[class*=" glyphicon-"] {
+  font-family: 'Glyphicons Halflings';
+  @include make-icon();
+}
+
+@import "scss/glyphicons";

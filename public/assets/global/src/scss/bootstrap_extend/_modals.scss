@@ -1,0 +1,586 @@
+// Name:            Modals
+//
+// Component:       `modal`
+//
+// Modifiers:       `modal-top`
+//                  `modal-center`
+//                  `modal-bottom`
+//                  `modal-sidebar`
+//                  `modal-fill-in`
+//                  `modal-primary`
+//                  `modal-success`
+//                  `modal-info`
+//                  `modal-warning`
+//                  `modal-danger`
+//                  `modal-fade-in-scale-up`
+//                  `modal-slide-in-right`
+//                  `modal-slide-from-bottom`
+//                  `modal-newspaper`
+//                  `modal-fall`
+//                  `modal-side-fall`
+//                  `modal-3d-flip-horizontal`
+//                  `modal-3d-flip-vertical`
+//                  `modal-3d-sign`
+//                  `modal-super-scaled`
+//                  `modal-just-me`
+//                  `modal-3d-slit`
+//                  `modal-rotate-from-bottom`
+//                  `modal-rotate-from-left`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$modal-header-padding-x: 20px !default;
+$modal-header-padding-y: 15px !default;
+$modal-footer-padding: 6px 20px 20px !default;
+$modal-radius: $border-radius-large !default;
+$modal-sidebar-bg: $inverse !default;
+$modal-fill-in-bg: rgba(255, 255, 255, .95) !default;
+$modal-fill-in-close-font-size: 2rem !default;
+$modal-primary-color: $inverse !default;
+$modal-primary-bg: $brand-primary !default;
+$modal-success-color: $inverse !default;
+$modal-success-bg: $brand-success !default;
+$modal-info-color: $inverse !default;
+$modal-info-bg: $brand-info !default;
+$modal-warning-color: $inverse !default;
+$modal-warning-bg: $brand-warning !default;
+$modal-danger-color: $inverse !default;
+$modal-danger-bg: $brand-danger !default;
+
+// Component: Modal
+// ========================================================================
+.modal-content {
+  border: none;
+}
+
+.modal-header {
+  padding: $modal-header-padding-y $modal-header-padding-x;
+  padding-right: ($modal-header-padding-x + 20);
+  border-bottom: none;
+}
+
+.modal-simple {
+  .modal-header + .modal-body {
+    padding-top: 0;
+  }
+}
+
+.modal-header .modal-title {
+  order: 1;
+  margin-top: 0;
+}
+
+.modal-header .close {
+  order: 2;
+  padding: 0;
+  margin-top: 1px;
+}
+
+.modal-footer {
+  padding: $modal-footer-padding;
+  border-top: none;
+
+  .btn + .btn {
+    margin-left: 5px;
+  }
+
+  .btn-block + .btn-block {
+    margin-left: 0;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  .modal-dialog {
+    margin: 30px;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .modal-dialog {
+    width: auto;
+    margin: 30px auto;
+  }
+
+  .modal-sm {
+    width: $modal-sm;
+  }
+}
+
+// Modifier: `modal-top`
+// -------------------------
+
+.modal-top {
+  margin: 0 auto;
+}
+
+// Modifier: `modal-center`
+// -------------------------
+
+.modal-center {
+  display: flex;
+  flex-flow: column nowrap;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0 auto;
+}
+
+// Modifier: `modal-bottom`
+// -------------------------
+
+.modal-bottom {
+  display: flex;
+  flex-flow: column nowrap;
+  align-content: center;
+  justify-content: flex-end;
+  height: 100%;
+  margin: 0 auto;
+}
+
+// Modifier: `modal-sidebar`
+// -------------------------
+
+.modal-sidebar {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  background-color: $modal-sidebar-bg;
+
+  .modal-content {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+
+  .modal-footer {
+    flex-wrap: wrap;
+    border-top: none;
+  }
+
+  button.close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+  }
+}
+
+.modal.fade .modal-dialog.modal-sidebar {
+  transform: translate(25%, 0);
+}
+
+.modal.show .modal-dialog.modal-sidebar {
+  transform: translate(0, 0);
+}
+
+// Modifier: `modal-fill-in`
+// -------------------------
+
+.modal-fill-in {
+  background-color: transparent;
+
+  &.show {
+    background-color: $modal-fill-in-bg;
+    opacity: 1;
+  }
+
+  .modal-dialog {
+
+    // Scale up the modal
+    @include media-breakpoint-up(md) {
+      & > * {
+        width: $modal-md;
+      }
+
+      &.modal-sm > * {
+        width: $modal-sm;
+      }
+
+      button.close {
+        position: fixed;
+        top: 20px;
+        right: 40px;
+        z-index: 1;
+        font-size: $modal-fill-in-close-font-size;
+        opacity: .5;
+        transform: translate(0%, 0%);
+      }
+    }
+
+    @include media-breakpoint-up(lg) {
+      &.modal-lg > * {
+        width: $modal-lg;
+      }
+    }
+    display: flex;
+    flex-flow: column nowrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    height: 100%;
+    margin: 0 auto;
+  }
+
+  .modal-content {
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `modal-primary`
+// -------------------------
+
+.modal-primary {
+  @include modal-styles-variant($modal-primary-color, $modal-primary-bg);
+}
+
+// Modifier: `modal-success`
+// -------------------------
+
+.modal-success {
+  @include modal-styles-variant($modal-success-color, $modal-success-bg);
+}
+
+// Modifier: `modal-info`
+// -------------------------
+
+.modal-info {
+  @include modal-styles-variant($modal-info-color, $modal-info-bg);
+}
+
+// Modifier: `modal-warning`
+// -------------------------
+
+.modal-warning {
+  @include modal-styles-variant($modal-warning-color, $modal-warning-bg);
+}
+
+// Modifier: `modal-danger`
+// -------------------------
+
+.modal-danger {
+  @include modal-styles-variant($modal-danger-color, $modal-danger-bg);
+}
+
+// Animate Modifier
+// ========================================================================
+
+.modal {
+  // Modifier: `modal-fade-in-scale-up`
+  // -------------------------
+
+  &.modal-fade-in-scale-up {
+    .modal-dialog {
+      opacity: 0;
+      transition: all .3s ease 0s;
+      transform: scale(.7);
+    }
+
+    &.show {
+      .modal-dialog {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+
+  // Modifier: `modal-slide-in-right`
+  // -------------------------
+
+  &.modal-slide-in-right {
+    .modal-dialog {
+      opacity: 0;
+      transition: all .3s cubic-bezier(.25, .5, .5, .9) 0s;
+      transform: translate(20%, 0%);
+    }
+
+    &.show {
+      .modal-dialog {
+        opacity: 1;
+        transform: translate(0, 0);
+      }
+    }
+  }
+
+  // Modifier: `modal-slide-from-bottom`
+  // -------------------------
+
+  &.modal-slide-from-bottom {
+    .modal-dialog {
+      opacity: 0;
+      transition: all .3s ease 0s;
+      transform: translate(0%, 20%);
+    }
+
+    &.show {
+      .modal-dialog {
+        opacity: 1;
+        transform: translate(0, 0);
+      }
+    }
+  }
+
+  // Modifier: `modal-newspaper`
+  // -------------------------
+
+  &.modal-newspaper {
+    .modal-dialog {
+      opacity: 0;
+      transition: all .5s ease 0s;
+      transform: scale(0) rotate(720deg);
+    }
+
+    &.show {
+      .modal-dialog {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-fall`
+  // -------------------------
+
+  &.modal-fall {
+    perspective: 1300px;
+
+    .modal-dialog {
+      opacity: 0;
+      transform: translateZ(600px) rotateX(20deg);
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        opacity: 1;
+        transition: all .3s ease-in 0s;
+        transform: translateZ(0) rotateX(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-side-fall`
+  // -------------------------
+
+  &.modal-side-fall {
+    perspective: 1300px;
+
+    .modal-dialog {
+      transform: translate(30%) translateZ(600px) rotate(10deg);
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        transition: all .3s ease-in 0s;
+        transform: translate(0%) translateZ(0) rotate(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-3d-flip-horizontal`
+  // -------------------------
+
+  &.modal-3d-flip-horizontal {
+    perspective: 1300px;
+
+    .modal-dialog {
+      transition: all .3s ease 0s;
+      transform: rotateY(-70deg);
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        transform: rotateY(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-3d-flip-vertical`
+  // -------------------------
+
+  &.modal-3d-flip-vertical {
+    perspective: 1300px;
+
+    .modal-dialog {
+      transition: all .3s ease 0s;
+      transform: rotateX(-70deg);
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        transform: rotateX(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-3d-sign`
+  // -------------------------
+
+  &.modal-3d-sign {
+    perspective: 1300px;
+
+    .modal-dialog {
+      transition: all .3s ease 0s;
+      transform: rotateX(-60deg);
+      transform-origin: 50% 0 0;
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        transform: rotateX(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-super-scaled`
+  // -------------------------
+
+  &.modal-super-scaled {
+    .modal-dialog {
+      opacity: 0;
+      transition: all .3s ease 0s;
+      transform: scale(2);
+    }
+
+    &.show {
+      .modal-dialog {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+
+  // Modifier: `modal-just-me`
+  // -------------------------
+
+  &.modal-just-me {
+    .modal-dialog {
+      opacity: 0;
+      transition: all .3s ease 0s;
+      transform: scale(.8);
+    }
+
+    .modal-backdrop {
+      background-color: $inverse;
+    }
+
+    &.show {
+      background: $modal-content-bg;
+
+      .modal-dialog {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .modal-backdrop {
+        opacity: 1;
+      }
+    }
+  }
+
+  // Modifier: `modal-3d-slit`
+  // -------------------------
+
+  &.modal-3d-slit {
+    perspective: 1300px;
+
+    .modal-dialog {
+      opacity: 0;
+      transition: all .5s ease 0s;
+      transform: translateZ(-3000px) rotateY(90deg);
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        animation: slit .7s ease-out forwards;
+      }
+    }
+  }
+
+  // Modifier: `modal-rotate-from-bottom`
+  // -------------------------
+
+  &.modal-rotate-from-bottom {
+    perspective: 1300px;
+
+    .modal-dialog {
+      transition: all .3s ease-out 0s;
+      transform: translateY(100%) rotateX(90deg);
+      transform-origin: 0 100% 0;
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        transform: translateY(0%) rotateX(0deg);
+      }
+    }
+  }
+
+  // Modifier: `modal-rotate-from-left`
+  // -------------------------
+
+  &.modal-rotate-from-left {
+    perspective: 1300px;
+
+    .modal-dialog {
+      transition: all .3s ease-out 0s;
+      transform: translateZ(100px) translateX(-30%) rotateY(90deg);
+      transform-origin: 0 100% 0;
+      transform-style: preserve-3d;
+    }
+
+    &.show {
+      .modal-dialog {
+        transform: translateZ(0) translateX(0%) rotateY(0deg);
+      }
+    }
+  }
+}
+
+@-webkit-keyframes slit {
+  50% {
+    opacity: .5;
+    transform: translateZ(-250px) rotateY(89deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateZ(0) rotateY(0deg);
+  }
+}
+
+@keyframes slit {
+  50% {
+    opacity: .5;
+    transform: translateZ(-250px) rotateY(89deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateZ(0) rotateY(0deg);
+  }
+}

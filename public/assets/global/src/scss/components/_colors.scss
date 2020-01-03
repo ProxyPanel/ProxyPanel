@@ -1,0 +1,53 @@
+// Name:            Color
+//
+// Component:       `color`
+//
+// ========================================================================
+
+// Variables
+// =======================================================================
+$primary-lists: (
+  "primary":
+  (
+    "100": $color-primary-100, "200": $color-primary-200, "300": $color-primary-300, "400": $color-primary-400, "500": $color-primary-500, "600": $color-primary-600, "700": $color-primary-700, "800": $color-primary-800
+  )
+) !default;
+
+// Component: Color
+// ========================================================================
+@mixin labelColorGenerator($label, $map, $type) {
+  $type-class: null;
+  $type-property: null;
+
+  @if ($type == "color") {
+    $type-class: "";
+    $type-property: "color";
+  } @else if($type == "bg") {
+    $type-class: "bg-";
+    $type-property: "background-color";
+  }
+
+  @each $index in $map {
+    .#{$type-class}#{$label}-#{nth($index, 1)} {
+      #{$type-property}: nth($index, 2) !important;
+    }
+  }
+}
+
+@each $label, $map in $color-lists {
+  @include labelColorGenerator($label, $map, "bg");
+  @include labelColorGenerator($label, $map, "color");
+}
+
+@each $label, $map in $primary-lists {
+  @include labelColorGenerator($label, $map, "bg");
+  @include labelColorGenerator($label, $map, "color");
+}
+
+.black {
+  color: $color-black !important;
+}
+
+.white {
+  color: $color-white !important;
+}

@@ -1,0 +1,89 @@
+// scss-lint:disable QualifyingElement
+
+//
+// Base styles
+//
+
+.btn {
+  border: $input-btn-border-width solid transparent;
+
+  &:focus,
+  &.focus {
+    box-shadow: $input-btn-focus-box-shadow;
+  }
+
+  // Disabled comes first so active can properly restyle
+  &.disabled,
+  &:disabled {
+    @include box-shadow(none);
+  }
+
+  // &:active,
+  // &.active {
+  //   @include box-shadow($input-btn-focus-box-shadow, $btn-active-box-shadow);
+  // }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    background-image: none;
+    @include box-shadow($btn-active-box-shadow);
+
+    &:focus {
+      @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
+    }
+  }
+}
+
+//
+// Alternate buttons
+//
+
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @include button-variant($value, $value);
+  }
+}
+
+// @each $color, $value in $theme-colors {
+//   .btn-outline-#{$color} {
+//     @if $color == "light" {
+//       @include button-outline-variant($value, $gray-900);
+//     } @else {
+//       @include button-outline-variant($value, $white);
+//     }
+//   }
+// }
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    @include button-outline-variant($value);
+  }
+}
+
+//
+// Link buttons
+//
+
+// Make a button look and behave like a link
+.btn-link {
+  color: $link-color;
+  background-color: transparent;
+
+  @include hover {
+    color: $link-hover-color;
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  &:focus,
+  &.focus {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $btn-link-disabled-color;
+  }
+
+  // No need for an active state here
+}

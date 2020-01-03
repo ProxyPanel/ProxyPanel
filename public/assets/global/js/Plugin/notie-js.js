@@ -48,7 +48,7 @@
         if (options.type !== undefined) {
           switch (options.type) {
             case 'confirm':
-              notie.confirm(babelHelpers.objectSpread({}, options, {
+              notie.confirm(Object.assign(options, {
                 submitCallback: function submitCallback() {
                   if (options.submitCallback && typeof window[options.submitCallback] === 'function') {
                     window[options.submitCallback]();
@@ -75,7 +75,7 @@
               break;
 
             case 'input':
-              notie.input(babelHelpers.objectSpread({}, options, {
+              notie.input(Object.assign(options, {
                 submitCallback: function submitCallback(value) {
                   if (options.submitCallback && typeof window[options.submitCallback] === 'function') {
                     window[options.submitCallback](value);

@@ -1,0 +1,33 @@
+
+.site-navbar {
+  background-color: $site-navbar-header-bg;
+
+  .navbar-header {
+    color: $site-navbar-header-color;
+
+    .navbar-toggler {
+      color: $site-navbar-header-color;
+    }
+
+    .hamburger {
+      &::before,
+      &::after,
+      .hamburger-bar {
+        background-color: $site-navbar-header-color;
+      }
+    }
+
+    .navbar-brand {
+      color: $site-navbar-brand-color;
+    }
+  }
+
+  .navbar-container {
+    background-color: $inverse;
+  }
+  &.navbar-inverse {
+    .navbar-container {
+      background-color: transparent;
+    }
+  }
+}

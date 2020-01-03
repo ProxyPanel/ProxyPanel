@@ -37,13 +37,10 @@
 							<tr>
 								<td class="text-middle">{{$goods->name}} </td>
 								<td>{{trans('home.service_days')}}
-									<strong>{{$goods->days}} {{trans('home.day')}}</strong>
+									<strong>{{$goods->type==1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
 									<br>
-									@if($goods->type == '2')
-										<strong>{{$goods->traffic_label}}</strong> {{trans('home.account_bandwidth_usage')}}/{{trans('home.month')}}
-									@else
-										<strong>{{$goods->traffic_label}}</strong> {{trans('home.account_bandwidth_usage')}}/{{$goods->days}} {{trans('home.day')}}
-									@endif</td>
+									<strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
+								</td>
 								<td class="text-middle"> ￥{{$goods->price}} </td>
 								<td class="text-middle"> x 1</td>
 							</tr>
@@ -72,15 +69,13 @@
 						@endif
 						<div class="col-md-12 mb-30">
 							<div class="float-right">
-								@if(\App\Components\Helpers::systemConfig()['is_youzan'])
-									<button class="btn btn-lg btn-danger" onclick="onlinePay('0')"> {{trans('home.online_pay')}} </button>
-								@elseif(\App\Components\Helpers::systemConfig()['is_alipay'])
-									<button class="btn btn-lg btn-success" onclick="onlinePay('4')"> 支付宝扫码</button>
+								@if(\App\Components\Helpers::systemConfig()['is_alipay'])
+									<button class="btn btn-lg btn-success" onclick="checkPrePaid('4')"> 支付宝扫码</button>
 								@elseif(\App\Components\Helpers::systemConfig()['is_f2fpay'])
-									<button class="btn btn-lg btn-success" onclick="onlinePay('5')"> 支付宝扫码</button>
+									<button class="btn btn-lg btn-success" onclick="checkPrePaid('5')"> 支付宝扫码</button>
 								@endif
 								@if($goods->type <= 2)
-									<button class="btn btn-lg btn-primary" onclick="pay()"> {{trans('home.service_pay_button')}} </button>
+									<button class="btn btn-lg btn-primary" onclick="checkPrePaid('1')"> {{trans('home.service_pay_button')}} </button>
 								@endif
 							</div>
 						</div>
@@ -115,7 +110,7 @@
                             total_price = goods_price - ret.data.amount;
                             total_price = total_price > 0 ? total_price : 0;
                             if (ret.data.type === 1) {
-                                $(".page-invoice-amount").parent().prepend('优惠码-' + ret.data.name + ' <span>￥ - '+ret.data.amount+'</span>');
+                                $(".page-invoice-amount").parent().prepend('优惠码-' + ret.data.name + ' <span>￥ - ' + ret.data.amount + '</span>');
                             }
                         }
 
@@ -140,8 +135,29 @@
             });
         }
 
-        // 在线支付
-        function onlinePay(pay_type) {
+        // 检查预支付
+        function checkPrePaid(pay_type) {
+            // 存在套餐 和 购买类型为套餐时 出现提示
+            if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
+                swal.fire({
+                    title: '套餐存在冲突',
+                    html: '<p>当前购买套餐将自动设置为 <code>预支付套餐</code><p><ol class="text-left"><li> 预支付套餐会在生效中的套餐失效后自动开通！</li><li> 您可以在支付后手动激活套餐！</li></ol>',
+                    type: 'info',
+                    showCancelButton: true,
+                    cancelButtonText: '返 回',
+                    confirmButtonText: '继 续',
+                }).then((result) => {
+                    if (result.value) {
+                        pay(pay_type);
+                    }
+                })
+            } else {
+                pay(pay_type);
+            }
+        }
+
+        // 支付
+        function pay(pay_type) {
             const goods_id = '{{$goods->id}}';
             const coupon_sn = $('#coupon_sn').val();
             $.ajax({
@@ -158,14 +174,17 @@
                             timer: 1300,
                             showConfirmButton: false
                         });
-                        if (pay_type === 4) {
+                        if (pay_type === '1') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+                                .then(() => window.location.href = '/invoices')
+                        } else if (pay_type === '4') {
                             // 如果是Alipay支付写入Alipay的支付页面
                             document.body.innerHTML += ret.data;
                             document.forms['alipaysubmit'].submit();
                         } else {
                             window.location.href = '/payment/' + ret.data;
                         }
-                    } else if(ret.status === 'info'){
+                    } else if (ret.status === 'info') {
                         swal.fire({title: ret.title, text: ret.message, type: 'question'});
                     } else {
                         swal.fire({
@@ -176,30 +195,6 @@
                 },
                 error: function () {
                     swal.fire('未知错误', '请开工单通知客服', 'error')
-                }
-            });
-        }
-
-        // 余额支付
-        function pay() {
-            $.ajax({
-                type: "POST",
-                url: "/buy/" + '{{$goods->id}}',
-                async: false,
-                data: {_token: '{{csrf_token()}}', coupon_sn: $('#coupon_sn').val()},
-                dataType: 'json',
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success',})
-                            .then(() => window.location.href = '/invoices')
-                    } else if(ret.status === 'info'){
-                        swal.fire({title: ret.title, text: ret.message, type: 'question'});
-	                } else{
-                        swal.fire({title: ret.message, type: 'error'})
-                    }
-                },
-                error: function () {
-                    swal.fire({title: '未知错误！请开工单通知客服', type: 'error'})
                 }
             });
         }

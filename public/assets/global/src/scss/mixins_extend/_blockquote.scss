@@ -1,0 +1,4 @@
+@mixin blockquote-variant($border) {
+  background-color: rgba($border, (10/100));
+  border-color: $border;
+}

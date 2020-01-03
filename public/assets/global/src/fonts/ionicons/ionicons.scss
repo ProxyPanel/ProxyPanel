@@ -1,0 +1,18 @@
+/**
+ * Ionicons, 3.0.0
+ * Created by Ben Sperry
+ * http://ionicons.com/
+ * MIT License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$ion-css-prefix}-"],
+[class*=" #{$ion-css-prefix}-"] {
+  font-family: '#{$ion-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

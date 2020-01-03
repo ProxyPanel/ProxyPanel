@@ -1,0 +1,308 @@
+@import 'vars';
+
+// Variables
+// ========================================================================
+$webui-popover-width: 276px;
+$webui-popover-min-height: 32px;
+$webui-popover-primary-color: $inverse;
+$webui-popover-primary-bg: $brand-primary;
+$webui-popover-primary-border: $brand-primary;
+$webui-popover-success-color: $inverse;
+$webui-popover-success-bg: $brand-success;
+$webui-popover-success-border: $brand-success;
+$webui-popover-info-color: $inverse;
+$webui-popover-info-bg: $brand-info;
+$webui-popover-info-border: $brand-info;
+$webui-popover-warning-color: $inverse;
+$webui-popover-warning-bg: $brand-warning;
+$webui-popover-warning-border: $brand-warning;
+$webui-popover-danger-color: $inverse;
+$webui-popover-danger-bg: $brand-danger;
+$webui-popover-danger-border: $brand-danger;
+$webui-popover-close-size: 20px;
+$webui-popover-close-color: #000;
+
+$webui-popover-arrow-width: 8px !default; // = bootstrap 4.1.3 vesion popover arrow's $popover-arrow-height
+$webui-popover-arrow-outer-width: ($webui-popover-arrow-width + 1);
+
+//z-index
+$webui-popover-z-index: $zindex-popover;
+$webui-popover-backdrop-z-index: ($webui-popover-z-index - 1);
+
+// for v4a-v4b;
+$popover-title-bg: $popover-header-bg;
+// $popover-title-color:            $popover-header-color;
+// $popover-title-padding-y:        $popover-header-padding-y;
+// $popover-title-padding-x:        $popover-header-padding-x;
+
+// $popover-content-color:          $popover-body-color;
+// $popover-content-padding-y:      $popover-body-padding-y;
+// $popover-content-padding-x:      $popover-body-padding-x;
+
+// Mixins
+// ========================================================================
+
+@mixin webui-popover-variant($color, $bg, $border) {
+  .webui-popover-title {
+    color: $color;
+    background-color: $bg;
+    border-color: $border;
+  }
+
+  &.bottom .webui-arrow {
+    border-bottom-color: $border;
+
+    &:after {
+      border-bottom-color: $bg;
+    }
+  }
+}
+
+// WebUI Popover
+// ========================================================================
+
+.webui-popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: zindex("popover", 0);
+  display: none;
+  width: $webui-popover-width;
+  min-height: $webui-popover-min-height;
+  padding: 0;
+  text-align: left;
+  white-space: normal;
+  background-color: $popover-bg;
+  background-clip: padding-box;
+  border: 1px solid $popover-fallback-border-color;
+  border: 1px solid $popover-border-color;
+  border-radius: $border-radius-large;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+
+  // Offset the popover to account for the popover arrow
+  &.top, &.top-left, &.top-right {
+    margin-top: -$webui-popover-arrow-width;
+  }
+
+  &.right, &.right-top, &.right-bottom {
+    margin-left: $webui-popover-arrow-width;
+  }
+
+  &.bottom, &.bottom-left, &.bottom-right {
+    margin-top: $webui-popover-arrow-width;
+  }
+
+  &.left, &.left-top, &.left-bottom {
+    margin-left: -$webui-popover-arrow-width;
+  }
+
+  &.pop {
+    @include transform(scale(.8));
+    transition: transform .15s cubic-bezier(.3, 0, 0, 1.5);
+  }
+
+  &.fade {
+    transition: opacity .15s linear;
+  }
+
+  &.in {
+    @include transform(none);
+    opacity: 1;
+  };
+}
+
+.webui-popover-inner .close {
+  float: right;
+  margin: 5px 10px 0 0;
+  font-family: arial;
+  font-size: $webui-popover-close-size;
+  font-weight: bold;
+  line-height: $webui-popover-close-size;
+  color: $webui-popover-close-color;
+  text-decoration: none;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .2;
+
+  &:hover, &:focus {
+    opacity: .5;
+  }
+}
+
+.webui-popover-title {
+  padding: 8px 14px;
+  margin: 0;
+  font-size: $font-size-base;
+  background-color: $popover-title-bg;
+  border-bottom: 1px solid darken($popover-title-bg, 5%);
+  border-radius: ($border-radius-large - 1) ($border-radius-large - 1) 0 0;
+}
+
+.webui-popover-content {
+  padding: 20px;
+  overflow: auto;
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.webui-no-padding {
+  .webui-popover-content {
+    padding: 0;
+  }
+
+  .list-group-item {
+    border-right: none;
+    border-left: none;
+
+    &:first-child {
+      border-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+
+// Arrows
+//
+// .webui-arrow is outer, .webui-arrow:after is inner
+
+.webui-popover > .webui-arrow {
+  &, &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+}
+
+.webui-popover > .webui-arrow {
+  border-width: $webui-popover-arrow-outer-width;
+}
+
+.webui-popover > .webui-arrow:after {
+  content: "";
+  border-width: $webui-popover-arrow-width;
+}
+
+.webui-popover {
+  &.top > .webui-arrow, &.top-right > .webui-arrow, &.top-left > .webui-arrow {
+    bottom: -$webui-popover-arrow-outer-width;
+    left: 50%;
+    margin-left: -$webui-popover-arrow-outer-width;
+    border-top-color: $popover-arrow-outer-fallback-color; // IE8 fallback
+    border-top-color: $popover-arrow-outer-color;
+    border-bottom-width: 0;
+
+    &:after {
+      bottom: 1px;
+      margin-left: -$webui-popover-arrow-width;
+      content: " ";
+      border-top-color: $popover-arrow-color;
+      border-bottom-width: 0;
+    }
+  }
+
+  &.right > .webui-arrow, &.right-top > .webui-arrow, &.right-bottom > .webui-arrow {
+    top: 50%;
+    left: -$webui-popover-arrow-outer-width;
+    margin-top: -$webui-popover-arrow-outer-width;
+    border-right-color: $popover-arrow-outer-fallback-color; // IE8 fallback
+    border-right-color: $popover-arrow-outer-color;
+    border-left-width: 0;
+
+    &:after {
+      bottom: -$webui-popover-arrow-width;
+      left: 1px;
+      content: " ";
+      border-right-color: $popover-arrow-color;
+      border-left-width: 0;
+    }
+  }
+
+  &.bottom > .webui-arrow, &.bottom-right > .webui-arrow, &.bottom-left > .webui-arrow {
+    top: -$webui-popover-arrow-outer-width;
+    left: 50%;
+    margin-left: -$webui-popover-arrow-outer-width;
+    border-top-width: 0;
+    border-bottom-color: $popover-arrow-outer-fallback-color; // IE8 fallback
+    border-bottom-color: $popover-arrow-outer-color;
+
+    &:after {
+      top: 1px;
+      margin-left: -$webui-popover-arrow-width;
+      content: " ";
+      border-top-width: 0;
+      border-bottom-color: $popover-arrow-color;
+    }
+  }
+
+  &.left > .webui-arrow, &.left-top > .webui-arrow, &.left-bottom > .webui-arrow {
+    top: 50%;
+    right: -$webui-popover-arrow-outer-width;
+    margin-top: -$webui-popover-arrow-outer-width;
+    border-right-width: 0;
+    border-left-color: $popover-arrow-outer-fallback-color; // IE8 fallback
+    border-left-color: $popover-arrow-outer-color;
+
+    &:after {
+      right: 1px;
+      bottom: -$webui-popover-arrow-width;
+      content: " ";
+      border-right-width: 0;
+      border-left-color: $popover-arrow-color;
+    }
+  }
+}
+
+.webui-popover-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: $webui-popover-backdrop-z-index;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .65);
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `webui-popover-primary`
+// -------------------------
+
+.webui-popover-primary {
+  @include webui-popover-variant($webui-popover-primary-color, $webui-popover-primary-bg, $webui-popover-primary-border);
+}
+
+// Modifier: `webui-popover-success`
+// -------------------------
+
+.webui-popover-success {
+  @include webui-popover-variant($webui-popover-success-color, $webui-popover-success-bg, $webui-popover-success-border);
+}
+
+// Modifier: `webui-popover-info`
+// -------------------------
+
+.webui-popover-info {
+  @include webui-popover-variant($webui-popover-info-color, $webui-popover-info-bg, $webui-popover-info-border);
+}
+
+// Modifier: `webui-popover-warning`
+// -------------------------
+
+.webui-popover-warning {
+  @include webui-popover-variant($webui-popover-warning-color, $webui-popover-warning-bg, $webui-popover-warning-border);
+}
+
+// Modifier: `webui-popover-danger`
+// -------------------------
+
+.webui-popover-danger {
+  @include webui-popover-variant($webui-popover-danger-color, $webui-popover-danger-bg, $webui-popover-danger-border);
+}

@@ -1,0 +1,41 @@
+// z-index
+// ----------------------------
+
+// @mixin z-index($layer){
+//   $value: %('zindex-%s', $layer) !default;
+//   z-index: $value;
+// }
+// @mixin z-index($layer, $step){
+//   $value: %('zindex-%s', $layer) !default;
+//   z-index: $value + $step;
+// }
+$zindex-layers: (
+  "fullscreen": 9999, "tooltip": 1900, "popover": 1800, "modal": 1700, "modal-background": 1600, "modal-bg": 1600, "navbar-fixed": 1500, "navbar-sticky": 1500, "menubar": 1400, "overlay": 1300, "dropdown": 1200, "navbar": 1200, "header": 1100, "footer": 1000, "base": 1, "init": 0, "below": -1
+) !default;
+$step: 0 !default;
+
+@function zindex($layer, $step) {
+  @if not map-has-key($zindex-layers, $layer) {
+    @warn "No layer found for"#{$layer}"in $zindex-layers map. Property omitted.";
+  }
+
+  @return map-get($zindex-layers, $layer) + $step;
+}
+
+// How to use
+// ===============
+
+// .modal {
+//   position: absolute;
+//   z-index: zindex('modal', 0);
+// }
+
+// .modal2 {
+//   position: absolute;
+//   z-index: $zindex-fullscreen;
+// }
+
+// .modal3 {
+//   position: relative;
+//   z-index: zindex('fullscreen', 30);
+// }

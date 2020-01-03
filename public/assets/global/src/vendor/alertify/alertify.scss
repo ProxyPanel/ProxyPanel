@@ -1,0 +1,180 @@
+@import 'vars';
+
+// z-index
+$alertify-z-index: $zindex-modal;//99999
+$alertify-logs-z-index: $zindex-modal - 1;//5000
+$alertify-shadow: $modal-content-shadow;
+$alertify-border-color: $modal-content-border-color;
+$alertify-border-radius: $border-radius-large;
+$alertify-bg: $modal-content-bg;
+$alertify-padding-base: 12px;
+$alertify-success-color: $brand-success;
+$alertify-danger-color: $brand-danger;
+
+.alertify-logs {
+  > * {
+    padding: $alertify-padding-base $alertify-padding-base * 2;
+    color: #fff;
+    border-radius: $alertify-border-radius;
+    box-shadow: $alertify-shadow;
+
+    &, &.default {
+      background: rgba(0, 0, 0, .8);
+    }
+
+    &.error {
+      background: $alertify-danger-color;
+    }
+
+    &.success {
+      background: $alertify-success-color;
+    }
+  }
+}
+
+.alertify {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: $alertify-z-index;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .3);
+
+  &.hide {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  &, &.show, &.hide {
+    box-sizing: border-box;
+    transition: all .33s cubic-bezier(.25, .8, .25, 1);
+  }
+
+  &, * {
+    box-sizing: border-box;
+  }
+
+  .dialog {
+    padding: 12px;
+  }
+
+  .dialog, .alert {
+    position: relative;
+    top: 50%;
+    width: 100%;
+    margin: 0 auto;
+    transform: translateY(-50%);
+
+    > * {
+      width: 400px;
+      max-width: 95%;
+      padding: $alertify-padding-base;
+      margin: 0 auto;
+      text-align: center;
+      background: #fff;
+      border-radius: $alertify-border-radius;
+      box-shadow: $alertify-shadow;
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .14), 0 4px 5px 0 rgba(0, 0, 0, .098), 0 1px 10px 0 rgba(0, 0, 0, .084);
+    }
+
+    .msg {
+      padding: $alertify-padding-base;
+      margin: 0;
+      margin-bottom: $alertify-padding-base;
+      text-align: left;
+    }
+
+    input {
+
+      // Customize the `:focus` state to imitate native WebKit styles.
+      @include form-control-focus();
+      width: 100%;
+      height: $input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
+      padding: $padding-base-vertical $padding-base-horizontal;
+      margin-bottom: 15px;
+      font-size: $font-size-base;
+      line-height: $line-height-base;
+      color: $input-color;
+      background-color: $input-bg;
+      background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+      border: 1px solid $input-border;
+      border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+      box-shadow: none;
+      transition: box-shadow .25s linear, border .25s linear, color .25s linear, background-color .25s linear;
+      // Placeholder
+      // @include placeholder();
+    }
+
+    nav {
+      text-align: right;
+
+      .btn {
+        margin: 4px 5px;
+      }
+
+      // button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button) {
+      //   background: transparent;
+      //   box-sizing: border-box;
+      //   color: rgba(0,0,0,0.87);
+      //   position: relative;
+      //   outline: 0;
+      //   border: 0;
+      //   display: inline-block;
+      //   align-items: center;
+      //   padding: 0 6px;
+      //   margin: 6px 8px;
+      //   line-height: 36px;
+      //   min-height: 36px;
+      //   white-space: nowrap;
+      //   min-width: 88px;
+      //   text-align: center;
+      //   text-transform: uppercase;
+      //   font-size: 14px;
+      //   text-decoration: none;
+      //   cursor: pointer;
+      //   border-radius: 2px;
+
+      //   &:hover, &:active {
+      //   background-color: rgba(0,0,0,.05);
+      //   }
+
+      //   &:focus {
+      //     border: 1px dashed rgba(0, 0, 0, .1);
+      //   }
+
+      // }
+    }
+  }
+}
+
+.alertify-logs {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: $alertify-logs-z-index;
+
+  > * {
+    position: relative;
+    box-sizing: border-box;
+    float: right;
+    margin-top: 10px;
+    clear: both;
+    transition: all .3s cubic-bezier(.25, .8, .25, 1);
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000;
+
+    &.show {
+      right: 0;
+      opacity: 1;
+    }
+
+    &, &.hide {
+      right: -100%;
+      opacity: 0;
+    }
+  }
+}

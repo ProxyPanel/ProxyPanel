@@ -1,0 +1,17 @@
+// [class^="sparkline-"],
+// [class^="sparkline-"]>*,
+// [class^="sparkline-"]:before,
+// [class^="sparkline-"]:after, {
+// 	box-sizing: content-box !important;
+// }
+@import 'vars';
+
+#jqstooltip {
+  box-sizing: content-box !important;
+}
+// z-index 
+$jqstooltip-z-index: $zindex-tooltip;
+
+.jqstooltip {
+  z-index: $jqstooltip-z-index;
+}

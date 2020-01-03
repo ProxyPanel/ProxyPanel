@@ -1,0 +1,320 @@
+// Name:            Social Icons
+// ========================================================================
+
+// Mixins
+// ========================================================================
+
+@mixin social-variant($bg) {
+  color: $inverse;
+  background-color: $bg !important;
+
+  &:hover, &:focus {
+    color: $inverse;
+    background-color: lighten($bg, 10%) !important;
+  }
+
+  &:active, &.active {
+    color: $inverse;
+    background-color: darken($bg, 10%) !important;
+  }
+}
+
+// Component: Social Icons
+// ========================================================================
+
+// Modifier: `*-facebook`
+// -------------------------
+
+.social-facebook {
+  @include social-variant($color-facebook);
+}
+
+.bg-facebook {
+  background-color: $color-facebook;
+}
+
+// Modifier: `*-twitter`
+// -------------------------
+
+.social-twitter {
+  @include social-variant($color-twitter);
+}
+
+.bg-twitter {
+  background-color: $color-twitter;
+}
+
+// Modifier: `*-google-plus`
+// -------------------------
+
+.social-google-plus {
+  @include social-variant($color-google-plus);
+}
+
+.bg-google-plus {
+  background-color: $color-google-plus;
+}
+
+// Modifier: `*-linkedin`
+// -------------------------
+
+.social-linkedin {
+  @include social-variant($color-linkedin);
+}
+
+.bg-linkedin {
+  background-color: $color-linkedin;
+}
+
+// Modifier: `*-flickr`
+// -------------------------
+
+.social-flickr {
+  @include social-variant($color-flickr);
+}
+
+.bg-flickr {
+  background-color: $color-flickr;
+}
+
+// Modifier: `*-tumblr`
+// -------------------------
+
+.social-tumblr {
+  @include social-variant($color-tumblr);
+}
+
+.bg-tumblr {
+  background-color: $color-tumblr;
+}
+
+// Modifier: `*-xing`
+// -------------------------
+
+.social-xing {
+  @include social-variant($color-xing);
+}
+
+.bg-xing {
+  background-color: $color-xing;
+}
+
+// Modifier: `*-github`
+// -------------------------
+
+.social-github {
+  @include social-variant($color-github);
+}
+
+.bg-github {
+  background-color: $color-github;
+}
+
+// Modifier: `*-html5`
+// -------------------------
+
+.social-html5 {
+  @include social-variant($color-html5);
+}
+
+.bg-html5 {
+  background-color: $color-html5;
+}
+
+// Modifier: `*-openid`
+// -------------------------
+
+.social-openid {
+  @include social-variant($color-openid);
+}
+
+.bg-openid {
+  background-color: $color-openid;
+}
+
+// Modifier: `*-stack-overflow`
+// -------------------------
+
+.social-stack-overflow {
+  @include social-variant($color-stack-overflow);
+}
+
+.bg-stack-overflow {
+  background-color: $color-stack-overflow;
+}
+
+// Modifier: `*-css3`
+// -------------------------
+
+.social-css3 {
+  @include social-variant($color-css3);
+}
+
+.bg-css3 {
+  background-color: $color-css3;
+}
+
+// Modifier: `*-youtube`
+// -------------------------
+
+.social-youtube {
+  @include social-variant($color-youtube);
+}
+
+.bg-youtube {
+  background-color: $color-youtube;
+}
+
+// Modifier: `*-dribbble`
+// -------------------------
+
+.social-dribbble {
+  @include social-variant($color-dribbble);
+}
+
+.bg-dribbble {
+  background-color: $color-dribbble;
+}
+
+// Modifier: `*-instagram`
+// -------------------------
+
+.social-instagram {
+  @include social-variant($color-instagram);
+}
+
+.bg-instagram {
+  background-color: $color-instagram;
+}
+
+// Modifier: `*-pinterest`
+// -------------------------
+
+.social-pinterest {
+  @include social-variant($color-pinterest);
+}
+
+.bg-pinterest {
+  background-color: $color-pinterest;
+}
+
+// Modifier: `*-vk`
+// -------------------------
+
+.social-vk {
+  @include social-variant($color-vk);
+}
+
+.bg-vk {
+  background-color: $color-vk;
+}
+
+// Modifier: `*-yahoo`
+// -------------------------
+
+.social-yahoo {
+  @include social-variant($color-yahoo);
+}
+
+.bg-yahoo {
+  background-color: $color-yahoo;
+}
+
+// Modifier: `*-behance`
+// -------------------------
+
+.social-behance {
+  @include social-variant($color-behance);
+}
+
+.bg-behance {
+  background-color: $color-xing;
+}
+
+// Modifier: `*-dropbox`
+// -------------------------
+
+.social-dropbox {
+  @include social-variant($color-dropbox);
+}
+
+.bg-dropbox {
+  background-color: $color-dropbox;
+}
+
+// Modifier: `*-reddit`
+// -------------------------
+
+.social-reddit {
+  @include social-variant($color-reddit);
+}
+
+.bg-reddit {
+  background-color: $color-reddit;
+}
+
+// Modifier: `*-spotify`
+// -------------------------
+
+.social-spotify {
+  @include social-variant($color-spotify);
+}
+
+.bg-spotify {
+  background-color: $color-spotify;
+}
+
+// Modifier: `*-vine`
+// -------------------------
+
+.social-vine {
+  @include social-variant($color-vine);
+}
+
+.bg-vine {
+  background-color: $color-vine;
+}
+
+// Modifier: `*-foursquare`
+// -------------------------
+
+.social-foursquare {
+  @include social-variant($color-foursquare);
+}
+
+.bg-foursquare {
+  background-color: $color-foursquare;
+}
+
+// Modifier: `*-vimeo`
+// -------------------------
+
+.social-vimeo {
+  @include social-variant($color-vimeo);
+}
+
+.bg-vimeo {
+  background-color: $color-vimeo;
+}
+
+// Modifier: `*-skype`
+// -------------------------
+
+.social-skype {
+  @include social-variant($color-skype);
+}
+
+.bg-skype {
+  background-color: $color-skype;
+}
+
+// Modifier: `*-evernote`
+// -------------------------
+
+.social-evernote {
+  @include social-variant($color-evernote);
+}
+
+.bg-evernote {
+  background-color: $color-evernote;
+}

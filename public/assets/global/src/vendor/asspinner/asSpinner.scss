@@ -1,0 +1,154 @@
+@import 'vars';
+
+// var
+// ==============================================
+$spinner: spinnerUi;
+$spinner-input-height: 40px;
+// $spinner-width:  $spinner-input-width + $spinner-control-width + 3px;
+$spinner-input-width: 170px;
+$spinner-control-width: 36px;
+
+// $spinner-width:  $spinner-input-width + $spinner-control-width + 3px;
+$spinner-input-width: 170px;
+$spinner-control-width: 40px;
+$spinner-input-hover-color: $text-color;
+$spinner-input-focus-color: $text-color;
+$spinner-control-divider-bgColor: rgba(0, 0, 0, 0);
+$spinner-arrow-color: $gray-400;
+$spinner-arrow-bgColor: $gray-100;
+$spinner-arrow-hover-color: $gray-400;
+$spinner-arrow-hover-bgColor: $gray-200;
+$spinner-arrow-focus-color: $color-white;
+$spinner-arrow-focus-bgColor: $brand-primary;
+$spinner-arrow-active-bgColor: $brand-primary-active;
+
+// spinner
+// =======================================================
+.#{$spinner} {
+  position: relative;
+  display: inline-block;
+  height: $spinner-input-height;
+  outline: none;
+  uesr-select: none;
+
+  > * {
+    vertical-align: top;// change middle to top for chrome 1px pro
+  }
+
+  &-control {
+    position: relative;
+    display: inline-block;
+    width: $spinner-control-width;
+    height: 100%;
+
+    &:after {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      height: 2px;
+      margin-top: -1px;
+      content: "";
+      background-color: $spinner-control-divider-bgColor;
+    }
+  }
+
+  & > input[type="text"] {
+    display: inline-block;
+    width: $spinner-input-width;
+    height: 100%;
+    margin: 0;
+    // padding: 7px 15px;
+    // line-height: 1.5;
+    border: 1px solid $input-border;
+    border-radius: $input-border-radius 0 0 $input-border-radius;
+    box-shadow: none;
+
+    &:hover {
+      border-color: $spinner-arrow-hover-bgColor;
+    }
+
+    &:focus {
+      border-color: $spinner-arrow-focus-bgColor;
+      box-shadow: none;
+    }
+  }
+
+  &-down, &-up {
+    position: relative;
+    display: block;
+    height: 50%;
+    font-family: $wb-font-family;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    color: $spinner-arrow-color;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  &-up {
+    background-color: $spinner-arrow-bgColor;
+    border-top: 1px solid $input-border;
+    border-right: 1px solid $input-border;
+    border-radius: 0 $input-border-radius 0 0;
+
+    &:before {
+      content: $wb-var-triangle-up;
+    }
+  }
+
+  &-down {
+    background-color: $spinner-arrow-bgColor;
+    border-right: 1px solid $input-border;
+    border-bottom: 1px solid $input-border;
+    border-radius: 0 0 $input-border-radius 0;
+
+    &:before {
+      content: $wb-var-triangle-down;
+    }
+  }
+}
+
+.#{$spinner}:hover {
+  input {
+    color: $spinner-input-hover-color;
+  }
+
+  .#{$spinner}-down, .#{$spinner}-up {
+    background-color: $spinner-arrow-hover-bgColor;
+  }
+}
+
+.#{$spinner}_focus {
+  > input[type="text"] {
+    color: $spinner-input-focus-color !important;
+    border-color: $spinner-arrow-focus-bgColor !important;
+  }
+
+  .#{$spinner}-down, .#{$spinner}-up {
+    color: $spinner-arrow-focus-color;
+    background-color: $spinner-arrow-focus-bgColor !important;
+    border-color: $spinner-arrow-focus-bgColor !important;
+  }
+}
+
+.#{$spinner}-down:active, .#{$spinner}-up:active {
+  background-color: $spinner-arrow-active-bgColor !important;
+}
+
+.#{$spinner}_disabled, .#{$spinner}_disabled:hover {
+  input {
+    color: $text-color;
+    background-color: $spinner-arrow-bgColor;
+
+    &:hover, &:focus {
+      border-color: $input-border;
+    }//$disabled-color-base;
+  }
+
+  .#{$spinner}-down, .#{$spinner}-up {
+    background-color: #e1e6e8 !important;
+  }
+}

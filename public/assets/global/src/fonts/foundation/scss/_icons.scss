@@ -1,0 +1,845 @@
+// Icons
+// -------------------------
+.#{$fi-css-prefix}-heart:before {
+	content: $fi-var-heart;
+}
+.#{$fi-css-prefix}-star:before {
+	content: $fi-var-star;
+}
+.#{$fi-css-prefix}-plus:before {
+	content: $fi-var-plus;
+}
+.#{$fi-css-prefix}-minus:before {
+	content: $fi-var-minus;
+}
+.#{$fi-css-prefix}-x:before {
+	content: $fi-var-x;
+}
+.#{$fi-css-prefix}-check:before {
+	content: $fi-var-check;
+}
+.#{$fi-css-prefix}-upload:before {
+	content: $fi-var-upload;
+}
+.#{$fi-css-prefix}-download:before {
+	content: $fi-var-download;
+}
+.#{$fi-css-prefix}-widget:before {
+	content: $fi-var-widget;
+}
+.#{$fi-css-prefix}-marker:before {
+	content: $fi-var-marker;
+}
+.#{$fi-css-prefix}-refresh:before {
+	content: $fi-var-refresh;
+}
+.#{$fi-css-prefix}-home:before {
+	content: $fi-var-home;
+}
+.#{$fi-css-prefix}-trash:before {
+	content: $fi-var-trash;
+}
+.#{$fi-css-prefix}-paperclip:before {
+	content: $fi-var-paperclip;
+}
+.#{$fi-css-prefix}-lock:before {
+	content: $fi-var-lock;
+}
+.#{$fi-css-prefix}-unlock:before {
+	content: $fi-var-unlock;
+}
+.#{$fi-css-prefix}-calendar:before {
+	content: $fi-var-calendar;
+}
+.#{$fi-css-prefix}-cloud:before {
+	content: $fi-var-cloud;
+}
+.#{$fi-css-prefix}-magnifying-glass:before {
+	content: $fi-var-magnifying-glass;
+}
+.#{$fi-css-prefix}-zoom-out:before {
+	content: $fi-var-zoom-out;
+}
+.#{$fi-css-prefix}-zoom-in:before {
+	content: $fi-var-zoom-in;
+}
+.#{$fi-css-prefix}-wrench:before {
+	content: $fi-var-wrench;
+}
+.#{$fi-css-prefix}-rss:before {
+	content: $fi-var-rss;
+}
+.#{$fi-css-prefix}-share:before {
+	content: $fi-var-share;
+}
+.#{$fi-css-prefix}-flag:before {
+	content: $fi-var-flag;
+}
+.#{$fi-css-prefix}-list-thumbnails:before {
+	content: $fi-var-list-thumbnails;
+}
+.#{$fi-css-prefix}-list:before {
+	content: $fi-var-list;
+}
+.#{$fi-css-prefix}-thumbnails:before {
+	content: $fi-var-thumbnails;
+}
+.#{$fi-css-prefix}-annotate:before {
+	content: $fi-var-annotate;
+}
+.#{$fi-css-prefix}-folder:before {
+	content: $fi-var-folder;
+}
+.#{$fi-css-prefix}-folder-lock:before {
+	content: $fi-var-folder-lock;
+}
+.#{$fi-css-prefix}-folder-add:before {
+	content: $fi-var-folder-add;
+}
+.#{$fi-css-prefix}-clock:before {
+	content: $fi-var-clock;
+}
+.#{$fi-css-prefix}-play-video:before {
+	content: $fi-var-play-video;
+}
+.#{$fi-css-prefix}-crop:before {
+	content: $fi-var-crop;
+}
+.#{$fi-css-prefix}-archive:before {
+	content: $fi-var-archive;
+}
+.#{$fi-css-prefix}-pencil:before {
+	content: $fi-var-pencil;
+}
+.#{$fi-css-prefix}-graph-trend:before {
+	content: $fi-var-graph-trend;
+}
+.#{$fi-css-prefix}-graph-bar:before {
+	content: $fi-var-graph-bar;
+}
+.#{$fi-css-prefix}-graph-horizontal:before {
+	content: $fi-var-graph-horizontal;
+}
+.#{$fi-css-prefix}-graph-pie:before {
+	content: $fi-var-graph-pie;
+}
+.#{$fi-css-prefix}-checkbox:before {
+	content: $fi-var-checkbox;
+}
+.#{$fi-css-prefix}-minus-circle:before {
+	content: $fi-var-minus-circle;
+}
+.#{$fi-css-prefix}-x-circle:before {
+	content: $fi-var-x-circle;
+}
+.#{$fi-css-prefix}-eye:before {
+	content: $fi-var-eye;
+}
+.#{$fi-css-prefix}-database:before {
+	content: $fi-var-database;
+}
+.#{$fi-css-prefix}-results:before {
+	content: $fi-var-results;
+}
+.#{$fi-css-prefix}-results-demographics:before {
+	content: $fi-var-results-demographics;
+}
+.#{$fi-css-prefix}-like:before {
+	content: $fi-var-like;
+}
+.#{$fi-css-prefix}-dislike:before {
+	content: $fi-var-dislike;
+}
+.#{$fi-css-prefix}-upload-cloud:before {
+	content: $fi-var-upload-cloud;
+}
+.#{$fi-css-prefix}-camera:before {
+	content: $fi-var-camera;
+}
+.#{$fi-css-prefix}-alert:before {
+	content: $fi-var-alert;
+}
+.#{$fi-css-prefix}-bookmark:before {
+	content: $fi-var-bookmark;
+}
+.#{$fi-css-prefix}-contrast:before {
+	content: $fi-var-contrast;
+}
+.#{$fi-css-prefix}-mail:before {
+	content: $fi-var-mail;
+}
+.#{$fi-css-prefix}-video:before {
+	content: $fi-var-video;
+}
+.#{$fi-css-prefix}-telephone:before {
+	content: $fi-var-telephone;
+}
+.#{$fi-css-prefix}-comment:before {
+	content: $fi-var-comment;
+}
+.#{$fi-css-prefix}-comment-video:before {
+	content: $fi-var-comment-video;
+}
+.#{$fi-css-prefix}-comment-quotes:before {
+	content: $fi-var-comment-quotes;
+}
+.#{$fi-css-prefix}-comment-minus:before {
+	content: $fi-var-comment-minus;
+}
+.#{$fi-css-prefix}-comments:before {
+	content: $fi-var-comments;
+}
+.#{$fi-css-prefix}-microphone:before {
+	content: $fi-var-microphone;
+}
+.#{$fi-css-prefix}-megaphone:before {
+	content: $fi-var-megaphone;
+}
+.#{$fi-css-prefix}-sound:before {
+	content: $fi-var-sound;
+}
+.#{$fi-css-prefix}-address-book:before {
+	content: $fi-var-address-book;
+}
+.#{$fi-css-prefix}-bluetooth:before {
+	content: $fi-var-bluetooth;
+}
+.#{$fi-css-prefix}-html5:before {
+	content: $fi-var-html5;
+}
+.#{$fi-css-prefix}-css3:before {
+	content: $fi-var-css3;
+}
+.#{$fi-css-prefix}-layout:before {
+	content: $fi-var-layout;
+}
+.#{$fi-css-prefix}-web:before {
+	content: $fi-var-web;
+}
+.#{$fi-css-prefix}-foundation:before {
+	content: $fi-var-foundation;
+}
+.#{$fi-css-prefix}-page:before {
+	content: $fi-var-page;
+}
+.#{$fi-css-prefix}-page-csv:before {
+	content: $fi-var-page-csv;
+}
+.#{$fi-css-prefix}-page-export-csv:before {
+	content: $fi-var-page-export-csv;
+}
+.#{$fi-css-prefix}-page-export:before {
+	content: $fi-var-page-export;
+}
+.#{$fi-css-prefix}-page-export-doc:before {
+	content: $fi-var-page-export-doc;
+}
+.#{$fi-css-prefix}-page-export-pdf:before {
+	content: $fi-var-page-export-pdf;
+}
+.#{$fi-css-prefix}-page-add:before {
+	content: $fi-var-page-add;
+}
+.#{$fi-css-prefix}-page-remove:before {
+	content: $fi-var-page-remove;
+}
+.#{$fi-css-prefix}-page-delete:before {
+	content: $fi-var-page-delete;
+}
+.#{$fi-css-prefix}-page-edit:before {
+	content: $fi-var-page-edit;
+}
+.#{$fi-css-prefix}-page-search:before {
+	content: $fi-var-page-search;
+}
+.#{$fi-css-prefix}-page-copy:before {
+	content: $fi-var-page-copy;
+}
+.#{$fi-css-prefix}-page-filled:before {
+	content: $fi-var-page-filled;
+}
+.#{$fi-css-prefix}-page-multiple:before {
+	content: $fi-var-page-multiple;
+}
+.#{$fi-css-prefix}-arrow-up:before {
+	content: $fi-var-arrow-up;
+}
+.#{$fi-css-prefix}-arrow-right:before {
+	content: $fi-var-arrow-right;
+}
+.#{$fi-css-prefix}-arrow-down:before {
+	content: $fi-var-arrow-down;
+}
+.#{$fi-css-prefix}-arrow-left:before {
+	content: $fi-var-arrow-left;
+}
+.#{$fi-css-prefix}-arrows-out:before {
+	content: $fi-var-arrows-out;
+}
+.#{$fi-css-prefix}-arrows-in:before {
+	content: $fi-var-arrows-in;
+}
+.#{$fi-css-prefix}-arrows-expand:before {
+	content: $fi-var-arrows-expand;
+}
+.#{$fi-css-prefix}-arrows-compress:before {
+	content: $fi-var-arrows-compress;
+}
+.#{$fi-css-prefix}-torso:before {
+	content: $fi-var-torso;
+}
+.#{$fi-css-prefix}-torso-female:before {
+	content: $fi-var-torso-female;
+}
+.#{$fi-css-prefix}-torsos:before {
+	content: $fi-var-torsos;
+}
+.#{$fi-css-prefix}-torsos-female-male:before {
+	content: $fi-var-torsos-female-male;
+}
+.#{$fi-css-prefix}-torsos-male-female:before {
+	content: $fi-var-torsos-male-female;
+}
+.#{$fi-css-prefix}-torsos-all:before {
+	content: $fi-var-torsos-all;
+}
+.#{$fi-css-prefix}-torsos-all-female:before {
+	content: $fi-var-torsos-all-female;
+}
+.#{$fi-css-prefix}-torso-business:before {
+	content: $fi-var-torso-business;
+}
+.#{$fi-css-prefix}-monitor:before {
+	content: $fi-var-monitor;
+}
+.#{$fi-css-prefix}-laptop:before {
+	content: $fi-var-laptop;
+}
+.#{$fi-css-prefix}-tablet-portrait:before {
+	content: $fi-var-tablet-portrait;
+}
+.#{$fi-css-prefix}-tablet-landscape:before {
+	content: $fi-var-tablet-landscape;
+}
+.#{$fi-css-prefix}-mobile:before {
+	content: $fi-var-mobile;
+}
+.#{$fi-css-prefix}-mobile-signal:before {
+	content: $fi-var-mobile-signal;
+}
+.#{$fi-css-prefix}-usb:before {
+	content: $fi-var-usb;
+}
+.#{$fi-css-prefix}-bold:before {
+	content: $fi-var-bold;
+}
+.#{$fi-css-prefix}-italic:before {
+	content: $fi-var-italic;
+}
+.#{$fi-css-prefix}-underline:before {
+	content: $fi-var-underline;
+}
+.#{$fi-css-prefix}-strikethrough:before {
+	content: $fi-var-strikethrough;
+}
+.#{$fi-css-prefix}-text-color:before {
+	content: $fi-var-text-color;
+}
+.#{$fi-css-prefix}-background-color:before {
+	content: $fi-var-background-color;
+}
+.#{$fi-css-prefix}-superscript:before {
+	content: $fi-var-superscript;
+}
+.#{$fi-css-prefix}-subscript:before {
+	content: $fi-var-subscript;
+}
+.#{$fi-css-prefix}-align-left:before {
+	content: $fi-var-align-left;
+}
+.#{$fi-css-prefix}-align-center:before {
+	content: $fi-var-align-center;
+}
+.#{$fi-css-prefix}-align-right:before {
+	content: $fi-var-align-right;
+}
+.#{$fi-css-prefix}-align-justify:before {
+	content: $fi-var-align-justify;
+}
+.#{$fi-css-prefix}-list-number:before {
+	content: $fi-var-list-number;
+}
+.#{$fi-css-prefix}-list-bullet:before {
+	content: $fi-var-list-bullet;
+}
+.#{$fi-css-prefix}-indent-more:before {
+	content: $fi-var-indent-more;
+}
+.#{$fi-css-prefix}-indent-less:before {
+	content: $fi-var-indent-less;
+}
+.#{$fi-css-prefix}-print:before {
+	content: $fi-var-print;
+}
+.#{$fi-css-prefix}-save:before {
+	content: $fi-var-save;
+}
+.#{$fi-css-prefix}-photo:before {
+	content: $fi-var-photo;
+}
+.#{$fi-css-prefix}-filter:before {
+	content: $fi-var-filter;
+}
+.#{$fi-css-prefix}-paint-bucket:before {
+	content: $fi-var-paint-bucket;
+}
+.#{$fi-css-prefix}-link:before {
+	content: $fi-var-link;
+}
+.#{$fi-css-prefix}-unlink:before {
+	content: $fi-var-unlink;
+}
+.#{$fi-css-prefix}-quote:before {
+	content: $fi-var-quote;
+}
+.#{$fi-css-prefix}-play:before {
+	content: $fi-var-play;
+}
+.#{$fi-css-prefix}-stop:before {
+	content: $fi-var-stop;
+}
+.#{$fi-css-prefix}-pause:before {
+	content: $fi-var-pause;
+}
+.#{$fi-css-prefix}-previous:before {
+	content: $fi-var-previous;
+}
+.#{$fi-css-prefix}-rewind:before {
+	content: $fi-var-rewind;
+}
+.#{$fi-css-prefix}-fast-forward:before {
+	content: $fi-var-fast-forward;
+}
+.#{$fi-css-prefix}-next:before {
+	content: $fi-var-next;
+}
+.#{$fi-css-prefix}-record:before {
+	content: $fi-var-record;
+}
+.#{$fi-css-prefix}-play-circle:before {
+	content: $fi-var-play-circle;
+}
+.#{$fi-css-prefix}-volume-none:before {
+	content: $fi-var-volume-none;
+}
+.#{$fi-css-prefix}-volume:before {
+	content: $fi-var-volume;
+}
+.#{$fi-css-prefix}-volume-strike:before {
+	content: $fi-var-volume-strike;
+}
+.#{$fi-css-prefix}-loop:before {
+	content: $fi-var-loop;
+}
+.#{$fi-css-prefix}-shuffle:before {
+	content: $fi-var-shuffle;
+}
+.#{$fi-css-prefix}-eject:before {
+	content: $fi-var-eject;
+}
+.#{$fi-css-prefix}-rewind-ten:before {
+	content: $fi-var-rewind-ten;
+}
+.#{$fi-css-prefix}-dollar:before {
+	content: $fi-var-dollar;
+}
+.#{$fi-css-prefix}-euro:before {
+	content: $fi-var-euro;
+}
+.#{$fi-css-prefix}-pound:before {
+	content: $fi-var-pound;
+}
+.#{$fi-css-prefix}-yen:before {
+	content: $fi-var-yen;
+}
+.#{$fi-css-prefix}-bitcoin:before {
+	content: $fi-var-bitcoin;
+}
+.#{$fi-css-prefix}-bitcoin-circle:before {
+	content: $fi-var-bitcoin-circle;
+}
+.#{$fi-css-prefix}-credit-card:before {
+	content: $fi-var-credit-card;
+}
+.#{$fi-css-prefix}-shopping-cart:before {
+	content: $fi-var-shopping-cart;
+}
+.#{$fi-css-prefix}-burst:before {
+	content: $fi-var-burst;
+}
+.#{$fi-css-prefix}-burst-new:before {
+	content: $fi-var-burst-new;
+}
+.#{$fi-css-prefix}-burst-sale:before {
+	content: $fi-var-burst-sale;
+}
+.#{$fi-css-prefix}-paypal:before {
+	content: $fi-var-paypal;
+}
+.#{$fi-css-prefix}-price-tag:before {
+	content: $fi-var-price-tag;
+}
+.#{$fi-css-prefix}-pricetag-multiple:before {
+	content: $fi-var-pricetag-multiple;
+}
+.#{$fi-css-prefix}-shopping-bag:before {
+	content: $fi-var-shopping-bag;
+}
+.#{$fi-css-prefix}-dollar-bill:before {
+	content: $fi-var-dollar-bill;
+}
+.#{$fi-css-prefix}-wheelchair:before {
+	content: $fi-var-wheelchair;
+}
+.#{$fi-css-prefix}-braille:before {
+	content: $fi-var-braille;
+}
+.#{$fi-css-prefix}-closed-caption:before {
+	content: $fi-var-closed-caption;
+}
+.#{$fi-css-prefix}-blind:before {
+	content: $fi-var-blind;
+}
+.#{$fi-css-prefix}-asl:before {
+	content: $fi-var-asl;
+}
+.#{$fi-css-prefix}-hearing-aid:before {
+	content: $fi-var-hearing-aid;
+}
+.#{$fi-css-prefix}-guide-dog:before {
+	content: $fi-var-guide-dog;
+}
+.#{$fi-css-prefix}-universal-access:before {
+	content: $fi-var-universal-access;
+}
+.#{$fi-css-prefix}-telephone-accessible:before {
+	content: $fi-var-telephone-accessible;
+}
+.#{$fi-css-prefix}-elevator:before {
+	content: $fi-var-elevator;
+}
+.#{$fi-css-prefix}-male:before {
+	content: $fi-var-male;
+}
+.#{$fi-css-prefix}-female:before {
+	content: $fi-var-female;
+}
+.#{$fi-css-prefix}-male-female:before {
+	content: $fi-var-male-female;
+}
+.#{$fi-css-prefix}-male-symbol:before {
+	content: $fi-var-male-symbol;
+}
+.#{$fi-css-prefix}-female-symbol:before {
+	content: $fi-var-female-symbol;
+}
+.#{$fi-css-prefix}-social-500px:before {
+	content: $fi-var-social-500px;
+}
+.#{$fi-css-prefix}-social-adobe:before {
+	content: $fi-var-social-adobe;
+}
+.#{$fi-css-prefix}-social-amazon:before {
+	content: $fi-var-social-amazon;
+}
+.#{$fi-css-prefix}-social-android:before {
+	content: $fi-var-social-android;
+}
+.#{$fi-css-prefix}-social-apple:before {
+	content: $fi-var-social-apple;
+}
+.#{$fi-css-prefix}-social-behance:before {
+	content: $fi-var-social-behance;
+}
+.#{$fi-css-prefix}-social-bing:before {
+	content: $fi-var-social-bing;
+}
+.#{$fi-css-prefix}-social-blogger:before {
+	content: $fi-var-social-blogger;
+}
+.#{$fi-css-prefix}-social-delicious:before {
+	content: $fi-var-social-delicious;
+}
+.#{$fi-css-prefix}-social-designer-news:before {
+	content: $fi-var-social-designer-news;
+}
+.#{$fi-css-prefix}-social-deviant-art:before {
+	content: $fi-var-social-deviant-art;
+}
+.#{$fi-css-prefix}-social-digg:before {
+	content: $fi-var-social-digg;
+}
+.#{$fi-css-prefix}-social-dribbble:before {
+	content: $fi-var-social-dribbble;
+}
+.#{$fi-css-prefix}-social-drive:before {
+	content: $fi-var-social-drive;
+}
+.#{$fi-css-prefix}-social-dropbox:before {
+	content: $fi-var-social-dropbox;
+}
+.#{$fi-css-prefix}-social-evernote:before {
+	content: $fi-var-social-evernote;
+}
+.#{$fi-css-prefix}-social-facebook:before {
+	content: $fi-var-social-facebook;
+}
+.#{$fi-css-prefix}-social-flickr:before {
+	content: $fi-var-social-flickr;
+}
+.#{$fi-css-prefix}-social-forrst:before {
+	content: $fi-var-social-forrst;
+}
+.#{$fi-css-prefix}-social-foursquare:before {
+	content: $fi-var-social-foursquare;
+}
+.#{$fi-css-prefix}-social-game-center:before {
+	content: $fi-var-social-game-center;
+}
+.#{$fi-css-prefix}-social-github:before {
+	content: $fi-var-social-github;
+}
+.#{$fi-css-prefix}-social-google-plus:before {
+	content: $fi-var-social-google-plus;
+}
+.#{$fi-css-prefix}-social-hacker-news:before {
+	content: $fi-var-social-hacker-news;
+}
+.#{$fi-css-prefix}-social-hi5:before {
+	content: $fi-var-social-hi5;
+}
+.#{$fi-css-prefix}-social-instagram:before {
+	content: $fi-var-social-instagram;
+}
+.#{$fi-css-prefix}-social-joomla:before {
+	content: $fi-var-social-joomla;
+}
+.#{$fi-css-prefix}-social-lastfm:before {
+	content: $fi-var-social-lastfm;
+}
+.#{$fi-css-prefix}-social-linkedin:before {
+	content: $fi-var-social-linkedin;
+}
+.#{$fi-css-prefix}-social-medium:before {
+	content: $fi-var-social-medium;
+}
+.#{$fi-css-prefix}-social-myspace:before {
+	content: $fi-var-social-myspace;
+}
+.#{$fi-css-prefix}-social-orkut:before {
+	content: $fi-var-social-orkut;
+}
+.#{$fi-css-prefix}-social-path:before {
+	content: $fi-var-social-path;
+}
+.#{$fi-css-prefix}-social-picasa:before {
+	content: $fi-var-social-picasa;
+}
+.#{$fi-css-prefix}-social-pinterest:before {
+	content: $fi-var-social-pinterest;
+}
+.#{$fi-css-prefix}-social-rdio:before {
+	content: $fi-var-social-rdio;
+}
+.#{$fi-css-prefix}-social-reddit:before {
+	content: $fi-var-social-reddit;
+}
+.#{$fi-css-prefix}-social-skype:before {
+	content: $fi-var-social-skype;
+}
+.#{$fi-css-prefix}-social-skillshare:before {
+	content: $fi-var-social-skillshare;
+}
+.#{$fi-css-prefix}-social-smashing-mag:before {
+	content: $fi-var-social-smashing-mag;
+}
+.#{$fi-css-prefix}-social-snapchat:before {
+	content: $fi-var-social-snapchat;
+}
+.#{$fi-css-prefix}-social-spotify:before {
+	content: $fi-var-social-spotify;
+}
+.#{$fi-css-prefix}-social-squidoo:before {
+	content: $fi-var-social-squidoo;
+}
+.#{$fi-css-prefix}-social-stack-overflow:before {
+	content: $fi-var-social-stack-overflow;
+}
+.#{$fi-css-prefix}-social-steam:before {
+	content: $fi-var-social-steam;
+}
+.#{$fi-css-prefix}-social-stumbleupon:before {
+	content: $fi-var-social-stumbleupon;
+}
+.#{$fi-css-prefix}-social-treehouse:before {
+	content: $fi-var-social-treehouse;
+}
+.#{$fi-css-prefix}-social-tumblr:before {
+	content: $fi-var-social-tumblr;
+}
+.#{$fi-css-prefix}-social-twitter:before {
+	content: $fi-var-social-twitter;
+}
+.#{$fi-css-prefix}-social-vimeo:before {
+	content: $fi-var-social-vimeo;
+}
+.#{$fi-css-prefix}-social-windows:before {
+	content: $fi-var-social-windows;
+}
+.#{$fi-css-prefix}-social-xbox-20:before {
+	content: $fi-var-social-xbox-20;
+}
+.#{$fi-css-prefix}-social-yahoo:before {
+	content: $fi-var-social-yahoo;
+}
+.#{$fi-css-prefix}-social-yelp:before {
+	content: $fi-var-social-yelp;
+}
+.#{$fi-css-prefix}-social-youtube:before {
+	content: $fi-var-social-youtube;
+}
+.#{$fi-css-prefix}-social-zerply:before {
+	content: $fi-var-social-zerply;
+}
+.#{$fi-css-prefix}-social-zurb:before {
+	content: $fi-var-social-zurb;
+}
+.#{$fi-css-prefix}-compass:before {
+	content: $fi-var-compass;
+}
+.#{$fi-css-prefix}-music:before {
+	content: $fi-var-music;
+}
+.#{$fi-css-prefix}-lightbulb:before {
+	content: $fi-var-lightbulb;
+}
+.#{$fi-css-prefix}-battery-full:before {
+	content: $fi-var-battery-full;
+}
+.#{$fi-css-prefix}-battery-half:before {
+	content: $fi-var-battery-half;
+}
+.#{$fi-css-prefix}-battery-empty:before {
+	content: $fi-var-battery-empty;
+}
+.#{$fi-css-prefix}-projection-screen:before {
+	content: $fi-var-projection-screen;
+}
+.#{$fi-css-prefix}-info:before {
+	content: $fi-var-info;
+}
+.#{$fi-css-prefix}-power:before {
+	content: $fi-var-power;
+}
+.#{$fi-css-prefix}-asterisk:before {
+	content: $fi-var-asterisk;
+}
+.#{$fi-css-prefix}-at-sign:before {
+	content: $fi-var-at-sign;
+}
+.#{$fi-css-prefix}-key:before {
+	content: $fi-var-key;
+}
+.#{$fi-css-prefix}-ticket:before {
+	content: $fi-var-ticket;
+}
+.#{$fi-css-prefix}-book:before {
+	content: $fi-var-book;
+}
+.#{$fi-css-prefix}-book-bookmark:before {
+	content: $fi-var-book-bookmark;
+}
+.#{$fi-css-prefix}-anchor:before {
+	content: $fi-var-anchor;
+}
+.#{$fi-css-prefix}-puzzle:before {
+	content: $fi-var-puzzle;
+}
+.#{$fi-css-prefix}-foot:before {
+	content: $fi-var-foot;
+}
+.#{$fi-css-prefix}-paw:before {
+	content: $fi-var-paw;
+}
+.#{$fi-css-prefix}-mountains:before {
+	content: $fi-var-mountains;
+}
+.#{$fi-css-prefix}-trees:before {
+	content: $fi-var-trees;
+}
+.#{$fi-css-prefix}-sheriff-badge:before {
+	content: $fi-var-sheriff-badge;
+}
+.#{$fi-css-prefix}-first-aid:before {
+	content: $fi-var-first-aid;
+}
+.#{$fi-css-prefix}-trophy:before {
+	content: $fi-var-trophy;
+}
+.#{$fi-css-prefix}-prohibited:before {
+	content: $fi-var-prohibited;
+}
+.#{$fi-css-prefix}-no-dogs:before {
+	content: $fi-var-no-dogs;
+}
+.#{$fi-css-prefix}-no-smoking:before {
+	content: $fi-var-no-smoking;
+}
+.#{$fi-css-prefix}-safety-cone:before {
+	content: $fi-var-safety-cone;
+}
+.#{$fi-css-prefix}-shield:before {
+	content: $fi-var-shield;
+}
+.#{$fi-css-prefix}-crown:before {
+	content: $fi-var-crown;
+}
+.#{$fi-css-prefix}-target:before {
+	content: $fi-var-target;
+}
+.#{$fi-css-prefix}-target-two:before {
+	content: $fi-var-target-two;
+}
+.#{$fi-css-prefix}-die-one:before {
+	content: $fi-var-die-one;
+}
+.#{$fi-css-prefix}-die-two:before {
+	content: $fi-var-die-two;
+}
+.#{$fi-css-prefix}-die-three:before {
+	content: $fi-var-die-three;
+}
+.#{$fi-css-prefix}-die-four:before {
+	content: $fi-var-die-four;
+}
+.#{$fi-css-prefix}-die-five:before {
+	content: $fi-var-die-five;
+}
+.#{$fi-css-prefix}-die-six:before {
+	content: $fi-var-die-six;
+}
+.#{$fi-css-prefix}-skull:before {
+	content: $fi-var-skull;
+}
+.#{$fi-css-prefix}-map:before {
+	content: $fi-var-map;
+}
+.#{$fi-css-prefix}-clipboard:before {
+	content: $fi-var-clipboard;
+}
+.#{$fi-css-prefix}-clipboard-pencil:before {
+	content: $fi-var-clipboard-pencil;
+}
+.#{$fi-css-prefix}-clipboard-notes:before {
+	content: $fi-var-clipboard-notes;
+}

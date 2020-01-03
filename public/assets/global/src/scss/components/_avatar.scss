@@ -1,0 +1,128 @@
+// Name:            Avatar
+//
+// Component:       `avatar`
+//
+// Modifiers:       `avatar-online`
+//                  `avatar-off`
+//                  `avatar-busy`
+//                  `avatar-away`
+//                  `avatar-lg`
+//                  `avatar-sm`
+//                  `avatar-xs`
+//
+// Markup:
+//
+// <!-- avatar -->
+// <span class="avatar">
+//   <img src="" />
+//   <i></i>
+// </span>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$avatar-size-100: 100px !default;
+$avatar-status-size-100: 20px !default;
+$avatar-online-color: $brand-success !default;
+$avatar-off-color: $brand-dark !default;
+$avatar-busy-color: $brand-warning !default;
+$avatar-away-color: $brand-danger !default;
+$avatar-status-border: $inverse !default;
+
+// Component: Avatar
+// ========================================================================
+
+.avatar {
+  position: relative;
+  display: inline-block;
+  width: $avatar-size;
+  white-space: nowrap;
+  vertical-align: bottom;
+  border-radius: 1000px;
+
+  i {
+    position: absolute;
+    right: 0;
+    // top: 0;
+    bottom: 0;
+    width: $avatar-status-size;
+    height: $avatar-status-size;
+    border: 2px solid $avatar-status-border;
+    border-radius: 100%;
+  }
+
+  img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 0 none;
+    border-radius: 1000px;
+  }
+}
+
+// Status Modifier
+// ========================================================================
+
+.avatar-online {
+  i {
+    background-color: $avatar-online-color;
+  }
+}
+
+.avatar-off {
+  i {
+    background-color: $avatar-off-color;
+  }
+}
+
+.avatar-busy {
+  i {
+    background-color: $avatar-busy-color;
+  }
+}
+
+.avatar-away {
+  i {
+    background-color: $avatar-away-color;
+  }
+}
+
+// Size Modifier
+// ========================================================================
+
+.avatar-100 {
+  width: $avatar-size-100;
+
+  i {
+    width: $avatar-status-size-100;
+    height: $avatar-status-size-100;
+  }
+}
+
+.avatar-lg {
+  width: $avatar-size-lg;
+
+  i {
+    width: $avatar-status-size-lg;
+    height: $avatar-status-size-lg;
+  }
+}
+
+.avatar-sm {
+  width: $avatar-size-sm;
+
+  i {
+    width: $avatar-status-size-sm;
+    height: $avatar-status-size-sm;
+  }
+}
+
+.avatar-xs {
+  width: $avatar-size-xs;
+
+  i {
+    width: $avatar-status-size-xs;
+    height: $avatar-status-size-xs;
+  }
+}

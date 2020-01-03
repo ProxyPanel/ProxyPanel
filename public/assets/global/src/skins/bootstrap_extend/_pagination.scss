@@ -1,0 +1,86 @@
+// Name:            Pagination
+//
+// Component:       `pagination`
+//
+// Modifiers:       `pagination-gap`
+//                  `pagination-no-border`
+//                  `pagination-lg`
+//                  `pagination-sm`
+//
+// Markup:
+//
+// <!-- pagination -->
+// <ul class="pagination">
+//     <li class="page-item previous"><a class="page-link" href=""></a></li>
+//     <li class="page-item"><a class="page-link" href="#">1</a></li>
+//     <li class="page-item"><a class="page-link" href="#">2</a></li>
+//     <li class="page-item next"><a class="page-link" href=""></a></li>
+// </ul>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$pagination-gap-hover-border:               $brand-primary !default;
+
+// $pagination-lg-font-size:                   16px !default;
+
+// $pagination-small-font-size:                $font-size-base !default;
+
+// Component: Pagination
+// ========================================================================
+
+.page-item {
+  // Link
+
+  &.disabled > span {
+    @include plain-hover-focus {
+      color: $pagination-disabled-color;
+      background-color: $pagination-disabled-bg;
+      border-color: $pagination-disabled-border;
+    }
+  }
+}
+
+// Modifier: `pagination-gap`
+// -------------------------
+
+.pagination-gap {
+  .page-item {
+    &.disabled .page-link{
+      @include hover-focus {
+        border-color: $pagination-disabled-border;
+      }
+    }
+
+    &.active .page-link {
+      background-color: $pagination-active-bg;
+    }
+  }
+
+  .page-link {
+    @include hover-focus {
+      background-color: transparent;
+      border-color: $pagination-gap-hover-border;
+    }
+  }
+}
+
+// Modifier: `pagination-no-border`
+// -------------------------
+.pagination-no-border {
+  .page-link {
+    border: none;
+  }
+}
+
+// Size Modifier
+// ========================================================================
+
+// .pagination-lg {
+//   @include pagination-size($padding-large-vertical, $pagination-lg-padding-horizontal, $pagination-lg-font-size, $line-height-lg, $border-radius-large);
+// }
+
+// .pagination-sm {
+//   @include pagination-size($padding-small-vertical, $pagination-small-padding-horizontal, $pagination-small-font-size, $line-height-sm, $border-radius-small);
+// }

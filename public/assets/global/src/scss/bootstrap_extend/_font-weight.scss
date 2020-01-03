@@ -1,0 +1,107 @@
+@if $font-weight-override == true {
+  body {
+    font-weight: $font-weight-base;
+  }
+
+  th {
+    font-weight: $font-weight-medium;
+  }
+
+  // normalize.scss
+  // --------------------------------------------------
+
+  b, strong {
+    font-weight: $font-weight-bold;
+  }
+
+  optgroup {
+    font-weight: $font-weight-bold;
+  }
+
+  // type.scss
+  // --------------------------------------------------
+
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    small, .small {
+      font-weight: $font-weight-normal;
+    }
+  }
+
+  .lead {
+    font-weight: $font-weight-light;
+  }
+
+  dt {
+    font-weight: $font-weight-bold;
+  }
+
+  // code.scss
+  // --------------------------------------------------
+
+  kbd {
+    kbd {
+      font-weight: $font-weight-bold;
+    }
+  }
+
+  // forms.scss
+  // --------------------------------------------------
+
+  label {
+    font-weight: $font-weight-normal;
+  }
+
+  .radio, .checkbox {
+    label {
+      font-weight: $font-weight-normal;
+    }
+  }
+
+  .radio-inline, .checkbox-inline {
+    font-weight: $font-weight-normal;
+  }
+
+  // buttons.scss
+  // --------------------------------------------------
+
+  .btn-link {
+    font-weight: $font-weight-normal;
+  }
+
+  // dropdowns.scss
+  // --------------------------------------------------
+
+  .dropdown-menu {
+    > li > a {
+      font-weight: $font-weight-light;
+    }
+  }
+
+  // input-groups.scss
+  // --------------------------------------------------
+
+  .input-group-addon {
+    font-weight: $font-weight-normal;
+  }
+
+  // badges.scss
+  // --------------------------------------------------
+
+  .badge {
+    font-weight: $font-weight-bold;
+  }
+
+  // popovers.scss
+  // --------------------------------------------------
+
+  .popover {
+    font-weight: $font-weight-normal;
+  }
+
+  // tooltip.scss
+  // --------------------------------------------------
+
+  .tooltip {
+    font-weight: $font-weight-normal;
+  }
+}

@@ -1,0 +1,39 @@
+// Name:            Comments
+//
+// Component:       `comments`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$comment-border                    : $divider-color-base !default;
+$comment-author-color              : $title-color !default;
+$comment-meta-color                : $prompt-color !default;
+
+// Component: Comments
+// ========================================================================
+
+.comments {
+
+  .comment {
+    border-bottom: 1px solid $comment-border;
+
+    .comment {
+      &:first-child {
+        border-top: 1px solid $comment-border;
+      }
+    }
+  }
+}
+
+.comment-author {
+  &,
+  &:hover,
+  &:focus {
+    color: $comment-author-color;
+  }
+}
+
+.comment-meta {
+  color: $comment-meta-color;
+}

@@ -1,0 +1,218 @@
+@import 'vars';
+$scrollable: scrollable;
+
+$scrollable-bar-size: 4px !default;
+$scrollable-bar-dragging-size: 8px !default;
+$scrollable-bar-dragging-color: transparent !default;
+$scrollable-bar-hovering-color: transparent !default;
+$scrollable-bar-handle-offset: 4px !default;
+$scrollable-bar-handle-color: rgba($gray-400, (60/100)) !default;
+$scrollable-bar-handle-hovering-color: rgba($gray-400, (80/100)) !default;
+$scrollable-bar-handle-dragging-color: rgba($gray-400, (80/100)) !default;
+
+$scrollable-shadow-bar-color: rgba($gray-200, (50/100)) !default;
+$scrollable-inverse-bar-handle-color: rgba($gray-200, (60/100)) !default;
+$scrollable-inverse-bar-handle-dragging-color: rgba($gray-200, (80/100)) !default;
+$scrollable-inverse-shadow-bar-color: rgba($gray-200, (40/100)) !default;
+
+.#{$scrollable} {
+  &.is-enabled {
+    overflow: hidden !important;
+  }
+
+  &-container {
+    .is-enabled & {
+      box-sizing: content-box !important;
+      overflow: hidden !important;
+    }
+
+    .is-enabled &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      -webkit-appearance: none;
+    }
+
+    .#{$scrollable}-vertical.is-enabled & {
+      & {
+        overflow-y: scroll !important;
+      }
+    }
+
+    .#{$scrollable}-horizontal.is-enabled & {
+      overflow-x: scroll !important;
+    }
+  }
+
+  &-content {
+    .is-enabled & {
+      position: relative !important;
+      box-sizing: border-box;
+      overflow: visible !important;
+
+      &::before,
+      &::after {
+        display: table;
+        content: " ";
+      }
+      &::after {
+        clear: both;
+      }
+    }
+  }
+
+  &-bar {
+    .is-disabled & {
+      display: none;
+    }
+
+    &-hide {
+      opacity: 0;
+      transition-delay: 400ms;
+    }
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    line-height: 0;
+    user-select: none;
+    border-radius: $scrollable-bar-size / 2;
+    transition: opacity .5s;
+    -webkit-touch-callout: none;
+    user-input: disabled;
+    user-focus: ignore;
+
+    &.is-hovering {
+      background: $scrollable-bar-hovering-color;
+    }
+
+    &.is-dragging {
+      background: $scrollable-bar-dragging-color !important;
+      opacity: 1;
+    }
+
+    &.is-disabled {
+      display: none;
+    }
+
+    &-handle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      line-height: 0;
+      cursor: pointer;
+      background: $scrollable-bar-handle-color;
+      border-radius: $scrollable-bar-size / 2;
+      transition: width, height .5s;
+    }
+
+    &.is-dragging &-handle {
+      background: $scrollable-bar-handle-dragging-color !important;
+    }
+
+    &.is-dragging,
+    &.is-hovering {
+      border-radius: $scrollable-bar-dragging-size / 2;
+      .#{$scrollable}-bar-handle {
+        border-radius: $scrollable-bar-dragging-size / 2;
+      }
+    }
+
+    &-vertical {
+      width: $scrollable-bar-size;
+      height: 100%;
+      height: calc(100% - #{2 * $scrollable-bar-handle-offset});
+      margin: $scrollable-bar-handle-offset ($scrollable-bar-dragging-size - $scrollable-bar-size) / 2;
+    }
+
+    &-vertical {
+      &.is-dragging,
+      &.is-hovering {
+        width: $scrollable-bar-dragging-size;
+        margin: $scrollable-bar-handle-offset 1px;
+      }
+    }
+
+    &-vertical &-handle {
+      width: 100%;
+    }
+
+    &-horizontal {
+      width: 100%;
+      width: calc(100% - #{2 * $scrollable-bar-handle-offset});
+      height: $scrollable-bar-size;
+      margin: ($scrollable-bar-dragging-size - $scrollable-bar-size) / 2 $scrollable-bar-handle-offset;
+    }
+
+    &-horizontal {
+      &.is-dragging,
+      &.is-hovering {
+        height: $scrollable-bar-dragging-size;
+        margin: 1px $scrollable-bar-handle-offset;
+      }
+    }
+
+    &-horizontal &-handle {
+      height: 100%;
+    }
+  }
+
+  &.is-scrolling {
+    .#{$scrollable}-bar {
+      opacity: 1;
+      transition: opacity 0;
+    }
+  }
+
+  &.is-hovering {
+    .#{$scrollable}-bar-handle {
+      background: $scrollable-bar-handle-hovering-color;
+    }
+  }
+
+  &.is-dragging {
+    user-select: none;
+    -webkit-touch-callout: none;
+    user-input: disabled;
+    user-focus: ignore;
+  }
+}
+
+.#{$scrollable}-inverse.#{$scrollable} {
+  .#{$scrollable}-bar-handle {
+    background: $scrollable-inverse-bar-handle-color;
+  }
+
+  &.is-dragging {
+    .#{$scrollable}-bar-handle {
+      background: $scrollable-inverse-bar-handle-dragging-color !important;
+    }
+  }
+}
+
+.#{$scrollable}-shadow.#{$scrollable} {
+  &.is-dragging, &.is-hovering {
+    .#{$scrollable}-bar {
+      background: $scrollable-shadow-bar-color;
+    }
+  }
+}
+
+.#{$scrollable}-inverse.#{$scrollable}-shadow.#{$scrollable} {
+  &.is-dragging, &.is-hovering {
+    .#{$scrollable}-bar {
+      background: $scrollable-inverse-shadow-bar-color;
+    }
+  }
+}
+
+// list-group in asScrollbar plugin
+//
+.#{$scrollable} {
+  &-content {
+    .list-group-item {
+      // width: calc(100% - 10px);
+    }
+  }
+}

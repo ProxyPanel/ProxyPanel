@@ -1,0 +1,78 @@
+// Name:            Status
+//
+// Component:       `status`
+//
+// Modifiers:       'status-online'
+//                  'status-off'
+//                  'status-busy'
+//                  'status-away'
+//                  'status-lg'
+//                  'status-md'
+//                  'status-sm'
+//                  'status-xs'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$status-size-sm: 8px !default;
+$status-size-lg: 14px !default;
+$status-size-xs: 7px !default;
+$status-size-md: 10px !default;
+$status-online-color: $brand-success !default;
+$status-off-color: $brand-dark !default;
+$status-busy-color: $brand-warning !default;
+$status-away-color: $brand-danger !default;
+
+// Component: Status
+// ========================================================================
+
+.status {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid $inverse;
+  border-radius: 100%;
+}
+
+// Status Modifier
+// ========================================================================
+
+.status-online {
+  background-color: $status-online-color;
+}
+
+.status-off {
+  background-color: $status-off-color;
+}
+
+.status-busy {
+  background-color: $status-busy-color;
+}
+
+.status-away {
+  background-color: $status-away-color;
+}
+
+// Size Modifier
+// ========================================================================
+
+.status-lg {
+  width: $status-size-lg;
+  height: $status-size-lg;
+}
+
+.status-md {
+  width: $status-size-md;
+  height: $status-size-md;
+}
+
+.status-sm {
+  width: $status-size-sm;
+  height: $status-size-sm;
+}
+
+.status-xs {
+  width: $status-size-xs;
+  height: $status-size-xs;
+}

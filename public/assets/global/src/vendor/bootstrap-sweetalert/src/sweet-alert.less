@@ -1,0 +1,291 @@
+// SweetAlert
+// 2014 (c) - Tristan Edwards
+// github.com/t4t5/sweetalert
+
+@import "sweet-alert-animations";
+
+body.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
+.sweet-overlay {
+  background-color: fade(#000, 40%);
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  display: none;
+  z-index: @zindex-modal;
+}
+
+.sweet-alert {
+  @width: 478px;
+  @padding: 17px;
+
+  background-color: @body-bg;
+  width: @width;
+  padding: @padding;
+  border-radius: 5px;
+  text-align: center;
+
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -(@width / 2 + @padding);
+  margin-top: -200px;
+
+  overflow: hidden;
+  display: none;
+  z-index: 2000;
+
+  @media all and (max-width: @screen-xs-max) {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+
+    left: (@grid-gutter-width / 2);
+    right: (@grid-gutter-width / 2);
+  }
+
+  .form-group {
+    display: none;
+
+    .sa-input-error {
+      display: none;
+    }
+  }
+  &.show-input .form-group {
+    display: block;
+  }
+
+  .sa-confirm-button-container {
+    display: inline-block;
+    position: relative;
+  }
+
+  .la-ball-fall {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -27px;
+    margin-top: -9px;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  button {
+    &[disabled] {
+      opacity: .6;
+      cursor: default;
+    }
+
+    &.confirm[disabled] {
+      color: transparent;
+      ~ .la-ball-fall {
+        opacity: 1;
+        visibility: visible;
+        transition-delay: 0s;
+      }
+    }
+  }
+
+  .sa-icon {
+    width: 80px;
+    height: 80px;
+    border: 4px solid gray;
+    border-radius: 50%;
+    margin: 20px auto;
+    position: relative;
+    box-sizing: content-box;
+
+    &.sa-error {
+      border-color: @btn-danger-border;
+
+      .sa-x-mark {
+        position: relative;
+        display: block;
+      }
+
+      .sa-line {
+        position: absolute;
+        height: 5px;
+        width: 47px;
+        background-color: @btn-danger-bg;
+        display: block;
+        top: 37px;
+        border-radius: 2px;
+
+        &.sa-left {
+          transform: rotate(45deg);
+          left: 17px;
+        }
+        &.sa-right {
+          transform: rotate(-45deg);
+          right: 16px;
+        }
+      }
+    }
+    &.sa-warning {
+      border-color: @btn-warning-border;
+
+      .sa-body { // Exclamation mark body
+        position: absolute;
+        width: 5px;
+        height: 47px;
+        left: 50%;
+        top: 10px;
+        border-radius: 2px;
+        margin-left: -2px;
+        background-color: @btn-warning-bg;
+      }
+      .sa-dot { // Exclamation mark dot
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin-left: -3px;
+        left: 50%;
+        bottom: 10px;
+        background-color: @btn-warning-bg;
+      }
+    }
+    &.sa-info {
+      border-color: @btn-info-border;
+
+      &::before { // i-letter body
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 29px;
+        left: 50%;
+        bottom: 17px;
+        border-radius: 2px;
+        margin-left: -2px;
+        background-color: @btn-info-bg;
+      }
+      &::after { // i-letter dot
+        content: "";
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin-left: -3px;
+        top: 19px;
+        background-color: @btn-info-bg;
+      }
+    }
+    &.sa-success {
+      border-color: @btn-success-border;
+
+      &::before, &::after { // Emulate moving circular line
+        content: '';
+        border-radius: 50%;
+        position: absolute;
+        width: 60px;
+        height: 120px;
+        background: @body-bg;
+        transform: rotate(45deg);
+      }
+      &::before {
+        border-radius: 120px 0 0 120px;
+        top: -7px;
+        left: -33px;
+
+        transform: rotate(-45deg);
+        transform-origin: 60px 60px;
+      }
+      &::after {
+        border-radius: 0 120px 120px 0;
+        top: -11px;
+        left: 30px;
+
+        transform: rotate(-45deg);
+        transform-origin: 0px 60px;
+      }
+
+      .sa-placeholder { // Ring
+        width: 80px;
+        height: 80px;
+        border: 4px solid fade(@brand-success, 20%);
+        border-radius: 50%;
+        box-sizing: content-box;
+
+        position: absolute;
+        left: -4px;
+        top: -4px;
+        z-index: 2;
+      }
+
+      .sa-fix {  // Hide corners left from animation
+        width: 5px;
+        height: 90px;
+        background-color: @body-bg;
+
+        position: absolute;
+        left: 28px;
+        top: 8px;
+        z-index: 1;
+
+        transform: rotate(-45deg);
+      }
+
+      .sa-line {
+        height: 5px;
+        background-color: @btn-success-bg;
+        display: block;
+        border-radius: 2px;
+
+        position: absolute;
+        z-index: 2;
+
+        &.sa-tip {
+          width: 25px;
+
+          left: 14px;
+          top: 46px;
+
+          transform: rotate(45deg);
+        }
+        &.sa-long {
+          width: 47px;
+
+          right: 8px;
+          top: 38px;
+
+          transform: rotate(-45deg);
+        }
+      }
+    }
+    &.sa-custom {
+      background-size: contain;
+      border-radius: 0;
+      border: none;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+  }
+
+  .btn-default {
+    .form-control-focus(@btn-default-border);
+  }
+  .btn-success {
+    .form-control-focus(@btn-success-border);
+  }
+  .btn-info {
+    .form-control-focus(@btn-info-border);
+  }
+  .btn-danger {
+    .form-control-focus(@btn-danger-border);
+  }
+  .btn-warning {
+    .form-control-focus(@btn-warning-border);
+  }
+
+  button::-moz-focus-inner {
+    border: 0;
+  }
+}

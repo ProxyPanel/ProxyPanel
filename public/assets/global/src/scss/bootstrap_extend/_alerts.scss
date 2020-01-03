@@ -1,0 +1,491 @@
+// Name:            Alerts
+//
+// Component:       `alert`
+//
+// Modifiers:       `alert-info`
+//                  `alert-success`
+//                  `alert-warning`
+//                  `alert-danger`
+//                  `alert-dismissible`
+//                  `alert-alt`
+//                  `alert-icon`
+//                  `page-alert`
+//
+// Markup:
+//
+// <!-- alert -->
+// <div class="alert" role="alert">
+//     <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+//     <p></p>
+// </div>
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$alert-padding-horizontal: 20px !default;
+$minus-alert-padding-horizontal: -20px !default;
+$alert-list-padding-left: 13px !default;
+$alert-list-item-padding-left: 7px !default;
+$alert-icon-font-size: $font-size-base !default;
+$alert-icon-padding-left: 45px !default;
+$alert-close-opacity: .6 !default;
+$alert-close-hover-opacity: 1 !default;
+
+// link-color
+$alert-primary-link-color: $brand-primary-active !default;
+$alert-success-link-color: $brand-success-active !default;
+$alert-info-link-color: $brand-info-active !default;
+$alert-warning-link-color: $brand-warning-active !default;
+$alert-danger-link-color: $brand-danger-active !default;
+
+// default
+$alert-alt-color: $text-color !default;
+$alert-alt-bg: rgba($bg-color-base, (80/100)) !default;
+$alert-alt-close-color: $gray-400 !default;
+$alert-alt-close-opacity: .6 !default;
+$alert-alt-close-hover-opacity: 1 !default;
+$alert-alt-primary-border: $brand-primary !default;
+$alert-alt-primary-text: $brand-primary !default;
+$alert-alt-success-border: $brand-success !default;
+$alert-alt-success-text: $brand-success !default;
+$alert-alt-info-border: $brand-info !default;
+$alert-alt-info-text: $brand-info !default;
+$alert-alt-warning-border: $brand-warning !default;
+$alert-alt-warning-text: $brand-warning !default;
+$alert-alt-danger-border: $brand-danger !default;
+$alert-alt-danger-text: $brand-danger !default;
+
+// Dark
+$alert-dark-text: $color-white !default;
+$alert-dark-alt-primary-border: darken($brand-primary-active, 15%) !default;
+$alert-dark-alt-success-border: darken($brand-success-active, 15%) !default;
+$alert-dark-alt-info-border: darken($brand-info-active, 15%) !default;
+$alert-dark-alt-warning-border: darken($brand-warning-active, 15%) !default;
+$alert-dark-alt-danger-border: darken($brand-danger-active, 15%) !default;
+$alert-dark-primary-bg: $brand-primary !default;
+$alert-dark-success-bg: $brand-success !default;
+$alert-dark-info-bg: $brand-info !default;
+$alert-dark-warning-bg: $brand-warning !default;
+$alert-dark-danger-bg: $brand-danger !default;
+$alert-social-icon-size: 28px !default;
+$alert-social-padding-left: 65px !default;
+$alert-social-text: $color-white !default;
+
+// Component: Alert
+// ========================================================================
+
+.alert {
+  padding-right: $alert-padding-horizontal;
+  padding-left: $alert-padding-horizontal;
+
+  ul {
+    padding-left: $alert-list-padding-left;
+
+    li {
+      padding-left: $alert-list-item-padding-left;
+    }
+  }
+
+  .panel > & {
+    margin: 0;
+  }
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: inherit;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Alternate styles
+// -------------------------
+
+.alert-alt {
+  color: $alert-alt-color;
+  background-color: $alert-alt-bg;
+  border: none;
+  border-left: 3px solid transparent;
+
+  a, .alert-link {
+    text-decoration: none;
+  }
+}
+
+// Modifier: `alert-dismissible`
+// -------------------------
+
+.alert-dismissible {
+  padding-right: ($alert-padding-horizontal + 20);
+
+  .close {
+    position: inherit;
+    padding: 0;
+    margin-right: $minus-alert-padding-horizontal;
+    // top: 0;
+    text-decoration: none;
+    opacity: $alert-close-opacity;
+
+    &:hover, &:focus {
+      opacity: $alert-close-hover-opacity;
+    }
+  }
+
+  &.alert-alt {
+    .close {
+      color: $alert-alt-close-color;
+      opacity: $alert-alt-close-opacity;
+
+      &:hover, &:focus {
+        color: $alert-alt-close-color;
+        opacity: $alert-alt-close-hover-opacity;
+      }
+    }
+  }
+}
+
+// Modifier: `alert-icon`
+// -------------------------
+
+.alert-icon {
+  position: relative;
+  padding-left: $alert-icon-padding-left;
+
+  > .icon {
+    @include icon-fixed-width();
+    position: absolute;
+    top: $alert-padding;
+    left: $alert-padding-horizontal;
+    font-size: $alert-icon-font-size;
+  }
+}
+
+// Modifier: `alert-avatar`
+// -------------------------
+
+.alert-avatar {
+  position: relative;
+  padding-top: $alert-padding-horizontal;
+  padding-bottom: $alert-padding-horizontal;
+  padding-left: (($avatar-size + $alert-padding + 20px));
+
+  > .avatar {
+    position: absolute;
+    top: ($alert-padding - 3px);
+    left: $alert-padding-horizontal; //12px
+    // width: $avatar-size;//30px;
+  }
+}
+
+// Modifier: `page-alert`
+// -------------------------
+
+.page-alert {
+  .alert-wrap {
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: max-height .7s linear 0s;
+
+    &.in {
+      max-height: 500px;
+      transition: max-height 1s linear 0s;
+    }
+
+    .alert {
+      margin: 0;
+      text-align: left;
+      border-radius: 0;
+    }
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `alert-success`
+// -------------------------
+
+.alert-primary {
+  // alert-variant mixin Not applicable here
+  @include alert-variant($alert-primary-bg, $alert-primary-border, $alert-primary-text);
+
+  .alert-link {
+    color: $alert-primary-link-color;
+  }
+}
+
+.alert-alt.alert-primary {
+  @include alert-alt-variant($alert-alt-primary-border, $alert-alt-primary-text);
+}
+
+// Modifier: `alert-success`
+// -------------------------
+
+.alert-success {
+  .alert-link {
+    color: $alert-success-link-color;
+  }
+}
+
+.alert-alt.alert-success {
+  @include alert-alt-variant($alert-alt-success-border, $alert-alt-success-text);
+}
+
+// Modifier: `alert-info`
+// -------------------------
+
+.alert-info {
+  .alert-link {
+    color: $alert-info-link-color;
+  }
+}
+
+.alert-alt.alert-info {
+  @include alert-alt-variant($alert-alt-info-border, $alert-alt-info-text);
+}
+
+// Modifier: `alert-warning`
+// -------------------------
+
+.alert-warning {
+  .alert-link {
+    color: $alert-warning-link-color;
+  }
+}
+
+.alert-alt.alert-warning {
+  @include alert-alt-variant($alert-alt-warning-border, $alert-alt-warning-text);
+}
+
+// Modifier: `alert-danger`
+// -------------------------
+.alert-danger {
+  .alert-link {
+    color: $alert-danger-link-color;
+  }
+}
+
+.alert-alt.alert-danger {
+  @include alert-alt-variant($alert-alt-danger-border, $alert-alt-danger-text);
+}
+
+// Social Modifier
+// ========================================================================
+
+.alert-social {
+  position: relative;
+  padding-left: $alert-social-padding-left;
+
+  > .icon {
+    @include icon-fixed-width();
+    position: absolute;
+    top: ($alert-padding - 3px);
+    bottom: 0;
+    left: $alert-padding-horizontal;
+    font-size: $alert-social-icon-size;
+  }
+}
+
+// Modifier: `alert-facebook`
+// -------------------------
+
+.alert-facebook {
+  @include alert-variant($color-facebook, $color-facebook, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-twitter`
+// -------------------------
+
+.alert-twitter {
+  @include alert-variant($color-twitter, $color-twitter, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-google-plus`
+// -------------------------
+
+.alert-google-plus {
+  @include alert-variant($color-google-plus, $color-google-plus, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-linkedin`
+// -------------------------
+
+.alert-linkedin {
+  @include alert-variant($color-linkedin, $color-linkedin, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-flickr`
+// -------------------------
+
+.alert-flickr {
+  @include alert-variant($color-flickr, $color-flickr, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-tumblr`
+// -------------------------
+
+.alert-tumblr {
+  @include alert-variant($color-tumblr, $color-tumblr, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-github`
+// -------------------------
+
+.alert-github {
+  @include alert-variant($color-github, $color-github, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-dribbble`
+// -------------------------
+
+.alert-dribbble {
+  @include alert-variant($color-dribbble, $color-dribbble, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Modifier: `alert-youtube`
+// -------------------------
+
+.alert-youtube {
+  @include alert-variant($color-youtube, $color-youtube, $alert-social-text);
+
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-social-text;
+  }
+}
+
+// Style .Dark
+//========================================================================
+
+.alert.dark {
+  .alert-link {
+    font-weight: $font-weight-bold;
+    color: $alert-dark-text !important;
+  }
+
+  // Alternate styles
+  // -------------------------
+
+  .alert-left-border {
+    border: none;
+    border-left: 3px solid transparent;
+  }
+
+  // Modifier: `alert-dismissible`
+  // -------------------------
+
+  &.alert-dismissible {
+    &.alert-alt {
+      .close {
+        color: $alert-dark-text;
+
+        &:hover, &:focus {
+          color: $alert-dark-text;
+        }
+      }
+    }
+  }
+
+  // Color Modifier
+  // ========================================================================
+
+  // Modifier: `alert-success`
+  // -------------------------
+
+  &.alert-primary {
+    @include alert-variant($alert-dark-primary-bg, $alert-dark-primary-bg, $alert-dark-text);
+
+    &.alert-alt {
+      @include alert-alt-variant($alert-dark-alt-primary-border, $alert-dark-text);
+    }
+  }
+
+  // Modifier: `alert-success`
+  // -------------------------
+
+  &.alert-success {
+    @include alert-variant($alert-dark-success-bg, $alert-dark-success-bg, $alert-dark-text);
+
+    &.alert-alt {
+      @include alert-alt-variant($alert-dark-alt-success-border, $alert-dark-text);
+    }
+  }
+
+  // Modifier: `alert-info`
+  // -------------------------
+
+  &.alert-info {
+    @include alert-variant($alert-dark-info-bg, $alert-dark-info-bg, $alert-dark-text);
+
+    &.alert-alt {
+      @include alert-alt-variant($alert-dark-alt-info-border, $alert-dark-text);
+    }
+  }
+
+  // Modifier: `alert-warning`
+  // -------------------------
+
+  &.alert-warning {
+    @include alert-variant($alert-dark-warning-bg, $alert-dark-warning-bg, $alert-dark-text);
+
+    &.alert-alt {
+      @include alert-alt-variant($alert-dark-alt-warning-border, $alert-dark-text);
+    }
+  }
+
+  // Modifier: `alert-danger`
+  // -------------------------
+  &.alert-danger {
+    @include alert-variant($alert-dark-danger-bg, $alert-dark-danger-bg, $alert-dark-text);
+
+    &.alert-alt {
+      @include alert-alt-variant($alert-dark-alt-danger-border, $alert-dark-text);
+    }
+  }
+}

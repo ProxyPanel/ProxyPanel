@@ -1,0 +1,58 @@
+/**
+ * FormValidation (http://formvalidation.io)
+ * The best jQuery plugin to validate form fields. Support Bootstrap, Foundation, Pure, SemanticUI, UIKit and custom frameworks
+ *
+ * @author      https://twitter.com/formvalidation
+ * @copyright   (c) 2013 - 2016 Nguyen Huu Phuoc
+ * @license     http://formvalidation.io/license/
+ */
+
+/* ------------
+ * Support Pure
+ * ------------ */
+
+.fv-form-pure .fv-control-feedback {
+    width: 36px;    /* Height of Pure input */
+    height: 36px;
+    line-height: 36px;
+}
+
+/* Horizontal form */
+.fv-form-pure.pure-form-aligned [type="checkbox"]~.fv-control-feedback,
+.fv-form-pure.pure-form-aligned [type="radio"]~.fv-control-feedback {
+    top: -9px;      /* labelHeight/2 - iconHeight/2 */
+}
+
+.fv-form-pure.pure-form-aligned .fv-help-block {
+    margin-top: 5px;
+    margin-left: 180px;
+}
+
+/* Stacked form */
+.fv-form-pure.pure-form-stacked .pure-control-group {
+    margin-bottom: 8px;
+}
+
+.fv-form-pure.pure-form-stacked .fv-control-feedback {
+    top: 22px;      /* Same as height of label */
+}
+
+.fv-form-pure.pure-form-stacked .pure-radio~.fv-control-feedback {
+    top: 20px;
+}
+
+.fv-form-pure.pure-form-stacked .fv-sr-only~.fv-control-feedback {
+    top: -9px;
+}
+
+.fv-form-pure .fv-has-error label,
+.fv-form-pure .fv-has-error .fv-help-block,
+.fv-form-pure .fv-has-error .fv-control-feedback {
+    color: #CA3C3C; /* Same as .button-error */
+}
+
+.fv-form-pure .fv-has-success label,
+.fv-form-pure .fv-has-success .fv-help-block,
+.fv-form-pure .fv-has-success .fv-control-feedback {
+    color: #1CB841; /* Same as .button-success */
+}

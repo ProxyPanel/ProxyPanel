@@ -1,0 +1,10 @@
+
+
+.site-footer {
+  background-color:  $site-footer-bg;
+  border-top: 1px solid $site-footer-divider-color;
+
+  .scroll-to-top {
+    color: $text-color;
+  }
+}

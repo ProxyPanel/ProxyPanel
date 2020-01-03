@@ -1,0 +1,47 @@
+@import 'vars';
+
+.treeview .list-group-item {
+  cursor: pointer;
+
+  &:not(.node-selected):hover, &:not(.node-selected):focus {
+    color: $brand-primary;
+    background-color: $gray-100;
+
+    > .node-icon {
+      color: $brand-primary;
+    }
+  }
+}
+
+.treeview span.indent {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.treeview span.icon {
+  width: 12px;
+  margin-right: 8px;
+}
+
+.treeview .node-disabled {
+  color: silver;
+  cursor: not-allowed;
+}
+
+// v3 badge
+.treeview {
+  .badge {
+    order: 1;
+    padding: 3px 6px;
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1;
+    color: #76838f;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #e4eaec;
+    border-radius: 10px;
+  }
+}

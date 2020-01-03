@@ -1,0 +1,120 @@
+// Name:            Steps
+//
+// Component:       `steps`
+//                  'step-icon'
+//                  'step-number'
+//                  'step-title'
+//                  'step-desc'
+//
+// Modifiers:       'current'
+//                  'done'
+//                  'error'
+//                  'disabled'
+//                  'steps-vertical'
+//                  'steps-lg'
+//                  'steps-sm'
+//                  'steps-xs'
+//
+// Markup:
+// <div class="step done">
+//   <span class="step-number">1</span>
+//   <div class="step-desc">
+//     <span class="step-title">Title</span>
+//     <p>Some desc text</p>
+//   </div>
+// </div>
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$step-color:                       $gray-400 !default;
+$step-bg:                          $bg-color-base !default;
+$step-number-bg:                   $gray-200 !default;
+$step-number-color:                $inverse !default;
+
+$step-current-color:               $inverse !default;
+$step-current-bg:                  $brand-primary !default;
+
+$step-done-color:                  $inverse !default;
+$step-done-bg:                     $brand-success !default;
+
+$step-error-color:                 $inverse !default;
+$step-error-bg:                    $brand-danger !default;
+
+$step-disabled-color:              $gray-300 !default;
+
+// Component: steps
+// ========================================================================
+
+.step {
+  color: $step-color;
+  background-color: $step-bg;
+}
+
+.step-number {
+  color: $step-number-color;
+  background: $step-number-bg;
+}
+
+.step-title {
+  color: $subtitle-color;
+}
+
+// State Modifier
+// ========================================================================
+.step {
+  &.current {
+    color: $step-current-color;
+    background-color: $step-current-bg;
+
+    .step-title {
+      color: $step-current-color;
+    }
+
+    .step-number {
+      color: $step-current-bg;
+      background-color: $step-current-color;
+    }
+  }
+
+  &.disabled {
+    color: $step-disabled-color;
+
+    .step-title {
+      color: $step-disabled-color;
+    }
+
+    .step-number {
+      background-color: $step-disabled-color;
+    }
+  }
+
+  &.error {
+    color: $step-error-color;
+    background-color: $step-error-bg;
+
+    .step-title {
+      color: $step-error-color;
+    }
+
+    .step-number {
+      color: $step-error-bg;
+      background-color: $step-error-color;
+    }
+  }
+
+  &.done {
+    color: $step-done-color;
+    background-color: $step-done-bg;
+
+    .step-title {
+      color: $step-done-color;
+    }
+
+    .step-number {
+      color: $step-done-bg;
+      background-color: $step-done-color;
+    }
+  }
+}

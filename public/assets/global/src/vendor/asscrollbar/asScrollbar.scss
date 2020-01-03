@@ -1,0 +1,87 @@
+$scrollbar: "scrollbar" !default;
+$scrollbar-size: 4px !default;
+$scrollbar-dragging-size: 10px !default;
+$scrollbar-dragging-color: rgba(238, 238, 238, .6) !default;
+$scrollbar-hovering-color: rgba(238, 238, 238, .4) !default;
+$scrollbar-handle-offset: 5px !default;
+$scrollbar-handle-color: rgba(224, 224, 224, .6) !default;
+$scrollbar-handle-hovering-color: rgba(150, 150, 150, .6) !default;
+$scrollbar-handle-dragging-color: rgba(150, 150, 150, .8) !default;
+
+.#{$scrollbar} {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  line-height: 0;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  border-radius: $scrollbar-size / 2;
+  -webkit-touch-callout: none;
+  &.is-hovering {
+    background: $scrollbar-hovering-color;
+  }
+  &.is-dragging {
+    background: $scrollbar-dragging-color !important;
+    opacity: 1;
+  }
+  &.is-disabled {
+    display: none;
+  }
+  &-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 0;
+    cursor: pointer;
+    background: $scrollbar-handle-color;
+    border-radius: $scrollbar-size / 2;
+    transition: width, height .5s;
+  }
+  &.is-dragging &-handle {
+    background: $scrollbar-handle-dragging-color !important;
+  }
+  &.is-hovering &-handle {
+    background: $scrollbar-handle-hovering-color !important;
+  }
+  &.is-dragging,
+  &.is-hovering {
+    border-radius: $scrollbar-dragging-size / 2;
+    .#{$scrollbar}-handle {
+      border-radius: $scrollbar-dragging-size / 2;
+    }
+  }
+  &-vertical {
+    width: $scrollbar-size;
+    height: #{calc(100% - 2 * #{$scrollbar-handle-offset})};
+    margin: $scrollbar-handle-offset ($scrollbar-dragging-size - $scrollbar-size) / 2;
+  }
+  &-vertical {
+    &.is-dragging,
+    &.is-hovering {
+      width: $scrollbar-dragging-size;
+      margin: $scrollbar-handle-offset 1px;
+    }
+  }
+  &-vertical &-handle {
+    width: 100%;
+  }
+  &-horizontal {
+    width: #{calc(100% - 2 * #{$scrollbar-handle-offset})};
+    height: $scrollbar-size;
+    margin: ($scrollbar-dragging-size - $scrollbar-size) / 2 $scrollbar-handle-offset;
+  }
+  &-horizontal {
+    &.is-dragging,
+    &.is-hovering {
+      height: $scrollbar-dragging-size;
+      margin: 1px $scrollbar-handle-offset;
+    }
+  }
+  &-horizontal &-handle {
+    height: 100%;
+  }
+}

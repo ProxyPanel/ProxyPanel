@@ -1,0 +1,124 @@
+@import "vars";
+
+.jsgrid {
+  position: relative;
+  overflow: hidden;
+  font-size: 1em;
+}
+
+.jsgrid, .jsgrid *, .jsgrid *:before, .jsgrid *:after {
+  box-sizing: border-box;
+}
+
+.jsgrid input, .jsgrid textarea, .jsgrid select {
+  font-size: 1em;
+}
+
+.jsgrid-grid-header {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.jsgrid-grid-body {
+  overflow-x: auto;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.jsgrid .jsgrid-table {
+  margin-bottom: 0;
+}
+
+.jsgrid-table {
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.jsgrid-table td {
+  padding: .5em;
+}
+
+.jsgrid-table > tbody > tr > td {
+  vertical-align: middle;
+}
+
+.jsgrid-table td, .jsgrid-table th {
+  box-sizing: border-box;
+}
+
+.jsgrid-table th {
+  font-weight: $font-weight-medium;
+}
+
+.jsgrid-align-left {
+  text-align: left;
+}
+
+.jsgrid-align-center {
+  text-align: center;
+}
+
+.jsgrid-align-right {
+  text-align: right;
+}
+
+.jsgrid-header-row > th {
+  padding: .5em;
+}
+
+.jsgrid-filter-row input, .jsgrid-filter-row textarea, .jsgrid-filter-row select, .jsgrid-edit-row input, .jsgrid-edit-row textarea, .jsgrid-edit-row select, .jsgrid-insert-row input, .jsgrid-insert-row textarea, .jsgrid-insert-row select {
+  width: 100%;
+  padding: .3em .5em;
+  height: auto;
+}
+
+.jsgrid-filter-row input[type='checkbox'], .jsgrid-edit-row input[type='checkbox'], .jsgrid-insert-row input[type='checkbox'] {
+  width: auto;
+}
+
+.jsgrid-header-row > th, .jsgrid-filter-row > td, .jsgrid-insert-row > td, .jsgrid-edit-row > td {
+  text-align: center;
+}
+
+.jsgrid-selected-row td {
+  cursor: pointer;
+}
+
+.jsgrid-nodata-row td {
+  padding: .5em 0;
+  text-align: center;
+}
+
+.jsgrid-header-sort {
+  cursor: pointer;
+}
+
+.jsgrid-pager {
+  padding: 1.42em 0 .4em;
+}
+
+.jsgrid-pager-nav-button {
+  padding: .2em .5em;
+}
+
+.jsgrid-pager-nav-inactive-button {
+  display: none;
+  pointer-events: none;
+}
+
+.jsgrid-pager-page {
+  padding: .2em .6em;
+}
+
+.jsgrid-control-field {
+  white-space: nowrap;
+}
+@import "scss/theme";

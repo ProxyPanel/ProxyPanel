@@ -1,0 +1,49 @@
+.tablesaw-sortable-head {
+	position: relative;
+	vertical-align: top;
+}
+/* Override */
+.tablesaw .tablesaw-sortable-head {
+	padding: 0;
+}
+.tablesaw-sortable-btn {
+	min-width: 100%;
+	color: inherit;
+	background: transparent;
+	border: 0;
+	/* same as cell padding in tables.css */
+	padding: .5em .7em;
+	text-align: inherit;
+	font: inherit;
+	text-transform: inherit;
+}
+.tablesaw-sortable-arrow:after {
+	display: inline-block;
+	width: 10px;
+	height: 14px;
+	content: " ";
+	margin-left: .3125em;
+}
+.tablesaw-sortable-ascending .tablesaw-sortable-arrow:after,
+.tablesaw-sortable-descending .tablesaw-sortable-arrow:after {
+	// content: "\0020";
+	font-family: $wb-font-family;
+  font-feature-settings: normal;
+  font-kerning: auto;
+  font-language-override: normal;
+  font-size: inherit;
+  font-size-adjust: none;
+  font-stretch: normal;
+  font-style: normal;
+  font-synthesis: weight style;
+  font-variant: normal;
+  font-weight: $font-weight-normal;
+  line-height: 1;
+  text-rendering: auto;
+}
+.tablesaw-sortable-ascending .tablesaw-sortable-arrow:after {
+	content: $wb-var-triangle-up;
+}
+.tablesaw-sortable-descending .tablesaw-sortable-arrow:after {
+	content: $wb-var-triangle-down;
+}

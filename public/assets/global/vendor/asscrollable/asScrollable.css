@@ -117,6 +117,3 @@
 
 .scrollable-inverse.scrollable-shadow.scrollable.is-dragging .scrollable-bar, .scrollable-inverse.scrollable-shadow.scrollable.is-hovering .scrollable-bar {
   background: rgba(228, 234, 236, 0.4); }
-
-.scrollable-content .list-group-item {
-  width: calc(100% - 10px); }

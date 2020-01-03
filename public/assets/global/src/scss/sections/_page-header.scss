@@ -1,0 +1,72 @@
+.page-header + .page-content {
+  padding-top: 0;
+}
+
+.page-title {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 26px;
+
+  > .icon {
+    margin-right: .3em;
+  }
+}
+
+.page-description {
+  color: $headings-small-color;
+}
+
+.page-header {
+  @include media-breakpoint-down(xs) {
+    padding: 10px;
+  }
+  position: relative;
+  z-index: $zindex-header; // fix for issue#498
+  padding: $page-header-vertical-padding $page-horizontal-padding;
+  margin-top: 0;
+  margin-bottom: 0;
+  background: $page-header-bg;
+  border-bottom: 0;
+
+  &-actions {
+    position: absolute;
+    top: 50%;
+    right: $page-horizontal-padding;
+    margin: auto;
+    transform: translateY(-50%);
+
+    .btn-icon {
+      margin-left: 6px;
+    }
+
+    > * {
+      margin-bottom: 0;
+    }
+  }
+
+  .breadcrumb {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.page-header-bordered {
+  padding-top: $page-header-bordered-vertical-padding;
+  padding-bottom: $page-header-bordered-vertical-padding;
+  margin-bottom: $page-vertical-padding;
+  background-color: $inverse;
+  border-bottom: 1px solid $page-header-border-color;
+}
+
+.page-header-tabs {
+  padding-bottom: 0;
+
+  .nav-tabs-line {
+    margin-top: 5px;
+    border-bottom-color: transparent;
+
+    > li > a {
+      padding: 5px 20px;
+    }
+  }
+}

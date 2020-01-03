@@ -1,0 +1,281 @@
+// Icons
+// -------------------------
+.#{$owi-css-prefix}-apml:before {
+	content: $owi-var-apml;
+}
+.#{$owi-css-prefix}-open-share:before {
+	content: $owi-var-open-share;
+}
+.#{$owi-css-prefix}-share:before {
+	content: $owi-var-share;
+}
+.#{$owi-css-prefix}-feed:before {
+	content: $owi-var-feed;
+}
+.#{$owi-css-prefix}-ostatus:before {
+	content: $owi-var-ostatus;
+}
+.#{$owi-css-prefix}-opml:before {
+	content: $owi-var-opml;
+}
+.#{$owi-css-prefix}-activity:before {
+	content: $owi-var-activity;
+}
+.#{$owi-css-prefix}-geo:before {
+	content: $owi-var-geo;
+}
+.#{$owi-css-prefix}-opensearch:before {
+	content: $owi-var-opensearch;
+}
+.#{$owi-css-prefix}-oauth:before {
+	content: $owi-var-oauth;
+}
+.#{$owi-css-prefix}-openid:before {
+	content: $owi-var-openid;
+}
+.#{$owi-css-prefix}-rdf:before {
+	content: $owi-var-rdf;
+}
+.#{$owi-css-prefix}-json-ld:before {
+	content: $owi-var-json-ld;
+}
+.#{$owi-css-prefix}-semantic-web:before {
+	content: $owi-var-semantic-web;
+}
+.#{$owi-css-prefix}-dataportability:before {
+	content: $owi-var-dataportability;
+}
+.#{$owi-css-prefix}-federated:before {
+	content: $owi-var-federated;
+}
+.#{$owi-css-prefix}-open-web:before {
+	content: $owi-var-open-web;
+}
+.#{$owi-css-prefix}-web-intents:before {
+	content: $owi-var-web-intents;
+}
+.#{$owi-css-prefix}-xmpp:before {
+	content: $owi-var-xmpp;
+}
+.#{$owi-css-prefix}-qr:before {
+	content: $owi-var-qr;
+}
+.#{$owi-css-prefix}-epub:before {
+	content: $owi-var-epub;
+}
+.#{$owi-css-prefix}-opengraph:before {
+	content: $owi-var-opengraph;
+}
+.#{$owi-css-prefix}-foaf:before {
+	content: $owi-var-foaf;
+}
+.#{$owi-css-prefix}-info-card:before {
+	content: $owi-var-info-card;
+}
+.#{$owi-css-prefix}-browserid:before {
+	content: $owi-var-browserid;
+}
+.#{$owi-css-prefix}-persona:before {
+	content: $owi-var-persona;
+}
+.#{$owi-css-prefix}-remote-storage:before {
+	content: $owi-var-remote-storage;
+}
+.#{$owi-css-prefix}-odata:before {
+	content: $owi-var-odata;
+}
+.#{$owi-css-prefix}-markdown:before {
+	content: $owi-var-markdown;
+}
+.#{$owi-css-prefix}-tosdr:before {
+	content: $owi-var-tosdr;
+}
+.#{$owi-css-prefix}-indieweb:before {
+	content: $owi-var-indieweb;
+}
+.#{$owi-css-prefix}-indiewebcamp:before {
+	content: $owi-var-indiewebcamp;
+}
+.#{$owi-css-prefix}-git:before {
+	content: $owi-var-git;
+}
+.#{$owi-css-prefix}-webhooks:before {
+	content: $owi-var-webhooks;
+}
+.#{$owi-css-prefix}-osi:before {
+	content: $owi-var-osi;
+}
+.#{$owi-css-prefix}-webfinger:before {
+	content: $owi-var-webfinger;
+}
+.#{$owi-css-prefix}-bitcoin:before {
+	content: $owi-var-bitcoin;
+}
+.#{$owi-css-prefix}-pubsubhubbub:before {
+	content: $owi-var-pubsubhubbub;
+}
+.#{$owi-css-prefix}-svg:before {
+	content: $owi-var-svg;
+}
+.#{$owi-css-prefix}-tent:before {
+	content: $owi-var-tent;
+}
+.#{$owi-css-prefix}-copyleft:before {
+	content: $owi-var-copyleft;
+}
+.#{$owi-css-prefix}-gnu:before {
+	content: $owi-var-gnu;
+}
+.#{$owi-css-prefix}-webmention:before {
+	content: $owi-var-webmention;
+}
+.#{$owi-css-prefix}-javascript:before {
+	content: $owi-var-javascript;
+}
+.#{$owi-css-prefix}-wtfpl:before {
+	content: $owi-var-wtfpl;
+}
+.#{$owi-css-prefix}-wordpress:before {
+	content: $owi-var-wordpress;
+}
+.#{$owi-css-prefix}-owncloud:before {
+	content: $owi-var-owncloud;
+}
+.#{$owi-css-prefix}-known:before {
+	content: $owi-var-known;
+}
+.#{$owi-css-prefix}-barcamp:before {
+	content: $owi-var-barcamp;
+}
+.#{$owi-css-prefix}-indiehosters:before {
+	content: $owi-var-indiehosters;
+}
+.#{$owi-css-prefix}-cccs:before {
+	content: $owi-var-cccs;
+}
+.#{$owi-css-prefix}-mozilla:before {
+	content: $owi-var-mozilla;
+}
+.#{$owi-css-prefix}-unhosted:before {
+	content: $owi-var-unhosted;
+}
+.#{$owi-css-prefix}-indie:before {
+	content: $owi-var-indie;
+}
+.#{$owi-css-prefix}-ghost:before {
+	content: $owi-var-ghost;
+}
+.#{$owi-css-prefix}-diaspora:before {
+	content: $owi-var-diaspora;
+}
+.#{$owi-css-prefix}-webplattform:before {
+	content: $owi-var-webplattform;
+}
+.#{$owi-css-prefix}-opensourcedesign:before {
+	content: $owi-var-opensourcedesign;
+}
+.#{$owi-css-prefix}-opendesign:before {
+	content: $owi-var-opendesign;
+}
+.#{$owi-css-prefix}-gnusocial:before {
+	content: $owi-var-gnusocial;
+}
+.#{$owi-css-prefix}-mastodon:before {
+	content: $owi-var-mastodon;
+}
+.#{$owi-css-prefix}-mastodon-simple:before {
+	content: $owi-var-mastodon-simple;
+}
+.#{$owi-css-prefix}-html5:before {
+	content: $owi-var-html5;
+}
+.#{$owi-css-prefix}-css3:before {
+	content: $owi-var-css3;
+}
+.#{$owi-css-prefix}-connectivity:before {
+	content: $owi-var-connectivity;
+}
+.#{$owi-css-prefix}-semantics:before {
+	content: $owi-var-semantics;
+}
+.#{$owi-css-prefix}-device-access:before {
+	content: $owi-var-device-access;
+}
+.#{$owi-css-prefix}-offline-storage:before {
+	content: $owi-var-offline-storage;
+}
+.#{$owi-css-prefix}-multimedia:before {
+	content: $owi-var-multimedia;
+}
+.#{$owi-css-prefix}-3deffects:before {
+	content: $owi-var-3deffects;
+}
+.#{$owi-css-prefix}-perfintegration:before {
+	content: $owi-var-perfintegration;
+}
+.#{$owi-css-prefix}-cc:before {
+	content: $owi-var-cc;
+}
+.#{$owi-css-prefix}-cc-by:before {
+	content: $owi-var-cc-by;
+}
+.#{$owi-css-prefix}-cc-nc:before {
+	content: $owi-var-cc-nc;
+}
+.#{$owi-css-prefix}-cc-nc-eu:before {
+	content: $owi-var-cc-nc-eu;
+}
+.#{$owi-css-prefix}-cc-nc-jp:before {
+	content: $owi-var-cc-nc-jp;
+}
+.#{$owi-css-prefix}-cc-sa:before {
+	content: $owi-var-cc-sa;
+}
+.#{$owi-css-prefix}-cc-nd:before {
+	content: $owi-var-cc-nd;
+}
+.#{$owi-css-prefix}-cc-public:before {
+	content: $owi-var-cc-public;
+}
+.#{$owi-css-prefix}-cc-zero:before {
+	content: $owi-var-cc-zero;
+}
+.#{$owi-css-prefix}-cc-share:before {
+	content: $owi-var-cc-share;
+}
+.#{$owi-css-prefix}-cc-remix:before {
+	content: $owi-var-cc-remix;
+}
+.#{$owi-css-prefix}-microformats:before {
+	content: $owi-var-microformats;
+}
+.#{$owi-css-prefix}-hcard-download:before {
+	content: $owi-var-hcard-download;
+}
+.#{$owi-css-prefix}-hcard-add:before {
+	content: $owi-var-hcard-add;
+}
+.#{$owi-css-prefix}-hresume:before {
+	content: $owi-var-hresume;
+}
+.#{$owi-css-prefix}-hatom:before {
+	content: $owi-var-hatom;
+}
+.#{$owi-css-prefix}-ofl:before {
+	content: $owi-var-ofl;
+}
+.#{$owi-css-prefix}-ofl-attribution:before {
+	content: $owi-var-ofl-attribution;
+}
+.#{$owi-css-prefix}-ofl-share:before {
+	content: $owi-var-ofl-share;
+}
+.#{$owi-css-prefix}-ofl-embedding:before {
+	content: $owi-var-ofl-embedding;
+}
+.#{$owi-css-prefix}-ofl-renaming:before {
+	content: $owi-var-ofl-renaming;
+}
+.#{$owi-css-prefix}-ofl-selling:before {
+	content: $owi-var-ofl-selling;
+}

@@ -1,0 +1,98 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  padding-top: $site-navbar-height;
+}
+
+.site-menubar {
+  position: fixed;
+  top: $site-navbar-height;
+  z-index: $zindex-menubar;
+  height: 100%;
+  height: calc(100% - #{$site-navbar-height});
+  font-family: $site-menubar-font-family;
+  color: $site-menubar-color;
+  background: $site-menubar-bg;
+  box-shadow: $site-menubar-shadow;
+
+  &-body {
+    height: 100%;
+    height: calc(100% - #{$site-menubar-footer-height});
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  a {
+    outline: none;
+
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
+
+  &.site-menubar-light {
+    background: $site-menubar-light-bg;
+    box-shadow: $site-menubar-light-shadow;
+
+    .scrollable-inverse.scrollable .scrollable-bar-handle {
+      background: rgba($gray-400, (60 / 100));
+    }
+  }
+}
+
+.site-menubar-section {
+  padding: 0 $site-menubar-padding-horizontal;
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+  > h4, > h5 {
+    color: $site-menubar-section-title-color;
+  }
+
+  .progress {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.site-menubar-footer {
+  position: fixed;
+  bottom: 0;
+  z-index: $zindex-menubar;
+  display: block;
+
+  > a {
+    display: block;
+    float: left;
+    width: (100% / 3);
+    height: $site-menubar-footer-height;
+    padding: 26px 0;
+    font-size: 16px;
+    color: $site-menubar-footer-color;
+    text-align: center;
+    background-color: $site-menubar-footer-link-bg;
+
+    &:hover, &:focus {
+      background-color: $site-menubar-footer-link-hover-bg;
+    }
+  }
+}
+
+.site-menubar-light {
+  .site-menubar-footer {
+    > a {
+      background-color: $site-menubar-light-footer-link-bg;
+
+      &:hover, &:focus {
+        background-color: $site-menubar-light-footer-link-hover-bg;
+      }
+    }
+  }
+}

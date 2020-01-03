@@ -1,0 +1,14 @@
+// Font path
+// --------------------------
+@font-face {
+
+  font-family: '#{$wb-font-family}';
+  src: url('#{$wb-font-path}/#{$wb-font-file}.eot?v=#{$wb-version}');
+  src: url('#{$wb-font-path}/#{$wb-font-file}.eot?#iefix&v=#{$wb-version}') format('embedded-opentype'),
+    url('#{$wb-font-path}/#{$wb-font-file}.woff2?v=#{$wb-version}') format('woff2'),
+    url('#{$wb-font-path}/#{$wb-font-file}.woff?v=#{$wb-version}') format('woff'),
+    url('#{$wb-font-path}/#{$wb-font-file}.ttf?v=#{$wb-version}') format('truetype'),
+    url('#{$wb-font-path}/#{$wb-font-file}.svg?v=#{$wb-version}##{$wb-font-file}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

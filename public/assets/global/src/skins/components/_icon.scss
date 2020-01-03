@@ -1,0 +1,63 @@
+// Name:            Icon
+//
+// Component:       `icon`
+//
+// Modifiers:       'icon-circle'
+//                  'icon-color'
+//                  'icon-color-alt'
+//                  'icon-lg'
+//                  'icon-2x'
+//                  'icon-3x'
+//                  'icon-4x'
+//                  'icon-5x'
+//                  'icon-fw'
+//                  'icon-ul'
+//                  'icon-border'
+//                  'icon-spin'
+//                  'icon-spin-reverse'
+//                  'icon-rotate'
+//                  'icon-flip'
+//                  'icon-stack'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$icon-border-color:  $gray-200 !default;
+$icon-inverse:       $inverse !default;
+
+// Component: Icon
+// ========================================================================
+
+// Modifier: `icon-border`
+// ========================================================================
+.icon-border {
+  border: solid .08em $icon-border-color;
+}
+// Modifier: `icon-stack`
+// ========================================================================
+
+.icon-stack {
+
+  &-inverse {
+    color: $icon-inverse;
+  }
+}
+
+// Color Modifier
+// ========================================================================
+
+// Modifier: `icon-color`
+// -------------------------
+
+.icon-color {
+  @include icon-color-variant($icon-color, $icon-hover-color, $icon-active-color);
+}
+
+// Modifier: `icon-color-alt`
+// -------------------------
+
+.icon-color-alt {
+  @include icon-color-variant($icon-alt-color, $icon-alt-hover-color, $icon-alt-active-color);
+}

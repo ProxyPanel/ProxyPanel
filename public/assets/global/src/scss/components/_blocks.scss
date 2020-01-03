@@ -1,0 +1,141 @@
+// Name:      Blocks
+//
+// Component:     `blocks`
+//
+// Modifiers:     `blocks-2`
+//                `blocks-3`
+//                `blocks-4`
+//                `blocks-5`
+//                `blocks-6`
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+$blocks-enable-flex: false !default;
+$blocks-grid-gutter-width: $grid-gutter-width !default;
+$block-margin-bottom: $blocks-grid-gutter-width !default;
+$blocks-columns: (100: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6) !default;
+
+//for not enable-flex
+$block-font-size: $font-size-base !default;
+
+// $blocks-breakpoints: (
+//   xxl: map-get($grid-breakpoints, xxl),// 1600px,
+//   xl: map-get($grid-breakpoints, xl),  // 1200px,
+//   lg: map-get($grid-breakpoints, lg),  // 992px,
+//   md: map-get($grid-breakpoints, md),  // 768px,
+//   sm: map-get($grid-breakpoints, sm),  // 480px
+//   xs: map-get($grid-breakpoints, xs)   // 0
+// );
+
+// // $blocks-mobile-point-name: sm;
+// // $blocks-mobile-point: map-get($blocks-breakpoints, $blocks-mobile-point-name);//480px
+
+// $blocks-mobile-point-name: xs;
+// $blocks-mobile-point: map-get($blocks-breakpoints, $blocks-mobile-point-name);//0
+
+// Mixins
+// ========================================================================
+
+@mixin flex-blocks-column-width($columns: $blocks-columns) {
+  @each $i in map-keys($columns) {
+    .blocks-#{$i} > .block, .blocks-#{$i} > li {
+      $rate1: ((1 / map-get($blocks-columns, $i))) !default;
+
+      @if not $blocks-enable-flex {
+        width: percentage($rate1);
+      } @else {
+        flex: 0 0 percentage($rate1);
+      }
+    }
+  }
+}
+
+// @mixin flex-blocks-media-column-width($columns: $blocks-columns, $moblie: $blocks-mobile-point-name, $breakpoints: $blocks-breakpoints){
+//   @each $j in map-keys($breakpoints) {
+//     @include media-breakpoint-between($moblie, $j) {
+//       @each $i in map-keys($columns) {
+//         .blocks-#{$j}-#{$i} > .block,
+//         .blocks-#{$j}-#{$i} > li {
+//           $rate2: ((1 / map-get($blocks-columns, $i))) !default;
+// // width: percentage($rate2);
+//    flex: 0 0 percentage($rate2);
+//         }
+//       }
+//     }
+//   }
+// }
+@mixin flex-blocks-media-column-width($columns: $blocks-columns, $breakpoints: $grid-breakpoints) {
+  @each $j in map-keys($breakpoints) {
+    @include media-breakpoint-up($j) {
+      @each $i in map-keys($columns) {
+        .blocks-#{$j}-#{$i} > .block, .blocks-#{$j}-#{$i} > li {
+          $rate2: ((1 / map-get($blocks-columns, $i))) !default;
+
+          @if not $blocks-enable-flex {
+            width: percentage($rate2);
+          } @else {
+            flex: 0 0 percentage($rate2);
+          }
+        }
+      }
+    }
+  }
+}
+
+// for test flex blocks
+// ====================
+// html example
+//
+// <ul class="blocks blocks-3 blocks-sm-2">
+//   <li class="block">1</li>
+//   <li>2</li>
+//   <li>3</li>
+//   <li>4</li>
+//   <li>5</li>
+// </ul>
+
+.blocks, [class*="blocks-"] {
+  @if not $blocks-enable-flex {
+    font-size: 0;
+  } @else {
+    display: flex;
+    flex-flow: row wrap;
+  }
+  padding: 0;
+  margin: 0;
+  margin-right: ($blocks-grid-gutter-width / -2);
+  margin-left: ($blocks-grid-gutter-width / -2);
+  list-style: none;
+}
+
+.blocks > .block, [class*="blocks-"] > li, [class*="blocks-"] > .block {
+  @if not $blocks-enable-flex {
+    display: inline-block;
+    font-size: $block-font-size;
+    vertical-align: top;
+  } @else {
+    flex: 0 0 auto;
+  }
+  padding-right: ($blocks-grid-gutter-width / 2);
+  padding-left: ($blocks-grid-gutter-width / 2);
+  margin-bottom: $block-margin-bottom;
+
+  // @media (max-width: $blocks-mobile-point) {
+  //   width: 100%;
+  // }
+}
+
+// no-sapce
+.blocks.no-space, [class*="blocks-"].no-space {
+  margin: 0;
+
+  > li, > .block {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+@include flex-blocks-column-width();
+@include flex-blocks-media-column-width();

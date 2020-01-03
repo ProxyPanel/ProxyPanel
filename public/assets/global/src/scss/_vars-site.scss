@@ -1,0 +1,151 @@
+
+
+//== Site Navbar
+//
+//##
+$brand-font-family: $headings-font-family !default;
+$site-navbar-height: remtopx($navbar-height) !default;
+$site-navbar-color: $gray-400 !default;
+$site-navbar-hover-color: $gray-500 !default;
+$site-navbar-brand-bg: $gray-700 !default;
+$site-navbar-header-bg: $color-blue-600 !default;
+$site-navbar-header-color: $inverse !default;
+$site-navbar-brand-color: $inverse !default;
+
+//== Site Menubar
+//
+//##
+$site-menubar-bg: $gray-800 !default;
+$site-menubar-unfold-width: 260px !default;
+$site-menubar-fold-width: 90px !default;
+$site-menubar-padding-horizontal: 30px !default;
+$site-menubar-color: rgba($gray-400, (90/100)) !default;
+$site-menubar-font-family: $headings-font-family !default;
+$site-menubar-shadow: 0 2px 4px rgba(0, 0, 0, .08) !default;
+$site-menubar-section-title-color: $gray-500 !default;
+$site-menubar-footer-height: 76px !default;
+$site-menubar-footer-color: $gray-500 !default;
+$site-menubar-footer-link-bg: rgb(33, 41, 46) !default;
+$site-menubar-footer-link-hover-bg: rgb(30, 36, 39) !default;
+
+//== Site Menu
+//
+//##
+$site-menu-top-hover-color: rgba($inverse, (80/100)) !default;
+$site-menu-top-hover-bg: rgba(255, 255, 255, .02) !default;
+
+// $site-menu-top-active-head-bg:     $color-purple !default;
+// $site-menu-top-active-head-bg:     rgba($color-primary-600, (10/100)) !default;
+$site-menu-top-active-head-bg: transparent !default;
+$site-menu-top-active-bg: darken($site-menubar-bg, 1%) !default;
+$site-menu-top-active-border-color: rgba(0, 0, 0, .04) !default;
+$site-menu-top-active-color: $inverse !default;
+$site-menu-top-open-head-bg: transparent !default;
+//$site-menu-top-open-bg:             transparent !default;
+$site-menu-top-open-bg: $site-menu-top-active-bg !default;
+$site-menu-top-open-color: $site-menu-top-active-color !default;
+$site-menu-top-height: 46px !default;
+$site-menu-sub-bg: transparent !default;
+$site-menu-sub-color: $site-menubar-color !default;
+$site-menu-sub-hover-bg: rgba(255, 255, 255, .02) !default;
+$site-menu-sub-hover-color: $site-menu-top-hover-color !default;
+$site-menu-sub-active-bg: rgba(0, 0, 0, .06) !default;
+$site-menu-sub-active-color: $inverse !default;
+$site-menu-sub-open-bg: $site-menu-sub-active-bg !default;
+$site-menu-sub-open-color: $site-menu-sub-active-color !default;
+$site-menu-sub-height: 36px !default;
+$site-menu-category-color: $gray-500 !default;
+$site-menu-has-sub-border-color: rgba(0, 0, 0, .06) !default;
+$site-menu-padding-horizontal: $site-menubar-padding-horizontal !default;
+
+//== Site Menubar Fold
+//
+//##
+$site-menubar-fold-nav-height: 60px !default;
+$site-menubar-fold-sub-bg: $site-menu-top-active-bg !default;
+$site-menubar-fold-sub-width: 240px !default;
+$site-menubar-fold-divider-bg: darken($site-menubar-bg, 1%) !default;
+
+//Light
+$site-menubar-light-fold-sub-bg: rgb(243, 248, 251) !default;
+$site-menubar-light-fold-divider-bg: rgba($color-blue-800, (5/100)) !default;
+$site-menubar-light-fold-box-shadow: 2px 1px 2px rgba(0, 0, 0, .08) !default;
+
+//== Site Menubar light
+//
+//##
+$site-menubar-light-color: rgba($gray-500, (90/100)) !default;
+$site-menubar-light-bg: $inverse !default;
+$site-menubar-light-shadow: $site-menubar-shadow !default;
+$site-menubar-light-footer-link-bg: $gray-200 !default;
+$site-menubar-light-footer-link-hover-bg: darken($gray-200, 5%) !default;
+
+//== Site Menu light
+//
+//##
+$site-menu-light-top-open-head-bg: transparent !default;
+$site-menu-light-top-hover-bg: rgba($color-primary-800, (5/100)) !default;
+$site-menu-light-top-open-bg: $site-menu-light-top-hover-bg !default;
+$site-menu-light-top-active-bg: $site-menu-light-top-hover-bg !default;
+$site-menu-light-sub-active-bg: rgba($color-primary-800, (3/100)) !default;
+$site-menu-light-sub-open-bg: rgba($color-primary-800, (3/100)) !default;
+$site-menu-light-has-sub-border-color: $site-menu-light-top-hover-bg !default;
+$site-menu-light-top-hover-color: $color-primary-600 !default;
+$site-menu-light-top-active-color: $site-menu-light-top-hover-color !default;
+$site-menu-light-sub-active-color: $site-menu-light-top-hover-color !default;
+$site-menu-light-sub-open-color: $site-menu-light-sub-active-color !default;
+$site-menu-light-sub-hover-color: $site-menu-light-top-hover-color !default;
+
+//== Site Grid Menu
+//
+//##
+$site-gridmenu-color: $gray-400 !default;
+$site-gridmenu-hover-color: $inverse !default;
+$site-gridmenu-bg: $gray-800 !default;
+$site-gridmenu-hover-bg: rgba($inverse, (2/100)) !default;
+$site-gridmenu-toggle-size: $font-size-base !default;
+
+//== Site Sidebar
+//
+//##
+$site-sidebar-width: 300px !default;
+$site-sidebar-z-index: ($zindex-navbar + 10) !default;
+$site-sidebar-nav-height: 90px !default;
+$site-sidebar-padding-horizontal: 30px !default;
+
+//== Page
+//
+//##
+$page-bg: #f1f4f5 !default;
+$page-vertical-padding: 30px !default;
+$page-horizontal-padding: 30px !default;
+
+//== Page Header
+//
+//##
+$page-header-bg: transparent !default;
+$page-header-bordered-bg: $inverse !default;
+$page-header-vertical-padding: 30px !default;
+$page-header-bordered-vertical-padding: 20px !default;
+
+//== Page Aside
+//
+//##
+$page-aside-padding-horizontal: 30px !default;
+$page-aside-width: 260px !default;
+$page-aside-md-width: 220px !default;
+$page-aside-bg: $inverse !default;
+
+//== Site Footer
+//
+//##
+$site-footer-vertical-padding: 10px !default;
+$site-footer-bg: rgba(0, 0, 0, .02) !default;
+$site-footer-divider-color: $gray-200 !default;
+$site-footer-height: 44px !default;
+
+//== Layout Boxed
+//
+//##
+$layout-boxed-width: 1320px !default;
+$layout-boxed-bg: $gray-200 !default;

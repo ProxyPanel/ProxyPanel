@@ -1,0 +1,18 @@
+/**
+ * Mfglabs iconset
+ * Created by MfgLabs
+ * https://github.com/MfgLabs/mfglabs-iconset
+ * CC BY-SA License
+ */
+@import "vars";
+@import "scss/variables";
+@import "scss/path";
+
+[class^="#{$ml-css-prefix}-"],
+[class*=" #{$ml-css-prefix}-"] {
+  font-family: '#{$ml-font-family}';
+
+  @include make-icon();
+}
+
+@import "scss/icons";

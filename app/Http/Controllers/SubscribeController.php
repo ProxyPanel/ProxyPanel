@@ -65,7 +65,7 @@ class SubscribeController extends Controller
 		$query = UserSubscribeLog::with('user:username');
 
 		if(isset($id)){
-			$query->where('sid',$id);
+			$query->where('sid', $id);
 		}
 
 		$view['subscribeLog'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
@@ -185,7 +185,6 @@ class SubscribeController extends Controller
 			shuffle($nodeList);
 		}
 
-		// 控制客户端最多获取节点数
 		$scheme = '';
 
 		// 展示到期时间和剩余流量
@@ -193,6 +192,7 @@ class SubscribeController extends Controller
 			$scheme .= $this->expireDate($user).$this->lastTraffic($user);
 		}
 
+		// 控制客户端最多获取节点数
 		foreach($nodeList as $key => $node){
 			// 控制显示的节点数
 			if(self::$systemConfig['subscribe_max'] && $key >= self::$systemConfig['subscribe_max']){
@@ -283,7 +283,7 @@ class SubscribeController extends Controller
 	 */
 	private function expireDate($user)
 	{
-		$text = '到期时间：'.$user->expire_time;
+		$text = '到期时间: '.$user->expire_time;
 
 		return 'ssr://'.base64url_encode('0.0.0.1:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(Helpers::systemConfig()['website_name']).'&udpport=0&uot=0')."\n";
 	}
@@ -297,7 +297,7 @@ class SubscribeController extends Controller
 	 */
 	private function lastTraffic($user)
 	{
-		$text = '剩余流量：'.flowAutoShow($user->transfer_enable-$user->u-$user->d);
+		$text = '剩余流量: '.flowAutoShow($user->transfer_enable-$user->u-$user->d);
 
 		return 'ssr://'.base64url_encode('0.0.0.2:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(Helpers::systemConfig()['website_name']).'&udpport=0&uot=0')."\n";
 	}

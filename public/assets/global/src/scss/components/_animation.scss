@@ -1,0 +1,546 @@
+// Name:            Animation
+//
+// Component:       `animation`
+//
+// Modifiers:       `animation-fade`
+//                  `animation-scale`
+//                  `animation-scale-up`
+//                  `animation-scale-down`
+//                  `animation-slide-top`
+//                  `animation-slide-bottom`
+//                  `animation-slide-left`
+//                  `animation-slide-right`
+//                  `animation-shake`
+//                  `animation-top-left`
+//                  `animation-top-center`
+//                  `animation-top-right`
+//                  `animation-middle-left`
+//                  `animation-middle-right`
+//                  `animation-bottom-left`
+//                  `animation-bottom-center`
+//                  `animation-bottom-right`
+//
+// ========================================================================
+
+// Component: Animation
+// ========================================================================
+
+[class*="animation-"] {
+  animation-duration: .5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.animation-hover:not(:hover), .animation-hover:not(:hover) [class*="animation-"], .touch .animation-hover:not(.hover), .touch .animation-hover:not(.hover) [class*="animation-"] {
+  animation-name: none;
+}
+
+.animation-reverse {
+  animation-timing-function: ease-in;
+  animation-direction: reverse;
+}
+
+.animation-repeat {
+  animation-iteration-count: infinite;
+}
+
+// Animate Modifier
+// ========================================================================
+
+// Modifier: `animation-fade`
+// -------------------------
+
+.animation-fade {
+  animation-name: fade;
+  animation-duration: .8s;
+  animation-timing-function: linear;
+}
+
+// Modifier: `animation-scale`
+// -------------------------
+
+.animation-scale {
+  animation-name: scale-12;
+}
+
+// Modifier: `animation-scale-up`
+// -------------------------
+
+.animation-scale-up {
+  animation-name: fade-scale-02;
+}
+
+// Modifier: `animation-scale-down`
+// -------------------------
+
+.animation-scale-down {
+  animation-name: fade-scale-18;
+}
+
+// Modifier: `animation-slide-top`
+// -------------------------
+
+.animation-slide-top {
+  animation-name: slide-top;
+}
+
+// Modifier: `animation-slide-bottom`
+// -------------------------
+
+.animation-slide-bottom {
+  animation-name: slide-bottom;
+}
+
+// Modifier: `animation-slide-left`
+// -------------------------
+
+.animation-slide-left {
+  animation-name: slide-left;
+}
+
+// Modifier: `animation-slide-right`
+// -------------------------
+
+.animation-slide-right {
+  animation-name: slide-right;
+}
+
+// Modifier: `animation-shake`
+// -------------------------
+
+.animation-shake {
+  animation-name: shake;
+}
+
+// Modifier: `animation-duration`
+// -------------------------
+
+.animation-duration-10 {
+  animation-duration: 15s;
+}
+
+.animation-duration-9 {
+  animation-duration: 9s;
+}
+
+.animation-duration-8 {
+  animation-duration: 8s;
+}
+
+.animation-duration-7 {
+  animation-duration: 7s;
+}
+
+.animation-duration-6 {
+  animation-duration: 6s;
+}
+
+.animation-duration-5 {
+  animation-duration: 5s;
+}
+
+.animation-duration-4 {
+  animation-duration: 4s;
+}
+
+.animation-duration-3 {
+  animation-duration: 3s;
+}
+
+.animation-duration-2 {
+  animation-duration: 2s;
+}
+
+.animation-duration-1 {
+  animation-duration: 1s;
+}
+
+.animation-delay-100 {
+  animation-duration: 100ms;
+}
+
+.animation-duration-250 {
+  animation-duration: 250ms;
+}
+
+.animation-duration-300 {
+  animation-duration: 300ms;
+}
+
+.animation-duration-500 {
+  animation-duration: 500ms;
+}
+
+.animation-duration-750 {
+  animation-duration: 750ms;
+}
+
+// Modifier: `animation-delay`
+// -------------------------
+
+.animation-delay-1000 {
+  animation-delay: 1s;
+}
+
+.animation-delay-900 {
+  animation-delay: 900ms;
+}
+
+.animation-delay-800 {
+  animation-delay: 800ms;
+}
+
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animation-delay-600 {
+  animation-delay: 600ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+// Modifier: `animation-top-left`
+// -------------------------
+
+.animation-top-left {
+  transform-origin: 0 0;
+}
+
+// Modifier: `animation-top-center`
+// -------------------------
+
+.animation-top-center {
+  transform-origin: 50% 0;
+}
+
+// Modifier: `animation-top-right`
+// -------------------------
+
+.animation-top-right {
+  transform-origin: 100% 0;
+}
+
+// Modifier: `animation-middle-left`
+// -------------------------
+
+.animation-middle-left {
+  transform-origin: 0 50%;
+}
+
+// Modifier: `animation-middle-right`
+// -------------------------
+
+.animation-middle-right {
+  transform-origin: 100% 50%;
+}
+
+// Modifier: `animation-bottom-left`
+// -------------------------
+
+.animation-bottom-left {
+  transform-origin: 0 100%;
+}
+
+// Modifier: `animation-bottom-center`
+// -------------------------
+
+.animation-bottom-center {
+  transform-origin: 50% 100%;
+}
+
+// Modifier: `animation-bottom-right`
+// -------------------------
+
+.animation-bottom-right {
+  transform-origin: 100% 100%;
+}
+
+// Modifier: `animation-timing-function`
+// -------------------------
+
+.animation-easing-easeInOut {
+  animation-timing-function: cubic-bezier(.42, 0, .58, 1);
+}
+
+.animation-easing-easeInQuad {
+  animation-timing-function: cubic-bezier(.55, .085, .68, .53);
+}
+
+.animation-easing-easeInCubic {
+  animation-timing-function: cubic-bezier(.55, .055, .675, .19);
+}
+
+.animation-easing-easeInQuart {
+  animation-timing-function: cubic-bezier(.895, .03, .685, .22);
+}
+
+.animation-easing-easeInQuint {
+  animation-timing-function: cubic-bezier(.755, .05, .855, .06);
+}
+
+.animation-easing-easeInSine {
+  animation-timing-function: cubic-bezier(.47, 0, .745, .715);
+}
+
+.animation-easing-easeInExpo {
+  animation-timing-function: cubic-bezier(.95, .05, .795, .035);
+}
+
+.animation-easing-easeInCirc {
+  animation-timing-function: cubic-bezier(.6, .04, .98, .335);
+}
+
+.animation-easing-easeInBack {
+  animation-timing-function: cubic-bezier(.6, -.28, .735, .045);
+}
+
+.animation-easing-eastOutQuad {
+  animation-timing-function: cubic-bezier(.25, .46, .45, .94);
+}
+
+.animation-easing-easeOutCubic {
+  animation-timing-function: cubic-bezier(.215, .61, .355, 1);
+}
+
+.animation-easing-easeOutQuart {
+  animation-timing-function: cubic-bezier(.165, .84, .44, 1);
+}
+
+.animation-easing-easeOutQuint {
+  animation-timing-function: cubic-bezier(.23, 1, .32, 1);
+}
+
+.animation-easing-easeOutSine {
+  animation-timing-function: cubic-bezier(.39, .575, .565, 1);
+}
+
+.animation-easing-easeOutExpo {
+  animation-timing-function: cubic-bezier(.19, 1, .22, 1);
+}
+
+.animation-easing-easeOutCirc {
+  animation-timing-function: cubic-bezier(.075, .82, .165, 1);
+}
+
+.animation-easing-easeOutBack {
+  animation-timing-function: cubic-bezier(.175, .885, .32, 1.275);
+}
+
+.animation-easing-easeInOutQuad {
+  animation-timing-function: cubic-bezier(.455, .03, .515, .955);
+}
+
+.animation-easing-easeInOutCubic {
+  animation-timing-function: cubic-bezier(.645, .045, .355, 1);
+}
+
+.animation-easing-easeInOutQuart {
+  animation-timing-function: cubic-bezier(.77, 0, .175, 1);
+}
+
+.animation-easing-easeInOutQuint {
+  animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+}
+
+.animation-easing-easeInOutSine {
+  animation-timing-function: cubic-bezier(.445, .05, .55, .95);
+}
+
+.animation-easing-easeInOutExpo {
+  animation-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+.animation-easing-easeInOutCirc {
+  animation-timing-function: cubic-bezier(.785, .135, .15, .86);
+}
+
+.animation-easing-easeInOutBack {
+  animation-timing-function: cubic-bezier(.68, -.55, .265, 1.55);
+}
+
+.animation-easing-easeInOutElastic {
+  animation-timing-function: cubic-bezier(1, -.56, 0, 1.455);
+}
+
+// Keyframes Modifier
+// ========================================================================
+
+// Modifier: `animation-fade`
+// -------------------------
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+// Modifier: `animation-scale`
+// -------------------------
+
+@keyframes scale-12 {
+  0% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Modifier: `animation-scale-up`
+// -------------------------
+
+@keyframes fade-scale-02 {
+  0% {
+    opacity: 0;
+    transform: scale(.2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Modifier: `animation-scale-down`
+// -------------------------
+
+@keyframes fade-scale-18 {
+  0% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Modifier: `animation-slide-top`
+// -------------------------
+
+@keyframes slide-top {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+// Modifier: `animation-slide-bottom`
+// -------------------------
+
+@keyframes slide-bottom {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+// Modifier: `animation-slide-left`
+// -------------------------
+
+@keyframes slide-left {
+  0% {
+    opacity: 0;
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+// Modifier: `animation-slide-right`
+// -------------------------
+
+@keyframes slide-right {
+  0% {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+// Modifier: `animation-shake`
+// -------------------------
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  10% {
+    transform: translateX(-9px);
+  }
+
+  20% {
+    transform: translateX(8px);
+  }
+
+  30% {
+    transform: translateX(-7px);
+  }
+
+  40% {
+    transform: translateX(6px);
+  }
+
+  50% {
+    transform: translateX(-5px);
+  }
+
+  60% {
+    transform: translateX(4px);
+  }
+
+  70% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
+
+  90% {
+    transform: translateX(-1px);
+  }
+}

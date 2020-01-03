@@ -18,7 +18,7 @@ return [
 	'submit'                 => '提 交',
 	'request'                => '獲 取',
 	'remember'               => '記住賬號',
-	'restPassword'           => '重置密碼',
+	'resetPassword'          => '重置密碼',
 	'new_password'           => '輸入新密碼',
 	'forget_password'        => '找回密碼',
 	'reset_password'         => '重置密碼',
@@ -65,8 +65,8 @@ return [
 	"reset_password_close"       => '本站關閉了找回密碼功能，請聯繫:email',
 	'reset_password_limit'       => '24小時內只能重設密碼:time次，請勿頻繁操作',
 	'reset_password_success_tip' => '重置成功，請查看所用郵箱(郵件可能在垃圾箱中）',
-	'rest_password_same_fail'    => '新舊密碼一樣，請重新輸入',
-	'rest_password_fail'         => '重設密碼失敗',
+	'reset_password_same_fail'   => '新舊密碼一樣，請重新輸入',
+	'reset_password_fail'        => '重設密碼失敗',
 	'reset_password_new'         => '新密碼設置成功，請自行登錄',
 	'request_error'              => '請求異常，請刷新頁面後重試'
 ];

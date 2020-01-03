@@ -1,0 +1,39 @@
+// Name:            Rating
+//
+// Component:       `rating`
+//
+// Modifiers:       'rating-disabled'
+//                  'rating-sm'
+//                  'rating-lg'
+//                  'rating-hg'
+//
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$rating-color:              $gray-300 !default;
+$rating-active-color:       $color-orange-600 !default;
+$rating-hover-color:        $color-orange-600 !default;
+$rating-active-hover-color: $rating-hover-color !default;
+
+// Component: Rating
+// ========================================================================
+
+.rating {
+
+  .icon {
+    color: $rating-color;
+
+    &.active {
+      color: $rating-active-color !important;
+      &.hover {
+        color: $rating-active-hover-color !important;
+      }
+    }
+
+    &.hover {
+      color: $rating-hover-color !important;
+    }
+  }
+}

@@ -1,0 +1,80 @@
+// Name:            Reboot
+//
+// ========================================================================
+
+html {
+  font-size: $font-size-root;
+}
+
+// ========================================================================
+$link-text-action-color: $gray-400 !default;
+$link-text-action-hover-color: $gray-300 !default;
+$link-like-action-color: $gray-400 !default;
+$link-like-action-hover-color: $color-red-600 !default;
+
+//  Correct color not being inherited.
+button {
+  color: inherit;
+}
+
+// Links
+// ========================================================================
+a {
+  &:active, &:hover, &:focus {
+    outline: 0;
+  }
+
+  &.text-body {
+    color: $body-color;
+
+    &, &:hover, &:focus {
+      text-decoration: none;
+    }
+
+    // &:hover, &:focus {
+    //   color: $link-text-action-hover-color;
+    // }
+  }
+
+  &.text-action {
+    color: $link-text-action-color;
+
+    &, &:hover, &:focus {
+      text-decoration: none;
+    }
+
+    &:hover, &:focus {
+      color: $link-text-action-hover-color;
+    }
+
+    .icon + span {
+      margin-left: 3px;
+    }
+  }
+
+  &.text-like {
+    color: $link-like-action-color !important;
+
+    &, &:hover, &:focus {
+      text-decoration: none;
+    }
+
+    &.active, &:hover, &:focus {
+      color: $link-like-action-hover-color !important;
+    }
+  }
+}
+
+.text-action + .text-action {
+  margin-left: 6px;
+}
+
+b, strong {
+  font-weight: inherit;
+}
+
+// Add the correct font weight in Chrome, Edge, and Safari.
+
+b, strong {
+  font-weight: $font-weight-bold;
+}

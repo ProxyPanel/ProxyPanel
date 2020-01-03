@@ -140,8 +140,7 @@
     var overlappingBarsDataThree = {
       labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
       series: [[5, 2, 6, 7, 10, 8, 6, 5], [4, 3, 5, 6, 8, 6, 4, 3]]
-    }; //define an array contains four bar's data
-
+    };
     var barsData = [overlappingBarsDataOne, overlappingBarsDataTwo, overlappingBarsDataThree, overlappingBarsDataThree]; //Common OverlappingBarsOptions
 
     var overlappingBarsOptions = {

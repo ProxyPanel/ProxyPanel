@@ -72,17 +72,12 @@
 
           $item.removeClass('hover');
         }).on('open.site.menu', '.site-menu-item', function (e) {
-            var $item = $(this);
-            self.expand($item, function () {
-                $item.addClass('open');
-            });
-            $item.siblings('.open').trigger('close.site.menu');
-            e.stopPropagation();
-        }).on('tap.site.menu', '> .site-menu-item > a', function (e) {
-            var link = $(this).attr('href')
-            if (link) {
-                window.location = link
-            }
+          var $item = $(this);
+          self.expand($item, function () {
+            $item.addClass('open');
+          });
+          $item.siblings('.open').trigger('close.site.menu');
+          e.stopPropagation();
         }).on('close.site.menu', '.site-menu-item.open', function (e) {
           var $item = $(this);
           self.collapse($item, function () {
@@ -101,6 +96,12 @@
           }
 
           e.stopPropagation();
+        }).on('tap.site.menu', '> .site-menu-item > a', function () {
+          var link = $(this).attr('href');
+
+          if (link) {
+            window.location = link;
+          }
         }).on('touchstart.site.menu', '.site-menu-item', function () {
           $(this).one('touchend.site.menu', function () {
             var $item = $(this);

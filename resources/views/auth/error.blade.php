@@ -14,9 +14,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
 	<meta name="description" content="错误">
 	<meta name="author" content="兔姬菌">
+	<meta name="copyright" content="2017-2020©兔姬菌">
 	<title>{{trans('error.title')}}</title>
 
-	<link href="{{asset('favicon.ico')}}" rel="shortcut icon">
+	<link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
 	<!-- 样式表/Stylesheets -->
 	<link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">

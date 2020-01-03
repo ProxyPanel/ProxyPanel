@@ -1,0 +1,168 @@
+$form-material-focus-text:              $brand-primary !default;
+
+$form-material-danger-text:               $form-danger-text !default;
+$form-material-warning-text:              $form-warning-text !default;
+$form-material-success-text:              $form-success-text !default;
+$form-material-info-text:                 $form-info-text !default;
+
+$form-material-underline-color:           $gray-200 !default;
+
+$form-material-floating-label-color:      $gray-500 !default;
+
+$form-material-disabled-floating-label-color:   $gray-300 !default;
+$form-material-disabled-underline-color:        $gray-300 !default;
+$form-material-disabled-placeholder-color:      $gray-300 !default;
+
+// Mixins
+// ========================================================================
+
+@mixin form-material-control-validation($text-color, $border-color: $form-material-underline-color){
+  .form-control {
+    // box-shadow: none;
+
+    &:focus, &.focus, &:not(.empty) {
+      @include form-material-control-underline($text-color, $border-color);
+
+      .no-cssgradients & {
+        background: transparent;
+        border-bottom: 2px solid $text-color;
+      }
+    }
+
+    &:-webkit-autofill {
+      @include form-material-control-underline($text-color, $border-color);
+
+      .no-cssgradients & {
+        background: transparent;
+        border-bottom: 2px solid $text-color;
+      }
+    }
+
+    &:not(.empty){
+      background-size: 100% 2px, 100% 1px;
+    }
+  }
+
+  .form-control-label {
+    color: $text-color;
+  }
+
+  .form-control {
+    &:focus, &.focus, &:not(.empty) {
+      ~ .floating-label {
+        color: $text-color;
+      }
+    }
+    &:-webkit-autofill {
+      ~ .floating-label {
+        color: $text-color;
+      }
+    }
+  }
+}
+
+@mixin form-material-control-underline($text-color, $border-color){
+  background-image: linear-gradient($text-color, $text-color), linear-gradient($border-color, $border-color);
+}
+
+// Form material
+// ========================================================================
+.form-material {
+
+  .form-control {
+    box-shadow: none;
+    background-color: transparent;
+
+    &, &:focus, &.focus {
+      @include form-material-control-underline($form-material-focus-text, $form-material-underline-color);
+    }
+
+    .no-cssgradients & {
+      border-bottom: 2px solid $form-material-underline-color;
+    }
+
+    &::-webkit-input-placeholder {
+      color:  $prompt-color;
+    }
+    &::-moz-placeholder {
+      color:  $prompt-color;
+    }
+    &:-ms-input-placeholder {
+      color:  $prompt-color;
+    }
+
+    &:disabled {
+      &::-webkit-input-placeholder {
+        color: $form-material-disabled-placeholder-color;
+      }
+      &::-moz-placeholder {
+        color: $form-material-disabled-placeholder-color;
+      }
+      &:-ms-input-placeholder {
+        color: $form-material-disabled-placeholder-color;
+      }
+    }
+
+    &:focus, &.focus {
+
+      .no-cssgradients & {
+        border-bottom: 2px solid $form-material-focus-text;
+      }
+    }
+
+    &:disabled,
+    &[disabled],
+    fieldset[disabled] & {
+      border-bottom: 1px dashed $form-material-disabled-underline-color;
+
+      ~ .floating-label {
+        color: $form-material-disabled-floating-label-color;
+      }
+    }
+  }
+
+  .floating-label {
+    color: $form-material-floating-label-color;
+  }
+
+  .form-control {
+    &:focus, &.focus {
+      ~ .floating-label {
+        color: $form-material-focus-text;
+      }
+    }
+  }
+
+  // Invalid
+  .form-control {
+    &:not(.empty):invalid, &.focus:invalid {
+      ~ .floating-label {
+        color: $form-material-danger-text;
+      }
+    }
+  }
+
+  .form-control:invalid {
+    @include form-material-control-underline($form-material-danger-text, $form-material-underline-color);
+  }
+
+  // States
+  &.form-group {
+    &.has-warning {
+      @include form-material-control-validation($form-material-warning-text, $form-material-underline-color);
+    }
+
+    &.has-danger {
+      @include form-material-control-validation($form-material-danger-text, $form-material-underline-color);
+    }
+
+    &.has-success {
+      @include form-material-control-validation($form-material-success-text, $form-material-underline-color);
+    }
+
+    &.has-info {
+      @include form-material-control-validation($form-material-info-text, $form-material-underline-color);
+    }
+  }
+}
+

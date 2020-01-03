@@ -1,0 +1,92 @@
+.asPaginator {
+  overflow: hidden;
+
+  li {
+    float: left;
+    margin: 0 5px;
+    list-style: none;
+
+    a {
+      cursor: default;
+      display: inline-block;
+      padding: 5px 9px;
+      text-decoration: none;
+      text-transform: capitalize;
+    }
+  }
+}
+
+$paginatorFontColor: #666 !default;
+$paginatorBgColor: #fff !default;
+$paginatorStateColor: #ff755a !default;
+
+$paginatorListsFontColor: $paginatorFontColor !default;
+$paginatorOmitHoverFontColor: $paginatorFontColor !default;
+
+$paginatorListsBgColor: $paginatorBgColor !default;
+$paginatorListsBdTopColor: darken($paginatorBgColor,21%) !default;
+$paginatorListsBdBottomColor: $paginatorListsBdTopColor !default;
+$paginatorListsBdRightColor: $paginatorListsBdTopColor !default;
+$paginatorArrowBdColor: $paginatorListsBdTopColor !default;
+
+$paginatorListsHoverFontColor: $paginatorStateColor !default;
+$paginatorActiveFontColor: lighten($paginatorStateColor,100%) !default;
+$paginatorActiveHoverFontColor: $paginatorActiveFontColor !default;
+$paginatorActiveBgColor: $paginatorStateColor !default;
+$paginatorActiveBdColor: $paginatorActiveBgColor !default;
+$paginatorDisableFontColor: rgba(darken($paginatorStateColor,100%/100.0%),20%) !default;
+$paginatorDisableHoverFontColor: $paginatorDisableFontColor !default;
+
+.asPaginator {
+  li {
+    margin: 0;
+    background-color: $paginatorListsBgColor;
+    border-top: 1px solid $paginatorListsBdTopColor;
+    border-bottom: 1px solid $paginatorListsBdBottomColor;
+    border-right: 1px solid $paginatorListsBdRightColor;
+
+    a {
+      padding: 6px 10px;
+      color: $paginatorListsFontColor;
+    }
+
+    &:hover a {
+      color: $paginatorListsHoverFontColor;
+    }
+
+    &:first-child {
+      border-left: 1px solid $paginatorArrowBdColor;
+    }
+  }
+
+  .asPaginator_active {
+    margin: 0 0 0 -1px;
+    background-color: $paginatorActiveBgColor;
+    border: 1px solid $paginatorActiveBdColor;
+
+    a {
+      padding: 6px 10px;
+      color: $paginatorActiveFontColor;
+    }
+
+    &:hover a {
+      color: $paginatorActiveHoverFontColor;
+    }
+  }
+
+  .asPaginator_disable {
+    a {
+      color: $paginatorDisableFontColor;
+    }
+
+    &:hover a {
+      color: $paginatorDisableHoverFontColor;
+    }
+  }
+
+  .asPaginator_omit {
+    &:hover a {
+      color: $paginatorOmitHoverFontColor;
+    }
+  }
+}

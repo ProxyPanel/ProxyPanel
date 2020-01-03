@@ -1,0 +1,21 @@
+// Top & Bottom
+@mixin shadow($shadow-top, $shadow-bottom) {
+  box-shadow: $shadow-top, $shadow-bottom;
+}
+
+// Top
+@mixin shadow-top($shadow-top) {
+  box-shadow: $shadow-top;
+}
+
+// Bottom
+@mixin shadow-bottom($shadow-bottom) {
+  box-shadow: $shadow-bottom;
+}
+
+// active
+@mixin shadow-active($shadow-active) {
+  &:hover, &:focus {
+    box-shadow: $shadow-active;
+  }
+}

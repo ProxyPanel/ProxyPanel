@@ -1,0 +1,135 @@
+// Name:            Steps
+//
+// Component:       `pearls`
+//
+// Modifiers:       'pearl-icon'
+//                  'pearl-number'
+//                  'pearl-title'
+//                  'pearl-desc'
+//                  'current'
+//                  'done'
+//                  'error'
+//                  'disabled'
+//                  'pearls-vertical'
+//                  'pearls-lg'
+//                  'pearls-sm'
+//                  'pearls-xs'
+//
+// Markup:
+// <div class="pearl done">
+//   <span class="pearl-number">1</span>
+//   <div class="pearl-title">Title</div>
+// </div>
+// ========================================================================
+
+// Variables
+// ========================================================================
+
+$pearl-line-bg:               $gray-100 !default;
+
+$pearl-color:                 $inverse !default;
+$pearl-bg:                    $gray-300 !default;
+$pearl-border-size:           2px !default;
+$pearl-border-color:          $pearl-bg !default;
+
+$pearl-current-scale:         1.3 !default;
+$pearl-current-color:         $brand-primary !default;
+$pearl-current-bg:            $inverse !default;
+$pearl-current-line-bg:       $brand-primary !default;
+$pearl-current-border-color:  $pearl-current-color !default;
+
+$pearl-done-color:            $inverse !default;
+$pearl-done-bg:               $brand-primary !default;
+$pearl-done-line-bg:          $brand-primary !default;
+$pearl-done-border-color:     $pearl-done-bg !default;
+
+$pearl-error-color:           $brand-danger !default;
+$pearl-error-bg:              $inverse !default;
+$pearl-error-line-bg:         $brand-primary !default;
+$pearl-error-border-color:    $pearl-error-color !default;
+
+$pearl-disabled-color:        $pearl-color !default;
+$pearl-disabled-bg:           $pearl-bg !default;
+$pearl-disabled-line-bg:      $pearl-line-bg !default;
+$pearl-disabled-border-color: $pearl-disabled-bg !default;
+
+// Component: pearls
+// ========================================================================
+
+.pearl {
+
+  &:before,
+  &:after {
+    background-color: $pearl-line-bg;
+  }
+}
+
+.pearl-number, .pearl-icon {
+  color: $pearl-color;
+  background: $pearl-bg;
+  border: $pearl-border-size solid $pearl-border-color;
+}
+
+.pearl-title {
+  color: $subtitle-color;
+}
+
+// State Modifier
+// ========================================================================
+.pearl {
+  &.current {
+    &:before,
+    &:after {
+      background-color: $pearl-current-line-bg;
+    }
+
+    .pearl-number, .pearl-icon {
+      color: $pearl-current-color;
+      background-color: $pearl-current-bg;
+      border-color: $pearl-current-border-color;
+    }
+  }
+
+  &.disabled {
+
+    &:before,
+    &:after {
+      background-color: $pearl-disabled-line-bg;
+    }
+
+    .pearl-number, .pearl-icon {
+      color: $pearl-disabled-color;
+      background-color: $pearl-disabled-bg;
+      border-color: $pearl-disabled-border-color;
+    }
+  }
+
+  &.error {
+    &:before {
+      background-color: $pearl-error-line-bg;
+    }
+
+    &:after {
+      background-color: $pearl-line-bg;
+    }
+
+    .pearl-number, .pearl-icon {
+      color: $pearl-error-color;
+      background-color: $pearl-error-bg;
+      border-color: $pearl-error-border-color;
+    }
+  }
+
+  &.done {
+    &:before,
+    &:after {
+      background-color: $pearl-done-line-bg;
+    }
+
+    .pearl-number, .pearl-icon {
+      color: $pearl-done-color;
+      background-color: $pearl-done-bg;
+      border-color: $pearl-done-border-color;
+    }
+  }
+}

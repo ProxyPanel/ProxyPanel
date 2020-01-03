@@ -1,0 +1,86 @@
+.site-gridmenu {
+  position: fixed;
+  top: $site-navbar-height;
+  bottom: 0;
+  z-index: $zindex-navbar-fixed;
+  // height: 100%;
+  // $height: 100% - #{$site-navbar-height} !default;
+  padding: 20px 0;
+  visibility: hidden;
+  background-color: $site-gridmenu-bg;
+  opacity: 0;
+
+  .js > & {
+    transition: opacity .5s ease 0s, visibility 0s;
+  }
+
+  .site-gridmenu-active > & {
+    @include media-breakpoint-down(sm) {
+    }
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .5s ease 0s;
+
+    ul {
+      opacity: 1;
+      transform: rotateX(0deg);
+    }
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    opacity: .4;
+    transition: transform .5s ease 0s, opacity .5s ease 0s;
+    transform: translateY(-25%) rotateX(35deg);
+  }
+
+  li {
+    float: left;
+    width: 50%;
+    text-align: center;
+
+    > a {
+      display: block;
+      padding: 30px 15px;
+      color: $site-gridmenu-color;
+    }
+
+    .icon {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    &:hover > a {
+      color: $site-gridmenu-hover-color;
+      text-decoration: none;
+      cursor: pointer;
+      background-color: $site-gridmenu-hover-bg;
+    }
+  }
+}
+
+body.site-gridmenu-active {
+  overflow: hidden;
+}
+
+.site-gridmenu-toggle {
+  &::after {
+    @include make-icon();
+    position: relative;
+    top: -1px;
+    right: -3px;
+    font-family: "#{$wb-font-family}";
+    font-size: $site-gridmenu-toggle-size;
+    content: "#{$wb-var-chevron-down-mini}";
+    opacity: 0;
+    transition: opacity .15s;
+
+    .site-gridmenu-active & {
+      //.rotate(90deg);
+      opacity: 1;
+    }
+  }
+}

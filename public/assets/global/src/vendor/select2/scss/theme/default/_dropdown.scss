@@ -1,0 +1,15 @@
+
+.select2-dropdown {
+    box-shadow: $dropdown-box-shadow;
+    border-color: $input-focus-border-color;
+    overflow-x: hidden;
+    margin-top: -1px;
+    &--above {
+        margin-top: 1px;
+    }
+}
+
+.select2-results > .select2-results__options {
+    max-height: 200px;
+    overflow-y: auto;
+}

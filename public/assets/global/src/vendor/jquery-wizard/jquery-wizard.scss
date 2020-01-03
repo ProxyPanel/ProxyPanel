@@ -1,0 +1,47 @@
+@import 'vars';
+$wizard-pane-transition-duration: .2s;
+$wizard-pane-color-active: $brand-primary;
+$wizard-pane-color-error: $brand-danger;
+$wizard-pane-color-done: $brand-success;
+
+.wizard-pane {
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity $wizard-pane-transition-duration ease;
+
+  &.active {
+    position: relative;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &.activing {
+    visibility: visible;
+  }
+}
+
+.wizard-content {
+  position: relative;
+  padding: 0;
+  transition: height $wizard-pane-transition-duration ease;
+}
+
+.wizard-buttons {
+  .panel-body > &, .tab-content > & {
+    margin-top: $line-height-computed;
+  }
+}
+
+.color-active {
+  color: $wizard-pane-color-active !important;
+}
+
+.color-error {
+  color: $wizard-pane-color-error !important;
+}
+
+.color-done {
+  color: $wizard-pane-color-done !important;
+}

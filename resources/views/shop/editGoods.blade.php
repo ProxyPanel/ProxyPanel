@@ -65,7 +65,7 @@
 					<div class="form-group row">
 						<label class="col-md-2 col-form-label" for="price">售价</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="price" id="price" value="{{$goods->price}}" required/>
+							<input type="text" class="form-control" name="price" id="price" value="{{$goods->price}}" required/>
 							<span class="input-group-text">元</span>
 						</div>
 					</div>
@@ -90,6 +90,14 @@
 									<input type="number" class="form-control" name="renew" id="renew" value="{{$goods->renew}}"/>
 									<span class="input-group-text">元</span>
 								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-2 col-form-label" for="period">重置周期</label>
+								<div class="col-md-4 input-group">
+									<input type="number" class="form-control" name="period" id="period" value="{{$goods->period}}" required/>
+									<span class="input-group-text">天</span>
+								</div>
+								<span class="text-help"> 套餐流量会每N天重置 </span>
 							</div>
 						@endif
 						<div class="form-group row">

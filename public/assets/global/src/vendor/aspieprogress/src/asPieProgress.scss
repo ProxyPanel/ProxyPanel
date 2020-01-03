@@ -1,0 +1,48 @@
+// core
+.pie_progress {
+  position: relative;
+  text-align: center;
+  transform-style: preserve-3d;
+
+  &__svg {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    vertical-align: middle;
+
+    svg {
+      position: absolute;
+      margin: 0 auto;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: inline-block;
+    }
+  }
+
+  &__content,
+  &__number,
+  &__label,
+  &__icon {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+  }
+}
+
+// styles
+.pie_progress {
+  &__number {
+    font-size: 42px;
+  }
+
+  &__label {
+    margin-top: 32px;
+    font-size: 12px;
+  }
+}
