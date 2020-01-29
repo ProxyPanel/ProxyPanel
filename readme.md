@@ -7,12 +7,12 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,VNET
 - [Update Log](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
 
 ## Requirements
-- PHP 7.1.3 +
+- PHP 7.2 +
 - Mysql 5.5 +
 - Memory 1G +
 - Disk 10G +
 - PHP Extensions: ZIP、XML、CURL、GD2、FileInfo、OpenSSL、Mbstring、PDO、Tokenizer、Ctype、JSON、BCMath
-- Laravel 5.6
+- Laravel 5.8
 
 ## Thanks
 - [@shadowsocks](https://github.com/shadowsocks)
