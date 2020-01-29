@@ -124,8 +124,6 @@ return [
 		/*
 		 * Laravel Framework Service Providers...
 		 */
-		Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-		Barryvdh\Debugbar\ServiceProvider::class,
 		Illuminate\Auth\AuthServiceProvider::class,
 		Illuminate\Broadcasting\BroadcastServiceProvider::class,
 		Illuminate\Bus\BusServiceProvider::class,
@@ -149,13 +147,16 @@ return [
 		Illuminate\Validation\ValidationServiceProvider::class,
 		Illuminate\View\ViewServiceProvider::class,
 
-
 		/*
 		* Package Service Providers...
 		*/
+		Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class, //IDE帮助
+		Barryvdh\Debugbar\ServiceProvider::class,//Debug工具
+		Jenssegers\Agent\AgentServiceProvider::class, //用户浏览器检测
 		Misechow\Geetest\GeetestServiceProvider::class,  // Geetest极验
 		Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA
 		Overtrue\LaravelLang\TranslationServiceProvider::class, // 多国语言包功能
+		Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,//日志查看
 
 		/*
 		 * Application Service Providers...

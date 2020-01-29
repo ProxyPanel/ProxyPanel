@@ -19,9 +19,9 @@ use Log;
 
 class AutoClearLog extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'autoClearLog';
 	protected $description = '自动清除日志';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -41,7 +41,7 @@ class AutoClearLog extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('执行定时任务【'.$this->description.'】，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 清除日志
@@ -60,7 +60,7 @@ class AutoClearLog extends Command
 		UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 days')))->delete();
 
 		// 自动清除1个月以前的用户每天流量数据日志
-		UserTrafficDaily::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month')))->delete();
+		UserTrafficDaily::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month 5 days')))->delete();
 
 		// 自动清除2个月以前的节点每小时流量数据日志
 		SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-2 month')))->delete();
@@ -71,8 +71,8 @@ class AutoClearLog extends Command
 		// 自动清除30天以前用户封禁日志
 		UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
 
-		// 自动清除1天前用户连接IP
-		SsNodeIp::query()->where('created_at', '<=', strtotime("-1 day"))->delete();
+		// 自动清除1月前用户连接IP
+		SsNodeIp::query()->where('created_at', '<=', strtotime("-1 month"))->delete();
 
 		// 自动清除3个月以前用户登陆日志
 		UserLoginLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-3 month")))->delete();

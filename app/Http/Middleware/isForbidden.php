@@ -16,7 +16,7 @@ class isForbidden
 	 * 限制机器人、指定IP访问
 	 *
 	 * @param Request $request
-	 * @param Closure                  $next
+	 * @param Closure $next
 	 *
 	 * @return mixed
 	 */
@@ -32,7 +32,7 @@ class isForbidden
 		}
 
 		// 拒绝通过订阅链接域名访问网站，防止网站被探测
-		if(FALSE !== strpos(Helpers::systemConfig()['subscribe_domain'], $request->getHost())){
+		if(TRUE === strpos(Helpers::systemConfig()['subscribe_domain'], $request->getHost()) && FALSE === strpos(Helpers::systemConfig()['subscribe_domain'], Helpers::systemConfig()['website_url'])){
 			Log::info("识别到通过订阅链接访问，强制跳转至百度(".getClientIp().")");
 
 			return redirect('https://www.baidu.com');

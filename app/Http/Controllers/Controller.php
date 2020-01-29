@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Http\Models\ReferralLog;
 use App\Http\Models\SensitiveWords;
+use App\Http\Models\SsGroup;
+use App\Http\Models\SsNode;
+use App\Http\Models\User;
 use App\Http\Models\UserBalanceLog;
+use App\Http\Models\UserSubscribeLog;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -18,19 +23,19 @@ class Controller extends BaseController
 	// 生成随机密码
 	public function makePasswd()
 	{
-		exit(makeRandStr());
+		return makeRandStr();
 	}
 
 	// 生成VmessId
 	public function makeVmessId()
 	{
-		exit(createGuid());
+		return createGuid();
 	}
 
 	// 生成网站安全码
 	public function makeSecurityCode()
 	{
-		exit(strtolower(makeRandStr(8)));
+		return strtolower(makeRandStr(8));
 	}
 
 	// 类似Linux中的tail命令
@@ -64,6 +69,8 @@ class Controller extends BaseController
 
 	/**
 	 * 计算文件行数
+	 * @param $file
+	 * @return int
 	 */
 	public function countLine($file)
 	{
@@ -136,7 +143,7 @@ class Controller extends BaseController
 	// 获取敏感词
 	public function sensitiveWords($type)
 	{
-		return SensitiveWords::query()->where('type',$type)->get()->pluck('words')->toArray();
+		return SensitiveWords::query()->where('type', $type)->get()->pluck('words')->toArray();
 	}
 
 	// 将Base64图片转换为本地图片并保存
@@ -163,5 +170,95 @@ class Controller extends BaseController
 		}else{
 			return '';
 		}
+	}
+
+	/**
+	 * 节点信息
+	 *
+	 * @param int $uid      用户ID
+	 * @param int $nodeId   节点ID
+	 * @param int $infoType 信息类型：0为链接，1为文字
+	 * @return string
+	 */
+	function getNodeInfo($uid, $nodeId, $infoType)
+	{
+		$user = User::whereKey($uid)->first();
+		$node = SsNode::whereKey($nodeId)->first();
+		$scheme = NULL;
+		// 获取分组名称
+		$group = SsGroup::query()->whereKey($node->group_id)->first();
+		$host = $node->server? : $node->ip;
+
+		if($node->type == 1){
+			$group = $group? $group->name : Helpers::systemConfig()['website_name'];
+			$obfs_param = $user->obfs_param? : $node->obfs_param;
+			if($node->single){
+				$port = $node->port;
+				$protocol = $node->protocol;
+				$method = $node->method;
+				$obfs = $node->obfs;
+				$passwd = $node->passwd;
+				$protocol_param = $user->port.':'.$user->passwd;
+			}else{
+				$port = $user->port;
+				$protocol = $user->protocol;
+				$method = $user->method;
+				$obfs = $user->obfs;
+				$passwd = $user->passwd;
+				$protocol_param = $user->protocol_param;
+			}
+			if($infoType != 1){
+				// 生成ss/ssr scheme
+				if($node->compatible){
+					$data = 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
+				}else{
+					$data = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
+				}
+			}else{
+				// 生成文本配置信息
+				$data = "服务器：".$host.PHP_EOL.
+					"IPv6：".($node->ipv6? : '').PHP_EOL.
+					"远程端口：".$port.PHP_EOL.
+					"密码：".$passwd.PHP_EOL.
+					"加密方法：".$method.PHP_EOL.
+					"路由：绕过局域网及中国大陆地址".PHP_EOL.
+					"协议：".$protocol.PHP_EOL.
+					"协议参数：".$protocol_param.PHP_EOL.
+					"混淆方式：".$obfs.PHP_EOL.
+					"混淆参数：".$obfs_param.PHP_EOL.
+					"本地端口：1080".PHP_EOL;
+			}
+		}else{
+			// 生成v2ray scheme
+			if($infoType != 1){
+				// 生成v2ray scheme
+				$data = 'vmess://'.base64_encode(json_encode(["v" => "2", "ps" => $node->name, "add" => $host, "port" => $node->v2_port, "id" => $user->vmess_id, "aid" => $node->v2_alter_id, "net" => $node->v2_net, "type" => $node->v2_type, "host" => $node->v2_host, "path" => $node->v2_path, "tls" => $node->v2_tls? "tls" : ""], JSON_PRETTY_PRINT));
+			}else{
+				$data = "服务器：".$host.PHP_EOL.
+					"IPv6：".($node->ipv6? : "").PHP_EOL.
+					"端口：".$node->v2_port.PHP_EOL.
+					"加密方式：".$node->v2_method.PHP_EOL.
+					"用户ID：".$user->vmess_id.PHP_EOL.
+					"额外ID：".$node->v2_alter_id.PHP_EOL.
+					"传输协议：".$node->v2_net.PHP_EOL.
+					"伪装类型：".$node->v2_type.PHP_EOL.
+					"伪装域名：".($node->v2_host? : "").PHP_EOL.
+					"路径：".($node->v2_path? : "").PHP_EOL.
+					"TLS：".($node->v2_tls? "tls" : "").PHP_EOL;
+			}
+		}
+
+		return $data;
+	}
+
+	// 写入订阅访问日志
+	public function log($subscribeId, $ip, $headers)
+	{
+		$log = new UserSubscribeLog();
+		$log->sid = $subscribeId;
+		$log->request_ip = $ip;
+		$log->request_time = date('Y-m-d H:i:s');
+		$log->request_header = $headers;
+		$log->save();
 	}
 }

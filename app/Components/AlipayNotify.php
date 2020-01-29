@@ -43,9 +43,7 @@ class AlipayNotify
 			return FALSE;
 		}else{
 			// 生成签名结果
-			$isSign = $this->getSignVeryfy($_POST, $_POST["sign"]);
-
-			$converted_res = ($isSign)? 'true' : 'false';
+			$isSign = $this->getSignVerify($_POST, $_POST["sign"]);
 
 			// 获取支付宝远程服务器ATN结果（验证是否是支付宝发来的消息）
 			$responseTxt = 'false';
@@ -54,7 +52,7 @@ class AlipayNotify
 			}
 
 			// 验证
-			// $responsetTxt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
+			// $responseTxt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
 			// isSign的结果不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
 			if(preg_match("/true$/i", $responseTxt) && $isSign){
 				return TRUE;
@@ -72,7 +70,7 @@ class AlipayNotify
 	 *
 	 * @return bool 签名验证结果
 	 */
-	function getSignVeryfy($para_temp, $sign)
+	function getSignVerify($para_temp, $sign)
 	{
 		// 除去待签名参数数组中的空值和签名参数
 		$para_filter = $this->paraFilter($para_temp);
@@ -81,43 +79,78 @@ class AlipayNotify
 		$para_sort = $this->argSort($para_filter);
 
 		// 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
-		$prestr = $this->createLinkString($para_sort);
+		$preStr = $this->createLinkString($para_sort);
 
 		switch(strtoupper(trim($this->sign_type))){
 			case "RSA" :
-				$isSgin = $this->rsaVerify($prestr, trim($this->alipay_public_key), $sign);
+				$isSign = $this->rsaVerify($preStr, trim($this->alipay_public_key), $sign);
 				break;
 			case "MD5" :
-				$isSgin = $this->md5Verify($prestr, $sign, trim($this->md5_key));
+				$isSign = $this->md5Verify($preStr, $sign, trim($this->md5_key));
 				break;
 			default :
-				$isSgin = FALSE;
+				$isSign = FALSE;
 		}
 
-		return $isSgin;
+		return $isSign;
 	}
 
 	/**
-	 * 获取远程服务器ATN结果,验证返回URL
+	 * 除去数组中的空值和签名参数
 	 *
-	 * @param integer $notify_id 通知校验ID
+	 * @param array $para 签名参数组
 	 *
-	 * @return string 服务器ATN结果
-	 * 验证结果集：
-	 * invalid命令参数不对 出现这个错误，请检测返回处理中partner和key是否为空
-	 * true 返回正确信息
-	 * false 请检查防火墙或者是服务器阻止端口问题以及验证时间是否超过一分钟
+	 * @return array 去掉空值与签名参数后的新签名参数组
 	 */
-	function getResponse($notify_id)
+	function paraFilter($para)
 	{
-		$transport = strtolower(trim($this->transport));
-		$partner = trim($this->partner);
+		$para_filter = [];
+		foreach($para as $key => $val){
+			if($key == "sign" || $key == "sign_type" || $val == "") continue;
+			else    $para_filter[$key] = $para[$key];
+		}
 
-		$verify_url = $transport == 'https'? $this->https_verify_url : $this->http_verify_url;
-		$verify_url = $verify_url."partner=".$partner."&notify_id=".$notify_id;
-		$responseTxt = $this->getHttpResponseGET($verify_url, base_path('ca/cacert_alipay.pem'));
+		return $para_filter;
+	}
 
-		return $responseTxt;
+	/**
+	 * 对数组排序
+	 *
+	 * @param array $para 排序前的数组
+	 *
+	 * @return array 排序后的数组
+	 */
+	function argSort($para)
+	{
+		ksort($para);
+		reset($para);
+
+		return $para;
+	}
+
+	/**
+	 * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+	 *
+	 * @param array $para 需要拼接的数组
+	 *
+	 * @return string
+	 */
+	function createLinkString($para)
+	{
+		$arg = '';
+		foreach($para as $key => $val){
+			$arg .= "&".$key."=".$val;
+		}
+
+		// 去掉开头的&字符
+		$arg = substr($arg, 1);
+
+		// 如果存在转义字符，那么去掉转义
+		if(get_magic_quotes_gpc()){
+			$arg = stripslashes($arg);
+		}
+
+		return $arg;
 	}
 
 	/**
@@ -152,42 +185,39 @@ class AlipayNotify
 	/**
 	 * 验证签名
 	 *
-	 * @param string $prestr 需要签名的字符串pre-sign
+	 * @param string $preStr 需要签名的字符串pre-sign
 	 * @param string $sign   签名结果
 	 * @param string $key    私钥
 	 *
 	 * @return bool
 	 */
-	function md5Verify($prestr, $sign, $key)
+	function md5Verify($preStr, $sign, $key)
 	{
-		$mysgin = md5($prestr.$key);
+		$mySign = md5($preStr.$key);
 
-		return $mysgin == $sign? TRUE : FALSE;
+		return $mySign == $sign? TRUE : FALSE;
 	}
 
 	/**
-	 * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+	 * 获取远程服务器ATN结果,验证返回URL
 	 *
-	 * @param array $para 需要拼接的数组
+	 * @param integer $notify_id 通知校验ID
 	 *
-	 * @return string
+	 * @return string 服务器ATN结果
+	 * 验证结果集：
+	 * invalid命令参数不对 出现这个错误，请检测返回处理中partner和key是否为空
+	 * true 返回正确信息
+	 * false 请检查防火墙或者是服务器阻止端口问题以及验证时间是否超过一分钟
 	 */
-	function createLinkString($para)
+	function getResponse($notify_id)
 	{
-		$arg = "";
-		while(list ($key, $val) = each($para)){
-			$arg .= $key."=".$val."&";
-		}
+		$transport = strtolower(trim($this->transport));
+		$partner = trim($this->partner);
 
-		// 去掉最后一个&字符
-		$arg = substr($arg, 0, count($arg)-2);
+		$verify_url = $transport == 'https'? $this->https_verify_url : $this->http_verify_url;
+		$verify_url = $verify_url."partner=".$partner."&notify_id=".$notify_id;
 
-		// 如果存在转义字符，那么去掉转义
-		if(get_magic_quotes_gpc()){
-			$arg = stripslashes($arg);
-		}
-
-		return $arg;
+		return $this->getHttpResponseGET($verify_url, base_path('ca/cacert_alipay.pem'));
 	}
 
 	/**
@@ -212,39 +242,6 @@ class AlipayNotify
 		curl_close($curl);
 
 		return $responseText;
-	}
-
-	/**
-	 * 除去数组中的空值和签名参数
-	 *
-	 * @param array $para 签名参数组
-	 *
-	 * @return array 去掉空值与签名参数后的新签名参数组
-	 */
-	function paraFilter($para)
-	{
-		$para_filter = [];
-		while(list ($key, $val) = each($para)){
-			if($key == "sign" || $key == "sign_type" || $val == "") continue;
-			else    $para_filter[$key] = $para[$key];
-		}
-
-		return $para_filter;
-	}
-
-	/**
-	 * 对数组排序
-	 *
-	 * @param array $para 排序前的数组
-	 *
-	 * @return array 排序后的数组
-	 */
-	function argSort($para)
-	{
-		ksort($para);
-		reset($para);
-
-		return $para;
 	}
 }
 

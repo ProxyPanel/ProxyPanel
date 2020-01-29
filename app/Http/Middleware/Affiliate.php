@@ -12,7 +12,7 @@ class Affiliate
 	 * 返利识别
 	 *
 	 * @param Request $request
-	 * @param Closure                  $next
+	 * @param Closure $next
 	 *
 	 * @return mixed
 	 */

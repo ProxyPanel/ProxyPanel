@@ -64,7 +64,7 @@ class AdminController extends Controller
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function index(Request $request)
+	public function index()
 	{
 		$past = strtotime(date('Y-m-d', strtotime("-".self::$systemConfig['expire_days']." days")));
 
@@ -291,6 +291,22 @@ class AdminController extends Controller
 			$view['initial_labels'] = explode(",", Helpers::systemConfig()['initial_labels_for_user']);
 
 			return Response::view('admin.addUser', $view);
+		}
+	}
+
+	// 生成用户标签
+	private function makeUserLabels($userId, $labels)
+	{
+		// 先删除该用户所有的标签
+		UserLabel::query()->where('user_id', $userId)->delete();
+
+		if(!empty($labels) && is_array($labels)){
+			foreach($labels as $label){
+				$userLabel = new UserLabel();
+				$userLabel->user_id = $userId;
+				$userLabel->label_id = $label;
+				$userLabel->save();
+			}
 		}
 	}
 
@@ -771,6 +787,22 @@ class AdminController extends Controller
 		}
 	}
 
+	// 生成节点标签
+	private function makeNodeLabels($nodeId, $labels)
+	{
+		// 先删除所有该节点的标签
+		SsNodeLabel::query()->where('node_id', $nodeId)->delete();
+
+		if(!empty($labels) && is_array($labels)){
+			foreach($labels as $label){
+				$ssNodeLabel = new SsNodeLabel();
+				$ssNodeLabel->node_id = $nodeId;
+				$ssNodeLabel->label_id = $label;
+				$ssNodeLabel->save();
+			}
+		}
+	}
+
 	// 删除节点
 	public function delNode(Request $request)
 	{
@@ -807,7 +839,7 @@ class AdminController extends Controller
 	}
 
 	// 节点流量监控
-	public function nodeMonitor(Request $request, $node_id)
+	public function nodeMonitor($node_id)
 	{
 		$node = SsNode::query()->where('id', $node_id)->orderBy('sort', 'desc')->first();
 		if(!$node){
@@ -1075,6 +1107,8 @@ class AdminController extends Controller
 		$user_id = $request->input('user_id');
 		$username = $request->input('username');
 		$nodeId = $request->input('nodeId');
+		$startTime = $request->input('startTime');
+		$endTime = $request->input('endTime');
 
 		$query = UserTrafficLog::query()->with(['user', 'node']);
 
@@ -1096,6 +1130,14 @@ class AdminController extends Controller
 
 		if(isset($nodeId)){
 			$query->where('node_id', $nodeId);
+		}
+
+		if(isset($startTime)){
+			$query->where('log_time', '>=', strtotime($startTime));
+		}
+
+		if(isset($endTime)){
+			$query->where('log_time', '<=', strtotime($endTime));
 		}
 
 		// 已使用流量
@@ -1252,8 +1294,8 @@ class AdminController extends Controller
 				return Redirect::back();
 			}
 
-			DB::beginTransaction();
 			try{
+				DB::beginTransaction();
 				foreach($data as $user){
 					$obj = new User();
 					$obj->username = $user->user;
@@ -1317,88 +1359,26 @@ class AdminController extends Controller
 			return Redirect::to('admin/userList');
 		}
 
-		$nodeList = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
-		foreach($nodeList as $node){
-			// 获取分组名称
-			$group = SsGroup::query()->where('id', $node->group_id)->first();
-			$host = $node->server? : $node->ip;
-			if($node->type == 1){
-				$obfs_param = $user->obfs_param? : $node->obfs_param;
-				$group = empty($group)? Helpers::systemConfig()['website_name'] : $group->name;
-				if($node->single){
-					$port = $node->port;
-					$protocol = $node->protocol;
-					$method = $node->method;
-					$obfs = $node->obfs;
-					$passwd = $node->passwd;
-					$protocol_param = $user->port.':'.$user->passwd;
-				}else{
-					$port = $user->port;
-					$protocol = $user->protocol;
-					$method = $user->method;
-					$obfs = $user->obfs;
-					$passwd = $user->passwd;
-					$protocol_param = $user->protocol_param;
-				}
+		if($request->isMethod('POST')){
+			$node_id = $request->input('id');
+			$infoType = $request->input('type');
 
-				// 生成ssr scheme
-				$node->ssr_scheme = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
+			$node = SsNode::query()->whereKey($node_id)->first();
+			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
+			$data = $this->getNodeInfo($id, $node->id, $infoType != 'text'? 0 : 1);
 
-				// 生成ss scheme
-				$node->ss_scheme = $node->compatible? 'ss://'.base64url_encode($user->method.':'.$user->passwd.'@'.$host.':'.$user->port).'#'.$group : '';
+			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 
-				// 生成文本配置信息
-				$node->txt = "服务器：".$host."\r\n".
-				$node->ipv6? "IPv6：".$node->ipv6."\r\n" : ''.
-					"远程端口：".$port."\r\n".
-					"密码：".$passwd."\r\n".
-					"加密方法：".$method."\r\n".
-					"路由：绕过局域网及中国大陆地址"."\r\n".
-					"协议：".$protocol."\r\n".
-					"协议参数：".$protocol_param."\r\n".
-					"混淆方式：".$obfs."\r\n".
-					"混淆参数：".$obfs_param."\r\n".
-					"本地端口：1080"."\r\n";
-			}else{
-				// 生成v2ray scheme
-				$node->v2_scheme = 'vmess://'.base64url_encode(json_encode([
-						"v"    => "2",
-						"ps"   => $node->name,
-						"add"  => $node->server? : $node->ip,
-						"port" => $node->v2_port,
-						"id"   => $user->vmess_id,
-						"aid"  => $node->v2_alter_id,
-						"net"  => $node->v2_net,
-						"type" => $node->v2_type,
-						"host" => $node->v2_host,
-						"path" => $node->v2_path,
-						"tls"  => $node->v2_tls? "tls" : ""
-					], JSON_PRETTY_PRINT));
-
-				// 生成文本配置信息
-				$node->txt =
-					"服务器：".$node->server? : $node->ip."\r\n".
-					$node->ipv6? "IPv6：".$node->ipv6."\r\n" : ''.
-						"端口：".$node->v2_port."\r\n".
-						"加密方式：".$node->v2_method."\r\n".
-						"用户ID：".$user->vmess_id."\r\n".
-						"额外ID：".$node->v2_alter_id."\r\n".
-						"传输协议：".$node->v2_net."\r\n".
-						"伪装类型：".$node->v2_type."\r\n".
-						($node->v2_host? "伪装域名：".$node->v2_host."\r\n" : "").
-						($node->v2_path? "路径：".$node->v2_path."\r\n" : "").
-						($node->v2_tls == 1? "TLS：tls\r\n" : "");
-			}
+		}else{
+			$view['nodeList'] = SsNode::query()->whereStatus(1)->orderBy('sort', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
+			$view['user'] = $user;
 		}
-
-		$view['nodeList'] = $nodeList;
-		$view['user'] = $user;
 
 		return Response::view('admin.export', $view);
 	}
 
 	// 导出原版SS用户配置信息
-	public function exportSSJson(Request $request)
+	public function exportSSJson()
 	{
 		$userList = User::query()->where('port', '>', 0)->get();
 		$defaultMethod = Helpers::getDefaultMethod();
@@ -1463,7 +1443,7 @@ EOF;
 	}
 
 	// 用户流量监控
-	public function userMonitor(Request $request, $id)
+	public function userMonitor($id)
 	{
 		if(empty($id)){
 			return Redirect::to('admin/userList');
@@ -1490,7 +1470,7 @@ EOF;
 		}
 
 		// 节点一天内的流量
-		$userTrafficHourly = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+		$userTrafficHourly = UserTrafficHourly::query()->whereUserId($user->id)->whereNodeId(0)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 		$hourlyTotal = date('H');
 		$hourlyCount = count($userTrafficHourly);
 		for($x = 0; $x < $hourlyTotal-$hourlyCount; $x++){
@@ -1521,11 +1501,9 @@ EOF;
 	}
 
 	// 生成端口
-	public function makePort(Request $request)
+	public function makePort()
 	{
-		$new_port = self::$systemConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
-		echo $new_port;
-		exit;
+		return self::$systemConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
 	}
 
 	// 加密方式、混淆、协议、等级、国家地区
@@ -1666,7 +1644,7 @@ EOF;
 	}
 
 	// 日志分析
-	public function analysis(Request $request)
+	public function analysis()
 	{
 		$file = storage_path('app/ssserver.log');
 		if(!file_exists($file)){
@@ -1799,8 +1777,12 @@ EOF;
 		if(!$existUsers->isEmpty()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
 		}
-
-		$ret = Level::query()->where('id', $id)->delete();
+		$ret = FALSE;
+		try{
+			$ret = Level::query()->where('id', $id)->delete();
+		} catch(Exception $e){
+			Log::error('删除等级时报错：'.$e);
+		}
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 		}else{
@@ -1896,8 +1878,12 @@ EOF;
 		if(!$existNode->isEmpty()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
-
-		$ret = Country::query()->where('id', $id)->delete();
+		$ret = FALSE;
+		try{
+			$ret = Country::query()->where('id', $id)->delete();
+		} catch(Exception $e){
+			Log::error('删除国家/地区时报错：'.$e);
+		}
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 		}else{
@@ -1906,7 +1892,7 @@ EOF;
 	}
 
 	// 系统设置
-	public function system(Request $request)
+	public function system()
 	{
 		$view = Helpers::systemConfig();
 		$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
@@ -1917,7 +1903,7 @@ EOF;
 	// 设置某个配置项
 	public function setConfig(Request $request)
 	{
-		$name = trim($request->input('name'));
+		$name = $request->input('name');
 		$value = trim($request->input('value'));
 
 		if(!$name){
@@ -1987,7 +1973,7 @@ EOF;
 	}
 
 	// 生成邀请码
-	public function makeInvite(Request $request)
+	public function makeInvite()
 	{
 		for($i = 0; $i < 10; $i++){
 			$obj = new Invite();
@@ -2003,7 +1989,7 @@ EOF;
 	}
 
 	// 导出邀请码
-	public function exportInvite(Request $request)
+	public function exportInvite()
 	{
 		$inviteList = Invite::query()->where('status', 0)->orderBy('id', 'asc')->get();
 
@@ -2012,21 +1998,25 @@ EOF;
 		$spreadsheet = new Spreadsheet();
 		$spreadsheet->getProperties()->setCreator('SSRPanel')->setLastModifiedBy('SSRPanel')->setTitle('邀请码')->setSubject('邀请码')->setDescription('')->setKeywords('')->setCategory('');
 
-		$spreadsheet->setActiveSheetIndex(0);
-		$sheet = $spreadsheet->getActiveSheet();
-		$sheet->setTitle('邀请码');
-		$sheet->fromArray(['邀请码', '有效期'], NULL);
+		try{
+			$spreadsheet->setActiveSheetIndex(0);
+			$sheet = $spreadsheet->getActiveSheet();
+			$sheet->setTitle('邀请码');
+			$sheet->fromArray(['邀请码', '有效期'], NULL);
 
-		foreach($inviteList as $k => $vo){
-			$sheet->fromArray([$vo->code, $vo->dateline], NULL, 'A'.($k+2));
+			foreach($inviteList as $k => $vo){
+				$sheet->fromArray([$vo->code, $vo->dateline], NULL, 'A'.($k+2));
+			}
+
+			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
+			//header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
+			header('Content-Disposition: attachment;filename="'.$filename.'"');
+			header('Cache-Control: max-age=0');
+			$writer = new Xlsx($spreadsheet);
+			$writer->save('php://output');
+		} catch(\PhpOffice\PhpSpreadsheet\Exception $e){
+			Log::error('导出优惠券时报错'.$e);
 		}
-
-		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
-		//header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
-		header('Content-Disposition: attachment;filename="'.$filename.'"');
-		header('Cache-Control: max-age=0');
-		$writer = new Xlsx($spreadsheet);
-		$writer->save('php://output');
 	}
 
 	// 提现申请列表
@@ -2496,37 +2486,5 @@ EOF;
 		$view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
 		return Response::view('admin.onlineIPMonitor', $view);
-	}
-
-	// 生成用户标签
-	private function makeUserLabels($userId, $labels)
-	{
-		// 先删除该用户所有的标签
-		UserLabel::query()->where('user_id', $userId)->delete();
-
-		if(!empty($labels) && is_array($labels)){
-			foreach($labels as $label){
-				$userLabel = new UserLabel();
-				$userLabel->user_id = $userId;
-				$userLabel->label_id = $label;
-				$userLabel->save();
-			}
-		}
-	}
-
-	// 生成节点标签
-	private function makeNodeLabels($nodeId, $labels)
-	{
-		// 先删除所有该节点的标签
-		SsNodeLabel::query()->where('node_id', $nodeId)->delete();
-
-		if(!empty($labels) && is_array($labels)){
-			foreach($labels as $label){
-				$ssNodeLabel = new SsNodeLabel();
-				$ssNodeLabel->node_id = $nodeId;
-				$ssNodeLabel->label_id = $label;
-				$ssNodeLabel->save();
-			}
-		}
 	}
 }

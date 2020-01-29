@@ -55,8 +55,8 @@
 				<label class="floating-label" for="password">{{trans('auth.password')}}</label>
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input type="password" class="form-control" autocomplete="off" name="repassword" required/>
-				<label class="floating-label" for="repassword">{{trans('auth.retype_password')}}</label>
+				<input type="password" class="form-control" autocomplete="off" name="confirmPassword" required/>
+				<label class="floating-label" for="confirmPassword">{{trans('auth.confirm_password')}}</label>
 			</div>
 			@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
 				<div class="form-group form-material floating" data-plugin="formMaterial">
@@ -69,29 +69,27 @@
 					</p>
 				@endif
 			@endif
-			@if(!\App\Components\Helpers::systemConfig()['is_verify_register'])
-				@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
-					@case(1)<!-- Default Captcha -->
-					<div class="form-group form-material floating input-group" data-plugin="formMaterial">
-						<input type="text" class="form-control" name="captcha" required/>
-						<label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
-						<img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
-					</div>
-					@break
-					@case(2)<!-- Geetest -->
-					<div class="form-group form-material floating" data-plugin="formMaterial">
-						{!! Geetest::render() !!}
-					</div>
-					@break
-					@case(3)<!-- Google noCAPTCHA -->
-					<div class="form-group form-material floating" data-plugin="formMaterial">
-						{!! NoCaptcha::display() !!}
-						{!! NoCaptcha::renderJs(session::get('locale')) !!}
-					</div>
-					@break
-					@default
-				@endswitch
-			@endif
+			@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
+				@case(1)<!-- Default Captcha -->
+				<div class="form-group form-material floating input-group" data-plugin="formMaterial">
+					<input type="text" class="form-control" name="captcha" required/>
+					<label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
+					<img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
+				</div>
+				@break
+				@case(2)<!-- Geetest -->
+				<div class="form-group form-material floating" data-plugin="formMaterial">
+					{!! Geetest::render() !!}
+				</div>
+				@break
+				@case(3)<!-- Google noCAPTCHA -->
+				<div class="form-group form-material floating" data-plugin="formMaterial">
+					{!! NoCaptcha::display() !!}
+					{!! NoCaptcha::renderJs(session::get('locale')) !!}
+				</div>
+				@break
+				@default
+			@endswitch
 			<div class="form-group mt-20 mb-20">
 				<div class="checkbox-custom checkbox-primary">
 					<input type="checkbox" name="term" id="term" {{Request::old('term') ? 'checked':''}} />
@@ -408,7 +406,7 @@
             if (flag) {
                 // 60秒后重新发送
                 let left_time = 60;
-                var tt = window.setInterval(function () {
+                const tt = window.setInterval(function () {
                     left_time = left_time - 1;
                     if (left_time <= 0) {
                         window.clearInterval(tt);
@@ -437,7 +435,7 @@
                 $elem = $('.register-form');
             type === 'error' ? typeClass = 'alert-danger' : typeClass = 'alert-success';
 
-            var tpl = '<div class="alert ' + typeClass + '">' +
+            const tpl = '<div class="alert ' + typeClass + '">' +
                 '<button type="button" class="close" onclick="$(this).parent().remove();"></button>' +
                 '<span> ' + msg + ' </span></div>';
 

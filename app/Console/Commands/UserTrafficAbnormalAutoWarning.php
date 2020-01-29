@@ -11,9 +11,9 @@ use Log;
 
 class UserTrafficAbnormalAutoWarning extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'userTrafficAbnormalAutoWarning';
 	protected $description = '用户流量异常警告';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -31,7 +31,7 @@ class UserTrafficAbnormalAutoWarning extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('执行定时任务【'.$this->description.'】，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 用户流量异常警告

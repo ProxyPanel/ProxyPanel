@@ -1,7 +1,7 @@
 @extends('admin.layouts')
-
 @section('css')
 	<link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
 	<div class="page-content container-fluid">
@@ -17,10 +17,10 @@
 					<div class="form-group col-lg-3 col-sm-8">
 						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
 					</div>
-					<div class="form-group col-lg-2 col-sm-3">
+					<div class="form-group col-lg-2 col-sm-4">
 						<input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}" placeholder="用户端口"/>
 					</div>
-					<div class="form-group col-lg-3 col-sm-5">
+					<div class="form-group col-lg-3 col-sm-8">
 						<select class="form-control" name="nodeId" id="nodeId" onChange="Search()">
 							<option value="" @if(Request::get('nodeId') == '') selected @endif>选择节点</option>
 							@foreach($nodeList as $node)
@@ -28,9 +28,21 @@
 							@endforeach
 						</select>
 					</div>
+					<div class="form-group col-lg-6 col-sm-12">
+						<div class="input-group input-daterange" data-plugin="datepicker">
+							<div class="input-group-prepend">
+								<span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
+							</div>
+							<input type="text" class="form-control" name="start" id="start" value="{{Request::get('startTime')}}" placeholder="{{date("Y-m-d")}}"/>
+							<div class="input-group-prepend">
+								<span class="input-group-text">至</span>
+							</div>
+							<input type="text" class="form-control" name="end" id="end" value="{{Request::get('endTime')}}" placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
+						</div>
+					</div>
 					<div class="form-group col-lg-2 col-sm-4 btn-group">
-						<button class="btn btn-primary" onclick="Search()">搜索</button>
-						<button href="/admin/trafficLog" class="btn btn-danger">重置</button>
+						<button class="btn btn-primary" onclick="Search()">搜 索</button>
+						<a href="/admin/trafficLog" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -93,7 +105,12 @@
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
+	<script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+        });
         //回车检测
         $(document).on("keypress", "input", function (e) {
             if (e.which === 13) {
@@ -104,7 +121,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/trafficLog' + '?port=' + $("#port").val() + '&user_id=' + $("#user_id").val() + '&username=' + $("#username").val() + '&nodeId=' + $("#nodeId option:selected").val();
+            window.location.href = '/admin/trafficLog' + '?port=' + $("#port").val() + '&user_id=' + $("#user_id").val() + '&username=' + $("#username").val() + '&nodeId=' + $("#nodeId option:selected").val() + '&startTime=' +$("#start").val() + '&endTime=' + $("#end").val();
         }
 	</script>
 @endsection

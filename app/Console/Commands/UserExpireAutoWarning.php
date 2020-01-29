@@ -12,9 +12,9 @@ use Mail;
 
 class UserExpireAutoWarning extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'userExpireAutoWarning';
 	protected $description = '用户临近到期自动发邮件提醒';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -34,7 +34,7 @@ class UserExpireAutoWarning extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('执行定时任务【'.$this->description.'】，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	private function userExpireWarning()

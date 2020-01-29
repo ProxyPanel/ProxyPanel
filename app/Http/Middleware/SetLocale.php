@@ -12,7 +12,7 @@ class SetLocale
 	 * 变更语言
 	 *
 	 * @param Request $request
-	 * @param Closure                  $next
+	 * @param Closure $next
 	 *
 	 * @return mixed
 	 */

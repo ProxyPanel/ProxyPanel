@@ -35,6 +35,8 @@ class ServerChan
 		}else{
 			Log::error('消息推送失败：未启用或未正确配置ServerChan');
 		}
+
+		return;
 	}
 
 	/**

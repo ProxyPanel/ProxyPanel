@@ -30,7 +30,7 @@ class AutoStatisticsNodeDailyTraffic extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('执行定时任务【'.$this->description.'】，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	private function statisticsByNode($node_id)

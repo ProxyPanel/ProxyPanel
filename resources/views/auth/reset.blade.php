@@ -26,8 +26,8 @@
 				{{csrf_field()}}
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input class="form-control" type="password" autocomplete="off" name="repassword" required/>
-				<label class="floating-label" for="repassword">{{trans('auth.retype_password')}}</label>
+				<input class="form-control" type="password" autocomplete="off" name="confirmPassword" required/>
+				<label class="floating-label" for="confirmPassword">{{trans('auth.confirm_Password')}}</label>
 			</div>
 		@endif
 		<a href="/login" class="btn btn-danger btn-lg {{$verify->status== 0? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>

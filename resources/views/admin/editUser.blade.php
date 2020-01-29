@@ -514,7 +514,7 @@
         // 余额充值
         function handleUserBalance() {
             const amount = $("#amount").val();
-            const reg = /^(\-?)\d+(\.\d+)?$/; //只可以是正负数字
+            const reg = /^(-?)\d+(\.\d+)?$/; //只可以是正负数字
 
             if (amount.trim() === '' || amount === 0 || !reg.test(amount)) {
                 $("#msg").show().html("请输入充值金额");

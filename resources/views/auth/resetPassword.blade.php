@@ -23,7 +23,7 @@
 			</div>
 		@else
 			<div class="alert alert-danger">
-				<span> {{trans('auth.system_maintenance_tip',['email' => \App\Components\Helpers::systemConfig()['admin_email']])}} </span>
+				<span> {{trans('auth.system_maintenance_tip',['email' => \App\Components\Helpers::systemConfig()['webmaster_email']])}} </span>
 			</div>
 		@endif
 		<a href="/login" class="btn btn-danger btn-lg {{\App\Components\Helpers::systemConfig()['is_reset_password']? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>

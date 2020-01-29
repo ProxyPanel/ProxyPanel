@@ -3,7 +3,9 @@
 namespace App\Http\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * 支付回调（有赞云支付）
@@ -11,6 +13,40 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Http\Models
  * @mixin Eloquent
+ * @property int         $id
+ * @property string|null $client_id
+ * @property string|null $yz_id
+ * @property string|null $kdt_id
+ * @property string|null $kdt_name
+ * @property int|null    $mode
+ * @property string|null $msg
+ * @property int|null    $sendCount
+ * @property string|null $sign
+ * @property string|null $status
+ * @property int|null    $test
+ * @property string|null $type
+ * @property string|null $version
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read mixed  $status_label
+ * @method static Builder|PaymentCallback newModelQuery()
+ * @method static Builder|PaymentCallback newQuery()
+ * @method static Builder|PaymentCallback query()
+ * @method static Builder|PaymentCallback whereClientId($value)
+ * @method static Builder|PaymentCallback whereCreatedAt($value)
+ * @method static Builder|PaymentCallback whereId($value)
+ * @method static Builder|PaymentCallback whereKdtId($value)
+ * @method static Builder|PaymentCallback whereKdtName($value)
+ * @method static Builder|PaymentCallback whereMode($value)
+ * @method static Builder|PaymentCallback whereMsg($value)
+ * @method static Builder|PaymentCallback whereSendCount($value)
+ * @method static Builder|PaymentCallback whereSign($value)
+ * @method static Builder|PaymentCallback whereStatus($value)
+ * @method static Builder|PaymentCallback whereTest($value)
+ * @method static Builder|PaymentCallback whereType($value)
+ * @method static Builder|PaymentCallback whereUpdatedAt($value)
+ * @method static Builder|PaymentCallback whereVersion($value)
+ * @method static Builder|PaymentCallback whereYzId($value)
  */
 class PaymentCallback extends Model
 {

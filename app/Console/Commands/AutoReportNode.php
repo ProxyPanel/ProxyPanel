@@ -11,9 +11,9 @@ use Log;
 
 class AutoReportNode extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'autoReportNode';
 	protected $description = '自动报告节点昨日使用情况';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -50,6 +50,6 @@ class AutoReportNode extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('执行定时任务【'.$this->description.'】，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 }
