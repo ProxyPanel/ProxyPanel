@@ -44,7 +44,7 @@
             // 支付宝直接跳转支付
 			@if(\App\Components\Helpers::systemConfig()['is_alipay'])
                 document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
-            document.forms['alipaysubmit'].submit();
+            document.forms['alipaySubmit'].submit();
 			@endif
             getStatus();
         });

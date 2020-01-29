@@ -61,7 +61,7 @@
 					</div>
 					<div class="card-footer card-footer-transparent">
 						<nav class="Page navigation float-right">
-							{{$referralUserList->appends(array_except(Request::query(), 'user_page'))->links()}}
+							{{$referralUserList->appends(\Illuminate\Support\Arr::except(Request::query(), 'user_page'))->links()}}
 						</nav>
 					</div>
 				</div>
@@ -124,7 +124,7 @@
 							</div>
 							<div class="col-md-6 col-sm-6">
 								<nav class="Page navigation float-right">
-									{{$referralLogList->appends(array_except(Request::query(), 'user_page'))->links()}}
+									{{$referralLogList->appends(\Illuminate\Support\Arr::except(Request::query(), 'user_page'))->links()}}
 								</nav>
 							</div>
 						</div>
@@ -173,7 +173,7 @@
 					</div>
 					<div class="card-footer card-footer-transparent">
 						<nav class="Page navigation float-right">
-							{{$referralApplyList->appends(array_except(Request::query(), 'user_page'))->links()}}
+							{{$referralApplyList->appends(\Illuminate\Support\Arr::except(Request::query(), 'user_page'))->links()}}
 						</nav>
 					</div>
 				</div>

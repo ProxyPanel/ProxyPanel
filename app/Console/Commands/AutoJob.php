@@ -23,9 +23,9 @@ use Log;
 
 class AutoJob extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'autoJob';
 	protected $description = '自动化任务';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -64,7 +64,7 @@ class AutoJob extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('【'.$this->description.'】执行定时任务，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 关闭超时未支付订单
@@ -121,7 +121,7 @@ class AutoJob extends Command
 				$subscribe = UserSubscribe::query()->where('user_id', $user->id)->first();
 				if($subscribe){
 					// 24小时内不同IP的请求次数
-					$request_times = UserSubscribeLog::query()->where('sid', $subscribe->id)->where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-24 hours")))->distinct()->count('request_ip');
+					$request_times = UserSubscribeLog::query()->where('sid', $subscribe->id)->where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-24 hours")))->distinct('request_ip')->count('request_ip');
 					if($request_times >= self::$systemConfig['subscribe_ban_times']){
 						UserSubscribe::query()->where('id', $subscribe->id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '存在异常，自动封禁']);
 
@@ -131,6 +131,22 @@ class AutoJob extends Command
 				}
 			}
 		}
+	}
+
+	/**
+	 * 添加用户封禁日志
+	 *
+	 * @param int    $userId  用户ID
+	 * @param int    $minutes 封禁时长，单位分钟
+	 * @param string $desc    封禁理由
+	 */
+	private function addUserBanLog($userId, $minutes, $desc)
+	{
+		$log = new UserBanLog();
+		$log->user_id = $userId;
+		$log->minutes = $minutes;
+		$log->desc = $desc;
+		$log->save();
 	}
 
 	// 封禁账号
@@ -223,21 +239,5 @@ class AutoJob extends Command
 				}
 			}
 		}
-	}
-
-	/**
-	 * 添加用户封禁日志
-	 *
-	 * @param int    $userId  用户ID
-	 * @param int    $minutes 封禁时长，单位分钟
-	 * @param string $desc    封禁理由
-	 */
-	private function addUserBanLog($userId, $minutes, $desc)
-	{
-		$log = new UserBanLog();
-		$log->user_id = $userId;
-		$log->minutes = $minutes;
-		$log->desc = $desc;
-		$log->save();
 	}
 }

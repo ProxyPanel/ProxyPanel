@@ -13,7 +13,7 @@ class isAdmin
 	 * 校验是否为管理员身份
 	 *
 	 * @param Request $request
-	 * @param Closure                  $next
+	 * @param Closure $next
 	 *
 	 * @return mixed
 	 */

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use App\Http\Models\UserSubscribe;
-use App\Http\Models\UserSubscribeLog;
 use Cache;
 use DB;
 use Exception;
@@ -50,7 +49,7 @@ class LoginController extends Controller
 				return Response::json(['status' => 'fail', 'data' => [], 'message' => '请求失败超限，禁止访问1小时']);
 			}
 		}else{
-			Cache::put($cacheKey, 1, 60);
+			Cache::put($cacheKey, 1, 3600);
 		}
 
 		$user = User::query()->where('username', $username)->where('status', '>=', 0)->first();
@@ -136,16 +135,5 @@ class LoginController extends Controller
 
 			return Response::json(['status' => 'success', 'data' => [], 'message' => '登录失败']);
 		}
-	}
-
-	// 写入订阅访问日志
-	private function log($subscribeId, $ip, $headers)
-	{
-		$log = new UserSubscribeLog();
-		$log->sid = $subscribeId;
-		$log->request_ip = $ip;
-		$log->request_time = date('Y-m-d H:i:s');
-		$log->request_header = $headers;
-		$log->save();
 	}
 }

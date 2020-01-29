@@ -83,7 +83,7 @@
 									</div>
 									<div class="form-group row">
 										<label for="traffic_rate" class="col-md-3 col-form-label"> 流量比例 </label>
-										<input type="number" class="form-control col-md-4" name="traffic_rate" value="1.0" id="traffic_rate"number step="0.01" required>
+										<input type="number" class="form-control col-md-4" name="traffic_rate" value="1.0" id="traffic_rate" step="0.01" required>
 										<span class="text-help offset-md-3"> 举例：0.1用100M结算10M，5用100M结算500M </span>
 									</div>
 									<div class="form-group row">

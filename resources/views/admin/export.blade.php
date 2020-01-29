@@ -37,9 +37,9 @@
 							<td>{{$node->ip}}</td>
 							<td>
 								<div class="btn-group">
-									<button class="btn btn-info" data-toggle="modal" href="#txt_{{$node->id}}"><i class="icon fa-file-text"></i></button>
-									<button class="btn btn-info" data-toggle="modal" href="#link_{{$node->id}}"><i class="icon fa-code"></i></button>
-									<button class="btn btn-info" data-toggle="modal" href="#qrcode_{{$node->id}}"><i class="icon fa-qrcode"></i></button>
+									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','code')"><i class="icon fa-code"></i></button>
+									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','qrcode')"><i class="icon fa-qrcode"></i></button>
+									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','text')"><i class="icon fa-list"></i></button>
 								</div>
 							</td>
 						</tr>
@@ -59,83 +59,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
-	@foreach ($nodeList as $node)
-		<div class="modal fade draggable-modal" id="txt_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-						<h4 class="modal-title">{{trans('home.setting_info')}}</h4>
-					</div>
-					<div class="modal-body">
-						<textarea class="form-control" rows="12" readonly="readonly">{{$node->txt}}</textarea>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- 配置链接 -->
-		<div class="modal fade draggable-modal" id="link_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-						<h4 class="modal-title">{{$node->name}}</h4>
-					</div>
-					<div class="modal-body">
-						@if($node->type == 1)
-							@if($node->ss_scheme)
-								<textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
-								<a href="{{$node->ss_scheme}}" class="btn btn-danger btn-block mt-10">打开SS</a>
-							@else
-								<textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
-								<a href="{{$node->ssr_scheme}}" class="btn btn-danger btn-block mt-10">打开SSR</a>
-							@endif
-						@else
-							@if($node->v2_scheme)
-								<textarea class="form-control" rows="3" readonly="readonly">{{$node->v2_scheme}}</textarea>
-								<a href="{{$node->v2_scheme}}" class="btn btn-danger btn-block mt-10">打开V2ray</a>
-							@endif
-						@endif
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- 配置二维码 -->
-		<div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog @if($node->type == 2 || !$node->compatible) modal-sm @endif">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-						<h4 class="modal-title">{{trans('home.scan_qrcode')}}</h4>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							@if ($node->type == 1)
-								@if ($node->compatible)
-									<div class="col-md-6">
-										<div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
-									</div>
-									<div class="col-md-6">
-										<div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
-									</div>
-								@else
-									<div class="col-md-12">
-										<div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
-									</div>
-								@endif
-							@else
-								<div class="col-md-12">
-									<div id="qrcode_v2_img_{{$node->id}}" style="text-align: center;"></div>
-								</div>
-							@endif
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	@endforeach
+	</div>>
 @endsection
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
@@ -144,48 +68,39 @@
 	<script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
-        const UIModals = function () {
-            const n = function () {
-				@foreach($nodeList as $node)
-                $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
-                $("#link_{{$node->id}}").draggable({handle: ".modal-header"});
-                $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
-				@endforeach
-            };
-
-            return {
-                init: function () {
-                    n()
+        function getInfo(id, type) {
+            $.post("/admin/export/{{$user->id}}", {_token: '{{csrf_token()}}', id: id, type: type}, function (ret) {
+                if (ret.status === 'success') {
+                    switch (type) {
+                        case 'code':
+                            swal.fire({
+                                html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
+                                    '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
+                                showConfirmButton: false
+                            });
+                            break;
+                        case 'qrcode':
+                            swal.fire({
+                                title: '{{trans('home.scan_qrcode')}}',
+                                html: '<div id="qrcode"></div>',
+                                onBeforeOpen: () => {
+                                    $("#qrcode").qrcode({text: ret.data});
+                                },
+                                showConfirmButton: false
+                            });
+                            break;
+                        case 'text':
+                            swal.fire({
+                                title: '{{trans('home.setting_info')}}',
+                                html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
+                                showConfirmButton: false
+                            });
+                            break;
+                        default:
+                            swal.fire({title: ret.title, text: ret.data});
+                    }
                 }
-            }
-        }();
-
-        jQuery(document).ready(function () {
-            UIModals.init()
-        });
-
-        // 循环输出节点scheme用于生成二维码
-		@foreach ($nodeList as $node)
-		@if($node->type == 1)
-        $('#qrcode_ssr_img_{{$node->id}}').qrcode("{{$node->ssr_scheme}}");
-        $('#download_qrcode_ssr_img_{{$node->id}}').attr({
-            'download': 'code',
-            'href': $('#qrcode_ssr_img_{{$node->id}} canvas')[0].toDataURL("image/png")
-        });
-		@if($node->compatible)
-        $('#qrcode_ss_img_{{$node->id}}').qrcode("{{$node->ss_scheme}}");
-        $('#download_qrcode_ss_img_{{$node->id}}').attr({
-            'download': 'code',
-            'href': $('#qrcode_ss_img_{{$node->id}} canvas')[0].toDataURL("image/png")
-        });
-		@endif
-		@else
-        $('#qrcode_v2_img_{{$node->id}}').qrcode("{{$node->v2_scheme}}");
-        $('#download_qrcode_v2_img_{{$node->id}}').attr({
-            'download': 'code',
-            'href': $('#qrcode_v2_img_{{$node->id}} canvas')[0].toDataURL("image/png")
-        });
-		@endif
-		@endforeach
+            });
+        }
 	</script>
 @endsection

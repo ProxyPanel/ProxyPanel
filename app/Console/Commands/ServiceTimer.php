@@ -15,9 +15,9 @@ use Log;
 class ServiceTimer extends Command
 {
 	use Callback;
+	protected static $systemConfig;
 	protected $signature = 'serviceTimer';
 	protected $description = '服务计时器';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -35,7 +35,7 @@ class ServiceTimer extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('执行定时任务【'.$this->description.'】，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 扣减用户到期商品的流量

@@ -56,7 +56,7 @@ class upgradeUserResetTime extends Command
 				User::query()->where('id', $user->id)->update(['reset_time' => $reset_time]);
 			}
 
-			Log::info('---用户[ID：'.$user->id.' - '.$user->username.']的新重置日期为'.($reset_time != NULL? '【'.$reset_time.'】': '【无】').'---');
+			Log::info('---用户[ID：'.$user->id.' - '.$user->username.']的新重置日期为'.($reset_time != NULL? '【'.$reset_time.'】' : '【无】').'---');
 		}
 
 		Log::info('----------------------------【升级用户重置日期】结束----------------------------');

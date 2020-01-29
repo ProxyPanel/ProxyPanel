@@ -49,16 +49,21 @@ class ShopController extends Controller
 		if($request->isMethod('POST')){
 			$this->validate($request, ['name' => 'required', 'traffic' => 'required_unless:type,3|integer|min:1024|max:10240000|nullable', 'price' => 'required|numeric|min:0', 'type' => 'required', 'days' => 'required|integer',], ['name.required' => '请填入名称', 'traffic.required_unless' => '请填入流量', 'traffic.integer' => '内含流量必须是整数值', 'traffic.min' => '内含流量不能低于1MB', 'traffic.max' => '内含流量不能超过10TB', 'price.required' => '请填入价格', 'price.numeric' => '价格不合法', 'price.min' => '价格最低0', 'type.required' => '请选择类型', 'days.required' => '请填入有效期', 'days.integer' => '有效期不合法',]);
 
+			$type = $request->input('type');
+			$price = $request->input('price');
+			$renew = $request->input('renew');
+			$days = $request->input('days');
+
 			// 套餐必须有价格
-			if($request->type == 2 && $request->price <= 0){
+			if($type == 2 && $price <= 0){
 				return Redirect::back()->withInput()->withErrors('套餐价格必须大于0');
 			}
 
-			if($request->renew < 0){
+			if($renew < 0){
 				return Redirect::back()->withInput()->withErrors('流量重置价格必须大于0');
 			}
 			// 套餐有效天数必须大于30天
-			if($request->type == 2 && $request->days < 1){
+			if($type == 2 && $days < 1){
 				return Redirect::back()->withInput()->withErrors('套餐有效天数必须不能少于1天');
 			}
 
@@ -82,20 +87,20 @@ class ShopController extends Controller
 			DB::beginTransaction();
 			try{
 				$goods = new Goods();
-				$goods->name = $request->name;
-				$goods->info = $request->info;
-				$goods->desc = $request->desc;
+				$goods->name = $request->input('name');
+				$goods->info = $request->input('info');
+				$goods->desc = $request->input('desc');
 				$goods->logo = $logo;
-				$goods->traffic = $request->traffic;
-				$goods->price = round($request->price, 2);
-				$goods->renew = round($request->renew, 2);
-				$goods->type = $request->type;
-				$goods->days = $request->days;
-				$goods->color = $request->color;
-				$goods->sort = $request->sort;
-				$goods->is_hot = $request->is_hot;
-				$goods->limit_num = $request->limit_num;
-				$goods->status = $request->status;
+				$goods->traffic = $request->input('traffic');
+				$goods->price = round($price, 2);
+				$goods->renew = round($renew, 2);
+				$goods->type = $type;
+				$goods->days = $days;
+				$goods->color = $request->input('color');
+				$goods->sort = $request->input('sort');
+				$goods->is_hot = $request->input('is_hot');
+				$goods->limit_num = $request->input('limit_num');
+				$goods->status = $request->input('status');
 				$goods->save();
 
 				// 生成SKU

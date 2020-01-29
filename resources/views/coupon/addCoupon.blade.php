@@ -102,7 +102,7 @@
 					<div class="form-group row usage">
 						<label class="col-md-2 col-form-label" for="rule">条件</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" step="0.01" requied/>
+							<input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" step="0.01" required/>
 							<span class="input-group-text">元</span>
 						</div>
 						<span class="text-help"> 当套餐超过N值时，才能使用本优惠劵；0即使用无限制 </span>

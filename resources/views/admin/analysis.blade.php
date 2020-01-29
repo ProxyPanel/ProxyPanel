@@ -47,9 +47,9 @@
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
-        var TableDatatablesScroller = function () {
-            var e = function () {
-                var e = $("#analysis");
+        const TableDatatablesScroller = function () {
+            const e = function () {
+                const e = $("#analysis");
                 e.dataTable({
                     language: {
                         aria: {

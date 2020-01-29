@@ -12,7 +12,7 @@ use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
-use App\Http\Models\SsGroup;
+use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeLabel;
 use App\Http\Models\Ticket;
@@ -56,7 +56,7 @@ class UserController extends Controller
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function index(Request $request)
+	public function index()
 	{
 		$totalTransfer = Auth::user()->transfer_enable;
 		$usedTransfer = Auth::user()->u+Auth::user()->d;
@@ -123,7 +123,7 @@ class UserController extends Controller
 	}
 
 	// 签到
-	public function checkIn(Request $request)
+	public function checkIn()
 	{
 		// 系统开启登录加积分功能才可以签到
 		if(!self::$systemConfig['is_checkin']){
@@ -145,7 +145,7 @@ class UserController extends Controller
 		Helpers::addUserTrafficModifyLog(Auth::user()->id, 0, Auth::user()->transfer_enable, Auth::user()->transfer_enable+$traffic*1048576, '[签到]');
 
 		// 多久后可以再签到
-		$ttl = self::$systemConfig['traffic_limit_time']? self::$systemConfig['traffic_limit_time'] : 1440;
+		$ttl = self::$systemConfig['traffic_limit_time']? self::$systemConfig['traffic_limit_time']*60 : 86400;
 		Cache::put('userCheckIn_'.Auth::user()->id, '1', $ttl);
 
 		return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 '.$traffic.'M 流量']);
@@ -154,88 +154,31 @@ class UserController extends Controller
 	// 节点列表
 	public function nodeList(Request $request)
 	{
-		// 节点列表
-		$userLabelIds = UserLabel::uid()->pluck('label_id');
-		if(empty($userLabelIds)){
-			$view['nodeList'] = [];
-			$view['allNodes'] = '';
+		if($request->isMethod('POST')){
+			$node_id = $request->input('id');
+			$infoType = $request->input('type');
 
-			return Response::view('user.nodeList', $view);
-		}
+			$node = SsNode::query()->whereKey($node_id)->first();
+			// 生成节点信息
+			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
+			$data = $this->getNodeInfo(Auth::user()->id, $node->id, $infoType != 'text'? 0 : 1);
 
-		// 获取当前用户可用节点
-		$nodeList = DB::table('ss_node')->selectRaw('ss_node.*')->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')->whereIn('ss_node_label.label_id', $userLabelIds)->where('ss_node.status', 1)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get();
+			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
+		}else{
+			// 获取当前用户标签
+			$userLabelIds = UserLabel::uid()->pluck('label_id');
+			// 获取当前用户可用节点
+			$nodeList = SsNode::query()->selectRaw('ss_node.*')->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')->whereIn('ss_node_label.label_id', $userLabelIds)->where('ss_node.status', 1)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get();
 
-		$allNodes = ''; // 全部节点SSR链接，用于一键复制所有节点
-		foreach($nodeList as $node){
-			// 获取分组名称
-			$group = SsGroup::query()->where('id', $node->group_id)->first();
-			$host = $node->server? : $node->ip;
-			if($node->type == 1){
-				$obfs_param = Auth::user()->obfs_param? : $node->obfs_param;
-				$group = empty($group)? Helpers::systemConfig()['website_name'] : $group->name;
-				if($node->single){
-					$port = $node->port;
-					$protocol = $node->protocol;
-					$method = $node->method;
-					$obfs = $node->obfs;
-					$passwd = $node->passwd;
-					$protocol_param = Auth::user()->port.':'.Auth::user()->passwd;
-				}else{
-					$port = Auth::user()->port;
-					$protocol = Auth::user()->protocol;
-					$method = Auth::user()->method;
-					$obfs = Auth::user()->obfs;
-					$passwd = Auth::user()->passwd;
-					$protocol_param = Auth::user()->protocol_param;
-				}
-
-				// 生成ssr scheme
-				$node->ssr_scheme = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
-				$allNodes .= $node->ssr_scheme.'|';
-				// 生成ss scheme
-				$node->ss_scheme = $node->compatible? 'ss://'.base64url_encode(Auth::user()->method.':'.Auth::user()->passwd.'@'.$host.':'.Auth::user()->port).'#'.$group : '';
-
-				// 生成文本配置信息
-				$node->txt = "服务器：".$host.PHP_EOL.
-					($node->ipv6? "IPv6：".$node->ipv6.PHP_EOL : '').
-					"远程端口：".$port.PHP_EOL.
-					"密码：".$passwd.PHP_EOL.
-					"加密方法：".$method.PHP_EOL.
-					"路由：绕过局域网及中国大陆地址".PHP_EOL.
-					"协议：".$protocol.PHP_EOL.
-					"协议参数：".$protocol_param.PHP_EOL.
-					"混淆方式：".$obfs.PHP_EOL.
-					"混淆参数：".$obfs_param.PHP_EOL.
-					"本地端口：1080".PHP_EOL;
-			}else{
-				// 生成v2ray scheme
-				$node->v2_scheme = 'vmess://'.base64_encode(json_encode(["v" => "2", "ps" => $node->name, "add" => $node->server? : $node->ip, "port" => $node->v2_port, "id" => Auth::user()->vmess_id, "aid" => $node->v2_alter_id, "net" => $node->v2_net, "type" => $node->v2_type, "host" => $node->v2_host, "path" => $node->v2_path, "tls" => $node->v2_tls == 1? "tls" : ""], JSON_PRETTY_PRINT));
-
-				// 生成文本配置信息
-				$node->txt = "服务器：".$host.PHP_EOL.
-					($node->ipv6? "IPv6：".$node->ipv6.PHP_EOL : '').
-					"端口：".$node->v2_port.PHP_EOL.
-					"加密方式：".$node->v2_method.PHP_EOL.
-					"用户ID：".Auth::user()->vmess_id.PHP_EOL.
-					"额外ID：".$node->v2_alter_id.PHP_EOL.
-					"传输协议：".$node->v2_net.PHP_EOL.
-					"伪装类型：".$node->v2_type.PHP_EOL.
-					($node->v2_host? "伪装域名：".$node->v2_host.PHP_EOL : "").
-					($node->v2_path? "路径：".$node->v2_path.PHP_EOL : "").
-					($node->v2_tls? "TLS：tls".PHP_EOL : "");
+			foreach($nodeList as $node){
+				// 节点在线状态
+				$node->offline = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->doesntExist();
+				// 节点标签
+				$node->labels = SsNodeLabel::query()->where('node_id', $node->id)->first();
 			}
-
-			// 节点在线状态
-			$nodeInfo = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-			$node->online_status = $nodeInfo? 1 : 0;
-
-			// 节点标签
-			$node->labels = SsNodeLabel::query()->with('labelInfo')->where('node_id', $node->id)->first();
+			$view['nodeList'] = $nodeList? : [];
 		}
 
-		$view['allNodes'] = rtrim($allNodes, "|");
-		$view['nodeList'] = $nodeList;
 
 		return Response::view('user.nodeList', $view);
 	}
@@ -243,7 +186,7 @@ class UserController extends Controller
 	// 公告详情
 	public function article(Request $request)
 	{
-		$view['info'] = Article::query()->findOrFail($request->id);
+		$view['info'] = Article::query()->findOrFail($request->input('id'));
 
 		return Response::view('user.article', $view);
 	}
@@ -490,7 +433,7 @@ class UserController extends Controller
 	}
 
 	// 邀请码
-	public function invite(Request $request)
+	public function invite()
 	{
 		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist()){
 			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
@@ -505,7 +448,7 @@ class UserController extends Controller
 	}
 
 	// 生成邀请码
-	public function makeInvite(Request $request)
+	public function makeInvite()
 	{
 		if(Auth::user()->invite_num <= 0){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：已无邀请码生成名额']);
@@ -558,7 +501,7 @@ class UserController extends Controller
 	}
 
 	// 购买服务
-	public function buy(Request $request, $goods_id)
+	public function buy($goods_id)
 	{
 		$goods = Goods::query()->where('id', $goods_id)->where('status', 1)->first();
 		if(empty($goods)){
@@ -575,7 +518,7 @@ class UserController extends Controller
 	}
 
 	// 推广返利
-	public function referral(Request $request)
+	public function referral()
 	{
 		if(Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist()){
 			return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
@@ -594,7 +537,7 @@ class UserController extends Controller
 	}
 
 	// 申请提现
-	public function extractMoney(Request $request)
+	public function extractMoney()
 	{
 		// 判断账户是否过期
 		if(Auth::user()->expire_time < date('Y-m-d')){
@@ -635,7 +578,7 @@ class UserController extends Controller
 	}
 
 	// 帮助中心
-	public function help(Request $request)
+	public function help()
 	{
 		$view['articleList'] = Article::type(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->limit(10)->paginate(5);
 
@@ -649,7 +592,7 @@ class UserController extends Controller
 		$view['subscribe_status'] = $subscribe->status;
 		$subscribe_link = (self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']).'/s/'.$subscribe->code;
 		$view['link'] = $subscribe_link;
-		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.self::$systemConfig['website_name'].'-'.self::$systemConfig['website_url'];
+		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(self::$systemConfig['website_name'].'-'.self::$systemConfig['website_url']);
 		$view['Shadowrocket_linkQrcode'] = 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(self::$systemConfig['website_name']);
 		$view['Quantumult_linkOut'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Rejection.conf');
 		$view['Quantumult_linkIn'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Rejection.conf');
@@ -658,7 +601,7 @@ class UserController extends Controller
 	}
 
 	// 更换订阅地址
-	public function exchangeSubscribe(Request $request)
+	public function exchangeSubscribe()
 	{
 		DB::beginTransaction();
 		try{
@@ -681,7 +624,7 @@ class UserController extends Controller
 	}
 
 	// 转换成管理员的身份
-	public function switchToAdmin(Request $request)
+	public function switchToAdmin()
 	{
 		if(!Session::has('admin')){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);

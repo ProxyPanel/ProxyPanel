@@ -29,29 +29,19 @@ class AlipaySubmit
 	}
 
 	/**
-	 * 生成签名结果
+	 * 生成要请求给支付宝的参数数组
 	 *
-	 * @param array $para_sort 已排序要签名的数组
+	 * @param array $para_temp 请求前的参数数组
 	 *
 	 * @return string
 	 */
-	function buildRequestMysign($para_sort)
+	function buildRequestParaToString($para_temp)
 	{
-		// 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
-		$prestr = $this->createLinkString($para_sort);
+		// 待请求参数数组
+		$para = $this->buildRequestPara($para_temp);
 
-		switch(strtoupper(trim($this->sign_type))){
-			case "MD5" :
-				$mysign = $this->md5Sign($prestr, $this->md5_key);
-				break;
-			case "RSA" :
-				$mysign = $this->rsaSign($prestr, $this->private_key);
-				break;
-			default :
-				$mysign = "";
-		}
-
-		return $mysign;
+		// 把参数组中所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串，并对字符串做urlencode编码
+		return $this->createLinkStringUrlEncode($para);
 	}
 
 	/**
@@ -70,74 +60,72 @@ class AlipaySubmit
 		$para_sort = $this->argSort($para_filter);
 
 		// 生成签名结果
-		$mysign = $this->buildRequestMysign($para_sort);
+		$mySign = $this->buildRequestMySign($para_sort);
 
 		// 签名结果与签名方式加入请求提交参数组中
-		$para_sort['sign'] = $mysign;
+		$para_sort['sign'] = $mySign;
 		$para_sort['sign_type'] = strtoupper(trim($this->sign_type));
 
 		return $para_sort;
 	}
 
 	/**
-	 * 生成要请求给支付宝的参数数组
+	 * 除去数组中的空值和签名参数
 	 *
-	 * @param array $para_temp 请求前的参数数组
+	 * @param array $para 签名参数组
 	 *
-	 * @return string
+	 * @return array
 	 */
-	function buildRequestParaToString($para_temp)
+	function paraFilter($para)
 	{
-		// 待请求参数数组
-		$para = $this->buildRequestPara($para_temp);
-
-		// 把参数组中所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串，并对字符串做urlencode编码
-		$request_data = $this->createLinkStringUrlEncode($para);
-
-		return $request_data;
-	}
-
-	/**
-	 * 建立请求，以表单HTML形式构造（默认）
-	 *
-	 * @param array  $para_temp   请求参数数组
-	 * @param string $method      提交方式。两个值可选：post、get
-	 * @param string $button_name 确认按钮显示文字
-	 *
-	 * @return string
-	 */
-	public function buildRequestForm($para_temp, $method, $button_name)
-	{
-		// 待请求参数数组
-		$para = $this->buildRequestPara($para_temp);
-
-		$sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->alipay_gateway_new."_input_charset=utf-8' method='".$method."'>";
-		while(list ($key, $val) = each($para)){
-			$sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
+		$para_filter = [];
+		foreach($para as $key => $val){
+			if($key == "sign" || $key == "sign_type" || $val == "") continue;
+			else    $para_filter[$key] = $para[$key];
 		}
 
-		// submit按钮控件请不要含有name属性
-		$sHtml = $sHtml."<input type='submit'  value='".$button_name."' style='display:none;'></form>";
-		$sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
-
-		return $sHtml;
+		return $para_filter;
 	}
 
 	/**
-	 * 用于防钓鱼，调用接口query_timestamp来获取时间戳的处理函数
+	 * 对数组排序
+	 *
+	 * @param array $para 排序前的数组
+	 *
+	 * @return mixed
+	 */
+	function argSort($para)
+	{
+		ksort($para);
+		reset($para);
+
+		return $para;
+	}
+
+	/**
+	 * 生成签名结果
+	 *
+	 * @param array $para_sort 已排序要签名的数组
 	 *
 	 * @return string
 	 */
-	function query_timestamp()
+	function buildRequestMySign($para_sort)
 	{
-		$url = $this->alipay_gateway_new."service=query_timestamp&partner=".trim(strtolower($this->partner))."&_input_charset=utf-8";
+		// 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		$preStr = $this->createLinkString($para_sort);
 
-		$doc = new DOMDocument();
-		$doc->load($url);
-		$itemEncrypt_key = $doc->getElementsByTagName("encrypt_key");
-		$encrypt_key = $itemEncrypt_key->item(0)->nodeValue;
+		switch(strtoupper(trim($this->sign_type))){
+			case "MD5" :
+				$mySign = $this->md5Sign($preStr, $this->md5_key);
+				break;
+			case "RSA" :
+				$mySign = $this->rsaSign($preStr, $this->private_key);
+				break;
+			default :
+				$mySign = "";
+		}
 
-		return $encrypt_key;
+		return $mySign;
 	}
 
 	/**
@@ -149,13 +137,13 @@ class AlipaySubmit
 	 */
 	function createLinkString($para)
 	{
-		$arg = "";
-		while(list ($key, $val) = each($para)){
-			$arg .= $key."=".$val."&";
+		$arg = '';
+		foreach($para as $key => $val){
+			$arg .= "&".$key."=".$val;
 		}
 
-		// 去掉最后一个&字符
-		$arg = substr($arg, 0, count($arg)-2);
+		// 去掉开头的&字符
+		$arg = substr($arg, 1);
 
 		// 如果存在转义字符，那么去掉转义
 		if(get_magic_quotes_gpc()){
@@ -166,28 +154,16 @@ class AlipaySubmit
 	}
 
 	/**
-	 * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串，并对字符串做urlencode编码
+	 * 签名字符串
 	 *
-	 * @param array $para 需要拼接的数组
+	 * @param string $preStr 需要签名的字符串
+	 * @param string $key    私钥
 	 *
-	 * @return bool|string
+	 * @return string
 	 */
-	function createLinkStringUrlEncode($para)
+	function md5Sign($preStr, $key)
 	{
-		$arg = "";
-		while(list ($key, $val) = each($para)){
-			$arg .= $key."=".urlencode($val)."&";
-		}
-
-		// 去掉最后一个&字符
-		$arg = substr($arg, 0, count($arg)-2);
-
-		// 如果存在转义字符，那么去掉转义
-		if(get_magic_quotes_gpc()){
-			$arg = stripslashes($arg);
-		}
-
-		return $arg;
+		return md5($preStr.$key);
 	}
 
 	/**
@@ -221,48 +197,69 @@ class AlipaySubmit
 	}
 
 	/**
-	 * 签名字符串
+	 * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串，并对字符串做urlencode编码
 	 *
-	 * @param string $prestr 需要签名的字符串
-	 * @param string $key    私钥
+	 * @param array $para 需要拼接的数组
+	 *
+	 * @return bool|string
+	 */
+	function createLinkStringUrlEncode($para)
+	{
+		$arg = '';
+		foreach($para as $key => $val){
+			$arg .= "&".$key."=".urlencode($val);
+		}
+
+		// 去掉开头的&字符
+		$arg = substr($arg, 1);
+
+		// 如果存在转义字符，那么去掉转义
+		if(get_magic_quotes_gpc()){
+			$arg = stripslashes($arg);
+		}
+
+		return $arg;
+	}
+
+	/**
+	 * 建立请求，以表单HTML形式构造（默认）
+	 *
+	 * @param array  $para_temp   请求参数数组
+	 * @param string $method      提交方式。两个值可选：post|get
+	 * @param string $button_name 确认按钮显示文字
 	 *
 	 * @return string
 	 */
-	function md5Sign($prestr, $key)
+	public function buildRequestForm($para_temp, $method, $button_name)
 	{
-		return md5($prestr.$key);
-	}
+		// 待请求参数数组
+		$para = $this->buildRequestPara($para_temp);
 
-	/**
-	 * 除去数组中的空值和签名参数
-	 *
-	 * @param array $para 签名参数组
-	 *
-	 * @return array
-	 */
-	function paraFilter($para)
-	{
-		$para_filter = [];
-		while(list ($key, $val) = each($para)){
-			if($key == "sign" || $key == "sign_type" || $val == "") continue;
-			else    $para_filter[$key] = $para[$key];
+		$sHtml = "<form id='alipaySubmit' name='alipaySubmit' action='".$this->alipay_gateway_new."_input_charset=utf-8' method='".$method."'>";
+		foreach($para as $key => $val){
+			$sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
 		}
 
-		return $para_filter;
+		// submit按钮控件请不要含有name属性
+		$sHtml = $sHtml."<input type='submit'  value='".$button_name."' style='display:none;'></form>";
+		$sHtml = $sHtml."<script>document.forms['alipaySubmit'].submit();</script>";
+
+		return $sHtml;
 	}
 
 	/**
-	 * 对数组排序
+	 * 用于防钓鱼，调用接口query_timestamp来获取时间戳的处理函数
 	 *
-	 * @param array $para 排序前的数组
-	 *
-	 * @return mixed
+	 * @return string
 	 */
-	function argSort($para)
+	function query_timestamp()
 	{
-		ksort($para);
-		reset($para);
+		$url = $this->alipay_gateway_new."service=query_timestamp&partner=".trim(strtolower($this->partner))."&_input_charset=utf-8";
 
-		return $para;
+		$doc = new DOMDocument();
+		$doc->load($url);
+		$itemEncrypt_key = $doc->getElementsByTagName("encrypt_key");
+
+		return $itemEncrypt_key->item(0)->nodeValue;
 	}
 }

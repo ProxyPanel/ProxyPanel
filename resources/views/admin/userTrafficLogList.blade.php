@@ -14,8 +14,8 @@
 						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
-						<button class="btn btn-primary" onclick="Search()">搜索</button>
-						<a href="/admin/userTrafficLogList" class="btn btn-danger">重置</a>
+						<button class="btn btn-primary" onclick="Search()">搜 索</button>
+						<a href="/admin/userTrafficLogList" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">

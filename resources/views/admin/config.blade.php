@@ -404,8 +404,8 @@
 
         // 添加国家/地区
         function addCountry() {
-            var country_name = $('#add_country_name').val();
-            var country_code = $('#add_country_code').val();
+            const country_name = $('#add_country_name').val();
+            const country_code = $('#add_country_code').val();
 
             if (country_name.trim() === '') {
                 $("#country_msg").show().html("国家/地区名称不能为空");

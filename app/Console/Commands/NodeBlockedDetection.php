@@ -15,9 +15,9 @@ use Mail;
 
 class NodeBlockedDetection extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'nodeBlockedDetection';
 	protected $description = '节点阻断检测';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -41,7 +41,7 @@ class NodeBlockedDetection extends Command
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info("执行定时任务【{$this->description}】，耗时 {$jobUsedTime} 秒");
+		Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
 	}
 
 	// 监测节点状态
@@ -74,6 +74,7 @@ class NodeBlockedDetection extends Command
 					}
 				}
 			}
+			sleep(3);
 			if($node->detectionType != 2){
 				$tcpCheck = $this->networkCheck($node->ip, FALSE, $node->single? $node->port : FALSE);
 				if($tcpCheck != FALSE){
@@ -92,7 +93,7 @@ class NodeBlockedDetection extends Command
 					if(Cache::has($cacheKey)){
 						$times = Cache::get($cacheKey);
 					}else{
-						Cache::put($cacheKey, 1, 725); // 最多设置提醒12次，12*60=720分钟缓存时效，多5分钟防止异常
+						Cache::put($cacheKey, 1, 43200); // 最多设置提醒12次,每次1小时间隔
 						$times = 1;
 					}
 
@@ -107,11 +108,30 @@ class NodeBlockedDetection extends Command
 				$this->notifyMaster($title, "**{$node->name} - 【{$node->ip}】**: \r\n\r\n".$text, $node->name, $node->server);
 				Log::info("【节点阻断检测】{$node->name} - 【{$node->ip}】: \r\n".$text);
 			}
+			sleep(3);
 		}
 
 		// 随机生成下次检测时间
 		$nextCheckTime = time()+3600;
-		Cache::put('LastCheckTime', $nextCheckTime, 60);
+		Cache::put('LastCheckTime', $nextCheckTime, 3600);
+	}
+
+	/**
+	 * 通知管理员
+	 *
+	 * @param string $title      消息标题
+	 * @param string $content    消息内容
+	 * @param string $nodeName   节点名称
+	 * @param string $nodeServer 节点域名
+	 *
+	 */
+	private function notifyMaster($title, $content, $nodeName, $nodeServer)
+	{
+		if(self::$systemConfig['webmaster_email']){
+			$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
+			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId, $nodeName, $nodeServer));
+		}
+		ServerChan::send($title, $content);
 	}
 
 	/**
@@ -154,23 +174,5 @@ class NodeBlockedDetection extends Command
 		}else{
 			return '机器宕机'; // 服务器宕机
 		}
-	}
-
-	/**
-	 * 通知管理员
-	 *
-	 * @param string $title      消息标题
-	 * @param string $content    消息内容
-	 * @param string $nodeName   节点名称
-	 * @param string $nodeServer 节点域名
-	 *
-	 */
-	private function notifyMaster($title, $content, $nodeName, $nodeServer)
-	{
-		if(self::$systemConfig['webmaster_email']){
-			$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
-			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId, $nodeName, $nodeServer));
-		}
-		ServerChan::send($title, $content);
 	}
 }

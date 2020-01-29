@@ -9,16 +9,10 @@ use Log;
 use Payment\Client\Query;
 use Payment\Common\PayException;
 
-/**
- * Class F2fpayController
- *
- * @author  heron
- *
- * @package App\Http\Controllers\Api
- */
 class F2fpayController extends Controller
 {
 	use Callback;
+
 	// 接收GET请求
 	public function index(Request $request)
 	{

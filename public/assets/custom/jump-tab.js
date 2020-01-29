@@ -1,0 +1,2 @@
+// tab 转跳
+const url=window.location.href;if(url.indexOf("#")>0){const activeTab=url.substring(url.indexOf("#")+1);$('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show')}$(document).ready(()=>{$('a[role="tab"]').on("click",function(){const hash=$(this).attr("href");let newUrl=url.split("#")[0]+hash;history.replaceState(null,null,newUrl)})});

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Http\Models\Device;
-use App\Http\Models\SsGroup;
 use App\Http\Models\SsNode;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
@@ -185,7 +184,7 @@ class SubscribeController extends Controller
 			shuffle($nodeList);
 		}
 
-		$scheme = '';
+		$scheme = NULL;
 
 		// 展示到期时间和剩余流量
 		if(self::$systemConfig['is_custom_subscribe']){
@@ -198,49 +197,7 @@ class SubscribeController extends Controller
 			if(self::$systemConfig['subscribe_max'] && $key >= self::$systemConfig['subscribe_max']){
 				break;
 			}
-			// 获取分组名称
-			$host = $node['server']? : $node['ip'];
-			if($node['type'] == 1){
-				$group = SsGroup::query()->where('id', $node['group_id'])->first();
-				$group = empty($group)? Helpers::systemConfig()['website_name'] : $group->name;
-				$obfs_param = $user->obfs_param? : $node['obfs_param'];
-
-				if($node['single']){
-					$port = $node['port'];
-					$protocol = $node['protocol'];
-					$method = $node['method'];
-					$obfs = $node['obfs'];
-					$passwd = $node['passwd'];
-					$protocol_param = $user->port.':'.$user->passwd;
-				}else{
-					$port = $user->port;
-					$protocol = $user->protocol;
-					$method = $user->method;
-					$obfs = $user->obfs;
-					$passwd = $user->passwd;
-					$protocol_param = $user->protocol_param;
-				}
-
-				// 生成ssr scheme
-				$scheme .= 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node['name']).'&group='.base64url_encode($group).'&udpport=0&uot=0')."\n";
-			}else{
-				// 生成v2ray scheme
-				$v2_json = [
-					"v"    => "2",
-					"ps"   => $node['name'],
-					"add"  => $host,
-					"port" => $node['v2_port'],
-					"id"   => $user->vmess_id,
-					"aid"  => $node['v2_alter_id'],
-					"net"  => $node['v2_net'],
-					"type" => $node['v2_type'],
-					"host" => $node['v2_host'],
-					"path" => $node['v2_path'],
-					"tls"  => $node['v2_tls']? "tls" : ""
-				];
-
-				$scheme .= 'vmess://'.base64url_encode(json_encode($v2_json, JSON_PRETTY_PRINT))."\n";
-			}
+			$scheme .= $this->getNodeInfo($user->id, $node['id'], 0).PHP_EOL;
 		}
 
 		// 适配Quantumult的自定义订阅头
@@ -255,17 +212,6 @@ class SubscribeController extends Controller
 		}else{
 			return Response::make(base64url_encode($scheme));
 		}
-	}
-
-	// 写入订阅访问日志
-	private function log($subscribeId, $ip, $headers)
-	{
-		$log = new UserSubscribeLog();
-		$log->sid = $subscribeId;
-		$log->request_ip = $ip;
-		$log->request_time = date('Y-m-d H:i:s');
-		$log->request_header = $headers;
-		$log->save();
 	}
 
 	// 抛出无可用的节点信息，用于兼容防止客户端订阅失败

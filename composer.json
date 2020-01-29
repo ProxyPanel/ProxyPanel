@@ -1,41 +1,45 @@
 {
   "name": "laravel/laravel",
   "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+  "keywords": [
+    "framework",
+    "laravel"
+  ],
   "license": "MIT",
   "type": "project",
   "require": {
-    "php": "^7.1.3",
-    "fideloper/proxy": "^4.0",
-    "guzzlehttp/guzzle": "^6.3",
+    "php": "^7.2",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "ext-dom": "*",
+    "barryvdh/laravel-debugbar": "^3.2",
+    "barryvdh/laravel-ide-helper": "^2.6",
+    "fideloper/proxy": "^4.2",
+    "guzzlehttp/guzzle": "^6.5",
     "ipip/db": "^1.0",
     "itbdw/ip-database": "^2.0",
     "jenssegers/agent": "^2.6",
-    "laravel/framework": "5.6.*",
-    "laravel/tinker": "^1.0",
-    "mews/captcha": "^2.2",
-    "mews/purifier": "^2.1",
+    "laravel/framework": "5.8.*",
+    "laravel/tinker": "~1.0",
+    "mews/captcha": "^3.0",
+    "mews/purifier": "^3.1",
     "misechow/geetest": "^1.0",
     "misechow/no-captcha": "^1.0",
-    "openlss/lib-array2xml": "^0.5.1",
+    "openlss/lib-array2xml": "^1.0",
     "overtrue/laravel-lang": "^3.0",
-    "phpoffice/phpspreadsheet": "^1.6",
+    "phpoffice/phpspreadsheet": "^1.10",
     "predis/predis": "^1.1",
-    "rap2hpoutre/laravel-log-viewer": "^1.0",
+    "rap2hpoutre/laravel-log-viewer": "^1.3",
     "riverslei/payment": "*",
-    "spatie/laravel-permission": "^2.29",
-    "youzanyun/open-sdk": "^2.0",
-    "ext-json": "*",
-    "ext-curl": "*"
+    "spatie/laravel-permission": "^3.4"
   },
   "require-dev": {
-    "barryvdh/laravel-debugbar": "^3.2",
-    "barryvdh/laravel-ide-helper": "^2.6",
-    "filp/whoops": "^2.0",
-    "fzaninotto/faker": "^1.4",
+    "filp/whoops": "^2.7",
+    "fzaninotto/faker": "^1.9",
     "mockery/mockery": "^1.0",
-    "nunomaduro/collision": "^2.0",
-    "phpunit/phpunit": "^7.0"
+    "nunomaduro/collision": "^3.0",
+    "phpunit/phpunit": "^8.0"
   },
   "autoload": {
     "files": [
@@ -63,6 +67,11 @@
   "scripts": {
     "post-root-package-install": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ],
+    "post-update-cmd": [
+      "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+      "@php artisan ide-helper:generate",
+      "@php artisan ide-helper:meta"
     ],
     "post-create-project-cmd": [
       "@php artisan key:generate"

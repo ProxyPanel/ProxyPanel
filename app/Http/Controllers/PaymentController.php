@@ -215,11 +215,12 @@ class PaymentController extends Controller
 
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建订单失败：'.$e->getMessage()]);
 		}
+
 		return Response::json(['status' => 'fail', 'data' => '', 'message' => '未知错误']);
 	}
 
 	// 支付单详情
-	public function detail(Request $request, $sn)
+	public function detail($sn)
 	{
 		$view['payment'] = Payment::uid()->with(['order', 'order.goods'])->where('sn', $sn)->firstOrFail();
 
@@ -235,7 +236,7 @@ class PaymentController extends Controller
 			return Response::json(['status' => 'error', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
 		}
 
-		$payment = Payment::uid()->where('sn', $request->sn)->first();
+		$payment = Payment::uid()->where('sn', $request->input('sn'))->first();
 		if($payment->status > 0){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
 		}elseif($payment->status < 0){

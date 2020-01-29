@@ -58,8 +58,8 @@ class Handler extends ExceptionHandler
 	/**
 	 * Render an exception into an HTTP response.
 	 *
-	 * @param Request $request
-	 * @param Exception                $exception
+	 * @param Request   $request
+	 * @param Exception $exception
 	 *
 	 * @return Response
 	 */
@@ -75,7 +75,7 @@ class Handler extends ExceptionHandler
 			Log::info("异常请求：".$request->fullUrl()."，IP：".getClientIp());
 
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Page Not Found']);
+				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.MissingPage')]);
 			}else{
 				return response()->view('auth.error', ['message' => trans('error.MissingPage')]);
 			}
@@ -84,7 +84,7 @@ class Handler extends ExceptionHandler
 		// 捕获身份校验异常
 		if($exception instanceof AuthenticationException){
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => 'Unauthorized']);
+				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.Unauthorized')]);
 			}else{
 				return response()->view('auth.error', ['message' => trans('error.Unauthorized')]);
 			}
@@ -93,16 +93,16 @@ class Handler extends ExceptionHandler
 		// 捕获CSRF异常
 		if($exception instanceof TokenMismatchException){
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error, Please Refresh Page, Try One More Time']);
+				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>']);
 			}else{
-				return response()->view('auth.error', ['message' => trans('error.RefreshPage')]);
+				return response()->view('auth.error', ['message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>']);
 			}
 		}
 
 		// 捕获反射异常
 		if($exception instanceof ReflectionException){
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
+				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.SystemError')]);
 			}else{
 				return response()->view('auth.error', ['message' => trans('error.SystemError')]);
 			}
@@ -111,7 +111,7 @@ class Handler extends ExceptionHandler
 		// 捕获系统错误异常
 		if($exception instanceof ErrorException){
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => 'System Error']);
+				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>']);
 			}else{
 				return response()->view('auth.error', ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>']);
 			}

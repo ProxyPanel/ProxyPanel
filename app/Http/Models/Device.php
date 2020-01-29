@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,12 +12,29 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Http\Models
  * @mixin Eloquent
+ * @property int        $id
+ * @property int        $type     类型：0-兼容、1-Shadowsocks(R)、2-V2Ray
+ * @property int        $platform 所属平台：0-其他、1-iOS、2-Android、3-Mac、4-Windows、5-Linux
+ * @property string     $name     设备名称
+ * @property int        $status   状态：0-禁止订阅、1-允许订阅
+ * @property string     $header   请求时头部的识别特征码
+ * @property-read mixed $platform_label
+ * @property-read mixed $type_label
+ * @method static Builder|Device newModelQuery()
+ * @method static Builder|Device newQuery()
+ * @method static Builder|Device query()
+ * @method static Builder|Device whereHeader($value)
+ * @method static Builder|Device whereId($value)
+ * @method static Builder|Device whereName($value)
+ * @method static Builder|Device wherePlatform($value)
+ * @method static Builder|Device whereStatus($value)
+ * @method static Builder|Device whereType($value)
  */
 class Device extends Model
 {
+	public $timestamps = FALSE;
 	protected $table = 'device';
 	protected $primaryKey = 'id';
-	public $timestamps = FALSE;
 
 	function getTypeLabelAttribute()
 	{

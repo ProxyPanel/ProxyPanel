@@ -8,6 +8,7 @@ return [
 	'ForbiddenOversea' => 'Oversea IP or Proxy Access Forbidden',
 	'MissingPage'      => 'Page Not Found',
 	'Unauthorized'     => 'Unauthorized visit',
+	'Refresh'          => 'Refresh',
 	'RefreshPage'      => 'Refresh Page, Try One More Time',
 	'SystemError'      => 'System Error',
 	'Visit'            => 'Please visit',

@@ -3,7 +3,9 @@
 namespace App\Http\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * 营销
@@ -11,6 +13,28 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Http\Models
  * @mixin Eloquent
+ * @property int         $id
+ * @property int         $type     类型：1-邮件群发、2-订阅渠道群发
+ * @property string      $receiver 接收者
+ * @property string      $title    标题
+ * @property string      $content  内容
+ * @property string|null $error    错误信息
+ * @property int         $status   状态：-1-失败、0-待发送、1-成功
+ * @property Carbon      $created_at
+ * @property Carbon      $updated_at
+ * @property-read mixed  $status_label
+ * @method static Builder|Marketing newModelQuery()
+ * @method static Builder|Marketing newQuery()
+ * @method static Builder|Marketing query()
+ * @method static Builder|Marketing whereContent($value)
+ * @method static Builder|Marketing whereCreatedAt($value)
+ * @method static Builder|Marketing whereError($value)
+ * @method static Builder|Marketing whereId($value)
+ * @method static Builder|Marketing whereReceiver($value)
+ * @method static Builder|Marketing whereStatus($value)
+ * @method static Builder|Marketing whereTitle($value)
+ * @method static Builder|Marketing whereType($value)
+ * @method static Builder|Marketing whereUpdatedAt($value)
  */
 class Marketing extends Model
 {

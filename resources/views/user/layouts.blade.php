@@ -194,7 +194,7 @@
 <div class="page">
 	<!--[if lt IE 8]>
 	<p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-		<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> </br>You are using an
+		<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an
 		<strong>outdated</strong> browser. Please
 		<a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 	<![endif]-->
@@ -210,7 +210,7 @@
 	</div>
 </footer>
 @if(Session::get("admin"))
-	<div class="panel panel-bordered w-300 bg-grey-200" style="position:fixed;right:20px;bottom:0px;">
+	<div class="panel panel-bordered w-300 bg-grey-200" style="position:fixed;right:20px;bottom:0;">
 		<div class="panel-body text-right">
 			<h5>当前身份：{{Auth::user()->username}}</h5>
 			<button type="button" class="btn btn-danger btn-block mt-20" id="return_to_admin">

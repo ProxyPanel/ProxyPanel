@@ -20,7 +20,7 @@ class isSecurity
 	public function handle($request, Closure $next)
 	{
 		$ip = getClientIP();
-		$code = $request->input('securityCode');
+		$code = $request->securityCode;
 		$cacheKey = 'SecurityLogin_'.ip2long($ip);
 		$websiteSecurityCode = Helpers::systemConfig()['website_security_code'];
 
@@ -30,7 +30,7 @@ class isSecurity
 
 				return response()->view('auth.error', ['message' => trans('error.SecurityError').', '.trans('error.Visit').'<a href="/login?securityCode=" target="_self">'.trans('error.SecurityEnter').'</a>']);
 			}else{
-				Cache::put($cacheKey, $ip, 120); // 缓存120分钟，因为每个session默认存活120分钟
+				Cache::put($cacheKey, $ip, 7200); // 2小时之内无需再次输入安全码访问
 			}
 		}
 

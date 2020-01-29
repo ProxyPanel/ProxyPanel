@@ -4,7 +4,9 @@ namespace App\Http\Models;
 
 use Auth;
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * 工单
@@ -12,7 +14,26 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Http\Models
  * @mixin Eloquent
- * @property-read mixed $status_label
+ * @property-read mixed  $status_label
+ * @property int         $id
+ * @property int         $user_id
+ * @property string      $title      标题
+ * @property string      $content    内容
+ * @property int         $status     状态：0-待处理、1-已处理未关闭、2-已关闭
+ * @property Carbon|null $created_at 创建时间
+ * @property Carbon|null $updated_at 最后更新时间
+ * @property-read User   $user
+ * @method static Builder|Ticket newModelQuery()
+ * @method static Builder|Ticket newQuery()
+ * @method static Builder|Ticket query()
+ * @method static Builder|Ticket uid()
+ * @method static Builder|Ticket whereContent($value)
+ * @method static Builder|Ticket whereCreatedAt($value)
+ * @method static Builder|Ticket whereId($value)
+ * @method static Builder|Ticket whereStatus($value)
+ * @method static Builder|Ticket whereTitle($value)
+ * @method static Builder|Ticket whereUpdatedAt($value)
+ * @method static Builder|Ticket whereUserId($value)
  */
 class Ticket extends Model
 {

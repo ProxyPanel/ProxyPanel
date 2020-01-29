@@ -14,10 +14,8 @@ use App\Mail\sendUserInfo;
 use DB;
 use Exception;
 use Hash;
-use Illuminate\Http\Request;
 use Log;
 use Mail;
-use Response;
 
 trait Callback
 {
@@ -26,6 +24,11 @@ trait Callback
 	function __construct()
 	{
 		self::$systemConfig = Helpers::systemConfig();
+	}
+
+	public function show()
+	{
+		exit('show');
 	}
 
 	// 交易支付
@@ -195,6 +198,7 @@ trait Callback
 			DB::rollBack();
 			Log::info('【'.$pay_type_name.'】回调更新支付单和订单异常：'.$e->getMessage());
 		}
+
 		return FALSE;
 	}
 
@@ -239,12 +243,6 @@ trait Callback
 			$obj->save();
 		}
 		Helpers::addUserTrafficModifyLog($prepaidOrder->user_id, $prepaidOrder->oid, $user->transfer_enable, $userTraffic, '[预支付订单激活]加上用户购买的套餐流量');
-
-		User::query()->where('id', $prepaidOrder->user_id)->increment('invite_num', $prepaidOrder->invite_num? : 0, ['transfer_enable' => $userTraffic, 'expire_time' => $expire_time, 'reset_time' => $nextResetTime]);
-	}
-
-	public function show(Request $request)
-	{
-		exit('show');
+		User::query()->where('id', $prepaidOrder->user_id)->increment('invite_num', $prepaidOrder->invite_num? : 0, ['u' => 0, 'd' => 0, 'transfer_enable' => $userTraffic, 'expire_time' => $expire_time, 'reset_time' => $nextResetTime]);
 	}
 }

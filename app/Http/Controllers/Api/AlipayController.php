@@ -8,13 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Log;
 
-/**
- * Class AlipayController
- *
- * @author  wz812180
- *
- * @package App\Http\Controllers\Api
- */
 class AlipayController extends Controller
 {
 	use Callback;

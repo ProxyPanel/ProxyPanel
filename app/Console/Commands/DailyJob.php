@@ -15,9 +15,9 @@ use Log;
 
 class DailyJob extends Command
 {
+	protected static $systemConfig;
 	protected $signature = 'dailyJob';
 	protected $description = '每日任务';
-	protected static $systemConfig;
 
 	public function __construct()
 	{
@@ -40,11 +40,10 @@ class DailyJob extends Command
 			$this->resetUserTraffic();
 		}
 
-
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
 
-		Log::info('【'.$this->description.'】执行定时任务，耗时'.$jobUsedTime.'秒');
+		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	private function expireUser()
@@ -89,6 +88,22 @@ class DailyJob extends Command
 			// 移除标签
 			UserLabel::query()->where('user_id', $user->id)->delete();
 		}
+	}
+
+	/**
+	 * 添加用户封禁日志
+	 *
+	 * @param int    $userId  用户ID
+	 * @param int    $minutes 封禁时长，单位分钟
+	 * @param string $desc    封禁理由
+	 */
+	private function addUserBanLog($userId, $minutes, $desc)
+	{
+		$log = new UserBanLog();
+		$log->user_id = $userId;
+		$log->minutes = $minutes;
+		$log->desc = $desc;
+		$log->save();
 	}
 
 	// 关闭超过72小时未处理的工单
@@ -150,23 +165,7 @@ class DailyJob extends Command
 			}
 			// 重置流量
 			User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => $order->goods->traffic*1048576, 'reset_time' => $nextResetTime]);
-			Log::info('用户[ID：'.$user->id.'  邮箱： '.$user->username.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.$nextResetTime? : '【无】');
+			Log::info('用户[ID：'.$user->id.'  邮箱： '.$user->username.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
 		}
-	}
-
-	/**
-	 * 添加用户封禁日志
-	 *
-	 * @param int    $userId  用户ID
-	 * @param int    $minutes 封禁时长，单位分钟
-	 * @param string $desc    封禁理由
-	 */
-	private function addUserBanLog($userId, $minutes, $desc)
-	{
-		$log = new UserBanLog();
-		$log->user_id = $userId;
-		$log->minutes = $minutes;
-		$log->desc = $desc;
-		$log->save();
 	}
 }

@@ -19,8 +19,8 @@
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
-						<button class="btn btn-primary" onclick="Search()">搜索</button>
-						<a href="/subscribe/deviceList" class="btn btn-danger">重置</a>
+						<button class="btn btn-primary" onclick="Search()">搜 索</button>
+						<a href="/subscribe/deviceList" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
