@@ -29,13 +29,7 @@ class NodeBlockedDetection extends Command
 	{
 		$jobStartTime = microtime(TRUE);
 		if(self::$systemConfig['nodes_detection']){
-			if(!Cache::has('LastCheckTime')){
-				$this->checkNodes();
-			}elseif(Cache::get('LastCheckTime') <= time()){
-				$this->checkNodes();
-			}else{
-				Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
-			}
+			$this->checkNodes();
 		}
 
 		$jobEndTime = microtime(TRUE);
@@ -48,8 +42,11 @@ class NodeBlockedDetection extends Command
 	private function checkNodes()
 	{
 		$nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->where('detectionType', '>', 0)->get();
+		$sendText = FALSE;
+		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
+		$additionalMessage = '';
 		foreach($nodeList as $node){
-			$title = "【{$node->name}】阻断警告";
+			$info = FALSE;
 			if($node->detectionType == 0){
 				continue;
 			}
@@ -60,40 +57,37 @@ class NodeBlockedDetection extends Command
 					$node->ip = $ip;
 				}else{
 					Log::warning("【节点阻断检测】检测".$node->server."时，IP获取失败".$ip." | ".$node->server);
-					$this->notifyMaster($title, "节点**{$node->name}**：** IP获取失败 **", $node->name, $node->server);
+					$this->notifyMaster("{$node->name}动态IP获取失败", "节点**{$node->name}**：** IP获取失败 **");
 				}
 			}
-			$sendText = FALSE;
-			$text = "| 协议 | 状态 |\r\n| :------ | :------ |\r\n";
 			if($node->detectionType != 1){
 				$icmpCheck = $this->networkCheck($node->ip, TRUE, FALSE);
-				if($icmpCheck != FALSE){
-					$text .= "| ICMP | ".$icmpCheck."|\r\n";
-					if($icmpCheck != '通讯正常'){
-						$sendText = TRUE;
-					}
-				}
-			}
-			sleep(3);
-			if($node->detectionType != 2){
-				$tcpCheck = $this->networkCheck($node->ip, FALSE, $node->single? $node->port : FALSE);
-				if($tcpCheck != FALSE){
-					$text .= "| TCP | ".$tcpCheck."|\r\n";
-					if($tcpCheck != '通讯正常'){
-						$sendText = TRUE;
-					}
+				if($icmpCheck != FALSE && $icmpCheck != "通讯正常"){
+					$message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
+					$sendText = TRUE;
+					$info = TRUE;
 				}
 			}
 
-			// 异常才发通知消息
-			if($sendText){
+			if($node->detectionType != 2){
+				$tcpCheck = $this->networkCheck($node->ip, FALSE, $node->single? $node->port : FALSE);
+				if($tcpCheck != FALSE && $tcpCheck != "通讯正常"){
+					$message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";
+					$sendText = TRUE;
+					$info = TRUE;
+				}
+			}
+
+			// 节点检测次数
+			if($info){
 				if(self::$systemConfig['numberOfWarningTimes']){
 					// 已通知次数
 					$cacheKey = 'numberOfWarningTimes'.$node->id;
 					if(Cache::has($cacheKey)){
 						$times = Cache::get($cacheKey);
 					}else{
-						Cache::put($cacheKey, 1, 43200); // 最多设置提醒12次,每次1小时间隔
+						// 键将保留12小时，多10分钟防意外
+						Cache::put($cacheKey, 1, 83800);
 						$times = 1;
 					}
 
@@ -102,34 +96,31 @@ class NodeBlockedDetection extends Command
 					}else{
 						Cache::forget($cacheKey);
 						SsNode::query()->where('id', $node->id)->update(['status' => 0]);
-						$text .= "\r\n**节点自动进入维护状态**\r\n";
+						$additionalMessage .= "\r\n**节点【{$node->name}】自动进入维护状态**\r\n";
 					}
 				}
-				$this->notifyMaster($title, "**{$node->name} - 【{$node->ip}】**: \r\n\r\n".$text, $node->name, $node->server);
-				Log::info("【节点阻断检测】{$node->name} - 【{$node->ip}】: \r\n".$text);
 			}
-			sleep(3);
 		}
 
-		// 随机生成下次检测时间
-		$nextCheckTime = time()+3600;
-		Cache::put('LastCheckTime', $nextCheckTime, 3600);
+		//只有在出现阻断线路时，才会发出警报
+		if($sendText){
+			$this->notifyMaster("节点阻断警告", "**阻断日志**: \r\n\r\n".$message.$additionalMessage);
+			Log::info("阻断日志: \r\n".$message.$additionalMessage);
+		}
 	}
 
 	/**
 	 * 通知管理员
 	 *
-	 * @param string $title      消息标题
-	 * @param string $content    消息内容
-	 * @param string $nodeName   节点名称
-	 * @param string $nodeServer 节点域名
+	 * @param string $title   消息标题
+	 * @param string $content 消息内容
 	 *
 	 */
-	private function notifyMaster($title, $content, $nodeName, $nodeServer)
+	private function notifyMaster($title, $content)
 	{
 		if(self::$systemConfig['webmaster_email']){
 			$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
-			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId, $nodeName, $nodeServer));
+			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId));
 		}
 		ServerChan::send($title, $content);
 	}
@@ -155,7 +146,15 @@ class NodeBlockedDetection extends Command
 
 				return FALSE;
 			}elseif(!$ret['success']){
-				Log::warning("【".$checkName."阻断检测】检测".$ip."时，返回".json_encode($ret));
+				if($ret['error'] == "execute timeout (3s)"){
+					sleep(10);
+
+					return $this->networkCheck($ip, $type, $port);
+				}else{
+					Log::warning("【".$checkName."阻断检测】检测".$ip.($port? : '')."时，返回".json_encode($ret));
+
+				}
+
 
 				return FALSE;
 			}
@@ -166,13 +165,13 @@ class NodeBlockedDetection extends Command
 		}
 
 		if($ret['firewall-enable'] && $ret['firewall-disable']){
-			return '通讯正常'; // 正常
+			return "通讯正常"; // 正常
 		}elseif($ret['firewall-enable'] && !$ret['firewall-disable']){
-			return '海外阻断'; // 国外访问异常
+			return "海外阻断"; // 国外访问异常
 		}elseif(!$ret['firewall-enable'] && $ret['firewall-disable']){
-			return '国内阻断'; // 被墙
+			return "国内阻断"; // 被墙
 		}else{
-			return '机器宕机'; // 服务器宕机
+			return "机器宕机"; // 服务器宕机
 		}
 	}
 }

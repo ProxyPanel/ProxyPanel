@@ -233,8 +233,8 @@ class AutoJob extends Command
 			$nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->get();
 			foreach($nodeList as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
-				$nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-				if(!$nodeTTL){
+				$nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->doesntExist();
+				if($nodeTTL){
 					ServerChan::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
 				}
 			}
