@@ -470,7 +470,7 @@
                         swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
                             .then(() => window.location.href = '/admin/nodeList')
                     } else {
-                        swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
+                        swal.fire({title: ret.message, type: "error"})
                     }
                 }
             });

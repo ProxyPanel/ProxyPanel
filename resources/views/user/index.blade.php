@@ -133,40 +133,16 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xl-4 col-lg-6 pb-30">
-						<div class="card card-shadow text-center h-full">
-							<div class="card-block">
-								@if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
+					@if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
+						<div class="col-xl-4 col-lg-6 pb-30">
+							<div class="card card-shadow text-center h-full">
+								<div class="card-block">
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
 									<p class="card-text" id="subscribe_qrcode"></p>
-								@else
-									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
-								@endif
-								@if($not_paying_user)
-									<p class="card-link btn btn-sm btn-primary"><i class="wb-lock mr-5"></i>购买服务后解锁</p>
-								@else
-									<div class="btn-group">
-										<a class="card-link btn btn-sm btn-pill-left btn-info" href="https://jq.qq.com/?_wv=1027&k=52AI188" target="_blank" rel="noopener">
-											<i class="fa fa-qq"></i> QQ群</a>
-										<a class="card-link btn btn-sm btn-pill-right btn-success" href="https://t.me/otakucloud" target="_blank" rel="noopener">TG群
-											<i class="fa fa-paper-plane"></i></a>
-									</div>
-								@endif
+								</div>
 							</div>
 						</div>
-					</div>
-					<!--
-					<div class="col-xl-4 col-lg-6 pb-30">
-						<div class="card card-shadow">
-							<div class="card-block p-20">
-								<h4 class="card-title"><i class="wb-info-circle blue-600 mr-10"></i>账号信息</h4>
-								  TO Do
-								 添加 权限 信息
-								 添加 账号 总流量 信息
-							</div>
-						</div>
-					</div>
-					-->
+					@endif
 				</div>
 				<div class="row" data-plugin="matchHeight" data-by-row="true">
 					<div class="col-xxl-6 mb-35">

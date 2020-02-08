@@ -14,22 +14,15 @@ class nodeCrashWarning extends Mailable implements ShouldQueue
 	use Queueable, SerializesModels;
 
 	protected $id; // 邮件记录ID
-	protected $nodeName; // 节点名称
-	protected $nodeServer; // 节点地址
 
-	public function __construct($id, $nodeName, $nodeServer)
+	public function __construct($id)
 	{
 		$this->id = $id;
-		$this->nodeName = $nodeName;
-		$this->nodeServer = $nodeServer;
 	}
 
 	public function build()
 	{
-		return $this->view('emails.nodeCrashWarning')->subject('节点离线警告')->with([
-			'nodeName'   => $this->nodeName,
-			'nodeServer' => $this->nodeServer
-		]);
+		return $this->view('emails.nodeCrashWarning')->subject('节点离线警告');
 	}
 
 	// 发件失败处理

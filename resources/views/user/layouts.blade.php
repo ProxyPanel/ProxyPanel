@@ -14,7 +14,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="兔姬菌">
-	<meta name="copyright" content="2017-2019©兔姬菌">
+	<meta name="copyright" content="2017-2020©兔姬菌">
 	<link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
 	<!-- 样式表/Stylesheets -->
 	<link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
@@ -201,7 +201,7 @@
 	@yield('content')
 </div>
 <footer class="site-footer">
-	<div class="site-footer-legal"> Copyright &copy; 2017 - 2019
+	<div class="site-footer-legal"> Copyright &copy; 2017 - 2020
 		<a href="{{\App\Components\Helpers::systemConfig()['website_url']}}" target="_blank">{{\App\Components\Helpers::systemConfig()['website_name']}}</a> | 基于<a href="https://github.com/ZBrettonYe/SSRPanel_OtakuMod">{{config('version.name')}}</a> 版本: {{config('version.number')}}  开发
 	</div>
 	<div class="site-footer-right">

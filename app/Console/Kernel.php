@@ -55,7 +55,7 @@ class Kernel extends ConsoleKernel
 		$schedule->command('autoJob')->everyMinute();
 		$schedule->command('serviceTimer')->everyTenMinutes();
 		$schedule->command('autoClearLog')->everyThirtyMinutes();
-		$schedule->command('nodeBlockedDetection')->everyThirtyMinutes();
+		$schedule->command('nodeBlockedDetection')->hourly();
 		$schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
 		$schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
 		$schedule->command('userTrafficAbnormalAutoWarning')->hourly();
