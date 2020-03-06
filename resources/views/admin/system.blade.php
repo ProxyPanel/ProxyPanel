@@ -1072,7 +1072,7 @@
 
         // 需要检查限制的更新
         function updateFromInput(systemItem, lowerBound, upperBound) {
-            let value = $('#' + systemItem).val();
+            let value = parseInt($('#' + systemItem).val());
             if (lowerBound !== false && value < lowerBound) {
                 swal.fire({title: '不能小于' + lowerBound, type: 'warning', timer: 1000, showConfirmButton: false});
             } else if (upperBound !== false && value > upperBound) {

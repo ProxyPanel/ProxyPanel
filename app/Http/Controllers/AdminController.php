@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Components\IPIP;
+use App\Components\NetworkDetection;
 use App\Components\QQWry;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
@@ -522,32 +523,50 @@ class AdminController extends Controller
 	// 节点列表
 	public function nodeList(Request $request)
 	{
-		$status = $request->input('status');
+		if($request->isMethod('POST')){
+			$id = $request->input('id');
+			$node = SsNode::query()->whereKey($id)->first();
+			// 使用DDNS的node先通过gethostbyname获取ipv4地址
+			if($node->is_ddns){
+				$ip = gethostbyname($node->server);
+				if(strcmp($ip, $node->server) != 0){
+					$node->ip = $ip;
+				}else{
+					return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
+				}
+			}
+			$data[0] = NetworkDetection::networkCheck($node->ip,TRUE); //ICMP
+			$data[1] = NetworkDetection::networkCheck($node->ip, FALSE, $node->single? $node->port : NULL); //TCP
 
-		$query = SsNode::query();
+			return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message'=>$data]);
+		}else{
+			$status = $request->input('status');
 
-		if(isset($status)){
-			$query->where('status', $status);
+			$query = SsNode::query();
+
+			if(isset($status)){
+				$query->where('status', $status);
+			}
+
+			$nodeList = $query->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
+			foreach($nodeList as $node){
+				// 在线人数
+				$online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-5 minutes"))->orderBy('id', 'desc')->first();
+				$node->online_users = empty($online_log)? 0 : $online_log->online_user;
+
+				// 已产生流量
+				$totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
+				$node->transfer = flowAutoShow($totalTraffic);
+
+				// 负载（10分钟以内）
+				$node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+				$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
+				$node->load = $node->isOnline? $node_info->load : '离线';
+				$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
+			}
+
+			$view['nodeList'] = $nodeList;
 		}
-
-		$nodeList = $query->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
-		foreach($nodeList as $node){
-			// 在线人数
-			$online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-5 minutes"))->orderBy('id', 'desc')->first();
-			$node->online_users = empty($online_log)? 0 : $online_log->online_user;
-
-			// 已产生流量
-			$totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
-			$node->transfer = flowAutoShow($totalTraffic);
-
-			// 负载（10分钟以内）
-			$node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
-			$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
-			$node->load = $node->isOnline? $node_info->load : '离线';
-			$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
-		}
-
-		$view['nodeList'] = $nodeList;
 
 		return Response::view('admin.nodeList', $view);
 	}

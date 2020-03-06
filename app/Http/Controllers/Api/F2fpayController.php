@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Components\Callback;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Log;
-use Payment\Client\Query;
-use Payment\Common\PayException;
+use Payment\Client;
+use Payment\Exceptions\ClassNotFoundException;
+use Payment\Exceptions\GatewayException;
 
 class F2fpayController extends Controller
 {
@@ -24,32 +27,42 @@ class F2fpayController extends Controller
 	public function store(Request $request)
 	{
 		Log::info("【支付宝当面付】回调接口[POST]：".var_export($request->all(), TRUE));
+		$aliConfig = [
+			'use_sandbox'     => FALSE,
+			'app_id'          => self::$systemConfig['f2fpay_app_id'],
+			'sign_type'       => 'RSA2',
+			'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
+			'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
+			'notify_url'      => self::$systemConfig['website_url']."/api/f2fpay", // 异步回调接口
+			'return_url'      => self::$systemConfig['website_url'],
+		];
 
-		$result = "fail";
+		$data = [
+			'trade_no'       => $request->input('out_trade_no'),
+			'transaction_id' => $request->input('trade_no'),
+		];
 
+		// 使用
 		try{
-			$verify_result = Query::run('ali_charge', [
-				'use_sandbox'     => FALSE,
-				"partner"         => self::$systemConfig['f2fpay_app_id'],
-				'app_id'          => self::$systemConfig['f2fpay_app_id'],
-				'sign_type'       => 'RSA2',
-				'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
-				'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
-				'notify_url'      => self::$systemConfig['website_url']."/api/f2fpay", // 异步回调接口
-				'return_url'      => self::$systemConfig['website_url'],
-				'return_raw'      => FALSE
-			], [
-				'out_trade_no' => $request->input('out_trade_no'),
-				'trade_no'     => $request->input('trade_no'),
-			]);
-
+			$client = new Client(Client::ALIPAY, $aliConfig);
+			$verify_result = $client->tradeQuery($data);
 			Log::info("【支付宝当面付】回调验证查询：".var_export($verify_result, TRUE));
-		} catch(PayException $e){
-			Log::info("【支付宝当面付】回调验证查询出错：".var_export($e->errorMessage(), TRUE));
-			exit($result);
+		} catch(InvalidArgumentException $e){
+			Log::error("【支付宝当面付】回调信息错误: ".$e->getMessage());
+			exit;
+		} catch(GatewayException $e){
+			Log::error("【支付宝当面付】建立支付错误: ".$e->getMessage());
+			exit;
+		} catch(ClassNotFoundException $e){
+			Log::error("【支付宝当面付】未知类型: ".$e->getMessage());
+			exit;
+		} catch(Exception $e){
+			Log::error("【支付宝当面付】错误: ".$e->getMessage());
+			exit;
 		}
 
-		if($verify_result['is_success'] == 'T'){ // 验证成功
+		$result = "fail";
+		if($verify_result['code'] == 10000 && $verify_result['msg'] == "Success"){ // 验证成功
 			$result = "success";
 			if($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS'){
 				// 商户订单号

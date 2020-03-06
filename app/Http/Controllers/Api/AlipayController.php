@@ -24,10 +24,10 @@ class AlipayController extends Controller
 	{
 		Log::info("【支付宝国际】回调接口[POST]：".var_export($request->all(), TRUE));
 
-		$result = "fail";
 		$alipayNotify = new AlipayNotify(self::$systemConfig['alipay_sign_type'], self::$systemConfig['alipay_partner'], self::$systemConfig['alipay_key'], self::$systemConfig['alipay_private_key'], self::$systemConfig['alipay_public_key'], self::$systemConfig['alipay_transport']);
 
 		// 验证支付宝交易
+		$result = "fail";
 		$verify_result = $alipayNotify->verifyNotify();
 		if($verify_result){ // 验证成功
 			$result = "success";

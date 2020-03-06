@@ -26,7 +26,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function()
 	Route::post('admin/delUser', 'AdminController@delUser'); // 删除账号
 	Route::post('admin/batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
 	Route::get('admin/exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
-	Route::get('admin/nodeList', 'AdminController@nodeList'); // 节点列表
+	Route::any('admin/nodeList', 'AdminController@nodeList'); // 节点列表
 	Route::any('admin/addNode', 'AdminController@addNode'); // 添加节点
 	Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
 	Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点

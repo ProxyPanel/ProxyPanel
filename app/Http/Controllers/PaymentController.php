@@ -15,8 +15,11 @@ use Auth;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Log;
-use Payment\Client\Charge;
+use Payment\Client;
+use Payment\Exceptions\ClassNotFoundException;
+use Payment\Exceptions\GatewayException;
 use Response;
 use Validator;
 
@@ -31,7 +34,7 @@ class PaymentController extends Controller
 {
 	use Callback;
 
-// 创建支付订单
+	// 创建支付订单
 	public function create(Request $request)
 	{
 		$goods_id = $request->input('goods_id');
@@ -151,23 +154,52 @@ class PaymentController extends Controller
 					$pay_way = 2;
 					// TODO：goods表里增加一个字段用于自定义商品付款时展示的商品名称，
 					// TODO：这里增加一个随机商品列表，根据goods的价格随机取值
-					$result = Charge::run("ali_qr", [
-						'use_sandbox'     => FALSE,
-						"partner"         => self::$systemConfig['f2fpay_app_id'],
+
+					$aliConfig = [
+						'use_sandbox'     => FALSE, // 是否使用沙盒模式
 						'app_id'          => self::$systemConfig['f2fpay_app_id'],
-						'sign_type'       => 'RSA2',
+						'sign_type'       => 'RSA2', // RSA  RSA2
 						'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
 						'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
-						'notify_url'      => self::$systemConfig['website_url']."/api/f2fpay", // 异步回调接口
+						'limit_pay'       => [
+							//'balance',// 余额
+							//'moneyFund',// 余额宝
+							//'debitCardExpress',// 	借记卡快捷
+							//'creditCard',//信用卡
+							//'creditCardExpress',// 信用卡快捷
+							//'creditCardCartoon',//信用卡卡通
+							//'credit_group',// 信用支付类型（包含信用卡卡通、信用卡快捷、花呗、花呗分期）
+						], // 用户不可用指定渠道支付当有多个渠道时用“,”分隔
+						'notify_url'      => self::$systemConfig['website_url']."/api/f2fpay",
 						'return_url'      => self::$systemConfig['website_url'],
-						'return_raw'      => FALSE
-					],
-						[
-							'body'     => '',
-							'subject'  => self::$systemConfig['f2fpay_subject_name'],
-							'order_no' => $orderSn,
-							'amount'   => $amount,
-						]);
+						'fee_type'        => 'CNY', // 货币类型  当前仅支持该字段
+					];
+
+					$payData = [
+						'body'        => '',
+						'subject'     => self::$systemConfig['f2fpay_subject_name']? : self::$systemConfig['website_name'],
+						'trade_no'    => $orderSn,
+						'time_expire' => time()+9000, // 表示必须 1000s 内付款
+						'amount'      => $amount, // 单位为元 ,最小为0.01
+					];
+
+					try{
+						$client = new Client(Client::ALIPAY, $aliConfig);
+						$result = $client->pay(Client::ALI_CHANNEL_QR, $payData);
+					} catch(InvalidArgumentException $e){
+						Log::error("【支付宝当面付】输入信息错误: ".$e->getMessage());
+						exit;
+					} catch(GatewayException $e){
+						Log::error("【支付宝当面付】建立支付错误: ".$e->getMessage()." | ".var_dump($e->getRaw()));
+						exit;
+					} catch(ClassNotFoundException $e){
+						Log::error("【支付宝当面付】未知类型: ".$e->getMessage());
+						exit;
+					} catch(Exception $e){
+						Log::error("【支付宝当面付】错误: ".$e->getMessage());
+						exit;
+					}
+
 				}else{
 					return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：未知支付类型']);
 				}
@@ -182,8 +214,8 @@ class PaymentController extends Controller
 				if(self::$systemConfig['is_alipay'] && $pay_type == 4){
 					$payment->qr_code = $result;
 				}elseif(self::$systemConfig['is_f2fpay'] && $pay_type == 5){
-					$payment->qr_code = $result;
-					$payment->qr_url = 'http://qr.topscan.com/api.php?text='.$result.'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';
+					$payment->qr_code = $result['qr_code'];
+					$payment->qr_url = 'http://qr.topscan.com/api.php?text='.$result['qr_code'].'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png'; //后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
 					$payment->qr_local_url = $payment->qr_url;
 				}
 				$payment->status = 0;

@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Components\Curl;
 use App\Components\Helpers;
+use App\Components\NetworkDetection;
 use App\Components\ServerChan;
 use App\Http\Models\SsNode;
 use App\Mail\nodeCrashWarning;
 use Cache;
-use Exception;
 use Illuminate\Console\Command;
 use Log;
 use Mail;
@@ -61,16 +60,15 @@ class NodeBlockedDetection extends Command
 				}
 			}
 			if($node->detectionType != 1){
-				$icmpCheck = $this->networkCheck($node->ip, TRUE, FALSE);
+				$icmpCheck = NetworkDetection::networkCheck($node->ip, TRUE);
 				if($icmpCheck != FALSE && $icmpCheck != "通讯正常"){
 					$message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
 					$sendText = TRUE;
 					$info = TRUE;
 				}
 			}
-
 			if($node->detectionType != 2){
-				$tcpCheck = $this->networkCheck($node->ip, FALSE, $node->single? $node->port : FALSE);
+				$tcpCheck = NetworkDetection::networkCheck($node->ip, FALSE, $node->single? $node->port : NULL);
 				if($tcpCheck != FALSE && $tcpCheck != "通讯正常"){
 					$message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";
 					$sendText = TRUE;
@@ -123,55 +121,5 @@ class NodeBlockedDetection extends Command
 			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId));
 		}
 		ServerChan::send($title, $content);
-	}
-
-	/**
-	 * 用api.50network.com进行节点阻断检测
-	 *
-	 * @param string  $ip   被检测的IP
-	 * @param boolean $type true 为ICMP,false 为tcp
-	 * @param int     $port 检测端口
-	 *
-	 * @return bool|string
-	 */
-	private function networkCheck($ip, $type, $port)
-	{
-		$url = 'https://api.50network.com/china-firewall/check/ip/'.($type? 'icmp/' : ($port? 'tcp_port/' : 'tcp_ack/')).$ip.($port? '/'.$port : '');
-		$checkName = $type? 'ICMP' : 'TCP';
-
-		try{
-			$ret = json_decode(Curl::send($url), TRUE);
-			if(!$ret){
-				Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：".$url);
-
-				return FALSE;
-			}elseif(!$ret['success']){
-				if($ret['error'] == "execute timeout (3s)"){
-					sleep(10);
-
-					return $this->networkCheck($ip, $type, $port);
-				}else{
-					Log::warning("【".$checkName."阻断检测】检测".$ip.($port? : '')."时，返回".json_encode($ret));
-
-				}
-
-
-				return FALSE;
-			}
-		} catch(Exception $e){
-			Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口请求超时".$e);
-
-			return FALSE;
-		}
-
-		if($ret['firewall-enable'] && $ret['firewall-disable']){
-			return "通讯正常"; // 正常
-		}elseif($ret['firewall-enable'] && !$ret['firewall-disable']){
-			return "海外阻断"; // 国外访问异常
-		}elseif(!$ret['firewall-enable'] && $ret['firewall-disable']){
-			return "国内阻断"; // 被墙
-		}else{
-			return "机器宕机"; // 服务器宕机
-		}
 	}
 }
