@@ -585,17 +585,18 @@ class UserController extends Controller
 		//付费用户判断
 		$view['not_paying_user'] = Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist();
 		//客户端安装
-		$view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/ipa.plist';
-		$view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/ipa.plist';
+		$view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/Shadowrocket.plist';
+		$view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/Quantumult.plist';
 		// 订阅连接
 		$subscribe = UserSubscribe::query()->where('user_id', Auth::user()->id)->first();
 		$view['subscribe_status'] = $subscribe->status;
 		$subscribe_link = (self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']).'/s/'.$subscribe->code;
 		$view['link'] = $subscribe_link;
+		$view['subscribe_link'] ='sub://'.base64url_encode($subscribe_link);
 		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(self::$systemConfig['website_name'].'-'.self::$systemConfig['website_url']);
 		$view['Shadowrocket_linkQrcode'] = 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(self::$systemConfig['website_name']);
-		$view['Quantumult_linkOut'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Rejection.conf');
-		$view['Quantumult_linkIn'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ConnersHua/Profiles/master/Quantumult/Rejection.conf');
+		$view['Quantumult_linkOut'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');
+		$view['Quantumult_linkIn'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');
 
 		return Response::view('user.help', $view);
 	}

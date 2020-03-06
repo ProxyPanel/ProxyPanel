@@ -1,6 +1,11 @@
 @extends('admin.layouts')
 @section('css')
 	<link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+	<style>
+		#swal2-content{
+			display:grid !important;
+		}
+	</style>
 @endsection
 @section('content')
 	<div class="page-content container-fluid">
@@ -62,6 +67,7 @@
 								</td>
 								<td>
 									<div class="btn-group">
+										<a href="javascript:testNode('{{$node->id}}','{{$node->name}}')" class="btn btn-primary"><i class="icon wb-signal"></i></a>
 										<a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
 										<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')" class="btn btn-danger"><i class="icon wb-trash"></i></a>
 										<a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
@@ -92,6 +98,17 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        //节点连通性测试
+        function testNode(id, name) {
+            $.post("/admin/nodeList", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.title, type: 'info', html: '<table class="my-20"><thead class="thead-default"><tr><th> ICMP </th> <th> TCP </th></thead><tbody><tr><td>' + ret.message[0] + '</td><td>' + ret.message[1] + '</td></tr></tbody></table>', showConfirmButton: false})
+                } else {
+                    swal.fire({title: ret.title, type: "error"})
+                }
+            });
+        }
+
         // 删除节点
         function delNode(id, name) {
             swal.fire({
