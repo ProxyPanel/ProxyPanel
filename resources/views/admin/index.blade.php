@@ -4,9 +4,9 @@
 @endsection
 @section('content')
 	<div class="page-content container-fluid">
-		<div class="row" data-plugin="matchHeight" data-by-row="true">
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList" class="card card-shadow h-full">
+		<div class="row" data-by-row="true">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-account"></i>
@@ -18,8 +18,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?enable=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?enable=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-info">
 							<i class="icon md-account"></i>
@@ -31,8 +31,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?active=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?active=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-success">
 							<i class="icon md-account"></i>
@@ -44,8 +44,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?unActive=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?unActive=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-warning">
 							<i class="icon md-account"></i>
@@ -57,8 +57,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?online=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?online=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-success">
 							<i class="icon md-account"></i>
@@ -70,8 +70,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?expireWarning=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?expireWarning=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-danger">
 							<i class="icon md-account"></i>
@@ -83,8 +83,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?largeTraffic=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?largeTraffic=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-warning">
 							<i class="icon md-account"></i>
@@ -96,8 +96,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userList?flowAbnormal=1" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userList?flowAbnormal=1" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-danger">
 							<i class="icon md-account"></i>
@@ -109,8 +109,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/nodeList" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/nodeList" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-cloud"></i>
@@ -122,8 +122,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/nodeList?status=0" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/nodeList?status=0" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-info">
 							<i class="icon md-cloud-off"></i>
@@ -135,8 +135,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/trafficLog" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/trafficLog" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-time-countdown"></i>
@@ -148,8 +148,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/trafficLog" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/trafficLog" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-time-countdown"></i>
@@ -161,8 +161,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/orderList" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/orderList" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-ticket-star"></i>
@@ -174,8 +174,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/orderList" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/orderList" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-info">
 							<i class="icon md-ticket-star"></i>
@@ -187,8 +187,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/orderList?status=2" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/orderList?status=2" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-success">
 							<i class="icon md-ticket-star"></i>
@@ -200,8 +200,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/orderList?status=2&range_time={{date('Y-m-d 00:00:00') . ',' . date('Y-m-d 23:59:59')}}" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/orderList?status=2&range_time={{date('Y-m-d 00:00:00') . ',' . date('Y-m-d 23:59:59')}}" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-success">
 							<i class="icon md-ticket-star"></i>
@@ -213,8 +213,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<div class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<div class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-money"></i>
@@ -226,8 +226,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<a href="/admin/userRebateList" class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<a href="/admin/userRebateList" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-warning">
 							<i class="icon md-money"></i>
@@ -239,8 +239,8 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-3 col-md-6 info-panel pb-30">
-				<div class="card card-shadow h-full">
+			<div class="col-xl-3 col-md-6 info-panel">
+				<div class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-dark">
 							<i class="icon md-money"></i>
@@ -258,4 +258,9 @@
 @section('script')
 	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
+	<script type="text/javascript">
+        $(function () {
+            $('.card').matchHeight();
+        });
+	</script>
 @endsection

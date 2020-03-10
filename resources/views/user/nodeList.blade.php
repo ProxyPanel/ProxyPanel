@@ -32,9 +32,9 @@
 									{{$node->desc}}
 								</blockquote>
 								<p class="font-size-14">
-									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','code')"><i class="icon fa-code"></i></button>
-									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','qrcode')"><i class="icon fa-qrcode"></i></button>
-									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','text')"><i class="icon fa-list"></i></button>
+									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','code')"><i id="code{{$node->id}}" class="icon fa-code"></i></button>
+									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','qrcode')"><i id="qrcode{{$node->id}}" class="icon fa-qrcode"></i></button>
+									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','text')"><i id="text{{$node->id}}" class="icon fa-list"></i></button>
 								</p>
 							</div>
 						</div>
@@ -44,41 +44,58 @@
 		</div>
 	</div>
 @endsection @section('script')
+	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+	<script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
 	<script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
+        $(function() {
+            $('.card').matchHeight();
+        });
         function getInfo(id, type) {
-            $.post("/nodeList", {_token: '{{csrf_token()}}', id: id, type: type}, function (ret) {
-                if (ret.status === 'success') {
-                    switch (type) {
-                        case 'code':
-                            swal.fire({
-                                html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
-                                    '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
-                                showConfirmButton: false
-                            });
-                            break;
-                        case 'qrcode':
-                            swal.fire({
-                                title: '{{trans('home.scan_qrcode')}}',
-                                html: '<div id="qrcode"></div>',
-                                onBeforeOpen: () => {
-                                    $("#qrcode").qrcode({text: ret.data});
-                                },
-                                showConfirmButton: false
-                            });
-                            break;
-                        case 'text':
-                            swal.fire({
-                                title: '{{trans('home.setting_info')}}',
-                                html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
-                                showConfirmButton: false
-                            });
-                            break;
-                        default:
-                            swal.fire({title: ret.title, text: ret.data});
+            const oldClass = $("#" + type + id).attr("class");
+            $.ajax({
+                type: "POST",
+                url: '/nodeList',
+                data: {_token: '{{csrf_token()}}', id: id, type: type},
+                beforeSend: function () {
+                    $("#" + type + id).removeAttr("class").addClass("icon wb-loop icon-spin");
+                },
+                success: function (ret) {
+                    if (ret.status === 'success') {
+                        switch (type) {
+                            case 'code':
+                                swal.fire({
+                                    html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
+                                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
+                                    showConfirmButton: false
+                                });
+                                break;
+                            case 'qrcode':
+                                swal.fire({
+                                    title: '{{trans('home.scan_qrcode')}}',
+                                    html: '<div id="qrcode"></div>',
+                                    onBeforeOpen: () => {
+                                        $("#qrcode").qrcode({text: ret.data});
+                                    },
+                                    showConfirmButton: false
+                                });
+                                break;
+                            case 'text':
+                                swal.fire({
+                                    title: '{{trans('home.setting_info')}}',
+                                    html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
+                                    showConfirmButton: false
+                                });
+                                break;
+                            default:
+                                swal.fire({title: ret.title, text: ret.data});
+                        }
                     }
+                },
+                complete: function () {
+                    $("#" + type + id).removeAttr("class").addClass(oldClass);
                 }
             });
         }

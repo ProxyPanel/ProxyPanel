@@ -28,7 +28,13 @@ class NodeBlockedDetection extends Command
 	{
 		$jobStartTime = microtime(TRUE);
 		if(self::$systemConfig['nodes_detection']){
-			$this->checkNodes();
+			if(!Cache::has('LastCheckTime')){
+				$this->checkNodes();
+			}elseif(Cache::get('LastCheckTime') <= time()){
+				$this->checkNodes();
+			}else{
+				Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
+			}
 		}
 
 		$jobEndTime = microtime(TRUE);
@@ -105,6 +111,9 @@ class NodeBlockedDetection extends Command
 			$this->notifyMaster("节点阻断警告", "**阻断日志**: \r\n\r\n".$message.$additionalMessage);
 			Log::info("阻断日志: \r\n".$message.$additionalMessage);
 		}
+
+		// 随机生成下次检测时间
+		Cache::put('LastCheckTime', time()+mt_rand(3000, 3600), 3600);
 	}
 
 	/**

@@ -135,20 +135,20 @@ class UserController extends Controller
 			return Response::json(['status' => 'fail', 'message' => '已经签到过了，明天再来吧']);
 		}
 
-		$traffic = mt_rand(self::$systemConfig['min_rand_traffic'], self::$systemConfig['max_rand_traffic']);
-		$ret = User::uid()->increment('transfer_enable', $traffic*1048576);
+		$traffic = mt_rand((int)self::$systemConfig['min_rand_traffic'], (int)self::$systemConfig['max_rand_traffic']) * 1048576;
+		$ret = User::uid()->increment('transfer_enable', $traffic);
 		if(!$ret){
 			return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
 		}
 
 		// 写入用户流量变动记录
-		Helpers::addUserTrafficModifyLog(Auth::user()->id, 0, Auth::user()->transfer_enable, Auth::user()->transfer_enable+$traffic*1048576, '[签到]');
+		Helpers::addUserTrafficModifyLog(Auth::user()->id, 0, Auth::user()->transfer_enable, Auth::user()->transfer_enable+$traffic, '[签到]');
 
 		// 多久后可以再签到
 		$ttl = self::$systemConfig['traffic_limit_time']? self::$systemConfig['traffic_limit_time']*60 : 86400;
 		Cache::put('userCheckIn_'.Auth::user()->id, '1', $ttl);
 
-		return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 '.$traffic.'M 流量']);
+		return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 '.flowAutoShow($traffic).'流量']);
 	}
 
 	// 节点列表
@@ -197,8 +197,8 @@ class UserController extends Controller
 		if($request->isMethod('POST')){
 			$old_password = trim($request->input('old_password'));
 			$new_password = trim($request->input('new_password'));
-			$wechat = $request->input('wechat');
-			$qq = $request->input('qq');
+			$wechat = trim($request->input('wechat'));
+			$qq = trim($request->input('qq'));
 			$passwd = trim($request->input('passwd'));
 
 			// 修改密码
@@ -310,11 +310,11 @@ class UserController extends Controller
 		$prepaidOrder = Order::query()->where('oid', $oid)->first();
 		if(!$prepaidOrder){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '查无此单！']);
-		}
-		if($prepaidOrder->status != 3){
+		}elseif($prepaidOrder->status != 3){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非预支付订单，无需再次启动！']);
+		}else{
+			$this->activePrepaidOrder($oid);
 		}
-		$this->activePrepaidOrder($oid);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '激活成功']);
 	}
@@ -592,7 +592,7 @@ class UserController extends Controller
 		$view['subscribe_status'] = $subscribe->status;
 		$subscribe_link = (self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']).'/s/'.$subscribe->code;
 		$view['link'] = $subscribe_link;
-		$view['subscribe_link'] ='sub://'.base64url_encode($subscribe_link);
+		$view['subscribe_link'] = 'sub://'.base64url_encode($subscribe_link);
 		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(self::$systemConfig['website_name'].'-'.self::$systemConfig['website_url']);
 		$view['Shadowrocket_linkQrcode'] = 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(self::$systemConfig['website_name']);
 		$view['Quantumult_linkOut'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');

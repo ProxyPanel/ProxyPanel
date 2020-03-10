@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class SsNodeLabel
  *
  * @package App\Http\Models
- * @property-read Label $labelInfo
  * @mixin Eloquent
+ * @property-read Label $labelInfo
  * @property int        $id
  * @property int        $node_id  用户ID
  * @property int        $label_id 标签ID

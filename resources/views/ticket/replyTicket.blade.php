@@ -127,6 +127,7 @@
             swal.fire({
                 title: '确定回复工单？',
                 type: 'question',
+                allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -138,13 +139,7 @@
                         content: content
                     }, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                type: 'success',
-                                timer: 1000,
-                                showConfirmButton: false
-                            })
-                                .then(() => window.location.reload())
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload())
                         } else {
                             swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }

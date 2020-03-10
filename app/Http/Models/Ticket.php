@@ -14,7 +14,6 @@ use Illuminate\Support\Carbon;
  *
  * @package App\Http\Models
  * @mixin Eloquent
- * @property-read mixed  $status_label
  * @property int         $id
  * @property int         $user_id
  * @property string      $title      标题
@@ -22,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property int         $status     状态：0-待处理、1-已处理未关闭、2-已关闭
  * @property Carbon|null $created_at 创建时间
  * @property Carbon|null $updated_at 最后更新时间
+ * @property-read mixed  $status_label
  * @property-read User   $user
  * @method static Builder|Ticket newModelQuery()
  * @method static Builder|Ticket newQuery()
