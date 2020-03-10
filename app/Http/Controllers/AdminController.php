@@ -535,10 +535,10 @@ class AdminController extends Controller
 					return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
 				}
 			}
-			$data[0] = NetworkDetection::networkCheck($node->ip,TRUE); //ICMP
+			$data[0] = NetworkDetection::networkCheck($node->ip, TRUE); //ICMP
 			$data[1] = NetworkDetection::networkCheck($node->ip, FALSE, $node->single? $node->port : NULL); //TCP
 
-			return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message'=>$data]);
+			return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data]);
 		}else{
 			$status = $request->input('status');
 

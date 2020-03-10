@@ -137,8 +137,7 @@
                         content: content
                     }, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 800, showConfirmButton: false})
-                                .then(() => window.location.reload())
+                            swal.fire({title: ret.message, type: 'success', timer: 800, showConfirmButton: false}).then(() => window.location.reload())
                         } else {
                             swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
                         }

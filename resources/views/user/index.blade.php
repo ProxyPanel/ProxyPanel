@@ -121,7 +121,7 @@
 					</div>
 				@endif
 			</div>
-			<div class="col-xxl-9 col-xl-4col-xl-8 col-lg-7 col-md-6 col-12">
+			<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-12">
 				<div class="row" data-plugin="matchHeight" data-by-row="true">
 					<div class="col-xl-4 col-lg-6 pb-30">
 						<div class="card card-shadow h-full">
@@ -133,16 +133,16 @@
 							</div>
 						</div>
 					</div>
-					@if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
-						<div class="col-xl-4 col-lg-6 pb-30">
-							<div class="card card-shadow text-center h-full">
-								<div class="card-block">
+					<div class="col-xl-4 col-lg-6 pb-30">
+						<div class="card card-shadow text-center h-full">
+							<div class="card-block">
+								@if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
 									<p class="card-text" id="subscribe_qrcode"></p>
+								@endif
 								</div>
 							</div>
 						</div>
-					@endif
 				</div>
 				<div class="row" data-plugin="matchHeight" data-by-row="true">
 					<div class="col-xxl-6 mb-35">

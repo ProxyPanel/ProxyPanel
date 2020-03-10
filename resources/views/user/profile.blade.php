@@ -2,18 +2,6 @@
 @section('content')
 	<div class="page-content container">
 		<div class="row">
-			@if (Session::has('successMsg'))
-				<div class="alert alert-success alert-dismissable">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					{{Session::get('successMsg')}}
-				</div>
-			@endif
-			@if($errors->any())
-				<div class="alert alert-danger alert-dismissable">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<strong>{{trans('home.error')}}：</strong> {{$errors->first()}}
-				</div>
-			@endif
 			<div class="col-lg-5">
 				<div class="card">
 					<div class="card-header white bg-cyan-600 p-30 clearfix">
@@ -34,6 +22,18 @@
 			</div>
 			<div class="col-lg-7">
 				<div class="panel">
+					@if (Session::has('successMsg'))
+						<div class="alert alert-success alert-dismissable">
+							<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							{{Session::get('successMsg')}}
+						</div>
+					@endif
+					@if($errors->any())
+						<div class="alert alert-danger alert-dismissable">
+							<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<strong>{{trans('home.error')}}：</strong> {{$errors->first()}}
+						</div>
+					@endif
 					<div class="panel-body nav-tabs-animate nav-tabs-horizontal" data-plugin="tabs">
 						<ul class="nav nav-tabs nav-tabs-line" role="tablist">
 							<li class="nav-item" role="presentation">
@@ -67,12 +67,12 @@
 								<form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal">
 									<div class="form-group row">
 										<label for="wechat" class="col-md-2 col-form-label">{{trans('home.wechat')}}</label>
-										<input type="text" class="form-control col-md-5 round" name="wechat" id="wechat" value="{{Auth::user()->wechat}}" required/>
+										<input type="text" class="form-control col-md-5 round" name="wechat" id="wechat" value="{{Auth::user()->wechat}}"/>
 										{{csrf_field()}}
 									</div>
 									<div class="form-group row">
 										<label for="qq" class="col-md-2 col-form-label">QQ</label>
-										<input type="number" class="form-control col-md-5 round" name="qq" id="qq" value="{{Auth::user()->qq}}" required/>
+										<input type="number" class="form-control col-md-5 round" name="qq" id="qq" value="{{Auth::user()->qq}}"/>
 									</div>
 									<div class="form-actions">
 										<button type="submit" class="btn btn-info">{{trans('home.submit')}}</button>
@@ -100,4 +100,5 @@
 @endsection
 @section('script')
 	<script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
+	<script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
 @endsection
