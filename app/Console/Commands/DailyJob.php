@@ -165,7 +165,7 @@ class DailyJob extends Command
 			}
 			// 重置流量
 			User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => $order->goods->traffic*1048576, 'reset_time' => $nextResetTime]);
-			Log::info('用户[ID：'.$user->id.'  邮箱： '.$user->username.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
+			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
 		}
 	}
 }

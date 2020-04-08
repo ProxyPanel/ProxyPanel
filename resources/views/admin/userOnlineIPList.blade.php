@@ -16,7 +16,7 @@
 						<input type="number" class="form-control" id="id" name="id" value="{{Request::get('id')}}" placeholder="ID"/>
 					</div>
 					<div class="form-group col-lg-3 col-sm-8">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<input type="text" class="form-control" name="wechat" id="wechat" value="{{Request::get('wechat')}}" placeholder="微信"/>
@@ -52,7 +52,7 @@
 						@foreach ($userList as $user)
 							<tr>
 								<td> {{$user->id}} </td>
-								<td> {{$user->username}} </td>
+								<td> {{$user->email}} </td>
 								<td> {{$user->port}} </td>
 								<td>
 									@if ($user->status > 0)
@@ -131,7 +131,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/userOnlineIPList' + '?id' + $("#id").val() + '&username=' + $("#username").val() + '&wechat=' + $("#wechat").val() + '&qq=' + $("#qq").val() + '&port=' + $("#port").val();
+            window.location.href = '/admin/userOnlineIPList' + '?id' + $("#id").val() + '&email=' + $("#email").val() + '&wechat=' + $("#wechat").val() + '&qq=' + $("#qq").val() + '&port=' + $("#port").val();
         }
 	</script>
 @endsection

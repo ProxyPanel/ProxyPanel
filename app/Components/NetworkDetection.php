@@ -56,6 +56,37 @@ class NetworkDetection
 			return "机器宕机"; // 服务器宕机
 		}
 	}
+
+	/**
+	 * 用api.iiwl.cc进行Ping检测
+	 *
+	 * @param string $ip 被检测的IP或者域名
+	 *
+	 * @return bool|array
+	 */
+	public static function ping($ip)
+	{
+		$url = 'https://api.iiwl.cc/api/ping.php?url='.$ip;
+
+		try{
+			$ret = json_decode(Curl::send($url), TRUE);
+			if(!$ret){
+				Log::warning("【PING】检测".$ip."时，接口返回异常访问链接：".$url);
+
+				return FALSE;
+			}elseif($ret['code'] != 1 || $ret['msg'] != "检测成功！"){
+				Log::warning("【PING】检测".$ip."时，返回".json_encode($ret));
+
+				return FALSE;
+			}
+		} catch(Exception $e){
+			Log::warning("【Ping】检测".$ip."时，接口请求超时".$e);
+
+			return FALSE;
+		}
+
+		return $ret['data']; // 服务器宕机
+	}
 }
 
 ?>

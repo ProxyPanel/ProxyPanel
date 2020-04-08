@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @package App\Http\Models
  * @mixin Eloquent
  * @property int         $id
- * @property string      $username   用户邮箱
+ * @property string      $address    用户邮箱
  * @property string      $code       验证码
  * @property int         $status     状态：0-未使用、1-已使用、2-已失效
  * @property Carbon|null $created_at 创建时间
@@ -28,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|VerifyCode whereStatus($value)
  * @method static Builder|VerifyCode whereUpdatedAt($value)
  * @method static Builder|VerifyCode whereUsername($value)
+ * @method static Builder|VerifyCode whereAddress($value)
  */
 class VerifyCode extends Model
 {

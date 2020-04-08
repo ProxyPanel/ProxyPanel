@@ -73,53 +73,7 @@
 										</div>
 										<div class="panel-collapse collapse show" id="answer-2" aria-labelledby="question-2" role="tabpanel">
 											<div class="panel-body">
-												<div class="nav-tabs-horizontal" data-plugin="tabs">
-													<ul class="nav nav-tabs nav-tabs-line mr-25" role="tablist">
-														<li class="nav-item" role="presentation">
-															<a class="nav-link active" data-toggle="tab" href="#android_client" aria-controls="android_client" role="tab" aria-expanded="true">
-																<i class="icon fa-android" aria-hidden="true"></i>Android</a>
-														</li>
-														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#shadowrocket_client" aria-controls="shadowrocket_client" role="tab">
-																<i class="icon fa-apple" aria-hidden="true"></i>iOS-小火箭<span class="badge badge-danger up">推荐</span></a>
-														</li>
-													</ul>
-													<div class="tab-content py-15">
-														<div class="tab-pane active" id="android_client" role="tabpanel">
-															<ol>
-																<li>点击<code>添加订阅地址</code> ->
-																	<button class="btn btn-xs btn-animate btn-animate-side btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}"><span><i class="icon wb-copy" aria-hidden="true"></i>点击复制订阅地址</span></button>
-																	-> 粘贴进输入框 ->
-																	<code>确定</code> -> <code>确定并更新</code></li>
-															</ol>
-														</div>
-														<div class="tab-pane" id="shadowrocket_client" role="tabpanel">
-															<ol>
-																<li>
-																	<a class="btn btn-xs btn-primary" href="{{$Shadowrocket_install}}"><i class="icon fa-hand-o-right" aria-hidden="true"></i> 点此下载客户端
-																		<i class="icon fa-hand-o-left" aria-hidden="true"></i></a> -> 弹窗选<code>安装</code> -> 等待下载 -> 启动
-																</li>
-																<li>返回手机主界面 -> 等待Shadowrocket下载/安装完毕 -> 进入软件</li>
-																@if (\App\Components\Helpers::systemConfig()['AppStore_id'] && \App\Components\Helpers::systemConfig()['AppStore_password'])
-																	<div class="alert alert-info" role="alert" style="width: fit-content">
-																		@if($not_paying_user)
-
-																		@else
-																			<i class="wb-unlock" aria-hidden="true"></i> 首次安装软件可能会需要苹果ID激活软件，请输入以下账号信息：
-																			<br>
-																			账号（Apple ID）：
-																			<code id="accountId">{{\App\Components\Helpers::systemConfig()['AppStore_id']}}</code>
-																			<button class="btn btn-xs btn-primary mt-clipboard" data-clipboard-target="#accountId" data-clipboard-action="copy"><i class="wb-copy" aria-hidden="true"></i></button>
-																			<br> 密码：
-																			<code id="accountPasswd">{{\App\Components\Helpers::systemConfig()['AppStore_password']}}</code>
-																			<button class="btn btn-xs btn-primary mt-clipboard" data-clipboard-target="#accountPasswd" data-clipboard-action="copy"><i class="wb-copy" aria-hidden="true"></i></button>
-																		@endif
-																	</div>
-																@endif
-															</ol>
-														</div>
-													</div>
-												</div>
+												@include('user.components.help.tutorial')
 											</div>
 										</div>
 									</div>
@@ -130,59 +84,7 @@
 										</div>
 										<div class="panel-collapse collapse" id="answer-3" aria-labelledby="question-3" role="tabpanel">
 											<div class="panel-body">
-												<div class="nav-tabs-horizontal" data-plugin="tabs">
-													<ul class="nav nav-tabs" role="tablist">
-														<li class="nav-item" role="presentation">
-															<a class="nav-link active" data-toggle="tab" href="#android" aria-controls="android" role="tab">
-																<i class="icon fa-android" aria-hidden="true"></i>Android</a>
-														</li>
-														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#ios" aria-controls="ios" role="tab">
-																<i class="icon fa-apple" aria-hidden="true"></i>iOS</a>
-														</li>
-														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#Windows" aria-controls="Windows" role="tab">
-																<i class="icon fa-windows" aria-hidden="true"></i>Windows</a>
-														</li>
-														<li class="nav-item" role="presentation">
-															<a class="nav-link" data-toggle="tab" href="#MacOS" aria-controls="MacOS" role="tab">
-																<i class="icon fa-apple" aria-hidden="true"></i>MacOS</a>
-														</li>
-													</ul>
-													<div class="tab-content pt-20">
-														<div class="tab-pane active" id="android" role="tabpanel">
-															暂无
-														</div>
-														<div class="tab-pane" id="ios" role="tabpanel">
-															<h4>Q: 软件安装后，闪退？</h4>
-															<p>A: 闪退的情况大概分以下三种</p>
-															<ol>
-																<li>安装完成后，一打开就秒退。
-																	<br> 解决办法：登陆网站上提供的对应ID，先在苹果商店搜索安装最新版，运行一次后，在通过网站直接覆盖安装。
-																</li>
-																<li>打开软件，且弹出ID验证框，输入ID后闪退。
-																	<br> 解决办法：同上。
-																</li>
-																<li>打开软件，运行一段时间后闪退。
-																	<br> 这类问题，一般是因为软件的适配性引起的，基本无解。
-																</li>
-															</ol>
-															<h4>Q: 软件安装失败？</h4>
-															<p>A: 出现此类问题，绝大多数是你的网络不好，更换个网络即可，最好使用数据流量进行下载。</p>
-														</div>
-														<div class="tab-pane" id="Windows" role="tabpanel">
-															{{--                                                            <h4>Q: PAC 更新失败</h4>--}}
-															{{--                                                            <p>A: 这个情况都是PC链接访问网站不稳定造成的！--}}
-															{{--                                                                <br>--}}
-															{{--                                                                解决方案： 手动下载--}}
-															{{--                                                            </p>--}}
-															暂无
-														</div>
-														<div class="tab-pane" id="MacOS" role="tabpanel">
-															暂无
-														</div>
-													</div>
-												</div>
+												@include('user.components.help.solution')
 											</div>
 										</div>
 									</div>
@@ -346,6 +248,7 @@
 	<script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/responsive-tabs.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
+	<script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
 	<script type="text/javascript">
         // 更换订阅地址
         function exchangeSubscribe() {

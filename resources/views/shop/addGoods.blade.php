@@ -27,15 +27,6 @@
 					<span> {{$errors->first()}} </span>
 				</div>
 			@endif
-			<div class="alert alert-info alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h4>面板关于商品的规则</h4>
-				<ul>
-					<li>警告：用户购买新套餐则会覆盖所有已购但未过期的旧套餐并删除这些旧套餐对应的流量，所以设置商品时请务必注意类型和有效期，流量包则可叠加</li>
-					<li>套餐：仅展示12个上架的商品；流量：仅展示12个上架的商品</li>
-					<li>注意：添加后无法更改授予等级、商品类型；套餐有效期90天起，因为套餐每月会重置流量</li>
-				</ul>
-			</div>
 			<div class="panel-body">
 				<form action="/shop/addGoods" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					{{csrf_field()}}
@@ -52,10 +43,6 @@
 										<input type="radio" name="type" value="2"/>
 										<label for="type">套餐</label>
 									</div>
-									<div class="radio-custom radio-primary radio-inline">
-										<input type="radio" name="type" value="3"/>
-										<label for="type">充值</label>
-									</div>
 								</div>
 								<span class="offset-md-3 text-help"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
 							</div>
@@ -65,7 +52,7 @@
 									<input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
 								</div>
 							</div>
-							<div class="form-group row package-money">
+							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="traffic">流量额度</label>
 								<div class="col-md-4 input-group">
 									<input type="number" class="form-control" name="traffic" id="traffic" value="{{Request::old('traffic')? :1024}}" required/>
@@ -80,7 +67,7 @@
 									<span class="input-group-text">元</span>
 								</div>
 							</div>
-							<div class="form-group row package-renew" style="display: none">
+							<div class="form-group row package-renew">
 								<label class="col-md-3 col-form-label" for="renew">流量重置价格</label>
 								<div class="col-md-4 input-group">
 									<input type="number" class="form-control" name="renew" id="renew" value="{{Request::old('renew')? :0}}" step="0.01" required/>
@@ -88,7 +75,7 @@
 								</div>
 								<span class="offset-md-3 text-help"> 用户自行重置流量价格, <code>0</code> 时代表改该商品不提供重置功能 </span>
 							</div>
-							<div class="form-group row package-renew" style="display: none">
+							<div class="form-group row package-renew">
 								<label class="col-md-3 col-form-label" for="period">重置周期</label>
 								<div class="col-md-4 input-group">
 									<input type="number" class="form-control" name="period" id="period" value="{{Request::old('period')? :30}}" required/>
@@ -96,7 +83,7 @@
 								</div>
 								<span class="offset-md-3 text-help"> 套餐流量会每N天重置 </span>
 							</div>
-							<div class="form-group row package-money">
+							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="limit_num">限购数量</label>
 								<div class="col-md-4 input-group">
 									<input type="number" class="form-control" name="limit_num" id="limit_num" value="{{Request::old('limit_num')? :0}}" required/>
@@ -104,7 +91,7 @@
 								</div>
 								<span class="offset-md-3 text-help"> 每个用户可以购买该商品次数，为 <code>0</code> 时代表不限购 </span>
 							</div>
-							<div class="form-group row package-money">
+							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="labels">标签</label>
 								<div class="col-md-8">
 									<select class="form-control show-tick" name="labels[]" id="labels" data-plugin="selectpicker" data-style="btn-outline btn-primary" multiple>
@@ -115,7 +102,7 @@
 								</div>
 								<span class="offset-md-3 text-help"> 自动给购买此商品的用户打上相应的标签 </span>
 							</div>
-							<div class="form-group row package-renew" style="display: none">
+							<div class="form-group row package-renew">
 								<label class="col-md-3 col-form-label" for="days">有效期</label>
 								<div class="col-md-3 input-group">
 									<input type="number" class="form-control" name="days" id="days" value="{{Request::old('days')? :30}}" required/>
@@ -123,7 +110,7 @@
 								</div>
 								<span class="text-help"> *提交后不可修改 </span>
 							</div>
-							<div class="form-group row package-money">
+							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="is_hot">热销</label>
 								<div class="col-md-9 d-flex align-items-center">
 									<div class="radio-custom radio-primary radio-inline">
@@ -150,7 +137,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 col-md-12 package-money">
+						<div class="col-lg-6 col-md-12">
 							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="sort">排序</label>
 								<div class="col-md-3">
@@ -206,20 +193,22 @@
 	<script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
+        function itemControl(value) {
+            if (value === 1) {
+                $(".package-renew").hide();
+            } else {
+                $(".package-renew").show();
+            }
+        }
+
+        $(document).ready(function () {
+            itemControl(parseInt($("input[name='type']").val()))
+        });
+
         // 选择商品类型
         $("input[name='type']").change(function () {
-            const type = $(this).val();
-            if (type === '3') {
-                $(".package-money").hide();
-            } else {
-                $(".package-money").show();
-            }
-
-            if (type === '2') {
-                $(".package-renew").show();
-            } else {
-                $(".package-renew").hide();
-            }
+            itemControl(parseInt($(this).val()));
         });
+
 	</script>
 @endsection

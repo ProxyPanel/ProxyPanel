@@ -33,11 +33,11 @@ class LoginController extends Controller
 	// 登录返回订阅信息
 	public function login(Request $request)
 	{
-		$username = trim($request->input('username'));
+		$email = trim($request->input('email'));
 		$password = trim($request->input('password'));
 		$cacheKey = 'request_times_'.md5(getClientIp());
 
-		if(!$username || !$password){
+		if(!$email || !$password){
 			Cache::increment($cacheKey);
 
 			return Response::json(['status' => 'fail', 'data' => [], 'message' => '请输入用户名和密码']);
@@ -52,7 +52,7 @@ class LoginController extends Controller
 			Cache::put($cacheKey, 1, 3600);
 		}
 
-		$user = User::query()->where('username', $username)->where('status', '>=', 0)->first();
+		$user = User::query()->where('email', $email)->where('status', '>=', 0)->first();
 		if(!$user){
 			Cache::increment($cacheKey);
 

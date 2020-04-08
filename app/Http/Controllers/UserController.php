@@ -15,6 +15,7 @@ use App\Http\Models\ReferralLog;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeLabel;
+use App\Http\Models\SsNodePing;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Http\Models\User;
@@ -135,7 +136,7 @@ class UserController extends Controller
 			return Response::json(['status' => 'fail', 'message' => '已经签到过了，明天再来吧']);
 		}
 
-		$traffic = mt_rand((int)self::$systemConfig['min_rand_traffic'], (int)self::$systemConfig['max_rand_traffic']) * 1048576;
+		$traffic = mt_rand((int)self::$systemConfig['min_rand_traffic'], (int)self::$systemConfig['max_rand_traffic'])*1048576;
 		$ret = User::uid()->increment('transfer_enable', $traffic);
 		if(!$ret){
 			return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
@@ -171,6 +172,11 @@ class UserController extends Controller
 			$nodeList = SsNode::query()->selectRaw('ss_node.*')->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')->whereIn('ss_node_label.label_id', $userLabelIds)->where('ss_node.status', 1)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get();
 
 			foreach($nodeList as $node){
+				$node->ct = number_format(SsNodePing::query()->where('node_id', $node->id)->where('ct', '>', '0')->avg('ct'), 1, '.', '');
+				$node->cu = number_format(SsNodePing::query()->where('node_id', $node->id)->where('cu', '>', '0')->avg('cu'), 1, '.', '');
+				$node->cm = number_format(SsNodePing::query()->where('node_id', $node->id)->where('cm', '>', '0')->avg('cm'), 1, '.', '');
+				$node->hk = number_format(SsNodePing::query()->where('node_id', $node->id)->where('hk', '>', '0')->avg('hk'), 1, '.', '');
+
 				// 节点在线状态
 				$node->offline = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->doesntExist();
 				// 节点标签
@@ -197,6 +203,7 @@ class UserController extends Controller
 		if($request->isMethod('POST')){
 			$old_password = trim($request->input('old_password'));
 			$new_password = trim($request->input('new_password'));
+			$username = trim($request->input('username'));
 			$wechat = trim($request->input('wechat'));
 			$qq = trim($request->input('qq'));
 			$passwd = trim($request->input('passwd'));
@@ -220,33 +227,27 @@ class UserController extends Controller
 				}else{
 					return Redirect::to('profile#tab_1')->with('successMsg', '修改成功');
 				}
-			}
-
-			// 修改联系方式
-			if($wechat || $qq){
-				if(empty(clean($wechat)) && empty(clean($qq))){
-					return Redirect::to('profile#tab_2')->withErrors('修改失败');
-				}
-
-				$ret = User::uid()->update(['wechat' => $wechat, 'qq' => $qq]);
-				if(!$ret){
-					return Redirect::to('profile#tab_2')->withErrors('修改失败');
-				}else{
-					return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
-				}
-			}
-
-			// 修改代理密码
-			if($passwd){
+				// 修改代理密码
+			}elseif($passwd){
 				$ret = User::uid()->update(['passwd' => $passwd]);
 				if(!$ret){
 					return Redirect::to('profile#tab_3')->withErrors('修改失败');
 				}else{
 					return Redirect::to('profile#tab_3')->with('successMsg', '修改成功');
 				}
-			}
+			}else{
+				// 修改联系方式
+				if(empty($username)){
+					return Redirect::to('profile#tab_2')->withErrors('修改失败,昵称不能为空值');
+				}
 
-			return Redirect::to('profile#tab_1')->withErrors('非法请求');
+				$ret = User::uid()->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq]);
+				if(!$ret){
+					return Redirect::to('profile#tab_2')->withErrors('修改失败');
+				}else{
+					return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
+				}
+			}
 		}else{
 			return Response::view('user.profile');
 		}
@@ -347,7 +348,7 @@ class UserController extends Controller
 
 		if($obj->id){
 			$emailTitle = "新工单提醒";
-			$content = "标题：【".$title."】<br>用户：".Auth::user()->username."<br>内容：".$content;
+			$content = "标题：【".$title."】<br>用户：".Auth::user()->email."<br>内容：".$content;
 
 			// 发邮件通知管理员
 			if(self::$systemConfig['webmaster_email']){
@@ -531,7 +532,7 @@ class UserController extends Controller
 		$view['link'] = self::$systemConfig['website_url'].'/register?aff='.Auth::user()->id;
 		$view['referralLogList'] = ReferralLog::uid()->with('user')->orderBy('id', 'desc')->paginate(10, ['*'], 'log_page');
 		$view['referralApplyList'] = ReferralApply::uid()->with('user')->orderBy('id', 'desc')->paginate(10, ['*'], 'apply_page');
-		$view['referralUserList'] = User::query()->select(['username', 'created_at'])->where('referral_uid', Auth::user()->id)->orderBy('id', 'desc')->paginate(10, ['*'], 'user_page');
+		$view['referralUserList'] = User::query()->select(['email', 'created_at'])->where('referral_uid', Auth::user()->id)->orderBy('id', 'desc')->paginate(10, ['*'], 'user_page');
 
 		return Response::view('user.referral', $view);
 	}
@@ -651,8 +652,8 @@ class UserController extends Controller
 
 		$coupon = Coupon::query()->where('sn', $request->input('coupon_sn'))->first();
 
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
 			// 写入日志
 			$this->addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance+$coupon->amount, $coupon->amount, '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
 

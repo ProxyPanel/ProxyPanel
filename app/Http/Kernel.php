@@ -6,8 +6,10 @@ use App\Http\Middleware\Affiliate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\isAdmin;
+use App\Http\Middleware\isAdminlogin;
 use App\Http\Middleware\isForbidden;
 use App\Http\Middleware\isLogin;
+use App\Http\Middleware\isMaintenance;
 use App\Http\Middleware\isSecurity;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
@@ -85,7 +87,9 @@ class Kernel extends HttpKernel
 		'signed'        => ValidateSignature::class,
 		'throttle'      => ThrottleRequests::class,
 		'isAdmin'       => isAdmin::class,
+		'isAdminLogin'  => isAdminLogin::class,
 		'isLogin'       => isLogin::class,
+		'isMaintenance' => isMaintenance::class,
 		'isSecurity'    => isSecurity::class,
 		'isForbidden'   => isForbidden::class,
 		'affiliate'     => Affiliate::class,

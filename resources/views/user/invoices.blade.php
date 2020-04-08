@@ -32,13 +32,12 @@
 						@foreach($orderList as $order)
 							<tr>
 								<td>{{$loop->iteration}}</td>
-								<td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a>
-								</td>
-								<td>{{empty($order->goods) ? trans('home.invoice_table_goods_deleted') : $order->goods->name}}</td>
+								<td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
+								<td>{{empty($order->goods) ? ($order->goods_id == -1 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</td>
 								<td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
 								<td>￥{{$order->amount}}</td>
 								<td>{{$order->created_at}}</td>
-								<td>{{empty($order->goods) ? '' : $order->goods->type == 3 || $order->status == 3 ? '' : $order->expire_at}}</td>
+								<td>{{empty($order->goods) ? '' : $order->goods_id == -1 || $order->status == 3 ? '' : $order->expire_at}}</td>
 								<td>
 									@switch($order->status)
 										@case(-1)
@@ -51,7 +50,7 @@
 										<span class="badge badge-info">{{trans('home.invoice_status_wait_confirm')}}</span>
 										@break
 										@case(2)
-										@if (!empty($order->goods) && $order->goods->type == 3)
+										@if ($order->goods_id == -1)
 											<span class="badge badge-default">{{trans('home.invoice_status_payment_confirm')}}</span>
 										@else
 											@if($order->is_expire)

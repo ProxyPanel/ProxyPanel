@@ -19,8 +19,8 @@
 				<span class="form-title">{{trans('auth.active_account')}}</span>
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				<input type="email" class="form-control" name="username" value="{{Request::get('username')}}" required/>
-				<label class="floating-label" for="username">{{trans('auth.username')}}</label>
+				<input type="email" class="form-control" name="email" value="{{Request::get('email')}}" required/>
+				<label class="floating-label" for="email">{{trans('auth.email')}}</label>
 				{{csrf_field()}}
 			</div>
 		@else

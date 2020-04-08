@@ -1,6 +1,7 @@
 <?php
 
 return [
+	'username'               => 'Username',
 	'active'                 => 'Activate',
 	'active_account'         => 'Activate account',
 	'active_tip'             => 'Account is not active yet, Please ',
@@ -10,7 +11,7 @@ return [
 	'register'               => 'Sign Up',
 	'send'                   => 'Send',
 	'tip'                    => 'Tip',
-	'username'               => 'Email',
+	'email'                  => 'Email',
 	'password'               => 'Password',
 	'confirm_password'       => 'Please renter your password',
 	'back'                   => 'Back',
@@ -45,6 +46,7 @@ return [
 	'captcha_close'              => 'Verification code registration is disable',
 	'captcha_send'               => 'Verification code sent',
 	'code_error'                 => 'The invitation code is invalid! Please try again',
+	'username_null'              => 'Please enter your username',
 	'email_null'                 => 'Please enter your email address',
 	'email_normal'               => 'Your account has been activated',
 	'email_legitimate'           => 'Account must be a legitimate email',

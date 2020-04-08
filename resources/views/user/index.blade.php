@@ -351,12 +351,13 @@
         const countDownDate = new Date("{{$banedTime}}").getTime();
         const x = setInterval(function () {
             const distance = countDownDate - new Date().getTime();
+            const hours = Math.floor(distance % 86400000 / 3600000);
             const minutes = Math.floor((distance % 3600000) / 60000);
             const seconds = Math.floor((distance % 60000) / 1000);
-            document.getElementById("countdown").innerHTML = minutes + "分 " + seconds + "秒";
+            document.getElementById("countdown").innerHTML = hours + "时 " + minutes + "分 " + seconds + "秒";
             if (distance <= 0) {
                 clearInterval(x);
-                window.location.reload();
+                document.getElementById("countdown").remove();
             }
         }, 1000);
 		@endif

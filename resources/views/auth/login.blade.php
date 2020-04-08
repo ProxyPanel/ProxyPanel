@@ -16,8 +16,8 @@
 			</div>
 		@endif
 		<div class="form-group form-material floating" data-plugin="formMaterial">
-			<input type="email" class="form-control" name="username" value="{{Request::old('username')}}" required/>
-			<label class="floating-label" for="username">{{trans('auth.username')}}</label>
+			<input type="email" class="form-control" name="email" value="{{Request::old('email')}}" required/>
+			<label class="floating-label" for="email">{{trans('auth.email')}}</label>
 		</div>
 		<div class="form-group form-material floating" data-plugin="formMaterial">
 			<input type="password" class="form-control" name="password" value="{{Request::old('password')}}" autocomplete required/>

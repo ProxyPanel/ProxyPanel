@@ -30,10 +30,6 @@
 					<strong>错误：</strong> {{$errors->first()}}
 				</div>
 			@endif
-			<div class="alert alert-info alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<strong>警告：</strong>购买新套餐则会覆盖所有已购但未过期的旧套餐并删除这些旧套餐对应的流量，所以设置商品时请务必注意类型和有效期，流量包则可叠加
-			</div>
 			<div class="panel-body">
 				<form action="/shop/editGoods/{{$goods->id}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					<div class="form-group row">
@@ -46,10 +42,6 @@
 							<div class="radio-custom radio-primary radio-inline">
 								<input type="radio" name="type" value="2" @if($goods->type == 2) checked @endif disabled/>
 								<label for="type">套餐</label>
-							</div>
-							<div class="radio-custom radio-primary radio-inline">
-								<input type="radio" name="type" value="3" @if($goods->type == 3) checked @endif disabled/>
-								<label for="type">充值</label>
 							</div>
 						</div>
 						<span class="offset-md-2 text-help"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
@@ -82,104 +74,102 @@
 							</div>
 						</div>
 					</div>
-					@if($goods->type <= 2)
-						@if ($goods->type == 2)
-							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="renew">流量重置价格</label>
-								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="renew" id="renew" value="{{$goods->renew}}" step="0.01"/>
-									<span class="input-group-text">元</span>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-md-2 col-form-label" for="period">重置周期</label>
-								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="period" id="period" value="{{$goods->period}}" required/>
-									<span class="input-group-text">天</span>
-								</div>
-								<span class="text-help"> 套餐流量会每N天重置 </span>
-							</div>
-						@endif
+					@if ($goods->type == 2)
 						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="traffic">流量额度</label>
+							<label class="col-md-2 col-form-label" for="renew">流量重置价格</label>
 							<div class="col-md-4 input-group">
-								<input type="number" class="form-control" name="traffic" id="traffic" value="{{$goods->traffic}}" disabled/>
-								<span class="input-group-text">MB</span>
+								<input type="number" class="form-control" name="renew" id="renew" value="{{$goods->renew}}" step="0.01"/>
+								<span class="input-group-text">元</span>
 							</div>
 						</div>
 						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="limit_num">限购数量</label>
+							<label class="col-md-2 col-form-label" for="period">重置周期</label>
 							<div class="col-md-4 input-group">
-								<input type="number" class="form-control" name="limit_num" id="limit_num" value="{{$goods->limit_num}}" required/>
-								<span class="input-group-text">次</span>
-							</div>
-							<span class="text-help"> 每个用户可以购买该商品次数，为 0 时代表不限购 </span>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="labels">标签</label>
-							<div class="col-md-6">
-								<select class="form-control show-tick" name="labels[]" id="labels" data-plugin="selectpicker" data-style="btn-outline btn-primary" multiple>
-									@foreach($label_list as $label)
-										<option value="{{$label->id}}" @if(in_array($label->id, $goods->labels)) selected @endif>{{$label->name}}</option>
-									@endforeach
-								</select>
-							</div>
-							<span class="text-help"> 自动给购买此商品的用户打上相应的标签 </span>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="days">有效期</label>
-							<div class="col-md-4 input-group">
-								<input type="number" class="form-control" name="days" id="days" value="{{$goods->days}}" disabled/>
+								<input type="number" class="form-control" name="period" id="period" value="{{$goods->period}}" required/>
 								<span class="input-group-text">天</span>
 							</div>
-							<span class="text-help"> 到期后会自动从总流量扣减对应的流量 </span>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="sort">排序</label>
-							<div class="col-md-4">
-								<input type="number" class="form-control" name="sort" id="sort" value="{{$goods->sort}}"/>
-							</div>
-							<span class="text-help"> 排序值越大排越前 </span>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="color">颜色</label>
-							<div class="col-md-4">
-								<input type="text" class="form-control" name="color" id="color" data-plugin="asColorPicker" data-mode="simple" value="{{$goods->color}}"/>
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="is_hot">热销</label>
-							<div class="col-md-10 d-flex align-items-center">
-								<div class="radio-custom radio-primary radio-inline">
-									<input type="radio" name="is_hot" value="1" @if($goods->is_hot == 1) checked @endif/>
-									<label for="is_hot">是</label>
-								</div>
-								<div class="radio-custom radio-primary radio-inline">
-									<input type="radio" name="is_hot" value="0" @if($goods->is_hot == 0) checked @endif/>
-									<label for="is_hot">否</label>
-								</div>
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="logo">商品图片</label>
-							<div class="col-md-6">
-								<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file={{$goods->logo?:'/assets/images/noimage.png'}} />
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="desc">描述</label>
-							<div class="col-md-8">
-								<textarea class="form-control" rows="2" name="desc" id="desc" placeholder="商品的简单描述">{{$goods->desc}}</textarea>
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-md-2 col-form-label" for="info">自定义列表</label>
-							<div class="col-md-8">
-								<textarea class="form-control" rows="6" name="info" id="info" placeholder="商品的自定义列表添加">{{$goods->info}}</textarea>
-							</div>
-							<span class="offset-md-2 text-help"> 每行内容请以<code>&lt;li&gt;</code> 开头 <code>&lt;/li&gt;</code> 结尾</span>
+							<span class="text-help"> 套餐流量会每N天重置 </span>
 						</div>
 					@endif
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="traffic">流量额度</label>
+						<div class="col-md-4 input-group">
+							<input type="number" class="form-control" name="traffic" id="traffic" value="{{$goods->traffic}}" disabled/>
+							<span class="input-group-text">MB</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="limit_num">限购数量</label>
+						<div class="col-md-4 input-group">
+							<input type="number" class="form-control" name="limit_num" id="limit_num" value="{{$goods->limit_num}}" required/>
+							<span class="input-group-text">次</span>
+						</div>
+						<span class="text-help"> 每个用户可以购买该商品次数，为 0 时代表不限购 </span>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="labels">标签</label>
+						<div class="col-md-6">
+							<select class="form-control show-tick" name="labels[]" id="labels" data-plugin="selectpicker" data-style="btn-outline btn-primary" multiple>
+								@foreach($label_list as $label)
+									<option value="{{$label->id}}" @if(in_array($label->id, $goods->labels)) selected @endif>{{$label->name}}</option>
+								@endforeach
+							</select>
+						</div>
+						<span class="text-help"> 自动给购买此商品的用户打上相应的标签 </span>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="days">有效期</label>
+						<div class="col-md-4 input-group">
+							<input type="number" class="form-control" name="days" id="days" value="{{$goods->days}}" disabled/>
+							<span class="input-group-text">天</span>
+						</div>
+						<span class="text-help"> 到期后会自动从总流量扣减对应的流量 </span>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="sort">排序</label>
+						<div class="col-md-4">
+							<input type="number" class="form-control" name="sort" id="sort" value="{{$goods->sort}}"/>
+						</div>
+						<span class="text-help"> 排序值越大排越前 </span>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="color">颜色</label>
+						<div class="col-md-4">
+							<input type="text" class="form-control" name="color" id="color" data-plugin="asColorPicker" data-mode="simple" value="{{$goods->color}}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="is_hot">热销</label>
+						<div class="col-md-10 d-flex align-items-center">
+							<div class="radio-custom radio-primary radio-inline">
+								<input type="radio" name="is_hot" value="1" @if($goods->is_hot == 1) checked @endif/>
+								<label for="is_hot">是</label>
+							</div>
+							<div class="radio-custom radio-primary radio-inline">
+								<input type="radio" name="is_hot" value="0" @if($goods->is_hot == 0) checked @endif/>
+								<label for="is_hot">否</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="logo">商品图片</label>
+						<div class="col-md-6">
+							<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file={{$goods->logo?:'/assets/images/noimage.png'}} />
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="desc">描述</label>
+						<div class="col-md-8">
+							<textarea class="form-control" rows="2" name="desc" id="desc" placeholder="商品的简单描述">{{$goods->desc}}</textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="info">自定义列表</label>
+						<div class="col-md-8">
+							<textarea class="form-control" rows="6" name="info" id="info" placeholder="商品的自定义列表添加">{{$goods->info}}</textarea>
+						</div>
+						<span class="offset-md-2 text-help"> 每行内容请以<code>&lt;li&gt;</code> 开头 <code>&lt;/li&gt;</code> 结尾</span>
+					</div>
 					<div class="form-actions col-12 text-right">
 						<button type="submit" class="btn btn-success"><i class="icon wb-check"></i> 提 交</button>
 					</div>

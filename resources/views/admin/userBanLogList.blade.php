@@ -11,7 +11,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-3 col-sm-6">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
@@ -38,9 +38,9 @@
 						@foreach($list as $vo)
 							<tr>
 								<td>
-									<a href="/admin/userList?username={{$vo->id}}" target="_blank" rel="noopener"> {{$vo->id}}</a>
+									<a href="/admin/userList?email={{$vo->id}}" target="_blank" rel="noopener"> {{$vo->id}}</a>
 								</td>
-								<td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
+								<td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->email}} </td>
 								<td> {{$vo->minutes}}分钟</td>
 								<td> {{$vo->desc}} </td>
 								<td> {{$vo->created_at}} </td>
@@ -80,7 +80,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/userBanLogList?username=' + $("#username").val();
+            window.location.href = '/admin/userBanLogList?email=' + $("#email").val();
         }
 	</script>
 @endsection

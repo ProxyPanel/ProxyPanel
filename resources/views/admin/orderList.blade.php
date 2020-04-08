@@ -12,7 +12,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-2 col-sm-6">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<input type="number" class="form-control" name="order_sn" id="order_sn" value="{{Request::get('order_sn')}}" placeholder="订单号"/>
@@ -107,7 +107,7 @@
 									@if(empty($order->user) )
 										【账号不存在】
 									@else
-										<a href="/admin/userList?id={{$order->user->id}}" target="_blank">{{$order->user->username}} </a>
+										<a href="/admin/userList?id={{$order->user->id}}" target="_blank">{{$order->user->email}} </a>
 									@endif
 								</td>
 								<td> {{$order->order_sn}}</td>
@@ -183,7 +183,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/orderList?username=' + $("#username").val() + '&order_sn=' + $("#order_sn").val() + '&is_expire=' + $("#is_expire").val() + '&is_coupon=' + $("#is_coupon").val() + '&pay_way=' + $("#pay_way").val() + '&status=' + $("#status").val() + '&sort=' + $("input:radio[name='sort']:checked").val() + '&range_time=' + [$("#start").val(), $("#end").val()];
+            window.location.href = '/admin/orderList?email=' + $("#email").val() + '&order_sn=' + $("#order_sn").val() + '&is_expire=' + $("#is_expire").val() + '&is_coupon=' + $("#is_coupon").val() + '&pay_way=' + $("#pay_way").val() + '&status=' + $("#status").val() + '&sort=' + $("input:radio[name='sort']:checked").val() + '&range_time=' + [$("#start").val(), $("#end").val()];
         }
 	</script>
 @endsection

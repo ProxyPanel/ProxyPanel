@@ -38,7 +38,7 @@
 							<thead class="thead-default">
 							<tr>
 								<th data-cell-style="cellStyle"> #</th>
-								<th> {{trans('home.invite_user_username')}} </th>
+								<th> {{trans('home.invite_user_email')}} </th>
 								<th> {{trans('home.invite_user_created_at')}}</th>
 							</tr>
 							</thead>
@@ -51,7 +51,7 @@
 								@foreach($referralUserList as $vo)
 									<tr>
 										<td> {{$loop->iteration}} </td>
-										<td> {{str_replace(mb_substr($vo->username, 3, 4), "****", $vo->username)}}  </td>
+										<td> {{str_replace(mb_substr($vo->email, 3, 4), "****", $vo->email)}}  </td>
 										<td> {{$vo->created_at}} </td>
 									</tr>
 								@endforeach
@@ -99,7 +99,7 @@
 									<tr>
 										<td> {{$loop->iteration}} </td>
 										<td> {{$referralLog->created_at}} </td>
-										<td> {{empty($referralLog->user) ? '【账号已删除】' : str_replace(mb_substr($referralLog->user->username, 3, 4), "****", $referralLog->user->username)}} </td>
+										<td> {{empty($referralLog->user) ? '【账号已删除】' : str_replace(mb_substr($referralLog->user->email, 3, 4), "****", $referralLog->user->email)}} </td>
 										<td> ￥{{$referralLog->amount}} </td>
 										<td> ￥{{$referralLog->ref_amount}} </td>
 										<td>

@@ -97,6 +97,21 @@ CREATE TABLE `ss_node_online_log` (
   INDEX `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点在线信息';
 
+-- ----------------------------
+-- Table structure for `ss_node_ping`
+-- ----------------------------
+CREATE TABLE `ss_node_ping` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `node_id` INT(11) NOT NULL DEFAULT '0' COMMENT '对应节点id',
+  `ct` INT(11) NOT NULL DEFAULT '0' COMMENT '电信',
+  `cu` INT(11) NOT NULL DEFAULT '0' COMMENT '联通',
+  `cm` INT(11) NOT NULL DEFAULT '0' COMMENT '移动',
+  `hk` INT(11) NOT NULL DEFAULT '0' COMMENT '香港',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `idx_node_id` (`node_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='节点ping信息表';
 
 -- ----------------------------
 -- Table structure for `ss_node_label`
@@ -115,7 +130,8 @@ CREATE TABLE `ss_node_label` (
 -- ----------------------------
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(128) NOT NULL DEFAULT '' COMMENT '用户名',
+  `username` text NOT NULL DEFAULT '' COMMENT '昵称',
+  `email` varchar(128) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `port` int(11) NOT NULL DEFAULT '0' COMMENT '代理端口',
   `passwd` varchar(16) NOT NULL DEFAULT '' COMMENT '代理密码',
@@ -154,7 +170,7 @@ CREATE TABLE `user` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `unq_username` (`username`),
+  UNIQUE INDEX `unq_email` (`email`),
   INDEX `idx_search` (`enable`, `status`, `port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';
 
@@ -162,8 +178,8 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `user` (`id`, `username`, `password`, `port`, `passwd`, `vmess_id`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `obfs`, `obfs_param`, `wechat`, `qq`, `usage`, `pay_way`, `balance`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
-VALUES (1,'test@test.com','$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq',10000,'@123', 'c6effafd-6046-7a84-376e-b0429751c304', 1099511627776,0,0,0,1,'aes-256-cfb','origin','plain',0,'','',1,3,0.00,'2017-01-01','2099-01-01',NULL,1,'127.0.0.1',1,now(),now());
+INSERT INTO `user` (`id`, `username`, `email`, `password`, `port`, `passwd`, `vmess_id`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `obfs`, `obfs_param`, `wechat`, `qq`, `usage`, `pay_way`, `balance`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
+VALUES (1,'管理员','test@test.com','$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq',10000,'@123', 'c6effafd-6046-7a84-376e-b0429751c304', 1099511627776,0,0,0,1,'aes-256-cfb','origin','plain',0,'','',1,3,0.00,'2017-01-01','2099-01-01',NULL,1,'127.0.0.1',1,now(),now());
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -377,7 +393,11 @@ INSERT INTO `config` VALUES ('95', 'google_captcha_secret', '');
 INSERT INTO `config` VALUES ('96', 'user_invite_days', 7);
 INSERT INTO `config` VALUES ('97', 'admin_invite_days', 7);
 INSERT INTO `config` VALUES ('98', 'admin_email', '');
-
+INSERT INTO `config` VALUES ('99', 'payjs_mch_id', '');
+INSERT INTO `config` VALUES ('100', 'payjs_key', '');
+insert into `config` VALUES ('101', 'maintenance_mode', '0');
+insert into `config` VALUES ('102', 'maintenance_time', '');
+insert into `config` VALUES ('103', 'maintenance_content', '');
 
 -- ----------------------------
 -- Table structure for `article`
@@ -464,7 +484,7 @@ CREATE TABLE `verify` (
 -- ----------------------------
 CREATE TABLE `verify_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(128) NOT NULL COMMENT '用户邮箱',
+  `address` varchar(128) NOT NULL COMMENT '用户邮箱',
   `code` char(6) NOT NULL COMMENT '验证码',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -545,7 +565,8 @@ CREATE TABLE `coupon` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   `deleted_at` datetime NULL DEFAULT NULL COMMENT '删除时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `unq_sn` (`sn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券';
 
 

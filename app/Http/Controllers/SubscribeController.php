@@ -33,18 +33,18 @@ class SubscribeController extends Controller
 	public function subscribeList(Request $request)
 	{
 		$user_id = $request->input('user_id');
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$status = $request->input('status');
 
-		$query = UserSubscribe::with(['user:id,username']);
+		$query = UserSubscribe::with(['user:id,email']);
 
 		if(isset($user_id)){
 			$query->where('user_id', $user_id);
 		}
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -61,7 +61,7 @@ class SubscribeController extends Controller
 	public function subscribeLog(Request $request)
 	{
 		$id = $request->input('id');
-		$query = UserSubscribeLog::with('user:username');
+		$query = UserSubscribeLog::with('user:email');
 
 		if(isset($id)){
 			$query->where('sid', $id);

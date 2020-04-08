@@ -36,6 +36,13 @@
 									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','qrcode')"><i id="qrcode{{$node->id}}" class="icon fa-qrcode"></i></button>
 									<button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','text')"><i id="text{{$node->id}}" class="icon fa-list"></i></button>
 								</p>
+								<p class="text-muted">
+									<span>电信： {{$node->ct>0 ?$node->ct.' ms' :'无数据'}} </span>
+									<span>联通： {{$node->cu>0 ?$node->cu.' ms' :'无数据'}} </span>
+									<br>
+									<span>移动： {{$node->cm>0 ?$node->cm.' ms' :'无数据'}} </span>
+									<span>香港： {{$node->hk>0 ?$node->hk.' ms' :'无数据'}} </span>
+								</p>
 							</div>
 						</div>
 					</div>
@@ -50,9 +57,10 @@
 	<script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
-        $(function() {
+        $(function () {
             $('.card').matchHeight();
         });
+
         function getInfo(id, type) {
             const oldClass = $("#" + type + id).attr("class");
             $.ajax({

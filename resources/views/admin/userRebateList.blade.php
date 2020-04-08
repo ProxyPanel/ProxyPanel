@@ -11,10 +11,10 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-4 col-sm-6">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="消费者"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="消费者"/>
 					</div>
 					<div class="form-group col-lg-4 col-sm-6">
-						<input type="text" class="form-control" name="ref_username" id="ref_username" value="{{Request::get('ref_username')}}" placeholder="邀请人"/>
+						<input type="text" class="form-control" name="ref_email" id="ref_email" value="{{Request::get('ref_email')}}" placeholder="邀请人"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<select name="status" id="status" class="form-control" onChange="Search()">
@@ -56,14 +56,14 @@
 									@if(empty($vo->user))
 										【账号已删除】
 									@else
-										<a href="/admin/userRebateList?username={{$vo->user->username}}"> {{$vo->user->username}} </a>
+										<a href="/admin/userRebateList?email={{$vo->user->email}}"> {{$vo->user->email}} </a>
 									@endif
 								</td>
 								<td>
 									@if(empty($vo->ref_user))
 										【账号已删除】
 									@else
-										<a href="/admin/userRebateList?ref_username={{$vo->ref_user->username}}"> {{$vo->ref_user->username}} </a>
+										<a href="/admin/userRebateList?ref_email={{$vo->ref_user->email}}"> {{$vo->ref_user->email}} </a>
 									@endif
 								</td>
 								<td> {{$vo->order_id}} </td>
@@ -116,7 +116,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/userRebateList' + '?username=' + $("#username").val() + '&ref_username=' + $("#ref_username").val() + '&status=' + $("#status option:selected").val();
+            window.location.href = '/admin/userRebateList' + '?email=' + $("#email").val() + '&ref_email=' + $("#ref_email").val() + '&status=' + $("#status option:selected").val();
         }
 	</script>
 @endsection

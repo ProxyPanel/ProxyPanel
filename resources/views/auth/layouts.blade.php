@@ -7,7 +7,7 @@
 <html lang="{{app()->getLocale()}}">
 <!--<![endif]-->
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
@@ -136,7 +136,6 @@
 <script src="/assets/js/Site.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
-<script src="/assets/global/js/Plugin/switchery.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/jquery-placeholder.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/material.js" type="text/javascript"></script>
 <!-- 统计 -->

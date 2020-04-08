@@ -11,7 +11,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-2 col-sm-4">
-						<input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" placeholder="申请账号"/>
+						<input type="text" class="form-control" name="email" value="{{Request::get('email')}}" id="email" placeholder="申请账号"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="status" id="status" onChange="Search()">
@@ -53,7 +53,7 @@
 									@if(empty($apply->user))
 										【账号已删除】
 									@else
-										<a href="/admin/userList?id={{$apply->user_id}}" target="_blank">{{$apply->user->username}}</a>
+										<a href="/admin/userList?id={{$apply->user_id}}" target="_blank">{{$apply->user->email}}</a>
 									@endif
 								</td>
 								<td> ￥{{$apply->amount}} </td>
@@ -116,7 +116,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/applyList?username=' + $("#username").val() + '&status=' + $("#status option:selected").val();
+            window.location.href = '/admin/applyList?email=' + $("#email").val() + '&status=' + $("#status option:selected").val();
         }
 
         // 更改状态

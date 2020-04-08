@@ -60,17 +60,18 @@ class Helpers
 	/**
 	 * 添加用户
 	 *
-	 * @param string $username        用户邮箱
+	 * @param string $email           用户邮箱
 	 * @param string $password        用户密码
 	 * @param string $transfer_enable 可用流量
 	 * @param int    $data            可使用天数
 	 * @param int    $referral_uid    邀请人
 	 * @return int
 	 */
-	public static function addUser($username, $password, $transfer_enable, $data, $referral_uid = 0)
+	public static function addUser($email, $password, $transfer_enable, $data, $referral_uid = 0)
 	{
 		$user = new User();
-		$user->username = $username;
+		$user->username = $email;
+		$user->email = $email;
 		$user->password = $password;
 		// 生成一个可用端口
 		$user->port = self::systemConfig()['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();

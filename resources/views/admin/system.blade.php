@@ -164,6 +164,37 @@
 											<span class="text-help offset-md-3"> 如果是机器人、爬虫、代理访问网站则会抛出404错误 </span>
 										</div>
 									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="maintenance_mode">维护模式</label>
+											<span class="col-md-9"><input type="checkbox" id="maintenance_mode" data-plugin="switchery" @if($maintenance_mode) checked @endif onchange="updateFromOther('switch','maintenance_mode')"></span>
+											<span class="text-help offset-md-3"> 启用后，用户访问将转移至维护界面 </span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3" for="maintenance_time">维护结束时间</label>
+											<div class="col-md-6">
+												<div class="input-group">
+													<input type="datetime-local" class="form-control" name="maintenance_time" id="maintenance_time" value="{{$maintenance_time}}" />
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('maintenance_time')">修改</button></span>
+												</div>
+											</div>
+											<span class="offset-md-3 text-help"> 用于维护界面倒计时 </span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3" for="maintenance_content">维护介绍内容</label>
+											<div class="col-md-6">
+												<div class="input-group">
+													<textarea class="form-control" rows="3" name="maintenance_content" id="maintenance_content">{{$maintenance_content}}</textarea>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('maintenance_content')">修改</button></span>
+												</div>
+											</div>
+											<span class="offset-md-3 text-help"> 自定义维护内容信息 </span>
+										</div>
+									</div>
 								</div>
 							</form>
 						</div>

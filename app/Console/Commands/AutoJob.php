@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\ServerChan;
+use App\Http\Models\Config;
 use App\Http\Models\Coupon;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
@@ -60,6 +61,14 @@ class AutoJob extends Command
 
 		// 检测节点是否离线
 		$this->checkNodeStatus();
+
+		// 检查 维护模式
+		if(Helpers::systemConfig()['maintenance_mode']){
+			if(strtotime(Helpers::systemConfig()['maintenance_time']) < time()){
+				Config::query()->where('name', 'maintenance_mode')->update(['value' => 0]);
+				Config::query()->where('name', 'maintenance_time')->update(['value' => '']);
+			}
+		}
 
 		$jobEndTime = microtime(TRUE);
 		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);

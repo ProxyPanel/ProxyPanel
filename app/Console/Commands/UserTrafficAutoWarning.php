@@ -42,7 +42,7 @@ class UserTrafficAutoWarning extends Command
 		$userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('transfer_enable', '>', 0)->get();
 		foreach($userList as $user){
 			// 用户名不是邮箱的跳过
-			if(FALSE === filter_var($user->username, FILTER_VALIDATE_EMAIL)){
+			if(FALSE === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
 				continue;
 			}
 
@@ -51,8 +51,8 @@ class UserTrafficAutoWarning extends Command
 				$title = '流量提醒';
 				$content = '流量已使用：'.$usedPercent.'%，请保持关注。';
 
-				$logId = Helpers::addEmailLog($user->username, $title, $content);
-				Mail::to($user->username)->send(new userTrafficWarning($logId, $usedPercent));
+				$logId = Helpers::addEmailLog($user->email, $title, $content);
+				Mail::to($user->email)->send(new userTrafficWarning($logId, $usedPercent));
 			}
 		}
 	}

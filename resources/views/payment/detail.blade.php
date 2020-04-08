@@ -17,9 +17,11 @@
 					<div class="row col-8">
 						<div class="col-md-6">
 							<ul class="list-group list-group-dividered">
-								<li class="list-group-item">服务名称：{{$payment->order->goods->name}}</li>
+								<li class="list-group-item">服务名称：{{$name}}</li>
 								<li class="list-group-item">支付金额：{{$payment->amount}}元</li>
-								<li class="list-group-item">有效期：{{$payment->order->goods->days}} 天</li>
+								@if($days != 0)
+									<li class="list-group-item">有效期：{{$days}} 天</li>
+								@endif
 								<li class="list-group-item"> 请在<code>15分钟</code>内完成支付，否者订单将会自动关闭</li>
 							</ul>
 						</div>
@@ -46,24 +48,31 @@
                 document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
             document.forms['alipaySubmit'].submit();
 			@endif
-            getStatus();
         });
 
         // 检查支付单状态
-        function getStatus() {
-            $.get("/payment/getStatus", {sn: '{{$payment->sn}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-                        .then(() => window.location.href = '/invoices')
-                } else if (ret.status === 'error') {
-                    swal.fire({title: ret.message, type: "error", timer: 1000, showConfirmButton: false})
-                        .then(() => window.location.href = '/invoices')
-                } else {
-                    // 无结果时，每2秒查询一次订单状态
-                    setInterval("getStatus()", 2000);
+        const r = window.setInterval(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/payment/getStatus',
+                data: {sn: '{{$payment->sn}}'},
+                dataType: 'json',
+                success: function (ret) {
+                    window.clearInterval();
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false})
+                            .then(() => {
+                                window.location.href = '/invoices'
+                            });
+                    } else if (ret.status === 'error') {
+                        swal.fire({title: ret.message, type: "error", timer: 1500, showConfirmButton: false})
+                            .then(() => {
+                                window.location.href = '/invoices'
+                            })
+                    }
                 }
             });
-        }
+        }, 3000);
 
         // 还原html脚本 < > & " '
         function unescapeHTML(str) {

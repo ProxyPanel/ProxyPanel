@@ -8,44 +8,26 @@
 			<div class="panel-body container-fluid">
 				<div class="page-invoice-table table-responsive">
 					<table class="table table-hover text-md-center">
-						@if($goods->type == 3)
-							<thead>
-							<tr>
-								<th class="invoice-title"> {{trans('home.service_name')}} </th>
-								<th class="invoice-title"> {{trans('home.service_price')}} </th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr>
-								<td class="p-10">
-									<h2>{{$goods->name}}</h2>
-									充值金额：{{$goods->price}}元
-								</td>
-								<td> ￥{{$goods->price}} </td>
-							</tr>
-							</tbody>
-						@else
-							<thead>
-							<tr>
-								<th>{{trans('home.service_name')}}</th>
-								<th>{{trans('home.service_desc')}} </th>
-								<th>{{trans('home.service_price')}}</th>
-								<th>{{trans('home.service_quantity')}}</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr>
-								<td class="text-middle">{{$goods->name}} </td>
-								<td>{{trans('home.service_days')}}
-									<strong>{{$goods->type==1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
-									<br>
-									<strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
-								</td>
-								<td class="text-middle"> ￥{{$goods->price}} </td>
-								<td class="text-middle"> x 1</td>
-							</tr>
-							</tbody>
-						@endif
+						<thead>
+						<tr>
+							<th>{{trans('home.service_name')}}</th>
+							<th>{{trans('home.service_desc')}} </th>
+							<th>{{trans('home.service_price')}}</th>
+							<th>{{trans('home.service_quantity')}}</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td class="text-middle">{{$goods->name}} </td>
+							<td>{{trans('home.service_days')}}
+								<strong>{{$goods->type==1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
+								<br>
+								<strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
+							</td>
+							<td class="text-middle"> ￥{{$goods->price}} </td>
+							<td class="text-middle"> x 1</td>
+						</tr>
+						</tbody>
 					</table>
 				</div>
 				@if($goods->type <= 2)

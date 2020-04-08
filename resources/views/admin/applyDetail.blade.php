@@ -21,7 +21,7 @@
 					<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
 						<thead class="thead-default">
 						<tr>
-							<th colspan="6">申请单ID：{{$info->id}} | 申请人：{{$info->user->username}} | 申请提现金额：￥{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
+							<th colspan="6">申请单ID：{{$info->id}} | 申请人：{{$info->user->email}} | 申请提现金额：￥{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
 						</tr>
 						<tr>
 							<th> #</th>
@@ -41,7 +41,7 @@
 							@foreach($list as $vo)
 								<tr>
 									<td> {{$vo->id}} </td>
-									<td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
+									<td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->email}} </td>
 									<td>
 										<a href="/admin/orderList?order_sn={{$vo->order->order_sn}}" target="_blank">{{$vo->order->goods->name}}</a>
 									</td>

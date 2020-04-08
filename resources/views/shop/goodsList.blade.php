@@ -18,7 +18,6 @@
 							<option value="" @if(Request::get('type') == '') selected hidden @endif>类型</option>
 							<option value="1" @if(Request::get('type') == '1') selected hidden @endif>流量包</option>
 							<option value="2" @if(Request::get('type') == '2') selected hidden @endif>套餐</option>
-							<option value="3" @if(Request::get('type') == '3') selected hidden @endif>余额充值</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
@@ -73,7 +72,7 @@
 										<a href="{{$goods->logo}}" target="_blank"><img src="{{$goods->logo}}" alt="logo" class="h-50"/></a>
 									@endif
 								</td>
-								<td> {{$goods->type == 3 ? '' : $goods->traffic_label}} </td>
+								<td> {{$goods->traffic_label}} </td>
 								<td> {{$goods->price}}元</td>
 								<td> {{$goods->sort}} </td>
 								<td>
