@@ -5,16 +5,16 @@
 			<div class="col-lg-5">
 				<div class="card">
 					<div class="card-header white bg-cyan-600 p-30 clearfix">
-						<a class="avatar avatar-100 float-left mr-20" href="javascript:void(0)">
-							<img src="/assets/images/astronaut.svg" alt="头像">
-						</a>
+						<span class="avatar avatar-100 float-left mr-20">
+							@include('user.components.avatar')
+						</span>
 						<div class="float-left">
 							<div class="font-size-20 mb-15">{{Auth::user()->username}}</div>
 							<p class="mb-5 text-nowrap"><i class="icon bd-webchat mr-10" aria-hidden="true"></i>
-								<span class="text-break">@if(Auth::user()->wechat) {{Auth::user()->wechat}} @else 未添加 @endif</span>
+								<span class="text-break">微信: @if(Auth::user()->wechat) {{Auth::user()->wechat}} @else 未添加 @endif</span>
 							</p>
 							<p class="mb-5 text-nowrap"><i class="icon bd-qq mr-10" aria-hidden="true"></i>
-								<span class="text-break">@if(Auth::user()->qq) {{Auth::user()->qq}} @else 未添加 @endif</span>
+								<span class="text-break">QQ: @if(Auth::user()->qq) {{Auth::user()->qq}} @else 未添加 @endif</span>
 							</p>
 						</div>
 					</div>
@@ -65,6 +65,10 @@
 							</div>
 							<div class="tab-pane animation-slide-left" id="tab_2" role="tabpanel">
 								<form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal">
+									<div class="form-group row">
+										<label for="username" class="col-md-2 col-form-label">{{trans('auth.username')}}</label>
+										<input type="text" class="form-control col-md-5 round" name="username" id="username" value="{{Auth::user()->username}}"/>
+									</div>
 									<div class="form-group row">
 										<label for="wechat" class="col-md-2 col-form-label">{{trans('home.wechat')}}</label>
 										<input type="text" class="form-control col-md-5 round" name="wechat" id="wechat" value="{{Auth::user()->wechat}}"/>

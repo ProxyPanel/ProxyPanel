@@ -145,11 +145,21 @@
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
 					<span class="site-menu-title">客服系统</span>
+					@if(\App\Http\Models\Ticket::query()->where('status','=','0')->count() > 0 )
+						<div class="site-menu-badge">
+							<span class="badge badge-pill badge-success">{{\App\Http\Models\Ticket::query()->where('status','=','0')->count()}}</span>
+						</div>
+					@endif
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['ticket/ticketList', 'ticket/addTicket','ticket/replyTicket']) ? 'active open' : ''}}">
 						<a href="/ticket/ticketList" class="animsition-link">
 							<span class="site-menu-title">服务工单</span>
+							@if(\App\Http\Models\Ticket::query()->where('status','=','0')->count() > 0 )
+								<div class="site-menu-label">
+									<span class="badge badge-danger badge-round mr-25">{{\App\Http\Models\Ticket::query()->where('status','=','0')->count()}}</span>
+								</div>
+							@endif
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
@@ -169,7 +179,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor', 'admin/labelList', 'admin/addLabel', 'admin/editLabel', 'admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor', 'admin/labelList', 'admin/addLabel', 'admin/editLabel', 'admin/groupList', 'admin/addGroup', 'admin/editGroup','admin/nodePingLog']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
 					<span class="site-menu-title">线路系统</span>
@@ -188,6 +198,11 @@
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/groupList', 'admin/addGroup', 'admin/editGroup']) ? 'active open' : ''}}">
 						<a href="/admin/groupList" class="animsition-link">
 							<span class="site-menu-title">分组管理</span>
+						</a>
+					</li>
+					<li class="site-menu-item {{in_array(Request::path(), ['admin/nodePingLog']) ? 'active open' : ''}}">
+						<a href="/admin/nodePingLog">
+							<span class="site-menu-title">测速日志</span>
 						</a>
 					</li>
 				</ul>

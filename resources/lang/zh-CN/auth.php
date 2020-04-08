@@ -10,7 +10,7 @@ return [
 	'register'                   => '注 册',
 	'send'                       => '发送',
 	'tip'                        => '提示',
-	'username'                   => '邮箱',
+	'email'                      => '邮箱',
 	'password'                   => '密码',
 	'confirm_password'           => '请再次输入密码',
 	'back'                       => '返 回',
@@ -44,6 +44,7 @@ return [
 	'captcha_close'              => '本站关闭了通过验证码注册',
 	'captcha_send'               => '验证码已发送至您的邮箱，请稍作等待或查看垃圾箱',
 	'code_error'                 => '邀请码不可用，请重试',
+	'username_null'              => '请输入昵称',
 	'email_null'                 => '请输入邮箱账号',
 	'email_normal'               => '账号状态正常，无需激活',
 	'email_legitimate'           => '邮箱地址不合规',
@@ -69,5 +70,6 @@ return [
 	'reset_password_fail'        => '重设密码失败',
 	'reset_password_new'         => '新密码设置成功，请自行登录',
 	'request_error'              => '请求异常，请刷新页面后重试',
+	'username'                   => '昵称',
 	'unaccepted'                 => '请阅读用户条款和可接受使用条款，并同意'
 ];

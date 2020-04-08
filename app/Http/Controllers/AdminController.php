@@ -24,6 +24,7 @@ use App\Http\Models\SsNodeInfo;
 use App\Http\Models\SsNodeIp;
 use App\Http\Models\SsNodeLabel;
 use App\Http\Models\SsNodeOnlineLog;
+use App\Http\Models\SsNodePing;
 use App\Http\Models\SsNodeTrafficDaily;
 use App\Http\Models\SsNodeTrafficHourly;
 use App\Http\Models\User;
@@ -110,7 +111,7 @@ class AdminController extends Controller
 	public function userList(Request $request)
 	{
 		$id = $request->input('id');
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$wechat = $request->input('wechat');
 		$qq = $request->input('qq');
 		$port = $request->input('port');
@@ -128,8 +129,8 @@ class AdminController extends Controller
 			$query->where('id', $id);
 		}
 
-		if(isset($username)){
-			$query->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->where('email', 'like', '%'.$email.'%');
 		}
 
 		if(isset($wechat)){
@@ -222,8 +223,8 @@ class AdminController extends Controller
 	public function addUser(Request $request)
 	{
 		if($request->isMethod('POST')){
-			// 校验username是否已存在
-			$exists = User::query()->where('username', $request->input('username'))->first();
+			// 校验email是否已存在
+			$exists = User::query()->where('email', $request->input('email'))->first();
 			if($exists){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
 			}
@@ -233,7 +234,7 @@ class AdminController extends Controller
 			}
 
 			$user = new User();
-			$user->username = trim($request->input('username'));
+			$user->email = trim($request->input('email'));
 			$user->password = Hash::make(trim($request->input('password'))? : makeRandStr());
 			$user->port = $request->input('port');
 			$user->passwd = empty($request->input('passwd'))? makeRandStr() : $request->input('passwd');
@@ -355,6 +356,7 @@ class AdminController extends Controller
 	{
 		if($request->isMethod('POST')){
 			$username = trim($request->input('username'));
+			$email = trim($request->input('email'));
 			$password = $request->input('password');
 			$port = $request->input('port');
 			$passwd = $request->input('passwd');
@@ -381,8 +383,8 @@ class AdminController extends Controller
 			$is_admin = $request->input('is_admin');
 			$reset_time = $request->input('reset_time');
 
-			// 校验username是否已存在
-			$exists = User::query()->where('id', '<>', $id)->where('username', $username)->first();
+			// 校验email是否已存在
+			$exists = User::query()->where('id', '<>', $id)->where('email', $email)->first();
 			if($exists){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
 			}
@@ -409,6 +411,7 @@ class AdminController extends Controller
 			try{
 				$data = [
 					'username'             => $username,
+					'email'                => $email,
 					'port'                 => $port,
 					'passwd'               => $passwd,
 					'vmess_id'             => $vmess_id,
@@ -842,6 +845,7 @@ class AdminController extends Controller
 			SsNodeOnlineLog::query()->where('node_id', $id)->delete();
 			SsNodeTrafficDaily::query()->where('node_id', $id)->delete();
 			SsNodeTrafficHourly::query()->where('node_id', $id)->delete();
+			SsNodePing::query()->where('node_id', $id)->delete();
 			UserTrafficDaily::query()->where('node_id', $id)->delete();
 			UserTrafficHourly::query()->where('node_id', $id)->delete();
 			UserTrafficLog::query()->where('node_id', $id)->delete();
@@ -916,6 +920,44 @@ class AdminController extends Controller
 
 		return Response::view('admin.nodeMonitor', $view);
 	}
+
+	// Ping节点延迟
+	public function pingNode(Request $request)
+	{
+		$node = SsNode::query()->where('id', $request->input('id'))->first();
+		if(!$node){
+			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
+		}
+
+		$result = NetworkDetection::ping($node->is_ddns? $node->server : $node->ip);
+
+		if($result){
+			$data[0] = $result['China Telecom']['time']? : '无';
+			$data[1] = $result['China Unicom']['time']? : '无';
+			$data[2] = $result['China Mobile']['time']? : '无';
+			$data[3] = $result['Hong Kong']['time']? : '无';
+
+			return Response::json(['status' => 'success', 'message' => $data]);
+		}else{
+			return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
+		}
+	}
+
+	public function nodePingLog(Request $request)
+	{
+
+		$node_id = $request->input('nodeId');
+		$query = SsNodePing::query();
+		if(isset($node_id)){
+			$query->where('node_id', $node_id);
+		}
+
+		$view['nodeList'] = SsNode::query()->orderBy('id', 'asc')->get();
+		$view['pingLogs'] = $query->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
+
+		return Response::view('admin.nodePingLog', $view);
+	}
+
 
 	// 文章列表
 	public function articleList(Request $request)
@@ -1124,7 +1166,7 @@ class AdminController extends Controller
 	{
 		$port = $request->input('port');
 		$user_id = $request->input('user_id');
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$nodeId = $request->input('nodeId');
 		$startTime = $request->input('startTime');
 		$endTime = $request->input('endTime');
@@ -1141,9 +1183,9 @@ class AdminController extends Controller
 			$query->where('user_id', $user_id);
 		}
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -1317,7 +1359,7 @@ class AdminController extends Controller
 				DB::beginTransaction();
 				foreach($data as $user){
 					$obj = new User();
-					$obj->username = $user->user;
+					$obj->email = $user->user;
 					$obj->password = Hash::make('123456');
 					$obj->port = $user->port;
 					$obj->passwd = $user->passwd;
@@ -1514,7 +1556,7 @@ EOF;
 		$view['trafficHourly'] = "'".implode("','", $hourlyData)."'";
 		$view['monthDays'] = "'".implode("','", $monthDays)."'";
 		$view['dayHours'] = "'".implode("','", $dayHours)."'";
-		$view['username'] = $user->username;
+		$view['email'] = $user->email;
 
 		return Response::view('admin.userMonitor', $view);
 	}
@@ -2041,13 +2083,13 @@ EOF;
 	// 提现申请列表
 	public function applyList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$status = $request->input('status');
 
 		$query = ReferralApply::with('user');
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -2081,7 +2123,7 @@ EOF;
 	// 订单列表
 	public function orderList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$order_sn = $request->input('order_sn');
 		$is_coupon = $request->input('is_coupon');
 		$is_expire = $request->input('is_expire');
@@ -2093,9 +2135,9 @@ EOF;
 
 		$query = Order::query()->with(['user', 'goods', 'coupon']);
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 		if(isset($order_sn)){
@@ -2214,13 +2256,13 @@ EOF;
 	// 用户余额变动记录
 	public function userBalanceLogList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 
 		$query = UserBalanceLog::query()->with(['user'])->orderBy('id', 'desc');
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -2232,13 +2274,13 @@ EOF;
 	// 用户封禁记录
 	public function userBanLogList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 
 		$query = UserBanLog::query()->with(['user'])->orderBy('id', 'desc');
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -2250,13 +2292,13 @@ EOF;
 	// 用户流量变动记录
 	public function userTrafficLogList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 
 		$query = UserTrafficModifyLog::query()->with(['user', 'order', 'order.goods']);
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -2268,21 +2310,21 @@ EOF;
 	// 用户返利流水记录
 	public function userRebateList(Request $request)
 	{
-		$username = $request->input('username');
-		$ref_username = $request->input('ref_username');
+		$email = $request->input('email');
+		$ref_email = $request->input('ref_email');
 		$status = $request->input('status');
 
 		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status', 'asc')->orderBy('id', 'desc');
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
-		if(isset($ref_username)){
-			$query->whereHas('ref_user', function($q) use ($ref_username){
-				$q->where('username', 'like', '%'.$ref_username.'%');
+		if(isset($ref_email)){
+			$query->whereHas('ref_user', function($q) use ($ref_email){
+				$q->where('email', 'like', '%'.$ref_email.'%');
 			});
 		}
 
@@ -2298,15 +2340,15 @@ EOF;
 	// 用户在线IP记录
 	public function userOnlineIPList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$port = $request->input('port');
 		$wechat = $request->input('wechat');
 		$qq = $request->input('qq');
 
 		$query = User::query()->where('status', '>=', 0)->where('enable', 1);
 
-		if(isset($username)){
-			$query->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->where('email', 'like', '%'.$email.'%');
 		}
 
 		if(isset($wechat)){
@@ -2426,13 +2468,13 @@ EOF;
 	// 邮件发送日志列表
 	public function emailLog(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$type = $request->input('type');
 
 		$query = EmailLog::query();
 
-		if(isset($username)){
-			$query->where('address', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->where('address', 'like', '%'.$email.'%');
 		}
 
 		if(isset($type)){
@@ -2448,7 +2490,7 @@ EOF;
 	public function onlineIPMonitor(Request $request)
 	{
 		$ip = $request->input('ip');
-		$username = $request->input('username');
+		$email = $request->input('email');
 		$port = $request->input('port');
 		$nodeId = $request->input('nodeId');
 		$userId = $request->input('id');
@@ -2459,9 +2501,9 @@ EOF;
 			$query->where('ip', $ip);
 		}
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 

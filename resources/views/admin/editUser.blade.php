@@ -18,9 +18,15 @@
 						<div class="col-lg-6">
 							<h4 class="example-title">账号信息</h4>
 							<div class="form-group row">
-								<label class="col-md-2 col-sm-3 col-form-label" for="username">用户名</label>
+								<label class="col-md-2 col-sm-3 col-form-label" for="username">昵称</label>
 								<div class="col-xl-6 col-sm-8">
-									<input type="text" class="form-control" name="username" value="{{$user->username}}" id="username" autocomplete="off" autofocus required/>
+									<input type="text" class="form-control" name="username" value="{{$user->username}}" id="username" autocomplete="off" required/>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-2 col-sm-3 col-form-label" for="email">邮箱</label>
+								<div class="col-xl-6 col-sm-8">
+									<input type="text" class="form-control" name="email" value="{{$user->email}}" id="email" autocomplete="off" autofocus required/>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -224,7 +230,7 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label" for="referral_uid">邀请人</label>
 								<div class="col-xl-6 col-sm-8">
-									<p class="form-control"> {{empty($user->referral) ? '无邀请人' : $user->referral->username}} </p>
+									<p class="form-control"> {{empty($user->referral) ? '无邀请人' : $user->referral->email}} </p>
 								</div>
 							</div>
 						</div>
@@ -435,6 +441,7 @@
                 data: {
                     _token: '{{csrf_token()}}',
                     username: $('#username').val(),
+                    email: $('#email').val(),
                     password: $('#password').val(),
                     usage: usage.substring(0, usage.length - 1),
                     pay_way: $("input:radio[name='pay_way']:checked").val(),

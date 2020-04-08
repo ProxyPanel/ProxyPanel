@@ -11,7 +11,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-3 col-sm-4">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="type" id="type" onChange="Search()">
@@ -92,7 +92,7 @@
 	<script type="text/javascript">
         // 搜索
         function Search() {
-            window.location.href = '/admin/emailLog?username=' + $("#username").val() + '&type=' + $("#type option:selected").val();
+            window.location.href = '/admin/emailLog?email=' + $("#email").val() + '&type=' + $("#type option:selected").val();
         }
 	</script>
 @endsection

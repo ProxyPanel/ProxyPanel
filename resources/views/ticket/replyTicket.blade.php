@@ -19,8 +19,14 @@
 					<div class="chats">
 						<div class="chat chat-left">
 							<div class="chat-avatar">
-								<p class="avatar" data-toggle="tooltip" data-placement="right" title="{{trans('home.ticket_reply_me')}}">
-									<img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}"/>
+								<p class="avatar">
+									@if($ticket->user->qq)
+										<img src="http://q1.qlogo.cn/g?b=qq&nk={{$ticket->user->qq}}&s=640" alt="客户">
+									@elseif(strpos(strtolower($ticket->user->email),"@qq.com") !== FALSE)
+										<img src="http://q1.qlogo.cn/g?b=qq&nk={{$ticket->user->email}}&s=640" alt="客户">
+									@else
+										<img src="/assets/images/astronaut.svg" alt="客户">
+									@endif
 								</p>
 							</div>
 							<div class="chat-body">
@@ -36,12 +42,18 @@
 							<div class="chat @if (!$reply->user->is_admin) chat-left @endif">
 								<div class="chat-avatar">
 									@if ($reply->user->is_admin)
-										<p class="avatar" data-toggle="tooltip" data-placement="left" title="{{trans('home.ticket_reply_master')}}">
+										<p class="avatar">
 											<img src="/assets/images/logo64.png" alt="{{trans('home.ticket_reply_master')}}"/>
 										</p>
 									@else
-										<p class="avatar" data-toggle="tooltip" data-placement="left" title="{{trans('home.ticket_reply_me')}}">
-											<img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}"/>
+										<p class="avatar">
+											@if($ticket->user->qq)
+												<img src="http://q1.qlogo.cn/g?b=qq&nk={{$ticket->user->qq}}&s=640" alt="客户">
+											@elseif(strpos(strtolower($ticket->user->email),"@qq.com") !== FALSE)
+												<img src="http://q1.qlogo.cn/g?b=qq&nk={{$ticket->user->email}}&s=640" alt="客户">
+											@else
+												<img src="/assets/images/astronaut.svg" alt="客户">
+											@endif
 										</p>
 									@endif
 								</div>

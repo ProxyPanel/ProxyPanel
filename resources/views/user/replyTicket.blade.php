@@ -19,7 +19,7 @@
 						<div class="chat">
 							<div class="chat-avatar">
 								<p class="avatar" data-toggle="tooltip" data-placement="right" title="{{trans('home.ticket_reply_me')}}">
-									<img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}"/>
+									@include('user.components.avatar')
 								</p>
 							</div>
 							<div class="chat-body">
@@ -40,7 +40,7 @@
 										</p>
 									@else
 										<p class="avatar" data-toggle="tooltip" data-placement="left" title="{{trans('home.ticket_reply_me')}}">
-											<img src="/assets/images/astronaut.svg" alt="{{trans('home.ticket_reply_me')}}"/>
+											@include('user.components.avatar')
 										</p>
 									@endif
 								</div>

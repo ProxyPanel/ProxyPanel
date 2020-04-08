@@ -55,7 +55,7 @@
 											<td>
 												{!!$invite->status_label!!}
 											</td>
-											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->username) : ''}}
+											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->email) : ''}}
 										</tr>
 									@endforeach
 								@endif

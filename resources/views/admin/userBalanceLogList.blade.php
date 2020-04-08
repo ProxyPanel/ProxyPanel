@@ -11,7 +11,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-3 col-sm-6">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
@@ -44,7 +44,7 @@
 									@if(empty($vo->user))
 										【账号已删除】
 									@else
-										<a href="/admin/userBalanceLogList?username={{$vo->user->username}}"> {{$vo->user->username}} </a>
+										<a href="/admin/userBalanceLogList?email={{$vo->user->email}}"> {{$vo->user->email}} </a>
 									@endif
 								</td>
 								<td> {{$vo->order_id}} </td>
@@ -88,7 +88,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/userBalanceLogList?username=' + $("#username").val();
+            window.location.href = '/admin/userBalanceLogList?email=' + $("#email").val();
         }
 	</script>
 @endsection

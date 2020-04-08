@@ -35,47 +35,46 @@
 					</tr>
 					</thead>
 					<tbody>
-					@if($nodeList->isEmpty())
+					@forelse($nodeList as $node)
+						<tr class="{{!$node->isOnline && $node->status ? 'table-danger' : ''}}">
+							<td>
+								{{$node->id}}
+							</td>
+							<td>
+								@if($node->is_transit)
+									中转
+								@else
+									{{$node->type == 2 ? 'V2' : 'SSR'}}
+								@endif
+							</td>
+							<td> {{$node->name}} </td>
+							<td> {{$node->is_ddns ? 'DDNS' : $node->ip}} </td>
+							<td> {{$node->server}} </td>
+							<td> {{$node->uptime}} </td>
+							<td> {{$node->status? $node->load : '维护'}} </td>
+							<td> {{$node->online_users}} </td>
+							<td> {{$node->transfer}} </td>
+							<td> {{$node->traffic_rate}} </td>
+							<td>
+								@if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
+								@if($node->single) <span class="badge badge-lg badge-info">单</span> @endif
+								@if(!$node->is_subscribe) <span class="badge badge-lg badge-danger"><s>订</s></span> @endif
+							</td>
+							<td>
+								<div class="btn-group">
+									<a href="javascript:pingNode('{{$node->id}}')" class="btn btn-primary"><i id="ping{{$node->id}}" class="icon wb-order"></i></a>
+									<a href="javascript:testNode('{{$node->id}}')" class="btn btn-primary"><i id="node{{$node->id}}" class="icon wb-signal"></i></a>
+									<a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
+									<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')" class="btn btn-danger"><i class="icon wb-trash"></i></a>
+									<a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
+								</div>
+							</td>
+						</tr>
+					@empty
 						<tr>
 							<td colspan="12">暂无数据</td>
 						</tr>
-					@else
-						@foreach($nodeList as $node)
-							<tr class="{{!$node->isOnline && $node->status ? 'table-danger' : ''}}">
-								<td>
-									{{$node->id}}
-								</td>
-								<td>
-									@if($node->is_transit)
-										中转
-									@else
-										{{$node->type == 2 ? 'V2' : 'SSR'}}
-									@endif
-								</td>
-								<td> {{$node->name}} </td>
-								<td> {{$node->is_ddns ? 'DDNS' : $node->ip}} </td>
-								<td> {{$node->server}} </td>
-								<td> {{$node->uptime}} </td>
-								<td> {{$node->status? $node->load : '维护'}} </td>
-								<td> {{$node->online_users}} </td>
-								<td> {{$node->transfer}} </td>
-								<td> {{$node->traffic_rate}} </td>
-								<td>
-									@if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
-									@if($node->single) <span class="badge badge-lg badge-info">单</span> @endif
-									@if(!$node->is_subscribe) <span class="badge badge-lg badge-danger"><s>订</s></span> @endif
-								</td>
-								<td>
-									<div class="btn-group">
-										<a href="javascript:testNode('{{$node->id}}')" class="btn btn-primary"><i id="node{{$node->id}}" class="icon wb-signal"></i></a>
-										<a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary"><i class="icon wb-edit"></i></a>
-										<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')" class="btn btn-danger"><i class="icon wb-trash"></i></a>
-										<a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i class="icon wb-stats-bars"></i></a>
-									</div>
-								</td>
-							</tr>
-						@endforeach
-					@endif
+					@endforelse
 					</tbody>
 				</table>
 			</div>
@@ -116,6 +115,28 @@
                 },
                 complete: function () {
                     $("#node" + id).removeClass("wb-loop icon-spin").addClass("wb-signal");
+                }
+            });
+        }
+
+        //Ping 节点获取延迟
+        function pingNode(id) {
+            $.ajax({
+                type: "POST",
+                url: '/admin/pingNode',
+                data: {_token: '{{csrf_token()}}', id: id},
+                beforeSend: function () {
+                    $("#ping" + id).removeClass("wb-order").addClass("wb-loop icon-spin");
+                },
+                success: function (ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({type: 'info', html: '<table class="my-20"><thead class="thead-default"><tr><th> 电信 </th> <th> 联通 </th> <th> 移动 </th> <th> 香港 </th></thead><tbody><tr><td>' + ret.message[0] + '</td><td>' + ret.message[1] + '</td><td>' + ret.message[2] + '</td><td>' + ret.message[3] + '</td></tr></tbody></table>', showConfirmButton: false})
+                    } else {
+                        swal.fire({title: ret.title, type: "error"})
+                    }
+                },
+                complete: function () {
+                    $("#ping" + id).removeClass("wb-loop icon-spin").addClass("wb-order");
                 }
             });
         }

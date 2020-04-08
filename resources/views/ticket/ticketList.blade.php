@@ -16,7 +16,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-3 col-sm-6">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名" autocomplete="off"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名" autocomplete="off"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
@@ -45,7 +45,7 @@
 									@if(!$ticket->user)
 										【账号已删除】
 									@else
-										<a href="/admin/userList?id={{$ticket->user->id}}" target="_blank">{{$ticket->user->username}}</a>
+										<a href="/admin/userList?id={{$ticket->user->id}}" target="_blank">{{$ticket->user->email}}</a>
 									@endif
 								</td>
 
@@ -90,7 +90,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/ticket/ticketList?username=' + $("#username").val();
+            window.location.href = '/ticket/ticketList?email=' + $("#email").val();
         }
 	</script>
 @endsection

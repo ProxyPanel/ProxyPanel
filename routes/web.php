@@ -2,7 +2,7 @@
 
 Route::get('s/{code}', 'SubscribeController@getSubscribeByCode'); // 节点订阅地址
 
-Route::group(['middleware' => ['isForbidden', 'affiliate']], function(){
+Route::group(['middleware' => ['isForbidden', 'affiliate', 'isMaintenance']], function(){
 	Route::get('lang/{locale}', 'AuthController@switchLang'); // 语言切换
 	Route::any('login', 'AuthController@login')->middleware('isSecurity'); // 登录
 	Route::get('logout', 'AuthController@logout'); // 退出
@@ -17,8 +17,9 @@ Route::group(['middleware' => ['isForbidden', 'affiliate']], function(){
 	Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
 	Route::get('makeSecurityCode', 'Controller@makeSecurityCode'); // 生成网站安全码
 });
+Route::any('admin/login', 'AuthController@login')->middleware('isForbidden','isSecurity'); // 登录
 
-Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function(){
+Route::group(['middleware' => ['isForbidden','isAdminLogin', 'isAdmin']], function(){
 	Route::get('admin', 'AdminController@index'); // 后台首页
 	Route::get('admin/userList', 'AdminController@userList'); // 账号列表
 	Route::any('admin/addUser', 'AdminController@addUser'); // 添加账号
@@ -31,6 +32,8 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function()
 	Route::any('admin/editNode', 'AdminController@editNode'); // 编辑节点
 	Route::post('admin/delNode', 'AdminController@delNode'); // 删除节点
 	Route::get('admin/nodeMonitor/{id}', 'AdminController@nodeMonitor'); // 节点流量监控
+	Route::post('admin/pingNode', 'AdminController@pingNode'); // 节点ping测速
+	Route::get('admin/nodePingLog', 'AdminController@nodePingLog'); //节点Ping测速日志
 	Route::get('admin/articleList', 'AdminController@articleList'); // 文章列表
 	Route::any('admin/addArticle', 'AdminController@addArticle'); // 添加文章
 	Route::any('admin/editArticle', 'AdminController@editArticle'); // 编辑文章
@@ -109,7 +112,7 @@ Route::group(['middleware' => ['isForbidden', 'isLogin', 'isAdmin']], function()
 	Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
 });
 
-Route::group(['middleware' => ['isForbidden', 'isLogin']], function(){
+Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], function(){
 	Route::any('/', 'UserController@index'); // 用户首页
 	Route::any('article', 'UserController@article'); // 文章详情
 	Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址

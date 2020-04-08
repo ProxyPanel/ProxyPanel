@@ -14,7 +14,7 @@
 						<input type="number" class="form-control" name="user_id" id="user_id" value="{{Request::get('user_id')}}" placeholder="ID"/>
 					</div>
 					<div class="form-group col-lg-4 col-sm-6">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-3 col-sm-6">
 						<select name="status" id="status" class="form-control" onChange="Search()">
@@ -54,7 +54,7 @@
 									@if(empty($subscribe->user))
 										【账号已删除】
 									@else
-										<a href="/admin/userList?id={{$subscribe->user->id}}" target="_blank">{{$subscribe->user->username}}</a>
+										<a href="/admin/userList?id={{$subscribe->user->id}}" target="_blank">{{$subscribe->user->email}}</a>
 									@endif
 								</td>
 								<td> {{$subscribe->code}} </td>
@@ -107,7 +107,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/subscribe/subscribeList' + '?user_id=' + $("#user_id").val() + '&username=' + $("#username").val() + '&status=' + $("#status option:selected").val();
+            window.location.href = '/subscribe/subscribeList' + '?user_id=' + $("#user_id").val() + '&email=' + $("#email").val() + '&status=' + $("#status option:selected").val();
         }
 
         // 启用禁用用户的订阅

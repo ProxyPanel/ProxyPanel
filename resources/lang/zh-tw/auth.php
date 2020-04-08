@@ -10,7 +10,7 @@ return [
 	'register'               => '注 冊',
 	'send'                   => '發送',
 	'tip'                    => '提示',
-	'username'               => '郵箱',
+	'email'                  => '郵箱',
 	'password'               => '密碼',
 	'confirm_password'       => '請再次輸入密碼',
 	'back'                   => '返 回',
@@ -68,5 +68,6 @@ return [
 	'reset_password_same_fail'   => '新舊密碼一樣，請重新輸入',
 	'reset_password_fail'        => '重設密碼失敗',
 	'reset_password_new'         => '新密碼設置成功，請自行登錄',
-	'request_error'              => '請求異常，請刷新頁面後重試'
+	'request_error'              => '請求異常，請刷新頁面後重試',
+	'username'                   => '昵稱'
 ];

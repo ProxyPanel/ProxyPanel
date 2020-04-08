@@ -49,7 +49,7 @@ class UserTrafficAbnormalAutoWarning extends Command
 				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value']*1073741824)){
 					$traffic = UserTrafficHourly::query()->where('node_id', 0)->where('user_id', $vo->user_id)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")->first();
 
-					$content = "用户**{$user->username}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU)."，下行流量：".flowAutoShow($traffic->totalD)."，共计：".flowAutoShow($traffic->totalTraffic)."**。";
+					$content = "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU)."，下行流量：".flowAutoShow($traffic->totalD)."，共计：".flowAutoShow($traffic->totalTraffic)."**。";
 
 					ServerChan::send($title, $content);
 				}

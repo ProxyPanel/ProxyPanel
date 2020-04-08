@@ -15,7 +15,7 @@
 						<input type="number" class="form-control" name="user_id" id="user_id" value="{{Request::get('user_id')}}" placeholder="用户ID"/>
 					</div>
 					<div class="form-group col-lg-3 col-sm-8">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}" placeholder="用户端口"/>
@@ -71,7 +71,7 @@
 									@if(empty($vo->user))
 										【账号已删除】
 									@else
-										<a href="/admin/userList?id={{$vo->user->id}}" target="_blank"> {{$vo->user->username}} </a>
+										<a href="/admin/userList?id={{$vo->user->id}}" target="_blank"> {{$vo->user->email}} </a>
 									@endif
 								</td>
 								<td> {{$vo->node ? $vo->node->name : '【节点已删除】'}} </td>
@@ -121,7 +121,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/trafficLog' + '?port=' + $("#port").val() + '&user_id=' + $("#user_id").val() + '&username=' + $("#username").val() + '&nodeId=' + $("#nodeId option:selected").val() + '&startTime=' +$("#start").val() + '&endTime=' + $("#end").val();
+            window.location.href = '/admin/trafficLog' + '?port=' + $("#port").val() + '&user_id=' + $("#user_id").val() + '&email=' + $("#email").val() + '&nodeId=' + $("#nodeId option:selected").val() + '&startTime=' + $("#start").val() + '&endTime=' + $("#end").val();
         }
 	</script>
 @endsection

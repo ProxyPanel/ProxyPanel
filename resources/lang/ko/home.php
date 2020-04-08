@@ -7,7 +7,7 @@ return [
 	'exchange_subscribe'              => '주소변경',
 	'subscribe_warning'               => '경고: 구독 주소 는 개인적 으로 사용 되 지 말고 이 주소 를 전파 하지 마시오',
 	'reset_password_title'            => '비번리셋',
-	'username_placeholder'            => '아이디를 입력하세요',
+	'email_placeholder'               => '아이디를 입력하세요',
 	'system_down'                     => '서비스 점금중',
 	'subscribe_baned'                 => '구독주소가 금지되였습니다,관리자에게 문의해주세요',
 	'download'                        => '다운로드',
@@ -193,6 +193,6 @@ return [
 	'promote_link'                    => '보급 링크 등록을 통해 활성화, 양측 모두 :traffic 유량에 장려합니다; 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있는 :referral_percent% 를 장려합니다.',
 	'promote_invite_code'             => '요청을 통해 등록 및 활성화, 양측 모두 :traffic 유량에 장려합니다, 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있습니다 :referral_percent% 를 장려합니다',
 	'invite_user_title'               => '초대장',
-	'invite_user_username'            => '사용자 이름',
+	'invite_user_email'               => '사용자 이름',
 	'invite_user_created_at'          => '등록 시간',
 ];

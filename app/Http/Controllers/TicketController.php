@@ -32,13 +32,13 @@ class TicketController extends Controller
 	// 工单列表
 	public function ticketList(Request $request)
 	{
-		$username = $request->input('username');
+		$email = $request->input('email');
 
 		$query = Ticket::query();
 
-		if(isset($username)){
-			$query->whereHas('user', function($q) use ($username){
-				$q->where('username', 'like', '%'.$username.'%');
+		if(isset($email)){
+			$query->whereHas('user', function($q) use ($email){
+				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
@@ -80,8 +80,8 @@ class TicketController extends Controller
 						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
 					}
 				}else{
-					$logId = Helpers::addEmailLog($ticket->user->username, $title, $content);
-					Mail::to($ticket->user->username)->send(new replyTicket($logId, $title, $content));
+					$logId = Helpers::addEmailLog($ticket->user->email, $title, $content);
+					Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
 				}
 
 				// 通过ServerChan发微信消息提醒管理员
@@ -121,8 +121,8 @@ class TicketController extends Controller
 		$content = "工单【".$ticket->title."】已关闭";
 
 		// 发邮件通知用户
-		$logId = Helpers::addEmailLog($ticket->user->username, $title, $content);
-		Mail::to($ticket->user->username)->send(new closeTicket($logId, $title, $content));
+		$logId = Helpers::addEmailLog($ticket->user->email, $title, $content);
+		Mail::to($ticket->user->email)->send(new closeTicket($logId, $title, $content));
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
 	}

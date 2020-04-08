@@ -105,7 +105,7 @@
 				<li class="nav-item dropdown">
 					<a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up" data-toggle="dropdown" role="button">
                 <span class="avatar avatar-online">
-                  <img src="/assets/images/astronaut.svg" alt="头像">
+	              @include('user.components.avatar')
                   <i></i>
                 </span>
 					</a>
@@ -212,7 +212,7 @@
 @if(Session::get("admin"))
 	<div class="panel panel-bordered w-300 bg-grey-200" style="position:fixed;right:20px;bottom:0;">
 		<div class="panel-body text-right">
-			<h5>当前身份：{{Auth::user()->username}}</h5>
+			<h5>当前身份：{{Auth::user()->email}}</h5>
 			<button type="button" class="btn btn-danger btn-block mt-20" id="return_to_admin">
 				返回管理页面
 			</button>

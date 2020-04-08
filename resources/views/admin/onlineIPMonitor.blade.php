@@ -16,7 +16,7 @@
 						<input type="number" class="form-control" name="id" id="id" value="{{Request::get('id')}}" placeholder="ID"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-5">
-						<input type="text" class="form-control" name="username" id="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-5">
 						<input type="text" class="form-control" name="ip" id="ip" value="{{Request::get('ip')}}" placeholder="IP"/>
@@ -62,7 +62,7 @@
 								<td>{{$vo->created_at}}</td>
 								<td>{{$vo->type}}</td>
 								<td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
-								<td>{{$vo->user ? $vo->user->username : '【用户已删除】'}}</td>
+								<td>{{$vo->user ? $vo->user->email : '【用户已删除】'}}</td>
 								<td>{{$vo->user ? $vo->user->address : '【用户已删除】'}}</td>
 								<td>
 									@if (strpos($vo->ip, ',') == TRUE)
@@ -110,7 +110,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/onlineIPMonitor?id=' + $("#id").val() + '&ip=' + $("#ip").val() + '&username=' + $("#username").val() + '&port=' + $("#port").val() + '&nodeId=' + $("#nodeId option:selected").val();
+            window.location.href = '/admin/onlineIPMonitor?id=' + $("#id").val() + '&ip=' + $("#ip").val() + '&email=' + $("#email").val() + '&port=' + $("#port").val() + '&nodeId=' + $("#nodeId option:selected").val();
         }
 	</script>
 @endsection

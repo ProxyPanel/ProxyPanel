@@ -43,7 +43,7 @@ class UserExpireAutoWarning extends Command
 		$userList = User::query()->where('enable', 1)->get();
 		foreach($userList as $user){
 			// 用户名不是邮箱的跳过
-			if(FALSE === filter_var($user->username, FILTER_VALIDATE_EMAIL)){
+			if(FALSE === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
 				continue;
 			}
 
@@ -53,14 +53,14 @@ class UserExpireAutoWarning extends Command
 				$title = '账号过期提醒';
 				$content = '您的账号将于今天晚上【24:00】过期。';
 
-				$logId = Helpers::addEmailLog($user->username, $title, $content);
-				Mail::to($user->username)->send(new userExpireWarningToday($logId));
+				$logId = Helpers::addEmailLog($user->email, $title, $content);
+				Mail::to($user->email)->send(new userExpireWarningToday($logId));
 			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= self::$systemConfig['expire_days']){
 				$title = '账号过期提醒';
 				$content = '您的账号还剩'.$lastCanUseDays.'天即将过期。';
 
-				$logId = Helpers::addEmailLog($user->username, $title, $content);
-				Mail::to($user->username)->send(new userExpireWarning($logId, $lastCanUseDays));
+				$logId = Helpers::addEmailLog($user->email, $title, $content);
+				Mail::to($user->email)->send(new userExpireWarning($logId, $lastCanUseDays));
 			}
 		}
 	}

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\AutoClearLog;
 use App\Console\Commands\AutoJob;
+use App\Console\Commands\AutoPingNode;
 use App\Console\Commands\AutoReportNode;
 use App\Console\Commands\AutoStatisticsNodeDailyTraffic;
 use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
 	protected $commands = [
 		AutoClearLog::class,
 		AutoJob::class,
+		AutoPingNode::class,
 		AutoReportNode::class,
 		AutoStatisticsNodeDailyTraffic::class,
 		AutoStatisticsNodeHourlyTraffic::class,
@@ -59,6 +61,7 @@ class Kernel extends ConsoleKernel
 		$schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
 		$schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
 		$schedule->command('userTrafficAbnormalAutoWarning')->hourly();
+		$schedule->command('autoPingNode')->twiceDaily();
 		$schedule->command('dailyJob')->daily();
 		$schedule->command('autoReportNode')->dailyAt('09:00');
 		$schedule->command('userTrafficAutoWarning')->dailyAt('10:30');

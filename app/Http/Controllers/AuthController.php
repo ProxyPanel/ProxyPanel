@@ -50,14 +50,14 @@ class AuthController extends Controller
 	{
 		if($request->isMethod('POST')){
 			$this->validate($request, [
-				'username' => 'required',
+				'email'    => 'required',
 				'password' => 'required'
 			], [
-				'username.required' => trans('auth.email_null'),
+				'email.required'    => trans('auth.email_null'),
 				'password.required' => trans('auth.password_null')
 			]);
 
-			$username = $request->input('username');
+			$email = $request->input('email');
 			$captcha = $request->input('captcha');
 			$password = $request->input('password');
 			$remember = $request->input('remember');
@@ -94,7 +94,7 @@ class AuthController extends Controller
 			}
 
 			// 验证账号并创建会话
-			if(!Auth::attempt(['username' => $username, 'password' => $password], $remember)){
+			if(!Auth::attempt(['email' => $email, 'password' => $password], $remember)){
 				return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
 			}
 
@@ -107,7 +107,7 @@ class AuthController extends Controller
 				}elseif(Auth::user()->status == 0 && (self::$systemConfig['is_active_register'] || self::$systemConfig['is_verify_register'])){
 					Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-					return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="/activeUser?username='.$username.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
+					return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="/activeUser?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
 				}
 			}
 
@@ -199,14 +199,16 @@ class AuthController extends Controller
 
 		if($request->isMethod('POST')){
 			$this->validate($request, [
-				'username'        => 'required|email|unique:user',
+				'username'        => 'required',
+				'email'           => 'required|email|unique:user',
 				'password'        => 'required|min:6',
 				'confirmPassword' => 'required|same:password',
 				'term'            => 'accepted'
 			], [
 				'username.required'        => trans('auth.email_null'),
-				'username.email'           => trans('auth.email_legitimate'),
-				'username.unique'          => trans('auth.email_exist'),
+				'email.required'           => trans('auth.email_null'),
+				'email.email'              => trans('auth.email_legitimate'),
+				'email.unique'             => trans('auth.email_exist'),
 				'password.required'        => trans('auth.password_null'),
 				'password.min'             => trans('auth.password_limit'),
 				'confirmPassword.required' => trans('auth.confirm_password'),
@@ -215,6 +217,7 @@ class AuthController extends Controller
 			]);
 
 			$username = $request->input('username');
+			$email = $request->input('email');
 			$password = $request->input('password');
 			$register_token = $request->input('register_token');
 			$code = $request->input('code');
@@ -238,14 +241,14 @@ class AuthController extends Controller
 			if(self::$systemConfig['sensitiveType']){
 				// 校验域名邮箱是否在黑名单中
 				$sensitiveWords = $this->sensitiveWords(1);
-				$usernameSuffix = explode('@', $username); // 提取邮箱后缀
-				if(in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+				$emailSuffix = explode('@', $email); // 提取邮箱后缀
+				if(in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
 					return Redirect::back()->withInput()->withErrors(trans('auth.email_banned'));
 				}
 			}else{
 				$sensitiveWords = $this->sensitiveWords(2);
-				$usernameSuffix = explode('@', $username); // 提取邮箱后缀
-				if(!in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+				$emailSuffix = explode('@', $email); // 提取邮箱后缀
+				if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
 					return Redirect::back()->withInput()->withErrors(trans('auth.email_invalid'));
 				}
 			}
@@ -271,7 +274,7 @@ class AuthController extends Controller
 				if(!$verify_code){
 					return Redirect::back()->withInput($request->except(['verify_code']))->withErrors(trans('auth.captcha_null'));
 				}else{
-					$verifyCode = VerifyCode::query()->where('username', $username)->where('code', $verify_code)->where('status', 0)->first();
+					$verifyCode = VerifyCode::query()->where('address', $email)->where('code', $verify_code)->where('status', 0)->firstOrFail();
 					if(!$verifyCode){
 						return Redirect::back()->withInput($request->except(['verify_code']))->withErrors(trans('auth.captcha_overtime'));
 					}
@@ -335,12 +338,14 @@ class AuthController extends Controller
 			$transfer_enable = 1048576*(self::$systemConfig['default_traffic']+($referral_uid? self::$systemConfig['referral_traffic'] : 0));
 
 			// 创建新用户
-			$uid = Helpers::addUser($username, Hash::make($password), $transfer_enable, self::$systemConfig['default_days'], $referral_uid);
+			$uid = Helpers::addUser($email, Hash::make($password), $transfer_enable, self::$systemConfig['default_days'], $referral_uid);
 
 			// 注册失败，抛出异常
 			if(!$uid){
 				return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
 			}
+			// 更新昵称
+			User::query()->whereKey($uid)->update(['username' => $username]);
 
 			// 生成订阅码
 			$subscribe = new UserSubscribe();
@@ -378,11 +383,11 @@ class AuthController extends Controller
 			// 邮箱验证码关闭情况下，发送激活邮件
 			if(!self::$systemConfig['is_verify_register'] && self::$systemConfig['is_active_register']){
 				// 生成激活账号的地址
-				$token = $this->addVerifyUrl($uid, $username);
+				$token = $this->addVerifyUrl($uid, $email);
 				$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
 
-				$logId = Helpers::addEmailLog($username, '注册激活', '请求地址：'.$activeUserUrl);
-				Mail::to($username)->send(new activeUser($logId, $activeUserUrl));
+				$logId = Helpers::addEmailLog($email, '注册激活', '请求地址：'.$activeUserUrl);
+				Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
 
 				Session::flash('regSuccessMsg', trans('auth.register_active_tip'));
 			}else{
@@ -454,9 +459,9 @@ class AuthController extends Controller
 	}
 
 	// 生成申请的请求地址
-	private function addVerifyUrl($uid, $username)
+	private function addVerifyUrl($uid, $email)
 	{
-		$token = md5(self::$systemConfig['website_name'].$username.microtime());
+		$token = md5(self::$systemConfig['website_name'].$email.microtime());
 		$verify = new Verify();
 		$verify->type = 1;
 		$verify->user_id = $uid;
@@ -473,13 +478,13 @@ class AuthController extends Controller
 		if($request->isMethod('POST')){
 			// 校验请求
 			$this->validate($request, [
-				'username' => 'required|email'
+				'email' => 'required|email'
 			], [
-				'username.required' => trans('auth.email_null'),
-				'username.email'    => trans('auth.email_legitimate')
+				'email.required' => trans('auth.email_null'),
+				'email.email'    => trans('auth.email_legitimate')
 			]);
 
-			$username = $request->input('username');
+			$email = $request->input('email');
 
 			// 是否开启重设密码
 			if(!self::$systemConfig['is_reset_password']){
@@ -487,30 +492,30 @@ class AuthController extends Controller
 			}
 
 			// 查找账号
-			$user = User::query()->where('username', $username)->first();
+			$user = User::query()->where('email', $email)->first();
 			if(!$user){
 				return Redirect::back()->withErrors(trans('auth.email_notExist'));
 			}
 
 			// 24小时内重设密码次数限制
 			$resetTimes = 0;
-			if(Cache::has('resetPassword_'.md5($username))){
-				$resetTimes = Cache::get('resetPassword_'.md5($username));
+			if(Cache::has('resetPassword_'.md5($email))){
+				$resetTimes = Cache::get('resetPassword_'.md5($email));
 				if($resetTimes >= self::$systemConfig['reset_password_times']){
 					return Redirect::back()->withErrors(trans('auth.reset_password_limit', ['time' => self::$systemConfig['reset_password_times']]));
 				}
 			}
 
 			// 生成取回密码的地址
-			$token = $this->addVerifyUrl($user->id, $username);
+			$token = $this->addVerifyUrl($user->id, $email);
 
 			// 发送邮件
 			$resetPasswordUrl = self::$systemConfig['website_url'].'/reset/'.$token;
 
-			$logId = Helpers::addEmailLog($username, '重置密码', '请求地址：'.$resetPasswordUrl);
-			Mail::to($username)->send(new resetPassword($logId, $resetPasswordUrl));
+			$logId = Helpers::addEmailLog($email, '重置密码', '请求地址：'.$resetPasswordUrl);
+			Mail::to($email)->send(new resetPassword($logId, $resetPasswordUrl));
 
-			Cache::put('resetPassword_'.md5($username), $resetTimes+1, 86400);
+			Cache::put('resetPassword_'.md5($email), $resetTimes+1, 86400);
 
 			return Redirect::back()->with('successMsg', trans('auth.reset_password_success_tip'));
 		}else{
@@ -582,13 +587,13 @@ class AuthController extends Controller
 	{
 		if($request->isMethod('POST')){
 			$this->validate($request, [
-				'username' => 'required|email|exists:user,username'
+				'email' => 'required|email|exists:user,email'
 			], [
-				'username.required' => trans('auth.email_null'),
-				'username.email'    => trans('auth.email_legitimate'),
-				'username.exists'   => trans('auth.email_notExist')
+				'email.required' => trans('auth.email_null'),
+				'email.email'    => trans('auth.email_legitimate'),
+				'email.exists'   => trans('auth.email_notExist')
 			]);
-			$username = $request->input('username');
+			$email = $request->input('email');
 
 			// 是否开启账号激活
 			if(!self::$systemConfig['is_active_register']){
@@ -596,7 +601,7 @@ class AuthController extends Controller
 			}
 
 			// 查找账号
-			$user = User::query()->where('username', $username)->first();
+			$user = User::query()->where('email', $email)->first();
 			if($user->status < 0){
 				return Redirect::back()->withErrors(trans('auth.login_ban', ['email' => self::$systemConfig['webmaster_email']]));
 			}elseif($user->status > 0){
@@ -605,23 +610,23 @@ class AuthController extends Controller
 
 			// 24小时内激活次数限制
 			$activeTimes = 0;
-			if(Cache::has('activeUser_'.md5($username))){
-				$activeTimes = Cache::get('activeUser_'.md5($username));
+			if(Cache::has('activeUser_'.md5($email))){
+				$activeTimes = Cache::get('activeUser_'.md5($email));
 				if($activeTimes >= self::$systemConfig['active_times']){
 					return Redirect::back()->withErrors(trans('auth.active_limit', ['time' => self::$systemConfig['webmaster_email']]));
 				}
 			}
 
 			// 生成激活账号的地址
-			$token = $this->addVerifyUrl($user->id, $username);
+			$token = $this->addVerifyUrl($user->id, $email);
 
 			// 发送邮件
 			$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
 
-			$logId = Helpers::addEmailLog($username, '激活账号', '请求地址：'.$activeUserUrl);
-			Mail::to($username)->send(new activeUser($logId, $activeUserUrl));
+			$logId = Helpers::addEmailLog($email, '激活账号', '请求地址：'.$activeUserUrl);
+			Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
 
-			Cache::put('activeUser_'.md5($username), $activeTimes+1, 86400);
+			Cache::put('activeUser_'.md5($email), $activeTimes+1, 86400);
 
 			return Redirect::back()->with('successMsg', trans('auth.register_active_tip'));
 		}else{
@@ -689,14 +694,14 @@ class AuthController extends Controller
 	public function sendCode(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'username' => 'required|email|unique:user'
+			'email' => 'required|email|unique:user'
 		], [
-			'username.required' => trans('auth.email_null'),
-			'username.email'    => trans('auth.email_legitimate'),
-			'username.unique'   => trans('auth.email_exist')
+			'email.required' => trans('auth.email_null'),
+			'email.email'    => trans('auth.email_legitimate'),
+			'email.unique'   => trans('auth.email_exist')
 		]);
 
-		$username = $request->input('username');
+		$email = $request->input('email');
 
 		if($validator->fails()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
@@ -706,14 +711,14 @@ class AuthController extends Controller
 		if(self::$systemConfig['sensitiveType']){
 			// 校验域名邮箱是否在黑名单中
 			$sensitiveWords = $this->sensitiveWords(1);
-			$usernameSuffix = explode('@', $username); // 提取邮箱后缀
-			if(in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+			$emailSuffix = explode('@', $email); // 提取邮箱后缀
+			if(in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_banned')]);
 			}
 		}else{
 			$sensitiveWords = $this->sensitiveWords(2);
-			$usernameSuffix = explode('@', $username); // 提取邮箱后缀
-			if(!in_array(strtolower($usernameSuffix[1]), $sensitiveWords)){
+			$emailSuffix = explode('@', $email); // 提取邮箱后缀
+			if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_invalid')]);
 			}
 		}
@@ -730,10 +735,10 @@ class AuthController extends Controller
 
 		// 发送邮件
 		$code = makeRandStr(6, TRUE);
-		$logId = Helpers::addEmailLog($username, '发送注册验证码', '验证码：'.$code);
-		Mail::to($username)->send(new sendVerifyCode($logId, $code));
+		$logId = Helpers::addEmailLog($email, '发送注册验证码', '验证码：'.$code);
+		Mail::to($email)->send(new sendVerifyCode($logId, $code));
 
-		$this->addVerifyCode($username, $code);
+		$this->addVerifyCode($email, $code);
 
 		Cache::put('send_verify_code_'.md5(getClientIP()), getClientIP(), 60);
 
@@ -741,10 +746,10 @@ class AuthController extends Controller
 	}
 
 	// 生成注册验证码
-	private function addVerifyCode($username, $code)
+	private function addVerifyCode($email, $code)
 	{
 		$verify = new VerifyCode();
-		$verify->username = $username;
+		$verify->address = $email;
 		$verify->code = $code;
 		$verify->status = 0;
 		$verify->save();

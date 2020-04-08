@@ -1,4 +1,7 @@
 @extends('user.layouts')
+@section('css')
+	<link rel="stylesheet" href="assets/global/vendor/ionrangeslider/ionrangeslider.min.css">
+@endsection
 @section('content')
 	<div class="page-content">
 		<div class="row">
@@ -97,33 +100,29 @@
 				<div class="modal-body">
 					<div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
 					<form action="#" method="post">
-						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])))
+						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || \App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
 							<div class="mb-15 w-p50">
 								<select class="form-control" name="charge_type" id="charge_type">
-									@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
+									@if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
 										<option value="1" selected>{{trans('home.online_pay')}}</option>
 									@endif
 									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
-										<option value="2" @if($chargeGoodsList->isEmpty()) selected @endif>二维码</option>
+										<option value="2" @if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']) selected @endif>二维码</option>
 									@endif
 									<option value="3">{{trans('home.coupon_code')}}</option>
 								</select>
 							</div>
 						@endif
-						@if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))
-							<div class="form-group row" id="charge_balance">
-								<label for="online_pay" class="offset-md-2 col-md-2 col-form-label">充值金额</label>
-								<div class="col-md-6">
-									<select class="form-control round" name="online_pay" id="online_pay">
-										@foreach($chargeGoodsList as $goods)
-											<option value="{{$goods->id}}">充值{{$goods->price}}元</option>
-										@endforeach
-									</select>
+						@if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
+							<div class="form-group row charge_balance">
+								<label for="amount" class="offset-md-1 col-md-2 col-form-label">充值金额</label>
+								<div class="col-md-8">
+									<input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="￥"/>
 								</div>
 							</div>
 						@endif
 						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
-							<div class="text-center" id="charge_qrcode" @if($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))style="display: none;" @endif>
+							<div class="text-center" id="charge_qrcode">
 								<div class="row">
 									<p class="col-md-12 mb-10">付款时，请
 										<mark>备注邮箱账号</mark>
@@ -144,7 +143,7 @@
 								</div>
 							</div>
 						@endif
-						<div class="form-group row" id="charge_coupon_code" @if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode']|| ($chargeGoodsList->isNotEmpty() && (\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']))) style="display: none;" @endif>
+						<div class="form-group row" id="charge_coupon_code">
 							<label for="charge_coupon" class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
 							<div class="col-md-6">
 								<input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
@@ -154,31 +153,46 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">{{trans('home.close')}}</button>
+					@if(\App\Components\Helpers::systemConfig()['is_alipay'])
+						<button type="button" class="btn btn-primary charge_balance" onclick="charge('4')"> 支付宝扫码</button>
+					@elseif(\App\Components\Helpers::systemConfig()['is_f2fpay'])
+						<button type="button" class="btn btn-primary charge_balance" onclick="charge('5')"> 支付宝扫码</button>
+					@endif
 					<button type="button" class="btn btn-primary" id="change_btn" onclick="charge()">{{trans('home.recharge')}}</button>
 				</div>
 			</div>
 		</div>
 	</div>
 @endsection @section('script')
+	<script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
+	<script src="assets/global/js/Plugin/ionrangeslider.js"></script>
 	<script type="text/javascript">
-        // 切换充值方式
-        $("#charge_type").change(function () {
-            if ($(this).val() === '1') {
-                $("#charge_balance").show();
-                $("#change_btn").show();
+        function itemControl(value) {
+            if (value === 1) {
+                $(".charge_balance").show();
+                $("#change_btn").hide();
                 $("#charge_qrcode").hide();
                 $("#charge_coupon_code").hide();
-            } else if ($(this).val() === '2') {
-                $("#charge_balance").hide();
+            } else if (value === 2) {
+                $(".charge_balance").hide();
                 $("#change_btn").hide();
                 $("#charge_qrcode").show();
                 $("#charge_coupon_code").hide();
             } else {
-                $("#charge_balance").hide();
+                $(".charge_balance").hide();
                 $("#charge_qrcode").hide();
                 $("#charge_coupon_code").show();
                 $("#change_btn").show();
             }
+        }
+
+        $(document).ready(function () {
+            itemControl(parseInt($('#charge_type').val()))
+        });
+
+        // 切换充值方式
+        $("#charge_type").change(function () {
+            itemControl(parseInt($(this).val()));
         });
 
         // 重置流量
@@ -205,44 +219,71 @@
         }
 
         // 充值
-        function charge() {
-            const paymentType = $('#charge_type').val();
-            const charge_coupon = $('#charge_coupon').val();
-
-            if (paymentType === '1') {
-                $("#charge_msg").show().html("正在跳转支付界面");
-                window.location.href = '/buy/' + $('#online_pay').val();
-                return false;
-            }
-
-            if (paymentType === '3' && charge_coupon.trim() === '') {
-                $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
-                $("#charge_coupon").focus();
-                return false;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '/charge',
-                data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
-                beforeSend: function () {
-                    $("#charge_msg").show().html("{{trans('home.recharging')}}");
-                },
-                success: function (ret) {
-                    if (ret.status === 'fail') {
-                        $("#charge_msg").show().html(ret.message);
-                        return false;
-                    }
-
-                    $("#charge_modal").modal("hide");
-                    window.location.reload();
-                },
-                error: function () {
-                    $("#charge_msg").show().html("{{trans('home.error_response')}}");
-                },
-                complete: function () {
+        function charge(id) {
+            const paymentType = parseInt($('#charge_type').val());
+            const charge_coupon = $('#charge_coupon').val().trim();
+            const amount = parseInt($('#amount').val());
+            id = parseInt(id);
+            console.log(paymentType, charge_coupon, amount);
+            if (paymentType === 1) {
+                if (amount <= 0) {
+                    swal.fire({title: "错误", text: "充值余额不合规", type: 'warning', timer: 1000, showConfirmButton: false});
+                    return false;
                 }
-            });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/payment/create",
+                    data: {_token: '{{csrf_token()}}', amount: amount, pay_type: id},
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#charge_msg").show().html("创建支付单中...");
+                    },
+                    success: function (ret) {
+                        $("#charge_msg").show().html(ret.message);
+                        if (id === 4) {
+                            // 如果是Alipay支付写入Alipay的支付页面
+                            document.body.innerHTML += ret.data;
+                            document.forms['alipaysubmit'].submit();
+                        } else {
+                            window.location.href = '/payment/' + ret.data;
+                        }
+                        if (ret.status === 'fail') {
+                            return false;
+                        }
+                    },
+                    error: function () {
+                        $("#charge_msg").show().html("{{trans('home.error_response')}}");
+                    },
+                });
+            } else if (paymentType === 3) {
+                if (charge_coupon === '') {
+                    $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
+                    $("#charge_coupon").focus();
+                    return false;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '/charge',
+                    data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
+                    beforeSend: function () {
+                        $("#charge_msg").show().html("{{trans('home.recharging')}}");
+                    },
+                    success: function (ret) {
+                        if (ret.status === 'fail') {
+                            $("#charge_msg").show().html(ret.message);
+                            return false;
+                        }
+
+                        $("#charge_modal").modal("hide");
+                        window.location.reload();
+                    },
+                    error: function () {
+                        $("#charge_msg").show().html("{{trans('home.error_response')}}");
+                    },
+                });
+            }
         }
 
 	</script>

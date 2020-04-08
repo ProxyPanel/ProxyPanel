@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @package App\Http\Models
  * @mixin Eloquent
  * @property int                                                        $id
+ * @property string                                                     $email                邮箱
  * @property string                                                     $username             用户名
  * @property string                                                     $password             密码
  * @property int                                                        $port                 代理端口
@@ -70,6 +71,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|User newQuery()
  * @method static Builder|User query()
  * @method static Builder|User uid()
+ * @method static Builder|User whereEmail($value)
  * @method static Builder|User whereBalance($value)
  * @method static Builder|User whereBanTime($value)
  * @method static Builder|User whereCreatedAt($value)

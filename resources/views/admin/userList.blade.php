@@ -26,7 +26,7 @@
 						<input type="number" class="form-control" id="id" name="id" value="{{Request::get('id')}}" placeholder="ID"/>
 					</div>
 					<div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-						<input type="text" class="form-control" id="username" name="username" value="{{Request::get('username')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" id="email" name="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
 						<input type="text" class="form-control" id="wechat" name="wechat" value="{{Request::get('wechat')}}" placeholder="微信"/>
@@ -92,7 +92,7 @@
 						@foreach ($userList as $user)
 							<tr class="{{$user->trafficWarning ? ' table-danger' : ''}}">
 								<td> {{$user->id}} </td>
-								<td> {{$user->username}} </td>
+								<td> {{$user->email}} </td>
 								<td> {{$user->balance}} </td>
 								<td>
 									{!!$user->port? : '<span class="badge badge-lg badge-danger"> 未分配 </span>'!!}
@@ -129,11 +129,11 @@
 								<td>
 									<div class="btn-group">
 										<a href="/admin/editUser/{{$user->id}}{{Request::getQueryString()? '?'.Request::getQueryString() : ''}}" class="btn btn-primary"><i class="icon wb-edit" aria-hidden="true"></i></a>
-										<a href="javascript:delUser('{{$user->id}}','{{$user->username}}');" class="btn btn-danger"><i class="icon wb-trash" aria-hidden="true"></i></a>
+										<a href="javascript:delUser('{{$user->id}}','{{$user->email}}');" class="btn btn-danger"><i class="icon wb-trash" aria-hidden="true"></i></a>
 										<a href="/admin/export/{{$user->id}}" class="btn btn-primary"><i class="icon wb-code" aria-hidden="true"></i></a>
 										<a href="/admin/userMonitor/{{$user->id}}" class="btn btn-primary"><i class="icon wb-stats-bars" aria-hidden="true"></i></a>
 										<a href="/admin/onlineIPMonitor?id={{$user->id}}" class="btn btn-primary"><i class="icon wb-cloud" aria-hidden="true"></i></a>
-										<a href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}');" class="btn btn-primary"><i class="icon wb-reload" aria-hidden="true"></i></a>
+										<a href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}');" class="btn btn-primary"><i class="icon wb-reload" aria-hidden="true"></i></a>
 										<a href="javascript:switchToUser('{{$user->id}}');" class="btn btn-primary"><i class="icon wb-user" aria-hidden="true"></i></a>
 									</div>
 								</td>
@@ -212,14 +212,14 @@
 
         // 搜索
         function Search() {
-            window.location.href = '/admin/userList' + '?id=' + $("#id").val() + '&username=' + $("#username").val() + '&wechat=' + $("#wechat").val() + '&qq=' + $("#qq").val() + '&port=' + $("#port").val() + '&pay_way=' + $("#pay_way option:selected").val() + '&status=' + $("#status option:selected").val() + '&enable=' + $("#enable option:selected").val();
+            window.location.href = '/admin/userList' + '?id=' + $("#id").val() + '&email=' + $("#email").val() + '&wechat=' + $("#wechat").val() + '&qq=' + $("#qq").val() + '&port=' + $("#port").val() + '&pay_way=' + $("#pay_way option:selected").val() + '&status=' + $("#status option:selected").val() + '&enable=' + $("#enable option:selected").val();
         }
 
         // 删除账号
-        function delUser(id, username) {
+        function delUser(id, email) {
             swal.fire({
                 title: '警告',
-                text: '确定删除用户 【' + username + '】 ？',
+                text: '确定删除用户 【' + email + '】 ？',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -239,10 +239,10 @@
         }
 
         // 重置流量
-        function resetTraffic(id, username) {
+        function resetTraffic(id, email) {
             swal.fire({
                 title: '警告',
-                text: '确定重置 【' + username + '】 流量吗？',
+                text: '确定重置 【' + email + '】 流量吗？',
                 type: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',

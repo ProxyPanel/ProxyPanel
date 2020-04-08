@@ -17,7 +17,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-2">用户名</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" name="username" value="{{Request::get('username')}}" id="username" autocomplete="off" autofocus required/>
+								<input type="text" class="form-control" name="email" value="{{Request::get('email')}}" id="email" autocomplete="off" autofocus required/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -53,7 +53,7 @@
                 type: "POST",
                 url: "/ticket/addTicket",
                 async: false,
-                data: {_token: '{{csrf_token()}}', username: $('#username').val(), title: $('#title').val(), content: $('#content').val()},
+                data: {_token: '{{csrf_token()}}', email: $('#email').val(), title: $('#title').val(), content: $('#content').val()},
                 dataType: 'json',
                 success: function (ret) {
                     swal.fire({title: ret.message, type: 'success', timer: 1000})

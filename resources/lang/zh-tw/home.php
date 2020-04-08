@@ -3,12 +3,12 @@
 return [
 	'panel'                           => '用戶中心',
 	'subscribe_help'                  => '互動式教程',
-	'subscribe_help'                  => '訂閱鏈接',
+	'subscribe_link'                  => '訂閱鏈接',
 	'copy_subscribe_address'          => '複製',
 	'exchange_subscribe'              => '更換',
 	'subscribe_warning'               => '注意：該訂閱鏈接僅限個人使用，請勿傳播該鏈接，這會導致您的帳號流量使用情况异常。',
 	'reset_password_title'            => '重置密碼',
-	'username_placeholder'            => '請輸入用戶名',
+	'email_placeholder'               => '請輸入用戶名',
 	'system_down'                     => '系統維護中',
 	'subscribe_baned'                 => '您的訂閱功能被暫時禁用，請聯系管理員恢復',
 	'download'                        => '下載',
@@ -197,6 +197,6 @@ return [
 	'promote_link'                    => '通過您的推廣連結注册並啟動，您和新用戶都會獲得 :traffic 流量獎勵；當他們消費時，您將獲得他們消費金額的 :referral_percent% 作為獎勵。',
 	'promote_invite_code'             => '通過您的邀請碼注册並啟動，您和新用戶都會獲得 :traffic 流量獎勵；當他們消費時，您將獲得他們消費金額的 :referral_percent% 作為獎勵。',
 	'invite_user_title'               => '邀請記錄',
-	'invite_user_username'            => '用戶名',
+	'invite_user_email'               => '郵箱',
 	'invite_user_created_at'          => '註冊時間',
 ];

@@ -22,6 +22,7 @@ use Payment\Exceptions\ClassNotFoundException;
 use Payment\Exceptions\GatewayException;
 use Response;
 use Validator;
+use Xhat\Payjs\Payjs;
 
 /**
  * 支付控制器
@@ -40,82 +41,88 @@ class PaymentController extends Controller
 		$goods_id = $request->input('goods_id');
 		$coupon_sn = $request->input('coupon_sn');
 		$pay_type = $request->input('pay_type');
-
-
+		$balance = $request->input('amount');
 		$goods = Goods::query()->where('status', 1)->where('id', $goods_id)->first();
-		if(!$goods){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：商品或服务已下架']);
-		}
-		// 是否有生效的套餐
-		$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q){ $q->where('type', 2); })->where('status', 2)->where('is_expire', 0)->doesntExist();
-		//无生效套餐，禁止购买加油包
-		if($goods->type == 1 && $activePlan){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '购买加油包前，请先购买套餐']);
-		}
-
-		//非余额付款下，检查对应的在线支付是否开启
-		if($pay_type != 1){
-			// 判断是否开启在线支付
-			if(!self::$systemConfig['is_alipay'] && !self::$systemConfig['is_f2fpay']){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：系统并未开启在线支付功能']);
+		if(isset($balance)){
+			if(!is_numeric($balance) || $balance <= 0){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值余额不合规']);
+			}
+			$amount = $balance;
+		}elseif(isset($goods_id) && isset($pay_type)){
+			if(!$goods){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：商品或服务已下架']);
+			}
+			// 是否有生效的套餐
+			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q){ $q->where('type', 2); })->where('status', 2)->where('is_expire', 0)->doesntExist();
+			//无生效套餐，禁止购买加油包
+			if($goods->type == 1 && $activePlan){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '购买加油包前，请先购买套餐']);
 			}
 
-			// 判断是否存在同个商品的未支付订单
-			$existsOrder = Order::uid()->where('status', 0)->where('goods_id', $goods_id)->exists();
-			if($existsOrder){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
+			//非余额付款下，检查对应的在线支付是否开启
+			if($pay_type != 1){
+				// 判断是否开启在线支付
+				if(!self::$systemConfig['is_alipay'] && !self::$systemConfig['is_f2fpay']){
+					return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：系统并未开启在线支付功能']);
+				}
+
+				// 判断是否存在同个商品的未支付订单
+				$existsOrder = Order::uid()->where('status', 0)->where('goods_id', $goods_id)->exists();
+				if($existsOrder){
+					return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
+				}
+			}
+
+			// 单个商品限购
+			if($goods->limit_num){
+				$count = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->count();
+				if($count >= $goods->limit_num){
+					return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
+				}
+			}
+
+			// 使用优惠券
+			if($coupon_sn){
+				$coupon = Coupon::query()->where('status', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
+				if(!$coupon){
+					return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：优惠券不存在']);
+				}
+
+				// 计算实际应支付总价
+				$amount = $coupon->type == 2? $goods->price*$coupon->discount/10 : $goods->price-$coupon->amount;
+				$amount = $amount > 0? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
+			}else{
+				$amount = $goods->price;
+			}
+
+			// 价格异常判断
+			if($amount < 0){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：订单总价异常']);
+			}elseif($amount == 0 && $pay_type != 1){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：订单总价为0，无需使用在线支付']);
+			}
+
+			// 验证账号余额是否充足
+			if($pay_type == 1 && Auth::user()->balance < $amount){
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '您的余额不足，请先充值']);
 			}
 		}
 
-		// 单个商品限购
-		if($goods->limit_num){
-			$count = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->count();
-			if($count >= $goods->limit_num){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
-			}
-		}
-
-		// 使用优惠券
-		if($coupon_sn){
-			$coupon = Coupon::query()->where('status', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
-			if(!$coupon){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：优惠券不存在']);
-			}
-
-			// 计算实际应支付总价
-			$amount = $coupon->type == 2? $goods->price*$coupon->discount/10 : $goods->price-$coupon->amount;
-			$amount = $amount > 0? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
-		}else{
-			$amount = $goods->price;
-		}
-
-		// 价格异常判断
-		if($amount < 0){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：订单总价异常']);
-		}elseif($amount == 0 && $pay_type != 1){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：订单总价为0，无需使用在线支付']);
-		}
-
-		// 验证账号余额是否充足
-		if($pay_type == 1 && Auth::user()->balance < $amount){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '您的余额不足，请先充值']);
-		}
-
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
 			$orderSn = date('ymdHis').mt_rand(100000, 999999);
 
 			// 生成订单
 			$order = new Order();
 			$order->order_sn = $orderSn;
 			$order->user_id = Auth::user()->id;
-			$order->goods_id = $goods_id;
+			$order->goods_id = $balance? -1 : $goods_id;
 			$order->coupon_id = !empty($coupon)? $coupon->id : 0;
-			$order->origin_amount = $goods->price;
+			$order->origin_amount = $balance? : $goods->price;
 			$order->amount = $amount;
-			$order->expire_at = date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
+			$order->expire_at = $balance? NULL : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
 			$order->is_expire = 0;
-			$order->pay_way = $pay_type;
+			$order->pay_way = $balance? 0 : $pay_type;
 			$order->status = 0;
 			$order->save();
 			// 生成支付单
@@ -200,6 +207,31 @@ class PaymentController extends Controller
 						exit;
 					}
 
+				}elseif($pay_type == 6){
+					$pay_way = 1;
+					// 配置通信参数
+					$config = [
+						'mchid' => self::$systemConfig['payjs_mch_id'],
+						'key'   => self::$systemConfig['payjs_key'],
+					];
+
+					// 初始化
+					$payjs = new Payjs($config);
+
+					$data = [
+						'body'         => '',
+						'total_fee'    => $amount,
+						'out_trade_no' => $orderSn,
+						'notify_url'   => self::$systemConfig['website_url']."/api/payjs",
+					];
+
+					$result = $payjs->native($data);
+					if(!$result['return_code']){
+						Log::error("【PayJs】错误: ".$result['return_msg']);
+
+						return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：支付渠道暂时无法提供支付信息！']);
+					}
+
 				}else{
 					return Response::json(['status' => 'fail', 'data' => '', 'message' => '创建支付单失败：未知支付类型']);
 				}
@@ -211,11 +243,15 @@ class PaymentController extends Controller
 				$payment->order_sn = $orderSn;
 				$payment->pay_way = $pay_way? : 1;
 				$payment->amount = $amount;
-				if(self::$systemConfig['is_alipay'] && $pay_type == 4){
+				if($pay_type == 4){
 					$payment->qr_code = $result;
-				}elseif(self::$systemConfig['is_f2fpay'] && $pay_type == 5){
+				}elseif($pay_type == 5){
 					$payment->qr_code = $result['qr_code'];
 					$payment->qr_url = 'http://qr.topscan.com/api.php?text='.$result['qr_code'].'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png'; //后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
+					$payment->qr_local_url = $payment->qr_url;
+				}elseif($pay_type == 6){
+					$payment->qr_code = $result['code_url'];
+					$payment->qr_url = $result['qrcode'];
 					$payment->qr_local_url = $payment->qr_url;
 				}
 				$payment->status = 0;
@@ -254,7 +290,10 @@ class PaymentController extends Controller
 	// 支付单详情
 	public function detail($sn)
 	{
-		$view['payment'] = Payment::uid()->with(['order', 'order.goods'])->where('sn', $sn)->firstOrFail();
+		$payment = Payment::uid()->with(['order', 'order.goods'])->where('sn', $sn)->firstOrFail();
+		$view['payment'] = $payment;
+		$view['name'] = $payment->order->goods? $payment->order->goods->name : '余额充值';
+		$view['days'] = $payment->order->goods? $payment->order->goods->days : 0;
 
 		return Response::view('payment.detail', $view);
 	}
