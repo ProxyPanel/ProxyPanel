@@ -41,15 +41,15 @@ class Namesilo
 
 			// 出错
 			if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success'){
-				Helpers::addEmailLog(self::$systemConfig['webmaster_email'], '[Namesilo API] - ['.$operation.']', $content, 0, $result['namesilo']['reply']['detail']);
+				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
 			}else{
-				Helpers::addEmailLog(self::$systemConfig['webmaster_email'], '[Namesilo API] - ['.$operation.']', $content, 1, $result['namesilo']['reply']['detail']);
+				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 1, $result['namesilo']['reply']['detail']);
 			}
 
 			return $result['namesilo']['reply'];
 		} catch(Exception $e){
 			Log::error('CURL请求失败：'.$e->getMessage().' --- '.$e->getLine());
-			Helpers::addEmailLog(self::$systemConfig['webmaster_email'], '[Namesilo API] - ['.$operation.']', $content, 0, $e->getMessage());
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 0, $e->getMessage());
 
 			return FALSE;
 		}

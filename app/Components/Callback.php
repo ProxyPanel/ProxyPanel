@@ -6,16 +6,12 @@ use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
-use App\Http\Models\SsNode;
-use App\Http\Models\SsNodeLabel;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
-use App\Mail\sendUserInfo;
 use DB;
 use Exception;
 use Hash;
 use Log;
-use Mail;
 
 trait Callback
 {
@@ -173,33 +169,6 @@ trait Callback
 						break;
 					default:
 						Log::info('【处理订单】出现错误-未知套餐类型');
-				}
-				// 自动提号机：如果order的email值不为空
-				if($order->email){
-					$title = '自动发送账号信息';
-					$content = [
-						'order_sn'      => $order->order_sn,
-						'goods_name'    => $order->goods->name,
-						'goods_traffic' => flowAutoShow($order->goods->traffic*1048576),
-						'port'          => $order->user->port,
-						'passwd'        => $order->user->passwd,
-						'method'        => $order->user->method,
-						//'protocol'       => $order->user->protocol,
-						//'protocol_param' => $order->user->protocol_param,
-						//'obfs'           => $order->user->obfs,
-						//'obfs_param'     => $order->user->obfs_param,
-						'created_at'    => $order->created_at->toDateTimeString(),
-						'expire_at'     => $order->expire_at
-					];
-
-					// 获取可用节点列表
-					$labels = UserLabel::query()->where('user_id', $order->user_id)->get()->pluck('label_id');
-					$nodeIds = SsNodeLabel::query()->whereIn('label_id', $labels)->get()->pluck('node_id');
-					$nodeList = SsNode::query()->whereIn('id', $nodeIds)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get()->toArray();
-					$content['serverList'] = $nodeList;
-
-					$logId = Helpers::addEmailLog($order->email, $title, json_encode($content));
-					Mail::to($order->email)->send(new sendUserInfo($logId, $content));
 				}
 			}
 

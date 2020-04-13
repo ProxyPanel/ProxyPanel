@@ -331,9 +331,9 @@ INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
-INSERT INTO `config` VALUES ('37', 'is_node_crash_warning', 0);
+INSERT INTO `config` VALUES ('37', 'is_node_offline', 0);
 INSERT INTO `config` VALUES ('38', 'webmaster_email', '');
-INSERT INTO `config` VALUES ('39', 'is_server_chan', 0);
+INSERT INTO `config` VALUES ('39', 'is_notification', 0);
 INSERT INTO `config` VALUES ('40', 'server_chan_key', '');
 INSERT INTO `config` VALUES ('41', 'is_subscribe_ban', 1);
 INSERT INTO `config` VALUES ('42', 'subscribe_ban_times', 20);
@@ -352,7 +352,7 @@ INSERT INTO `config` VALUES ('54', 'initial_labels_for_user', '');
 INSERT INTO `config` VALUES ('55', 'website_analytics', '');
 INSERT INTO `config` VALUES ('56', 'website_customer_service', '');
 INSERT INTO `config` VALUES ('57', 'register_ip_limit', 5);
-INSERT INTO `config` VALUES ('58', 'sensitiveType', '1');
+INSERT INTO `config` VALUES ('58', 'is_email_filtering', '0');
 INSERT INTO `config` VALUES ('59', 'is_push_bear', 0);
 INSERT INTO `config` VALUES ('60', 'push_bear_send_key', '');
 INSERT INTO `config` VALUES ('61', 'push_bear_qrcode', '');
@@ -362,12 +362,12 @@ INSERT INTO `config` VALUES ('64', 'namesilo_key', '');
 INSERT INTO `config` VALUES ('65', 'website_logo', '');
 INSERT INTO `config` VALUES ('66', 'website_home_logo', '');
 INSERT INTO `config` VALUES ('67', 'nodes_detection', 0);
-INSERT INTO `config` VALUES ('68', 'numberOfWarningTimes', 3);
+INSERT INTO `config` VALUES ('68', 'detection_check_times', 3);
 INSERT INTO `config` VALUES ('69', 'is_forbid_china', 0);
 INSERT INTO `config` VALUES ('70', 'is_forbid_oversea', 0);
 INSERT INTO `config` VALUES ('71', 'AppStore_id', 0);
 INSERT INTO `config` VALUES ('72', 'AppStore_password', 0);
-INSERT INTO `config` VALUES ('73', 'is_verify_register', 0);
+INSERT INTO `config` VALUES ('73', 'is_activate_account', 0);
 INSERT INTO `config` VALUES ('74', 'node_daily_report', 0);
 INSERT INTO `config` VALUES ('75', 'mix_subscribe', 0);
 INSERT INTO `config` VALUES ('76', 'rand_subscribe', 0);
@@ -392,12 +392,13 @@ INSERT INTO `config` VALUES ('94', 'google_captcha_sitekey', '');
 INSERT INTO `config` VALUES ('95', 'google_captcha_secret', '');
 INSERT INTO `config` VALUES ('96', 'user_invite_days', 7);
 INSERT INTO `config` VALUES ('97', 'admin_invite_days', 7);
-INSERT INTO `config` VALUES ('98', 'admin_email', '');
+INSERT INTO `config` VALUES ('98', 'offline_check_times', '');
 INSERT INTO `config` VALUES ('99', 'payjs_mch_id', '');
 INSERT INTO `config` VALUES ('100', 'payjs_key', '');
 insert into `config` VALUES ('101', 'maintenance_mode', '0');
 insert into `config` VALUES ('102', 'maintenance_time', '');
 insert into `config` VALUES ('103', 'maintenance_content', '');
+insert into `config` VALUES ('104', 'bark_key', '');
 
 -- ----------------------------
 -- Table structure for `article`
@@ -723,11 +724,11 @@ CREATE TABLE `referral_log` (
 
 
 -- ----------------------------
--- Table structure for `email_log`
+-- Table structure for `notification_log`
 -- ----------------------------
-CREATE TABLE `email_log` (
+CREATE TABLE `notification_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：1-邮件、2-serverChan',
+  `type` TINYINT(4) NOT NULL DEFAULT '1' COMMENT '类型：1-邮件、2-serverChan、3-Bark',
   `address` VARCHAR(255) NOT NULL COMMENT '收信地址',
   `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
   `content` TEXT NOT NULL COMMENT '内容',
@@ -736,7 +737,7 @@ CREATE TABLE `email_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邮件投递记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通知投递记录';
 
 
 -- ----------------------------

@@ -20,10 +20,7 @@
 				<label class="floating-label" for="username">{{trans('auth.username')}}</label>
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
-				@if(\App\Components\Helpers::systemConfig()['sensitiveType'])
-					<input type="email" class="form-control" autocomplete="off" name="email" value="{{Request::old('email')}}" id="email" required/>
-					<label class="floating-label" for="email">{{trans('auth.email')}}</label>
-				@else
+				@if($emailList)
 					<div class="input-group">
 						<input type="text" class="form-control" autocomplete="off" name="emailHead" value="{{Request::old('emailHead')}}" id="emailHead" required/>
 						<label class="floating-label" for="emailHead">{{trans('auth.email')}}</label>
@@ -31,17 +28,18 @@
 							<span class="input-group-text bg-indigo-600 text-white">@</span>
 						</div>
 						<select class="form-control" name="emailTail" id="emailTail" data-plugin="selectpicker" data-style="btn-outline-primary">
-							@if(!$emailList->isEmpty())
-								@foreach($emailList as $email)
-									<option value="{{$email->words}}">{{$email->words}}</option>
-								@endforeach
-							@endif
+							@foreach($emailList as $email)
+								<option value="{{$email->words}}">{{$email->words}}</option>
+							@endforeach
 						</select>
 						<input type="text" name="email" id="email" hidden/>
 					</div>
+				@else
+					<input type="email" class="form-control" autocomplete="off" name="email" value="{{Request::old('email')}}" id="email" required/>
+					<label class="floating-label" for="email">{{trans('auth.email')}}</label>
 				@endif
 			</div>
-			@if(\App\Components\Helpers::systemConfig()['is_verify_register'])
+			@if(\App\Components\Helpers::systemConfig()['is_activate_account'] == 1)
 				<div class="form-group form-material floating" data-plugin="formMaterial">
 					<div class="input-group" data-plugin="inputGroupFile">
 						<input type="text" class="form-control" name="verify_code" value="{{Request::old('verify_code')}}" required/>
@@ -163,27 +161,29 @@
 	<script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		@if(!\App\Components\Helpers::systemConfig()['sensitiveType'])
+		@if($emailList)
         function getEmail() {
-            let email = $("#emailHead").val();
+            let email = $("#emailHead").val().trim();
             const emailTail = $("#emailTail").val();
-            if (email.trim() === '') {
+            if (email === '') {
                 swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
                 return false;
             }
-            email = email.trim() + '@' + emailTail;
+            email += '@' + emailTail;
             $("#email").val(email);
+            return email;
         }
 		@endif
 
         // 发送注册验证码
         function sendVerifyCode() {
             let flag = true; // 请求成功与否标记
-			@if(!\App\Components\Helpers::systemConfig()['sensitiveType'])
-            getEmail();
-					@endif
-            const email = $("#email").val();
-            if (email.trim() === '') {
+            let email = $("#email").val().trim();
+			@if($emailList)
+                email = getEmail();
+			@endif
+
+            if (email === '') {
                 swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
                 return false;
             }
@@ -228,7 +228,7 @@
         }
 
         $('#register-form').submit(function (event) {
-			@if(!\App\Components\Helpers::systemConfig()['sensitiveType'])
+			@if($emailList)
             getEmail();
 			@endif
             // 先检查Google reCAPTCHA有没有进行验证
