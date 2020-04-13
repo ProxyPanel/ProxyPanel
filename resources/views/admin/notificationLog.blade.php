@@ -24,7 +24,7 @@
 					</div>
 					<div class="form-group col-lg-1 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/admin/emailLog" class="btn btn-danger">重 置</a>
+						<a href="/admin/notificationLog" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -49,7 +49,7 @@
 						@foreach($list as $vo)
 							<tr>
 								<td> {{$vo->id}} </td>
-								<td> {{$vo->type == 1 ? 'Email' : 'serverChan'}} </td>
+								<td> {{$vo->type == 1 ? 'Email' : ($vo->type == 2? 'ServerChan': 'Bark')}} </td>
 								<td> @if($vo->type == 3)
 										<a href="/b/{{$vo->code}}" target="_blank">{{$vo->code}}</a> @endif </td>
 								<td> {{$vo->address}} </td>
@@ -92,7 +92,7 @@
 	<script type="text/javascript">
         // 搜索
         function Search() {
-            window.location.href = '/admin/emailLog?email=' + $("#email").val() + '&type=' + $("#type option:selected").val();
+            window.location.href = '/admin/notificationLog?email=' + $("#email").val() + '&type=' + $("#type option:selected").val();
         }
 	</script>
 @endsection

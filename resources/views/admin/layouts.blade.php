@@ -253,7 +253,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/trafficLog', 'admin/userTrafficLogList', 'admin/userBanLogList', 'admin/userOnlineIPList', 'admin/onlineIPMonitor', 'admin/emailLog', 'payment/callbackList', 'logs']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/trafficLog', 'admin/userTrafficLogList', 'admin/userBanLogList', 'admin/userOnlineIPList', 'admin/onlineIPMonitor', 'admin/notificationLog', 'payment/callbackList', 'logs']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-calendar" aria-hidden="true"></i>
 					<span class="site-menu-title">日志系统</span>
@@ -284,9 +284,9 @@
 							<span class="site-menu-title">在线监控</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['admin/emailLog']) ? 'active open' : ''}}">
-						<a href="/admin/emailLog" class="animsition-link">
-							<span class="site-menu-title">邮件投递</span>
+					<li class="site-menu-item {{in_array(Request::path(), ['admin/notificationLog']) ? 'active open' : ''}}">
+						<a href="/admin/notificationLog" class="animsition-link">
+							<span class="site-menu-title">通知记录</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
@@ -295,7 +295,7 @@
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
-						<a href="/logs" class="animsition-link">
+						<a href="/logs" class="animsition-link" target="_blank">
 							<span class="site-menu-title">系统运行</span>
 						</a>
 					</li>

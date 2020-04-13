@@ -73,7 +73,7 @@
 											<label class="col-md-3" for="website_name">网站名称</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="text" class="form-control" name="website_name" id="website_name" value="{{$website_name}}"/>
+													<input type="text" class="form-control" id="website_name" value="{{$website_name}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('website_name')">修改</button></span>
 												</div>
 											</div>
@@ -85,7 +85,7 @@
 											<label class="col-md-3 col-form-label" for="website_url">网站地址</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="url" class="form-control" name="website_url" id="website_url" value="{{$website_url}}"/>
+													<input type="url" class="form-control" id="website_url" value="{{$website_url}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('website_url')">修改</button></span>
 												</div>
 											</div>
@@ -97,7 +97,7 @@
 											<label class="col-md-3 col-form-label" for="AppStore_id">苹果账号</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="email" class="form-control" name="AppStore_id" id="AppStore_id" value="{{$AppStore_id}}"/>
+													<input type="email" class="form-control" id="AppStore_id" value="{{$AppStore_id}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('AppStore_id')">修改</button></span>
 												</div>
 											</div>
@@ -109,7 +109,7 @@
 											<label class="col-md-3 col-form-label" for="AppStore_password">苹果密码</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="password" class="form-control" name="AppStore_password" id="AppStore_password" value="{{$AppStore_password}}"/>
+													<input type="password" class="form-control" id="AppStore_password" value="{{$AppStore_password}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('AppStore_password')">修改</button></span>
 												</div>
 											</div>
@@ -121,7 +121,7 @@
 											<label class="col-md-3 col-form-label" for="webmaster_email">管理员邮箱</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="email" class="form-control" name="webmaster_email" id="webmaster_email" value="{{$webmaster_email}}"/>
+													<input type="email" class="form-control" id="webmaster_email" value="{{$webmaster_email}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('webmaster_email')">修改</button></span>
 												</div>
 											</div>
@@ -133,7 +133,7 @@
 											<label class="col-md-3 col-form-label" for="website_security_code">网站安全码</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="text" class="form-control" name="website_security_code" id="website_security_code" value="{{$website_security_code}}"/>
+													<input type="text" class="form-control" id="website_security_code" value="{{$website_security_code}}"/>
 													<span class="input-group-append">
 														<button class="btn btn-info" type="button" onclick="makeWebsiteSecurityCode()">生成</button>
 														<button class="btn btn-primary" type="button" onclick="update('website_security_code')">修改</button>
@@ -176,7 +176,7 @@
 											<label class="col-md-3" for="maintenance_time">维护结束时间</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<input type="datetime-local" class="form-control" name="maintenance_time" id="maintenance_time" value="{{$maintenance_time}}" />
+													<input type="datetime-local" class="form-control" id="maintenance_time" value="{{$maintenance_time}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('maintenance_time')">修改</button></span>
 												</div>
 											</div>
@@ -188,7 +188,7 @@
 											<label class="col-md-3" for="maintenance_content">维护介绍内容</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<textarea class="form-control" rows="3" name="maintenance_content" id="maintenance_content">{{$maintenance_content}}</textarea>
+													<textarea class="form-control" rows="3" id="maintenance_content">{{$maintenance_content}}</textarea>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('maintenance_content')">修改</button></span>
 												</div>
 											</div>
@@ -211,25 +211,34 @@
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="is_invite_register">邀请注册</label>
-											<select class="col-md-3" name="is_invite_register" id="is_invite_register" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_invite_register')">
-												<option value="0" @if($is_invite_register == '0') selected @endif>关闭</option>
-												<option value="1" @if($is_invite_register == '1') selected @endif>可选</option>
-												<option value="2" @if($is_invite_register == '2') selected @endif>必须</option>
+											<select class="col-md-3" id="is_invite_register" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_invite_register')">
+												<option value="0">关闭</option>
+												<option value="1">可选</option>
+												<option value="2">必须</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_active_register">激活账号</label>
-											<span class="col-md-9"><input type="checkbox" id="is_active_register" data-plugin="switchery" @if($is_active_register) checked @endif onchange="updateFromOther('switch','is_active_register')"></span>
+											<label class="col-md-3 col-form-label" for="is_activate_account">激活账号</label>
+											<select class="col-md-3" id="is_activate_account" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_activate_account')">
+												<option value="0">关闭</option>
+												<option value="1">注册前激活</option>
+												<option value="2">注册后激活</option>
+											</select>
 											<span class="text-help offset-md-3"> 启用后用户需要通过邮件来激活账号 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_verify_register">注册校验验证码</label>
-											<span class="col-md-9"><input type="checkbox" id="is_verify_register" data-plugin="switchery" @if($is_verify_register) checked @endif onchange="updateFromOther('switch','is_verify_register')"></span>
-											<span class="text-help offset-md-3"> 注册时需要先通过邮件获取验证码方可注册，‘激活账号’失效 </span>
+											<label class="col-md-3 col-form-label" for="is_captcha">验证码</label>
+											<select class="col-md-5" id="is_captcha" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_captcha')">
+												<option value="0">关闭</option>
+												<option value="1">普通验证码</option>
+												<option value="2">极验Geetest</option>
+												<option value="3">Google reCAPTCHA</option>
+											</select>
+											<span class="text-help offset-md-3"> 启用后登录、注册需要输入验证码 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -237,18 +246,6 @@
 											<label class="col-md-3 col-form-label" for="is_reset_password">重置密码</label>
 											<span class="col-md-9"><input type="checkbox" id="is_reset_password" data-plugin="switchery" @if($is_reset_password) checked @endif onchange="updateFromOther('switch','is_reset_password')"></span>
 											<span class="text-help offset-md-3"> 启用后用户可以通过邮件重置密码 </span>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_captcha">验证码</label>
-											<select class="col-md-5" name="is_captcha" id="is_captcha" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_captcha')">
-												<option value="0" @if($is_captcha == '0') selected @endif>关闭</option>
-												<option value="1" @if($is_captcha == '1') selected @endif>普通验证码</option>
-												<option value="2" @if($is_captcha == '2') selected @endif>极验Geetest</option>
-												<option value="3" @if($is_captcha == '3') selected @endif>Google reCAPTCHA</option>
-											</select>
-											<span class="text-help offset-md-3"> 启用后登录、注册需要输入验证码 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -271,12 +268,12 @@
 											<div class="col-md-7">
 												<div class="input-group">
 													<label for="min_port"></label>
-													<input type="number" class="form-control" name="min_port" id="min_port" value="{{$min_port}}" onchange="updateFromInput('min_port','1000','{{$max_port}}')"/>
+													<input type="number" class="form-control" id="min_port" value="{{$min_port}}" onchange="updateFromInput('min_port','1000','{{$max_port}}')"/>
 													<div class="input-group-prepend">
 														<span class="input-group-text"> ~ </span>
 													</div>
 													<label for="max_port"></label>
-													<input type="number" class="form-control" name="max_port" id="max_port" value="{{$max_port}}" onchange="updateFromInput('max_port','{{$max_port}}','65535')"/>
+													<input type="number" class="form-control" id="max_port" value="{{$max_port}}" onchange="updateFromInput('max_port','{{$max_port}}','65535')"/>
 												</div>
 											</div>
 											<span class="text-help offset-md-3"> 端口范围：1000 - 65535 </span>
@@ -294,7 +291,7 @@
 											<label class="col-md-3 col-form-label" for="default_days">初始有效期</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="default_days" id="default_days" value="{{$default_days}}"/>
+													<input type="number" class="form-control" id="default_days" value="{{$default_days}}"/>
 													<div class="input-group-append">
 													</div>
 													<span class="input-group-text">天</span>
@@ -309,7 +306,7 @@
 											<label class="col-md-3 col-form-label" for="default_traffic">初始流量</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="default_traffic" id="default_traffic" value="{{$default_traffic}}"/>
+													<input type="number" class="form-control" id="default_traffic" value="{{$default_traffic}}"/>
 													<div class="input-group-append">
 													</div>
 													<span class="input-group-text">MB</span>
@@ -324,7 +321,7 @@
 											<label class="col-md-3 col-form-label" for="invite_num">可生成邀请码数</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="invite_num" id="invite_num" value="{{$invite_num}}"/>
+													<input type="number" class="form-control" id="invite_num" value="{{$invite_num}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="updateFromInput('invite_num','0')">修改</button></span>
 												</div>
 											</div>
@@ -336,7 +333,7 @@
 											<label class="col-md-3 col-form-label" for="reset_password_times">重置密码次数</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="reset_password_times" id="reset_password_times" value="{{$reset_password_times}}"/>
+													<input type="number" class="form-control" id="reset_password_times" value="{{$reset_password_times}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="updateFromInput('reset_password_times','0')">修改</button></span>
 												</div>
 											</div>
@@ -345,9 +342,13 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="sensitiveType">邮箱过滤机制</label>
-											<span class="col-md-9"><input type="checkbox" id="sensitiveType" data-plugin="switchery" @if($sensitiveType) checked @endif onchange="updateFromOther('switch','sensitiveType')"></span>
-											<span class="text-help offset-md-3"> 开启为黑名单，用户可使用任意黑名单外的邮箱注册；关闭为白名单，用户只能选择使用白名单中的邮箱后缀注册 </span>
+											<label class="col-md-3 col-form-label" for="is_email_filtering">邮箱过滤机制</label>
+											<select class="col-md-3" id="is_email_filtering" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_email_filtering')">
+												<option value="0">关闭</option>
+												<option value="1">黑名单</option>
+												<option value="2">白名单</option>
+											</select>
+											<span class="text-help offset-md-3"> 黑名单: 用户可使用任意黑名单外的邮箱注册；白名单: 用户只能选择使用白名单中的邮箱后缀注册 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -355,7 +356,7 @@
 											<label class="col-md-3 col-form-label" for="active_times">激活账号次数</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="active_times" id="active_times" value="{{$active_times}}"/>
+													<input type="number" class="form-control" id="active_times" value="{{$active_times}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="updateFromInput('active_times','0')">修改</button></span>
 												</div>
 											</div>
@@ -367,7 +368,7 @@
 											<label class="col-md-3 col-form-label" for="register_ip_limit">同IP注册限制</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="register_ip_limit" id="register_ip_limit" value="{{$register_ip_limit}}"/>
+													<input type="number" class="form-control" id="register_ip_limit" value="{{$register_ip_limit}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="updateFromInput('register_ip_limit','0')">修改</button></span>
 												</div>
 											</div>
@@ -377,9 +378,9 @@
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="initial_labels_for_user">用户初始标签</label>
-											<select class="col-md-7 show-tick" name="initial_labels_for_user" id="initial_labels_for_user" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('multiSelect','initial_labels_for_user')" multiple>
+											<select class="col-md-7 show-tick" id="initial_labels_for_user" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('multiSelect','initial_labels_for_user')" multiple>
 												@foreach($label_list as $label)
-													<option value="{{$label->id}}" @if(in_array($label->id, explode(',', $initial_labels_for_user))) selected @endif>{{$label->name}}</option>
+													<option value="{{$label->id}}">{{$label->name}}</option>
 												@endforeach
 											</select>
 											<span class="text-help offset-md-3"> 注册用户时的初始标签，标签用于关联节点 </span>
@@ -390,7 +391,7 @@
 											<label class="col-md-3 col-form-label" for="user_invite_days">用户-邀请码有效期</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="user_invite_days" id="user_invite_days" value="{{$user_invite_days}}"/>
+													<input type="number" class="form-control" id="user_invite_days" value="{{$user_invite_days}}"/>
 													<div class="input-group-append">
 													</div>
 													<span class="input-group-text">天</span>
@@ -411,7 +412,7 @@
 											<label class="col-md-3 col-form-label" for="subscribe_domain">节点订阅地址</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="url" class="form-control" name="subscribe_domain" id="subscribe_domain" value="{{$subscribe_domain}}"/>
+													<input type="url" class="form-control" id="subscribe_domain" value="{{$subscribe_domain}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('subscribe_domain')">修改</button></span>
 												</div>
 											</div>
@@ -423,7 +424,7 @@
 											<label class="col-md-3 col-form-label" for="subscribe_max">订阅节点数</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="subscribe_max" id="subscribe_max" value="{{$subscribe_max}}"/>
+													<input type="number" class="form-control" id="subscribe_max" value="{{$subscribe_max}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="updateFromInput('subscribe_max','0')">修改</button></span>
 												</div>
 											</div>
@@ -469,7 +470,7 @@
 											<label class="col-md-3 col-form-label" for="namesilo_key">Namesilo API KEY</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" name="namesilo_key" id="namesilo_key" value="{{$namesilo_key}}" placeholder="填入Namesilo上申请的API KEY"/>
+													<input type="text" class="form-control" id="namesilo_key" value="{{$namesilo_key}}" placeholder="填入Namesilo上申请的API KEY"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('namesilo_key')">修改</button></span>
 												</div>
 											</div>
@@ -481,7 +482,7 @@
 											<label class="col-md-3 col-form-label" for="admin_invite_days">管理员-邀请码有效期</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="admin_invite_days" id="admin_invite_days" value="{{$admin_invite_days}}"/>
+													<input type="number" class="form-control" id="admin_invite_days" value="{{$admin_invite_days}}"/>
 													<div class="input-group-append">
 													</div>
 													<span class="input-group-text">天</span>
@@ -497,7 +498,7 @@
 												<label class="col-md-3 col-form-label" for="geetest_id">极验ID</label>
 												<div class="col-md-7">
 													<div class="input-group">
-														<input type="text" class="form-control" name="geetest_id" id="geetest_id" value="{{$geetest_id}}"/>
+														<input type="text" class="form-control" id="geetest_id" value="{{$geetest_id}}"/>
 														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('geetest_id')">修改</button></span>
 													</div>
 												</div>
@@ -509,7 +510,7 @@
 												<label class="col-md-3 col-form-label" for="geetest_key">极验KEY</label>
 												<div class="col-md-7">
 													<div class="input-group">
-														<input type="text" class="form-control" name="geetest_key" id="geetest_key" value="{{$geetest_key}}"/>
+														<input type="text" class="form-control" id="geetest_key" value="{{$geetest_key}}"/>
 														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('geetest_key')">修改</button></span>
 													</div>
 												</div>
@@ -521,7 +522,7 @@
 												<label class="col-md-3 col-form-label" for="google_captcha_sitekey">网站密钥</label>
 												<div class="col-md-7">
 													<div class="input-group">
-														<input type="text" class="form-control" name="google_captcha_sitekey" id="google_captcha_sitekey" value="{{$google_captcha_sitekey}}"/>
+														<input type="text" class="form-control" id="google_captcha_sitekey" value="{{$google_captcha_sitekey}}"/>
 														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('google_captcha_sitekey')">修改</button></span>
 													</div>
 												</div>
@@ -533,7 +534,7 @@
 												<label class="col-md-3 control-label" for="google_captcha_secret">密钥</label>
 												<div class="col-md-7">
 													<div class="input-group">
-														<input type="text" class="form-control" name="google_captcha_secret" id="google_captcha_secret" value="{{$google_captcha_secret}}"/>
+														<input type="text" class="form-control" id="google_captcha_secret" value="{{$google_captcha_secret}}"/>
 														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('google_captcha_secret')">修改</button></span>
 													</div>
 												</div>
@@ -558,7 +559,7 @@
 											<label class="col-md-3 col-form-label" for="traffic_limit_time">时间间隔</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="traffic_limit_time" id="traffic_limit_time" value="{{$traffic_limit_time}}"/>
+													<input type="number" class="form-control" id="traffic_limit_time" value="{{$traffic_limit_time}}"/>
 													<div class="input-group-append">
 													</div>
 													<span class="input-group-text">分钟</span>
@@ -574,12 +575,12 @@
 											<div class="col-md-7">
 												<div class="input-group">
 													<label for="min_rand_traffic"></label>
-													<input type="number" class="form-control" name="min_rand_traffic" id="min_rand_traffic" value="{{$min_rand_traffic}}" onchange="updateFromInput('min_rand_traffic','0','{{$max_rand_traffic}}')"/>
+													<input type="number" class="form-control" id="min_rand_traffic" value="{{$min_rand_traffic}}" onchange="updateFromInput('min_rand_traffic','0','{{$max_rand_traffic}}')"/>
 													<div class="input-group-prepend">
 														<span class="input-group-text"> ~ </span>
 													</div>
 													<label for="max_rand_traffic"></label>
-													<input type="number" class="form-control" name="max_rand_traffic" id="max_rand_traffic" value="{{$max_rand_traffic}}" onchange="updateFromInput('max_rand_traffic','0','{{$min_rand_traffic}}')"/>
+													<input type="number" class="form-control" id="max_rand_traffic" value="{{$max_rand_traffic}}" onchange="updateFromInput('max_rand_traffic','0','{{$min_rand_traffic}}')"/>
 													<div class="input-group-prepend">
 														<span class="input-group-text"> MB </span>
 													</div>
@@ -609,7 +610,7 @@
 											<label class="col-md-3 col-form-label" for="referral_traffic">注册送流量</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="referral_traffic" id="referral_traffic" value="{{$referral_traffic}}"/>
+													<input type="number" class="form-control" id="referral_traffic" value="{{$referral_traffic}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">MB</span>
 														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_traffic','0')">修改</button>
@@ -624,7 +625,7 @@
 											<label class="col-md-3 col-form-label" for="referral_percent">返利比例</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="referral_percent" id="referral_percent" value="{{$referral_percent * 100}}"/>
+													<input type="number" class="form-control" id="referral_percent" value="{{$referral_percent * 100}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">%</span>
 														<button class="btn btn-primary" type="button" onchange="updateFromInput('referral_percent','0','100')">修改</button>
@@ -639,7 +640,7 @@
 											<label class="col-md-3 col-form-label" for="referral_money">提现限制</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="referral_money" id="referral_money" value="{{$referral_money}}"/>
+													<input type="number" class="form-control" id="referral_money" value="{{$referral_money}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">元</span>
 														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_money','0')">修改</button>
@@ -667,7 +668,7 @@
 											<label class="col-md-3 col-form-label" for="expire_days">过期警告阈值</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="expire_days" id="expire_days" value="{{$expire_days}}"/>
+													<input type="number" class="form-control" id="expire_days" value="{{$expire_days}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">天</span>
 														<button class="btn btn-primary" type="button" onclick="updateFromInput('expire_days','0')">修改</button>
@@ -689,7 +690,7 @@
 											<label for="traffic_warning_percent" class="col-md-3 col-form-label">流量警告阈值</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="traffic_warning_percent" id="traffic_warning_percent" value="{{$traffic_warning_percent}}"/>
+													<input type="number" class="form-control" id="traffic_warning_percent" value="{{$traffic_warning_percent}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">%</span>
 														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_warning_percent','0')">修改</button>
@@ -701,9 +702,24 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_node_crash_warning">节点离线提醒</label>
-											<span class="col-md-9"><input type="checkbox" id="is_node_crash_warning" data-plugin="switchery" @if($is_node_crash_warning) checked @endif onchange="updateFromOther('switch','is_node_crash_warning')"></span>
-											<span class="text-help offset-md-3"> 启用后如果节点离线则通过ServerChan推送提醒 </span>
+											<label class="col-md-3 col-form-label" for="is_node_offline">节点离线提醒</label>
+											<span class="col-md-9"><input type="checkbox" id="is_node_offline" data-plugin="switchery" @if($is_node_offline) checked @endif onchange="updateFromOther('switch','is_node_offline')"></span>
+											<span class="text-help offset-md-3"> 启用后如果节点离线会推送提醒 </span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="offline_check_times">离线提醒次数</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="number" class="form-control" id="offline_check_times" value="{{$offline_check_times}}"/>
+													<div class="input-group-append">
+														<span class="input-group-text">次</span>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('offline_check_times','0','60')">修改</button>
+													</div>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"> 提醒几次后不再提醒，为0时不限制，不超过60 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -715,13 +731,13 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="numberOfWarningTimes">阻断检测提醒</label>
+											<label class="col-md-3 col-form-label" for="detection_check_times">阻断检测提醒</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="numberOfWarningTimes" id="numberOfWarningTimes" value="{{$numberOfWarningTimes}}"/>
+													<input type="number" class="form-control" id="detection_check_times" value="{{$detection_check_times}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">次</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('numberOfWarningTimes','0','12')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('detection_check_times','0','12')">修改</button>
 													</div>
 												</div>
 											</div>
@@ -730,9 +746,13 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_server_chan">ServerChan</label>
-											<span class="col-md-9"><input type="checkbox" id="is_server_chan" data-plugin="switchery" @if($is_server_chan) checked @endif onchange="updateFromOther('switch','is_server_chan')"></span>
-											<span class="text-help offset-md-3"> 推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="http://sc.ftqq.com" target="_blank">绑定微信</a>） </span>
+											<label class="col-md-3 col-form-label" for="is_notification">推送通知</label>
+											<select class="col-md-5" id="is_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_notification')">
+												<option value="0">关闭</option>
+												<option value="1">ServerChan</option>
+												<option value="2">Bark</option>
+											</select>
+											<span class="text-help offset-md-3"> 推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="javascript:sendTestNotification();">发送测试消息</a>）</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -740,11 +760,23 @@
 											<label class="col-md-3 col-form-label" for="server_chan_key">SCKEY</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" name="server_chan_key" id="server_chan_key" value="{{$server_chan_key}}" placeholder="请到ServerChan申请"/>
+													<input type="text" class="form-control" id="server_chan_key" value="{{$server_chan_key}}" placeholder="请到ServerChan申请"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('server_chan_key')">修改</button></span>
 												</div>
 											</div>
 											<span class="text-help offset-md-3"> 启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>） </span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="bark_key">Bark设备号</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="url" class="form-control" id="bark_key" value="{{$bark_key}}" placeholder="安装并打开Bark后取得"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('bark_key')">修改</button></span>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"> 推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -759,7 +791,7 @@
 											<label class="col-md-3 col-form-label" for="push_bear_send_key">PushBear SendKey</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" name="push_bear_send_key" id="push_bear_send_key" value="{{$push_bear_send_key}}" placeholder="创建消息通道后即可获取"/>
+													<input type="text" class="form-control" id="push_bear_send_key" value="{{$push_bear_send_key}}" placeholder="创建消息通道后即可获取"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('push_bear_send_key')">修改</button></span>
 												</div>
 											</div>
@@ -771,7 +803,7 @@
 											<label class="col-md-3 col-form-label" for="push_bear_qrcode">PushBear订阅二维码</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="url" class="form-control" name="push_bear_qrcode" id="push_bear_qrcode" value="{{$push_bear_qrcode}}" placeholder="填入消息通道的二维码URL"/>
+													<input type="url" class="form-control" id="push_bear_qrcode" value="{{$push_bear_qrcode}}" placeholder="填入消息通道的二维码URL"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('push_bear_qrcode')">修改</button></span>
 												</div>
 											</div>
@@ -810,7 +842,7 @@
 											<label class="col-md-3 col-form-label" for="subscribe_ban_times">订阅请求阈值</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="subscribe_ban_times" id="subscribe_ban_times" value="{{$subscribe_ban_times}}"/>
+													<input type="number" class="form-control" id="subscribe_ban_times" value="{{$subscribe_ban_times}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="updateFromInput('subscribe_ban_times','0')">修改</button></span>
 												</div>
 											</div>
@@ -829,7 +861,7 @@
 											<label class="col-md-3 col-form-label" for="traffic_ban_value">流量异常阈值</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="traffic_ban_value" id="traffic_ban_value" value="{{$traffic_ban_value}}"/>
+													<input type="number" class="form-control" id="traffic_ban_value" value="{{$traffic_ban_value}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">GB</span>
 														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_ban_value', '1')">修改</button>
@@ -844,7 +876,7 @@
 											<label class="col-md-3 col-form-label" for="traffic_ban_time">封号时长</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="number" class="form-control" name="traffic_ban_time" id="traffic_ban_time" value="{{$traffic_ban_time}}"/>
+													<input type="number" class="form-control" id="traffic_ban_time" value="{{$traffic_ban_time}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">分钟</span>
 														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_ban_time', '0')">修改</button>
@@ -886,7 +918,7 @@
 										<div class="row">
 											<label class="col-form-label col-md-3" for="website_home_logo">首页LOGO</label>
 											<div class="col-md-9">
-												<input type="file" name="website_home_logo" id="website_home_logo" data-plugin="dropify" data-default-file={{$website_home_logo?:'/assets/images/noimage.png'}} />
+												<input type="file" id="website_home_logo" data-plugin="dropify" data-default-file={{$website_home_logo?:'/assets/images/noimage.png'}} />
 												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
 											</div>
 										</div>
@@ -895,7 +927,7 @@
 										<div class="row">
 											<label class="col-form-label col-md-3" for="website_logo">站内LOGO</label>
 											<div class="col-md-9">
-												<input type="file" name="website_logo" id="website_logo" data-plugin="dropify" data-default-file={{$website_logo?:'/assets/images/noimage.png'}} />
+												<input type="file" id="website_logo" data-plugin="dropify" data-default-file={{$website_logo?:'/assets/images/noimage.png'}} />
 												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
 											</div>
 										</div>
@@ -904,7 +936,7 @@
 										<div class="row">
 											<label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
 											<div class="col-md-9">
-												<textarea class="form-control" rows="10" name="website_analytics" id="website_analytics">{{$website_analytics}}</textarea>
+												<textarea class="form-control" rows="10" id="website_analytics">{{$website_analytics}}</textarea>
 												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
 											</div>
 										</div>
@@ -913,7 +945,7 @@
 										<div class="row">
 											<label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
 											<div class="col-md-9">
-												<textarea class="form-control" rows="10" name="website_customer_service" id="website_customer_service">{{$website_customer_service}}</textarea>
+												<textarea class="form-control" rows="10" id="website_customer_service">{{$website_customer_service}}</textarea>
 												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
 											</div>
 										</div>
@@ -934,29 +966,29 @@
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="alipay_currency">结算币种</label>
-											<select class="col-md-5" name="alipay_currency" id="alipay_currency" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_currency')">
-												<option value="USD" @if($alipay_currency == 'USD') selected @endif>美元</option>
-												<option value="HKD" @if($alipay_currency == 'HKD') selected @endif>港币</option>
-												<option value="JPY" @if($alipay_currency == 'JPY') selected @endif>日元</option>
-												<option value="EUR" @if($alipay_currency == 'EUR') selected @endif>欧元</option>
+											<select class="col-md-5" id="alipay_currency" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_currency')">
+												<option value="USD">美元</option>
+												<option value="HKD">港币</option>
+												<option value="JPY">日元</option>
+												<option value="EUR">欧元</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="alipay_sign_type">加密方式</label>
-											<select class="col-md-5" name="alipay_sign_type" id="alipay_sign_type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_sign_type')">
-												<option value="MD5" @if($alipay_sign_type == 'MD5') selected @endif>MD5</option>
-												<option value="RSA" @if($alipay_sign_type == 'RSA') selected @endif>RSA</option>
+											<select class="col-md-5" id="alipay_sign_type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_sign_type')">
+												<option value="MD5">MD5</option>
+												<option value="RSA">RSA</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="alipay_transport">启用SSL验证</label>
-											<select class="col-md-5" name="alipay_transport" id="alipay_transport" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_transport')">
-												<option value="http" @if($alipay_transport == 'http') selected @endif>否</option>
-												<option value="https" @if($alipay_transport == 'https') selected @endif>是</option>
+											<select class="col-md-5" id="alipay_transport" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_transport')">
+												<option value="http">否</option>
+												<option value="https">是</option>
 											</select>
 											<span class="text-help offset-md-3"> HTTPS站点需启用 </span>
 										</div>
@@ -966,7 +998,7 @@
 											<label class="col-md-3 col-form-label" for="alipay_partner">Partner</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" name="alipay_partner" id="alipay_partner" value="{{$alipay_partner}}"/>
+													<input type="text" class="form-control" id="alipay_partner" value="{{$alipay_partner}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_partner')">修改</button></span>
 												</div>
 											</div>
@@ -977,7 +1009,7 @@
 											<label for="alipay_key" class="col-md-3 col-form-label">Key</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="password" class="form-control" name="alipay_key" id="alipay_key" value="{{$alipay_key}}"/>
+													<input type="password" class="form-control" id="alipay_key" value="{{$alipay_key}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_key')">修改</button></span>
 												</div>
 											</div>
@@ -988,7 +1020,7 @@
 											<label class="col-md-3 col-form-label" for="alipay_private_key">RSA私钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="password" class="form-control" name="alipay_private_key" id="alipay_private_key" value="{{$alipay_private_key}}"/>
+													<input type="password" class="form-control" id="alipay_private_key" value="{{$alipay_private_key}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_private_key')">修改</button></span>
 												</div>
 											</div>
@@ -999,7 +1031,7 @@
 											<label class="col-md-3 col-form-label" for="alipay_public_key">RSA公钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="password" class="form-control" name="alipay_public_key" id="alipay_public_key" value="{{$alipay_public_key}}"/>
+													<input type="password" class="form-control" id="alipay_public_key" value="{{$alipay_public_key}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_public_key')">修改</button></span>
 												</div>
 											</div>
@@ -1019,7 +1051,7 @@
 											<label class="col-md-3 col-form-label" for="f2fpay_app_id">应用ID</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" name="f2fpay_app_id" id="f2fpay_app_id" value="{{$f2fpay_app_id}}"/>
+													<input type="text" class="form-control" id="f2fpay_app_id" value="{{$f2fpay_app_id}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_app_id')">修改</button></span>
 												</div>
 											</div>
@@ -1031,7 +1063,7 @@
 											<label class="col-md-3 col-form-label" for="f2fpay_private_key">RSA私钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input class="form-control" type="text" name="f2fpay_private_key" id="f2fpay_private_key" value="{{$f2fpay_private_key}}"/>
+													<input class="form-control" type="text" id="f2fpay_private_key" value="{{$f2fpay_private_key}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_private_key')">修改</button></span>
 												</div>
 											</div>
@@ -1043,7 +1075,7 @@
 											<label class="col-md-3 col-form-label" for="f2fpay_public_key">支付宝公钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" name="f2fpay_public_key" id="f2fpay_public_key" value="{{$f2fpay_public_key}}"/>
+													<input type="text" class="form-control" id="f2fpay_public_key" value="{{$f2fpay_public_key}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_public_key')">修改</button></span>
 												</div>
 											</div>
@@ -1056,7 +1088,7 @@
 										<label class="col-md-3 col-form-label" for="f2fpay_subject_name">自定义商品名称</label>
 										<div class="col-md-7">
 											<div class="input-group">
-												<input type="text" class="form-control" name="f2fpay_subject_name" id="f2fpay_subject_name" value="{{$f2fpay_subject_name}}"/>
+												<input type="text" class="form-control" id="f2fpay_subject_name" value="{{$f2fpay_subject_name}}"/>
 												<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_subject_name')">修改</button></span>
 											</div>
 										</div>
@@ -1083,15 +1115,26 @@
 	<script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
-	<!--suppress JSUnusedGlobalSymbols -->
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#is_invite_register').selectpicker('val', {{$is_invite_register}});
+            $('#is_activate_account').selectpicker('val', {{$is_activate_account}});
+            $('#is_captcha').selectpicker('val', {{$is_captcha}});
+            $('#is_email_filtering').selectpicker('val', {{$is_email_filtering}});
+            $('#initial_labels_for_user').selectpicker('val', [{{$initial_labels_for_user}}]);
+            $('#is_notification').selectpicker('val', {{$is_notification}});
+            $('#alipay_currency').selectpicker('val', {{$alipay_currency}});
+            $('#alipay_sign_type').selectpicker('val', {{$alipay_sign_type}});
+            $('#alipay_transport').selectpicker('val', {{$alipay_transport}});
+        });
+
         // 系统设置更新
         function systemUpdate(systemItem, value) {
             $.post("/admin/setConfig", {_token: '{{csrf_token()}}', name: systemItem, value: value}, function (ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 800, showConfirmButton: false});
+                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
                 } else {
-                    swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
                 }
             });
         }
@@ -1105,9 +1148,9 @@
         function updateFromInput(systemItem, lowerBound, upperBound) {
             let value = parseInt($('#' + systemItem).val());
             if (lowerBound !== false && value < lowerBound) {
-                swal.fire({title: '不能小于' + lowerBound, type: 'warning', timer: 1000, showConfirmButton: false});
+                swal.fire({title: '不能小于' + lowerBound, type: 'warning', timer: 1500, showConfirmButton: false});
             } else if (upperBound !== false && value > upperBound) {
-                swal.fire({title: '不能大于' + upperBound, type: 'warning', timer: 1000, showConfirmButton: false});
+                swal.fire({title: '不能大于' + upperBound, type: 'warning', timer: 1500, showConfirmButton: false});
             } else {
                 systemUpdate(systemItem, value);
             }
@@ -1133,6 +1176,17 @@
                 default:
                     break;
             }
+        }
+
+        // 发送Bark测试消息
+        function sendTestNotification() {
+            $.post("/admin/sendTestNotification", {_token: '{{csrf_token()}}'}, function (ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
+                } else {
+                    swal.fire({title: ret.message, type: 'error'});
+                }
+            });
         }
 
         // 自动去除公钥和私钥中的空格和换行

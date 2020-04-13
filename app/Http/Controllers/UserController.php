@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Callback;
 use App\Components\Helpers;
-use App\Components\ServerChan;
+use App\Components\PushNotification;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
@@ -352,11 +352,11 @@ class UserController extends Controller
 
 			// 发邮件通知管理员
 			if(self::$systemConfig['webmaster_email']){
-				$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $emailTitle, $content);
+				$logId = Helpers::addNotificationLog($emailTitle, $content, 1, self::$systemConfig['webmaster_email']);
 				Mail::to(self::$systemConfig['webmaster_email'])->send(new newTicket($logId, $emailTitle, $content));
 			}
 
-			ServerChan::send($emailTitle, $content);
+			PushNotification::send($emailTitle, $content);
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
 		}else{
@@ -400,11 +400,11 @@ class UserController extends Controller
 
 				// 发邮件通知管理员
 				if(self::$systemConfig['webmaster_email']){
-					$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
+					$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
 					Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
 				}
 
-				ServerChan::send($title, $content);
+				PushNotification::send($title, $content);
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
 			}else{
@@ -425,7 +425,7 @@ class UserController extends Controller
 
 		$ret = Ticket::uid()->where('id', $id)->update(['status' => 2]);
 		if($ret){
-			ServerChan::send('工单关闭提醒', '工单：ID'.$id.'用户已手动关闭');
+			PushNotification::send('工单关闭提醒', '工单：ID'.$id.'用户已手动关闭');
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
 		}else{

@@ -224,7 +224,6 @@
             const charge_coupon = $('#charge_coupon').val().trim();
             const amount = parseInt($('#amount').val());
             id = parseInt(id);
-            console.log(paymentType, charge_coupon, amount);
             if (paymentType === 1) {
                 if (amount <= 0) {
                     swal.fire({title: "错误", text: "充值余额不合规", type: 'warning', timer: 1000, showConfirmButton: false});

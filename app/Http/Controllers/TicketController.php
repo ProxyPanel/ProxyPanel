@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Components\ServerChan;
+use App\Components\PushNotification;
 use App\Http\Models\Ticket;
 use App\Http\Models\TicketReply;
 use App\Mail\closeTicket;
@@ -76,17 +76,17 @@ class TicketController extends Controller
 				// 发通知邮件
 				if(!Auth::user()->is_admin){
 					if(self::$systemConfig['webmaster_email']){
-						$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
+						$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
 						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
 					}
 				}else{
-					$logId = Helpers::addEmailLog($ticket->user->email, $title, $content);
+					$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
 					Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
 				}
 
-				// 通过ServerChan发微信消息提醒管理员
+				// 推送通知管理员
 				if(!Auth::user()->is_admin){
-					ServerChan::send($title, $content);
+					PushNotification::send($title, $content);
 				}
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
@@ -121,7 +121,7 @@ class TicketController extends Controller
 		$content = "工单【".$ticket->title."】已关闭";
 
 		// 发邮件通知用户
-		$logId = Helpers::addEmailLog($ticket->user->email, $title, $content);
+		$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
 		Mail::to($ticket->user->email)->send(new closeTicket($logId, $title, $content));
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);

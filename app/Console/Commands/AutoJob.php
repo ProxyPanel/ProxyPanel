@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Components\ServerChan;
+use App\Components\PushNotification;
 use App\Http\Models\Config;
 use App\Http\Models\Coupon;
 use App\Http\Models\Invite;
@@ -17,6 +17,7 @@ use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserSubscribeLog;
 use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\VerifyCode;
+use Cache;
 use DB;
 use Exception;
 use Illuminate\Console\Command;
@@ -238,13 +239,28 @@ class AutoJob extends Command
 	// 检测节点是否离线
 	private function checkNodeStatus()
 	{
-		if(Helpers::systemConfig()['is_node_crash_warning']){
+		if(Helpers::systemConfig()['is_node_offline']){
 			$nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->get();
 			foreach($nodeList as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
 				$nodeTTL = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->doesntExist();
 				if($nodeTTL){
-					ServerChan::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
+					if(self::$systemConfig['offline_check_times']){
+						// 已通知次数
+						$cacheKey = 'offline_check_times'.$node->id;
+						if(Cache::has($cacheKey)){
+							$times = Cache::get($cacheKey);
+						}else{
+							// 键将保留24小时
+							Cache::put($cacheKey, 1, 86400);
+							$times = 1;
+						}
+
+						if($times < self::$systemConfig['offline_check_times']){
+							Cache::increment($cacheKey);
+							PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
+						}
+					}
 				}
 			}
 		}

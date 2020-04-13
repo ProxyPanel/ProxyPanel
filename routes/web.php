@@ -102,11 +102,12 @@ Route::group(['middleware' => ['isForbidden','isAdminLogin', 'isAdmin']], functi
 	Route::any('admin/import', 'AdminController@import'); // 数据导入
 	Route::get('admin/trafficLog', 'AdminController@trafficLog'); // 流量日志
 	Route::get('admin/analysis', 'AdminController@analysis'); // 日志分析
-	Route::get('admin/emailLog', 'AdminController@emailLog'); // 邮件发送日志
+	Route::get('admin/notificationLog', 'AdminController@notificationLog'); // 邮件发送日志
 	Route::get("payment/callbackList", "PaymentController@callbackList"); // 支付回调日志
 	Route::get("sensitiveWords/list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
 	Route::post("sensitiveWords/add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
 	Route::post("sensitiveWords/del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
+	Route::post('admin/sendTestNotification', 'AdminController@sendTestNotification'); //推送通知测试
 	Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
 	Route::any('admin/profile', 'AdminController@profile'); // 修改个人信息
 	Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口

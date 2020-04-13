@@ -4,8 +4,8 @@ namespace App\Components;
 
 use App\Http\Models\Config;
 use App\Http\Models\CouponLog;
-use App\Http\Models\EmailLog;
 use App\Http\Models\Level;
+use App\Http\Models\NotificationLog;
 use App\Http\Models\SsConfig;
 use App\Http\Models\User;
 use App\Http\Models\UserSubscribe;
@@ -84,13 +84,13 @@ class Helpers
 		$user->obfs = Helpers::getDefaultObfs();
 		$user->obfs_param = '';
 		$user->usage = 1;
-		$user->transfer_enable = $transfer_enable; // 新创建的账号给1，防止定时任务执行时发现u + d >= transfer_enable被判为流量超限而封禁
+		$user->transfer_enable = $transfer_enable;
 		$user->enable_time = date('Y-m-d');
 		$user->expire_time = date('Y-m-d', strtotime("+".$data." days"));
 		$user->reg_ip = getClientIp();
 		$user->referral_uid = $referral_uid;
 		$user->reset_time = NULL;
-		$user->status = 1;
+		$user->status = 0;
 		$user->save();
 
 		return $user->id;
@@ -161,20 +161,21 @@ class Helpers
 	}
 
 	/**
-	 * 添加邮件投递日志
+	 * 添加通知推送日志
 	 *
-	 * @param string $address 收信地址
 	 * @param string $title   标题
 	 * @param string $content 内容
+	 * @param int    $type    发送类型
+	 * @param string $address 收信方
 	 * @param int    $status  投递状态
 	 * @param string $error   投递失败时记录的异常信息
 	 *
 	 * @return int
 	 */
-	public static function addEmailLog($address, $title, $content, $status = 1, $error = '')
+	public static function addNotificationLog($title, $content, $type, $address = 'admin', $status = 1, $error = '')
 	{
-		$log = new EmailLog();
-		$log->type = 1;
+		$log = new NotificationLog();
+		$log->type = $type;
 		$log->address = $address;
 		$log->title = $title;
 		$log->content = $content;

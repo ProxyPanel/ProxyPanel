@@ -53,13 +53,13 @@ class UserExpireAutoWarning extends Command
 				$title = '账号过期提醒';
 				$content = '您的账号将于今天晚上【24:00】过期。';
 
-				$logId = Helpers::addEmailLog($user->email, $title, $content);
+				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
 				Mail::to($user->email)->send(new userExpireWarningToday($logId));
 			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= self::$systemConfig['expire_days']){
 				$title = '账号过期提醒';
 				$content = '您的账号还剩'.$lastCanUseDays.'天即将过期。';
 
-				$logId = Helpers::addEmailLog($user->email, $title, $content);
+				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
 				Mail::to($user->email)->send(new userExpireWarning($logId, $lastCanUseDays));
 			}
 		}

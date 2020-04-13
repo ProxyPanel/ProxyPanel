@@ -274,10 +274,10 @@
 	<script type="text/javascript">
         $("#return_to_admin").click(function () {
             $.ajax({
-                'type': "POST",
-                'url': "/switchToAdmin",
-                'data': {'_token': '{{csrf_token()}}'},
-                'dataType': "json",
+                type: "POST",
+                url: "/switchToAdmin",
+                data: {'_token': '{{csrf_token()}}'},
+                dataType: "json",
                 success: function (ret) {
                     swal.fire({
                         title: ret.message,

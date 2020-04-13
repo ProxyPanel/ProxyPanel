@@ -2,7 +2,7 @@
 	<tbody>
 	<tr style="padding:0;text-align:left;vertical-align:top">
 		<td class="center" align="center" valign="top" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;hyphens:auto;line-height:19px;margin:0;padding:0;text-align:left;vertical-align:top;word-wrap:break-word">
-			<center data-parsed="" style="min-width:580px;width:100%">
+			<div data-parsed="" style="min-width:580px;width:100%; text-align: center;">
 				<table align="center" class="container no-bg float-center" style="Margin:0 auto;background:0 0;border:0;border-collapse:collapse;border-radius:3px;border-spacing:0;box-shadow:none;float:none;margin:0 auto;margin-top:20px;padding:0;text-align:center;vertical-align:top;width:580px">
 					<tbody>
 					<tr style="padding:0;text-align:left;vertical-align:top">
@@ -80,7 +80,7 @@
 					</tr>
 					</tbody>
 				</table>
-			</center>
+			</div>
 		</td>
 	</tr>
 	</tbody>

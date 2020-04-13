@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Components\IPIP;
 use App\Components\NetworkDetection;
+use App\Components\PushNotification;
 use App\Components\QQWry;
 use App\Http\Models\Article;
 use App\Http\Models\Config;
 use App\Http\Models\Country;
-use App\Http\Models\EmailLog;
 use App\Http\Models\Invite;
 use App\Http\Models\Label;
 use App\Http\Models\Level;
+use App\Http\Models\NotificationLog;
 use App\Http\Models\Order;
 use App\Http\Models\ReferralApply;
 use App\Http\Models\ReferralLog;
@@ -1968,24 +1969,24 @@ EOF;
 		$value = trim($request->input('value'));
 
 		if(!$name){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：请求参数异常']);
+			return Response::json(['status' => 'fail', 'message' => '设置失败：请求参数异常']);
 		}
 
 		// 屏蔽异常配置
 		if(!array_key_exists($name, self::$systemConfig)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：配置不存在']);
+			return Response::json(['status' => 'fail', 'message' => '设置失败：配置不存在']);
 		}
 
 		// 如果开启用户邮件重置密码，则先设置网站名称和网址
-		if(in_array($name, ['is_reset_password', 'is_active_register']) && $value == '1'){
+		if(in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning','traffic_warning']) && $value != '0'){
 			$config = Config::query()->where('name', 'website_name')->first();
 			if($config->value == ''){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
+				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
 			}
 
 			$config = Config::query()->where('name', 'website_url')->first();
 			if($config->value == ''){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
+				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
 			}
 		}
 
@@ -1994,7 +1995,7 @@ EOF;
 			$denyConfig = ['website_url', 'min_rand_traffic', 'max_rand_traffic', 'push_bear_send_key', 'push_bear_qrcode', 'is_forbid_china', 'alipay_partner', 'alipay_key', 'alipay_transport', 'alipay_sign_type', 'alipay_private_key', 'alipay_public_key', 'website_security_code'];
 
 			if(in_array($name, $denyConfig)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '演示环境禁止修改该配置']);
+				return Response::json(['status' => 'fail', 'message' => '演示环境禁止修改该配置']);
 			}
 		}
 
@@ -2003,26 +2004,37 @@ EOF;
 			$value = intval($value)/100;
 		}
 
-		// 用支付国际则不可用支付宝当面付
-		if(in_array($name, ['is_alipay'])){
-			$is_f2fpay = Config::query()->where('name', 'is_f2fpay')->first();
-			if($is_f2fpay->value){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝当面付】']);
-			}
-		}
-
-		// 用支付宝当面则不可用支付宝国际
-		if(in_array($name, ['is_f2fpay'])){
-			$is_alipay = Config::query()->where('name', 'is_alipay')->first();
-			if($is_alipay->value){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '已经在使用【支付宝国际支付】']);
-			}
-		}
-
 		// 更新配置
 		Config::query()->where('name', $name)->update(['value' => $value]);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+	}
+
+	//推送通知测试
+	public function sendTestNotification()
+	{
+		if(Helpers::systemConfig()['is_notification']){
+			$result = PushNotification::send('这是测试的标题', 'SSRPanel_OM测试内容');
+			switch(Helpers::systemConfig()['is_notification']){
+				case 1:
+					if(!$result->errno){
+						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
+					}else{
+						return Response::json(['status' => 'fail', 'message' => $result? $result->errmsg : '未知']);
+					}
+					break;
+				case 2:
+					if($result->code == 200){
+						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
+					}else{
+						return Response::json(['status' => 'fail', 'message' => $result->message]);
+					}
+					break;
+				default:
+			}
+		}
+
+		return Response::json(['status' => 'fail', 'message' => '请先选择【日志通知】渠道']);
 	}
 
 	// 邀请码列表
@@ -2466,12 +2478,12 @@ EOF;
 	}
 
 	// 邮件发送日志列表
-	public function emailLog(Request $request)
+	public function notificationLog(Request $request)
 	{
 		$email = $request->input('email');
 		$type = $request->input('type');
 
-		$query = EmailLog::query();
+		$query = NotificationLog::query();
 
 		if(isset($email)){
 			$query->where('address', 'like', '%'.$email.'%');
@@ -2483,7 +2495,7 @@ EOF;
 
 		$view['list'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.emailLog', $view);
+		return Response::view('admin.notificationLog', $view);
 	}
 
 	// 在线IP监控（实时）

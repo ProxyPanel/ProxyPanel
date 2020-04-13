@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Components\ServerChan;
+use App\Components\PushNotification;
 use App\Http\Models\Invite;
 use App\Http\Models\Order;
 use App\Http\Models\Ticket;
@@ -113,7 +113,7 @@ class DailyJob extends Command
 		foreach($ticketList as $ticket){
 			$ret = Ticket::query()->where('id', $ticket->id)->update(['status' => 2]);
 			if($ret){
-				ServerChan::send('工单关闭提醒', '工单：ID'.$ticket->id.'超过72小时未处理，系统已自动关闭');
+				PushNotification::send('工单关闭提醒', '工单：ID'.$ticket->id.'超过72小时未处理，系统已自动关闭');
 			}
 		}
 	}
@@ -165,7 +165,7 @@ class DailyJob extends Command
 			}
 			// 重置流量
 			User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => $order->goods->traffic*1048576, 'reset_time' => $nextResetTime]);
-			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
+			//Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
 		}
 	}
 }

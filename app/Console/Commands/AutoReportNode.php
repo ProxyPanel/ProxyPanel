@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Components\ServerChan;
+use App\Components\PushNotification;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodeTrafficDaily;
 use Illuminate\Console\Command;
@@ -43,7 +43,7 @@ class AutoReportNode extends Command
 					}
 				}
 
-				ServerChan::send('节点日报', $msg);
+				PushNotification::send('节点日报', $msg);
 			}
 		}
 

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\NetworkDetection;
-use App\Components\ServerChan;
+use App\Components\PushNotification;
 use App\Http\Models\SsNode;
 use App\Mail\nodeCrashWarning;
 use Cache;
@@ -84,18 +84,18 @@ class NodeBlockedDetection extends Command
 
 			// 节点检测次数
 			if($info){
-				if(self::$systemConfig['numberOfWarningTimes']){
+				if(self::$systemConfig['detection_check_times']){
 					// 已通知次数
-					$cacheKey = 'numberOfWarningTimes'.$node->id;
+					$cacheKey = 'detection_check_times'.$node->id;
 					if(Cache::has($cacheKey)){
 						$times = Cache::get($cacheKey);
 					}else{
 						// 键将保留12小时，多10分钟防意外
-						Cache::put($cacheKey, 1, 83800);
+						Cache::put($cacheKey, 1, 43800);
 						$times = 1;
 					}
 
-					if($times < self::$systemConfig['numberOfWarningTimes']){
+					if($times < self::$systemConfig['detection_check_times']){
 						Cache::increment($cacheKey);
 					}else{
 						Cache::forget($cacheKey);
@@ -113,7 +113,7 @@ class NodeBlockedDetection extends Command
 		}
 
 		// 随机生成下次检测时间
-		Cache::put('LastCheckTime', time()+mt_rand(3000, 3600), 3600);
+		Cache::put('LastCheckTime', time()+mt_rand(3000, 3600), 4000);
 	}
 
 	/**
@@ -126,9 +126,9 @@ class NodeBlockedDetection extends Command
 	private function notifyMaster($title, $content)
 	{
 		if(self::$systemConfig['webmaster_email']){
-			$logId = Helpers::addEmailLog(self::$systemConfig['webmaster_email'], $title, $content);
+			$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
 			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId));
 		}
-		ServerChan::send($title, $content);
+		PushNotification::send($title, $content);
 	}
 }

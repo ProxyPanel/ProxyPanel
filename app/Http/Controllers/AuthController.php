@@ -104,7 +104,7 @@ class AuthController extends Controller
 					Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
 					return Redirect::back()->withInput()->withErrors(trans('auth.login_ban', ['email' => self::$systemConfig['webmaster_email']]));
-				}elseif(Auth::user()->status == 0 && (self::$systemConfig['is_active_register'] || self::$systemConfig['is_verify_register'])){
+				}elseif(Auth::user()->status == 0 && self::$systemConfig['is_activate_account']){
 					Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
 					return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="/activeUser?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
@@ -238,18 +238,10 @@ class AuthController extends Controller
 			}
 
 			// 校验域名邮箱黑白名单
-			if(self::$systemConfig['sensitiveType']){
-				// 校验域名邮箱是否在黑名单中
-				$sensitiveWords = $this->sensitiveWords(1);
-				$emailSuffix = explode('@', $email); // 提取邮箱后缀
-				if(in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
-					return Redirect::back()->withInput()->withErrors(trans('auth.email_banned'));
-				}
-			}else{
-				$sensitiveWords = $this->sensitiveWords(2);
-				$emailSuffix = explode('@', $email); // 提取邮箱后缀
-				if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
-					return Redirect::back()->withInput()->withErrors(trans('auth.email_invalid'));
+			if(self::$systemConfig['is_email_filtering']){
+				$result = $this->emailChecker($email);
+				if($result != FALSE){
+					return $result;
 				}
 			}
 
@@ -269,8 +261,8 @@ class AuthController extends Controller
 				}
 			}
 
-			// 如果开启注册发送验证码
-			if(self::$systemConfig['is_verify_register']){
+			// 注册前发送激活码
+			if(self::$systemConfig['is_activate_account'] == 1){
 				if(!$verify_code){
 					return Redirect::back()->withInput($request->except(['verify_code']))->withErrors(trans('auth.captcha_null'));
 				}else{
@@ -380,13 +372,13 @@ class AuthController extends Controller
 			// 清除邀请人Cookie
 			Cookie::unqueue('register_aff');
 
-			// 邮箱验证码关闭情况下，发送激活邮件
-			if(!self::$systemConfig['is_verify_register'] && self::$systemConfig['is_active_register']){
+			// 注册后发送激活码
+			if(self::$systemConfig['is_activate_account'] == 2){
 				// 生成激活账号的地址
 				$token = $this->addVerifyUrl($uid, $email);
 				$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
 
-				$logId = Helpers::addEmailLog($email, '注册激活', '请求地址：'.$activeUserUrl);
+				$logId = Helpers::addNotificationLog('注册激活', '请求地址：'.$activeUserUrl, 1, $email);
 				Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
 
 				Session::flash('regSuccessMsg', trans('auth.register_active_tip'));
@@ -400,18 +392,46 @@ class AuthController extends Controller
 						}
 					}
 				}
-				User::query()->where('id', $uid)->update(['status' => 1, 'enable' => 1]);
+
+				if(self::$systemConfig['is_activate_account'] == 1){
+					User::query()->where('id', $uid)->update(['status' => 1]);
+				}
 
 				Session::flash('regSuccessMsg', trans('auth.register_success'));
 			}
 
 			return Redirect::to('login')->withInput();
 		}else{
-			$view['emailList'] = self::$systemConfig['sensitiveType']? NULL : SensitiveWords::query()->where('type', 2)->get();
+			$view['emailList'] = self::$systemConfig['is_email_filtering'] != 2? FALSE : SensitiveWords::query()->where('type', 2)->get();
 			Session::put('register_token', makeRandStr(16));
 
 			return Response::view('auth.register', $view);
 		}
+	}
+
+	//邮箱检查
+	private function emailChecker($email)
+	{
+		$sensitiveWords = $this->sensitiveWords(self::$systemConfig['is_email_filtering']);
+		$emailSuffix = explode('@', $email); // 提取邮箱后缀
+		switch(self::$systemConfig['is_email_filtering']){
+			// 黑名单
+			case 1:
+				if(in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
+					return Response::json(['status' => 'fail', 'message' => trans('auth.email_banned')]);
+				}
+				break;
+			//白名单
+			case 2:
+				if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
+					return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
+				}
+				break;
+			default:
+				return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -512,7 +532,7 @@ class AuthController extends Controller
 			// 发送邮件
 			$resetPasswordUrl = self::$systemConfig['website_url'].'/reset/'.$token;
 
-			$logId = Helpers::addEmailLog($email, '重置密码', '请求地址：'.$resetPasswordUrl);
+			$logId = Helpers::addNotificationLog('重置密码', '请求地址：'.$resetPasswordUrl, 1, $email);
 			Mail::to($email)->send(new resetPassword($logId, $resetPasswordUrl));
 
 			Cache::put('resetPassword_'.md5($email), $resetTimes+1, 86400);
@@ -596,7 +616,7 @@ class AuthController extends Controller
 			$email = $request->input('email');
 
 			// 是否开启账号激活
-			if(!self::$systemConfig['is_active_register']){
+			if(self::$systemConfig['is_activate_account'] != 2){
 				return Redirect::back()->withInput()->withErrors(trans('auth.active_close', ['email' => self::$systemConfig['webmaster_email']]));
 			}
 
@@ -623,7 +643,7 @@ class AuthController extends Controller
 			// 发送邮件
 			$activeUserUrl = self::$systemConfig['website_url'].'/active/'.$token;
 
-			$logId = Helpers::addEmailLog($email, '激活账号', '请求地址：'.$activeUserUrl);
+			$logId = Helpers::addNotificationLog('激活账号', '请求地址：'.$activeUserUrl, 1, $email);
 			Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
 
 			Cache::put('activeUser_'.md5($email), $activeTimes+1, 86400);
@@ -704,45 +724,37 @@ class AuthController extends Controller
 		$email = $request->input('email');
 
 		if($validator->fails()){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
+			return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
 		}
 
 		// 校验域名邮箱黑白名单
-		if(self::$systemConfig['sensitiveType']){
-			// 校验域名邮箱是否在黑名单中
-			$sensitiveWords = $this->sensitiveWords(1);
-			$emailSuffix = explode('@', $email); // 提取邮箱后缀
-			if(in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_banned')]);
-			}
-		}else{
-			$sensitiveWords = $this->sensitiveWords(2);
-			$emailSuffix = explode('@', $email); // 提取邮箱后缀
-			if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.email_invalid')]);
+		if(self::$systemConfig['is_email_filtering']){
+			$result = $this->emailChecker($email);
+			if($result != FALSE){
+				return $result;
 			}
 		}
 
 		// 是否开启注册发送验证码
-		if(!self::$systemConfig['is_verify_register']){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.captcha_close')]);
+		if(self::$systemConfig['is_activate_account'] != 1){
+			return Response::json(['status' => 'fail', 'message' => trans('auth.captcha_close')]);
 		}
 
 		// 防刷机制
 		if(Cache::has('send_verify_code_'.md5(getClientIP()))){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('auth.register_anti')]);
+			return Response::json(['status' => 'fail', 'message' => trans('auth.register_anti')]);
 		}
 
 		// 发送邮件
 		$code = makeRandStr(6, TRUE);
-		$logId = Helpers::addEmailLog($email, '发送注册验证码', '验证码：'.$code);
+		$logId = Helpers::addNotificationLog('发送注册验证码', '验证码：'.$code, 1, $email);
 		Mail::to($email)->send(new sendVerifyCode($logId, $code));
 
 		$this->addVerifyCode($email, $code);
 
 		Cache::put('send_verify_code_'.md5(getClientIP()), getClientIP(), 60);
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => trans('auth.captcha_send')]);
+		return Response::json(['status' => 'success', 'message' => trans('auth.captcha_send')]);
 	}
 
 	// 生成注册验证码
