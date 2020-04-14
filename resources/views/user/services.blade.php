@@ -104,10 +104,10 @@
 							<div class="mb-15 w-p50">
 								<select class="form-control" name="charge_type" id="charge_type">
 									@if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
-										<option value="1" selected>{{trans('home.online_pay')}}</option>
+										<option value="1">{{trans('home.online_pay')}}</option>
 									@endif
 									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
-										<option value="2" @if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay']) selected @endif>二维码</option>
+										<option value="2">二维码</option>
 									@endif
 									<option value="3">{{trans('home.coupon_code')}}</option>
 								</select>
@@ -193,6 +193,14 @@
         // 切换充值方式
         $("#charge_type").change(function () {
             itemControl(parseInt($(this).val()));
+            let which_selected = 3;
+	        @if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
+                which_selected = 1;
+	        @elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+                which_selected = 2;
+	        @endif
+
+            $('charge_type').val(which_selected)
         });
 
         // 重置流量
