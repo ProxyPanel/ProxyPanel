@@ -48,7 +48,7 @@
 }
 
 @media screen and (max-height: 575px) {
-    .g-recaptcha {
+    .g-recaptcha .h-captcha {
         -webkit-transform: scale(0.81);
         transform: scale(0.81);
         -webkit-transform-origin: 0 0;

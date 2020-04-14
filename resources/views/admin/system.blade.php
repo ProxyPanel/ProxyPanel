@@ -221,24 +221,12 @@
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="is_activate_account">激活账号</label>
-											<select class="col-md-3" id="is_activate_account" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_activate_account')">
+											<select class="col-md-4" id="is_activate_account" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_activate_account')">
 												<option value="0">关闭</option>
 												<option value="1">注册前激活</option>
 												<option value="2">注册后激活</option>
 											</select>
 											<span class="text-help offset-md-3"> 启用后用户需要通过邮件来激活账号 </span>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_captcha">验证码</label>
-											<select class="col-md-5" id="is_captcha" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_captcha')">
-												<option value="0">关闭</option>
-												<option value="1">普通验证码</option>
-												<option value="2">极验Geetest</option>
-												<option value="3">Google reCAPTCHA</option>
-											</select>
-											<span class="text-help offset-md-3"> 启用后登录、注册需要输入验证码 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -492,55 +480,88 @@
 											<span class="text-help offset-md-3"> 管理员生成邀请码的有效期 </span>
 										</div>
 									</div>
-									@if($is_captcha == 2)
-										<div class="form-group col-lg-6">
-											<div class="row">
-												<label class="col-md-3 col-form-label" for="geetest_id">极验ID</label>
-												<div class="col-md-7">
-													<div class="input-group">
-														<input type="text" class="form-control" id="geetest_id" value="{{$geetest_id}}"/>
-														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('geetest_id')">修改</button></span>
-													</div>
-												</div>
-												<span class="text-help offset-md-3"> 本功能需要 <a href="https://auth.geetest.com/login/" target="_blank">极验后台</a> 申请权限及应用 </span>
-											</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="is_captcha">验证码</label>
+											<select class="col-md-5" id="is_captcha" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_captcha')">
+												<option value="0">关闭</option>
+												<option value="1">普通验证码</option>
+												<option value="2">极验Geetest</option>
+												<option value="3">Google reCaptcha</option>
+												<option value="4">hCaptcha</option>
+											</select>
+											<span class="text-help offset-md-3"> 启用后登录、注册需要输入验证码 </span>
 										</div>
-										<div class="form-group col-lg-6">
-											<div class="row">
-												<label class="col-md-3 col-form-label" for="geetest_key">极验KEY</label>
-												<div class="col-md-7">
-													<div class="input-group">
-														<input type="text" class="form-control" id="geetest_key" value="{{$geetest_key}}"/>
-														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('geetest_key')">修改</button></span>
-													</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="geetest_id">极验ID</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="geetest_id" value="{{$geetest_id}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('geetest_id')">修改</button></span>
 												</div>
 											</div>
+											<span class="text-help offset-md-3"> 本功能需要 <a href="https://auth.geetest.com/login/" target="_blank">极验后台</a> 申请权限及应用 </span>
 										</div>
-									@elseif($is_captcha == 3)
-										<div class="form-group col-lg-6">
-											<div class="row">
-												<label class="col-md-3 col-form-label" for="google_captcha_sitekey">网站密钥</label>
-												<div class="col-md-7">
-													<div class="input-group">
-														<input type="text" class="form-control" id="google_captcha_sitekey" value="{{$google_captcha_sitekey}}"/>
-														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('google_captcha_sitekey')">修改</button></span>
-													</div>
-												</div>
-												<span class="text-help offset-md-3"> 本功能需要 <a href="https://www.google.com/recaptcha/admin" target="_blank">Google reCAPTCHA后台</a> 申请权限及应用 （申请需科学上网，日常验证不用）</span>
-											</div>
-										</div>
-										<div class="form-group col-lg-6">
-											<div class="row">
-												<label class="col-md-3 control-label" for="google_captcha_secret">密钥</label>
-												<div class="col-md-7">
-													<div class="input-group">
-														<input type="text" class="form-control" id="google_captcha_secret" value="{{$google_captcha_secret}}"/>
-														<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('google_captcha_secret')">修改</button></span>
-													</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="geetest_key">极验KEY</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="geetest_key" value="{{$geetest_key}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('geetest_key')">修改</button></span>
 												</div>
 											</div>
 										</div>
-									@endif
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 control-label" for="google_captcha_secret">密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="google_captcha_secret" value="{{$google_captcha_secret}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('google_captcha_secret')">修改</button></span>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"> 本功能需要 <a href="https://www.google.com/recaptcha/admin" target="_blank">Google reCAPTCHA后台</a> 申请权限及应用 （申请需科学上网，日常验证不用）</span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="google_captcha_sitekey">网站密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="google_captcha_sitekey" value="{{$google_captcha_sitekey}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('google_captcha_sitekey')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 control-label" for="google_captcha_secret">hCaptcha Secret密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="hcaptcha_secret" value="{{$hcaptcha_secret}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('hcaptcha_secret')">修改</button></span>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"> 本功能需要 <a href="https://hCaptcha.com/?r=2d46d3aa7a4e" target="_blank">hCaptcha后台</a> 申请权限及应用</span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="google_captcha_sitekey">hCaptcha Site Key网站密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="hcaptcha_sitekey" value="{{$hcaptcha_sitekey}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('hcaptcha_sitekey')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</form>
 						</div>
@@ -603,6 +624,17 @@
 												</div>
 											</div>
 											<span class="text-help offset-md-3"> 关闭后用户不可见，但是不影响其正常邀请返利 </span>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="referral_type">返利模式</label>
+											<select class="col-md-5" id="referral_type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','referral_type')">
+												<option value="0">关闭</option>
+												<option value="1">首购返利</option>
+												<option value="2">循环返利</option>
+											</select>
+											<span class="text-help offset-md-3"> 启用后登录、注册需要输入验证码 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -1120,6 +1152,7 @@
             $('#is_invite_register').selectpicker('val', {{$is_invite_register}});
             $('#is_activate_account').selectpicker('val', {{$is_activate_account}});
             $('#is_captcha').selectpicker('val', {{$is_captcha}});
+            $('#referral_type').selectpicker('val', {{$referral_type}});
             $('#is_email_filtering').selectpicker('val', {{$is_email_filtering}});
             $('#initial_labels_for_user').selectpicker('val', [{{$initial_labels_for_user}}]);
             $('#is_notification').selectpicker('val', {{$is_notification}});

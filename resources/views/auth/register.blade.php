@@ -84,10 +84,16 @@
 					{!! Geetest::render() !!}
 				</div>
 				@break
-				@case(3)<!-- Google noCAPTCHA -->
+				@case(3)<!-- Google reCaptcha -->
 				<div class="form-group form-material floating" data-plugin="formMaterial">
 					{!! NoCaptcha::display() !!}
 					{!! NoCaptcha::renderJs(session::get('locale')) !!}
+				</div>
+				@break
+				@case(4)<!-- hCaptcha -->
+				<div class="form-group form-material floating" data-plugin="formMaterial">
+					{!! HCaptcha::display() !!}
+					{!! HCaptcha::renderJs(session::get('locale')) !!}
 				</div>
 				@break
 				@default
@@ -231,11 +237,24 @@
 			@if($emailList)
             getEmail();
 			@endif
+
+			@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
+			@case(3)
             // 先检查Google reCAPTCHA有没有进行验证
             if ($('#g-recaptcha-response').val() === '') {
                 swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
                 return false;
             }
+			@break
+			@case(4)
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#h-captcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                return false;
+            }
+			@break
+			@default
+			@endswitch
         });
 	</script>
 @endsection

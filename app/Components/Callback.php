@@ -6,6 +6,7 @@ use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
+use App\Http\Models\ReferralLog;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use DB;
@@ -143,29 +144,28 @@ trait Callback
 								}
 							}
 
-							// 写入返利日志
-							if($order->user->referral_uid){
-								$this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount*self::$systemConfig['referral_percent']);
-								// 邀请注册功能开启时，每成功邀请一名付费用户，返还邀请者邀请名额
-								if(self::$systemConfig['is_invite_register']){
-									User::query()->where('id', $order->user->referral_uid)->increment('invite_num', 1);
-								}
-							}
-
 							Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $userTraffic, '[在线支付]加上用户购买的套餐流量');
 							User::query()->where('id', $order->user_id)->increment('invite_num', $goods->invite_num? : 0, ['transfer_enable' => $userTraffic, 'reset_time' => $nextResetTime, 'expire_time' => $expireTime, 'enable' => 1]);
 						}else{
 							//预支付订单先给上账号时间用于流量重置判断
 							User::query()->where('id', $order->user_id)->update(['expire_time' => date('Y-m-d', strtotime("+".$goods->days." days", strtotime($user->expire_time)))]);
 						}
-						break;
-					case 3:
-						$order->status = 2;
-						$order->save();
-						User::query()->where('id', $order->user_id)->increment('balance', $goods->price*100);
 
-						// 余额变动记录日志
-						$this->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance+$goods->price, $goods->price, '用户在线充值');
+						// 是否返利
+						if(Helpers::systemConfig()['referral_type'] && $order->user->referral_uid){
+							//获取历史返利记录
+							$referral = ReferralLog::where('user_id', $order->user_id)->get();
+							// 无记录 / 首次返利
+							if(!$referral && self::$systemConfig['is_invite_register']){
+								// 邀请注册功能开启时，返还邀请者邀请名额
+								User::query()->where('id', $order->user->referral_uid)->increment('invite_num', 1);
+							}
+							//按照返利模式进行返利判断
+							if(Helpers::systemConfig()['referral_type'] == 2 || (Helpers::systemConfig()['referral_type'] == 1 && !$referral)){
+								$this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount, $order->amount*self::$systemConfig['referral_percent']);
+							}
+						}
+
 						break;
 					default:
 						Log::info('【处理订单】出现错误-未知套餐类型');

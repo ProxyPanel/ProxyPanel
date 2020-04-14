@@ -304,7 +304,7 @@ INSERT INTO `config` VALUES ('6', 'website_name', 'SSRPanel');
 INSERT INTO `config` VALUES ('7', 'is_reset_password', 1);
 INSERT INTO `config` VALUES ('8', 'reset_password_times', 3);
 INSERT INTO `config` VALUES ('9', 'website_url', 'https://www.ssrpanel.com');
-INSERT INTO `config` VALUES ('10', 'is_active_register', 1);
+INSERT INTO `config` VALUES ('10', 'referral_type', 0);
 INSERT INTO `config` VALUES ('11', 'active_times', 3);
 INSERT INTO `config` VALUES ('12', 'is_checkin', 1);
 INSERT INTO `config` VALUES ('13', 'min_rand_traffic', 10);
@@ -399,6 +399,8 @@ insert into `config` VALUES ('101', 'maintenance_mode', '0');
 insert into `config` VALUES ('102', 'maintenance_time', '');
 insert into `config` VALUES ('103', 'maintenance_content', '');
 insert into `config` VALUES ('104', 'bark_key', '');
+INSERT INTO `config` VALUES ('105', 'hcaptcha_secret', '');
+INSERT INTO `config` VALUES ('106', 'hcaptcha_sitekey', '');
 
 -- ----------------------------
 -- Table structure for `article`
