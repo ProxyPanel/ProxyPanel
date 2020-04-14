@@ -33,6 +33,7 @@
     "rap2hpoutre/laravel-log-viewer": "^1.3",
     "riverslei/payment": "*",
     "spatie/laravel-permission": "^3.4",
+    "ssrpanel/hcaptcha": "^2.0",
     "xhat/payjs": "^1.4"
   },
   "require-dev": {

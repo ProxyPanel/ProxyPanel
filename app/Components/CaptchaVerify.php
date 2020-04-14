@@ -9,9 +9,17 @@ namespace App\Components;
  */
 Class CaptchaVerify
 {
-	/**
-	 * 从后台获取 Geetest_id 和 Geetest_key
-	 */
+	//从后台获取 hcaptcha_sitekey 和 hcaptcha_secret
+	public static function hCaptchaGetConfig()
+	{
+		return [
+			"sitekey" => Helpers::systemConfig()["hcaptcha_sitekey"],
+			"secret"  => Helpers::systemConfig()["hcaptcha_secret"],
+			"options" => []
+		];
+	}
+
+	//从后台获取 Geetest_id 和 Geetest_key
 	public static function geetestCaptchaGetConfig()
 	{
 		return [
@@ -20,9 +28,7 @@ Class CaptchaVerify
 		];
 	}
 
-	/**
-	 * 从后台获取 google_captcha_sitekey 和 google_captcha_secret
-	 */
+	//从后台获取 google_captcha_sitekey 和 google_captcha_secret
 	public static function googleCaptchaGetConfig()
 	{
 		return [

@@ -58,39 +58,13 @@ class AuthController extends Controller
 			]);
 
 			$email = $request->input('email');
-			$captcha = $request->input('captcha');
 			$password = $request->input('password');
 			$remember = $request->input('remember');
 
 			// 是否校验验证码
-			switch(self::$systemConfig['is_captcha']){
-				case 1: // 默认图形验证码
-					if(!Captcha::check($captcha)){
-						return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
-					}
-					break;
-				case 2: // Geetest
-					$result = $this->validate($request, [
-						'geetest_challenge' => 'required|geetest'
-					], [
-						'geetest' => trans('auth.captcha_fail')
-					]);
-
-					if(!$result){
-						return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
-					}
-					break;
-				case 3: // Google reCAPTCHA
-					$result = $this->validate($request, [
-						'g-recaptcha-response' => 'required|NoCaptcha'
-					]);
-
-					if(!$result){
-						return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
-					}
-					break;
-				default: // 不启用验证码
-					break;
+			$captcha = $this->check_captcha($request);
+			if($captcha != FALSE){
+				return $captcha;
 			}
 
 			// 验证账号并创建会话
@@ -184,6 +158,50 @@ class AuthController extends Controller
 		$log->save();
 	}
 
+	// 校验验证码
+	private function check_captcha($request)
+	{
+		switch(self::$systemConfig['is_captcha']){
+			case 1: // 默认图形验证码
+				if(!Captcha::check($request->input('captcha'))){
+					return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
+				}
+				break;
+			case 2: // Geetest
+				$result = $this->validate($request, [
+					'geetest_challenge' => 'required|geetest'
+				], [
+					'geetest' => trans('auth.captcha_fail')
+				]);
+
+				if(!$result){
+					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				}
+				break;
+			case 3: // Google reCAPTCHA
+				$result = $this->validate($request, [
+					'g-recaptcha-response' => 'required|NoCaptcha'
+				]);
+
+				if(!$result){
+					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				}
+				break;
+			case 4: // hCaptcha
+				$result = $this->validate($request, [
+					'h-captcha-response' => 'required|HCaptcha'
+				]);
+
+				if(!$result){
+					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				}
+				break;
+			default: // 不启用验证码
+				break;
+		}
+	}
+
+
 	// 退出
 	public function logout()
 	{
@@ -222,7 +240,6 @@ class AuthController extends Controller
 			$register_token = $request->input('register_token');
 			$code = $request->input('code');
 			$verify_code = $request->input('verify_code');
-			$captcha = $request->input('captcha');
 			$aff = intval($request->input('aff'));
 
 			// 防止重复提交
@@ -277,34 +294,9 @@ class AuthController extends Controller
 			}
 
 			// 是否校验验证码
-			switch(self::$systemConfig['is_captcha']){
-				case 1: // 默认图形验证码
-					if(!Captcha::check($captcha)){
-						return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
-					}
-					break;
-				case 2: // Geetest
-					$result = $this->validate($request, [
-						'geetest_challenge' => 'required|geetest'
-					], [
-						'geetest' => trans('auth.captcha_fail')
-					]);
-
-					if(!$result){
-						return Redirect::back()->withInput()->withErrors(trans('auth.captcha_fail'));
-					}
-					break;
-				case 3: // Google reCAPTCHA
-					$result = $this->validate($request, [
-						'g-recaptcha-response' => 'required|NoCaptcha'
-					]);
-
-					if(!$result){
-						return Redirect::back()->withInput()->withErrors(trans('auth.captcha_fail'));
-					}
-					break;
-				default: // 不启用验证码
-					break;
+			$captcha = $this->check_captcha($request);
+			if($captcha != FALSE){
+				return $captcha;
 			}
 
 			// 24小时内同IP注册限制

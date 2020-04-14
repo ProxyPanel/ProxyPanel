@@ -19,3 +19,4 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
+_ide_helper_models.php
