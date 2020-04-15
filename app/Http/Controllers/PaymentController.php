@@ -122,7 +122,7 @@ class PaymentController extends Controller
 			$order->amount = $amount;
 			$order->expire_at = $balance? NULL : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
 			$order->is_expire = 0;
-			$order->pay_way = $balance? 0 : $pay_type;
+			$order->pay_way = $pay_type;
 			$order->status = 0;
 			$order->save();
 			// 生成支付单

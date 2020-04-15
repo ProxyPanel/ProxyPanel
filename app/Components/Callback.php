@@ -11,7 +11,6 @@ use App\Http\Models\User;
 use App\Http\Models\UserLabel;
 use DB;
 use Exception;
-use Hash;
 use Log;
 
 trait Callback
@@ -32,15 +31,16 @@ trait Callback
 	private function tradePaid($msg, $pay_type)
 	{
 		$pay_type_name = $pay_type == 1? '余额支付' : ($pay_type == 4? '支付宝国际' : ($pay_type == 5? '支付宝当面付' : ''));
-		$payment = Payment::query()->with(['order', 'order.goods'])->where('status', 0)->where('order_sn', $msg['out_trade_no'])->first();
-		if(!$payment){
-			Log::info('【'.$pay_type_name.'】回调订单【'.$msg['out_trade_no'].'】不存在');
 
-			return FALSE;
-		}
 		if($pay_type != 1){
-			Log::info('【'.$pay_type_name.'】支付成功，开始处理回调订单');
 			// 获取未完成状态的订单防止重复增加时间
+			$payment = Payment::query()->with(['order', 'order.goods'])->where('status', 0)->where('order_sn', $msg['out_trade_no'])->first();
+			if(!$payment){
+				Log::info('【'.$pay_type_name.'】回调订单【'.$msg['out_trade_no'].'】不存在');
+
+				return FALSE;
+			}
+			Log::info('【'.$pay_type_name.'】支付成功，开始处理回调订单');
 		}else{
 			Log::info('【'.$pay_type_name.'】订单处理');
 		}
@@ -49,15 +49,6 @@ trait Callback
 		try{
 			DB::beginTransaction();
 			if($pay_type != 1){
-				// 如果支付单中没有用户信息则创建一个用户
-				if(!$payment->user_id){
-					$uid = Helpers::addUser('自动生成-'.$payment->order->email, Hash::make(makeRandStr()), 1, $payment->order->goods->days);
-
-					if($uid){
-						Order::query()->where('oid', $payment->oid)->update(['user_id' => $uid]);
-					}
-				}
-
 				// 更新支付单
 				$payment->pay_way = $pay_type == 4 || $pay_type == 5? 2 : 1; // 1-微信、2-支付宝
 				$payment->status = 1;
@@ -101,6 +92,7 @@ trait Callback
 						// 2为开始生效，3为预支付
 						$order->status = $activePlan? 3 : 2;
 						$order->save();
+
 						// 预支付不执行
 						if(!$activePlan){
 							// 如果买的是套餐，则先将之前购买的套餐都无效化，重置用户已用、可用流量为0
