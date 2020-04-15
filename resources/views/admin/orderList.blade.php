@@ -111,7 +111,7 @@
 									@endif
 								</td>
 								<td> {{$order->order_sn}}</td>
-								<td> {{$order->goods->name}} </td>
+								<td> {{$order->goods_id == -1? "余额充值" :$order->goods->name}} </td>
 								<td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
 								<td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
 								<td> ￥{{$order->origin_amount}} </td>

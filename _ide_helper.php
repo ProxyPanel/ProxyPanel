@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.8.37 on 2020-04-04 05:47:15.
+ * Generated for Laravel 5.8.38 on 2020-04-15 08:22:37.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -15276,6 +15276,115 @@ namespace Barryvdh\Debugbar {
  
 }
 
+namespace SSRPanel\HCaptcha\Facades { 
+
+    /**
+     * 
+     *
+     */ 
+    class HCaptcha {
+        
+        /**
+         * Render HTML captcha.
+         *
+         * @param array $attributes
+         * @return string 
+         * @static 
+         */ 
+        public static function display($attributes = [])
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->display($attributes);
+        }
+        
+        /**
+         * 
+         *
+         * @see display()
+         * @static 
+         */ 
+        public static function displayWidget($attributes = [])
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->displayWidget($attributes);
+        }
+        
+        /**
+         * Display a Invisible hCaptcha by embedding a callback into a form submit button.
+         *
+         * @param string $formIdentifier the html ID of the form that should be submitted.
+         * @param string $text the text inside the form button
+         * @param array $attributes array of additional html elements
+         * @return string 
+         * @static 
+         */ 
+        public static function displaySubmit($formIdentifier, $text = 'submit', $attributes = [])
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->displaySubmit($formIdentifier, $text, $attributes);
+        }
+        
+        /**
+         * Render js source
+         *
+         * @param null $lang
+         * @param bool $callback
+         * @param string $onLoadClass
+         * @return string 
+         * @static 
+         */ 
+        public static function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack')
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->renderJs($lang, $callback, $onLoadClass);
+        }
+        
+        /**
+         * Verify no-captcha response.
+         *
+         * @param string $response
+         * @param string $clientIp
+         * @return bool 
+         * @static 
+         */ 
+        public static function verifyResponse($response, $clientIp = null)
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->verifyResponse($response, $clientIp);
+        }
+        
+        /**
+         * Verify no-captcha response by Symfony Request.
+         *
+         * @param \Request $request
+         * @return bool 
+         * @static 
+         */ 
+        public static function verifyRequest($request)
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->verifyRequest($request);
+        }
+        
+        /**
+         * Get hCaptcha js link.
+         *
+         * @param string $lang
+         * @param boolean $callback
+         * @param string $onLoadClass
+         * @return string 
+         * @static 
+         */ 
+        public static function getJsLink($lang = null, $callback = false, $onLoadClass = 'onloadCallBack')
+        {
+                        /** @var \SSRPanel\HCaptcha\HCaptcha $instance */
+                        return $instance->getJsLink($lang, $callback, $onLoadClass);
+        }
+         
+    }
+ 
+}
+
 namespace Mews\Captcha\Facades { 
 
     /**
@@ -19045,6 +19154,8 @@ namespace  {
     class Gate extends \Illuminate\Support\Facades\Gate {}
 
     class Hash extends \Illuminate\Support\Facades\Hash {}
+
+    class HCaptcha extends \SSRPanel\HCaptcha\Facades\HCaptcha {}
 
     class Lang extends \Illuminate\Support\Facades\Lang {}
 
