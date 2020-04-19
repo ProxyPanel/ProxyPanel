@@ -11,21 +11,19 @@ use Log;
 
 class AutoReportNode extends Command
 {
-	protected static $systemConfig;
 	protected $signature = 'autoReportNode';
 	protected $description = '自动报告节点昨日使用情况';
 
 	public function __construct()
 	{
 		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	public function handle()
 	{
 		$jobStartTime = microtime(TRUE);
 
-		if(self::$systemConfig['node_daily_report']){
+		if(Helpers::systemConfig()['node_daily_report']){
 			$nodeList = SsNode::query()->where('status', 1)->get();
 			if(!$nodeList->isEmpty()){
 				$msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";

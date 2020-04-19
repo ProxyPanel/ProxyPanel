@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Http\Models\ReferralLog;
 use App\Http\Models\SensitiveWords;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsNode;
@@ -112,30 +111,6 @@ class Controller extends BaseController
 		$log->amount = $amount;
 		$log->desc = $desc;
 		$log->created_at = date('Y-m-d H:i:s');
-
-		return $log->save();
-	}
-
-	/**
-	 * 添加返利日志
-	 *
-	 * @param int $userId    用户ID
-	 * @param int $refUserId 返利用户ID
-	 * @param int $oid       订单ID
-	 * @param int $amount    发生金额
-	 * @param int $refAmount 返利金额
-	 *
-	 * @return int
-	 */
-	public function addReferralLog($userId, $refUserId, $oid, $amount, $refAmount)
-	{
-		$log = new ReferralLog();
-		$log->user_id = $userId;
-		$log->ref_user_id = $refUserId;
-		$log->order_id = $oid;
-		$log->amount = $amount;
-		$log->ref_amount = $refAmount;
-		$log->status = 0;
 
 		return $log->save();
 	}

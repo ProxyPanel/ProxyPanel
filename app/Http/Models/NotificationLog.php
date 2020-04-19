@@ -11,8 +11,6 @@ use Illuminate\Support\Carbon;
  * 推送通知日志
  * Class NotificationLog
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
  * @property int         $type       类型：1-邮件、2-ServerChan、3-Bark
  * @property string      $address    收信地址
@@ -34,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|NotificationLog whereTitle($value)
  * @method static Builder|NotificationLog whereType($value)
  * @method static Builder|NotificationLog whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class NotificationLog extends Model
 {

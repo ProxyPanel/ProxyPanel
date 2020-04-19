@@ -231,7 +231,7 @@ class SubscribeController extends Controller
 	{
 		$text = '到期时间: '.$user->expire_time;
 
-		return 'ssr://'.base64url_encode('0.0.0.1:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(Helpers::systemConfig()['website_name']).'&udpport=0&uot=0')."\n";
+		return 'ssr://'.base64url_encode('0.0.0.1:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0')."\n";
 	}
 
 	/**
@@ -245,6 +245,6 @@ class SubscribeController extends Controller
 	{
 		$text = '剩余流量: '.flowAutoShow($user->transfer_enable-$user->u-$user->d);
 
-		return 'ssr://'.base64url_encode('0.0.0.2:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(Helpers::systemConfig()['website_name']).'&udpport=0&uot=0')."\n";
+		return 'ssr://'.base64url_encode('0.0.0.2:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0')."\n";
 	}
 }

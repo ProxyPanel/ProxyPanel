@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Callback;
 use App\Components\Helpers;
 use App\Components\PushNotification;
 use App\Http\Models\Article;
@@ -49,7 +48,6 @@ use Validator;
  */
 class UserController extends Controller
 {
-	use Callback;
 	protected static $systemConfig;
 
 	function __construct()
@@ -265,6 +263,7 @@ class UserController extends Controller
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = Auth::user()->reset_time? Auth::user()->reset_time : Auth::user()->expire_time;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays)-strtotime(date('Y-m-d')))/86400) : 0;
+		$view['purchaseHTML'] = PaymentController::purchaseHTML();
 
 		return Response::view('user.services', $view);
 	}
@@ -314,7 +313,7 @@ class UserController extends Controller
 		}elseif($prepaidOrder->status != 3){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非预支付订单，无需再次启动！']);
 		}else{
-			$this->activePrepaidOrder($oid);
+			(new ServiceController)->activePrepaidOrder($oid);
 		}
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '激活成功']);
@@ -512,7 +511,7 @@ class UserController extends Controller
 		$dataPlusDays = Auth::user()->reset_time? Auth::user()->reset_time : Auth::user()->expire_time;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays)-strtotime(date('Y-m-d')))/86400) : 0;
 		$view['activePlan'] = Order::uid()->with(['goods'])->where('is_expire', 0)->where('status', 2)->whereHas('goods', function($q){ $q->where('type', 2); })->exists();
-
+		$view['purchaseHTML'] = PaymentController::purchaseHTML();
 		$view['goods'] = $goods;
 
 		return Response::view('user.buy', $view);

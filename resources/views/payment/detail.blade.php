@@ -26,7 +26,7 @@
 							</ul>
 						</div>
 						<div class="col-md-6 text-center mb-15">
-							<img class="h-250 w-250" src="{{$payment->qr_local_url}}" alt="支付二维码">
+							<img class="h-250 w-250" src="{{$payment->qr_code}}" alt="支付二维码">
 						</div>
 					</div>
 					<div class="col-2"></div>
@@ -42,15 +42,7 @@
 @endsection
 @section('script')
 	<script type="text/javascript">
-        $(document).ready(function () {
-            // 支付宝直接跳转支付
-			@if(\App\Components\Helpers::systemConfig()['is_alipay'])
-                document.body.innerHTML += unescapeHTML("{{$payment->qr_code}}");
-            document.forms['alipaySubmit'].submit();
-			@endif
-        });
-
-        // 检查支付单状态
+		// 检查支付单状态
         const r = window.setInterval(function () {
             $.ajax({
                 type: 'GET',

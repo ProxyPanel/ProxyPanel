@@ -42,6 +42,9 @@ class AutoJob extends Command
 	{
 		$jobStartTime = microtime(TRUE);
 
+		// 关闭超时未支付在线订单
+		$this->closePayments();
+
 		// 关闭超时未支付订单
 		$this->closeOrders();
 
@@ -64,8 +67,8 @@ class AutoJob extends Command
 		$this->checkNodeStatus();
 
 		// 检查 维护模式
-		if(Helpers::systemConfig()['maintenance_mode']){
-			if(strtotime(Helpers::systemConfig()['maintenance_time']) < time()){
+		if(self::$systemConfig['maintenance_mode']){
+			if(strtotime(self::$systemConfig['maintenance_time']) < time()){
 				Config::query()->where('name', 'maintenance_mode')->update(['value' => 0]);
 				Config::query()->where('name', 'maintenance_time')->update(['value' => '']);
 			}
@@ -77,8 +80,8 @@ class AutoJob extends Command
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	// 关闭超时未支付订单
-	private function closeOrders()
+	// 关闭超时未在线支付订单
+	private function closePayments()
 	{
 		// 关闭超时未支付的在线支付订单（在线支付收款二维码超过30分钟自动关闭，关闭后无法再支付，所以我们限制15分钟内必须付款）
 		$paymentList = Payment::query()->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
@@ -96,12 +99,41 @@ class AutoJob extends Command
 					if($payment->order->coupon_id){
 						Coupon::query()->where('id', $payment->order->coupon_id)->update(['status' => 0]);
 
-						Helpers::addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '订单超时未支付，自动退回');
+						Helpers::addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '在线订单超时未支付，自动退回');
 					}
 				}
 
 				DB::commit();
-			} catch(Exception $e){
+			}catch(Exception $e){
+				Log::info('【异常】自动关闭超时未支付在线订单：'.$e);
+
+				DB::rollBack();
+			}
+		}
+	}
+
+	// 关闭超时未支付订单
+	private function closeOrders()
+	{
+		// 关闭超时未支付的在线支付订单（在线支付收款二维码超过30分钟自动关闭，关闭后无法再支付，所以我们限制15分钟内必须付款）
+		$orderList = Order::query()->where('status', 0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
+		if($orderList->isNotEmpty()){
+			DB::beginTransaction();
+			try{
+				foreach($orderList as $order){
+					// 关闭订单
+					Order::query()->whereKey($order->oid)->update(['status' => -1]);
+
+					// 退回优惠券
+					if($order->coupon_id){
+						Coupon::query()->where('id', $order->coupon_id)->update(['status' => 0]);
+
+						Helpers::addCouponLog($order->coupon_id, $order->goods_id, $order->oid, '订单超时未支付，自动退回');
+					}
+				}
+
+				DB::commit();
+			}catch(Exception $e){
 				Log::info('【异常】自动关闭超时未支付订单：'.$e);
 
 				DB::rollBack();
@@ -239,7 +271,7 @@ class AutoJob extends Command
 	// 检测节点是否离线
 	private function checkNodeStatus()
 	{
-		if(Helpers::systemConfig()['is_node_offline']){
+		if(self::$systemConfig['is_node_offline']){
 			$nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->get();
 			foreach($nodeList as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
