@@ -291,7 +291,7 @@ class AdminController extends Controller
 			$view['obfs_list'] = Helpers::obfsList();
 			$view['level_list'] = Helpers::levelList();
 			$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
-			$view['initial_labels'] = explode(",", Helpers::systemConfig()['initial_labels_for_user']);
+			$view['initial_labels'] = explode(",", self::$systemConfig['initial_labels_for_user']);
 
 			return Response::view('admin.addUser', $view);
 		}
@@ -1956,7 +1956,7 @@ EOF;
 	// 系统设置
 	public function system()
 	{
-		$view = Helpers::systemConfig();
+		$view = self::$systemConfig;
 		$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
 		return Response::view('admin.system', $view);
@@ -1990,9 +1990,33 @@ EOF;
 			}
 		}
 
+		// 支付设置判断
+		if(in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay']) && $value != ''){
+			switch($value){
+				case 'f2fpay':
+					if(!self::$systemConfig['f2fpay_app_id'] || !self::$systemConfig['f2fpay_private_key'] || !self::$systemConfig['f2fpay_public_key']){
+						return Response::json(['status' => 'fail', 'message' => '请先设置【支付宝F2F】必要参数']);
+					}
+					break;
+				case 'codepay':
+					if(!self::$systemConfig['codepay_url'] || !self::$systemConfig['codepay_id'] || !self::$systemConfig['codepay_key']){
+						return Response::json(['status' => 'fail', 'message' => '请先设置【码支付】必要参数']);
+					}
+					break;
+				case 'payjs':
+					if(!self::$systemConfig['payjs_mch_id'] || !self::$systemConfig['payjs_key']){
+						return Response::json(['status' => 'fail', 'message' => '请先设置【PayJs】必要参数']);
+					}
+					break;
+				default:
+					return Response::json(['status' => 'fail', 'message' => '未知支付渠道']);
+					break;
+			}
+		}
+
 		// 演示环境禁止修改特定配置项
 		if(env('APP_DEMO')){
-			$denyConfig = ['website_url', 'min_rand_traffic', 'max_rand_traffic', 'push_bear_send_key', 'push_bear_qrcode', 'is_forbid_china', 'alipay_partner', 'alipay_key', 'alipay_transport', 'alipay_sign_type', 'alipay_private_key', 'alipay_public_key', 'website_security_code'];
+			$denyConfig = ['website_url', 'min_rand_traffic', 'max_rand_traffic', 'push_bear_send_key', 'push_bear_qrcode', 'is_forbid_china', 'website_security_code'];
 
 			if(in_array($name, $denyConfig)){
 				return Response::json(['status' => 'fail', 'message' => '演示环境禁止修改该配置']);
@@ -2013,9 +2037,9 @@ EOF;
 	//推送通知测试
 	public function sendTestNotification()
 	{
-		if(Helpers::systemConfig()['is_notification']){
+		if(self::$systemConfig['is_notification']){
 			$result = PushNotification::send('这是测试的标题', 'SSRPanel_OM测试内容');
-			switch(Helpers::systemConfig()['is_notification']){
+			switch(self::$systemConfig['is_notification']){
 				case 1:
 					if(!$result->errno){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);

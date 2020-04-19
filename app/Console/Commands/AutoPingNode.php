@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Components\Helpers;
 use App\Components\NetworkDetection;
 use App\Http\Models\SsNode;
 use App\Http\Models\SsNodePing;
@@ -11,14 +10,12 @@ use Log;
 
 class AutoPingNode extends Command
 {
-	private static $systemConfig;
 	protected $signature = 'autoPingNode';
 	protected $description = '节点定时Ping测速';
 
 	public function __construct()
 	{
 		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	public function handle()

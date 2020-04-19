@@ -990,92 +990,53 @@
 								<div class="row pb-70">
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label for="is_alipay" class="col-md-3 col-form-label">AliPay国际</label>
-											<span class="col-md-9"><input type="checkbox" id="is_alipay" data-plugin="switchery" @if($is_alipay) checked @endif onchange="updateFromOther('switch','is_alipay')"></span>
-											<span class="text-help offset-md-3"> 请先到 <a href="https://global.alipay.com/" target="_blank">AliPay国际</a> 申请partner和key </span>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="alipay_currency">结算币种</label>
-											<select class="col-md-5" id="alipay_currency" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_currency')">
-												<option value="USD">美元</option>
-												<option value="HKD">港币</option>
-												<option value="JPY">日元</option>
-												<option value="EUR">欧元</option>
+											<label class="col-md-3 col-form-label" for="is_AliPay">支付宝支付</label>
+											<select class="col-md-3" id="is_AliPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_AliPay')">
+												<option value="">关闭</option>
+												<option value="f2fpay">F2F</option>
+												<option value="codepay">码支付</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="alipay_sign_type">加密方式</label>
-											<select class="col-md-5" id="alipay_sign_type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_sign_type')">
-												<option value="MD5">MD5</option>
-												<option value="RSA">RSA</option>
+											<label class="col-md-3 col-form-label" for="is_QQPay">QQ钱包</label>
+											<select class="col-md-3" id="is_QQPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_QQPay')">
+												<option value="">关闭</option>
+												<option value="codepay">码支付</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="alipay_transport">启用SSL验证</label>
-											<select class="col-md-5" id="alipay_transport" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','alipay_transport')">
-												<option value="http">否</option>
-												<option value="https">是</option>
+											<label class="col-md-3 col-form-label" for="is_WeChatPay">微信支付</label>
+											<select class="col-md-3" id="is_WeChatPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_WeChatPay')">
+												<option value="">关闭</option>
+												<option value="codepay">码支付</option>
+												<option value="payjs">PayJS</option>
 											</select>
-											<span class="text-help offset-md-3"> HTTPS站点需启用 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="alipay_partner">Partner</label>
+											<label class="col-md-3 col-form-label" for="subject_name">自定义商品名称</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" id="alipay_partner" value="{{$alipay_partner}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_partner')">修改</button></span>
+													<input type="text" class="form-control" id="subject_name" value="{{$subject_name}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('subject_name')">修改</button></span>
 												</div>
 											</div>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label for="alipay_key" class="col-md-3 col-form-label">Key</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="password" class="form-control" id="alipay_key" value="{{$alipay_key}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_key')">修改</button></span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="alipay_private_key">RSA私钥</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="password" class="form-control" id="alipay_private_key" value="{{$alipay_private_key}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_private_key')">修改</button></span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="alipay_public_key">RSA公钥</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="password" class="form-control" id="alipay_public_key" value="{{$alipay_public_key}}"/>
-													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('alipay_public_key')">修改</button></span>
-												</div>
-											</div>
+											<span class="text-help offset-md-3"> 用于在支付渠道的商品标题显示 </span>
 										</div>
 									</div>
 								</div>
 								<div class="row pb-70">
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="is_f2fpay">支付宝F2F</label>
-											<span class="col-md-9"><input type="checkbox" id="is_f2fpay" data-plugin="switchery" @if($is_f2fpay) checked @endif onchange="updateFromOther('switch','is_f2fpay')"></span>
-											<span class="text-help offset-md-3"> 本功能需要 <a href="https://open.alipay.com/platform/home.htm" target="_blank">蚂蚁金服开放平台</a> 申请权限及应用 </span>
+											<label class="col-md-3 col-form-label">支付宝F2F</label>
+											<div class="col-md-7">
+												本功能需要 <a href="https://open.alipay.com/platform/home.htm" target="_blank">蚂蚁金服开放平台</a> 申请权限及应用
+											</div>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -1115,16 +1076,79 @@
 										</div>
 									</div>
 								</div>
-								<div class="form-group col-lg-6">
-									<div class="row">
-										<label class="col-md-3 col-form-label" for="f2fpay_subject_name">自定义商品名称</label>
-										<div class="col-md-7">
-											<div class="input-group">
-												<input type="text" class="form-control" id="f2fpay_subject_name" value="{{$f2fpay_subject_name}}"/>
-												<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_subject_name')">修改</button></span>
+								<div class="row pb-70">
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label">码支付</label>
+											<div class="col-md-7">
+												请到 <a href="https://codepay.fateqq.com/i/377289">码支付</a> 申请账号，然后下载登录其挂机软件
 											</div>
 										</div>
-										<span class="text-help offset-md-3"> 用于在用户支付宝客户端显示 </span>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="codepay_url">请求URL</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="codepay_url" value="{{$codepay_url}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('codepay_url')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="codepay_id">码支付ID</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="codepay_id" value="{{$codepay_id}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('codepay_id')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="codepay_key">码支付通信密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="codepay_key" value="{{$codepay_key}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('codepay_key')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row pb-70">
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label">PayJs</label>
+											<div class="col-md-7">
+												请到 <a href="https://payjs.cn/" target="_blank">PayJs</a> 申请账号
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="payjs_mch_id">商户ID</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="payjs_mch_id" value="{{$payjs_mch_id}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('payjs_mch_id')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="payjs_key">密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="payjs_key" value="{{$payjs_key}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('payjs_key')">修改</button></span>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</form>
@@ -1156,9 +1180,9 @@
             $('#is_email_filtering').selectpicker('val', {{$is_email_filtering}});
             $('#initial_labels_for_user').selectpicker('val', [{{$initial_labels_for_user}}]);
             $('#is_notification').selectpicker('val', {{$is_notification}});
-            $('#alipay_currency').selectpicker('val', {{$alipay_currency}});
-            $('#alipay_sign_type').selectpicker('val', {{$alipay_sign_type}});
-            $('#alipay_transport').selectpicker('val', {{$alipay_transport}});
+            $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
+            $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
+            $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
         });
 
         // 系统设置更新

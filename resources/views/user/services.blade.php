@@ -100,10 +100,10 @@
 				<div class="modal-body">
 					<div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
 					<form action="#" method="post">
-						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'] || \App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
+						@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
 							<div class="mb-15 w-p50">
 								<select class="form-control" name="charge_type" id="charge_type">
-									@if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
+									@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
 										<option value="1">{{trans('home.online_pay')}}</option>
 									@endif
 									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
@@ -113,7 +113,7 @@
 								</select>
 							</div>
 						@endif
-						@if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
+						@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
 							<div class="form-group row charge_balance">
 								<label for="amount" class="offset-md-1 col-md-2 col-form-label">充值金额</label>
 								<div class="col-md-8">
@@ -142,7 +142,7 @@
 									@endif
 								</div>
 							</div>
-						@endif
+							@endif
 						<div class="form-group row" id="charge_coupon_code">
 							<label for="charge_coupon" class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
 							<div class="col-md-6">
@@ -152,13 +152,8 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">{{trans('home.close')}}</button>
-					@if(\App\Components\Helpers::systemConfig()['is_alipay'])
-						<button type="button" class="btn btn-primary charge_balance" onclick="charge('4')"> 支付宝扫码</button>
-					@elseif(\App\Components\Helpers::systemConfig()['is_f2fpay'])
-						<button type="button" class="btn btn-primary charge_balance" onclick="charge('5')"> 支付宝扫码</button>
-					@endif
-					<button type="button" class="btn btn-primary" id="change_btn" onclick="charge()">{{trans('home.recharge')}}</button>
+					<span class="charge_balance"> @include('user.components.purchase') </span>
+					<button type="button" class="btn btn-primary" id="change_btn" onclick="pay()">{{trans('home.recharge')}}</button>
 				</div>
 			</div>
 		</div>
@@ -194,11 +189,11 @@
         $("#charge_type").change(function () {
             itemControl(parseInt($(this).val()));
             let which_selected = 3;
-	        @if(\App\Components\Helpers::systemConfig()['is_alipay'] || \App\Components\Helpers::systemConfig()['is_f2fpay'])
+			@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
                 which_selected = 1;
-	        @elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+			@elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
                 which_selected = 2;
-	        @endif
+			@endif
 
             $('charge_type').val(which_selected)
         });
@@ -227,11 +222,10 @@
         }
 
         // 充值
-        function charge(id) {
+        function pay(method, pay_type) {
             const paymentType = parseInt($('#charge_type').val());
             const charge_coupon = $('#charge_coupon').val().trim();
             const amount = parseInt($('#amount').val());
-            id = parseInt(id);
             if (paymentType === 1) {
                 if (amount <= 0) {
                     swal.fire({title: "错误", text: "充值余额不合规", type: 'warning', timer: 1000, showConfirmButton: false});
@@ -240,23 +234,18 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/payment/create",
-                    data: {_token: '{{csrf_token()}}', amount: amount, pay_type: id},
+                    url: "/payment/purchase",
+                    data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
                     dataType: "json",
                     beforeSend: function () {
                         $("#charge_msg").show().html("创建支付单中...");
                     },
                     success: function (ret) {
-                        $("#charge_msg").show().html(ret.message);
-                        if (id === 4) {
-                            // 如果是Alipay支付写入Alipay的支付页面
-                            document.body.innerHTML += ret.data;
-                            document.forms['alipaysubmit'].submit();
-                        } else {
-                            window.location.href = '/payment/' + ret.data;
-                        }
                         if (ret.status === 'fail') {
                             return false;
+                        }else{
+                            $("#charge_msg").show().html(ret.message);
+                            window.location.href = '/payment/' + ret.data;
                         }
                     },
                     error: function () {

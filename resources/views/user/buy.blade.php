@@ -51,13 +51,9 @@
 						@endif
 						<div class="col-md-12 mb-30">
 							<div class="float-right">
-								@if(\App\Components\Helpers::systemConfig()['is_alipay'])
-									<button class="btn btn-lg btn-success" onclick="checkPrePaid('4')"> 支付宝扫码</button>
-								@elseif(\App\Components\Helpers::systemConfig()['is_f2fpay'])
-									<button class="btn btn-lg btn-success" onclick="checkPrePaid('5')"> 支付宝扫码</button>
-								@endif
+								@include('user.components.purchase')
 								@if($goods->type <= 2)
-									<button class="btn btn-lg btn-primary" onclick="checkPrePaid('1')"> {{trans('home.service_pay_button')}} </button>
+									<button class="btn btn-lg btn-primary" onclick="pay('1','0')"> {{trans('home.service_pay_button')}} </button>
 								@endif
 							</div>
 						</div>
@@ -118,9 +114,9 @@
         }
 
         // 检查预支付
-        function checkPrePaid(pay_type) {
+        function checkPrePaid() {
             // 存在套餐 和 购买类型为套餐时 出现提示
-            if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
+            if ('{{$activePlan}}' === '1') {
                 swal.fire({
                     title: '套餐存在冲突',
                     html: '<p>当前购买套餐将自动设置为 <code>预支付套餐</code><p><ol class="text-left"><li> 预支付套餐会在生效中的套餐失效后自动开通！</li><li> 您可以在支付后手动激活套餐！</li></ol>',
@@ -129,24 +125,25 @@
                     cancelButtonText: '返 回',
                     confirmButtonText: '继 续',
                 }).then((result) => {
-                    if (result.value) {
-                        pay(pay_type);
+                    if (!result.value) {
+                        window.location.reload();
                     }
                 })
-            } else {
-                pay(pay_type);
             }
         }
 
         // 支付
-        function pay(pay_type) {
+        function pay(method, pay_type) {
+            if('{{$goods->type}}' === '2'){
+                checkPrePaid();
+            }
             const goods_id = '{{$goods->id}}';
             const coupon_sn = $('#coupon_sn').val();
             $.ajax({
                 type: "POST",
-                url: "/payment/create",
+                url: "/payment/purchase",
                 async: false,
-                data: {_token: '{{csrf_token()}}', goods_id: goods_id, coupon_sn: coupon_sn, pay_type: pay_type},
+                data: {_token: '{{csrf_token()}}', goods_id: goods_id, coupon_sn: coupon_sn, method: method, pay_type: pay_type},
                 dataType: 'json',
                 success: function (ret) {
                     if (ret.status === 'success') {
@@ -159,13 +156,8 @@
                         if (pay_type === '1') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
                                 .then(() => window.location.href = '/invoices')
-                        } else if (pay_type === '4') {
-                            // 如果是Alipay支付写入Alipay的支付页面
-                            document.body.innerHTML += ret.data;
-                            document.forms['alipaysubmit'].submit();
-                        } else {
-                            window.location.href = '/payment/' + ret.data;
                         }
+                        window.location.href = '/payment/' + ret.data;
                     } else if (ret.status === 'info') {
                         swal.fire({title: ret.title, text: ret.message, type: 'question'});
                     } else {

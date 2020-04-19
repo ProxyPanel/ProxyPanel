@@ -2,8 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Components\Callback;
-use App\Components\Helpers;
+use App\Http\Controllers\ServiceController;
 use App\Http\Models\Order;
 use App\Http\Models\User;
 use App\Http\Models\UserLabel;
@@ -14,15 +13,12 @@ use Log;
 
 class ServiceTimer extends Command
 {
-	use Callback;
-	protected static $systemConfig;
 	protected $signature = 'serviceTimer';
 	protected $description = '服务计时器';
 
 	public function __construct()
 	{
 		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	public function handle()
@@ -44,8 +40,8 @@ class ServiceTimer extends Command
 		//获取失效的套餐
 		$orderList = Order::query()->with(['goods'])->where('status', 2)->where('is_expire', 0)->whereHas('goods', function($q){ $q->where('type', 2); })->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
 		if($orderList->isNotEmpty()){
-			DB::beginTransaction();
 			try{
+				DB::beginTransaction();
 				foreach($orderList as $order){
 					// 过期本订单
 					Order::query()->where('oid', $order->oid)->update(['is_expire' => 1]);
@@ -75,7 +71,7 @@ class ServiceTimer extends Command
 					$prepaidOrder = Order::query()->where('user_id', $order->user_id)->where('status', 3)->orderBy('oid', 'asc')->first();
 
 					if($prepaidOrder){
-						$this->activePrepaidOrder($prepaidOrder->oid);
+						(new ServiceController)->activePrepaidOrder($prepaidOrder->oid);
 					}
 				}
 

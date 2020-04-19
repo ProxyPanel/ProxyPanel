@@ -19,14 +19,12 @@ use Log;
 
 class AutoClearLog extends Command
 {
-	protected static $systemConfig;
 	protected $signature = 'autoClearLog';
 	protected $description = '自动清除日志';
 
 	public function __construct()
 	{
 		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	public function handle()
@@ -34,7 +32,7 @@ class AutoClearLog extends Command
 		$jobStartTime = microtime(TRUE);
 
 		// 清除日志
-		if(self::$systemConfig['is_clear_log']){
+		if(Helpers::systemConfig()['is_clear_log']){
 			$this->clearLog();
 		}
 
