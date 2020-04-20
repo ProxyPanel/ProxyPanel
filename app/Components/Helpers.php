@@ -105,7 +105,7 @@ class Helpers
 			$data[$vo->name] = $vo->value;
 		}
 
-		$data['is_onlinePay'] = ($data['is_AliPay'] || $data['is_QQPay'] || $data['is_WeChatPay'])? : 0;
+		$data['is_onlinePay'] = ($data['is_AliPay'] || $data['is_QQPay'] || $data['is_WeChatPay'] || $data['is_otherPay'])? : 0;
 
 		return $data;
 	}

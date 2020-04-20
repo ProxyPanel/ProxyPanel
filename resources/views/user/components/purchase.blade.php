@@ -7,3 +7,6 @@
 @if(\App\Components\Helpers::systemConfig()['is_WeChatPay'])
 	<button class="btn btn-flat waves-attach" onclick="pay('{{\App\Components\Helpers::systemConfig()['is_WeChatPay']}}','3')"><img src="/assets/images/wechat.svg" width="50px" height="50px" alt="wechat"/></button>'
 @endif
+@if(\App\Components\Helpers::systemConfig()['is_otherPay'])
+	<button class="btn btn-flat waves-attach" onclick="pay('{{\App\Components\Helpers::systemConfig()['is_otherPay']}}','x')"><img src="/assets/images/bitcoin.svg" width="50px" height="50px" alt="other"/></button>'
+@endif

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Gateway\AopF2F;
+use App\Http\Controllers\Gateway\BitpayX;
 use App\Http\Controllers\Gateway\CodePay;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Models\Coupon;
@@ -36,6 +37,8 @@ class PaymentController extends Controller
 				return new Codepay();
 			case 'payjs':
 				return new PayJs();
+			case 'bitpayx':
+				return new BitpayX();
 			default:
 				return NULL;
 		}
@@ -69,7 +72,7 @@ class PaymentController extends Controller
 	}
 
 	// 创建支付订单
-	public function purchase(Request $request)
+	public static function purchase(Request $request)
 	{
 		$goods_id = $request->input('goods_id');
 		$coupon_sn = $request->input('coupon_sn');
@@ -173,16 +176,16 @@ class PaymentController extends Controller
 			User::query()->where('id', Auth::user()->id)->decrement('balance', $amount*100);
 
 			// 记录余额操作日志
-			$this->addUserBalanceLog(Auth::user()->id, $order->oid, Auth::user()->balance, Auth::user()->balance-$amount, -1*$amount, '购买商品：'.$goods->name);
+			(new Controller)->addUserBalanceLog(Auth::user()->id, $order->oid, Auth::user()->balance, Auth::user()->balance-$amount, -1*$amount, '购买商品：'.$goods->name);
 			$order = Order::query()->where('oid', $orderSn)->first();
 			$order->status = 2;
 			$order->save();
 			User::query()->where('id', $order->user_id)->increment('balance', $order->amount*100);
 
 			// 余额变动记录日志
-			$this->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance+$order->amount, $order->amount, '用户在线充值');
+			(new Controller)->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance+$order->amount, $order->amount, '用户在线充值');
 		}else{
-			$request->merge(['oid' => $order->oid, 'amount' => $amount]);
+			$request->merge(['oid' => $order->oid, 'amount' => $amount, 'type' => $request->input('pay_type')]);
 
 			return self::getClient()->purchase($request);
 		}
