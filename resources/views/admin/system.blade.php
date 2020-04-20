@@ -1019,6 +1019,15 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
+											<label class="col-md-3 col-form-label" for="is_otherPay">特殊支付</label>
+											<select class="col-md-3" id="is_otherPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_otherPay')">
+												<option value="">关闭</option>
+												<option value="bitpayx">麻瓜宝</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
 											<label class="col-md-3 col-form-label" for="subject_name">自定义商品名称</label>
 											<div class="col-md-7">
 												<div class="input-group">
@@ -1151,6 +1160,28 @@
 										</div>
 									</div>
 								</div>
+								<div class="row pb-70">
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label">麻瓜宝 MugglePay</label>
+											<div class="col-md-7">
+												请到 <a href="https://merchants.mugglepay.com/user/register?ref=MP904BEBB79FE0" target="_blank">麻瓜宝 MugglePay</a> 申请账号
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="bitpay_secret">应用密钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="bitpay_secret" value="{{$bitpay_secret}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('bitpay_secret')">修改</button></span>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"><a href="https://merchants.mugglepay.com/basic/api" target="_blank"> 在本页</a>中获取后台服务器的秘钥 </span>
+										</div>
+									</div>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -1183,6 +1214,7 @@
             $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
             $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
             $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
+            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
         });
 
         // 系统设置更新

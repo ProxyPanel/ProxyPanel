@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Gateway;
 use App\Http\Models\Payment;
 use Auth;
 use Exception;
+use Log;
 use Omnipay\Alipay\Responses\AopCompletePurchaseResponse;
 use Omnipay\Alipay\Responses\AopTradePreCreateResponse;
 use Omnipay\Omnipay;
@@ -67,6 +68,7 @@ class AopF2F extends AbstractPayment
 				exit('success');
 			}
 		}catch(Exception $e){
+			Log::error('支付宝当面付 '.$e);
 			exit('fail');
 		}
 	}

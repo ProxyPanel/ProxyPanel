@@ -1991,7 +1991,7 @@ EOF;
 		}
 
 		// 支付设置判断
-		if(in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay']) && $value != ''){
+		if(in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay']) && $value != ''){
 			switch($value){
 				case 'f2fpay':
 					if(!self::$systemConfig['f2fpay_app_id'] || !self::$systemConfig['f2fpay_private_key'] || !self::$systemConfig['f2fpay_public_key']){
@@ -2006,6 +2006,11 @@ EOF;
 				case 'payjs':
 					if(!self::$systemConfig['payjs_mch_id'] || !self::$systemConfig['payjs_key']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【PayJs】必要参数']);
+					}
+					break;
+				case 'bitpayx':
+					if(!self::$systemConfig['bitpayx']){
+						return Response::json(['status' => 'fail', 'message' => '请先设置【麻瓜宝】必要参数']);
 					}
 					break;
 				default:

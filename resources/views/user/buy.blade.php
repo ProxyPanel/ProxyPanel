@@ -157,7 +157,11 @@
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
                                 .then(() => window.location.href = '/invoices')
                         }
-                        window.location.href = '/payment/' + ret.data;
+                        if (ret.data) {
+                            window.location.href = '/payment/' + ret.data;
+                        } else if (ret.url) {
+                            window.location.href = ret.url;
+                        }
                     } else if (ret.status === 'info') {
                         swal.fire({title: ret.title, text: ret.message, type: 'question'});
                     } else {

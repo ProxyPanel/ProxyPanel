@@ -243,9 +243,13 @@
                     success: function (ret) {
                         if (ret.status === 'fail') {
                             return false;
-                        }else{
+                        } else {
                             $("#charge_msg").show().html(ret.message);
-                            window.location.href = '/payment/' + ret.data;
+                            if (ret.data) {
+                                window.location.href = '/payment/' + ret.data;
+                            } else if (ret.url) {
+                                window.location.href = ret.url;
+                            }
                         }
                     },
                     error: function () {

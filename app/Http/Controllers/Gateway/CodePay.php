@@ -21,7 +21,7 @@ class CodePay extends AbstractPayment
 		$data = [
 			'id'         => parent::$systemConfig['codepay_id'],
 			'pay_id'     => $payment->sn,
-			'type'       => $request->input('method'),//1支付宝支付 2QQ钱包 3微信支付
+			'type'       => $request->input('type'),//1支付宝支付 2QQ钱包 3微信支付
 			'price'      => $payment->amount,
 			'page'       => 4,
 			'outTime'    => 900,
