@@ -20,18 +20,18 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="type" id="type" onChange="Search()">
-							<option value="" @if(Request::get('type') == '') selected hidden @endif>支付方式</option>
-							<option value="2" @if(Request::get('type') == '2') selected hidden @endif>码支付</option>
-							<option value="3" @if(Request::get('type') == '3') selected hidden @endif>易支付</option>
-							<option value="4" @if(Request::get('type') == '4') selected hidden @endif>支付宝国际</option>
-							<option value="5" @if(Request::get('type') == '5') selected hidden @endif>当面付</option>
+							<option value="" hidden>支付方式</option>
+							<option value="f2fpay">当面付</option>
+							<option value="codepay">码支付</option>
+							<option value="payjs">PayJs</option>
+							<option value="bitpayx">麻瓜宝</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="trade_status" id="trade_status" onChange="Search()">
-							<option value="" @if(Request::get('trade_status') == '') selected hidden @endif>交易状态</option>
-							<option value="1" @if(Request::get('trade_status') == '1') selected hidden @endif>成功</option>
-							<option value="0" @if(Request::get('trade_status') == '0') selected hidden @endif>失败</option>
+							<option value="" hidden>交易状态</option>
+							<option value="1">成功</option>
+							<option value="0">失败</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4 btn-group">
@@ -93,6 +93,11 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#type').val({{Request::get('type')}});
+            $('#trade_status').val({{Request::get('trade_status')}});
+        });
+
         //回车检测
         $(document).on("keypress", "input", function (e) {
             if (e.which === 13) {

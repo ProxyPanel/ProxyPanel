@@ -183,19 +183,21 @@
 
         $(document).ready(function () {
             itemControl(parseInt($('#charge_type').val()))
+            let which_selected;
+	        @if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
+                which_selected = 1;
+	        @elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+                which_selected = 2;
+	        @else
+                which_selected = 3
+	        @endif
+
+            $('charge_type').val(which_selected)
         });
 
         // 切换充值方式
         $("#charge_type").change(function () {
             itemControl(parseInt($(this).val()));
-            let which_selected = 3;
-			@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
-                which_selected = 1;
-			@elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
-                which_selected = 2;
-			@endif
-
-            $('charge_type').val(which_selected)
         });
 
         // 重置流量

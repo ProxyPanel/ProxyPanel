@@ -31,34 +31,34 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<select class="form-control" name="is_expire" id="is_expire" onChange="Search()">
-							<option value="" @if(Request::get('is_expire') == '') selected hidden @endif>是否过期</option>
-							<option value="0" @if(Request::get('is_expire') == '0') selected hidden @endif>否</option>
-							<option value="1" @if(Request::get('is_expire') == '1') selected hidden @endif>是</option>
+							<option value="" hidden>是否过期</option>
+							<option value="0">否</option>
+							<option value="1">是</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<select class="form-control" name="is_coupon" id="is_coupon" onChange="Search()">
-							<option value="" @if(Request::get('is_coupon') == '') selected hidden @endif>是否使用优惠券</option>
-							<option value="0" @if(Request::get('is_coupon') == '0') selected hidden @endif>否</option>
-							<option value="1" @if(Request::get('is_coupon') == '1') selected hidden @endif>是</option>
+							<option value="" hidden>是否使用优惠券</option>
+							<option value="0">否</option>
+							<option value="1">是</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<select class="form-control" name="pay_way" id="pay_way" onChange="Search()">
-							<option value="" @if(Request::get('pay_way') == '') selected hidden @endif>支付方式</option>
-							<option value="1" @if(Request::get('pay_way') == '1') selected hidden @endif>余额支付</option>
-							<option value="2" @if(Request::get('pay_way') == '2') selected hidden @endif>有赞云支付</option>
-							<option value="4" @if(Request::get('pay_way') == '4') selected hidden @endif>支付宝国际</option>
-							<option value="5" @if(Request::get('pay_way') == '5') selected hidden @endif>支付宝当面付</option>
+							<option value="" hidden>支付方式</option>
+							<option value="1">余额支付</option>
+							<option value="2">有赞云支付</option>
+							<option value="4">支付宝国际</option>
+							<option value="5">支付宝当面付</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<select class="form-control" name="status" id="status" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>订单状态</option>
-							<option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>已关闭</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>待支付</option>
-							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>已支付待确认</option>
-							<option value="2" @if(Request::get('status') == '2') selected hidden @endif>已完成</option>
+							<option value="" hidden>订单状态</option>
+							<option value="-1">已关闭</option>
+							<option value="0">待支付</option>
+							<option value="1">已支付待确认</option>
+							<option value="2">已完成</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-3 col-sm-6">
@@ -169,6 +169,13 @@
 	<script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#is_expire').val({{Request::get('is_expire')}});
+            $('#is_coupon').val({{Request::get('is_coupon')}});
+            $('#pay_way').val({{Request::get('pay_way')}});
+            $('#status').val({{Request::get('status')}});
+        });
+
         // 有效期
         $('.input-daterange').datepicker({
             format: "yyyy-mm-dd",
