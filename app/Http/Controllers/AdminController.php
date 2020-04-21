@@ -2009,7 +2009,7 @@ EOF;
 					}
 					break;
 				case 'bitpayx':
-					if(!self::$systemConfig['bitpayx']){
+					if(!self::$systemConfig['bitpay_secret']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【麻瓜宝】必要参数']);
 					}
 					break;

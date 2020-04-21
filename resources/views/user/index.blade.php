@@ -230,7 +230,7 @@
 	<script type="text/javascript">
         // 签到
         function checkIn() {
-            $.post('/checkIn', function (ret) {
+            $.post('/checkIn', {_token: '{{csrf_token()}}'}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire('长者的微笑', ret.message, 'success');
                 } else {
