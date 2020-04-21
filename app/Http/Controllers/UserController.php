@@ -271,7 +271,7 @@ class UserController extends Controller
 	//重置流量
 	public function resetUserTraffic()
 	{
-		$temp = Order::uid()->where('status', 2)->where('is_expire', 0)->first();
+		$temp = Order::uid()->where('status', 2)->where('is_expire', 0)->with(['goods'])->whereHas('goods', function($q){ $q->where('type', 2); })->first();
 		$renewCost = Goods::query()->where('id', $temp->goods_id)->first()->renew;
 		if(Auth::user()->balance < $renewCost){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '余额不足，请充值余额']);
