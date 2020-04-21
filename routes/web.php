@@ -24,7 +24,7 @@ Route::group(['middleware' => ['isForbidden','isAdminLogin', 'isAdmin']], functi
 		Route::get('', 'AdminController@index'); // 后台首页
 		Route::get('userList', 'AdminController@userList'); // 账号列表
 		Route::any('addUser', 'AdminController@addUser'); // 添加账号
-		Route::any('aeditUser/{id}', 'AdminController@editUser'); // 编辑账号
+		Route::any('editUser/{id}', 'AdminController@editUser'); // 编辑账号
 		Route::post('delUser', 'AdminController@delUser'); // 删除账号
 		Route::post('batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
 		Route::get('exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
@@ -161,12 +161,8 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 
 	Route::group(['prefix' => 'payment'], function(){
 		Route::post('purchase', 'PaymentController@purchase'); // 创建支付
+		Route::any('notify', 'PaymentController@notify'); //支付回调
 		Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
 		Route::get('{sn}', 'PaymentController@detail'); // 支付单详情
 	});
-});
-
-// 第三方回调接口
-Route::group(['namespace' => 'Callback', 'prefix' => 'callback', 'middleware' => ['callback']], function(){
-	Route::any('payment', 'PaymentController@notify');
 });

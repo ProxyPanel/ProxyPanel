@@ -62,7 +62,7 @@ class NodeBlockedDetection extends Command
 					$node->ip = $ip;
 				}else{
 					Log::warning("【节点阻断检测】检测".$node->server."时，IP获取失败".$ip." | ".$node->server);
-					$this->notifyMaster("{$node->name}动态IP获取失败", "节点**{$node->name}**：** IP获取失败 **");
+					$this->notifyMaster("{$node->name}动态IP获取失败", "节点 {$node->name} ： IP获取失败 ");
 				}
 			}
 			if($node->detectionType != 1){
@@ -100,7 +100,7 @@ class NodeBlockedDetection extends Command
 					}else{
 						Cache::forget($cacheKey);
 						SsNode::query()->where('id', $node->id)->update(['status' => 0]);
-						$additionalMessage .= "\r\n**节点【{$node->name}】自动进入维护状态**\r\n";
+						$additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
 					}
 				}
 			}
@@ -108,7 +108,7 @@ class NodeBlockedDetection extends Command
 
 		//只有在出现阻断线路时，才会发出警报
 		if($sendText){
-			$this->notifyMaster("节点阻断警告", "**阻断日志**: \r\n\r\n".$message.$additionalMessage);
+			$this->notifyMaster("节点阻断警告", "阻断日志: \r\n\r\n".$message.$additionalMessage);
 			Log::info("阻断日志: \r\n".$message.$additionalMessage);
 		}
 
@@ -125,10 +125,10 @@ class NodeBlockedDetection extends Command
 	 */
 	private function notifyMaster($title, $content)
 	{
-		if(self::$systemConfig['webmaster_email']){
+		$result = PushNotification::send($title, $content);
+		if(!$result && self::$systemConfig['webmaster_email']){
 			$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
 			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId));
 		}
-		PushNotification::send($title, $content);
 	}
 }

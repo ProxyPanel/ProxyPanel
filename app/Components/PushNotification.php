@@ -3,7 +3,6 @@
 
 namespace App\Components;
 
-
 use Exception;
 use Log;
 use stdClass;
@@ -13,14 +12,16 @@ class PushNotification
 	public static function send($title, $content)
 	{
 		switch(Helpers::systemConfig()['is_notification']){
-			case 1:
+			case 'serverChan':
 				return self::ServerChan($title, $content);
 				break;
-			case 2:
+			case 'bark':
 				return self::Bark($title, $content);
 				break;
 			default:
 		}
+
+		return FALSE;
 	}
 
 	/**
@@ -33,7 +34,7 @@ class PushNotification
 	 */
 	private static function ServerChan($title, $content)
 	{
-
+		$result = FALSE;
 		try{
 			// TODO：一天仅可发送不超过500条
 			$url = 'https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content);
@@ -66,13 +67,16 @@ class PushNotification
 	 */
 	private static function Bark($title, $content)
 	{
+		$result = FALSE;
 		try{
 			$url = 'https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content;
 			$result = json_decode(Curl::send($url));
-			if($result->code == 200){
-				Helpers::addNotificationLog($title, $content, 3);
-			}else{
-				Helpers::addNotificationLog($title, $content, 3, 'admin', $result->message);
+			if($result){
+				if($result->code == 200){
+					Helpers::addNotificationLog($title, $content, 3);
+				}else{
+					Helpers::addNotificationLog($title, $content, 3, 'admin', $result->message);
+				}
 			}
 		} catch(Exception $e){
 			Log::error('Bark消息推送异常：'.$e);
