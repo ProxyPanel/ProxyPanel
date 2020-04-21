@@ -12,10 +12,10 @@
 				<div class="form-row">
 					<div class="form-group col-lg-3 col-sm-6">
 						<select name="status" id="status" class="form-control" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>账号状态</option>
-							<option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>禁用</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>未激活</option>
-							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>正常</option>
+							<option value="" hidden>账号状态</option>
+							<option value="-1">禁用</option>
+							<option value="0">未激活</option>
+							<option value="1">正常</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
@@ -80,6 +80,10 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#status').val({{Request::get('status')}});
+        });
+
         // 搜索
         function Search() {
             window.location.href = '/subscribe/deviceList' + '?status=' + $("#status option:selected").val();

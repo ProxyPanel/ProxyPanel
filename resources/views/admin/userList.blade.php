@@ -39,27 +39,27 @@
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-sm-4">
 						<select class="form-control" id="pay_way" name="pay_way" onChange="Search()">
-							<option value="" @if(Request::get('pay_way') == '') selected hidden @endif>付费方式</option>
-							<option value="0" @if(Request::get('pay_way') == '0') selected hidden @endif>免费</option>
-							<option value="1" @if(Request::get('pay_way') == '1') selected hidden @endif>月付</option>
-							<option value="2" @if(Request::get('pay_way') == '2') selected hidden @endif>季付</option>
-							<option value="3" @if(Request::get('pay_way') == '3') selected hidden @endif>半年付</option>
-							<option value="4" @if(Request::get('pay_way') == '4') selected hidden @endif>年付</option>
+							<option value="" hidden>付费方式</option>
+							<option value="0">免费</option>
+							<option value="1">月付</option>
+							<option value="2">季付</option>
+							<option value="3">半年付</option>
+							<option value="4">年付</option>
 						</select>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
 						<select class="form-control" id="status" name="status" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>账号状态</option>
-							<option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>禁用</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>未激活</option>
-							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>正常</option>
+							<option value="" hidden>账号状态</option>
+							<option value="-1">禁用</option>
+							<option value="0">未激活</option>
+							<option value="1">正常</option>
 						</select>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
 						<select class="form-control" id="enable" name="enable" onChange="Search()">
-							<option value="" @if(Request::get('enable') == '') selected hidden @endif>代理状态</option>
-							<option value="1" @if(Request::get('enable') == '1') selected hidden @endif>启用</option>
-							<option value="0" @if(Request::get('enable') == '0') selected hidden @endif>禁用</option>
+							<option value="" hidden>代理状态</option>
+							<option value="1">启用</option>
+							<option value="0">禁用</option>
 						</select>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
@@ -163,6 +163,12 @@
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#pay_way').val({{Request::get('pay_way')}});
+            $('#status').val({{Request::get('status')}});
+            $('#enable').val({{Request::get('enable')}});
+        });
+
         // 导出原版json配置
         function exportSSJson() {
             swal.fire({

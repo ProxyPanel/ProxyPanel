@@ -19,18 +19,18 @@
 					</div>
 					<div class="form-group col-lg-3 col-sm-4">
 						<select class="form-control" name="type" id="type" onChange="Search()">
-							<option value="" @if(Request::get('type') == '') selected hidden @endif>类型</option>
-							<option value="1" @if(Request::get('type') == '1') selected hidden @endif>现金券</option>
-							<option value="2" @if(Request::get('type') == '2') selected hidden @endif>折扣券</option>
-							<option value="3" @if(Request::get('type') == '3') selected hidden @endif>充值券</option>
+							<option value="" hidden>类型</option>
+							<option value="1">现金券</option>
+							<option value="2">折扣券</option>
+							<option value="3">充值券</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-3 col-sm-4">
 						<select class="form-control" name="status" id="status" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>状态</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>未使用/生效中</option>
-							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>已使用</option>
-							<option value="2" @if(Request::get('status') == '2') selected hidden @endif>已失效</option>
+							<option value="" hidden>状态</option>
+							<option value="0">未使用/生效中</option>
+							<option value="1">已使用</option>
+							<option value="2">已失效</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-3 col-sm-4 btn-group">
@@ -130,6 +130,11 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#type').val({{Request::get('type')}});
+            $('#status').val({{Request::get('status')}});
+        });
+
         //回车检测
         $(document).on("keypress", "input", function (e) {
             if (e.which === 13) {

@@ -15,11 +15,11 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="status" id="status" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>状态</option>
-							<option value="-1" @if(Request::get('status') == '-1') selected hidden @endif>驳回</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>待审核</option>
-							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>审核通过待打款</option>
-							<option value="2" @if(Request::get('status') == '2') selected hidden @endif>已打款</option>
+							<option value="" hidden>状态</option>
+							<option value="-1">驳回</option>
+							<option value="0">待审核</option>
+							<option value="1">审核通过待打款</option>
+							<option value="2">已打款</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-1 col-sm-4 btn-group">
@@ -106,6 +106,10 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#status').val({{Request::get('status')}});
+        });
+
         //回车检测
         $(document).on("keypress", "input", function (e) {
             if (e.which === 13) {

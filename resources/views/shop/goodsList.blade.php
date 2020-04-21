@@ -15,16 +15,16 @@
 				<div class="form-row">
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" id="type" name="type" onChange="Search()">
-							<option value="" @if(Request::get('type') == '') selected hidden @endif>类型</option>
-							<option value="1" @if(Request::get('type') == '1') selected hidden @endif>流量包</option>
-							<option value="2" @if(Request::get('type') == '2') selected hidden @endif>套餐</option>
+							<option value="" hidden>类型</option>
+							<option value="1">流量包</option>
+							<option value="2">套餐</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" id="status" name="status" onChange="Search()">
-							<option value="" @if(Request::get('status') == '') selected hidden @endif>状态</option>
-							<option value="1" @if(Request::get('status') == '1') selected hidden @endif>上架</option>
-							<option value="0" @if(Request::get('status') == '0') selected hidden @endif>下架</option>
+							<option value="" hidden>状态</option>
+							<option value="1">上架</option>
+							<option value="0">下架</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4 btn-group">
@@ -123,6 +123,11 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#type').val({{Request::get('type')}});
+            $('#status').val({{Request::get('status')}});
+        });
+
         // 搜索
         function Search() {
             window.location.href = '/shop/goodsList?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();

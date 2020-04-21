@@ -15,11 +15,11 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="type" id="type" onChange="Search()">
-							<option value="" @if(Request::get('type') == '') selected hidden @endif>类型</option>
-							<option value="1" @if(Request::get('type') == '1') selected hidden @endif>邮件</option>
-							<option value="2" @if(Request::get('type') == '2') selected hidden @endif>ServerChan</option>
-							<option value="3" @if(Request::get('type') == '3') selected hidden @endif>Bark</option>
-							<option value="4" @if(Request::get('type') == '4') selected hidden @endif>Telegram</option>
+							<option value="" hidden>类型</option>
+							<option value="1">邮件</option>
+							<option value="2">ServerChan</option>
+							<option value="3">Bark</option>
+							<option value="4">Telegram</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-1 col-sm-4 btn-group">
@@ -90,6 +90,10 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+        $(document).ready(function () {
+            $('#type').val({{Request::get('type')}});
+        });
+
         // 搜索
         function Search() {
             window.location.href = '/admin/notificationLog?email=' + $("#email").val() + '&type=' + $("#type option:selected").val();

@@ -109,7 +109,7 @@
 									<div class="form-group row">
 										<label for="country_code" class="col-md-3 col-form-label"> 国家/地区 </label>
 										<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="country_code" id="country_code">
-											<option value="">请选择</option>
+											<option value="" hidden>请选择</option>
 											@if(!$country_list->isEmpty())
 												@foreach($country_list as $country)
 													<option value="{{$country->code}}" {{$node->country_code == $country->code ? 'selected' : ''}}>{{$country->code}} - {{$country->name}}</option>

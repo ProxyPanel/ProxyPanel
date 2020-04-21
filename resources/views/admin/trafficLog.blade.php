@@ -22,7 +22,7 @@
 					</div>
 					<div class="form-group col-lg-3 col-sm-8">
 						<select class="form-control" name="nodeId" id="nodeId" onChange="Search()">
-							<option value="" @if(Request::get('nodeId') == '') selected @endif>选择节点</option>
+							<option value="" @if(Request::get('nodeId') == '') selected @endif hidden>选择节点</option>
 							@foreach($nodeList as $node)
 								<option value="{{$node->id}}" @if(Request::get('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
 							@endforeach
