@@ -1,8 +1,12 @@
+-- 添加码支付配置
 update `config` SET `name` = 'codepay_url', `value` = 'https://codepay.fateqq.com/creat_order/?' where `config`.`id` = 43;
 update `config` SET `name` = 'codepay_id', `value` = '' where `config`.`id` = 44;
 update `config` SET `name` = 'codepay_key', `value` = '' where `config`.`id` = 45;
+
+-- 添加 支付回调链接自定义
 update `config` SET `name` = 'website_callback_url', `value` = '' where `config`.`id` = 50;
 
+-- 在线支付数据库 简化
 alter table `payment`
   drop `order_sn`,
   drop `pay_way`,
@@ -11,7 +15,7 @@ alter table `payment`
   drop `qr_code`,
   drop `qr_local_url`;
 
-drop table `order_goods`
+drop table `order_goods`;
 
 ALTER TABLE `payment`
     ADD COLUMN `qr_code` text COLLATE utf8mb4_unicode_ci COMMENT '支付二维码' AFTER `amount`;

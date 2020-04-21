@@ -781,8 +781,8 @@
 											<label class="col-md-3 col-form-label" for="is_notification">推送通知</label>
 											<select class="col-md-5" id="is_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_notification')">
 												<option value="0">关闭</option>
-												<option value="1">ServerChan</option>
-												<option value="2">Bark</option>
+												<option value="serverChan">ServerChan</option>
+												<option value="bark">Bark</option>
 											</select>
 											<span class="text-help offset-md-3"> 推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="javascript:sendTestNotification();">发送测试消息</a>）</span>
 										</div>

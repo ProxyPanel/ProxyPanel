@@ -2044,15 +2044,18 @@ EOF;
 	{
 		if(self::$systemConfig['is_notification']){
 			$result = PushNotification::send('这是测试的标题', 'SSRPanel_OM测试内容');
+			if($result == FALSE){
+				return Response::json(['status' => 'fail', 'message' => '发送失败，请重新尝试！']);
+			}
 			switch(self::$systemConfig['is_notification']){
-				case 1:
+				case 'serverChan':
 					if(!$result->errno){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
 					}else{
 						return Response::json(['status' => 'fail', 'message' => $result? $result->errmsg : '未知']);
 					}
 					break;
-				case 2:
+				case 'bark':
 					if($result->code == 200){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
 					}else{
