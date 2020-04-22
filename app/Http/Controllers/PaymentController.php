@@ -6,7 +6,7 @@ use App\Components\Helpers;
 use App\Http\Controllers\Gateway\AopF2F;
 use App\Http\Controllers\Gateway\BitpayX;
 use App\Http\Controllers\Gateway\CodePay;
-use App\Http\Controllers\Gateway\local;
+use App\Http\Controllers\Gateway\Local;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
@@ -28,6 +28,11 @@ class PaymentController extends Controller
 {
 	private static $method;
 
+	public static function notify(Request $request)
+	{
+		return self::getClient()->notify($request);
+	}
+
 	public static function getClient()
 	{
 		switch(self::$method){
@@ -44,11 +49,6 @@ class PaymentController extends Controller
 			default:
 				return NULL;
 		}
-	}
-
-	public static function notify(Request $request)
-	{
-		return self::getClient()->notify($request);
 	}
 
 	public static function returnHTML(Request $request)
