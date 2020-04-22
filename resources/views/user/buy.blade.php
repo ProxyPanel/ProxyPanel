@@ -53,7 +53,7 @@
 							<div class="float-right">
 								@include('user.components.purchase')
 								@if($goods->type <= 2)
-									<button class="btn btn-lg btn-primary" onclick="pay('1','0')"> {{trans('home.service_pay_button')}} </button>
+									<button class="btn btn-lg btn-primary" onclick="pay('balance','0')"> {{trans('home.service_pay_button')}} </button>
 								@endif
 							</div>
 						</div>
@@ -114,9 +114,9 @@
         }
 
         // 检查预支付
-        function checkPrePaid() {
+        function pay(method, pay_type) {
             // 存在套餐 和 购买类型为套餐时 出现提示
-            if ('{{$activePlan}}' === '1') {
+            if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
                 swal.fire({
                     title: '套餐存在冲突',
                     html: '<p>当前购买套餐将自动设置为 <code>预支付套餐</code><p><ol class="text-left"><li> 预支付套餐会在生效中的套餐失效后自动开通！</li><li> 您可以在支付后手动激活套餐！</li></ol>',
@@ -125,18 +125,16 @@
                     cancelButtonText: '返 回',
                     confirmButtonText: '继 续',
                 }).then((result) => {
-                    if (!result.value) {
-                        window.location.reload();
+                    if (result.value) {
+                        contiousPay(method, pay_type);
                     }
                 })
+            } else {
+                contiousPay(method, pay_type);
             }
         }
 
-        // 支付
-        function pay(method, pay_type) {
-            if('{{$goods->type}}' === '2'){
-                checkPrePaid();
-            }
+        function contiousPay(method, pay_type) {
             const goods_id = '{{$goods->id}}';
             const coupon_sn = $('#coupon_sn').val();
             $.ajax({
@@ -153,7 +151,7 @@
                             timer: 1300,
                             showConfirmButton: false
                         });
-                        if (pay_type === '1') {
+                        if (method === 'balance') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
                                 .then(() => window.location.href = '/invoices')
                         }

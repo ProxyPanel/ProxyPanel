@@ -22,7 +22,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command
 	{
 		$jobStartTime = microtime(TRUE);
 
-		$nodeList = SsNode::query()->where('status', 1)->orderBy('id', 'asc')->get();
+		$nodeList = SsNode::query()->whereStatus(1)->orderBy('id', 'asc')->get();
 		foreach($nodeList as $node){
 			$this->statisticsByNode($node->id);
 		}
@@ -38,7 +38,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command
 		$start_time = strtotime(date('Y-m-d H:i:s', strtotime("-1 hour")));
 		$end_time = time();
 
-		$query = UserTrafficLog::query()->where('node_id', $node_id)->whereBetween('log_time', [$start_time, $end_time]);
+		$query = UserTrafficLog::query()->whereNodeId($node_id)->whereBetween('log_time', [$start_time, $end_time]);
 
 		$u = $query->sum('u');
 		$d = $query->sum('d');

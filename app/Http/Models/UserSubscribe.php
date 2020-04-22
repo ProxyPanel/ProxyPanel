@@ -45,7 +45,7 @@ class UserSubscribe extends Model
 
 	function scopeUid($query)
 	{
-		return $query->where('user_id', Auth::user()->id);
+		return $query->whereUserId(Auth::user()->id);
 	}
 
 	function user()

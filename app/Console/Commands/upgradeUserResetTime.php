@@ -53,7 +53,7 @@ class upgradeUserResetTime extends Command
 				if($reset_time > $user->expire_time){
 					$reset_time = NULL;
 				}
-				User::query()->where('id', $user->id)->update(['reset_time' => $reset_time]);
+				User::query()->whereId($user->id)->update(['reset_time' => $reset_time]);
 			}
 
 			Log::info('---用户[ID：'.$user->id.' - '.$user->username.' ('.$user->email.')]的新重置日期为'.($reset_time != NULL? '【'.$reset_time.'】' : '【无】').'---');

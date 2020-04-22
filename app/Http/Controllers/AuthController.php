@@ -271,7 +271,7 @@ class AuthController extends Controller
 
 				// 校验邀请码合法性
 				if($code){
-					$codeEnable = Invite::query()->where('code', $code)->where('status', 0)->doesntExist();
+					$codeEnable = Invite::query()->whereCode($code)->whereStatus(0)->doesntExist();
 					if($codeEnable){
 						return Redirect::back()->withInput($request->except(['code']))->withErrors(trans('auth.code_error'));
 					}
@@ -283,7 +283,7 @@ class AuthController extends Controller
 				if(!$verify_code){
 					return Redirect::back()->withInput($request->except(['verify_code']))->withErrors(trans('auth.captcha_null'));
 				}else{
-					$verifyCode = VerifyCode::query()->where('address', $email)->where('code', $verify_code)->where('status', 0)->firstOrFail();
+					$verifyCode = VerifyCode::query()->whereAddress($email)->whereCode($verify_code)->whereStatus(0)->firstOrFail();
 					if(!$verifyCode){
 						return Redirect::back()->withInput($request->except(['verify_code']))->withErrors(trans('auth.captcha_overtime'));
 					}
@@ -358,7 +358,7 @@ class AuthController extends Controller
 
 			// 更新邀请码
 			if(self::$systemConfig['is_invite_register'] && $affArr['code_id']){
-				Invite::query()->where('id', $affArr['code_id'])->update(['fuid' => $uid, 'status' => 1]);
+				Invite::query()->whereId($affArr['code_id'])->update(['fuid' => $uid, 'status' => 1]);
 			}
 
 			// 清除邀请人Cookie
@@ -377,16 +377,16 @@ class AuthController extends Controller
 			}else{
 				// 则直接给推荐人加流量
 				if($referral_uid){
-					$referralUser = User::query()->where('id', $referral_uid)->first();
+					$referralUser = User::query()->whereId($referral_uid)->first();
 					if($referralUser){
 						if($referralUser->expire_time >= date('Y-m-d')){
-							User::query()->where('id', $referral_uid)->increment('transfer_enable', self::$systemConfig['referral_traffic']*1048576);
+							User::query()->whereId($referral_uid)->increment('transfer_enable', self::$systemConfig['referral_traffic']*1048576);
 						}
 					}
 				}
 
 				if(self::$systemConfig['is_activate_account'] == 1){
-					User::query()->where('id', $uid)->update(['status' => 1]);
+					User::query()->whereId($uid)->update(['status' => 1]);
 				}
 
 				Session::flash('regSuccessMsg', trans('auth.register_success'));
@@ -394,7 +394,7 @@ class AuthController extends Controller
 
 			return Redirect::to('login')->withInput();
 		}else{
-			$view['emailList'] = self::$systemConfig['is_email_filtering'] != 2? FALSE : SensitiveWords::query()->where('type', 2)->get();
+			$view['emailList'] = self::$systemConfig['is_email_filtering'] != 2? FALSE : SensitiveWords::query()->whereType(2)->get();
 			Session::put('register_token', makeRandStr(16));
 
 			return Response::view('auth.register', $view);
@@ -444,7 +444,7 @@ class AuthController extends Controller
 
 		// 有邀请码先用邀请码，用谁的邀请码就给谁返利
 		if($code){
-			$inviteCode = Invite::query()->where('code', $code)->where('status', 0)->first();
+			$inviteCode = Invite::query()->whereCode($code)->whereStatus(0)->first();
 			if($inviteCode){
 				$referral_uid = $inviteCode->uid;
 				$code_id = $inviteCode->id;
@@ -456,10 +456,10 @@ class AuthController extends Controller
 			// 检查一下cookie里有没有aff
 			$cookieAff = \Request::hasCookie('register_aff')? \Request::cookie('register_aff') : 0;
 			if($cookieAff){
-				$affUser = User::query()->where('id', $cookieAff)->exists();
+				$affUser = User::query()->whereId($cookieAff)->exists();
 				$referral_uid = $affUser? $cookieAff : 0;
 			}elseif($aff){ // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
-				$affUser = User::query()->where('id', $aff)->exists();
+				$affUser = User::query()->whereId($aff)->exists();
 				$referral_uid = $affUser? $aff : 0;
 			}
 		}
@@ -504,7 +504,7 @@ class AuthController extends Controller
 			}
 
 			// 查找账号
-			$user = User::query()->where('email', $email)->first();
+			$user = User::query()->whereEmail($email)->first();
 			if(!$user){
 				return Redirect::back()->withErrors(trans('auth.email_notExist'));
 			}
@@ -555,7 +555,7 @@ class AuthController extends Controller
 			]);
 			$password = $request->input('password');
 			// 校验账号
-			$verify = Verify::type(1)->with('user')->where('token', $token)->first();
+			$verify = Verify::type(1)->with('user')->whereToken($token)->first();
 			if(!$verify){
 				return Redirect::to('login');
 			}elseif($verify->status == 1){
@@ -567,7 +567,7 @@ class AuthController extends Controller
 			}
 
 			// 更新密码
-			$ret = User::query()->where('id', $verify->user_id)->update(['password' => Hash::make($password)]);
+			$ret = User::query()->whereId($verify->user_id)->update(['password' => Hash::make($password)]);
 			if(!$ret){
 				return Redirect::back()->withErrors(trans('auth.reset_password_fail'));
 			}
@@ -578,7 +578,7 @@ class AuthController extends Controller
 
 			return Redirect::back()->with('successMsg', trans('auth.reset_password_new'));
 		}else{
-			$verify = Verify::type(1)->where('token', $token)->first();
+			$verify = Verify::type(1)->whereToken($token)->first();
 			if(!$verify){
 				return Redirect::to('login');
 			}elseif(time()-strtotime($verify->created_at) >= 1800){
@@ -588,7 +588,7 @@ class AuthController extends Controller
 			}
 
 			// 重新获取一遍verify
-			$view['verify'] = Verify::type(1)->where('token', $token)->first();
+			$view['verify'] = Verify::type(1)->whereToken($token)->first();
 
 			return Response::view('auth.reset', $view);
 		}
@@ -613,7 +613,7 @@ class AuthController extends Controller
 			}
 
 			// 查找账号
-			$user = User::query()->where('email', $email)->first();
+			$user = User::query()->whereEmail($email)->first();
 			if($user->status < 0){
 				return Redirect::back()->withErrors(trans('auth.login_ban', ['email' => self::$systemConfig['webmaster_email']]));
 			}elseif($user->status > 0){
@@ -653,7 +653,7 @@ class AuthController extends Controller
 			return Redirect::to('login');
 		}
 
-		$verify = Verify::type(1)->with('user')->where('token', $token)->first();
+		$verify = Verify::type(1)->with('user')->whereToken($token)->first();
 		if(!$verify){
 			return Redirect::to('login');
 		}elseif(empty($verify->user)){
@@ -679,7 +679,7 @@ class AuthController extends Controller
 		}
 
 		// 更新账号状态
-		$ret = User::query()->where('id', $verify->user_id)->update(['status' => 1]);
+		$ret = User::query()->whereId($verify->user_id)->update(['status' => 1]);
 		if(!$ret){
 			Session::flash('errorMsg', trans('auth.active_fail'));
 
@@ -694,7 +694,7 @@ class AuthController extends Controller
 		if($verify->user->referral_uid){
 			$transfer_enable = self::$systemConfig['referral_traffic']*1048576;
 
-			User::query()->where('id', $verify->user->referral_uid)->increment('transfer_enable', $transfer_enable, ['enable' => 1]);
+			User::query()->whereId($verify->user->referral_uid)->increment('transfer_enable', $transfer_enable, ['enable' => 1]);
 		}
 
 		Session::flash('successMsg', trans('auth.active_success'));
@@ -762,7 +762,7 @@ class AuthController extends Controller
 	// 公开的邀请码列表
 	public function free()
 	{
-		$view['inviteList'] = Invite::query()->where('uid', 0)->where('status', 0)->paginate();
+		$view['inviteList'] = Invite::query()->whereUid(0)->whereStatus(0)->paginate();
 
 		return Response::view('auth.free', $view);
 	}

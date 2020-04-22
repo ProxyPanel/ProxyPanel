@@ -46,7 +46,7 @@ class NodeBlockedDetection extends Command
 	// 监测节点状态
 	private function checkNodes()
 	{
-		$nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->where('detectionType', '>', 0)->get();
+		$nodeList = SsNode::query()->whereIsTransit(0)->whereStatus(1)->where('detectionType', '>', 0)->get();
 		$sendText = FALSE;
 		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
 		$additionalMessage = '';
@@ -99,7 +99,7 @@ class NodeBlockedDetection extends Command
 						Cache::increment($cacheKey);
 					}else{
 						Cache::forget($cacheKey);
-						SsNode::query()->where('id', $node->id)->update(['status' => 0]);
+						SsNode::query()->whereId($node->id)->update(['status' => 0]);
 						$additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
 					}
 				}

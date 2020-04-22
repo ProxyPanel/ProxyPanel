@@ -89,36 +89,10 @@ class Controller extends BaseController
 		return $i;
 	}
 
-	/**
-	 * 记录余额操作日志
-	 *
-	 * @param int    $userId 用户ID
-	 * @param string $oid    订单ID
-	 * @param int    $before 记录前余额
-	 * @param int    $after  记录后余额
-	 * @param int    $amount 发生金额
-	 * @param string $desc   描述
-	 *
-	 * @return int
-	 */
-	public function addUserBalanceLog($userId, $oid, $before, $after, $amount, $desc = '')
-	{
-		$log = new UserBalanceLog();
-		$log->user_id = $userId;
-		$log->order_id = $oid;
-		$log->before = $before;
-		$log->after = $after;
-		$log->amount = $amount;
-		$log->desc = $desc;
-		$log->created_at = date('Y-m-d H:i:s');
-
-		return $log->save();
-	}
-
 	// 获取敏感词
 	public function sensitiveWords($type)
 	{
-		return SensitiveWords::query()->where('type', $type)->get()->pluck('words')->toArray();
+		return SensitiveWords::query()->whereType($type)->get()->pluck('words')->toArray();
 	}
 
 	// 将Base64图片转换为本地图片并保存

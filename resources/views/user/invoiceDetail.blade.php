@@ -54,21 +54,25 @@
 						<tbody>
 						<tr>
 							<td>
-								<h3>{{$order->goods->name}}</h3>
+								<h3>{{empty($order->goods) ? ($order->goods_id == -1 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</h3>
 							</td>
 							<td>
-								{{trans('home.service_days')}} <code>{{$order->goods->days}}</code> {{trans('home.day')}}
-								<br/>
-								@if($order->goods->type == '2')
-									<code>{{$order->goods->traffic_label}}</code> {{trans('home.bandwidth')}}/{{trans('home.month')}}
+								@if($order->goods)
+									{{trans('home.service_days')}} <code>{{$order->goods->days}}</code> {{trans('home.day')}}
+									<br/>
+									@if($order->goods->type == '2')
+										<code>{{$order->goods->traffic_label}}</code> {{trans('home.bandwidth')}}/{{trans('home.month')}}
+									@else
+										<code>{{$order->goods->traffic_label}}</code> {{trans('home.bandwidth')}}/<code>{{$order->goods->days}}</code> {{trans('home.day')}}
+									@endif
 								@else
-									<code>{{$order->goods->traffic_label}}</code> {{trans('home.bandwidth')}}/<code>{{$order->goods->days}}</code> {{trans('home.day')}}
+									余额充值
 								@endif
 							</td>
-							<td><strong>¥</strong> {{$order->goods->price}} </td>
+							<td><strong>¥</strong> {{$order->origin_amount}} </td>
 							<td> 1</td>
 							<td>{{$order->coupon ? $order->coupon->name : '无'}}</td>
-							<td> ￥{{$order->goods->price}} </td>
+							<td> ￥{{$order->amount}} </td>
 							<td> {{$order->status_label}} </td>
 						</tr>
 						</tbody>

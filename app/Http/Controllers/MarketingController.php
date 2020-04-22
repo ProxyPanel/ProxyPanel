@@ -32,10 +32,10 @@ class MarketingController extends Controller
 	{
 		$status = $request->input('status');
 
-		$query = Marketing::query()->where('type', 1);
+		$query = Marketing::query()->whereType(1);
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
@@ -48,10 +48,10 @@ class MarketingController extends Controller
 	{
 		$status = $request->input('status');
 
-		$query = Marketing::query()->where('type', 2);
+		$query = Marketing::query()->whereType(2);
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['list'] = $query->paginate(15);

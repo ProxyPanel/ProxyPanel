@@ -17,9 +17,9 @@ Route::group(['middleware' => ['isForbidden', 'affiliate', 'isMaintenance']], fu
 	Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
 	Route::get('makeSecurityCode', 'Controller@makeSecurityCode'); // 生成网站安全码
 });
-Route::any('admin/login', 'AuthController@login')->middleware('isForbidden','isSecurity'); // 登录
+Route::any('admin/login', 'AuthController@login')->middleware('isForbidden', 'isSecurity'); // 登录
 
-Route::group(['middleware' => ['isForbidden','isAdminLogin', 'isAdmin']], function(){
+Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], function(){
 	Route::group(['prefix' => 'admin'], function(){
 		Route::get('', 'AdminController@index'); // 后台首页
 		Route::get('userList', 'AdminController@userList'); // 账号列表

@@ -38,12 +38,12 @@ class SsConfig extends Model
 
 	function scopeDefault($query)
 	{
-		$query->where('is_default', 1);
+		$query->whereIsDefault(1);
 	}
 
 	// 筛选类型
 	function scopeType($query, $type)
 	{
-		$query->where('type', $type);
+		$query->whereType($type);
 	}
 }

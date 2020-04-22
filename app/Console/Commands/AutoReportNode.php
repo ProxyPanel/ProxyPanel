@@ -24,12 +24,12 @@ class AutoReportNode extends Command
 		$jobStartTime = microtime(TRUE);
 
 		if(Helpers::systemConfig()['node_daily_report']){
-			$nodeList = SsNode::query()->where('status', 1)->get();
+			$nodeList = SsNode::query()->whereStatus(1)->get();
 			if(!$nodeList->isEmpty()){
 				$msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
 				foreach($nodeList as $node){
 					$log = SsNodeTrafficDaily::query()
-						->where('node_id', $node->id)
+						->whereNodeId($node->id)
 						->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-1 day")))
 						->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime("-1 day")))
 						->first();

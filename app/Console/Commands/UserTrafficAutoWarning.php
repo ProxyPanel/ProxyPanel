@@ -39,7 +39,7 @@ class UserTrafficAutoWarning extends Command
 	// 用户流量超过警告阈值自动发邮件提醒
 	private function userTrafficWarning()
 	{
-		$userList = User::query()->where('status', '>=', 0)->where('enable', 1)->where('transfer_enable', '>', 0)->get();
+		$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->where('transfer_enable', '>', 0)->get();
 		foreach($userList as $user){
 			// 用户名不是邮箱的跳过
 			if(FALSE === filter_var($user->email, FILTER_VALIDATE_EMAIL)){

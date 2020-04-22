@@ -120,7 +120,7 @@ class User extends Authenticatable
 
 	function scopeUid($query)
 	{
-		return $query->where('id', Auth::user()->id);
+		return $query->whereId(Auth::user()->id);
 	}
 
 	function levelList()

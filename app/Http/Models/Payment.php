@@ -21,7 +21,6 @@ use Illuminate\Support\Carbon;
  * @property int             $status  状态：-1-支付失败、0-等待支付、1-支付成功
  * @property Carbon          $created_at
  * @property Carbon          $updated_at
- * @property-read mixed      $pay_way_label
  * @property-read mixed      $status_label
  * @property-read Order|null $order
  * @property-read User       $user
@@ -48,7 +47,7 @@ class Payment extends Model
 
 	function scopeUid($query)
 	{
-		return $query->where('user_id', Auth::user()->id);
+		return $query->whereUserId(Auth::user()->id);
 	}
 
 	function user()
@@ -87,20 +86,5 @@ class Payment extends Model
 		}
 
 		return $status_label;
-	}
-
-	// 支付方式
-	function getPayWayLabelAttribute()
-	{
-		switch($this->attributes['pay_way']){
-			case 1:
-				$pay_way_label = '微信';
-				break;
-			case 2:
-			default:
-				$pay_way_label = '支付宝';
-		}
-
-		return $pay_way_label;
 	}
 }

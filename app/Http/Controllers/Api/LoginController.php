@@ -52,7 +52,7 @@ class LoginController extends Controller
 			Cache::put($cacheKey, 1, 3600);
 		}
 
-		$user = User::query()->where('email', $email)->where('status', '>=', 0)->first();
+		$user = User::query()->whereEmail($email)->where('status', '>=', 0)->first();
 		if(!$user){
 			Cache::increment($cacheKey);
 
@@ -64,7 +64,7 @@ class LoginController extends Controller
 		DB::beginTransaction();
 		try{
 			// 如果未生成过订阅链接则生成一个
-			$subscribe = UserSubscribe::query()->where('user_id', $user->id)->first();
+			$subscribe = UserSubscribe::query()->whereUserId($user->id)->first();
 
 			// 更新订阅链接访问次数
 			$subscribe->increment('times', 1);
@@ -76,7 +76,7 @@ class LoginController extends Controller
 			$url = self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url'];
 
 			// 节点列表
-			$userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');
+			$userLabelIds = UserLabel::query()->whereUserId($user->id)->pluck('label_id');
 			if(empty($userLabelIds)){
 				return Response::json(['status' => 'fail', 'message' => '', 'data' => []]);
 			}

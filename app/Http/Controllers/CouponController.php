@@ -35,11 +35,11 @@ class CouponController extends Controller
 		}
 
 		if(isset($type)){
-			$query->where('type', $type);
+			$query->whereType($type);
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['couponList'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
@@ -141,7 +141,7 @@ class CouponController extends Controller
 	// 删除优惠券
 	public function delCoupon(Request $request)
 	{
-		Coupon::query()->where('id', $request->input('id'))->delete();
+		Coupon::query()->whereId($request->input('id'))->delete();
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
 	}
@@ -149,9 +149,9 @@ class CouponController extends Controller
 	// 导出卡券
 	public function exportCoupon()
 	{
-		$voucherList = Coupon::type(1)->where('status', 0)->get();
-		$discountCouponList = Coupon::type(2)->where('status', 0)->get();
-		$refillList = Coupon::type(3)->where('status', 0)->get();
+		$voucherList = Coupon::type(1)->whereStatus(0)->get();
+		$discountCouponList = Coupon::type(2)->whereStatus(0)->get();
+		$refillList = Coupon::type(3)->whereStatus(0)->get();
 
 		$filename = '卡券'.date('Ymd').'.xlsx';
 		$spreadsheet = new Spreadsheet();
