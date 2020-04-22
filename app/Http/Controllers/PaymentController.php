@@ -6,13 +6,13 @@ use App\Components\Helpers;
 use App\Http\Controllers\Gateway\AopF2F;
 use App\Http\Controllers\Gateway\BitpayX;
 use App\Http\Controllers\Gateway\CodePay;
+use App\Http\Controllers\Gateway\local;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
-use App\Http\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Response;
@@ -31,6 +31,8 @@ class PaymentController extends Controller
 	public static function getClient()
 	{
 		switch(self::$method){
+			case 'balance':
+				return new Local();
 			case 'f2fpay':
 				return new AopF2F();
 			case 'codepay':
@@ -72,38 +74,43 @@ class PaymentController extends Controller
 	}
 
 	// 创建支付订单
-	public static function purchase(Request $request)
+	public function purchase(Request $request)
 	{
 		$goods_id = $request->input('goods_id');
 		$coupon_sn = $request->input('coupon_sn');
 		self::$method = $request->input('method');
 		$balance = $request->input('amount');
-		$goods = Goods::query()->where('status', 1)->whereId($goods_id)->first();
-		if(isset($balance)){
+
+		$goods = Goods::query()->whereStatus(1)->whereId($goods_id)->first();
+		// 充值余额
+		if($balance){
 			if(!is_numeric($balance) || $balance <= 0){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值余额不合规']);
 			}
 			$amount = $balance;
-		}elseif(isset($goods_id) && isset(self::$method)){
+			// 购买服务
+		}elseif($goods_id && self::$method){
 			if(!$goods){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：商品或服务已下架']);
 			}
+
 			// 是否有生效的套餐
-			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q){ $q->where('type', 2); })->where('status', 2)->where('is_expire', 0)->doesntExist();
+			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q){ $q->whereType(2); })->whereStatus(2)->whereIsExpire(0)->doesntExist();
+
 			//无生效套餐，禁止购买加油包
 			if($goods->type == 1 && $activePlan){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '购买加油包前，请先购买套餐']);
 			}
 
 			//非余额付款下，检查对应的在线支付是否开启
-			if(self::$method != 1){
+			if(self::$method != 'balance'){
 				// 判断是否开启在线支付
 				if(!Helpers::systemConfig()['is_onlinePay']){
 					return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：系统并未开启在线支付功能']);
 				}
 
 				// 判断是否存在同个商品的未支付订单
-				$existsOrder = Order::uid()->where('status', 0)->where('goods_id', $goods_id)->exists();
+				$existsOrder = Order::uid()->whereStatus(0)->whereGoodsId($goods_id)->exists();
 				if($existsOrder){
 					return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
 				}
@@ -111,7 +118,7 @@ class PaymentController extends Controller
 
 			// 单个商品限购
 			if($goods->limit_num){
-				$count = Order::uid()->where('status', '>=', 0)->where('goods_id', $goods_id)->count();
+				$count = Order::uid()->where('status', '>=', 0)->whereGoodsId($goods_id)->count();
 				if($count >= $goods->limit_num){
 					return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
 				}
@@ -119,7 +126,7 @@ class PaymentController extends Controller
 
 			// 使用优惠券
 			if($coupon_sn){
-				$coupon = Coupon::query()->where('status', 0)->whereIn('type', [1, 2])->where('sn', $coupon_sn)->first();
+				$coupon = Coupon::query()->whereStatus(0)->whereIn('type', [1, 2])->whereSn($coupon_sn)->first();
 				if(!$coupon){
 					return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：优惠券不存在']);
 				}
@@ -134,12 +141,12 @@ class PaymentController extends Controller
 			// 价格异常判断
 			if($amount < 0){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：订单总价异常']);
-			}elseif($amount == 0 && self::$method != 1){
+			}elseif($amount == 0 && self::$method != 'balance'){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '订单创建失败：订单总价为0，无需使用在线支付']);
 			}
 
 			// 验证账号余额是否充足
-			if(self::$method == 1 && Auth::user()->balance < $amount){
+			if(self::$method == 'balance' && Auth::user()->balance < $amount){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '您的余额不足，请先充值']);
 			}
 		}
@@ -170,33 +177,16 @@ class PaymentController extends Controller
 			Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '订单支付使用');
 		}
 
+		$request->merge(['oid' => $order->oid, 'amount' => $amount, 'type' => $request->input('pay_type')]);
+
 		// 生成支付单
-		if(self::$method == 1){
-			// 扣余额
-			User::query()->where('id', Auth::user()->id)->decrement('balance', $amount*100);
-
-			// 记录余额操作日志
-			(new Controller)->addUserBalanceLog(Auth::user()->id, $order->oid, Auth::user()->balance, Auth::user()->balance-$amount, -1*$amount, '购买商品：'.$goods->name);
-			$order = Order::query()->where('oid', $orderSn)->first();
-			$order->status = 2;
-			$order->save();
-			User::query()->where('id', $order->user_id)->increment('balance', $order->amount*100);
-
-			// 余额变动记录日志
-			(new Controller)->addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance+$order->amount, $order->amount, '用户在线充值');
-		}else{
-			$request->merge(['oid' => $order->oid, 'amount' => $amount, 'type' => $request->input('pay_type')]);
-
-			return self::getClient()->purchase($request);
-		}
-
-		return FALSE;
+		return self::getClient()->purchase($request);
 	}
 
 	// 支付单详情
 	public function detail($sn)
 	{
-		$payment = Payment::uid()->with(['order', 'order.goods'])->where('sn', $sn)->first();
+		$payment = Payment::uid()->with(['order', 'order.goods'])->whereSn($sn)->first();
 		$view['payment'] = $payment;
 		$view['name'] = $payment->order->goods? $payment->order->goods->name : '余额充值';
 		$view['days'] = $payment->order->goods? $payment->order->goods->days : 0;
@@ -212,7 +202,7 @@ class PaymentController extends Controller
 		$query = PaymentCallback::query();
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['list'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));

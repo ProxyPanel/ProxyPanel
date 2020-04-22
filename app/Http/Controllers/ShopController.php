@@ -31,11 +31,11 @@ class ShopController extends Controller
 		$query = Goods::query();
 
 		if(isset($type)){
-			$query->where('type', $type);
+			$query->whereType($type);
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['goodsList'] = $query->orderBy('status', 'desc')->paginate(10)->appends($request->except('page'));
@@ -150,7 +150,7 @@ class ShopController extends Controller
 			$limit_num = $request->input('limit_num');
 			$status = $request->input('status');
 
-			$goods = Goods::query()->where('id', $id)->first();
+			$goods = Goods::query()->whereId($id)->first();
 			if(!$goods){
 				Session::flash('errorMsg', '商品不存在');
 
@@ -212,10 +212,10 @@ class ShopController extends Controller
 					$data['logo'] = $logo;
 				}
 
-				Goods::query()->where('id', $id)->update($data);
+				Goods::query()->whereId($id)->update($data);
 
 				// 先删除该商品所有的标签
-				GoodsLabel::query()->where('goods_id', $id)->delete();
+				GoodsLabel::query()->whereGoodsId($id)->delete();
 
 				// 生成商品标签
 				if(!empty($labels)){
@@ -238,7 +238,7 @@ class ShopController extends Controller
 
 			return Redirect::to('shop/editGoods/'.$id);
 		}else{
-			$goods = Goods::query()->with(['label'])->where('id', $id)->first();
+			$goods = Goods::query()->with(['label'])->whereId($id)->first();
 			if($goods){
 				$label = [];
 				foreach($goods->label as $vo){

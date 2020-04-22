@@ -41,7 +41,7 @@ class Verify extends Model
 	// 筛选类型
 	function scopeType($query, $type)
 	{
-		return $query->where('type', $type);
+		return $query->whereType($type);
 	}
 
 	function user()

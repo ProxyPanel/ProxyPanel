@@ -46,10 +46,12 @@
 					<div class="form-group col-lg-2 col-sm-6">
 						<select class="form-control" name="pay_way" id="pay_way" onChange="Search()">
 							<option value="" hidden>支付方式</option>
-							<option value="1">余额支付</option>
-							<option value="2">有赞云支付</option>
-							<option value="4">支付宝国际</option>
-							<option value="5">支付宝当面付</option>
+							<option value="balance">余额</option>
+							<option value="youzan">有赞云</option>
+							<option value="f2fpay">支付宝当面付</option>
+							<option value="codepay">码支付</option>
+							<option value="payjs">PayJs</option>
+							<option value="bitpayx">麻瓜宝</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
@@ -117,17 +119,7 @@
 								<td> ￥{{$order->origin_amount}} </td>
 								<td> ￥{{$order->amount}} </td>
 								<td>
-									@if($order->pay_way == '1')
-										<span class="badge badge-lg badge-info"> 余额支付 </span>
-									@elseif($order->pay_way == '2')
-										<span class="badge badge-lg badge-info"> 有赞云支付 </span>
-									@elseif($order->pay_way == '4')
-										<span class="label label-info"> 支付宝国际 </span>
-									@elseif($order->pay_way == '5')
-										<span class="label label-info"> 支付宝当面付 </span>
-									@else
-										<span class="badge badge-lg badge-info"> 未知 </span>
-									@endif
+									<span class="badge badge-lg badge-info"> {{$order->pay_way_label}} </span>
 								</td>
 								<td>
 									@if($order->status == '-1')

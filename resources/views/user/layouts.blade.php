@@ -170,7 +170,7 @@
 					<span class="site-menu-title">{{trans('home.invoices')}}</span>
 				</a>
 			</li>
-			@if(!\App\Http\Models\Order::uid()->where('status', 2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist())
+			@if(!\App\Http\Models\Order::uid()->whereStatus(2)->where('is_expire', 0)->where('origin_amount', '>', 0)->doesntExist())
 				@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
 					<li class="site-menu-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}">
 						<a href="/invite">

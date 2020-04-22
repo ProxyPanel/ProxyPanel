@@ -145,9 +145,9 @@
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
 					<span class="site-menu-title">客服系统</span>
-					@if(\App\Http\Models\Ticket::query()->where('status','=','0')->count() > 0 )
+					@if(\App\Http\Models\Ticket::query()->whereStatus(0)->count() > 0 )
 						<div class="site-menu-badge">
-							<span class="badge badge-pill badge-success">{{\App\Http\Models\Ticket::query()->where('status','=','0')->count()}}</span>
+							<span class="badge badge-pill badge-success">{{\App\Http\Models\Ticket::query()->whereStatus(0)->count()}}</span>
 						</div>
 					@endif
 				</a>
@@ -155,9 +155,9 @@
 					<li class="site-menu-item {{in_array(Request::path(), ['ticket/ticketList', 'ticket/addTicket','ticket/replyTicket']) ? 'active open' : ''}}">
 						<a href="/ticket/ticketList" class="animsition-link">
 							<span class="site-menu-title">服务工单</span>
-							@if(\App\Http\Models\Ticket::query()->where('status','=','0')->count() > 0 )
+							@if(\App\Http\Models\Ticket::query()->whereStatus(0)->count() > 0 )
 								<div class="site-menu-label">
-									<span class="badge badge-danger badge-round mr-25">{{\App\Http\Models\Ticket::query()->where('status','=','0')->count()}}</span>
+									<span class="badge badge-danger badge-round mr-25">{{\App\Http\Models\Ticket::query()->whereStatus(0)->count()}}</span>
 								</div>
 							@endif
 						</a>

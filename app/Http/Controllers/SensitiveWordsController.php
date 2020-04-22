@@ -52,7 +52,7 @@ class SensitiveWordsController extends Controller
 	// 删除敏感词
 	public function delSensitiveWords(Request $request)
 	{
-		$result = SensitiveWords::query()->where('id', $request->input('id'))->delete();
+		$result = SensitiveWords::query()->whereId($request->input('id'))->delete();
 		if($result){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
 		}else{

@@ -55,7 +55,7 @@ class AopF2F extends AbstractPayment
 
 	public function notify($request)
 	{
-		$gateway = $this->createGateway();
+		$gateway = self::createGateway();
 		$aliRequest = $gateway->completePurchase();
 		$aliRequest->setParams($_POST);
 
@@ -64,7 +64,7 @@ class AopF2F extends AbstractPayment
 			$aliResponse = $aliRequest->send();
 			$pid = $aliResponse->data('out_trade_no');
 			if($aliResponse->isPaid()){
-				$this->postPayment($pid, '支付宝当面付');
+				self::postPayment($pid, '支付宝当面付');
 				exit('success');
 			}
 		}catch(Exception $e){

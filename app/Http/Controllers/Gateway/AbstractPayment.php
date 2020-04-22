@@ -49,39 +49,46 @@ abstract class AbstractPayment
 
 	abstract public function getPurchaseHTML();
 
-	public function postPayment($sn, $method)
+	public function postPayment($data, $method)
 	{
 		// 获取需要的信息
-		$payment = Payment::where('sn', $sn)->first();
-		$order = Order::find($payment->oid);
+		$payment = Payment::whereSn($data)->first();
+		// 是否为余额购买套餐
+		if($payment){
+			$order = Order::find($payment->oid);
+		}else{
+			$order = Order::find($data);
+		}
 		$goods = Goods::find($order->goods_id);
 		$user = User::find($order->user_id);
+
+		//余额充值
+		if($order->goods_id == -1){
+			User::query()->whereId($order->user_id)->increment('balance', $order->amount*100);
+			// 余额变动记录日志
+			Helpers::addUserBalanceLog($order->user_id, $order->oid, $order->user->balance, $order->user->balance+$order->amount, $order->amount, '用户'.$method.'充值余额');
+
+			return 0;
+		}
 
 		// 商品为流量或者套餐
 		switch($goods->type){
 			case 1:
 				$order->status = 2;
 				$order->save();
-				User::query()->where('id', $order->user_id)->increment('transfer_enable', $goods->traffic*1048576);
-				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $user->transfer_enable+$goods->traffic*1048576, '[在线支付]加上用户购买的套餐流量');
+				User::query()->whereId($order->user_id)->increment('transfer_enable', $goods->traffic*1048576);
+				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $user->transfer_enable+$goods->traffic*1048576, '['.$method.']加上用户购买的套餐流量');
 				break;
 			case 2:
-				$activePlan = Order::query()
-					->where('user_id', $user->id)
-					->where('is_expire', 0)
-					->where('status', 2)
-					->with(['goods'])
-					->whereHas('goods', function($q){
-						$q->where('type', 2);
-					})
-					->exists();
+				$activePlan = Order::query()->whereUserId($user->id)->with(['goods'])->whereIsExpire(0)->whereStatus(2)->whereHas('goods', function($q){ $q->whereType(2); })->exists();
+
 				// 2为开始生效，3为预支付
 				$order->status = $activePlan? 3 : 2;
 				$order->save();
 
 				if($activePlan){
 					// 预支付订单, 刷新账号有效时间用于流量重置判断
-					User::query()->where('id', $order->user_id)->update(['expire_time' => date('Y-m-d', strtotime("+".$goods->days." days", strtotime($user->expire_time)))]);
+					User::query()->whereId($order->user_id)->update(['expire_time' => date('Y-m-d', strtotime("+".$goods->days." days", strtotime($user->expire_time)))]);
 				}else{
 					// 如果买的是套餐，则先将之前购买的套餐都无效化，重置用户已用、可用流量为0
 					Order::query()
@@ -90,13 +97,13 @@ abstract class AbstractPayment
 						->whereHas('goods', function($q){
 							$q->where('type', '<=', 2);
 						})
-						->where('is_expire', 0)
-						->where('status', 2)
+						->whereIsExpire(0)
+						->whereStatus(2)
 						->where('oid', '<>', $order->oid)
 						->update(['expire_at' => date('Y-m-d H:i:s'), 'is_expire' => 1]);
 
 					User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
-					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, 0, '[在线支付]用户购买新套餐，先清空流量');
+					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, 0, '['.$method.']用户购买新套餐，先清空流量');
 
 					$userTraffic = $goods->traffic*1048576;
 					// 添加账号有效期
@@ -125,7 +132,7 @@ abstract class AbstractPayment
 					}
 
 					User::query()->where('id', $order->user_id)->increment('invite_num', $goods->invite_num? : 0, ['transfer_enable' => $userTraffic, 'reset_time' => $nextResetTime, 'expire_time' => $expireTime, 'enable' => 1]);
-					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $userTraffic, '[在线支付]加上用户购买的套餐流量');
+					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $userTraffic, '['.$method.']加上用户购买的套餐流量');
 				}
 
 				// 是否返利

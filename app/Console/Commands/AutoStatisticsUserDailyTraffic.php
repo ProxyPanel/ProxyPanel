@@ -23,13 +23,13 @@ class AutoStatisticsUserDailyTraffic extends Command
 	{
 		$jobStartTime = microtime(TRUE);
 
-		$userList = User::query()->where('status', '>=', 0)->where('enable', 1)->get();
+		$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
 		foreach($userList as $user){
 			// 统计一次所有节点的总和
 			$this->statisticsByNode($user->id);
 
 			// 统计每个节点产生的流量
-			$nodeList = SsNode::query()->where('status', 1)->orderBy('id', 'asc')->get();
+			$nodeList = SsNode::query()->whereStatus(1)->orderBy('id', 'asc')->get();
 			foreach($nodeList as $node){
 				$this->statisticsByNode($user->id, $node->id);
 			}
@@ -46,10 +46,10 @@ class AutoStatisticsUserDailyTraffic extends Command
 		$start_time = strtotime(date('Y-m-d 00:00:00', strtotime("-1 day")));
 		$end_time = strtotime(date('Y-m-d 23:59:59', strtotime("-1 day")));
 
-		$query = UserTrafficLog::query()->where('user_id', $user_id)->whereBetween('log_time', [$start_time, $end_time]);
+		$query = UserTrafficLog::query()->whereUserId($user_id)->whereBetween('log_time', [$start_time, $end_time]);
 
 		if($node_id){
-			$query->where('node_id', $node_id);
+			$query->whereNodeId($node_id);
 		}
 
 		$u = $query->sum('u');

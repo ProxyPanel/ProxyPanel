@@ -39,7 +39,7 @@ class SubscribeController extends Controller
 		$query = UserSubscribe::with(['user:id,email']);
 
 		if(isset($user_id)){
-			$query->where('user_id', $user_id);
+			$query->whereUserId($user_id);
 		}
 
 		if(isset($email)){
@@ -49,7 +49,7 @@ class SubscribeController extends Controller
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['subscribeList'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
@@ -64,7 +64,7 @@ class SubscribeController extends Controller
 		$query = UserSubscribeLog::with('user:email');
 
 		if(isset($id)){
-			$query->where('sid', $id);
+			$query->whereSid($id);
 		}
 
 		$view['subscribeLog'] = $query->orderBy('id', 'desc')->paginate(20)->appends($request->except('page'));
@@ -83,11 +83,11 @@ class SubscribeController extends Controller
 		$query = Device::query();
 
 		if(isset($type)){
-			$query->where('type', $type);
+			$query->whereType($type);
 		}
 
 		if(isset($platform)){
-			$query->where('platform', $platform);
+			$query->wherePlatform($platform);
 		}
 
 		if(isset($name)){
@@ -95,7 +95,7 @@ class SubscribeController extends Controller
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['deviceList'] = $query->paginate(20)->appends($request->except('page'));
@@ -114,9 +114,9 @@ class SubscribeController extends Controller
 		}
 
 		if($status){
-			UserSubscribe::query()->where('id', $id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
+			UserSubscribe::query()->whereId($id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
 		}else{
-			UserSubscribe::query()->where('id', $id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
+			UserSubscribe::query()->whereId($id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
 		}
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
@@ -132,7 +132,7 @@ class SubscribeController extends Controller
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
 		}
 
-		Device::query()->where('id', $id)->update(['status' => $status]);
+		Device::query()->whereId($id)->update(['status' => $status]);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 	}
@@ -145,12 +145,12 @@ class SubscribeController extends Controller
 		}
 
 		// 校验合法性
-		$subscribe = UserSubscribe::query()->with('user')->where('status', 1)->where('code', $code)->first();
+		$subscribe = UserSubscribe::query()->with('user')->whereStatus(1)->whereCode($code)->first();
 		if(!$subscribe){
 			exit($this->noneNode());
 		}
 
-		$user = User::query()->whereIn('status', [0, 1])->where('enable', 1)->where('id', $subscribe->user_id)->first();
+		$user = User::query()->whereIn('status', [0, 1])->whereEnable(1)->whereId($subscribe->user_id)->first();
 		if(!$user){
 			exit($this->noneNode());
 		}
@@ -162,7 +162,7 @@ class SubscribeController extends Controller
 		$this->log($subscribe->id, getClientIp(), $request->headers);
 
 		// 获取这个账号可用节点
-		$userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');
+		$userLabelIds = UserLabel::query()->whereUserId($user->id)->pluck('label_id');
 		if(empty($userLabelIds)){
 			exit($this->noneNode());
 		}

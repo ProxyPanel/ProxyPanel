@@ -47,7 +47,7 @@ class ReferralLog extends Model
 
 	function scopeUid($query)
 	{
-		return $query->where('ref_user_id', Auth::user()->id);
+		return $query->whereRefUserId(Auth::user()->id);
 	}
 
 	function user()

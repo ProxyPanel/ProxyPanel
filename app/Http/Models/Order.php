@@ -33,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property-read Goods   $goods
  * @property-read Payment $payment
  * @property-read User    $user
+ * @property-read mixed   $pay_way_label
  * @method static Builder|Order newModelQuery()
  * @method static Builder|Order newQuery()
  * @method static Builder|Order query()
@@ -60,7 +61,7 @@ class Order extends Model
 
 	function scopeUid($query)
 	{
-		return $query->where('user_id', Auth::user()->id);
+		return $query->whereUserId(Auth::user()->id);
 	}
 
 	function user()
@@ -83,6 +84,30 @@ class Order extends Model
 		return $this->hasOne(Payment::class, 'oid', 'oid');
 	}
 
+	// 订单状态
+	function getStatusLabelAttribute()
+	{
+		switch($this->attributes['status']){
+			case -1:
+				$status_label = trans('home.invoice_status_closed');
+				break;
+			case 1:
+				$status_label = trans('home.invoice_status_wait_confirm');
+				break;
+			case 2:
+				$status_label = trans('home.invoice_status_payment_confirm');
+				break;
+			case 0:
+				$status_label = trans('home.invoice_status_wait_payment');
+				break;
+			default:
+				$status_label = 'Unknown';
+		}
+
+		return $status_label;
+	}
+
+
 	function getOriginAmountAttribute($value)
 	{
 		return $value/100;
@@ -101,5 +126,34 @@ class Order extends Model
 	function setAmountAttribute($value)
 	{
 		return $this->attributes['amount'] = $value*100;
+	}
+
+	// 支付方式
+	function getPayWayLabelAttribute()
+	{
+		switch($this->attributes['pay_way']){
+			case 'balance':
+				$pay_way_label = '余额';
+				break;
+			case 'youzan':
+				$pay_way_label = '有赞云';
+				break;
+			case 'f2fpay':
+				$pay_way_label = '支付宝当面付';
+				break;
+			case 'codepay':
+				$pay_way_label = '码支付';
+				break;
+			case 'payjs':
+				$pay_way_label = 'PayJs';
+				break;
+			case 'bitpayx':
+				$pay_way_label = '麻瓜宝';
+				break;
+			default:
+				$pay_way_label = '未知';
+		}
+
+		return $pay_way_label;
 	}
 }

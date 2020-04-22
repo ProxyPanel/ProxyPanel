@@ -73,16 +73,16 @@ class AdminController extends Controller
 
 		$view['expireDays'] = self::$systemConfig['expire_days'];
 		$view['totalUserCount'] = User::query()->count(); // 总用户数
-		$view['enableUserCount'] = User::query()->where('enable', 1)->count(); // 有效用户数
+		$view['enableUserCount'] = User::query()->whereEnable(1)->count(); // 有效用户数
 		$view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
-		$view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->where('enable', 1)->where('t', '>', 0)->count(); // 不活跃用户数
+		$view['unActiveUserCount'] = User::query()->where('t', '<=', $past)->whereEnable(1)->where('t', '>', 0)->count(); // 不活跃用户数
 		$view['onlineUserCount'] = User::query()->where('t', '>=', time()-600)->count(); // 10分钟内在线用户数
 		$view['expireWarningUserCount'] = User::query()->where('expire_time', '>=', date('Y-m-d', strtotime("now")))->where('expire_time', '<=', date('Y-m-d', strtotime("+".self::$systemConfig['expire_days']." days")))->count(); // 临近过期用户数
 		$view['largeTrafficUserCount'] = User::query()->whereRaw('(u + d) >= 107374182400')->whereIn('status', [0, 1])->count(); // 流量超过100G的用户
 
 		// 1小时内流量异常用户
 		$tempUsers = [];
-		$userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+		$userTotalTrafficList = UserTrafficHourly::query()->whereNodeId(0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
 		if(!$userTotalTrafficList->isEmpty()){
 			foreach($userTotalTrafficList as $vo){
 				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value']*1073741824)){
@@ -92,18 +92,18 @@ class AdminController extends Controller
 		}
 		$view['flowAbnormalUserCount'] = User::query()->whereIn('id', $tempUsers)->count();
 		$view['nodeCount'] = SsNode::query()->count();
-		$view['unnormalNodeCount'] = SsNode::query()->where('status', 0)->count();
+		$view['unnormalNodeCount'] = SsNode::query()->whereStatus(0)->count();
 		$flowCount = SsNodeTrafficDaily::query()->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-30 days")))->sum('total');
 		$view['flowCount'] = flowAutoShow($flowCount);
 		$totalFlowCount = SsNodeTrafficDaily::query()->sum('total');
 		$view['totalFlowCount'] = flowAutoShow($totalFlowCount);
 		$view['totalBalance'] = User::query()->sum('balance')/100;
 		$view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount')/100;
-		$view['totalRefAmount'] = ReferralApply::query()->where('status', 2)->sum('amount')/100;
+		$view['totalRefAmount'] = ReferralApply::query()->whereStatus(2)->sum('amount')/100;
 		$view['totalOrder'] = Order::query()->count();
-		$view['totalOnlinePayOrder'] = Order::query()->where('pay_way', 2)->count();
-		$view['totalSuccessOrder'] = Order::query()->where('status', 2)->count();
-		$view['todaySuccessOrder'] = Order::query()->where('status', 2)->where('created_at', '>=', date('Y-m-d 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'))->count();
+		$view['totalOnlinePayOrder'] = Order::query()->wherePayWay(2)->count();
+		$view['totalSuccessOrder'] = Order::query()->whereStatus(2)->count();
+		$view['todaySuccessOrder'] = Order::query()->whereStatus(2)->where('created_at', '>=', date('Y-m-d 00:00:00'))->where('created_at', '<=', date('Y-m-d 23:59:59'))->count();
 
 		return Response::view('admin.index', $view);
 	}
@@ -127,7 +127,7 @@ class AdminController extends Controller
 
 		$query = User::query()->with(['subscribe']);
 		if(isset($id)){
-			$query->where('id', $id);
+			$query->whereId($id);
 		}
 
 		if(isset($email)){
@@ -143,19 +143,19 @@ class AdminController extends Controller
 		}
 
 		if(isset($port)){
-			$query->where('port', $port);
+			$query->wherePort($port);
 		}
 
 		if(isset($pay_way)){
-			$query->where('pay_way', $pay_way);
+			$query->wherePayWay($pay_way);
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		if(isset($enable)){
-			$query->where('enable', $enable);
+			$query->whereEnable($enable);
 		}
 
 		// 流量超过100G的
@@ -175,13 +175,13 @@ class AdminController extends Controller
 
 		// 不活跃用户
 		if($unActive){
-			$query->where('t', '>', 0)->where('t', '<=', strtotime(date('Y-m-d', strtotime("-".self::$systemConfig['expire_days']." days"))))->where('enable', 1);
+			$query->where('t', '>', 0)->where('t', '<=', strtotime(date('Y-m-d', strtotime("-".self::$systemConfig['expire_days']." days"))))->whereEnable(1);
 		}
 
 		// 1小时内流量异常用户
 		if($flowAbnormal){
 			$tempUsers = [];
-			$userTotalTrafficList = UserTrafficHourly::query()->where('node_id', 0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
+			$userTotalTrafficList = UserTrafficHourly::query()->whereNodeId(0)->where('total', '>', 104857600)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->groupBy('user_id')->selectRaw("user_id, sum(total) as totalTraffic")->get(); // 只统计100M以上的记录，加快速度
 			if(!$userTotalTrafficList->isEmpty()){
 				foreach($userTotalTrafficList as $vo){
 					if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value']*1024*1024*1024)){
@@ -208,7 +208,7 @@ class AdminController extends Controller
 
 			// 流量异常警告
 			$time = date('Y-m-d H:i:s', time()-3900);
-			$totalTraffic = UserTrafficHourly::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', $time)->sum('total');
+			$totalTraffic = UserTrafficHourly::query()->whereUserId($user->id)->whereNodeId(0)->where('created_at', '>=', $time)->sum('total');
 			$user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value']*1024*1024*1024)? 1 : 0;
 
 			// 订阅地址
@@ -225,7 +225,7 @@ class AdminController extends Controller
 	{
 		if($request->isMethod('POST')){
 			// 校验email是否已存在
-			$exists = User::query()->where('email', $request->input('email'))->first();
+			$exists = User::query()->whereEmail($request->input('email'))->first();
 			if($exists){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
 			}
@@ -301,7 +301,7 @@ class AdminController extends Controller
 	private function makeUserLabels($userId, $labels)
 	{
 		// 先删除该用户所有的标签
-		UserLabel::query()->where('user_id', $userId)->delete();
+		UserLabel::query()->whereUserId($userId)->delete();
 
 		if(!empty($labels) && is_array($labels)){
 			foreach($labels as $label){
@@ -385,13 +385,13 @@ class AdminController extends Controller
 			$reset_time = $request->input('reset_time');
 
 			// 校验email是否已存在
-			$exists = User::query()->where('id', '<>', $id)->where('email', $email)->first();
+			$exists = User::query()->where('id', '<>', $id)->whereEmail($email)->first();
 			if($exists){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
 			}
 
 			// 校验端口是否已存在
-			$exists = User::query()->where('id', '<>', $id)->where('port', '>', 0)->where('port', $port)->first();
+			$exists = User::query()->where('id', '<>', $id)->where('port', '>', 0)->wherePort($port)->first();
 			if($exists){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
 			}
@@ -406,7 +406,7 @@ class AdminController extends Controller
 			}
 
 			// 用户编辑前的信息
-			$user = User::query()->where('id', $id)->first();
+			$user = User::query()->whereId($id)->first();
 
 			DB::beginTransaction();
 			try{
@@ -448,7 +448,7 @@ class AdminController extends Controller
 					}
 				}
 
-				User::query()->where('id', $id)->update($data);
+				User::query()->whereId($id)->update($data);
 
 				// 重新生成用户标签
 				$this->makeUserLabels($id, $labels);
@@ -468,7 +468,7 @@ class AdminController extends Controller
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
 			}
 		}else{
-			$user = User::query()->with(['label', 'referral'])->where('id', $id)->first();
+			$user = User::query()->with(['label', 'referral'])->whereId($id)->first();
 			if($user){
 				$user->transfer_enable = flowToGB($user->transfer_enable);
 
@@ -505,13 +505,13 @@ class AdminController extends Controller
 
 		DB::beginTransaction();
 		try{
-			User::query()->where('id', $id)->delete();
-			UserSubscribe::query()->where('user_id', $id)->delete();
-			UserBanLog::query()->where('user_id', $id)->delete();
-			UserLabel::query()->where('user_id', $id)->delete();
-			UserBalanceLog::query()->where('user_id', $id)->delete();
-			UserTrafficModifyLog::query()->where('user_id', $id)->delete();
-			UserLoginLog::query()->where('user_id', $id)->delete();
+			User::query()->whereId($id)->delete();
+			UserSubscribe::query()->whereUserId($id)->delete();
+			UserBanLog::query()->whereUserId($id)->delete();
+			UserLabel::query()->whereUserId($id)->delete();
+			UserBalanceLog::query()->whereUserId($id)->delete();
+			UserTrafficModifyLog::query()->whereUserId($id)->delete();
+			UserLoginLog::query()->whereUserId($id)->delete();
 
 			DB::commit();
 
@@ -549,21 +549,21 @@ class AdminController extends Controller
 			$query = SsNode::query();
 
 			if(isset($status)){
-				$query->where('status', $status);
+				$query->whereStatus($status);
 			}
 
 			$nodeList = $query->orderBy('status', 'desc')->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
 			foreach($nodeList as $node){
 				// 在线人数
-				$online_log = SsNodeOnlineLog::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-5 minutes"))->orderBy('id', 'desc')->first();
+				$online_log = SsNodeOnlineLog::query()->whereNodeId($node->id)->where('log_time', '>=', strtotime("-5 minutes"))->orderBy('id', 'desc')->first();
 				$node->online_users = empty($online_log)? 0 : $online_log->online_user;
 
 				// 已产生流量
-				$totalTraffic = SsNodeTrafficDaily::query()->where('node_id', $node->id)->sum('total');
+				$totalTraffic = SsNodeTrafficDaily::query()->whereNodeId($node->id)->sum('total');
 				$node->transfer = flowAutoShow($totalTraffic);
 
 				// 负载（10分钟以内）
-				$node_info = SsNodeInfo::query()->where('node_id', $node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
+				$node_info = SsNodeInfo::query()->whereNodeId($node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->first();
 				$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
 				$node->load = $node->isOnline? $node_info->load : '离线';
 				$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
@@ -759,12 +759,12 @@ class AdminController extends Controller
 					'v2_outsider_port' => $request->input('v2_outsider_port', 443)
 				];
 
-				SsNode::query()->where('id', $id)->update($data);
+				SsNode::query()->whereid($id)->update($data);
 
 				// 建立分组关联
 				if($request->input('group_id')){
 					// 先删除该节点所有关联
-					SsGroupNode::query()->where('node_id', $id)->delete();
+					SsGroupNode::query()->whereNodeId($id)->delete();
 
 					// 建立关联
 					$ssGroupNode = new SsGroupNode();
@@ -788,7 +788,7 @@ class AdminController extends Controller
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：'.$e->getMessage()]);
 			}
 		}else{
-			$node = SsNode::query()->with(['label'])->where('id', $id)->first();
+			$node = SsNode::query()->with(['label'])->whereId($id)->first();
 			if($node){
 				$labels = [];
 				foreach($node->label as $vo){
@@ -814,7 +814,7 @@ class AdminController extends Controller
 	private function makeNodeLabels($nodeId, $labels)
 	{
 		// 先删除所有该节点的标签
-		SsNodeLabel::query()->where('node_id', $nodeId)->delete();
+		SsNodeLabel::query()->whereNodeId($nodeId)->delete();
 
 		if(!empty($labels) && is_array($labels)){
 			foreach($labels as $label){
@@ -831,7 +831,7 @@ class AdminController extends Controller
 	{
 		$id = $request->input('id');
 
-		$node = SsNode::query()->where('id', $id)->first();
+		$node = SsNode::query()->whereId($id)->first();
 		if(!$node){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '节点不存在，请重试']);
 		}
@@ -839,17 +839,17 @@ class AdminController extends Controller
 		DB::beginTransaction();
 		try{
 			// 删除分组关联、节点标签、节点相关日志
-			SsNode::query()->where('id', $id)->delete();
-			SsGroupNode::query()->where('node_id', $id)->delete();
-			SsNodeLabel::query()->where('node_id', $id)->delete();
-			SsNodeInfo::query()->where('node_id', $id)->delete();
-			SsNodeOnlineLog::query()->where('node_id', $id)->delete();
-			SsNodeTrafficDaily::query()->where('node_id', $id)->delete();
-			SsNodeTrafficHourly::query()->where('node_id', $id)->delete();
-			SsNodePing::query()->where('node_id', $id)->delete();
-			UserTrafficDaily::query()->where('node_id', $id)->delete();
-			UserTrafficHourly::query()->where('node_id', $id)->delete();
-			UserTrafficLog::query()->where('node_id', $id)->delete();
+			SsNode::query()->whereId($id)->delete();
+			SsGroupNode::query()->whereNodeId($id)->delete();
+			SsNodeLabel::query()->whereNodeId($id)->delete();
+			SsNodeInfo::query()->whereNodeId($id)->delete();
+			SsNodeOnlineLog::query()->whereNodeId($id)->delete();
+			SsNodeTrafficDaily::query()->whereNodeId($id)->delete();
+			SsNodeTrafficHourly::query()->whereNodeId($id)->delete();
+			SsNodePing::query()->whereNodeId($id)->delete();
+			UserTrafficDaily::query()->whereNodeId($id)->delete();
+			UserTrafficHourly::query()->whereNodeId($id)->delete();
+			UserTrafficLog::query()->whereNodeId($id)->delete();
 
 			DB::commit();
 
@@ -865,7 +865,7 @@ class AdminController extends Controller
 	// 节点流量监控
 	public function nodeMonitor($node_id)
 	{
-		$node = SsNode::query()->where('id', $node_id)->orderBy('sort', 'desc')->first();
+		$node = SsNode::query()->whereId($node_id)->orderBy('sort', 'desc')->first();
 		if(!$node){
 			Session::flash('errorMsg', '节点不存在，请重试');
 
@@ -877,7 +877,7 @@ class AdminController extends Controller
 		$hourlyData = [];
 
 		// 节点一个月内的流量
-		$nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+		$nodeTrafficDaily = SsNodeTrafficDaily::query()->with(['info'])->whereNodeId($node->id)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 		$dailyTotal = date('d', time())-1;//今天不算，减一
 		$dailyCount = count($nodeTrafficDaily);
 		for($x = 0; $x < ($dailyTotal-$dailyCount); $x++){
@@ -888,7 +888,7 @@ class AdminController extends Controller
 		}
 
 		// 节点一天内的流量
-		$nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->where('node_id', $node->id)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+		$nodeTrafficHourly = SsNodeTrafficHourly::query()->with(['info'])->whereNodeId($node->id)->where('created_at', '>=', date('Y-m-d', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 		$hourlyTotal = date('H', time());
 		$hourlyCount = count($nodeTrafficHourly);
 		for($x = 0; $x < ($hourlyTotal-$hourlyCount); $x++){
@@ -925,7 +925,7 @@ class AdminController extends Controller
 	// Ping节点延迟
 	public function pingNode(Request $request)
 	{
-		$node = SsNode::query()->where('id', $request->input('id'))->first();
+		$node = SsNode::query()->whereId($request->input('id'))->first();
 		if(!$node){
 			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
 		}
@@ -950,7 +950,7 @@ class AdminController extends Controller
 		$node_id = $request->input('nodeId');
 		$query = SsNodePing::query();
 		if(isset($node_id)){
-			$query->where('node_id', $node_id);
+			$query->whereNodeId($node_id);
 		}
 
 		$view['nodeList'] = SsNode::query()->orderBy('id', 'asc')->get();
@@ -1213,7 +1213,7 @@ class AdminController extends Controller
 		}
 
 		$view['list'] = $list;
-		$view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
+		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
 		return Response::view('admin.trafficLog', $view);
 	}
@@ -2096,7 +2096,7 @@ EOF;
 	// 导出邀请码
 	public function exportInvite()
 	{
-		$inviteList = Invite::query()->where('status', 0)->orderBy('id', 'asc')->get();
+		$inviteList = Invite::query()->whereStatus(0)->orderBy('id', 'asc')->get();
 
 		$filename = '邀请码'.date('Ymd').'.xlsx';
 
@@ -2138,7 +2138,7 @@ EOF;
 		}
 
 		if($status){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['applyList'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
@@ -2205,7 +2205,7 @@ EOF;
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		if(isset($range_time) && $range_time != ','){
@@ -2275,7 +2275,7 @@ EOF;
 				$user = User::query()->where('id', $userId)->first();
 
 				// 写入余额变动日志
-				$this->addUserBalanceLog($userId, 0, $user->balance, $user->balance+$amount, $amount, '后台手动充值');
+				Helpers::addUserBalanceLog($userId, 0, $user->balance, $user->balance+$amount, $amount, '后台手动充值');
 
 				// 加减余额
 				if($amount < 0){
@@ -2373,7 +2373,7 @@ EOF;
 		}
 
 		if(isset($status)){
-			$query->where('status', $status);
+			$query->whereStatus($status);
 		}
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
@@ -2389,7 +2389,7 @@ EOF;
 		$wechat = $request->input('wechat');
 		$qq = $request->input('qq');
 
-		$query = User::query()->where('status', '>=', 0)->where('enable', 1);
+		$query = User::query()->where('status', '>=', 0)->whereEnable(1);
 
 		if(isset($email)){
 			$query->where('email', 'like', '%'.$email.'%');
@@ -2588,7 +2588,7 @@ EOF;
 		}
 
 		$view['list'] = $list->paginate(20)->appends($request->except('page'));
-		$view['nodeList'] = SsNode::query()->where('status', 1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
+		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
 		return Response::view('admin.onlineIPMonitor', $view);
 	}

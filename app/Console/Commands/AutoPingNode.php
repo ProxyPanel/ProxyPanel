@@ -22,7 +22,7 @@ class AutoPingNode extends Command
 	{
 		$jobStartTime = microtime(TRUE);
 
-		$nodeList = SsNode::query()->where('is_transit', 0)->where('status', 1)->get();
+		$nodeList = SsNode::query()->whereIsTransit(0)->whereStatus(1)->get();
 		foreach($nodeList as $node){
 			$this->pingNode($node->id, $node->is_ddns? $node->server : $node->ip);
 		}

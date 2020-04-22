@@ -8,6 +8,7 @@ use App\Http\Models\Level;
 use App\Http\Models\NotificationLog;
 use App\Http\Models\SsConfig;
 use App\Http\Models\User;
+use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficModifyLog;
 
@@ -50,7 +51,7 @@ class Helpers
 	public static function makeSubscribeCode()
 	{
 		$code = makeRandStr(5);
-		if(UserSubscribe::query()->where('code', $code)->exists()){
+		if(UserSubscribe::query()->whereCode($code)->exists()){
 			$code = self::makeSubscribeCode();
 		}
 
@@ -205,6 +206,32 @@ class Helpers
 		$log->goods_id = $goodsId;
 		$log->order_id = $orderId;
 		$log->desc = $desc;
+
+		return $log->save();
+	}
+
+	/**
+	 * 记录余额操作日志
+	 *
+	 * @param int    $userId 用户ID
+	 * @param string $oid    订单ID
+	 * @param int    $before 记录前余额
+	 * @param int    $after  记录后余额
+	 * @param int    $amount 发生金额
+	 * @param string $desc   描述
+	 *
+	 * @return int
+	 */
+	public static function addUserBalanceLog($userId, $oid, $before, $after, $amount, $desc = '')
+	{
+		$log = new UserBalanceLog();
+		$log->user_id = $userId;
+		$log->order_id = $oid;
+		$log->before = $before;
+		$log->after = $after;
+		$log->amount = $amount;
+		$log->desc = $desc;
+		$log->created_at = date('Y-m-d H:i:s');
 
 		return $log->save();
 	}

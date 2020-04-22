@@ -56,7 +56,7 @@ class Invite extends Model
 
 	function scopeUid($query)
 	{
-		return $query->where('uid', Auth::user()->id);
+		return $query->whereUid(Auth::user()->id);
 	}
 
 	function generator()
