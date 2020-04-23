@@ -15,6 +15,7 @@ use App\Http\Models\Payment;
 use App\Http\Models\PaymentCallback;
 use Auth;
 use Illuminate\Http\Request;
+use Log;
 use Response;
 
 /**
@@ -30,7 +31,12 @@ class PaymentController extends Controller
 
 	public static function notify(Request $request)
 	{
-		return self::getClient()->notify($request);
+		self::$method = $request->input('method');
+
+		Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), TRUE));
+		$result = self::getClient()->notify($request);		
+
+		return 0;
 	}
 
 	public static function getClient()
@@ -64,13 +70,17 @@ class PaymentController extends Controller
 	public static function getStatus(Request $request)
 	{
 		$payment = Payment::whereSn($request->input('sn'))->first();
-		if($payment->status > 0){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
-		}elseif($payment->status < 0){
-			return Response::json(['status' => 'error', 'data' => '', 'message' => '订单超时未支付，已自动关闭']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '等待支付']);
+		if($payment){
+			if($payment->status == 1){
+				return Response::json(['status' => 'success', 'data' => '', 'message' => '支付成功']);
+			}elseif($payment->status == -1){
+				return Response::json(['status' => 'error', 'data' => '', 'message' => '订单超时未支付，已自动关闭']);
+			}else{
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => '等待支付']);
+			}
 		}
+
+		return Response::json(['status' => 'error', 'data' => '', 'message' => '未知订单']);
 	}
 
 	// 创建支付订单

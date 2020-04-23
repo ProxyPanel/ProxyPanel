@@ -25,7 +25,7 @@ class PayJs extends AbstractPayment
 			'total_fee'    => $payment->amount*100,
 			'out_trade_no' => $payment->sn,
 			'attach'       => '',
-			'notify_url'   => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/payment/notify',
+			'notify_url'   => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/callback/notify?method=payjs',
 		]);
 
 		if(!$result->return_code){

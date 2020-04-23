@@ -68,13 +68,12 @@
 								<tr style="padding:0;text-align:left;vertical-align:top">
 									<th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
 										<div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
-											<p>{{$content}}</p>
+											<p>{!! $content !!}</p>
 										</div>
 									</th>
 									<th class="expander" style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0!important;text-align:left;visibility:hidden;width:0"></th>
 								</tr>
 								</tbody>
-								</th></tr></tbody>
 							</table>
 						</td>
 					</tr>

@@ -282,7 +282,7 @@ class UserController extends Controller
 			User::query()->whereId(Auth::user()->id)->decrement('balance', $renewCost*100);
 
 			// 记录余额操作日志
-			$this->addUserBalanceLog(Auth::user()->id, '', Auth::user()->balance, Auth::user()->balance-$renewCost, -1*$renewCost, '用户自行重置流量');
+			Helpers::addUserBalanceLog(Auth::user()->id, '', Auth::user()->balance, Auth::user()->balance-$renewCost, -1*$renewCost, '用户自行重置流量');
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '重置成功']);
 		}
@@ -654,7 +654,7 @@ class UserController extends Controller
 		try{
 			DB::beginTransaction();
 			// 写入日志
-			$this->addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance+$coupon->amount, $coupon->amount, '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
+			Helpers::addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance+$coupon->amount, $coupon->amount, '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
 
 			// 余额充值
 			User::uid()->increment('balance', $coupon->amount*100);

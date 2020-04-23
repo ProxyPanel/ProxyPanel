@@ -34,7 +34,8 @@ class AopF2F extends AbstractPayment
 		/** @var AopTradePreCreateResponse $response */
 		$aliResponse = $request->send();
 
-		$payment->qr_code = 'http://qr.topscan.com/api.php?text='.$aliResponse->getQrCode().'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';//后备：https://cli.im/api/qrcode/code?text=".$aliResponse->getQrCode()."&mhid=5EfGCwztyckhMHcmI9ZcOKs
+		$payment->qr_code = 'http://qr.topscan.com/api.php?text='.$aliResponse->getQrCode().'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';
+		//后备：https://cli.im/api/qrcode/code?text=".$aliResponse->getQrCode()."&mhid=5EfGCwztyckhMHcmI9ZcOKs
 		$payment->save();
 
 		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
@@ -45,10 +46,9 @@ class AopF2F extends AbstractPayment
 		$gateway = Omnipay::create('Alipay_AopF2F');
 		$gateway->setSignType('RSA2'); //RSA/RSA2
 		$gateway->setAppId(parent::$systemConfig['f2fpay_app_id']);
-		$gateway->setPrivateKey(parent::$systemConfig['f2fpay_private_key']); // 可以是路径，也可以是密钥内容
-		$gateway->setAlipayPublicKey(parent::$systemConfig['f2fpay_public_key']); // 可以是路径，也可以是密钥内容
-		$notifyUrl = (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/payment/notify';
-		$gateway->setNotifyUrl($notifyUrl);
+		$gateway->setPrivateKey(parent::$systemConfig['f2fpay_private_key']);
+		$gateway->setAlipayPublicKey(parent::$systemConfig['f2fpay_public_key']);
+		$gateway->setNotifyUrl((parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/callback/notify?method=f2fpay');
 
 		return $gateway;
 	}
@@ -56,16 +56,17 @@ class AopF2F extends AbstractPayment
 	public function notify($request)
 	{
 		$gateway = self::createGateway();
-		$aliRequest = $gateway->completePurchase();
-		$aliRequest->setParams($_POST);
+		$request = $gateway->completePurchase();
+		$request->setParams($_POST);
 
 		try{
 			/** @var AopCompletePurchaseResponse $response */
-			$aliResponse = $aliRequest->send();
-			$pid = $aliResponse->data('out_trade_no');
-			if($aliResponse->isPaid()){
-				self::postPayment($pid, '支付宝当面付');
+			$response = $request->send();
+			if($response->isPaid()){
+				self::postPayment($response->data('out_trade_no'), '支付宝当面付');
 				exit('success');
+			}else{
+				exit('fail');
 			}
 		}catch(Exception $e){
 			Log::error('支付宝当面付 '.$e);

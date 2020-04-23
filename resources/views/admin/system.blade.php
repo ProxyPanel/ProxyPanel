@@ -1038,6 +1038,18 @@
 											<span class="text-help offset-md-3"> 用于在支付渠道的商品标题显示 </span>
 										</div>
 									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-form-label col-md-3" for="website_callback_url">通用支付回调地址</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="website_callback_url" value="{{$website_callback_url}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('website_callback_url')">修改</button></span>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"> 防止因为网站域名被DNS投毒后导致支付无法正常回调，需带http://或https:// </span>
+										</div>
+									</div>
 								</div>
 								<div class="row pb-70">
 									<div class="form-group col-lg-6">
@@ -1062,14 +1074,14 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="f2fpay_private_key">RSA私钥</label>
+											<label class="col-md-3 col-form-label" for="f2fpay_private_key">应用私钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input class="form-control" type="text" id="f2fpay_private_key" value="{{$f2fpay_private_key}}"/>
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_private_key')">修改</button></span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3">即：rsa_private_key，不包括首尾格式</span>
+											<span class="text-help offset-md-3">生成秘钥软件生成时，产生的应用秘钥</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -1081,7 +1093,7 @@
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('f2fpay_public_key')">修改</button></span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 注意不是RSA公钥 </span>
+											<span class="text-help offset-md-3"> 注意不是应用公钥！ </span>
 										</div>
 									</div>
 								</div>
@@ -1090,7 +1102,7 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">码支付</label>
 											<div class="col-md-7">
-												请到 <a href="https://codepay.fateqq.com/i/377289">码支付</a> 申请账号，然后下载登录其挂机软件
+												请到 <a href="https://codepay.fateqq.com/i/377289" target="_blank">码支付</a> 申请账号，然后下载登录其挂机软件
 											</div>
 										</div>
 									</div>
@@ -1210,7 +1222,7 @@
             $('#referral_type').selectpicker('val', {{$referral_type}});
             $('#is_email_filtering').selectpicker('val', {{$is_email_filtering}});
             $('#initial_labels_for_user').selectpicker('val', [{{$initial_labels_for_user}}]);
-            $('#is_notification').selectpicker('val', {{$is_notification}});
+            $('#is_notification').selectpicker('val', '{{$is_notification}}');
             $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
             $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
             $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
@@ -1277,11 +1289,6 @@
                 }
             });
         }
-
-        // 自动去除公钥和私钥中的空格和换行
-        $("#alipay_public_key,#alipay_private_key,#f2fpay_public_key,#f2fpay_private_key").on('input', function () {
-            $(this).val($(this).val().replace(/(\s+)/g, ''));
-        });
 
         // 生成网站安全码
         function makeWebsiteSecurityCode() {

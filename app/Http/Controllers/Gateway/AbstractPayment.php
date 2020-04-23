@@ -55,6 +55,7 @@ abstract class AbstractPayment
 		$payment = Payment::whereSn($data)->first();
 		// 是否为余额购买套餐
 		if($payment){
+			Payment::whereSn($data)->update(['status' => 1]);
 			$order = Order::find($payment->oid);
 		}else{
 			$order = Order::find($data);

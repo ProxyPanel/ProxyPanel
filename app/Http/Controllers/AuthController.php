@@ -199,6 +199,8 @@ class AuthController extends Controller
 			default: // 不启用验证码
 				break;
 		}
+
+		return 0;
 	}
 
 
