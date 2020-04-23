@@ -74,7 +74,6 @@
 									<th class="expander" style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0!important;text-align:left;visibility:hidden;width:0"></th>
 								</tr>
 								</tbody>
-								</th></tbody>
 							</table>
 						</td>
 					</tr>

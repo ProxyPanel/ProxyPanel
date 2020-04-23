@@ -59,7 +59,7 @@ class BitpayX extends AbstractPayment
 			'pay_currency'      => $request->input('type') == 1? 'ALIPAY' : 'WECHAT',
 			'title'             => '支付单号：'.$payment->sn,
 			'description'       => parent::$systemConfig['subject_name']? : parent::$systemConfig['website_name'],
-			'callback_url'      => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/payment/notify',
+			'callback_url'      => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/callback/notify?method=bitpayx',
 			'success_url'       => parent::$systemConfig['website_url'].'/invoices',
 			'cancel_url'        => parent::$systemConfig['website_url'],
 			'token'             => $this->sign($this->prepareSignId($payment->sn)),

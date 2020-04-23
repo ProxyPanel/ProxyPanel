@@ -53,7 +53,7 @@ class CouponController extends Controller
 		if($request->isMethod('POST')){
 			$this->validate($request, [
 				'name'            => 'required',
-				'sn'              => 'mail|unique:coupon',
+				'sn'              => 'unique:coupon',
 				'type'            => 'required|integer|between:1,3',
 				'usage'           => 'required|integer|between:1,2',
 				'num'             => 'required|integer|min:1',

@@ -130,7 +130,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post("del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
 	});
 	Route::get("payment/callbackList", "PaymentController@callbackList"); // 支付回调日志
-	Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
+	Route::get('logs', '\Rap2hpoutre\Controllers\LogViewerController@index'); // 系统运行日志
 });
 
 Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], function(){
@@ -161,8 +161,9 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 
 	Route::group(['prefix' => 'payment'], function(){
 		Route::post('purchase', 'PaymentController@purchase'); // 创建支付
-		Route::any('notify', 'PaymentController@notify'); //支付回调
 		Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
 		Route::get('{sn}', 'PaymentController@detail'); // 支付单详情
 	});
 });
+
+Route::post('callback/notify', 'PaymentController@notify'); //支付回调
