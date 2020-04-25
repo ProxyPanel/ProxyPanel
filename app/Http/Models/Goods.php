@@ -73,6 +73,7 @@ use Illuminate\Support\Carbon;
 class Goods extends Model
 {
 	use SoftDeletes;
+
 	protected $table = 'goods';
 	protected $primaryKey = 'id';
 	protected $dates = ['deleted_at'];

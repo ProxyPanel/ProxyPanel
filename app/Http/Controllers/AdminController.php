@@ -49,7 +49,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Redirect;
 use Response;
 use Session;
-use stdClass;
 
 /**
  * 管理员控制器
@@ -217,7 +216,7 @@ class AdminController extends Controller
 
 		$view['userList'] = $userList;
 
-		return Response::view('admin.userList', $view);
+		return Response::view('admin.user.userList', $view);
 	}
 
 	// 添加账号
@@ -293,7 +292,7 @@ class AdminController extends Controller
 			$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 			$view['initial_labels'] = explode(",", self::$systemConfig['initial_labels_for_user']);
 
-			return Response::view('admin.addUser', $view);
+			return Response::view('admin.user.addUser', $view);
 		}
 	}
 
@@ -345,7 +344,7 @@ class AdminController extends Controller
 			DB::commit();
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '批量生成账号成功']);
-		} catch(Exception $e){
+		}catch(Exception $e){
 			DB::rollBack();
 
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '批量生成账号失败：'.$e->getMessage()]);
@@ -461,7 +460,7 @@ class AdminController extends Controller
 				DB::commit();
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
-			} catch(Exception $e){
+			}catch(Exception $e){
 				DB::rollBack();
 				Log::error('编辑用户信息异常：'.$e->getMessage());
 
@@ -490,7 +489,7 @@ class AdminController extends Controller
 			$view['level_list'] = Helpers::levelList();
 			$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
-			return Response::view('admin.editUser', $view);
+			return Response::view('admin.user.editUser', $view);
 		}
 	}
 
@@ -516,7 +515,7 @@ class AdminController extends Controller
 			DB::commit();
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::error($e);
 			DB::rollBack();
 
@@ -529,7 +528,7 @@ class AdminController extends Controller
 	{
 		if($request->isMethod('POST')){
 			$id = $request->input('id');
-			$node = SsNode::query()->whereKey($id)->first();
+			$node = SsNode::query()->whereId($id)->first();
 			// 使用DDNS的node先通过gethostbyname获取ipv4地址
 			if($node->is_ddns){
 				$ip = gethostbyname($node->server);
@@ -572,7 +571,7 @@ class AdminController extends Controller
 			$view['nodeList'] = $nodeList;
 		}
 
-		return Response::view('admin.nodeList', $view);
+		return Response::view('admin.node.nodeList', $view);
 	}
 
 	// 添加节点
@@ -668,7 +667,7 @@ class AdminController extends Controller
 				DB::commit();
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
-			} catch(Exception $e){
+			}catch(Exception $e){
 				DB::rollBack();
 				Log::error('添加节点信息异常：'.$e->getMessage());
 
@@ -683,7 +682,7 @@ class AdminController extends Controller
 			$view['country_list'] = Country::query()->orderBy('code', 'asc')->get();
 			$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
-			return Response::view('admin.addNode', $view);
+			return Response::view('admin.group.addNode', $view);
 		}
 	}
 
@@ -781,7 +780,7 @@ class AdminController extends Controller
 				DB::commit();
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
-			} catch(Exception $e){
+			}catch(Exception $e){
 				DB::rollBack();
 				Log::error('编辑节点信息异常：'.$e->getMessage());
 
@@ -806,7 +805,7 @@ class AdminController extends Controller
 			$view['country_list'] = Country::query()->orderBy('code', 'asc')->get();
 			$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
-			return Response::view('admin.editNode', $view);
+			return Response::view('admin.node.editNode', $view);
 		}
 	}
 
@@ -854,7 +853,7 @@ class AdminController extends Controller
 			DB::commit();
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-		} catch(Exception $e){
+		}catch(Exception $e){
 			DB::rollBack();
 			Log::error('删除节点信息异常：'.$e->getMessage());
 
@@ -919,7 +918,7 @@ class AdminController extends Controller
 		$view['monthDays'] = "'".implode("','", $monthDays)."'";
 		$view['dayHours'] = "'".implode("','", $dayHours)."'";
 
-		return Response::view('admin.nodeMonitor', $view);
+		return Response::view('admin.node.nodeMonitor', $view);
 	}
 
 	// Ping节点延迟
@@ -956,7 +955,7 @@ class AdminController extends Controller
 		$view['nodeList'] = SsNode::query()->orderBy('id', 'asc')->get();
 		$view['pingLogs'] = $query->orderBy('id', 'asc')->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.nodePingLog', $view);
+		return Response::view('admin.logs.nodePingLog', $view);
 	}
 
 
@@ -965,7 +964,7 @@ class AdminController extends Controller
 	{
 		$view['list'] = Article::query()->orderBy('sort', 'desc')->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.articleList', $view);
+		return Response::view('admin.article.articleList', $view);
 	}
 
 	// 添加文章
@@ -1016,7 +1015,7 @@ class AdminController extends Controller
 
 			return Redirect::to('admin/articleList');
 		}else{
-			return Response::view('admin.addArticle');
+			return Response::view('admin.article.addArticle');
 		}
 	}
 
@@ -1060,7 +1059,7 @@ class AdminController extends Controller
 				$data['logo'] = $logo;
 			}
 
-			$ret = Article::query()->where('id', $id)->update($data);
+			$ret = Article::query()->whereId('id', $id)->update($data);
 			if($ret){
 				Session::flash('successMsg', '编辑成功');
 			}else{
@@ -1069,9 +1068,9 @@ class AdminController extends Controller
 
 			return Redirect::to('admin/editArticle?id='.$id);
 		}else{
-			$view['article'] = Article::query()->where('id', $id)->first();
+			$view['article'] = Article::query()->whereId($id)->first();
 
-			return Response::view('admin.editArticle', $view);
+			return Response::view('admin.article.editArticle', $view);
 		}
 	}
 
@@ -1080,7 +1079,7 @@ class AdminController extends Controller
 	{
 		$id = $request->input('id');
 
-		$ret = Article::query()->where('id', $id)->delete();
+		$ret = Article::query()->whereId($id)->delete();
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
 		}else{
@@ -1100,7 +1099,7 @@ class AdminController extends Controller
 		}
 		$view['levelMap'] = $levelMap;
 
-		return Response::view('admin.groupList', $view);
+		return Response::view('admin.group.groupList', $view);
 	}
 
 	// 添加节点分组
@@ -1116,7 +1115,7 @@ class AdminController extends Controller
 		}else{
 			$view['levelList'] = Helpers::levelList();
 
-			return Response::view('admin.addGroup', $view);
+			return Response::view('admin.group.addGroup', $view);
 		}
 	}
 
@@ -1129,17 +1128,17 @@ class AdminController extends Controller
 
 			$data = ['name' => $name, 'level' => $level];
 
-			$ret = SsGroup::query()->where('id', $id)->update($data);
+			$ret = SsGroup::query()->whereId($id)->update($data);
 			if($ret){
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
 			}else{
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
 			}
 		}else{
-			$view['group'] = SsGroup::query()->where('id', $id)->first();
+			$view['group'] = SsGroup::query()->whereId($id)->first();
 			$view['levelList'] = Helpers::levelList();
 
-			return Response::view('admin.editGroup', $view);
+			return Response::view('admin.group.editGroup', $view);
 		}
 	}
 
@@ -1149,12 +1148,12 @@ class AdminController extends Controller
 		$id = $request->input('id');
 
 		// 检查是否该分组下是否有节点
-		$ssGroupNodeCount = SsGroupNode::query()->where('group_id', $id)->count();
+		$ssGroupNodeCount = SsGroupNode::query()->whereGroupId($id)->count();
 		if($ssGroupNodeCount){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：该分组下有节点关联，请先解除关联']);
 		}
 
-		$ret = SsGroup::query()->where('id', $id)->delete();
+		$ret = SsGroup::query()->whereId($id)->delete();
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
 		}else{
@@ -1176,12 +1175,12 @@ class AdminController extends Controller
 
 		if(isset($port)){
 			$query->whereHas('user', function($q) use ($port){
-				$q->where('port', $port);
+				$q->wherePort($port);
 			});
 		}
 
 		if(isset($user_id)){
-			$query->where('user_id', $user_id);
+			$query->whereUserId($user_id);
 		}
 
 		if(isset($email)){
@@ -1191,7 +1190,7 @@ class AdminController extends Controller
 		}
 
 		if(isset($nodeId)){
-			$query->where('node_id', $nodeId);
+			$query->whereNodeId($nodeId);
 		}
 
 		if(isset($startTime)){
@@ -1215,7 +1214,7 @@ class AdminController extends Controller
 		$view['list'] = $list;
 		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
-		return Response::view('admin.trafficLog', $view);
+		return Response::view('admin.logs.trafficLog', $view);
 	}
 
 	// SS(R)链接反解析
@@ -1393,7 +1392,7 @@ class AdminController extends Controller
 				}
 
 				DB::commit();
-			} catch(Exception $e){
+			}catch(Exception $e){
 				DB::rollBack();
 
 				Session::flash('errorMsg', '出错了，可能是导入的配置中有端口已经存在了');
@@ -1416,7 +1415,7 @@ class AdminController extends Controller
 			return Redirect::to('admin/userList');
 		}
 
-		$user = User::query()->where('id', $id)->first();
+		$user = User::query()->whereId($id)->first();
 		if(empty($user)){
 			return Redirect::to('admin/userList');
 		}
@@ -1425,7 +1424,7 @@ class AdminController extends Controller
 			$node_id = $request->input('id');
 			$infoType = $request->input('type');
 
-			$node = SsNode::query()->whereKey($node_id)->first();
+			$node = SsNode::query()->whereId($node_id)->first();
 			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
 			$data = $this->getNodeInfo($id, $node->id, $infoType != 'text'? 0 : 1);
 
@@ -1511,7 +1510,7 @@ EOF;
 			return Redirect::to('admin/userList');
 		}
 
-		$user = User::query()->where('id', $id)->first();
+		$user = User::query()->whereId($id)->first();
 		if(empty($user)){
 			return Redirect::to('admin/userList');
 		}
@@ -1520,7 +1519,7 @@ EOF;
 		$dailyData = [];
 		$hourlyData = [];
 		// 节点一个月内的流量
-		$userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user->id)->where('node_id', 0)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
+		$userTrafficDaily = UserTrafficDaily::query()->whereUserId($user->id)->whereNodeId(0)->where('created_at', '>=', date('Y-m', time()))->orderBy('created_at', 'asc')->pluck('total')->toArray();
 
 		$dailyTotal = date('d')-1; // 今天不算，减一
 		$dailyCount = count($userTrafficDaily);
@@ -1559,7 +1558,7 @@ EOF;
 		$view['dayHours'] = "'".implode("','", $dayHours)."'";
 		$view['email'] = $user->email;
 
-		return Response::view('admin.userMonitor', $view);
+		return Response::view('admin.logs.userMonitor', $view);
 	}
 
 	// 生成端口
@@ -1582,7 +1581,7 @@ EOF;
 			}
 
 			// 校验是否已存在
-			$config = SsConfig::type($type)->where('name', $name)->first();
+			$config = SsConfig::type($type)->whereName($name)->first();
 			if($config){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置已经存在，请勿重复添加']);
 			}
@@ -1611,7 +1610,7 @@ EOF;
 	{
 		$id = $request->input('id');
 
-		$ret = SsConfig::query()->where('id', $id)->delete();
+		$ret = SsConfig::query()->whereId($id)->delete();
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
 		}else{
@@ -1628,7 +1627,7 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
 		}
 
-		$config = SsConfig::query()->where('id', $id)->first();
+		$config = SsConfig::query()->whereId($id)->first();
 		if(!$config){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置不存在']);
 		}
@@ -1637,7 +1636,7 @@ EOF;
 		SsConfig::default()->type($config->type)->update(['is_default' => 0]);
 
 		// 将该ID对应记录值置为默认值
-		SsConfig::query()->where('id', $id)->update(['is_default' => 1]);
+		SsConfig::query()->whereId($id)->update(['is_default' => 1]);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 	}
@@ -1666,7 +1665,7 @@ EOF;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$websiteHomeLogo = $move? '/upload/image/'.$logoName : '';
 
-				Config::query()->where('name', 'website_home_logo')->update(['value' => $websiteHomeLogo]);
+				Config::query()->whereName('website_home_logo')->update(['value' => $websiteHomeLogo]);
 			}
 
 			// 站内LOGO
@@ -1685,18 +1684,18 @@ EOF;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$websiteLogo = $move? '/upload/image/'.$logoName : '';
 
-				Config::query()->where('name', 'website_logo')->update(['value' => $websiteLogo]);
+				Config::query()->whereName('website_logo')->update(['value' => $websiteLogo]);
 			}
 
-			Config::query()->where('name', 'website_analytics')->update(['value' => $websiteAnalytics]);
-			Config::query()->where('name', 'website_customer_service')->update(['value' => $websiteCustomerService]);
+			Config::query()->whereName('website_analytics')->update(['value' => $websiteAnalytics]);
+			Config::query()->whereName('website_customer_service')->update(['value' => $websiteCustomerService]);
 
 			Session::flash('successMsg', '更新成功');
 
 			DB::commit();
 
 			return Redirect::back();
-		} catch(Exception $e){
+		}catch(Exception $e){
 			DB::rollBack();
 
 			Session::flash('errorMsg', '更新失败');
@@ -1756,7 +1755,7 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
 		}
 
-		$exists = Level::query()->where('level', $level)->first();
+		$exists = Level::query()->whereLevel($level)->first();
 		if($exists){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级已存在，请勿重复添加']);
 		}
@@ -1792,24 +1791,24 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级名称不能为空']);
 		}
 
-		$le = Level::query()->where('id', $id)->first();
+		$le = Level::query()->whereId($id)->first();
 		if(!$le){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不存在']);
 		}
 
 		// 校验该等级下是否存在关联分组
-		$ssGroupCount = SsGroup::query()->where('level', $le->level)->count();
+		$ssGroupCount = SsGroup::query()->whereLevel($le->level)->count();
 		if($ssGroupCount){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联分组，请先取消关联']);
 		}
 
 		// 校验该等级下是否存在关联账号
-		$userCount = User::query()->where('level', $le->level)->count();
+		$userCount = User::query()->whereLevel($le->level)->count();
 		if($userCount){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
 		}
 
-		Level::query()->where('id', $id)->update(['level' => $level, 'level_name' => $level_name]);
+		Level::query()->whereId($id)->update(['level' => $level, 'level_name' => $level_name]);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 	}
@@ -1823,26 +1822,26 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
 		}
 
-		$level = Level::query()->where('id', $id)->first();
+		$level = Level::query()->whereId($id)->first();
 		if(empty($level)){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '等级不存在']);
 		}
 
 		// 校验该等级下是否存在关联分组
-		$existGroups = SsGroup::query()->where('level', $level->level)->get();
+		$existGroups = SsGroup::query()->whereLevel($level->level)->get();
 		if(!$existGroups->isEmpty()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联分组，请先取消关联']);
 		}
 
 		// 校验该等级下是否存在关联账号
-		$existUsers = User::query()->where('level', $level->level)->get();
+		$existUsers = User::query()->whereLevel($level->level)->get();
 		if(!$existUsers->isEmpty()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
 		}
 		$ret = FALSE;
 		try{
-			$ret = Level::query()->where('id', $id)->delete();
-		} catch(Exception $e){
+			$ret = Level::query()->whereId($id)->delete();
+		}catch(Exception $e){
 			Log::error('删除等级时报错：'.$e);
 		}
 		if($ret){
@@ -1866,7 +1865,7 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
 		}
 
-		$exists = Country::query()->where('name', $name)->first();
+		$exists = Country::query()->whereName($name)->first();
 		if($exists){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区名称已存在，请勿重复添加']);
 		}
@@ -1902,18 +1901,18 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
 		}
 
-		$country = Country::query()->where('id', $id)->first();
+		$country = Country::query()->whereId($id)->first();
 		if(empty($country)){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
 		}
 
 		// 校验该国家/地区下是否存在关联节点
-		$existNode = SsNode::query()->where('country_code', $country->code)->get();
+		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
 		if(!$existNode->isEmpty()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
 
-		$ret = Country::query()->where('id', $id)->update(['name' => $name, 'code' => $code]);
+		$ret = Country::query()->whereId($id)->update(['name' => $name, 'code' => $code]);
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 		}else{
@@ -1930,20 +1929,20 @@ EOF;
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
 		}
 
-		$country = Country::query()->where('id', $id)->first();
+		$country = Country::query()->whereId($id)->first();
 		if(empty($country)){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
 		}
 
 		// 校验该国家/地区下是否存在关联节点
-		$existNode = SsNode::query()->where('country_code', $country->code)->get();
+		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
 		if(!$existNode->isEmpty()){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
 		$ret = FALSE;
 		try{
-			$ret = Country::query()->where('id', $id)->delete();
-		} catch(Exception $e){
+			$ret = Country::query()->whereId($id)->delete();
+		}catch(Exception $e){
 			Log::error('删除国家/地区时报错：'.$e);
 		}
 		if($ret){
@@ -1978,13 +1977,13 @@ EOF;
 		}
 
 		// 如果开启用户邮件重置密码，则先设置网站名称和网址
-		if(in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning','traffic_warning']) && $value != '0'){
-			$config = Config::query()->where('name', 'website_name')->first();
+		if(in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning']) && $value != '0'){
+			$config = Config::query()->whereName('website_name')->first();
 			if($config->value == ''){
 				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
 			}
 
-			$config = Config::query()->where('name', 'website_url')->first();
+			$config = Config::query()->whereName('website_url')->first();
 			if($config->value == ''){
 				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
 			}
@@ -2034,7 +2033,7 @@ EOF;
 		}
 
 		// 更新配置
-		Config::query()->where('name', $name)->update(['value' => $value]);
+		Config::query()->whereName($name)->update(['value' => $value]);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 	}
@@ -2119,49 +2118,9 @@ EOF;
 			header('Cache-Control: max-age=0');
 			$writer = new Xlsx($spreadsheet);
 			$writer->save('php://output');
-		} catch(\PhpOffice\PhpSpreadsheet\Exception $e){
+		}catch(\PhpOffice\PhpSpreadsheet\Exception $e){
 			Log::error('导出优惠券时报错'.$e);
 		}
-	}
-
-	// 提现申请列表
-	public function applyList(Request $request)
-	{
-		$email = $request->input('email');
-		$status = $request->input('status');
-
-		$query = ReferralApply::with('user');
-		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email){
-				$q->where('email', 'like', '%'.$email.'%');
-			});
-		}
-
-		if($status){
-			$query->whereStatus($status);
-		}
-
-		$view['applyList'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
-
-		return Response::view('admin.applyList', $view);
-	}
-
-	// 提现申请详情
-	public function applyDetail(Request $request)
-	{
-		$id = $request->input('id');
-
-		$list = new stdClass();
-		$apply = ReferralApply::query()->with(['user'])->where('id', $id)->first();
-		if($apply && $apply->link_logs){
-			$link_logs = explode(',', $apply->link_logs);
-			$list = ReferralLog::query()->with(['user', 'order.goods'])->whereIn('id', $link_logs)->paginate(15)->appends($request->except('page'));
-		}
-
-		$view['info'] = $apply;
-		$view['list'] = $list;
-
-		return Response::view('admin.applyDetail', $view);
 	}
 
 	// 订单列表
@@ -2192,16 +2151,16 @@ EOF;
 			if($is_coupon){
 				$query->where('coupon_id', '<>', 0);
 			}else{
-				$query->where('coupon_id', 0);
+				$query->whereCouponId(0);
 			}
 		}
 
 		if(isset($is_expire)){
-			$query->where('is_expire', $is_expire);
+			$query->whereIsExpire($is_expire);
 		}
 
 		if(isset($pay_way)){
-			$query->where('pay_way', $pay_way);
+			$query->wherePayWay($pay_way);
 		}
 
 		if(isset($status)){
@@ -2214,7 +2173,7 @@ EOF;
 		}
 
 		if(isset($order_id)){
-			$query->where('oid', $order_id);
+			$query->whereOid($order_id);
 		}
 
 		if($sort){
@@ -2225,28 +2184,7 @@ EOF;
 
 		$view['orderList'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.orderList', $view);
-	}
-
-	// 设置提现申请状态
-	public function setApplyStatus(Request $request)
-	{
-		$id = $request->input('id');
-		$status = $request->input('status');
-
-		$ret = ReferralApply::query()->where('id', $id)->update(['status' => $status]);
-		if($ret){
-			// 审核申请的时候将关联的
-			$referralApply = ReferralApply::query()->where('id', $id)->first();
-			$log_ids = explode(',', $referralApply->link_logs);
-			if($referralApply && $status == 1){
-				ReferralLog::query()->whereIn('id', $log_ids)->update(['status' => 1]);
-			}elseif($referralApply && $status == 2){
-				ReferralLog::query()->whereIn('id', $log_ids)->update(['status' => 2]);
-			}
-		}
-
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+		return Response::view('admin.logs.orderList', $view);
 	}
 
 	// 重置用户流量
@@ -2254,7 +2192,7 @@ EOF;
 	{
 		$id = $request->input('id');
 
-		User::query()->where('id', $id)->update(['u' => 0, 'd' => 0]);
+		User::query()->whereId($id)->update(['u' => 0, 'd' => 0]);
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
 	}
@@ -2272,7 +2210,7 @@ EOF;
 
 			DB::beginTransaction();
 			try{
-				$user = User::query()->where('id', $userId)->first();
+				$user = User::query()->whereId($userId)->first();
 
 				// 写入余额变动日志
 				Helpers::addUserBalanceLog($userId, 0, $user->balance, $user->balance+$amount, $amount, '后台手动充值');
@@ -2287,7 +2225,7 @@ EOF;
 				DB::commit();
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
-			} catch(Exception $e){
+			}catch(Exception $e){
 				DB::rollBack();
 
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败：'.$e->getMessage()]);
@@ -2312,7 +2250,7 @@ EOF;
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.userBalanceLogList', $view);
+		return Response::view('admin.logs.userBalanceLogList', $view);
 	}
 
 	// 用户封禁记录
@@ -2330,7 +2268,7 @@ EOF;
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.userBanLogList', $view);
+		return Response::view('admin.logs.userBanLogList', $view);
 	}
 
 	// 用户流量变动记录
@@ -2348,37 +2286,7 @@ EOF;
 
 		$view['list'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.userTrafficLogList', $view);
-	}
-
-	// 用户返利流水记录
-	public function userRebateList(Request $request)
-	{
-		$email = $request->input('email');
-		$ref_email = $request->input('ref_email');
-		$status = $request->input('status');
-
-		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status', 'asc')->orderBy('id', 'desc');
-
-		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email){
-				$q->where('email', 'like', '%'.$email.'%');
-			});
-		}
-
-		if(isset($ref_email)){
-			$query->whereHas('ref_user', function($q) use ($ref_email){
-				$q->where('email', 'like', '%'.$ref_email.'%');
-			});
-		}
-
-		if(isset($status)){
-			$query->whereStatus($status);
-		}
-
-		$view['list'] = $query->paginate(15)->appends($request->except('page'));
-
-		return Response::view('admin.userRebateList', $view);
+		return Response::view('admin.logs.userTrafficLogList', $view);
 	}
 
 	// 用户在线IP记录
@@ -2404,20 +2312,20 @@ EOF;
 		}
 
 		if(isset($port)){
-			$query->where('port', $port);
+			$query->wherePort($port);
 		}
 
 		$userList = $query->paginate(15)->appends($request->except('page'));
 		if(!$userList->isEmpty()){
 			foreach($userList as $user){
 				// 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-				$user->onlineIPList = SsNodeIp::query()->with(['node'])->where('type', 'tcp')->where('port', $user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(5)->get();
+				$user->onlineIPList = SsNodeIp::query()->with(['node'])->whereType('tcp')->wherePort($user->port)->where('created_at', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->limit(5)->get();
 			}
 		}
 
 		$view['userList'] = $userList;
 
-		return Response::view('admin.userOnlineIPList', $view);
+		return Response::view('admin.logs.userOnlineIPList', $view);
 	}
 
 	// 转换成某个用户的身份
@@ -2442,13 +2350,13 @@ EOF;
 	{
 		$labelList = Label::query()->paginate(15)->appends($request->except('page'));
 		foreach($labelList as $label){
-			$label->userCount = UserLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
-			$label->nodeCount = SsNodeLabel::query()->where('label_id', $label->id)->groupBy('label_id')->count();
+			$label->userCount = UserLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
+			$label->nodeCount = SsNodeLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
 		}
 
 		$view['labelList'] = $labelList;
 
-		return Response::view('admin.labelList', $view);
+		return Response::view('admin.label.labelList', $view);
 	}
 
 	// 添加标签
@@ -2465,7 +2373,7 @@ EOF;
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
 		}else{
-			return Response::view('admin.addLabel');
+			return Response::view('admin.label.addLabel');
 		}
 	}
 
@@ -2477,14 +2385,14 @@ EOF;
 			$name = $request->input('name');
 			$sort = $request->input('sort');
 
-			Label::query()->where('id', $id)->update(['name' => $name, 'sort' => $sort]);
+			Label::query()->whereId($id)->update(['name' => $name, 'sort' => $sort]);
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
 		}else{
 			$id = $request->input('id');
-			$view['label'] = Label::query()->where('id', $id)->first();
+			$view['label'] = Label::query()->whereId($id)->first();
 
-			return Response::view('admin.editLabel', $view);
+			return Response::view('admin.label.editLabel', $view);
 		}
 	}
 
@@ -2495,14 +2403,14 @@ EOF;
 
 		DB::beginTransaction();
 		try{
-			Label::query()->where('id', $id)->delete();
-			UserLabel::query()->where('label_id', $id)->delete(); // 删除用户关联
-			SsNodeLabel::query()->where('label_id', $id)->delete(); // 删除节点关联
+			Label::query()->whereId($id)->delete();
+			UserLabel::query()->whereLabelId($id)->delete(); // 删除用户关联
+			SsNodeLabel::query()->whereLabelId($id)->delete(); // 删除节点关联
 
 			DB::commit();
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-		} catch(Exception $e){
+		}catch(Exception $e){
 			DB::rollBack();
 
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：'.$e->getMessage()]);
@@ -2522,12 +2430,12 @@ EOF;
 		}
 
 		if(isset($type)){
-			$query->where('type', $type);
+			$query->whereType($type);
 		}
 
 		$view['list'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.notificationLog', $view);
+		return Response::view('admin.logs.notificationLog', $view);
 	}
 
 	// 在线IP监控（实时）
@@ -2539,10 +2447,10 @@ EOF;
 		$nodeId = $request->input('nodeId');
 		$userId = $request->input('id');
 
-		$query = SsNodeIp::query()->with(['node', 'user'])->where('type', 'tcp')->where('created_at', '>=', strtotime("-120 seconds"));
+		$query = SsNodeIp::query()->with(['node', 'user'])->whereType('tcp')->where('created_at', '>=', strtotime("-120 seconds"));
 
 		if(isset($ip)){
-			$query->where('ip', $ip);
+			$query->whereIp($ip);
 		}
 
 		if(isset($email)){
@@ -2553,19 +2461,19 @@ EOF;
 
 		if(isset($port)){
 			$query->whereHas('user', function($q) use ($port){
-				$q->where('port', $port);
+				$q->wherePort($port);
 			});
 		}
 
 		if(isset($nodeId)){
 			$query->whereHas('node', function($q) use ($nodeId){
-				$q->where('id', $nodeId);
+				$q->whereId($nodeId);
 			});
 		}
 
 		if(isset($userId)){
 			$query->whereHas('user', function($q) use ($userId){
-				$q->where('id', $userId);
+				$q->whereId($userId);
 			});
 		}
 
@@ -2590,6 +2498,6 @@ EOF;
 		$view['list'] = $list->paginate(20)->appends($request->except('page'));
 		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderBy('sort', 'desc')->orderBy('id', 'desc')->get();
 
-		return Response::view('admin.onlineIPMonitor', $view);
+		return Response::view('admin.logs.onlineIPMonitor', $view);
 	}
 }

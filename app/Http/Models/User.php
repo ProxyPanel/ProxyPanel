@@ -115,6 +115,7 @@ use Illuminate\Support\Carbon;
 class User extends Authenticatable
 {
 	use Notifiable;
+
 	protected $table = 'user';
 	protected $primaryKey = 'id';
 

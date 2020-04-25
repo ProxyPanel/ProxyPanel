@@ -7,7 +7,7 @@ namespace App\Components;
  *
  * @package App\Components
  */
-Class CaptchaVerify
+class CaptchaVerify
 {
 	//从后台获取 hcaptcha_sitekey 和 hcaptcha_secret
 	public static function hCaptchaGetConfig()

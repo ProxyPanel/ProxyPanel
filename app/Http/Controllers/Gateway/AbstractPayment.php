@@ -93,7 +93,7 @@ abstract class AbstractPayment
 				}else{
 					// 如果买的是套餐，则先将之前购买的套餐都无效化，重置用户已用、可用流量为0
 					Order::query()
-						->where('user_id', $user->id)
+						->whereUserId($user->id)
 						->with(['goods'])
 						->whereHas('goods', function($q){
 							$q->where('type', '<=', 2);
@@ -103,7 +103,7 @@ abstract class AbstractPayment
 						->where('oid', '<>', $order->oid)
 						->update(['expire_at' => date('Y-m-d H:i:s'), 'is_expire' => 1]);
 
-					User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
+					User::query()->whereId($order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
 					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, 0, '['.$method.']用户购买新套餐，先清空流量');
 
 					$userTraffic = $goods->traffic*1048576;
@@ -118,10 +118,10 @@ abstract class AbstractPayment
 					// 写入用户标签
 					if($goods->label){
 						// 删除用户所有标签
-						UserLabel::query()->where('user_id', $order->user_id)->delete();
+						UserLabel::query()->whereUserId($order->user_id)->delete();
 
 						//取出 商品默认标签  & 系统默认标签 去重
-						$newUserLabels = array_values(array_unique(array_merge(GoodsLabel::query()->where('goods_id', $order->goods_id)->pluck('label_id')->toArray(), self::$systemConfig['initial_labels_for_user']? explode(',', self::$systemConfig['initial_labels_for_user']) : [])));
+						$newUserLabels = array_values(array_unique(array_merge(GoodsLabel::query()->whereGoodsId($order->goods_id)->pluck('label_id')->toArray(), self::$systemConfig['initial_labels_for_user']? explode(',', self::$systemConfig['initial_labels_for_user']) : [])));
 
 						// 生成标签
 						foreach($newUserLabels as $Label){
@@ -132,18 +132,18 @@ abstract class AbstractPayment
 						}
 					}
 
-					User::query()->where('id', $order->user_id)->increment('invite_num', $goods->invite_num? : 0, ['transfer_enable' => $userTraffic, 'reset_time' => $nextResetTime, 'expire_time' => $expireTime, 'enable' => 1]);
+					User::query()->whereId($order->user_id)->increment('invite_num', $goods->invite_num? : 0, ['transfer_enable' => $userTraffic, 'reset_time' => $nextResetTime, 'expire_time' => $expireTime, 'enable' => 1]);
 					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, $userTraffic, '['.$method.']加上用户购买的套餐流量');
 				}
 
 				// 是否返利
 				if(self::$systemConfig['referral_type'] && $order->user->referral_uid){
 					//获取历史返利记录
-					$referral = ReferralLog::where('user_id', $order->user_id)->get();
+					$referral = ReferralLog::whereUserId($order->user_id)->get();
 					// 无记录 / 首次返利
 					if(!$referral && self::$systemConfig['is_invite_register']){
 						// 邀请注册功能开启时，返还邀请者邀请名额
-						User::query()->where('id', $order->user->referral_uid)->increment('invite_num', 1);
+						User::query()->whereId($order->user->referral_uid)->increment('invite_num', 1);
 					}
 					//按照返利模式进行返利判断
 					if(self::$systemConfig['referral_type'] == 2 || (self::$systemConfig['referral_type'] == 1 && !$referral)){

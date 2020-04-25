@@ -11,32 +11,7 @@ use Response;
 
 class BitpayX extends AbstractPayment
 {
-	private $bitpayGatewayUri= 'https://api.mugglepay.com/v1/';
-
-	public function mprequest($data, $type = 'pay')
-	{
-		$headers = ['content-type: application/json', 'token: '.parent::$systemConfig['bitpay_secret']];
-		$curl = curl_init();
-		if($type === 'pay'){
-			$this->bitpayGatewayUri .= 'orders';
-			curl_setopt($curl, CURLOPT_URL, $this->bitpayGatewayUri);
-			curl_setopt($curl, CURLOPT_POST, 1);
-			$data_string = json_encode($data);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-		}elseif($type === 'query'){
-			$this->bitpayGatewayUri .= 'orders/merchant_order_id/status?id='.$data['merchant_order_id'];
-			curl_setopt($curl, CURLOPT_URL, $this->bitpayGatewayUri);
-			curl_setopt($curl, CURLOPT_HTTPGET, 1);
-		}
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
-		$data = curl_exec($curl);
-		curl_close($curl);
-
-		return $data;
-	}
+	private $bitpayGatewayUri = 'https://api.mugglepay.com/v1/';
 
 	/**
 	 * @param Request $request
@@ -93,6 +68,31 @@ class BitpayX extends AbstractPayment
 		ksort($data_sign);
 
 		return http_build_query($data_sign);
+	}
+
+	public function mprequest($data, $type = 'pay')
+	{
+		$headers = ['content-type: application/json', 'token: '.parent::$systemConfig['bitpay_secret']];
+		$curl = curl_init();
+		if($type === 'pay'){
+			$this->bitpayGatewayUri .= 'orders';
+			curl_setopt($curl, CURLOPT_URL, $this->bitpayGatewayUri);
+			curl_setopt($curl, CURLOPT_POST, 1);
+			$data_string = json_encode($data);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+		}elseif($type === 'query'){
+			$this->bitpayGatewayUri .= 'orders/merchant_order_id/status?id='.$data['merchant_order_id'];
+			curl_setopt($curl, CURLOPT_URL, $this->bitpayGatewayUri);
+			curl_setopt($curl, CURLOPT_HTTPGET, 1);
+		}
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+		$data = curl_exec($curl);
+		curl_close($curl);
+
+		return $data;
 	}
 
 	public function notify(Request $request)

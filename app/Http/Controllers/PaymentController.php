@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\BitpayX;
 use App\Http\Controllers\Gateway\CodePay;
+use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\Local;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Models\Coupon;
@@ -203,7 +203,7 @@ class PaymentController extends Controller
 		$view['name'] = $payment->order->goods? $payment->order->goods->name : '余额充值';
 		$view['days'] = $payment->order->goods? $payment->order->goods->days : 0;
 
-		return Response::view('payment.detail', $view);
+		return Response::view('user.payment', $view);
 	}
 
 	// 回调日志
@@ -219,6 +219,6 @@ class PaymentController extends Controller
 
 		$view['list'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
 
-		return Response::view('payment.callbackList', $view);
+		return Response::view('admin.logs.callbackList', $view);
 	}
 }

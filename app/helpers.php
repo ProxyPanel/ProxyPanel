@@ -204,7 +204,7 @@ if(!function_exists('getIPv6')){
 			}
 
 			return $result;
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::error($e->getMessage());
 
 			return [];

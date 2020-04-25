@@ -73,7 +73,7 @@ class PingController extends Controller
 			fclose($fp);
 
 			return response()->json(['status' => $ret, 'message' => $message]);
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::info($e);
 
 			return response()->json(['status' => 0, 'message' => 'port close']);

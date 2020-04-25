@@ -132,7 +132,7 @@
 					<h4 class="modal-title">{{\App\Components\Helpers::systemConfig()['website_name']}} - {{trans('auth.tos')}} <small>2019年11月28日10:49</small></h4>
 				</div>
 				<div class="modal-body">
-					@include('docs.tos')
+					@include('auth.docs.tos')
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('auth.close')}}</button>
@@ -150,7 +150,7 @@
 					<h4 class="modal-title">{{\App\Components\Helpers::systemConfig()['website_name']}} - {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>
 				</div>
 				<div class="modal-body">
-					@include('docs.aup')
+					@include('auth.docs.aup')
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('auth.close')}}</button>

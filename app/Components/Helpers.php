@@ -66,6 +66,7 @@ class Helpers
 	 * @param string $transfer_enable 可用流量
 	 * @param int    $data            可使用天数
 	 * @param int    $referral_uid    邀请人
+	 *
 	 * @return int
 	 */
 	public static function addUser($email, $password, $transfer_enable, $data, $referral_uid = 0)

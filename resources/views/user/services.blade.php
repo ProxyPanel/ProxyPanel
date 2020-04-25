@@ -142,7 +142,7 @@
 									@endif
 								</div>
 							</div>
-							@endif
+						@endif
 						<div class="form-group row" id="charge_coupon_code">
 							<label for="charge_coupon" class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
 							<div class="col-md-6">
@@ -184,13 +184,13 @@
         $(document).ready(function () {
             itemControl(parseInt($('#charge_type').val()))
             let which_selected;
-	        @if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
+			@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
                 which_selected = 1;
-	        @elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+			@elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
                 which_selected = 2;
-	        @else
+			@else
                 which_selected = 3
-	        @endif
+			@endif
 
             $('charge_type').val(which_selected)
         });
