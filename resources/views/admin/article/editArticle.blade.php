@@ -76,7 +76,7 @@
 							<label class="col-form-label col-md-2" for="logo">LOGO/图标</label>
 							@if($article->type == 1)
 								<div class="col-md-4">
-									<input type="file" name="logo" id="logo" data-plugin="dropify" data-default-file={{$article->logo?:'/assets/images/noimage.png'}} />
+									<input type="file" name="logo" id="logo" data-plugin="dropify" data-default-file={{$article->logo?:'/assets/images/default.png'}} />
 									<span class="text-help"> 推荐尺寸：100x75 </span>
 								</div>
 							@else
