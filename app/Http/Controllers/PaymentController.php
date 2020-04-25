@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Http\Controllers\Gateway\AopF2F;
+use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\BitpayX;
 use App\Http\Controllers\Gateway\CodePay;
 use App\Http\Controllers\Gateway\Local;
@@ -34,7 +34,7 @@ class PaymentController extends Controller
 		self::$method = $request->input('method');
 
 		Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), TRUE));
-		$result = self::getClient()->notify($request);		
+		self::getClient()->notify($request);
 
 		return 0;
 	}
@@ -45,7 +45,7 @@ class PaymentController extends Controller
 			case 'balance':
 				return new Local();
 			case 'f2fpay':
-				return new AopF2F();
+				return new F2Fpay();
 			case 'codepay':
 				return new Codepay();
 			case 'payjs':
@@ -53,6 +53,8 @@ class PaymentController extends Controller
 			case 'bitpayx':
 				return new BitpayX();
 			default:
+				Log::error("未知支付：".self::$method);
+
 				return NULL;
 		}
 	}

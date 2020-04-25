@@ -22,8 +22,6 @@
     "jenssegers/agent": "^2.6",
     "laravel/framework": "5.8.*",
     "laravel/tinker": "~1.0",
-    "league/omnipay": "^3",
-    "lokielse/omnipay-alipay": "*",
     "mews/captcha": "^3.1",
     "mews/purifier": "^3.2",
     "misechow/geetest": "^1.0",
@@ -33,6 +31,7 @@
     "phpoffice/phpspreadsheet": "^1.11",
     "predis/predis": "^1.1",
     "rap2hpoutre/laravel-log-viewer": "^1.5",
+    "riverslei/payment": "*",
     "scyllaly/hcaptcha": "^4.1",
     "spatie/laravel-permission": "^3.11",
     "xhat/payjs": "^1.4"
