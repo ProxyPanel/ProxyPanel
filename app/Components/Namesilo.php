@@ -47,7 +47,7 @@ class Namesilo
 			}
 
 			return $result['namesilo']['reply'];
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::error('CURL请求失败：'.$e->getMessage().' --- '.$e->getLine());
 			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 0, $e->getMessage());
 

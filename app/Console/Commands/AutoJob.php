@@ -122,7 +122,7 @@ class AutoJob extends Command
 			try{
 				foreach($orderList as $order){
 					// 关闭订单
-					Order::query()->whereKey($order->oid)->update(['status' => -1]);
+					Order::query()->whereOid($order->oid)->update(['status' => -1]);
 
 					// 退回优惠券
 					if($order->coupon_id){

@@ -19,9 +19,8 @@ class PushNotification
 				return self::Bark($title, $content);
 				break;
 			default:
+				return FALSE;
 		}
-
-		return FALSE;
 	}
 
 	/**
@@ -34,7 +33,7 @@ class PushNotification
 	 */
 	private static function ServerChan($title, $content)
 	{
-		$result = FALSE;
+		$ret = FALSE;
 		try{
 			// TODO：一天仅可发送不超过500条
 			$url = 'https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content);
@@ -46,15 +45,16 @@ class PushNotification
 			}
 			if($result != NULL && !$result->errno){
 				Helpers::addNotificationLog($title, $content, 2);
+				$ret = TRUE;
 			}else{
 				Helpers::addNotificationLog($title, $content, 2, 'admin', 1, $result? $result->errmsg : '未知');
 			}
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::error('ServerChan消息推送异常：'.$e);
 		}
 
 
-		return $result;
+		return $ret;
 	}
 
 	/**
@@ -67,21 +67,22 @@ class PushNotification
 	 */
 	private static function Bark($title, $content)
 	{
-		$result = FALSE;
+		$ret = FALSE;
 		try{
 			$url = 'https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content;
 			$result = json_decode(Curl::send($url));
 			if($result){
 				if($result->code == 200){
 					Helpers::addNotificationLog($title, $content, 3);
+					$ret = TRUE;
 				}else{
 					Helpers::addNotificationLog($title, $content, 3, 'admin', $result->message);
 				}
 			}
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::error('Bark消息推送异常：'.$e);
 		}
 
-		return $result;
+		return $ret;
 	}
 }

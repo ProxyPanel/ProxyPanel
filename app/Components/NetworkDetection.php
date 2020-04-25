@@ -40,7 +40,7 @@ class NetworkDetection
 
 				return FALSE;
 			}
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口请求超时".$e);
 
 			return FALSE;
@@ -79,7 +79,7 @@ class NetworkDetection
 
 				return FALSE;
 			}
-		} catch(Exception $e){
+		}catch(Exception $e){
 			Log::warning("【Ping】检测".$ip."时，接口请求超时".$e);
 
 			return FALSE;

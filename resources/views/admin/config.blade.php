@@ -40,29 +40,23 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($method_list->isEmpty())
+								@foreach($method_list as $method)
 									<tr>
-										<td colspan="2">暂无数据</td>
+										<td> {{$method->name}}</td>
+										<td>
+											@if($method->is_default)
+												<span class='badge badge-lg badge-default'>默认</span>
+											@else
+												<div class="btn-group">
+													<button class="btn btn-primary" onclick="setDefault('{{$method->id}}')">默认</button>
+													<button class="btn btn-danger" onclick="delConfig('{{$method->id}}','{{$method->name}}')">
+														<i class="icon wb-trash"></i>
+													</button>
+												</div>
+											@endif
+										</td>
 									</tr>
-								@else
-									@foreach($method_list as $method)
-										<tr>
-											<td> {{$method->name}}</td>
-											<td>
-												@if($method->is_default)
-													<span class='badge badge-lg badge-default'>默认</span>
-												@else
-													<div class="btn-group">
-														<button class="btn btn-primary" onclick="setDefault('{{$method->id}}')">默认</button>
-														<button class="btn btn-danger" onclick="delConfig('{{$method->id}}','{{$method->name}}')">
-															<i class="icon wb-trash"></i>
-														</button>
-													</div>
-												@endif
-											</td>
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>
@@ -77,29 +71,23 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($protocol_list->isEmpty())
+								@foreach($protocol_list as $protocol)
 									<tr>
-										<td colspan="2">暂无数据</td>
+										<td> {{$protocol->name}}</td>
+										<td>
+											@if($protocol->is_default)
+												<span class="badge badge-lg badge-default">默认</span>
+											@else
+												<div class="btn-group">
+													<button class="btn btn-primary" onclick="setDefault('{{$protocol->id}}')">默认</button>
+													<button class="btn btn-danger" onclick="delConfig('{{$protocol->id}}','{{$protocol->name}}')">
+														<i class="icon wb-trash"></i>
+													</button>
+												</div>
+											@endif
+										</td>
 									</tr>
-								@else
-									@foreach($protocol_list as $protocol)
-										<tr>
-											<td> {{$protocol->name}}</td>
-											<td>
-												@if($protocol->is_default)
-													<span class="badge badge-lg badge-default">默认</span>
-												@else
-													<div class="btn-group">
-														<button class="btn btn-primary" onclick="setDefault('{{$protocol->id}}')">默认</button>
-														<button class="btn btn-danger" onclick="delConfig('{{$protocol->id}}','{{$protocol->name}}')">
-															<i class="icon wb-trash"></i>
-														</button>
-													</div>
-												@endif
-											</td>
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>
@@ -114,27 +102,21 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($obfs_list->isEmpty())
+								@foreach($obfs_list as $obfs)
 									<tr>
-										<td colspan="2">暂无数据</td>
+										<td> {{$obfs->name}}</td>
+										<td>
+											@if($obfs->is_default)
+												<span class="badge badge-lg badge-default">默认</span>
+											@else
+												<button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">默认</button>
+												<button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
+													<i class="icon wb-trash"></i>
+												</button>
+											@endif
+										</td>
 									</tr>
-								@else
-									@foreach($obfs_list as $obfs)
-										<tr>
-											<td> {{$obfs->name}}</td>
-											<td>
-												@if($obfs->is_default)
-													<span class="badge badge-lg badge-default">默认</span>
-												@else
-													<button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">默认</button>
-													<button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
-														<i class="icon wb-trash"></i>
-													</button>
-												@endif
-											</td>
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>
@@ -150,30 +132,24 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($level_list->isEmpty())
+								@foreach($level_list as $level)
 									<tr>
-										<td colspan="3">暂无数据</td>
+										<td>
+											<input type="text" class="form-control" name="level" id="level_{{$level->id}}" value="{{$level->level}}"/>
+										</td>
+										<td>
+											<input type="text" class="form-control" name="level_name" id="level_name_{{$level->id}}" value="{{$level->level_name}}"/>
+										</td>
+										<td>
+											<div class="btn-group">
+												<button type="button" class="btn btn-primary" onclick="updateLevel('{{$level->id}}')">修改</button>
+												<button type="button" class="btn btn-danger" onclick="delLevel('{{$level->id}}','{{$level->level_name}}')">
+													<i class="icon wb-trash"></i>
+												</button>
+											</div>
+										</td>
 									</tr>
-								@else
-									@foreach($level_list as $level)
-										<tr>
-											<td>
-												<input type="text" class="form-control" name="level" id="level_{{$level->id}}" value="{{$level->level}}"/>
-											</td>
-											<td>
-												<input type="text" class="form-control" name="level_name" id="level_name_{{$level->id}}" value="{{$level->level_name}}"/>
-											</td>
-											<td>
-												<div class="btn-group">
-													<button type="button" class="btn btn-primary" onclick="updateLevel('{{$level->id}}')">修改</button>
-													<button type="button" class="btn btn-danger" onclick="delLevel('{{$level->id}}','{{$level->level_name}}')">
-														<i class="icon wb-trash"></i>
-													</button>
-												</div>
-											</td>
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>
@@ -190,33 +166,27 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($country_list->isEmpty())
+								@foreach($country_list as $country)
 									<tr>
-										<td colspan="4">暂无数据</td>
+										<td>
+											<svg class="w-40 h-40 text-center" aria-hidden="true">
+												<use xlink:href="@if($country->code)#icon-{{$country->code}}@endif"></use>
+											</svg>
+										</td>
+										<td>
+											<input type="text" class="form-control" name="country_name" id="country_name_{{$country->id}}" value="{{$country->name}}"/>
+										</td>
+										<td>
+											<input type="text" class="form-control" name="country_code" id="country_code_{{$country->id}}" value="{{$country->code}}"/>
+										</td>
+										<td>
+											<div class="btn-group">
+												<button type="button" class="btn btn-primary" onclick="updateCountry('{{$country->id}}')">修改</button>
+												<button type="button" class="btn btn-danger" onclick="delCountry('{{$country->id}}','{{$country->name}}')"><i class="icon wb-trash"></i></button>
+											</div>
+										</td>
 									</tr>
-								@else
-									@foreach($country_list as $country)
-										<tr>
-											<td>
-												<svg class="w-40 h-40 text-center" aria-hidden="true">
-													<use xlink:href="@if($country->code)#icon-{{$country->code}}@endif"></use>
-												</svg>
-											</td>
-											<td>
-												<input type="text" class="form-control" name="country_name" id="country_name_{{$country->id}}" value="{{$country->name}}"/>
-											</td>
-											<td>
-												<input type="text" class="form-control" name="country_code" id="country_code_{{$country->id}}" value="{{$country->code}}"/>
-											</td>
-											<td>
-												<div class="btn-group">
-													<button type="button" class="btn btn-primary" onclick="updateCountry('{{$country->id}}')">修改</button>
-													<button type="button" class="btn btn-danger" onclick="delCountry('{{$country->id}}','{{$country->name}}')"><i class="icon wb-trash"></i></button>
-												</div>
-											</td>
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>

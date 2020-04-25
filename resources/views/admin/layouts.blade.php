@@ -230,10 +230,15 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/inviteList', 'admin/applyList', 'admin/applyDetail', 'admin/userRebateList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/inviteList', 'admin/affList', 'admin/affDetail', 'admin/userRebateList']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-thumb-up" aria-hidden="true"></i>
 					<span class="site-menu-title">推广系统</span>
+					@if(\App\Http\Models\ReferralApply::query()->whereStatus(0)->count() > 0 )
+						<div class="site-menu-badge">
+							<span class="badge badge-pill badge-success">{{\App\Http\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+						</div>
+					@endif
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/inviteList']) ? 'active open' : ''}}">
@@ -241,9 +246,14 @@
 							<span class="site-menu-title">邀请管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['admin/applyList', 'admin/applyDetail']) ? 'active open' : ''}}">
-						<a href="/admin/applyList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['admin/affList', 'admin/affDetail']) ? 'active open' : ''}}">
+						<a href="/admin/affList" class="animsition-link">
 							<span class="site-menu-title">提现管理</span>
+							@if(\App\Http\Models\ReferralApply::query()->whereStatus(0)->count() > 0 )
+								<div class="site-menu-label">
+									<span class="badge badge-danger badge-round mr-25">{{\App\Http\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+								</div>
+							@endif
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userRebateList']) ? 'active open' : ''}}">

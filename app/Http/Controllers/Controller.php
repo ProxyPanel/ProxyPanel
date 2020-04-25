@@ -7,7 +7,6 @@ use App\Http\Models\SensitiveWords;
 use App\Http\Models\SsGroup;
 use App\Http\Models\SsNode;
 use App\Http\Models\User;
-use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserSubscribeLog;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -52,7 +51,7 @@ class Controller extends BaseController
 		while(count($lines) <= $n){
 			try{
 				fseek($fp, -$pos, SEEK_END);
-			} catch(Exception $e){
+			}catch(Exception $e){
 				fseek(0);
 				break;
 			}
@@ -68,7 +67,9 @@ class Controller extends BaseController
 
 	/**
 	 * 计算文件行数
+	 *
 	 * @param $file
+	 *
 	 * @return int
 	 */
 	public function countLine($file)
@@ -127,15 +128,16 @@ class Controller extends BaseController
 	 * @param int $uid      用户ID
 	 * @param int $nodeId   节点ID
 	 * @param int $infoType 信息类型：0为链接，1为文字
+	 *
 	 * @return string
 	 */
 	function getNodeInfo($uid, $nodeId, $infoType)
 	{
-		$user = User::whereKey($uid)->first();
-		$node = SsNode::whereKey($nodeId)->first();
+		$user = User::whereId($uid)->first();
+		$node = SsNode::whereId($nodeId)->first();
 		$scheme = NULL;
 		// 获取分组名称
-		$group = SsGroup::query()->whereKey($node->group_id)->first();
+		$group = SsGroup::query()->whereId($node->group_id)->first();
 		$host = $node->server? : $node->ip;
 
 		if($node->type == 1){

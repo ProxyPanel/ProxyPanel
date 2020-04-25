@@ -1,6 +1,6 @@
 <?php
 
-Route::get('s/{code}', 'SubscribeController@getSubscribeByCode'); // 节点订阅地址
+Route::get('s/{code}', 'User\SubscribeController@getSubscribeByCode'); // 节点订阅地址
 
 Route::group(['middleware' => ['isForbidden', 'affiliate', 'isMaintenance']], function(){
 	Route::get('lang/{locale}', 'AuthController@switchLang'); // 语言切换
@@ -51,9 +51,6 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::get('inviteList', 'AdminController@inviteList'); // 邀请码列表
 		Route::post('makeInvite', 'AdminController@makeInvite'); // 生成邀请码
 		Route::get('exportInvite', 'AdminController@exportInvite'); // 导出邀请码
-		Route::get('applyList', 'AdminController@applyList'); // 提现申请列表
-		Route::get('applyDetail', 'AdminController@applyDetail'); // 提现申请详情
-		Route::post('setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
 		Route::any('config', 'AdminController@config'); // 配置列表
 		Route::any('addConfig', 'AdminController@addConfig'); // 添加配置
 		Route::post('delConfig', 'AdminController@delConfig'); // 删除配置
@@ -69,7 +66,6 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post('setConfig', 'AdminController@setConfig'); // 设置某个配置项
 		Route::get('userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动记录
 		Route::get('userTrafficLogList', 'AdminController@userTrafficLogList'); // 流量变动记录
-		Route::get('userRebateList', 'AdminController@userRebateList'); // 返利流水记录
 		Route::get('userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
 		Route::get('userOnlineIPList', 'AdminController@userOnlineIPList'); // 用户在线IP记录
 		Route::any('export/{id}', 'AdminController@export'); // 导出(查看)配置信息
@@ -88,47 +84,58 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post('sendTestNotification', 'AdminController@sendTestNotification'); //推送通知测试
 		Route::any('profile', 'AdminController@profile'); // 修改个人信息
 		Route::get('makePort', 'AdminController@makePort'); // 生成端口
+
+		//返利相关
+		Route::group(['namespace' => 'Admin'], function(){
+			Route::get('affList', 'AffiliateController@affiliateList'); // 提现申请列表
+			Route::get('affDetail', 'AffiliateController@affiliateDetail'); // 提现申请详情
+			Route::post('setAffStatus', 'AffiliateController@setAffiliateStatus'); // 设置提现申请状态
+			Route::get('userRebateList', 'AffiliateController@userRebateList'); // 返利流水记录
+		});
 	});
 
-	Route::group(['prefix' => 'ticket'], function(){
-		Route::get('ticketList', 'TicketController@ticketList'); // 工单列表
-		Route::any('replyTicket', 'TicketController@replyTicket'); // 回复工单
-		Route::post('closeTicket', 'TicketController@closeTicket'); // 关闭工单
+	Route::group(['namespace' => 'Admin'], function(){
+		Route::group(['prefix' => 'ticket'], function(){
+			Route::get('ticketList', 'TicketController@ticketList'); // 工单列表
+			Route::any('replyTicket', 'TicketController@replyTicket'); // 回复工单
+			Route::post('closeTicket', 'TicketController@closeTicket'); // 关闭工单
+		});
+
+		Route::group(['prefix' => 'coupon'], function(){
+			Route::any('couponList', 'CouponController@couponList'); // 优惠券列表
+			Route::any('addCoupon', 'CouponController@addCoupon'); // 添加优惠券
+			Route::post('delCoupon', 'CouponController@delCoupon'); // 删除优惠券
+			Route::get('exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
+		});
+
+		Route::group(['prefix' => 'shop'], function(){
+			Route::any('goodsList', 'ShopController@goodsList'); // 商品列表
+			Route::any('addGoods', 'ShopController@addGoods'); // 添加商品
+			Route::any('editGoods/{id}', 'ShopController@editGoods'); // 编辑商品
+			Route::post('delGoods', 'ShopController@delGoods'); // 删除商品
+		});
+
+		Route::group(['prefix' => 'subscribe'], function(){
+			Route::get('subscribeList', 'SubscribeController@subscribeList'); // 订阅码列表
+			Route::get('subscribeLog', 'SubscribeController@subscribeLog'); // 订阅码记录
+			Route::get('deviceList', 'SubscribeController@deviceList'); // 订阅设备列表
+			Route::post('setSubscribeStatus', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
+			Route::post('setDeviceStatus', 'SubscribeController@setDeviceStatus'); // 是否允许设备订阅
+		});
+
+		Route::group(['prefix' => 'marketing'], function(){
+			Route::get("emailList", "MarketingController@emailList"); // 邮件消息列表
+			Route::get("pushList", "MarketingController@pushList"); // 推送消息列表
+			Route::post("addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
+		});
+
+		Route::group(['prefix' => 'sensitiveWords'], function(){
+			Route::get("list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
+			Route::post("add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
+			Route::post("del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
+		});
 	});
 
-	Route::group(['prefix' => 'coupon'], function(){
-		Route::any('couponList', 'CouponController@couponList'); // 优惠券列表
-		Route::any('addCoupon', 'CouponController@addCoupon'); // 添加优惠券
-		Route::post('delCoupon', 'CouponController@delCoupon'); // 删除优惠券
-		Route::get('exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
-	});
-
-	Route::group(['prefix' => 'shop'], function(){
-		Route::any('goodsList', 'ShopController@goodsList'); // 商品列表
-		Route::any('addGoods', 'ShopController@addGoods'); // 添加商品
-		Route::any('editGoods/{id}', 'ShopController@editGoods'); // 编辑商品
-		Route::post('delGoods', 'ShopController@delGoods'); // 删除商品
-	});
-
-	Route::group(['prefix' => 'subscribe'], function(){
-		Route::get('subscribeList', 'SubscribeController@subscribeList'); // 订阅码列表
-		Route::get('subscribeLog', 'SubscribeController@subscribeLog'); // 订阅码记录
-		Route::get('deviceList', 'SubscribeController@deviceList'); // 订阅设备列表
-		Route::post('setSubscribeStatus', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
-		Route::post('setDeviceStatus', 'SubscribeController@setDeviceStatus'); // 是否允许设备订阅
-	});
-
-	Route::group(['prefix' => 'marketing'], function(){
-		Route::get("marketing/emailList", "MarketingController@emailList"); // 邮件消息列表
-		Route::get("marketing/pushList", "MarketingController@pushList"); // 推送消息列表
-		Route::post("marketing/addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
-	});
-
-	Route::group(['prefix' => 'sensitiveWords'], function(){
-		Route::get("list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
-		Route::post("add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
-		Route::post("del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
-	});
 	Route::get("payment/callbackList", "PaymentController@callbackList"); // 支付回调日志
 	Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
 });
@@ -153,11 +160,14 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 	Route::get('invite', 'UserController@invite'); // 邀请码
 	Route::post('makeInvite', 'UserController@makeInvite'); // 生成邀请码
 	Route::any('profile', 'UserController@profile'); // 修改个人信息
-	Route::get('referral', 'UserController@referral'); // 推广返利
-	Route::post('extractMoney', 'UserController@extractMoney'); // 申请提现
 	Route::post("switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
 	Route::post("charge", "UserController@charge"); // 卡券余额充值
 	Route::get("help", "UserController@help"); // 帮助中心
+
+	Route::group(['namespace' => 'User'], function(){
+		Route::get('referral', 'AffiliateController@referral'); // 推广返利
+		Route::post('extractMoney', 'AffiliateController@extractMoney'); // 申请提现
+	});
 
 	Route::group(['prefix' => 'payment'], function(){
 		Route::post('purchase', 'PaymentController@purchase'); // 创建支付

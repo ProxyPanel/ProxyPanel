@@ -77,7 +77,7 @@ class ServiceTimer extends Command
 				}
 
 				DB::commit();
-			} catch(Exception $e){
+			}catch(Exception $e){
 				Log::error($this->description.'：'.$e);
 
 				DB::rollBack();

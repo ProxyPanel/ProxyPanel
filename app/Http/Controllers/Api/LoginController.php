@@ -130,7 +130,7 @@ class LoginController extends Controller
 			DB::commit();
 
 			return Response::json(['status' => 'success', 'data' => $data, 'message' => '登录成功']);
-		} catch(Exception $e){
+		}catch(Exception $e){
 			DB::rollBack();
 
 			return Response::json(['status' => 'success', 'data' => [], 'message' => '登录失败']);

@@ -24,7 +24,7 @@ class updateUserName extends Command
 		$userList = User::query()->get();
 		foreach($userList as $user){
 			$name = process($user->id);
-			User::query()->whereKey($user->id)->update(['username' => $name]);
+			User::query()->whereId($user->id)->update(['username' => $name]);
 
 			Log::info('---用户[ID：'.$user->id.' - '.$user->email.'] :'.$user->username.'---');
 		}
@@ -33,7 +33,7 @@ class updateUserName extends Command
 			if($user->email == $user->username){
 				$name = process($user->id);
 
-				User::query()->whereKey($user->id)->update(['username' => $name]);
+				User::query()->whereId($user->id)->update(['username' => $name]);
 
 				Log::info('---用户[ID：'.$user->id.' - '.$user->email.'] :'.$user->username.'---');
 			}
@@ -45,7 +45,7 @@ class updateUserName extends Command
 
 function process($id)
 {
-	$user = User::query()->whereKey($id)->first();
+	$user = User::query()->whereId($id)->first();
 	// 先设个默认值
 	$name = $user->email;
 	// 用户是否设置了QQ号

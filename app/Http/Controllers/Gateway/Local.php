@@ -18,7 +18,7 @@ class Local extends AbstractPayment
 	{
 		$amount = $request->input('amount');
 		$order = Order::whereOid($request->input('oid'))->first();
-		$goods = Goods::query()->where('status', 1)->where('id', $request->input('goods_id'))->first();
+		$goods = Goods::query()->whereStatus(1)->whereId($request->input('goods_id'))->first();
 
 		if($goods){
 			User::query()->whereId(Auth::user()->id)->decrement('balance', $amount*100);

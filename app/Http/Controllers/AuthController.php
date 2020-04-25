@@ -110,6 +110,51 @@ class AuthController extends Controller
 		}
 	}
 
+	// 校验验证码
+	private function check_captcha($request)
+	{
+		switch(self::$systemConfig['is_captcha']){
+			case 1: // 默认图形验证码
+				if(!Captcha::check($request->input('captcha'))){
+					return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
+				}
+				break;
+			case 2: // Geetest
+				$result = $this->validate($request, [
+					'geetest_challenge' => 'required|geetest'
+				], [
+					'geetest' => trans('auth.captcha_fail')
+				]);
+
+				if(!$result){
+					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				}
+				break;
+			case 3: // Google reCAPTCHA
+				$result = $this->validate($request, [
+					'g-recaptcha-response' => 'required|NoCaptcha'
+				]);
+
+				if(!$result){
+					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				}
+				break;
+			case 4: // hCaptcha
+				$result = $this->validate($request, [
+					'h-captcha-response' => 'required|HCaptcha'
+				]);
+
+				if(!$result){
+					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				}
+				break;
+			default: // 不启用验证码
+				break;
+		}
+
+		return 0;
+	}
+
 	/**
 	 * 添加用户登录日志
 	 *
@@ -158,53 +203,9 @@ class AuthController extends Controller
 		$log->save();
 	}
 
-	// 校验验证码
-	private function check_captcha($request)
-	{
-		switch(self::$systemConfig['is_captcha']){
-			case 1: // 默认图形验证码
-				if(!Captcha::check($request->input('captcha'))){
-					return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
-				}
-				break;
-			case 2: // Geetest
-				$result = $this->validate($request, [
-					'geetest_challenge' => 'required|geetest'
-				], [
-					'geetest' => trans('auth.captcha_fail')
-				]);
-
-				if(!$result){
-					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
-				}
-				break;
-			case 3: // Google reCAPTCHA
-				$result = $this->validate($request, [
-					'g-recaptcha-response' => 'required|NoCaptcha'
-				]);
-
-				if(!$result){
-					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
-				}
-				break;
-			case 4: // hCaptcha
-				$result = $this->validate($request, [
-					'h-captcha-response' => 'required|HCaptcha'
-				]);
-
-				if(!$result){
-					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
-				}
-				break;
-			default: // 不启用验证码
-				break;
-		}
-
-		return 0;
-	}
-
 
 	// 退出
+
 	public function logout()
 	{
 		Auth::logout();
@@ -331,7 +332,7 @@ class AuthController extends Controller
 				return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
 			}
 			// 更新昵称
-			User::query()->whereKey($uid)->update(['username' => $username]);
+			User::query()->whereId($uid)->update(['username' => $username]);
 
 			// 生成订阅码
 			$subscribe = new UserSubscribe();
