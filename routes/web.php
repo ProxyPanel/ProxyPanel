@@ -130,7 +130,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post("del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
 	});
 	Route::get("payment/callbackList", "PaymentController@callbackList"); // 支付回调日志
-	Route::get('logs', '\Rap2hpoutre\Controllers\LogViewerController@index'); // 系统运行日志
+	Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index'); // 系统运行日志
 });
 
 Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], function(){
