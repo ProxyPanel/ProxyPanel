@@ -66,7 +66,7 @@
 						</div>
 
 						<div class="col-md-4" id="logoUpload">
-							<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/noimage.png"/>
+							<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/default.png"/>
 							<span class="text-help"> 推荐尺寸：100x75 </span>
 						</div>
 					</div>

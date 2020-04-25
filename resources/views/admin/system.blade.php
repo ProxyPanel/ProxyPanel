@@ -950,7 +950,7 @@
 										<div class="row">
 											<label class="col-form-label col-md-3" for="website_home_logo">首页LOGO</label>
 											<div class="col-md-9">
-												<input type="file" id="website_home_logo" data-plugin="dropify" data-default-file={{$website_home_logo?:'/assets/images/noimage.png'}} />
+												<input type="file" id="website_home_logo" data-plugin="dropify" data-default-file={{$website_home_logo?:'/assets/images/default.png'}} />
 												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
 											</div>
 										</div>
@@ -959,7 +959,7 @@
 										<div class="row">
 											<label class="col-form-label col-md-3" for="website_logo">站内LOGO</label>
 											<div class="col-md-9">
-												<input type="file" id="website_logo" data-plugin="dropify" data-default-file={{$website_logo?:'/assets/images/noimage.png'}} />
+												<input type="file" id="website_logo" data-plugin="dropify" data-default-file={{$website_logo?:'/assets/images/default.png'}} />
 												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
 											</div>
 										</div>

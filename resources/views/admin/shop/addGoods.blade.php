@@ -154,7 +154,7 @@
 							<div class="form-group row">
 								<label class="col-md-3 col-form-label" for="logo">商品图片</label>
 								<div class="col-md-9">
-									<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/noimage.png"/>
+									<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="/assets/images/default.png"/>
 								</div>
 							</div>
 							<div class="form-group row">
