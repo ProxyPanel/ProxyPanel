@@ -8,6 +8,7 @@ use App\Http\Controllers\Gateway\CodePay;
 use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\Local;
 use App\Http\Controllers\Gateway\PayJs;
+use App\Http\Controllers\Gateway\PayPal;
 use App\Http\Models\Coupon;
 use App\Http\Models\Goods;
 use App\Http\Models\Order;
@@ -52,6 +53,8 @@ class PaymentController extends Controller
 				return new PayJs();
 			case 'bitpayx':
 				return new BitpayX();
+			case 'paypal':
+				return new PayPal();
 			default:
 				Log::error("未知支付：".self::$method);
 

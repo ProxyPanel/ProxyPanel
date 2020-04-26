@@ -34,6 +34,7 @@
     "riverslei/payment": "*",
     "scyllaly/hcaptcha": "^4.1",
     "spatie/laravel-permission": "^3.11",
+    "srmklive/paypal": "~1.0",
     "xhat/payjs": "^1.4"
   },
   "require-dev": {

@@ -1023,6 +1023,7 @@
 											<select class="col-md-3" id="is_otherPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_otherPay')">
 												<option value="">关闭</option>
 												<option value="bitpayx">麻瓜宝</option>
+												<option value="paypal">PayPal</option>
 											</select>
 										</div>
 									</div>
@@ -1191,6 +1192,71 @@
 												</div>
 											</div>
 											<span class="text-help offset-md-3"><a href="https://merchants.mugglepay.com/basic/api" target="_blank"> 在本页</a>中获取后台服务器的秘钥 </span>
+										</div>
+									</div>
+								</div>
+								<div class="row pb-70">
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label">PayPal</label>
+											<div class="col-md-7">
+												请到 <a href="" target="_blank">PayPal</a> 申请账号
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="paypal_username">账号</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="paypal_username" value="{{$paypal_username}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('paypal_username')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="paypal_password">密码</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="paypal_password" value="{{$paypal_password}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('paypal_password')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="paypal_secret">秘钥</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="paypal_secret" value="{{$paypal_secret}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('paypal_secret')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="paypal_certificate">证书</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="paypal_certificate" value="{{$paypal_certificate}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('paypal_certificate')">修改</button></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="paypal_app_id">应用ID</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="paypal_app_id" value="{{$paypal_app_id}}"/>
+													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('paypal_app_id')">修改</button></span>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>

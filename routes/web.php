@@ -176,4 +176,7 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 	});
 });
 
-Route::post('callback/notify', 'PaymentController@notify'); //支付回调
+Route::group(['prefix' => 'callback'], function(){
+	Route::get('checkout', 'Gateway\PayPal@getCheckout');
+	Route::post('notify', 'PaymentController@notify'); //支付回调
+});
