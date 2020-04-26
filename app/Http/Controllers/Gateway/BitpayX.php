@@ -46,6 +46,7 @@ class BitpayX extends AbstractPayment
 
 		if($result['status'] === 200 || $result['status'] === 201){
 			$result['payment_url'] .= '&lang=zh';
+			Payment::whereId($payment->id)->update(['url' => $result['payment_url']]);
 
 			return Response::json(['status' => 'success', 'url' => $result['payment_url'] .= '&lang=zh', 'message' => '创建订单成功!']);
 		}

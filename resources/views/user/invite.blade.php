@@ -40,25 +40,19 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($inviteList->isEmpty())
+								@foreach($inviteList as $invite)
 									<tr>
-										<td colspan="5">{{trans('home.invite_code_table_none_codes')}}</td>
+										<td> {{$loop->iteration}} </td>
+										<td>
+											<a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{url('/register?aff='.Auth::user()->id.'&code='.$invite->code)}}">{{$invite->code}}</a>
+										</td>
+										<td> {{$invite->dateline}} </td>
+										<td>
+											{!!$invite->status_label!!}
+										</td>
+										{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->email) : ''}}
 									</tr>
-								@else
-									@foreach($inviteList as $invite)
-										<tr>
-											<td> {{$loop->iteration}} </td>
-											<td>
-												<a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{url('/register?aff='.Auth::user()->id.'&code='.$invite->code)}}">{{$invite->code}}</a>
-											</td>
-											<td> {{$invite->dateline}} </td>
-											<td>
-												{!!$invite->status_label!!}
-											</td>
-											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->email) : ''}}
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>

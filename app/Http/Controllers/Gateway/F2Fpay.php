@@ -67,9 +67,7 @@ class F2Fpay extends AbstractPayment
 			exit;
 		}
 
-		$payment->qr_code = 'http://qr.topscan.com/api.php?text='.$result['qr_code'].'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png';
-		//后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
-		$payment->save();
+		Payment::whereId($payment->id)->update(['qr_code' => 'http://qr.topscan.com/api.php?text='.$result['qr_code'].'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png']);//后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
 
 		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
 	}

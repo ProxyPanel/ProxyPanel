@@ -28,30 +28,24 @@
 								</tr>
 								</thead>
 								<tbody>
-								@if($ticketList->isEmpty())
+								@foreach($ticketList as $ticket)
 									<tr>
-										<td colspan="4"> {{trans('home.ticket_table_none')}} </td>
+										<td>{{$ticket->id}}</td>
+										<td>{{$ticket->title}}</td>
+										<td>
+											{!!$ticket->status_label!!}
+										</td>
+										<td>
+											@if($ticket->status == 2)
+												<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
+													<span><i class="icon wb-eye" aria-hidden="true" style="left: 40%">  </i> {{trans('home.ticket_table_view')}} </span></a>
+											@else
+												<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-success">
+													<span><i class="icon wb-check" aria-hidden="true" style="left: 40%"></i> {{trans('home.ticket_open')}} </span></a>
+											@endif
+										</td>
 									</tr>
-								@else
-									@foreach($ticketList as $ticket)
-										<tr>
-											<td>{{$ticket->id}}</td>
-											<td>{{$ticket->title}}</td>
-											<td>
-												{!!$ticket->status_label!!}
-											</td>
-											<td>
-												@if($ticket->status == 2)
-													<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
-														<span><i class="icon wb-eye" aria-hidden="true" style="left: 40%">  </i> {{trans('home.ticket_table_view')}} </span></a>
-												@else
-													<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-success">
-														<span><i class="icon wb-check" aria-hidden="true" style="left: 40%"></i> {{trans('home.ticket_open')}} </span></a>
-												@endif
-											</td>
-										</tr>
-									@endforeach
-								@endif
+								@endforeach
 								</tbody>
 							</table>
 						</div>
