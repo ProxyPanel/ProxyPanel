@@ -80,7 +80,7 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link navbar-avatar" data-toggle="dropdown" href="#" aria-expanded="false" data-animation="scale-up" role="button">
                 <span class="avatar avatar-online">
-                  <img src="/assets/images/astronaut.svg" alt="..."/>
+                  <img src="/assets/images/avatar.svg" alt="..."/>
                     <i></i>
                 </span>
 					</a>

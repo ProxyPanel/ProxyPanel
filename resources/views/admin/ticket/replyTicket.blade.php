@@ -25,7 +25,7 @@
 									@elseif(strpos(strtolower($ticket->user->email),"@qq.com") !== FALSE)
 										<img src="http://q1.qlogo.cn/g?b=qq&nk={{$ticket->user->email}}&s=640" alt="客户">
 									@else
-										<img src="/assets/images/astronaut.svg" alt="客户">
+										<img src="/assets/images/avatar.svg" alt="客户">
 									@endif
 								</p>
 							</div>
@@ -52,7 +52,7 @@
 											@elseif(strpos(strtolower($ticket->user->email),"@qq.com") !== FALSE)
 												<img src="http://q1.qlogo.cn/g?b=qq&nk={{$ticket->user->email}}&s=640" alt="客户">
 											@else
-												<img src="/assets/images/astronaut.svg" alt="客户">
+												<img src="/assets/images/avatar.svg" alt="客户">
 											@endif
 										</p>
 									@endif

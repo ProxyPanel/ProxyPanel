@@ -10,6 +10,16 @@ use Xhat\Payjs\Payjs as Pay;
 
 class PayJs extends AbstractPayment
 {
+	private static $config;
+
+	function __construct()
+	{
+		parent::__construct();
+		self::$config = [
+			'mchid' => self::$systemConfig['payjs_mch_id'],   // 配置商户号
+			'key'   => self::$systemConfig['payjs_key'],   // 配置通信密钥
+		];
+	}
 
 	public function purchase($request)
 	{
@@ -20,7 +30,7 @@ class PayJs extends AbstractPayment
 		$payment->amount = $request->input('amount');
 		$payment->save();
 
-		$result = (new Pay($this->createGateway()))->native([
+		$result = (new Pay($this::$config))->native([
 			'body'         => parent::$systemConfig['subject_name']? : parent::$systemConfig['website_name'],
 			'total_fee'    => $payment->amount*100,
 			'out_trade_no' => $payment->sn,
@@ -37,21 +47,14 @@ class PayJs extends AbstractPayment
 		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
 	}
 
-	private function createGateway()
-	{
-		return $config = [
-			'mchid' => self::$systemConfig['payjs_mch_id'],   // 配置商户号
-			'key'   => self::$systemConfig['payjs_key'],   // 配置通信密钥
-		];
 
-	}
 
 	public function notify($request)
 	{
-		$data = (new Pay($this->createGateway()))->notify();
+		$data = (new Pay($this::$config))->notify();
 
 		if($data['return_code'] == 1){
-			$this->postPayment($data['out_trade_no'], 6);
+			$this::postPayment($data['out_trade_no'], 'PayJs');
 			exit("success");
 		}
 		exit("fail");
