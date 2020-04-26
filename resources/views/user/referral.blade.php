@@ -43,19 +43,13 @@
 							</tr>
 							</thead>
 							<tbody>
-							@if($referralUserList->isEmpty())
+							@foreach($referralUserList as $vo)
 								<tr>
-									<td colspan="3"> {{trans('home.referral_table_none')}} </td>
+									<td> {{$loop->iteration}} </td>
+									<td> {{str_replace(mb_substr($vo->email, 3, 4), "****", $vo->email)}}  </td>
+									<td> {{$vo->created_at}} </td>
 								</tr>
-							@else
-								@foreach($referralUserList as $vo)
-									<tr>
-										<td> {{$loop->iteration}} </td>
-										<td> {{str_replace(mb_substr($vo->email, 3, 4), "****", $vo->email)}}  </td>
-										<td> {{$vo->created_at}} </td>
-									</tr>
-								@endforeach
-							@endif
+							@endforeach
 							</tbody>
 						</table>
 					</div>
@@ -90,30 +84,24 @@
 							</tr>
 							</thead>
 							<tbody>
-							@if($referralLogList->isEmpty())
+							@foreach($referralLogList as $referralLog)
 								<tr>
-									<td colspan="6"> {{trans('home.referral_table_none')}} </td>
+									<td> {{$loop->iteration}} </td>
+									<td> {{$referralLog->created_at}} </td>
+									<td> {{empty($referralLog->user) ? '【账号已删除】' : str_replace(mb_substr($referralLog->user->email, 3, 4), "****", $referralLog->user->email)}} </td>
+									<td> ￥{{$referralLog->amount}} </td>
+									<td> ￥{{$referralLog->ref_amount}} </td>
+									<td>
+										@if ($referralLog->status == 1)
+											<span class="badge badge-sm badge-info">申请中</span>
+										@elseif($referralLog->status == 2)
+											<span>已提现</span>
+										@else
+											<span class="badge badge-sm badge-success">未提现</span>
+										@endif
+									</td>
 								</tr>
-							@else
-								@foreach($referralLogList as $referralLog)
-									<tr>
-										<td> {{$loop->iteration}} </td>
-										<td> {{$referralLog->created_at}} </td>
-										<td> {{empty($referralLog->user) ? '【账号已删除】' : str_replace(mb_substr($referralLog->user->email, 3, 4), "****", $referralLog->user->email)}} </td>
-										<td> ￥{{$referralLog->amount}} </td>
-										<td> ￥{{$referralLog->ref_amount}} </td>
-										<td>
-											@if ($referralLog->status == 1)
-												<span class="badge badge-sm badge-info">申请中</span>
-											@elseif($referralLog->status == 2)
-												<span>已提现</span>
-											@else
-												<span class="badge badge-sm badge-success">未提现</span>
-											@endif
-										</td>
-									</tr>
-								@endforeach
-							@endif
+							@endforeach
 							</tbody>
 						</table>
 					</div>
@@ -144,30 +132,24 @@
 							</tr>
 							</thead>
 							<tbody>
-							@if($referralApplyList->isEmpty())
+							@foreach($referralApplyList as $vo)
 								<tr>
-									<td colspan="6"> {{trans('home.referral_table_none')}} </td>
+									<td> {{$loop->iteration}} </td>
+									<td> {{$vo->created_at}} </td>
+									<td> ￥{{$vo->amount}} </td>
+									<td>
+										@if ($vo->status == 0)
+											<span class="badge badge-sm badge-warning">待审核</span>
+										@elseif($vo->status == 1)
+											<span class="badge badge-sm badge-info">审核通过 - 待打款</span>
+										@elseif($vo->status == 2)
+											<span>已打款</span>
+										@else
+											<span class="badge badge-sm badge-dark">驳回</span>
+										@endif
+									</td>
 								</tr>
-							@else
-								@foreach($referralApplyList as $vo)
-									<tr>
-										<td> {{$loop->iteration}} </td>
-										<td> {{$vo->created_at}} </td>
-										<td> ￥{{$vo->amount}} </td>
-										<td>
-											@if ($vo->status == 0)
-												<span class="badge badge-sm badge-warning">待审核</span>
-											@elseif($vo->status == 1)
-												<span class="badge badge-sm badge-info">审核通过 - 待打款</span>
-											@elseif($vo->status == 2)
-												<span>已打款</span>
-											@else
-												<span class="badge badge-sm badge-dark">驳回</span>
-											@endif
-										</td>
-									</tr>
-								@endforeach
-							@endif
+							@endforeach
 							</tbody>
 						</table>
 					</div>

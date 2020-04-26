@@ -401,6 +401,11 @@ insert into `config` VALUES ('103', 'maintenance_content', '');
 insert into `config` VALUES ('104', 'bark_key', '');
 insert into `config` VALUES ('105', 'hcaptcha_secret', '');
 insert into `config` VALUES ('106', 'hcaptcha_sitekey', '');
+insert into `config` VALUES ('107', 'paypal_username', '');
+insert into `config` VALUES ('108', 'paypal_password', '');
+insert into `config` VALUES ('109', 'paypal_secret', '');
+insert into `config` VALUES ('110', 'paypal_certificate', '');
+insert into `config` VALUES ('111', 'paypal_app_id', '');
 
 -- ----------------------------
 -- Table structure for `article`
@@ -602,7 +607,7 @@ create TABLE `order` (
   `amount` int(11) NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
   `expire_at` datetime DEFAULT NULL COMMENT '过期时间',
   `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
-  `pay_way` tinyint(4) NOT NULL DEFAULT '1' COMMENT '支付方式：1-余额支付、2-有赞云支付',
+  `pay_way` tinyint(4) NOT NULL DEFAULT '1' COMMENT '支付方式：balance、f2fpay、codepay、payjs、bitpayx等',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
@@ -1106,6 +1111,7 @@ create TABLE `payment` (
   `oid` int(11) DEFAULT NULL COMMENT '本地订单ID',
   `amount` int(11) NOT NULL DEFAULT '0' COMMENT '金额，单位分',
   `qr_code` text COLLATE utf8mb4_unicode_ci COMMENT '支付二维码',
+  `url` text COLLATE utf8mb4_unicode_ci COMMENT '支付链接',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态：-1-支付失败、0-等待支付、1-支付成功',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -1133,7 +1139,7 @@ create TABLE `payment_callback` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='有赞云回调日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='回调日志';
 
 
 -- ----------------------------

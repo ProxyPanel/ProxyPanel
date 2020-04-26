@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property int|null        $oid     本地订单ID
  * @property int             $amount  金额，单位分
  * @property string|null     $qr_code 支付二维码
+ * @property string|null     $url     支付链接
  * @property int             $status  状态：-1-支付失败、0-等待支付、1-支付成功
  * @property Carbon          $created_at
  * @property Carbon          $updated_at
@@ -36,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Payment whereSn($value)
  * @method static Builder|Payment whereStatus($value)
  * @method static Builder|Payment whereUpdatedAt($value)
+ * @method static Builder|Payment whereUrl($value)
  * @method static Builder|Payment whereUserId($value)
  * @mixin Eloquent
  */

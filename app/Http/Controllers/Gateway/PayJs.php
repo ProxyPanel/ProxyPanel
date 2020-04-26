@@ -41,13 +41,11 @@ class PayJs extends AbstractPayment
 		if(!$result->return_code){
 			Log::error('PayJs '.$result->return_msg);
 		}
-		$payment->qr_code = $result->qrcode;// 获取收款二维码内容
-		$payment->save();
+		// 获取收款二维码内容
+		Payment::whereId($payment->id)->update(['qr_code' => $result->qrcode]);
 
 		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
 	}
-
-
 
 	public function notify($request)
 	{
@@ -60,12 +58,10 @@ class PayJs extends AbstractPayment
 		exit("fail");
 	}
 
-
 	public function getReturnHTML($request)
 	{
 		// TODO: Implement getReturnHTML() method.
 	}
-
 
 	public function getPurchaseHTML()
 	{

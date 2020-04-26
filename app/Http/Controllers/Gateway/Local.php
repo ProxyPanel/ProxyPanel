@@ -13,7 +13,6 @@ use Response;
 
 class Local extends AbstractPayment
 {
-
 	public function purchase(Request $request)
 	{
 		$amount = $request->input('amount');

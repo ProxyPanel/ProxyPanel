@@ -24,60 +24,56 @@
 					</tr>
 					</thead>
 					<tbody>
-					@if($orderList->isEmpty())
+					@foreach($orderList as $order)
 						<tr>
-							<td colspan="8">{{trans('home.invoice_table_none')}}</td>
-						</tr>
-					@else
-						@foreach($orderList as $order)
-							<tr>
-								<td>{{$loop->iteration}}</td>
-								<td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
-								<td>{{empty($order->goods) ? ($order->goods_id == -1 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</td>
-								<td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
-								<td>￥{{$order->amount}}</td>
-								<td>{{$order->created_at}}</td>
-								<td>{{empty($order->goods) ? '' : $order->goods_id == -1 || $order->status == 3 ? '' : $order->expire_at}}</td>
-								<td>
-									@switch($order->status)
-										@case(-1)
-										<span class="badge badge-default">{{trans('home.invoice_status_closed')}}</span>
-										@break
-										@case(0)
-										<span class="badge badge-danger">{{trans('home.invoice_status_wait_payment')}}</span>
-										@break
-										@case(1)
-										<span class="badge badge-info">{{trans('home.invoice_status_wait_confirm')}}</span>
-										@break
-										@case(2)
-										@if ($order->goods_id == -1)
-											<span class="badge badge-default">{{trans('home.invoice_status_payment_confirm')}}</span>
+							<td>{{$loop->iteration}}</td>
+							<td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
+							<td>{{empty($order->goods) ? ($order->goods_id == -1 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</td>
+							<td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
+							<td>￥{{$order->amount}}</td>
+							<td>{{$order->created_at}}</td>
+							<td>{{empty($order->goods) ? '' : $order->goods_id == -1 || $order->status == 3 ? '' : $order->expire_at}}</td>
+							<td>
+								@switch($order->status)
+									@case(-1)
+									<span class="badge badge-default">{{trans('home.invoice_status_closed')}}</span>
+									@break
+									@case(0)
+									<span class="badge badge-danger">{{trans('home.invoice_status_wait_payment')}}</span>
+									@break
+									@case(1)
+									<span class="badge badge-info">{{trans('home.invoice_status_wait_confirm')}}</span>
+									@break
+									@case(2)
+									@if ($order->goods_id == -1)
+										<span class="badge badge-default">{{trans('home.invoice_status_payment_confirm')}}</span>
+									@else
+										@if($order->is_expire)
+											<span class="badge badge-default">{{trans('home.invoice_table_expired')}}</span>
 										@else
-											@if($order->is_expire)
-												<span class="badge badge-default">{{trans('home.invoice_table_expired')}}</span>
-											@else
-												<span class="badge badge-success">{{trans('home.invoice_table_active')}}</span>
-											@endif
+											<span class="badge badge-success">{{trans('home.invoice_table_active')}}</span>
 										@endif
-										@break
-										@case(3)
-										<span class="badge badge-info">{{trans('home.invoice_table_prepay')}}</span>
-								@break
-								@endswitch
-								<td>
-									@if($order->status == 0 && !empty($order->payment))
-										@if(!empty($order->payment->jump_url))
-											<a href="{{$order->payment->jump_url}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
-										@elseif(!empty($order->payment->sn))
-											<a href="/payment/{{$order->payment->sn}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
-										@endif
-									@elseif ($order->status == 3)
-										<button onclick="activeOrder('{{$order->oid}}')" class="btn btn-success">{{trans('home.invoice_table_start')}}</button>
 									@endif
-								</td>
-							</tr>
-						@endforeach
-					@endif
+									@break
+									@case(3)
+									<span class="badge badge-info">{{trans('home.invoice_table_prepay')}}</span>
+							@break
+							@endswitch
+							<td>
+								@if($order->status == 0 && $order->payment)
+									@if($order->payment->url)
+										<a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+									@elseif($order->payment->sn)
+										<a href="/payment/{{$order->payment->sn}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+									@endif
+								@elseif ($order->status == 1)
+									<button onClick="window.location.reload();" class="btn btn-primary"><i class="icon wb-refresh" aria-hidden="true"></i></button>
+								@elseif ($order->status == 3)
+									<button onclick="activeOrder('{{$order->oid}}')" class="btn btn-success">{{trans('home.invoice_table_start')}}</button>
+								@endif
+							</td>
+						</tr>
+					@endforeach
 					</tbody>
 				</table>
 			</div>

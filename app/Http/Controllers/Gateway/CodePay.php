@@ -48,6 +48,7 @@ class CodePay extends AbstractPayment
 		}
 		$query = $urls.'&sign='.md5($sign.parent::$systemConfig['codepay_key']); //创建订单所需的参数
 		$url = parent::$systemConfig['codepay_url'].$query; //支付页面
+		Payment::whereId($payment->id)->update(['url' => $url]);
 
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
 	}

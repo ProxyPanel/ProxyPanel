@@ -13,24 +13,12 @@
 					</tr>
 					</thead>
 					<tbody>
-					@if($inviteList->isEmpty())
+					@foreach($inviteList as $invite)
 						<tr>
-							<td colspan="2">{{trans('home.invite_code_table_none_codes')}}</td>
+							<td><a href="/register?code={{$invite->code}}" target="_blank">{{$invite->code}}</a></td>
+							<td> {{$invite->dateline}} </td>
 						</tr>
-					@else
-						@foreach($inviteList as $invite)
-							<tr>
-								<td><a href="/register?code={{$invite->code}}" target="_blank">{{$invite->code}}</a></td>
-								<td> {{$invite->dateline}} </td>
-							</tr>
-						@endforeach
-					@endif
-					</tbody>
-				@else
-					<tbody>
-					<tr>
-						<td colspan="2">{{trans('home.invite_code_table_none_codes')}}</td>
-					</tr>
+					@endforeach
 					</tbody>
 				@endif
 			@else

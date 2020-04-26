@@ -41,30 +41,24 @@
 							</tr>
 							</thead>
 							<tbody>
-							@if($inviteList->isEmpty())
+							@foreach($inviteList as $invite)
 								<tr>
-									<td colspan="6">{{trans('home.invite_code_table_none_codes')}}</td>
+									<td> {{$invite->id}} </td>
+									<td>
+										<a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{url('/register?code='.$invite->code)}}">{{$invite->code}}</a>
+									</td>
+									<td> {{$invite->dateline}} </td>
+									<td>
+										{{$invite->uid == 0 ? '系统生成' : (empty($invite->generator) ? '【账号已删除】' : $invite->generator->email)}}
+									</td>
+									<td>
+										{!!$invite->status_label!!}
+									</td>
+									<td>
+										{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->email) : ''}}
+									</td>
 								</tr>
-							@else
-								@foreach($inviteList as $invite)
-									<tr>
-										<td> {{$invite->id}} </td>
-										<td>
-											<a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{url('/register?code='.$invite->code)}}">{{$invite->code}}</a>
-										</td>
-										<td> {{$invite->dateline}} </td>
-										<td>
-											{{$invite->uid == 0 ? '系统生成' : (empty($invite->generator) ? '【账号已删除】' : $invite->generator->email)}}
-										</td>
-										<td>
-											{!!$invite->status_label!!}
-										</td>
-										<td>
-											{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->email) : ''}}
-										</td>
-									</tr>
-								@endforeach
-							@endif
+							@endforeach
 							</tbody>
 						</table>
 					</div>

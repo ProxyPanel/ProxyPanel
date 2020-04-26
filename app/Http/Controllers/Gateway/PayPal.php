@@ -3,6 +3,8 @@
 
 namespace App\Http\Controllers\Gateway;
 
+use App\Components\Curl;
+use App\Http\Models\Order;
 use App\Http\Models\Payment;
 use Auth;
 use Exception;
@@ -14,6 +16,7 @@ use Srmklive\PayPal\Services\ExpressCheckout;
 class PayPal extends AbstractPayment
 {
 	protected $provider;
+	protected $exChange;
 
 	public function __construct()
 	{
@@ -30,13 +33,20 @@ class PayPal extends AbstractPayment
 			],
 
 			'payment_action' => 'Sale',
-			'currency'       => env('PAYPAL_CURRENCY', 'USD'),
+			'currency'       => 'USD',
 			'billing_type'   => 'MerchantInitiatedBilling',
 			'notify_url'     => (self::$systemConfig['website_callback_url']? : self::$systemConfig['website_url']).'/callback/notify?method=paypal',
-			'locale'         => 'zh-CN',
+			'locale'         => 'zh_CN',
 			'validate_ssl'   => TRUE,
 		];
 		$this->provider->setApiCredentials($config);
+		$this->exChange = 7;
+		$exChangeRate = json_decode(Curl::send('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4'), TRUE);
+		if($exChangeRate){
+			if($exChangeRate['success']){
+				$this->exChange = $exChangeRate['result']['rate'];
+			}
+		}
 	}
 
 	public function purchase(Request $request)
@@ -52,6 +62,7 @@ class PayPal extends AbstractPayment
 
 		try{
 			$response = $this->provider->setExpressCheckout($data);
+			Payment::whereId($payment->id)->update(['url' => $response['paypal_link']]);
 
 			return Response::json(['status' => 'success', 'url' => $response['paypal_link'], 'message' => '创建订单成功!']);
 		}catch(Exception $e){
@@ -62,6 +73,8 @@ class PayPal extends AbstractPayment
 
 	protected function getCheckoutData($sn, $amount)
 	{
+		$amount = ceil($amount/$this->exChange*100)/100;
+
 		return [
 			'invoice_id'          => $sn,
 			'items'               => [
@@ -95,7 +108,8 @@ class PayPal extends AbstractPayment
 			$status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
 			if(!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')){
-				Log::info("Order $payment->id has been paid successfully!");
+				Log::info("Order $payment->oid has been paid successfully!");
+				Order::whereOid($payment->oid)->update(['status' => 1]);
 			}else{
 				Log::error("Error processing PayPal payment for Order $payment->id!");
 			}
