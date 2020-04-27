@@ -147,7 +147,7 @@ class DailyJob extends Command
 			// 过期生效中的加油包
 			Order::query()
 				->with(['goods'])
-				->whereUserID($user->id)
+				->whereUserId($user->id)
 				->whereStatus(2)
 				->whereIsExpire(0)
 				->whereHas('goods', function($q){
@@ -165,7 +165,7 @@ class DailyJob extends Command
 			}
 			// 重置流量
 			User::query()->whereId($user->id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => $order->goods->traffic*1048576, 'reset_time' => $nextResetTime]);
-			//Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
+			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic*1048576).'. 重置日期为 '.($nextResetTime? : '【无】'));
 		}
 	}
 }

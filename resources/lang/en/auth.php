@@ -7,6 +7,7 @@ return [
 	'active_tip'             => 'Account is not active yet, Please ',
 	'captcha'                => 'Verification code',
 	'code'                   => 'Invite Code',
+	'optional'               => 'Optional',
 	'login'                  => 'Sign In',
 	'register'               => 'Sign Up',
 	'send'                   => 'Send',
