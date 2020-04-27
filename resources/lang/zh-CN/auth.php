@@ -6,6 +6,7 @@ return [
 	'active_tip'                 => '账号未激活，请点击',
 	'captcha'                    => '验证码',
 	'code'                       => '邀请码',
+	'optional'                   => '可选',
 	'login'                      => '登 录',
 	'register'                   => '注 册',
 	'send'                       => '发送',

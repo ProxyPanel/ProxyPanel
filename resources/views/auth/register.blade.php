@@ -63,7 +63,7 @@
 			@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
 				<div class="form-group form-material floating" data-plugin="formMaterial">
 					<input type="password" class="form-control" name="code" value="{{Request::old('code') ? : Request::get('code')}}" @if(\App\Components\Helpers::systemConfig()['is_invite_register'] == 2) required @endif/>
-					<label class="floating-label" for="code">{{trans('auth.code')}}</label>
+					<label class="floating-label" for="code">{{trans('auth.code')}}@if(\App\Components\Helpers::systemConfig()['is_invite_register'] == 1) ({{trans('auth.optional')}}) @endif</label>
 				</div>
 				@if(\App\Components\Helpers::systemConfig()['is_free_code'])
 					<p class="hint">
