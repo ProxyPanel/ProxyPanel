@@ -73,7 +73,7 @@ class PayPal extends AbstractPayment
 
 	protected function getCheckoutData($sn, $amount)
 	{
-		$amount = ceil($amount/$this->exChange*100)/100;
+		$amount = 0.3+ceil($amount/$this->exChange*100)/100;
 
 		return [
 			'invoice_id'          => $sn,

@@ -51,10 +51,12 @@
 						@endif
 						<div class="col-md-12 mb-30">
 							<div class="float-right">
-								@include('user.components.purchase')
-								@if($goods->type <= 2)
-									<button class="btn btn-lg btn-primary" onclick="pay('balance','0')"> {{trans('home.service_pay_button')}} </button>
-								@endif
+								<div class="btn-group btn-group-lg">
+									@include('user.components.purchase')
+									@if($goods->type <= 2)
+										<button class="btn btn-flat" onclick="pay('balance','0')"><img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('home.service_pay_button')}}"/></button>
+									@endif
+								</div>
 							</div>
 						</div>
 					</div>

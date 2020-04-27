@@ -2013,7 +2013,7 @@ EOF;
 					}
 					break;
 				case 'paypal':
-					if(!self::$systemConfig['paypal_username'] || !self::$systemConfig['paypal_password']){
+					if(!self::$systemConfig['paypal_username'] || !self::$systemConfig['paypal_password'] || !self::$systemConfig['paypal_secret']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【PayPal】必要参数']);
 					}
 					break;

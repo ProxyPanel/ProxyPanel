@@ -1191,7 +1191,7 @@
 													<span class="input-group-append"><button class="btn btn-primary" type="button" onclick="update('bitpay_secret')">修改</button></span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"><a href="https://merchants.mugglepay.com/basic/api" target="_blank"> 在本页</a>中获取后台服务器的秘钥 </span>
+											<span class="text-help offset-md-3">在<a href="https://merchants.mugglepay.com/basic/api" target="_blank">API设置</a>中获取后台服务器的秘钥 </span>
 										</div>
 									</div>
 								</div>
@@ -1200,13 +1200,13 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">PayPal</label>
 											<div class="col-md-7">
-												请到 <a href="" target="_blank">PayPal</a> 申请账号
+												使用商家账号登录<a href="https://www.paypal.com/businessprofile/mytools/apiaccess/firstparty" target="_blank">API凭证申请页</a>, 同意并获取设置信息
 											</div>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="paypal_username">账号</label>
+											<label class="col-md-3 col-form-label" for="paypal_username">API用户名</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_username" value="{{$paypal_username}}"/>
@@ -1217,7 +1217,7 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="paypal_password">密码</label>
+											<label class="col-md-3 col-form-label" for="paypal_password">API密码</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_password" value="{{$paypal_password}}"/>
@@ -1228,7 +1228,7 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="paypal_secret">秘钥</label>
+											<label class="col-md-3 col-form-label" for="paypal_secret">签名</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_secret" value="{{$paypal_secret}}"/>
@@ -1237,7 +1237,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="form-group col-lg-6">
+									<div class="form-group col-lg-6" hidden>
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="paypal_certificate">证书</label>
 											<div class="col-md-7">
@@ -1248,7 +1248,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="form-group col-lg-6">
+									<div class="form-group col-lg-6" hidden>
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="paypal_app_id">应用ID</label>
 											<div class="col-md-7">
