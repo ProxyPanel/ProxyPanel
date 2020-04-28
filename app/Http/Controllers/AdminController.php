@@ -682,7 +682,7 @@ class AdminController extends Controller
 			$view['country_list'] = Country::query()->orderBy('code', 'asc')->get();
 			$view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
-			return Response::view('admin.group.addNode', $view);
+			return Response::view('admin.node.addNode', $view);
 		}
 	}
 
