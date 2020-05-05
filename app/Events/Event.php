@@ -8,8 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Event
-{
+class Event {
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
 	/**
@@ -17,8 +16,7 @@ class Event
 	 *
 	 * @return void
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		//
 	}
 
@@ -27,8 +25,7 @@ class Event
 	 *
 	 * @return Channel|array
 	 */
-	public function broadcastOn()
-	{
+	public function broadcastOn() {
 		return new PrivateChannel('channel-name');
 	}
 }

@@ -7,10 +7,8 @@ use Exception;
 use Log;
 use stdClass;
 
-class PushNotification
-{
-	public static function send($title, $content)
-	{
+class PushNotification {
+	public static function send($title, $content) {
 		switch(Helpers::systemConfig()['is_notification']){
 			case 'serverChan':
 				return self::ServerChan($title, $content);
@@ -19,33 +17,32 @@ class PushNotification
 				return self::Bark($title, $content);
 				break;
 			default:
-				return FALSE;
+				return false;
 		}
 	}
 
 	/**
 	 * ServerChan推送消息
 	 *
-	 * @param string $title   消息标题
-	 * @param string $content 消息内容
+	 * @param  string  $title    消息标题
+	 * @param  string  $content  消息内容
 	 *
 	 * @return mixed
 	 */
-	private static function ServerChan($title, $content)
-	{
-		$ret = FALSE;
+	private static function ServerChan($title, $content) {
+		$ret = false;
 		try{
 			// TODO：一天仅可发送不超过500条
 			$url = 'https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content);
 			$result = json_decode(Curl::send($url));
 			if(empty(Helpers::systemConfig()['server_chan_key'])){
 				$result = new stdClass();
-				$result->errno = TRUE;
+				$result->errno = true;
 				$result->errmsg = "未正确配置ServerChan";
 			}
-			if($result != NULL && !$result->errno){
+			if($result != null && !$result->errno){
 				Helpers::addNotificationLog($title, $content, 2);
-				$ret = TRUE;
+				$ret = true;
 			}else{
 				Helpers::addNotificationLog($title, $content, 2, 'admin', 1, $result? $result->errmsg : '未知');
 			}
@@ -60,21 +57,20 @@ class PushNotification
 	/**
 	 * Bark推送消息
 	 *
-	 * @param string $title   消息标题
-	 * @param string $content 消息内容
+	 * @param  string  $title    消息标题
+	 * @param  string  $content  消息内容
 	 *
 	 * @return mixed
 	 */
-	private static function Bark($title, $content)
-	{
-		$ret = FALSE;
+	private static function Bark($title, $content) {
+		$ret = false;
 		try{
 			$url = 'https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content;
 			$result = json_decode(Curl::send($url));
 			if($result){
 				if($result->code == 200){
 					Helpers::addNotificationLog($title, $content, 3);
-					$ret = TRUE;
+					$ret = true;
 				}else{
 					Helpers::addNotificationLog($title, $content, 3, 'admin', $result->message);
 				}

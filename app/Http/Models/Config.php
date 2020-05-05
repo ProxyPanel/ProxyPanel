@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * 系统配置
- * Class Config
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
  * @property string      $name  配置名
  * @property string|null $value 配置值
@@ -21,10 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Config whereId($value)
  * @method static Builder|Config whereName($value)
  * @method static Builder|Config whereValue($value)
+ * @mixin Eloquent
  */
-class Config extends Model
-{
-	public $timestamps = FALSE;
+class Config extends Model {
+	public $timestamps = false;
 	protected $table = 'config';
 	protected $primaryKey = 'id';
 

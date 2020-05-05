@@ -6,18 +6,16 @@ use Closure;
 use Illuminate\Http\Request;
 use Redirect;
 
-class isLogin
-{
+class isLogin {
 	/**
 	 * 校验是否已登录
 	 *
-	 * @param Request $request
-	 * @param Closure $next
+	 * @param  Request  $request
+	 * @param  Closure  $next
 	 *
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
-	{
+	public function handle($request, Closure $next) {
 		if(auth()->guest()){
 			return Redirect::to('login');
 		}

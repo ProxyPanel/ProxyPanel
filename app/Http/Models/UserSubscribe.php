@@ -10,20 +10,17 @@ use Illuminate\Support\Carbon;
 
 /**
  * 用户订阅地址
- * Class UserSubscribe
  *
- * @package App\Http\Models
- * @mixin Eloquent
- * @property int         $id
- * @property int         $user_id    用户ID
- * @property string|null $code       订阅地址唯一识别码
- * @property int         $times      地址请求次数
- * @property int         $status     状态：0-禁用、1-启用
- * @property int         $ban_time   封禁时间
- * @property string      $ban_desc   封禁理由
- * @property Carbon|null $created_at 创建时间
- * @property Carbon|null $updated_at 最后更新时间
- * @property-read User   $user
+ * @property int            $id
+ * @property int            $user_id    用户ID
+ * @property string|null    $code       订阅地址唯一识别码
+ * @property int            $times      地址请求次数
+ * @property int            $status     状态：0-禁用、1-启用
+ * @property int            $ban_time   封禁时间
+ * @property string         $ban_desc   封禁理由
+ * @property Carbon|null    $created_at 创建时间
+ * @property Carbon|null    $updated_at 最后更新时间
+ * @property-read User|null $user
  * @method static Builder|UserSubscribe newModelQuery()
  * @method static Builder|UserSubscribe newQuery()
  * @method static Builder|UserSubscribe query()
@@ -37,19 +34,17 @@ use Illuminate\Support\Carbon;
  * @method static Builder|UserSubscribe whereTimes($value)
  * @method static Builder|UserSubscribe whereUpdatedAt($value)
  * @method static Builder|UserSubscribe whereUserId($value)
+ * @mixin Eloquent
  */
-class UserSubscribe extends Model
-{
+class UserSubscribe extends Model {
 	protected $table = 'user_subscribe';
 	protected $primaryKey = 'id';
 
-	function scopeUid($query)
-	{
+	function scopeUid($query) {
 		return $query->whereUserId(Auth::user()->id);
 	}
 
-	function user()
-	{
+	function user() {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 }

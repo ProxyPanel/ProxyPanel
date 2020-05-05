@@ -21,24 +21,21 @@ use Response;
  *
  * @package App\Http\Controllers\Controller
  */
-class TicketController extends Controller
-{
+class TicketController extends Controller {
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 工单列表
-	public function ticketList(Request $request)
-	{
+	public function ticketList(Request $request) {
 		$email = $request->input('email');
 
 		$query = Ticket::query();
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email){
+			$query->whereHas('user', function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -49,8 +46,7 @@ class TicketController extends Controller
 	}
 
 	// 回复工单
-	public function replyTicket(Request $request)
-	{
+	public function replyTicket(Request $request) {
 		$id = $request->input('id');
 
 		if($request->isMethod('POST')){
@@ -77,8 +73,10 @@ class TicketController extends Controller
 				// 发通知邮件
 				if(!Auth::user()->is_admin){
 					if(self::$systemConfig['webmaster_email']){
-						$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
-						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
+						$logId = Helpers::addNotificationLog($title, $content, 1,
+						                                     self::$systemConfig['webmaster_email']);
+						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title,
+						                                                                       $content));
 					}
 				}else{
 					$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
@@ -103,8 +101,7 @@ class TicketController extends Controller
 	}
 
 	// 关闭工单
-	public function closeTicket(Request $request)
-	{
+	public function closeTicket(Request $request) {
 		$id = $request->input('id');
 
 		$ticket = Ticket::query()->with(['user'])->whereId($id)->first();

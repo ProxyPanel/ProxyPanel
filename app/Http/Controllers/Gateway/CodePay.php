@@ -6,10 +6,8 @@ use App\Http\Models\Payment;
 use Auth;
 use Response;
 
-class CodePay extends AbstractPayment
-{
-	public function purchase($request)
-	{
+class CodePay extends AbstractPayment {
+	public function purchase($request) {
 		$payment = new Payment();
 		$payment->sn = self::generateGuid();
 		$payment->user_id = Auth::user()->id;
@@ -20,12 +18,12 @@ class CodePay extends AbstractPayment
 		$data = [
 			'id'         => parent::$systemConfig['codepay_id'],
 			'pay_id'     => $payment->sn,
-			'type'       => $request->input('type'),//1支付宝支付 2QQ钱包 3微信支付
+			'type'       => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
 			'price'      => $payment->amount,
 			'page'       => 1,
 			'outTime'    => 900,
 			'param'      => '',
-			'notify_url' => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/callback/notify?method=codepay',
+			'notify_url' => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=codepay',
 			'return_url' => parent::$systemConfig['website_url'].'/invoices',
 		];
 
@@ -53,8 +51,7 @@ class CodePay extends AbstractPayment
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
 	}
 
-	public function notify($request)
-	{
+	public function notify($request) {
 		ksort($_POST);
 		reset($_POST);
 		$sign = '';
@@ -81,13 +78,11 @@ class CodePay extends AbstractPayment
 		exit('fail');
 	}
 
-	public function getReturnHTML($request)
-	{
+	public function getReturnHTML($request) {
 		// TODO: Implement getReturnHTML() method.
 	}
 
-	public function getPurchaseHTML()
-	{
+	public function getPurchaseHTML() {
 		// TODO: Implement getReturnHTML() method.
 	}
 }

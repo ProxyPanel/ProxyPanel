@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * SS节点负载情况
- * Class SsNodeInfo
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int    $id
  * @property int    $node_id  节点ID
  * @property int    $uptime   后端存活时长，单位秒
@@ -25,10 +22,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|SsNodeInfo whereLogTime($value)
  * @method static Builder|SsNodeInfo whereNodeId($value)
  * @method static Builder|SsNodeInfo whereUptime($value)
+ * @mixin Eloquent
  */
-class SsNodeInfo extends Model
-{
-	public $timestamps = FALSE;
+class SsNodeInfo extends Model {
+	public $timestamps = false;
 	protected $table = 'ss_node_info';
 	protected $primaryKey = 'id';
 

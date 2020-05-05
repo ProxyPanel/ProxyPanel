@@ -9,10 +9,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * 注册时的激活验证码
- * Class VerifyCode
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
  * @property string      $address    用户邮箱
  * @property string      $code       验证码
@@ -22,16 +19,15 @@ use Illuminate\Support\Carbon;
  * @method static Builder|VerifyCode newModelQuery()
  * @method static Builder|VerifyCode newQuery()
  * @method static Builder|VerifyCode query()
+ * @method static Builder|VerifyCode whereAddress($value)
  * @method static Builder|VerifyCode whereCode($value)
  * @method static Builder|VerifyCode whereCreatedAt($value)
  * @method static Builder|VerifyCode whereId($value)
  * @method static Builder|VerifyCode whereStatus($value)
  * @method static Builder|VerifyCode whereUpdatedAt($value)
- * @method static Builder|VerifyCode whereUsername($value)
- * @method static Builder|VerifyCode whereAddress($value)
+ * @mixin Eloquent
  */
-class VerifyCode extends Model
-{
+class VerifyCode extends Model {
 	protected $table = 'verify_code';
 	protected $primaryKey = 'id';
 

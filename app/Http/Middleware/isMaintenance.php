@@ -6,20 +6,21 @@ use App\Components\Helpers;
 use Closure;
 use Illuminate\Http\Request;
 
-class isMaintenance
-{
+class isMaintenance {
 	/**
 	 * 校验是否开启维护模式
 	 *
-	 * @param Request $request
-	 * @param Closure $next
+	 * @param  Request  $request
+	 * @param  Closure  $next
 	 *
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
-	{
+	public function handle($request, Closure $next) {
 		if(Helpers::systemConfig()['maintenance_mode']){
-			return response()->view('auth.maintenance', ['message' => Helpers::systemConfig()['maintenance_content'], 'time' => Helpers::systemConfig()['maintenance_time']? : '0']);
+			return response()->view('auth.maintenance', [
+				'message' => Helpers::systemConfig()['maintenance_content'],
+				'time'    => Helpers::systemConfig()['maintenance_time']?: '0'
+			]);
 		}
 
 		return $next($request);

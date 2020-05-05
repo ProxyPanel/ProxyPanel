@@ -21,11 +21,9 @@ use Session;
  *
  * @package App\Http\Controllers\Controller
  */
-class ShopController extends Controller
-{
+class ShopController extends Controller {
 	// 商品列表
-	public function goodsList(Request $request)
-	{
+	public function goodsList(Request $request) {
 		$type = $request->input('type');
 		$status = $request->input('status');
 
@@ -45,10 +43,27 @@ class ShopController extends Controller
 	}
 
 	// 添加商品
-	public function addGoods(Request $request)
-	{
+	public function addGoods(Request $request) {
 		if($request->isMethod('POST')){
-			$this->validate($request, ['name' => 'required', 'traffic' => 'required_unless:type,3|integer|min:1024|max:10240000|nullable', 'price' => 'required|numeric|min:0', 'type' => 'required', 'days' => 'required|integer',], ['name.required' => '请填入名称', 'traffic.required_unless' => '请填入流量', 'traffic.integer' => '内含流量必须是整数值', 'traffic.min' => '内含流量不能低于1MB', 'traffic.max' => '内含流量不能超过10TB', 'price.required' => '请填入价格', 'price.numeric' => '价格不合法', 'price.min' => '价格最低0', 'type.required' => '请选择类型', 'days.required' => '请填入有效期', 'days.integer' => '有效期不合法',]);
+			$this->validate($request, [
+				'name'    => 'required',
+				'traffic' => 'required_unless:type,3|integer|min:1024|max:10240000|nullable',
+				'price'   => 'required|numeric|min:0',
+				'type'    => 'required',
+				'days'    => 'required|integer',
+			], [
+				                'name.required'           => '请填入名称',
+				                'traffic.required_unless' => '请填入流量',
+				                'traffic.integer'         => '内含流量必须是整数值',
+				                'traffic.min'             => '内含流量不能低于1MB',
+				                'traffic.max'             => '内含流量不能超过10TB',
+				                'price.required'          => '请填入价格',
+				                'price.numeric'           => '价格不合法',
+				                'price.min'               => '价格最低0',
+				                'type.required'           => '请选择类型',
+				                'days.required'           => '请填入有效期',
+				                'days.integer'            => '有效期不合法',
+			                ]);
 
 			$type = $request->input('type');
 			$price = $request->input('price');
@@ -136,8 +151,7 @@ class ShopController extends Controller
 	}
 
 	// 编辑商品
-	public function editGoods(Request $request, $id)
-	{
+	public function editGoods(Request $request, $id) {
 		if($request->isMethod('POST')){
 			$name = $request->input('name');
 			$info = $request->input('info');
@@ -201,13 +215,14 @@ class ShopController extends Controller
 					'name'      => $name,
 					'info'      => $info,
 					'desc'      => $desc,
-					'price'     => $price*100,
-					'renew'     => $renew*100,
+					'price'     => $price * 100,
+					'renew'     => $renew * 100,
 					'sort'      => $sort,
 					'color'     => $color,
 					'is_hot'    => $is_hot,
 					'limit_num' => $limit_num,
-					'status'    => $status];
+					'status'    => $status
+				];
 
 				if($logo){
 					$data['logo'] = $logo;
@@ -256,8 +271,7 @@ class ShopController extends Controller
 	}
 
 	// 删除商品
-	public function delGoods(Request $request)
-	{
+	public function delGoods(Request $request) {
 		Goods::query()->whereId($request->input('id'))->delete();
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);

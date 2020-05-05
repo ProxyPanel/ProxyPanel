@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * SS节点用户在线情况
- * Class SsNodeOnlineLog
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int $id
  * @property int $node_id     节点ID
  * @property int $online_user 在线用户数
@@ -23,10 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|SsNodeOnlineLog whereLogTime($value)
  * @method static Builder|SsNodeOnlineLog whereNodeId($value)
  * @method static Builder|SsNodeOnlineLog whereOnlineUser($value)
+ * @mixin Eloquent
  */
-class SsNodeOnlineLog extends Model
-{
-	public $timestamps = FALSE;
+class SsNodeOnlineLog extends Model {
+	public $timestamps = false;
 	protected $table = 'ss_node_online_log';
 	protected $primaryKey = 'id';
 

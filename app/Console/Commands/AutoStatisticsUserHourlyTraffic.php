@@ -9,19 +9,16 @@ use App\Http\Models\UserTrafficLog;
 use Illuminate\Console\Command;
 use Log;
 
-class AutoStatisticsUserHourlyTraffic extends Command
-{
+class AutoStatisticsUserHourlyTraffic extends Command {
 	protected $signature = 'autoStatisticsUserHourlyTraffic';
 	protected $description = '自动统计用户每小时流量';
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 	}
 
-	public function handle()
-	{
-		$jobStartTime = microtime(TRUE);
+	public function handle() {
+		$jobStartTime = microtime(true);
 
 		$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
 		foreach($userList as $user){
@@ -35,14 +32,13 @@ class AutoStatisticsUserHourlyTraffic extends Command
 			}
 		}
 
-		$jobEndTime = microtime(TRUE);
-		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
+		$jobEndTime = microtime(true);
+		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	private function statisticsByNode($user_id, $node_id = 0)
-	{
+	private function statisticsByNode($user_id, $node_id = 0) {
 		$start_time = strtotime(date('Y-m-d H:i:s', strtotime("-1 hour")));
 		$end_time = time();
 
@@ -54,7 +50,7 @@ class AutoStatisticsUserHourlyTraffic extends Command
 
 		$u = $query->sum('u');
 		$d = $query->sum('d');
-		$total = $u+$d;
+		$total = $u + $d;
 		$traffic = flowAutoShow($total);
 
 		if($total){ // 有数据才记录

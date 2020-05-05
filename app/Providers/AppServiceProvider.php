@@ -6,17 +6,15 @@ use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use URL;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
 	/**
 	 * Bootstrap any application services.
 	 *
 	 * @return void
 	 */
-	public function boot()
-	{
+	public function boot() {
 		// 检测是否强制跳转https
-		if(env('REDIRECT_HTTPS', FALSE)){
+		if(env('REDIRECT_HTTPS', false)){
 			URL::forceScheme('https');
 		}
 
@@ -28,8 +26,7 @@ class AppServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	public function register()
-	{
+	public function register() {
 		if($this->app->environment() !== 'production'){
 			$this->app->register(IdeHelperServiceProvider::class);
 		}

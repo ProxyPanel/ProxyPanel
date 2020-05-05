@@ -14,10 +14,8 @@ use Log;
  *
  * @package App\Http\Controllers\Api
  */
-class PingController extends Controller
-{
-	public function ping(Request $request)
-	{
+class PingController extends Controller {
+	public function ping(Request $request) {
 		$token = $request->input('token');
 		$host = $request->input('host');
 		$port = $request->input('port', 22);
@@ -51,7 +49,7 @@ class PingController extends Controller
 		}
 
 		// 如果不是IPv4
-		if(FALSE === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+		if(false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
 			// 如果是IPv6
 			if(filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){
 				$host = '['.$host.']';

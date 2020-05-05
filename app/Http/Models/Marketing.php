@@ -9,12 +9,9 @@ use Illuminate\Support\Carbon;
 
 /**
  * 营销
- * Class Marketing
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
- * @property int         $type     类型：1-邮件群发、2-订阅渠道群发
+ * @property int         $type     类型：1-邮件群发
  * @property string      $receiver 接收者
  * @property string      $title    标题
  * @property string      $content  内容
@@ -35,15 +32,14 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Marketing whereTitle($value)
  * @method static Builder|Marketing whereType($value)
  * @method static Builder|Marketing whereUpdatedAt($value)
+ * @mixin Eloquent
  */
-class Marketing extends Model
-{
+class Marketing extends Model {
 	protected $table = 'marketing';
 	protected $primaryKey = 'id';
 	protected $appends = ['status_label'];
 
-	function getStatusLabelAttribute()
-	{
+	function getStatusLabelAttribute() {
 		$status_label = '';
 		switch($this->attributes['status']){
 			case -1:

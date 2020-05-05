@@ -9,22 +9,19 @@ use Illuminate\Support\Carbon;
 
 /**
  * 用户登录日志
- * Class UserLoginLog
  *
- * @package App\Http\Models
- * @mixin Eloquent
- * @property int       $id
- * @property int       $user_id
- * @property string    $ip
- * @property string    $country
- * @property string    $province
- * @property string    $city
- * @property string    $county
- * @property string    $isp
- * @property string    $area
- * @property Carbon    $created_at
- * @property Carbon    $updated_at
- * @property-read User $user
+ * @property int            $id
+ * @property int            $user_id
+ * @property string         $ip
+ * @property string         $country
+ * @property string         $province
+ * @property string         $city
+ * @property string         $county
+ * @property string         $isp
+ * @property string         $area
+ * @property Carbon         $created_at
+ * @property Carbon         $updated_at
+ * @property-read User|null $user
  * @method static Builder|UserLoginLog newModelQuery()
  * @method static Builder|UserLoginLog newQuery()
  * @method static Builder|UserLoginLog query()
@@ -39,14 +36,13 @@ use Illuminate\Support\Carbon;
  * @method static Builder|UserLoginLog whereProvince($value)
  * @method static Builder|UserLoginLog whereUpdatedAt($value)
  * @method static Builder|UserLoginLog whereUserId($value)
+ * @mixin Eloquent
  */
-class UserLoginLog extends Model
-{
+class UserLoginLog extends Model {
 	protected $table = 'user_login_log';
 	protected $primaryKey = 'id';
 
-	function user()
-	{
+	function user() {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 }

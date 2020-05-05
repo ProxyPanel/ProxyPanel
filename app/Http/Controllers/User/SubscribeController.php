@@ -12,18 +12,15 @@ use Illuminate\Http\Request;
 use Redirect;
 use Response;
 
-class SubscribeController extends Controller
-{
+class SubscribeController extends Controller {
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 通过订阅码获取订阅信息
-	public function getSubscribeByCode(Request $request, $code)
-	{
+	public function getSubscribeByCode(Request $request, $code) {
 		if(empty($code)){
 			return Redirect::to('login');
 		}
@@ -51,14 +48,23 @@ class SubscribeController extends Controller
 			exit($this->noneNode());
 		}
 
-		$query = SsNode::query()->selectRaw('ss_node.*')->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id");
+		$query = SsNode::query()
+		               ->selectRaw('ss_node.*')
+		               ->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id");
 
 		// 启用混合订阅时，加入V2Ray节点，未启用时仅下发SSR节点信息
 		if(!self::$systemConfig['mix_subscribe']){
 			$query->where('ss_node.type', 1);
 		}
 
-		$nodeList = $query->where('ss_node.status', 1)->where('ss_node.is_subscribe', 1)->whereIn('ss_node_label.label_id', $userLabelIds)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get()->toArray();
+		$nodeList = $query->where('ss_node.status', 1)
+		                  ->where('ss_node.is_subscribe', 1)
+		                  ->whereIn('ss_node_label.label_id', $userLabelIds)
+		                  ->groupBy('ss_node.id')
+		                  ->orderBy('ss_node.sort', 'desc')
+		                  ->orderBy('ss_node.id', 'asc')
+		                  ->get()
+		                  ->toArray();
 		if(empty($nodeList)){
 			exit($this->noneNode());
 		}
@@ -68,7 +74,7 @@ class SubscribeController extends Controller
 			shuffle($nodeList);
 		}
 
-		$scheme = NULL;
+		$scheme = null;
 
 		// 展示到期时间和剩余流量
 		if(self::$systemConfig['is_custom_subscribe']){
@@ -99,20 +105,18 @@ class SubscribeController extends Controller
 	}
 
 	// 抛出无可用的节点信息，用于兼容防止客户端订阅失败
-	private function noneNode()
-	{
+	private function noneNode() {
 		return base64url_encode('ssr://'.base64url_encode('0.0.0.0:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode('无可用节点或账号被封禁或订阅被封禁').'&group='.base64url_encode('错误').'&udpport=0&uot=0')."\n");
 	}
 
 	/**
 	 * 过期时间
 	 *
-	 * @param object $user
+	 * @param  object  $user
 	 *
 	 * @return string
 	 */
-	private function expireDate($user)
-	{
+	private function expireDate($user) {
 		$text = '到期时间: '.$user->expire_time;
 
 		return 'ssr://'.base64url_encode('0.0.0.1:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0')."\n";
@@ -121,13 +125,12 @@ class SubscribeController extends Controller
 	/**
 	 * 剩余流量
 	 *
-	 * @param object $user
+	 * @param  object  $user
 	 *
 	 * @return string
 	 */
-	private function lastTraffic($user)
-	{
-		$text = '剩余流量: '.flowAutoShow($user->transfer_enable-$user->u-$user->d);
+	private function lastTraffic($user) {
+		$text = '剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d);
 
 		return 'ssr://'.base64url_encode('0.0.0.2:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0')."\n";
 	}

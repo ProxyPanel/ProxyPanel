@@ -23,14 +23,12 @@ use Exception;
 use Illuminate\Console\Command;
 use Log;
 
-class AutoJob extends Command
-{
+class AutoJob extends Command {
 	protected static $systemConfig;
 	protected $signature = 'autoJob';
 	protected $description = '自动化任务';
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 		self::$systemConfig = Helpers::systemConfig();
 	}
@@ -38,9 +36,8 @@ class AutoJob extends Command
 	/*
 	 * 警告：除非熟悉业务流程，否则不推荐更改以下执行顺序，随意变更以下顺序可能导致系统异常
 	 */
-	public function handle()
-	{
-		$jobStartTime = microtime(TRUE);
+	public function handle() {
+		$jobStartTime = microtime(true);
 
 		// 关闭超时未支付在线订单
 		$this->closePayments();
@@ -74,17 +71,19 @@ class AutoJob extends Command
 			}
 		}
 
-		$jobEndTime = microtime(TRUE);
-		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
+		$jobEndTime = microtime(true);
+		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 关闭超时未在线支付订单
-	private function closePayments()
-	{
+	private function closePayments() {
 		// 关闭超时未支付的在线支付订单（在线支付收款二维码超过30分钟自动关闭，关闭后无法再支付，所以我们限制15分钟内必须付款）
-		$paymentList = Payment::query()->whereStatus(0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))->get();
+		$paymentList = Payment::query()
+		                      ->whereStatus(0)
+		                      ->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")))
+		                      ->get();
 		if($paymentList->isNotEmpty()){
 			DB::beginTransaction();
 			try{
@@ -99,7 +98,8 @@ class AutoJob extends Command
 					if($payment->order->coupon_id){
 						Coupon::query()->whereId($payment->order->coupon_id)->update(['status' => 0]);
 
-						Helpers::addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid, '在线订单超时未支付，自动退回');
+						Helpers::addCouponLog($payment->order->coupon_id, $payment->order->goods_id, $payment->oid,
+						                      '在线订单超时未支付，自动退回');
 					}
 				}
 
@@ -113,10 +113,12 @@ class AutoJob extends Command
 	}
 
 	// 关闭超时未支付订单
-	private function closeOrders()
-	{
+	private function closeOrders() {
 		// 关闭超时未支付的在线支付订单（在线支付收款二维码超过30分钟自动关闭，关闭后无法再支付，所以我们限制15分钟内必须付款）
-		$orderList = Order::query()->whereStatus(0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))->get();
+		$orderList = Order::query()
+		                  ->whereStatus(0)
+		                  ->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-30 minutes")))
+		                  ->get();
 		if($orderList->isNotEmpty()){
 			DB::beginTransaction();
 			try{
@@ -142,10 +144,12 @@ class AutoJob extends Command
 	}
 
 	// 注册验证码自动置无效
-	private function expireCode()
-	{
+	private function expireCode() {
 		// 注册验证码自动置无效
-		VerifyCode::query()->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-10 minutes")))->update(['status' => 2]);
+		VerifyCode::query()
+		          ->whereStatus(0)
+		          ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-10 minutes")))
+		          ->update(['status' => 2]);
 
 		// 优惠券到期自动置无效
 		Coupon::query()->whereStatus(0)->where('available_end', '<=', time())->update(['status' => 2]);
@@ -155,17 +159,25 @@ class AutoJob extends Command
 	}
 
 	// 封禁访问异常的订阅链接
-	private function blockSubscribe()
-	{
+	private function blockSubscribe() {
 		if(self::$systemConfig['is_subscribe_ban']){
 			$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
 			foreach($userList as $user){
 				$subscribe = UserSubscribe::query()->whereUserId($user->id)->first();
 				if($subscribe){
 					// 24小时内不同IP的请求次数
-					$request_times = UserSubscribeLog::query()->whereSid($subscribe->id)->where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-24 hours")))->distinct('request_ip')->count('request_ip');
+					$request_times = UserSubscribeLog::query()
+					                                 ->whereSid($subscribe->id)
+					                                 ->where('request_time', '>=',
+					                                         date("Y-m-d H:i:s", strtotime("-24 hours")))
+					                                 ->distinct('request_ip')
+					                                 ->count('request_ip');
 					if($request_times >= self::$systemConfig['subscribe_ban_times']){
-						UserSubscribe::query()->whereId($subscribe->id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '存在异常，自动封禁']);
+						UserSubscribe::query()->whereId($subscribe->id)->update([
+							                                                        'status'   => 0,
+							                                                        'ban_time' => time(),
+							                                                        'ban_desc' => '存在异常，自动封禁'
+						                                                        ]);
 
 						// 记录封禁日志
 						$this->addUserBanLog($subscribe->user_id, 0, '【完全封禁订阅】-订阅24小时内请求异常');
@@ -178,12 +190,11 @@ class AutoJob extends Command
 	/**
 	 * 添加用户封禁日志
 	 *
-	 * @param int    $userId  用户ID
-	 * @param int    $minutes 封禁时长，单位分钟
-	 * @param string $desc    封禁理由
+	 * @param  int     $userId   用户ID
+	 * @param  int     $minutes  封禁时长，单位分钟
+	 * @param  string  $desc     封禁理由
 	 */
-	private function addUserBanLog($userId, $minutes, $desc)
-	{
+	private function addUserBanLog($userId, $minutes, $desc) {
 		$log = new UserBanLog();
 		$log->user_id = $userId;
 		$log->minutes = $minutes;
@@ -192,8 +203,7 @@ class AutoJob extends Command
 	}
 
 	// 封禁账号
-	private function blockUsers()
-	{
+	private function blockUsers() {
 		// 封禁1小时内流量异常账号
 		if(self::$systemConfig['is_traffic_ban']){
 			$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->whereBanTime(0)->get();
@@ -204,9 +214,17 @@ class AutoJob extends Command
 				}
 
 				// 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
-				$totalTraffic = UserTrafficHourly::query()->whereUserId($user->id)->whereNodeId(0)->where('created_at', '>=', date('Y-m-d H:i:s', time()-3900))->sum('total');
-				if($totalTraffic >= (self::$systemConfig['traffic_ban_value']*1073741824)){
-					User::query()->whereId($user->id)->update(['enable' => 0, 'ban_time' => strtotime(date('Y-m-d H:i:s', strtotime("+".self::$systemConfig['traffic_ban_time']." minutes")))]);
+				$totalTraffic = UserTrafficHourly::query()
+				                                 ->whereUserId($user->id)
+				                                 ->whereNodeId(0)
+				                                 ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
+				                                 ->sum('total');
+				if($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * 1073741824)){
+					User::query()->whereId($user->id)->update([
+						                                          'enable'   => 0,
+						                                          'ban_time' => strtotime(date('Y-m-d H:i:s',
+						                                                                       strtotime("+".self::$systemConfig['traffic_ban_time']." minutes")))
+					                                          ]);
 
 					// 写入日志
 					$this->addUserBanLog($user->id, self::$systemConfig['traffic_ban_time'], '【临时封禁代理】-1小时内流量异常');
@@ -215,7 +233,12 @@ class AutoJob extends Command
 		}
 
 		// 禁用流量超限用户
-		$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->whereBanTime(0)->whereRaw("u + d >= transfer_enable")->get();
+		$userList = User::query()
+		                ->whereEnable(1)
+		                ->where('status', '>=', 0)
+		                ->whereBanTime(0)
+		                ->whereRaw("u + d >= transfer_enable")
+		                ->get();
 		foreach($userList as $user){
 			User::query()->whereId($user->id)->update(['enable' => 0]);
 
@@ -225,8 +248,7 @@ class AutoJob extends Command
 	}
 
 	// 解封被临时封禁的账号
-	private function unblockUsers()
-	{
+	private function unblockUsers() {
 		// 解封被临时封禁的账号
 		$userList = User::query()->whereEnable(0)->where('status', '>=', 0)->where('ban_time', '>', 0)->get();
 		foreach($userList as $user){
@@ -239,7 +261,13 @@ class AutoJob extends Command
 		}
 
 		// 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）
-		$userList = User::query()->whereEnable(0)->where('status', '>=', 0)->whereBanTime(0)->where('expire_time', '>=', date('Y-m-d'))->whereRaw("u + d < transfer_enable")->get();
+		$userList = User::query()
+		                ->whereEnable(0)
+		                ->where('status', '>=', 0)
+		                ->whereBanTime(0)
+		                ->where('expire_time', '>=', date('Y-m-d'))
+		                ->whereRaw("u + d < transfer_enable")
+		                ->get();
 		foreach($userList as $user){
 			User::query()->whereId($user->id)->update(['enable' => 1]);
 
@@ -249,8 +277,7 @@ class AutoJob extends Command
 	}
 
 	// 端口回收与分配
-	private function dispatchPort()
-	{
+	private function dispatchPort() {
 		if(self::$systemConfig['auto_release_port']){
 			## 自动分配端口
 			$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->wherePort(0)->get();
@@ -264,18 +291,25 @@ class AutoJob extends Command
 			User::query()->whereEnable(0)->whereStatus(-1)->where('port', '!=', 0)->update(['port' => 0]);
 
 			## 过期一个月的账户自动释放端口
-			User::query()->whereEnable(0)->where('port', '!=', 0)->where('expire_time', '<=', date("Y-m-d", strtotime("-30 days")))->update(['port' => 0]);
+			User::query()
+			    ->whereEnable(0)
+			    ->where('port', '!=', 0)
+			    ->where('expire_time', '<=', date("Y-m-d", strtotime("-30 days")))
+			    ->update(['port' => 0]);
 		}
 	}
 
 	// 检测节点是否离线
-	private function checkNodeStatus()
-	{
+	private function checkNodeStatus() {
 		if(self::$systemConfig['is_node_offline']){
 			$nodeList = SsNode::query()->whereIsTransit(0)->whereStatus(1)->get();
 			foreach($nodeList as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
-				$nodeTTL = SsNodeInfo::query()->whereNodeId($node->id)->where('log_time', '>=', strtotime("-10 minutes"))->orderBy('id', 'desc')->doesntExist();
+				$nodeTTL = SsNodeInfo::query()
+				                     ->whereNodeId($node->id)
+				                     ->where('log_time', '>=', strtotime("-10 minutes"))
+				                     ->orderBy('id', 'desc')
+				                     ->doesntExist();
 				if($nodeTTL){
 					if(self::$systemConfig['offline_check_times']){
 						// 已通知次数

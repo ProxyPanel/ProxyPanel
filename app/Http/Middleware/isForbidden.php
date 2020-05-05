@@ -10,18 +10,16 @@ use Closure;
 use Illuminate\Http\Request;
 use Log;
 
-class isForbidden
-{
+class isForbidden {
 	/**
 	 * 限制机器人、指定IP访问
 	 *
-	 * @param Request $request
-	 * @param Closure $next
+	 * @param  Request  $request
+	 * @param  Closure  $next
 	 *
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
-	{
+	public function handle($request, Closure $next) {
 		// 拒绝机器人访问
 		if(Helpers::systemConfig()['is_forbid_robot']){
 			if(Agent::isRobot()){
@@ -32,7 +30,8 @@ class isForbidden
 		}
 
 		// 拒绝通过订阅链接域名访问网站，防止网站被探测
-		if(TRUE === strpos(Helpers::systemConfig()['subscribe_domain'], $request->getHost()) && FALSE === strpos(Helpers::systemConfig()['subscribe_domain'], Helpers::systemConfig()['website_url'])){
+		if(true === strpos(Helpers::systemConfig()['subscribe_domain'], $request->getHost())
+		   && false === strpos(Helpers::systemConfig()['subscribe_domain'], Helpers::systemConfig()['website_url'])){
 			Log::info("识别到通过订阅链接访问，强制跳转至百度(".getClientIp().")");
 
 			return redirect('https://www.baidu.com');
@@ -41,10 +40,10 @@ class isForbidden
 		$ip = getClientIP();
 		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){
 			Log::info('识别到IPv6，尝试解析：'.$ip);
-			$isIPv6 = TRUE;
+			$isIPv6 = true;
 			$ipInfo = getIPv6($ip);
 		}else{
-			$isIPv6 = FALSE;
+			$isIPv6 = false;
 			$ipInfo = QQWry::ip($ip); // 通过纯真IP库解析IPv4信息
 			if(isset($ipInfo['error'])){
 				Log::info('无法识别IPv4，尝试使用IPIP的IP库解析：'.$ip);
@@ -73,7 +72,9 @@ class isForbidden
 		if(!in_array($ipInfo['country'], ['本机地址', '局域网'])){
 			// 拒绝大陆IP访问
 			if(Helpers::systemConfig()['is_forbid_china']){
-				if(($ipInfo['country'] == '中国' && !in_array($ipInfo['province'], ['香港', '澳门', '台湾'])) || ($isIPv6 && $ipInfo['country'] == 'China')){
+				if(($ipInfo['country'] == '中国' && !in_array($ipInfo['province'], ['香港', '澳门', '台湾']))
+				   || ($isIPv6
+				       && $ipInfo['country'] == 'China')){
 					Log::info('识别到大陆IP，拒绝访问：'.$ip);
 
 					return response()->view('auth.error', ['message' => trans('error.ForbiddenChina')], 403);
@@ -82,7 +83,9 @@ class isForbidden
 
 			// 拒绝非大陆IP访问
 			if(Helpers::systemConfig()['is_forbid_oversea']){
-				if($ipInfo['country'] != '中国' || in_array($ipInfo['province'], ['香港', '澳门', '台湾']) || ($isIPv6 && $ipInfo['country'] != 'China')){
+				if($ipInfo['country'] != '中国' || in_array($ipInfo['province'], ['香港', '澳门', '台湾'])
+				   || ($isIPv6
+				       && $ipInfo['country'] != 'China')){
 					Log::info('识别到海外IP，拒绝访问：'.$ip.' - '.$ipInfo['country']);
 
 					return response()->view('auth.error', ['message' => trans('error.ForbiddenOversea')], 403);

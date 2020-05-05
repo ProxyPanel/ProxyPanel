@@ -13,13 +13,11 @@ use Log;
 use Response;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
-class PayPal extends AbstractPayment
-{
+class PayPal extends AbstractPayment {
 	protected $provider;
 	protected $exChange;
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 		$this->provider = new ExpressCheckout();
 		$config = [
@@ -35,13 +33,14 @@ class PayPal extends AbstractPayment
 			'payment_action' => 'Sale',
 			'currency'       => 'USD',
 			'billing_type'   => 'MerchantInitiatedBilling',
-			'notify_url'     => (self::$systemConfig['website_callback_url']? : self::$systemConfig['website_url']).'/callback/notify?method=paypal',
+			'notify_url'     => (self::$systemConfig['website_callback_url']?: self::$systemConfig['website_url']).'/callback/notify?method=paypal',
 			'locale'         => 'zh_CN',
-			'validate_ssl'   => TRUE,
+			'validate_ssl'   => true,
 		];
 		$this->provider->setApiCredentials($config);
 		$this->exChange = 7;
-		$exChangeRate = json_decode(Curl::send('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4'), TRUE);
+		$exChangeRate = json_decode(Curl::send('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4'),
+		                            true);
 		if($exChangeRate){
 			if($exChangeRate['success']){
 				$this->exChange = $exChangeRate['result']['rate'];
@@ -49,8 +48,7 @@ class PayPal extends AbstractPayment
 		}
 	}
 
-	public function purchase(Request $request)
-	{
+	public function purchase(Request $request) {
 		$payment = new Payment();
 		$payment->sn = self::generateGuid();
 		$payment->user_id = Auth::user()->id;
@@ -63,7 +61,7 @@ class PayPal extends AbstractPayment
 		try{
 			$response = $this->provider->setExpressCheckout($data);
 			if(!$response['paypal_link']){
-				Log::error(var_export($response, TRUE));
+				Log::error(var_export($response, true));
 
 				return Response::json(['status' => 'fail', 'message' => '创建订单失败，请使用其他方式或通知管理员！']);
 			}
@@ -76,17 +74,16 @@ class PayPal extends AbstractPayment
 		}
 	}
 
-	protected function getCheckoutData($sn, $amount)
-	{
-		$amount = 0.3+ceil($amount/$this->exChange*100)/100;
+	protected function getCheckoutData($sn, $amount) {
+		$amount = 0.3 + ceil($amount / $this->exChange * 100) / 100;
 
 		return [
 			'invoice_id'          => $sn,
 			'items'               => [
 				[
-					'name'  => self::$systemConfig['subject_name']? : self::$systemConfig['website_name'],
+					'name'  => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
 					'price' => $amount,
-					'desc'  => 'Description for'.(self::$systemConfig['subject_name']? : self::$systemConfig['website_name']),
+					'desc'  => 'Description for'.(self::$systemConfig['subject_name']?: self::$systemConfig['website_name']),
 					'qty'   => 1
 				]
 			],
@@ -97,8 +94,7 @@ class PayPal extends AbstractPayment
 		];
 	}
 
-	public function getCheckout(Request $request)
-	{
+	public function getCheckout(Request $request) {
 		$token = $request->get('token');
 		$PayerID = $request->get('PayerID');
 
@@ -123,12 +119,11 @@ class PayPal extends AbstractPayment
 		return redirect('/invoices');
 	}
 
-	public function notify(Request $request)
-	{
+	public function notify(Request $request) {
 		$request->merge(['cmd' => '_notify-validate']);
 		$post = $request->all();
 
-		$response = (string)$this->provider->verifyIPN($post);
+		$response = (string) $this->provider->verifyIPN($post);
 
 		if($response === 'VERIFIED' && $request['mp_desc']){
 			if(Payment::whereSn($request['mp_desc'])->first()->status == 0){
@@ -139,13 +134,11 @@ class PayPal extends AbstractPayment
 		exit("fail");
 	}
 
-	public function getReturnHTML(Request $request)
-	{
+	public function getReturnHTML(Request $request) {
 		// TODO: Implement getReturnHTML() method.
 	}
 
-	public function getPurchaseHTML()
-	{
+	public function getPurchaseHTML() {
 		// TODO: Implement getPurchaseHTML() method.
 	}
 }

@@ -18,34 +18,30 @@ use Exception;
 use Illuminate\Console\Command;
 use Log;
 
-class AutoClearLog extends Command
-{
+class AutoClearLog extends Command {
 	protected $signature = 'autoClearLog';
 	protected $description = '自动清除日志';
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 	}
 
-	public function handle()
-	{
-		$jobStartTime = microtime(TRUE);
+	public function handle() {
+		$jobStartTime = microtime(true);
 
 		// 清除日志
 		if(Helpers::systemConfig()['is_clear_log']){
 			$this->clearLog();
 		}
 
-		$jobEndTime = microtime(TRUE);
-		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
+		$jobEndTime = microtime(true);
+		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 清除日志
-	private function clearLog()
-	{
+	private function clearLog() {
 		// 自动清除30分钟以前的节点负载信息日志
 		try{
 			SsNodeInfo::query()->where('log_time', '<=', strtotime("-30 minutes"))->delete();
@@ -60,13 +56,19 @@ class AutoClearLog extends Command
 			UserTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 days')))->delete();
 
 			// 自动清除1个月以前的用户每天流量数据日志
-			UserTrafficDaily::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month 5 days')))->delete();
+			UserTrafficDaily::query()
+			                ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month 5 days')))
+			                ->delete();
 
 			// 自动清除2个月以前的节点每小时流量数据日志
-			SsNodeTrafficHourly::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-2 month')))->delete();
+			SsNodeTrafficHourly::query()
+			                   ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-2 month')))
+			                   ->delete();
 
 			// 自动清除3个月以前的节点每天流量数据日志
-			SsNodeTrafficDaily::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 month')))->delete();
+			SsNodeTrafficDaily::query()
+			                  ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 month')))
+			                  ->delete();
 
 			// 自动清除30天以前用户封禁日志
 			UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
@@ -78,7 +80,9 @@ class AutoClearLog extends Command
 			UserLoginLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-3 month")))->delete();
 
 			// 自动清除1个月前的用户订阅记录
-			UserSubscribeLog::query()->where('request_time', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
+			UserSubscribeLog::query()
+			                ->where('request_time', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))
+			                ->delete();
 		}catch(Exception $e){
 			Log::error('【清理日志】错误： '.$e->getMessage());
 		}

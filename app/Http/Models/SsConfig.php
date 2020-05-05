@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * 配置信息
- * Class SsConfig
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int    $id
  * @property string $name       配置名
  * @property int    $type       类型：1-加密方式、2-协议、3-混淆
@@ -27,23 +24,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|SsConfig whereName($value)
  * @method static Builder|SsConfig whereSort($value)
  * @method static Builder|SsConfig whereType($value)
+ * @mixin Eloquent
  */
-class SsConfig extends Model
-{
-	public $timestamps = FALSE;
+class SsConfig extends Model {
+	public $timestamps = false;
 	protected $table = 'ss_config';
 	protected $primaryKey = 'id';
 
 	// 筛选默认
 
-	function scopeDefault($query)
-	{
+	function scopeDefault($query) {
 		$query->whereIsDefault(1);
 	}
 
 	// 筛选类型
-	function scopeType($query, $type)
-	{
+	function scopeType($query, $type) {
 		$query->whereType($type);
 	}
 }

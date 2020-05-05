@@ -8,10 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * 敏感词
- * Class SensitiveWords
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int    $id
  * @property int    $type  类型：1-黑名单、2-白名单
  * @property string $words 敏感词
@@ -21,10 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|SensitiveWords whereId($value)
  * @method static Builder|SensitiveWords whereType($value)
  * @method static Builder|SensitiveWords whereWords($value)
+ * @mixin Eloquent
  */
-class SensitiveWords extends Model
-{
-	public $timestamps = FALSE;
+class SensitiveWords extends Model {
+	public $timestamps = false;
 	protected $table = 'sensitive_words';
 	protected $primaryKey = 'id';
 }

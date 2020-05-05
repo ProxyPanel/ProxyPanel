@@ -26,22 +26,19 @@ use Response;
  *
  * @package App\Http\Controllers
  */
-class PaymentController extends Controller
-{
+class PaymentController extends Controller {
 	private static $method;
 
-	public static function notify(Request $request)
-	{
+	public static function notify(Request $request) {
 		self::$method = $request->input('method');
 
-		Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), TRUE));
+		Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), true));
 		self::getClient()->notify($request);
 
 		return 0;
 	}
 
-	public static function getClient()
-	{
+	public static function getClient() {
 		switch(self::$method){
 			case 'balance':
 				return new Local();
@@ -58,22 +55,19 @@ class PaymentController extends Controller
 			default:
 				Log::error("未知支付：".self::$method);
 
-				return NULL;
+				return null;
 		}
 	}
 
-	public static function returnHTML(Request $request)
-	{
+	public static function returnHTML(Request $request) {
 		return self::getClient()->getReturnHTML($request);
 	}
 
-	public static function purchaseHTML()
-	{
+	public static function purchaseHTML() {
 		return Response::view('user.components.purchase');
 	}
 
-	public static function getStatus(Request $request)
-	{
+	public static function getStatus(Request $request) {
 		$payment = Payment::whereSn($request->input('sn'))->first();
 		if($payment){
 			if($payment->status == 1){
@@ -89,8 +83,7 @@ class PaymentController extends Controller
 	}
 
 	// 创建支付订单
-	public function purchase(Request $request)
-	{
+	public function purchase(Request $request) {
 		$goods_id = $request->input('goods_id');
 		$coupon_sn = $request->input('coupon_sn');
 		self::$method = $request->input('method');
@@ -110,7 +103,9 @@ class PaymentController extends Controller
 			}
 
 			// 是否有生效的套餐
-			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q){ $q->whereType(2); })->whereStatus(2)->whereIsExpire(0)->doesntExist();
+			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q) {
+				$q->whereType(2);
+			})->whereStatus(2)->whereIsExpire(0)->doesntExist();
 
 			//无生效套餐，禁止购买加油包
 			if($goods->type == 1 && $activePlan){
@@ -135,7 +130,11 @@ class PaymentController extends Controller
 			if($goods->limit_num){
 				$count = Order::uid()->where('status', '>=', 0)->whereGoodsId($goods_id)->count();
 				if($count >= $goods->limit_num){
-					return Response::json(['status' => 'fail', 'data' => '', 'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
+					return Response::json([
+						                      'status'  => 'fail',
+						                      'data'    => '',
+						                      'message' => '此商品/服务限购'.$goods->limit_num.'次，您已购买'.$count.'次'
+					                      ]);
 				}
 			}
 
@@ -147,7 +146,7 @@ class PaymentController extends Controller
 				}
 
 				// 计算实际应支付总价
-				$amount = $coupon->type == 2? $goods->price*$coupon->discount/10 : $goods->price-$coupon->amount;
+				$amount = $coupon->type == 2? $goods->price * $coupon->discount / 10 : $goods->price - $coupon->amount;
 				$amount = $amount > 0? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
 			}else{
 				$amount = $goods->price;
@@ -174,9 +173,9 @@ class PaymentController extends Controller
 		$order->user_id = Auth::user()->id;
 		$order->goods_id = $balance? -1 : $goods_id;
 		$order->coupon_id = !empty($coupon)? $coupon->id : 0;
-		$order->origin_amount = $balance? : $goods->price;
+		$order->origin_amount = $balance?: $goods->price;
 		$order->amount = $amount;
-		$order->expire_at = $balance? NULL : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
+		$order->expire_at = $balance? null : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
 		$order->is_expire = 0;
 		$order->pay_way = self::$method;
 		$order->status = 0;
@@ -199,8 +198,7 @@ class PaymentController extends Controller
 	}
 
 	// 支付单详情
-	public function detail($sn)
-	{
+	public function detail($sn) {
 		$payment = Payment::uid()->with(['order', 'order.goods'])->whereSn($sn)->first();
 		$view['payment'] = $payment;
 		$view['name'] = $payment->order->goods? $payment->order->goods->name : '余额充值';
@@ -210,8 +208,7 @@ class PaymentController extends Controller
 	}
 
 	// 回调日志
-	public function callbackList(Request $request)
-	{
+	public function callbackList(Request $request) {
 		$status = $request->input('status', 0);
 
 		$query = PaymentCallback::query();
