@@ -6,26 +6,22 @@ use Exception;
 use Log;
 use LSS\XML2Array;
 
-class Namesilo
-{
+class Namesilo {
 	protected static $host;
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$host = 'https://www.namesilo.com/api/';
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 列出账号下所有域名
-	public function listDomains()
-	{
+	public function listDomains() {
 		return $this->send('listDomains');
 	}
 
 	// 发送请求
-	private function send($operation, $data = [])
-	{
+	private function send($operation, $data = []) {
 		$params = [
 			'version' => 1,
 			'type'    => 'xml',
@@ -41,23 +37,27 @@ class Namesilo
 
 			// 出错
 			if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success'){
-				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
+				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+				                            self::$systemConfig['webmaster_email'], 0,
+				                            $result['namesilo']['reply']['detail']);
 			}else{
-				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 1, $result['namesilo']['reply']['detail']);
+				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+				                            self::$systemConfig['webmaster_email'], 1,
+				                            $result['namesilo']['reply']['detail']);
 			}
 
 			return $result['namesilo']['reply'];
 		}catch(Exception $e){
 			Log::error('CURL请求失败：'.$e->getMessage().' --- '.$e->getLine());
-			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, self::$systemConfig['webmaster_email'], 0, $e->getMessage());
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+			                            self::$systemConfig['webmaster_email'], 0, $e->getMessage());
 
-			return FALSE;
+			return false;
 		}
 	}
 
 	// 列出指定域名的所有DNS记录
-	public function dnsListRecords($domain)
-	{
+	public function dnsListRecords($domain) {
 		$query = [
 			'domain' => $domain
 		];
@@ -66,8 +66,7 @@ class Namesilo
 	}
 
 	// 为指定域名添加DNS记录
-	public function dnsAddRecord($domain, $host, $value, $type = 'A', $ttl = 7207)
-	{
+	public function dnsAddRecord($domain, $host, $value, $type = 'A', $ttl = 7207) {
 		$query = [
 			'domain'  => $domain,
 			'rrtype'  => $type,
@@ -80,8 +79,7 @@ class Namesilo
 	}
 
 	// 更新DNS记录
-	public function dnsUpdateRecord($domain, $id, $host, $value, $ttl = 7207)
-	{
+	public function dnsUpdateRecord($domain, $id, $host, $value, $ttl = 7207) {
 		$query = [
 			'domain'  => $domain,
 			'rrid'    => $id,
@@ -94,8 +92,7 @@ class Namesilo
 	}
 
 	// 删除DNS记录
-	public function dnsDeleteRecord($domain, $id)
-	{
+	public function dnsDeleteRecord($domain, $id) {
 		$data = [
 			'domain' => $domain,
 			'rrid'   => $id

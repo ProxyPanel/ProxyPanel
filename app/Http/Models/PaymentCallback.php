@@ -8,54 +8,34 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * 支付回调（有赞云支付）
- * Class PaymentCallback
+ * 支付回调日志
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
- * @property string|null $client_id
- * @property string|null $yz_id
- * @property string|null $kdt_id
- * @property string|null $kdt_name
- * @property int|null    $mode
- * @property string|null $msg
- * @property int|null    $sendCount
- * @property string|null $sign
- * @property string|null $status
- * @property int|null    $test
- * @property string|null $type
- * @property string|null $version
+ * @property string|null $trade_no     本地订单号
+ * @property string|null $out_trade_no 外部订单号（支付平台）
+ * @property int|null    $amount       交易金额，单位分
+ * @property int|null    $status       交易状态：0-失败、1-成功
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read mixed  $status_label
  * @method static Builder|PaymentCallback newModelQuery()
  * @method static Builder|PaymentCallback newQuery()
  * @method static Builder|PaymentCallback query()
- * @method static Builder|PaymentCallback whereClientId($value)
+ * @method static Builder|PaymentCallback whereAmount($value)
  * @method static Builder|PaymentCallback whereCreatedAt($value)
  * @method static Builder|PaymentCallback whereId($value)
- * @method static Builder|PaymentCallback whereKdtId($value)
- * @method static Builder|PaymentCallback whereKdtName($value)
- * @method static Builder|PaymentCallback whereMode($value)
- * @method static Builder|PaymentCallback whereMsg($value)
- * @method static Builder|PaymentCallback whereSendCount($value)
- * @method static Builder|PaymentCallback whereSign($value)
+ * @method static Builder|PaymentCallback whereOutTradeNo($value)
  * @method static Builder|PaymentCallback whereStatus($value)
- * @method static Builder|PaymentCallback whereTest($value)
- * @method static Builder|PaymentCallback whereType($value)
+ * @method static Builder|PaymentCallback whereTradeNo($value)
  * @method static Builder|PaymentCallback whereUpdatedAt($value)
- * @method static Builder|PaymentCallback whereVersion($value)
- * @method static Builder|PaymentCallback whereYzId($value)
+ * @mixin Eloquent
  */
-class PaymentCallback extends Model
-{
+class PaymentCallback extends Model {
 	protected $table = 'payment_callback';
 	protected $primaryKey = 'id';
 	protected $appends = ['status_label'];
 
-	function getStatusLabelAttribute()
-	{
+	function getStatusLabelAttribute() {
 		$status_label = '';
 		switch($this->attributes['status']){
 			case 'WAIT_BUYER_PAY':

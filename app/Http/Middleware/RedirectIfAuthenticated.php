@@ -5,19 +5,17 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class RedirectIfAuthenticated
-{
+class RedirectIfAuthenticated {
 	/**
 	 * Handle an incoming request.
 	 *
-	 * @param Request     $request
-	 * @param Closure     $next
-	 * @param string|null $guard
+	 * @param  Request      $request
+	 * @param  Closure      $next
+	 * @param  string|null  $guard
 	 *
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next, $guard = NULL)
-	{
+	public function handle($request, Closure $next, $guard = null) {
 		if(auth()->guard($guard)->check()){
 			return redirect('/');
 		}

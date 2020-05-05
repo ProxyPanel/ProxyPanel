@@ -2,41 +2,38 @@
 
 namespace App\Components;
 
-class QQInfo
-{
+class QQInfo {
 	/**
 	 * 通过QQ号查询头像与昵称信息
 	 *
-	 * @param string $qq QQ号
+	 * @param  string  $qq  QQ号
 	 *
 	 * @return string
 	 */
-	public static function getName($qq)
-	{
+	public static function getName($qq) {
 
 		//向接口发起请求获取json数据
 		$url = 'https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?get_nick=1&uins='.$qq;
 		$ret = mb_convert_encoding(Curl::send($url), "UTF-8", "GBK");
 		// 接口是否异常
 		//echo $ret;
-		if(strpos($ret, $qq) !== FALSE){
+		if(strpos($ret, $qq) !== false){
 			//对获取的json数据进行截取并解析成数组
-			$ret = json_decode(substr($ret, 17, -1), TRUE);
+			$ret = json_decode(substr($ret, 17, -1), true);
 
 			return stripslashes($ret[$qq][6]);
 		}
 
 		echo $qq.PHP_EOL;
 
-		return FALSE;
+		return false;
 	}
 
-	public static function getName2($qq)
-	{
+	public static function getName2($qq) {
 
 		//向接口发起请求获取json数据
 		$url = 'https://api.toubiec.cn/qq?qq='.$qq.'&size=100';
-		$ret = json_decode(Curl::send($url), TRUE);
+		$ret = json_decode(Curl::send($url), true);
 		// 接口是否异常
 		if($ret){
 			if($ret['code'] == 200){
@@ -46,14 +43,13 @@ class QQInfo
 
 		echo $qq.PHP_EOL;
 
-		return FALSE;
+		return false;
 	}
 
-	public static function getName3($qq)
-	{
+	public static function getName3($qq) {
 		//向接口发起请求获取json数据
 		$url = 'https://api.unipay.qq.com/v1/r/1450000186/wechat_query?cmd=1&pf=mds_storeopen_qb-__mds_qqclub_tab_-html5&pfkey=pfkey&from_h5=1&from_https=1&openid=openid&openkey=openkey&session_id=hy_gameid&session_type=st_dummy&qq_appid=&offerId=1450000186&sandbox=&provide_uin='.$qq;
-		$ret = json_decode(Curl::send($url), TRUE);
+		$ret = json_decode(Curl::send($url), true);
 		// 接口是否异常
 		if($ret){
 			if($ret['ret'] == 0){
@@ -63,6 +59,6 @@ class QQInfo
 
 		echo $qq.PHP_EOL;
 
-		return FALSE;
+		return false;
 	}
 }

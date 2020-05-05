@@ -7,18 +7,15 @@ use App\Http\Models\User;
 use Illuminate\Console\Command;
 use Log;
 
-class updateUserName extends Command
-{
+class updateUserName extends Command {
 	protected $signature = 'updateUserName';
 	protected $description = '升级用户昵称';
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 	}
 
-	public function handle()
-	{
+	public function handle() {
 		Log::info('----------------------------【升级用户昵称】开始----------------------------');
 
 		$userList = User::query()->get();
@@ -43,8 +40,7 @@ class updateUserName extends Command
 	}
 }
 
-function process($id)
-{
+function process($id) {
 	$user = User::query()->whereId($id)->first();
 	// 先设个默认值
 	$name = $user->email;
@@ -52,14 +48,14 @@ function process($id)
 	if($user->qq){
 		$name = QQInfo::getName3($user->qq);
 		// 检测用户注册是否为QQ邮箱
-	}elseif(strpos(strtolower($user->email), '@qq') != FALSE){
+	}elseif(strpos(strtolower($user->email), '@qq') != false){
 		// 分离QQ邮箱后缀
 		$email = explode('@', $user->email);
 		if(is_numeric($email[0])){
 			$name = QQInfo::getName3($email[0]);
 		}else{
 			// 分离www前缀
-			if(strpos($email[0], '.') != FALSE){
+			if(strpos($email[0], '.') != false){
 				$temp = explode('.', $email[0]);
 				if(is_numeric($temp[1])){
 					$name = QQInfo::getName3($temp[1]);
@@ -69,7 +65,7 @@ function process($id)
 			}
 		}
 	}
-	if($name == FALSE){
+	if($name == false){
 		$name = $user->email;
 	}
 

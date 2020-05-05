@@ -10,19 +10,16 @@ use Illuminate\Support\Carbon;
 
 /**
  * 工单
- * Class Ticket
  *
- * @package App\Http\Models
- * @mixin Eloquent
- * @property int         $id
- * @property int         $user_id
- * @property string      $title      标题
- * @property string      $content    内容
- * @property int         $status     状态：0-待处理、1-已处理未关闭、2-已关闭
- * @property Carbon|null $created_at 创建时间
- * @property Carbon|null $updated_at 最后更新时间
- * @property-read mixed  $status_label
- * @property-read User   $user
+ * @property int            $id
+ * @property int            $user_id    用户ID
+ * @property string         $title      标题
+ * @property string         $content    内容
+ * @property int            $status     状态：0-待处理、1-已处理未关闭、2-已关闭
+ * @property Carbon|null    $created_at 创建时间
+ * @property Carbon|null    $updated_at 最后更新时间
+ * @property-read mixed     $status_label
+ * @property-read User|null $user
  * @method static Builder|Ticket newModelQuery()
  * @method static Builder|Ticket newQuery()
  * @method static Builder|Ticket query()
@@ -34,24 +31,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ticket whereTitle($value)
  * @method static Builder|Ticket whereUpdatedAt($value)
  * @method static Builder|Ticket whereUserId($value)
+ * @mixin Eloquent
  */
-class Ticket extends Model
-{
+class Ticket extends Model {
 	protected $table = 'ticket';
 	protected $primaryKey = 'id';
 
-	function scopeUid($query)
-	{
+	function scopeUid($query) {
 		return $query->whereUserId(Auth::user()->id);
 	}
 
-	function user()
-	{
+	function user() {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function getStatusLabelAttribute()
-	{
+	function getStatusLabelAttribute() {
 		switch($this->attributes['status']){
 			case 0:
 				$status_label = '<span class="badge badge-lg badge-success">'.trans('home.ticket_table_status_wait').'</span>';

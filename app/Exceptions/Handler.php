@@ -13,16 +13,13 @@ use Log;
 use ReflectionException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
 	/**
 	 * A list of the exception types that are not reported.
 	 *
 	 * @var array
 	 */
-	protected $dontReport = [
-		//
-	];
+	protected $dontReport = [];
 
 	/**
 	 * A list of the inputs that are never flashed for validation exceptions.
@@ -37,13 +34,12 @@ class Handler extends ExceptionHandler
 	/**
 	 * Report or log an exception.
 	 *
-	 * @param Exception $exception
+	 * @param  Exception  $exception
 	 *
 	 * @return mixed|void
 	 * @throws Exception
 	 */
-	public function report(Exception $exception)
-	{
+	public function report(Exception $exception) {
 		// 记录异常来源
 		Log::info('异常来源：'.get_class($exception));
 
@@ -58,13 +54,12 @@ class Handler extends ExceptionHandler
 	/**
 	 * Render an exception into an HTTP response.
 	 *
-	 * @param Request   $request
-	 * @param Exception $exception
+	 * @param  Request    $request
+	 * @param  Exception  $exception
 	 *
 	 * @return Response
 	 */
-	public function render($request, Exception $exception)
-	{
+	public function render($request, Exception $exception) {
 		// 调试模式下直接返回错误信息
 		if(config('app.debug')){
 			return parent::render($request, $exception);
@@ -93,9 +88,15 @@ class Handler extends ExceptionHandler
 		// 捕获CSRF异常
 		if($exception instanceof TokenMismatchException){
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>']);
+				return response()->json([
+					                        'status'  => 'fail',
+					                        'data'    => '',
+					                        'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
+				                        ]);
 			}else{
-				return response()->view('auth.error', ['message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>']);
+				return response()->view('auth.error', [
+					'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
+				]);
 			}
 		}
 
@@ -111,9 +112,15 @@ class Handler extends ExceptionHandler
 		// 捕获系统错误异常
 		if($exception instanceof ErrorException){
 			if($request->ajax()){
-				return response()->json(['status' => 'fail', 'data' => '', 'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>']);
+				return response()->json([
+					                        'status'  => 'fail',
+					                        'data'    => '',
+					                        'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
+				                        ]);
 			}else{
-				return response()->view('auth.error', ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>']);
+				return response()->view('auth.error', [
+					'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
+				]);
 			}
 		}
 

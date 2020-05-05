@@ -9,17 +9,15 @@ use Auth;
 use Illuminate\Http\Request;
 use Response;
 
-class BitpayX extends AbstractPayment
-{
+class BitpayX extends AbstractPayment {
 	private $bitpayGatewayUri = 'https://api.mugglepay.com/v1/';
 
 	/**
-	 * @param Request $request
+	 * @param  Request  $request
 	 *
 	 * @return mixed
 	 */
-	public function purchase(Request $request)
-	{
+	public function purchase(Request $request) {
 		$payment = new Payment();
 		$payment->sn = self::generateGuid();
 		$payment->user_id = Auth::user()->id;
@@ -29,38 +27,40 @@ class BitpayX extends AbstractPayment
 
 		$data = [
 			'merchant_order_id' => $payment->sn,
-			'price_amount'      => (float)$request->input('amount'),
+			'price_amount'      => (float) $request->input('amount'),
 			'price_currency'    => 'CNY',
 			'pay_currency'      => $request->input('type') == 1? 'ALIPAY' : 'WECHAT',
 			'title'             => '支付单号：'.$payment->sn,
-			'description'       => parent::$systemConfig['subject_name']? : parent::$systemConfig['website_name'],
-			'callback_url'      => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/callback/notify?method=bitpayx',
+			'description'       => parent::$systemConfig['subject_name']?: parent::$systemConfig['website_name'],
+			'callback_url'      => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=bitpayx',
 			'success_url'       => parent::$systemConfig['website_url'].'/invoices',
 			'cancel_url'        => parent::$systemConfig['website_url'],
 			'token'             => $this->sign($this->prepareSignId($payment->sn)),
 
 		];
 
-		$result = json_decode($this->mprequest($data), TRUE);
+		$result = json_decode($this->mprequest($data), true);
 
 
 		if($result['status'] === 200 || $result['status'] === 201){
 			$result['payment_url'] .= '&lang=zh';
 			Payment::whereId($payment->id)->update(['url' => $result['payment_url']]);
 
-			return Response::json(['status' => 'success', 'url' => $result['payment_url'] .= '&lang=zh', 'message' => '创建订单成功!']);
+			return Response::json([
+				                      'status'  => 'success',
+				                      'url'     => $result['payment_url'] .= '&lang=zh',
+				                      'message' => '创建订单成功!'
+			                      ]);
 		}
 
 		return Response::json(['status' => 'fail', 'data' => $result, 'message' => '创建订单失败!']);
 	}
 
-	public function sign($data)
-	{
+	public function sign($data) {
 		return strtolower(md5(md5($data).parent::$systemConfig['bitpay_secret']));
 	}
 
-	public function prepareSignId($tradeno)
-	{
+	public function prepareSignId($tradeno) {
 		$data_sign = [
 			'merchant_order_id' => $tradeno,
 			'secret'            => parent::$systemConfig['bitpay_secret'],
@@ -71,8 +71,7 @@ class BitpayX extends AbstractPayment
 		return http_build_query($data_sign);
 	}
 
-	public function mprequest($data, $type = 'pay')
-	{
+	public function mprequest($data, $type = 'pay') {
 		$headers = ['content-type: application/json', 'token: '.parent::$systemConfig['bitpay_secret']];
 		$curl = curl_init();
 		if($type === 'pay'){
@@ -88,21 +87,20 @@ class BitpayX extends AbstractPayment
 		}
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 		$data = curl_exec($curl);
 		curl_close($curl);
 
 		return $data;
 	}
 
-	public function notify(Request $request)
-	{
+	public function notify(Request $request) {
 		$inputString = file_get_contents('php://input', 'r');
 		$inputStripped = str_replace(["\r", "\n", "\t", "\v"], '', $inputString);
-		$inputJSON = json_decode($inputStripped, TRUE); //convert JSON into array
+		$inputJSON = json_decode($inputStripped, true); //convert JSON into array
 		$data = [];
-		if($inputJSON !== NULL){
+		if($inputJSON !== null){
 			$data = [
 				'status'            => $inputJSON['status'],
 				'order_id'          => $inputJSON['order_id'],
@@ -115,7 +113,7 @@ class BitpayX extends AbstractPayment
 		// 准备待签名数据
 		$str_to_sign = $this->prepareSignId($inputJSON['merchant_order_id']);
 		$resultVerify = $this->verify($str_to_sign, $inputJSON['token']);
-		$isPaid = $data !== NULL && $data['status'] !== NULL && $data['status'] === 'PAID';
+		$isPaid = $data !== null && $data['status'] !== null && $data['status'] === 'PAID';
 
 		if($resultVerify && $isPaid){
 			$this->postPayment($inputJSON['merchant_order_id'], 'BitPayX');
@@ -130,20 +128,17 @@ class BitpayX extends AbstractPayment
 		exit();
 	}
 
-	public function verify($data, $signature)
-	{
+	public function verify($data, $signature) {
 		$mySign = $this->sign($data);
 
 		return $mySign === $signature;
 	}
 
-	public function getReturnHTML(Request $request)
-	{
+	public function getReturnHTML(Request $request) {
 		// TODO: Implement getReturnHTML() method.
 	}
 
-	public function getPurchaseHTML()
-	{
+	public function getPurchaseHTML() {
 		// TODO: Implement getPurchaseHTML() method.
 	}
 }

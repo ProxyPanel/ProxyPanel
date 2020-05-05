@@ -19,18 +19,15 @@ use Response;
  *
  * @package App\Http\Controllers\Controller
  */
-class MarketingController extends Controller
-{
+class MarketingController extends Controller {
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 邮件群发消息列表
-	public function emailList(Request $request)
-	{
+	public function emailList(Request $request) {
 		$status = $request->input('status');
 
 		$query = Marketing::query()->whereType(1);
@@ -45,8 +42,7 @@ class MarketingController extends Controller
 	}
 
 	// 消息通道群发列表
-	public function pushList(Request $request)
-	{
+	public function pushList(Request $request) {
 		$status = $request->input('status');
 
 		$query = Marketing::query()->whereType(2);
@@ -61,8 +57,7 @@ class MarketingController extends Controller
 	}
 
 	// 添加推送消息
-	public function addPushMarketing(Request $request)
-	{
+	public function addPushMarketing(Request $request) {
 		$title = trim($request->input('title'));
 		$content = $request->input('content');
 
@@ -73,7 +68,13 @@ class MarketingController extends Controller
 		DB::beginTransaction();
 		try{
 			$client = new Client();
-			$response = $client->request('GET', 'https://pushbear.ftqq.com/sub', ['query' => ['sendkey' => self::$systemConfig['push_bear_send_key'], 'text' => $title, 'desp' => $content]]);
+			$response = $client->request('GET', 'https://pushbear.ftqq.com/sub', [
+				'query' => [
+					'sendkey' => self::$systemConfig['push_bear_send_key'],
+					'text'    => $title,
+					'desp'    => $content
+				]
+			]);
 
 			$result = json_decode($response->getBody());
 			if($result->code){ // 失败
@@ -96,8 +97,7 @@ class MarketingController extends Controller
 		}
 	}
 
-	private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = '')
-	{
+	private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = '') {
 		$marketing = new Marketing();
 		$marketing->type = $type;
 		$marketing->receiver = $receiver;

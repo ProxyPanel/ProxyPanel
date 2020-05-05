@@ -12,21 +12,18 @@ use Illuminate\Console\Command;
 use Log;
 use Mail;
 
-class NodeBlockedDetection extends Command
-{
+class NodeBlockedDetection extends Command {
 	protected static $systemConfig;
 	protected $signature = 'nodeBlockedDetection';
 	protected $description = '节点阻断检测';
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function handle()
-	{
-		$jobStartTime = microtime(TRUE);
+	public function handle() {
+		$jobStartTime = microtime(true);
 		if(self::$systemConfig['nodes_detection']){
 			if(!Cache::has('LastCheckTime')){
 				$this->checkNodes();
@@ -37,21 +34,20 @@ class NodeBlockedDetection extends Command
 			}
 		}
 
-		$jobEndTime = microtime(TRUE);
-		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
+		$jobEndTime = microtime(true);
+		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
 		Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
 	}
 
 	// 监测节点状态
-	private function checkNodes()
-	{
+	private function checkNodes() {
 		$nodeList = SsNode::query()->whereIsTransit(0)->whereStatus(1)->where('detectionType', '>', 0)->get();
-		$sendText = FALSE;
+		$sendText = false;
 		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
 		$additionalMessage = '';
 		foreach($nodeList as $node){
-			$info = FALSE;
+			$info = false;
 			if($node->detectionType == 0){
 				continue;
 			}
@@ -66,19 +62,19 @@ class NodeBlockedDetection extends Command
 				}
 			}
 			if($node->detectionType != 1){
-				$icmpCheck = NetworkDetection::networkCheck($node->ip, TRUE);
-				if($icmpCheck != FALSE && $icmpCheck != "通讯正常"){
+				$icmpCheck = NetworkDetection::networkCheck($node->ip, true);
+				if($icmpCheck != false && $icmpCheck != "通讯正常"){
 					$message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
-					$sendText = TRUE;
-					$info = TRUE;
+					$sendText = true;
+					$info = true;
 				}
 			}
 			if($node->detectionType != 2){
-				$tcpCheck = NetworkDetection::networkCheck($node->ip, FALSE, $node->single? $node->port : NULL);
-				if($tcpCheck != FALSE && $tcpCheck != "通讯正常"){
+				$tcpCheck = NetworkDetection::networkCheck($node->ip, false, $node->single? $node->port : null);
+				if($tcpCheck != false && $tcpCheck != "通讯正常"){
 					$message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";
-					$sendText = TRUE;
-					$info = TRUE;
+					$sendText = true;
+					$info = true;
 				}
 			}
 
@@ -113,18 +109,17 @@ class NodeBlockedDetection extends Command
 		}
 
 		// 随机生成下次检测时间
-		Cache::put('LastCheckTime', time()+mt_rand(3000, 3600), 4000);
+		Cache::put('LastCheckTime', time() + mt_rand(3000, 3600), 4000);
 	}
 
 	/**
 	 * 通知管理员
 	 *
-	 * @param string $title   消息标题
-	 * @param string $content 消息内容
+	 * @param  string  $title    消息标题
+	 * @param  string  $content  消息内容
 	 *
 	 */
-	private function notifyMaster($title, $content)
-	{
+	private function notifyMaster($title, $content) {
 		$result = PushNotification::send($title, $content);
 		if(!$result && self::$systemConfig['webmaster_email']){
 			$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);

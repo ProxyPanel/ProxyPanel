@@ -10,16 +10,13 @@ use Illuminate\Support\Carbon;
 
 /**
  * 优惠券
- * Class Goods
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
  * @property string      $name            优惠券名称
  * @property string      $logo            优惠券LOGO
  * @property string      $sn              优惠券码
- * @property int         $type            类型：1-现金券、2-折扣券、3-充值券
- * @property int         $usage           用途：1-仅限一次性使用、2-可重复使用
+ * @property int         $type            类型：1-抵用券、2-折扣券、3-充值券
+ * @property int         $usage           用途：0-可重复使用、1-仅限一次性使用
  * @property int         $amount          金额，单位分
  * @property float       $discount        折扣
  * @property int         $rule            使用限制，单位分
@@ -29,12 +26,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at      创建时间
  * @property Carbon|null $updated_at      最后更新时间
  * @property Carbon|null $deleted_at      删除时间
- * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon newQuery()
  * @method static Builder|Coupon onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon query()
- * @method static bool|null restore()
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon type($type)
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereAvailableEnd($value)
@@ -53,9 +48,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereUsage($value)
  * @method static Builder|Coupon withTrashed()
  * @method static Builder|Coupon withoutTrashed()
+ * @mixin Eloquent
  */
-class Coupon extends Model
-{
+class Coupon extends Model {
 	use SoftDeletes;
 
 	protected $table = 'coupon';
@@ -63,38 +58,31 @@ class Coupon extends Model
 	protected $dates = ['deleted_at'];
 
 	// 筛选类型
-	function scopeType($query, $type)
-	{
+	function scopeType($query, $type) {
 		return $query->whereType($type);
 	}
 
-	function getAmountAttribute($value)
-	{
-		return $value/100;
+	function getAmountAttribute($value) {
+		return $value / 100;
 	}
 
-	function setAmountAttribute($value)
-	{
-		$this->attributes['amount'] = $value*100;
+	function setAmountAttribute($value) {
+		$this->attributes['amount'] = $value * 100;
 	}
 
-	function getDiscountAttribute($value)
-	{
-		return $value*10;
+	function getDiscountAttribute($value) {
+		return $value * 10;
 	}
 
-	function setDiscountAttribute($value)
-	{
-		$this->attributes['discount'] = $value/10;
+	function setDiscountAttribute($value) {
+		$this->attributes['discount'] = $value / 10;
 	}
 
-	function getRuleAttribute($value)
-	{
-		return $value/100;
+	function getRuleAttribute($value) {
+		return $value / 100;
 	}
 
-	function setRuleAttribute($value)
-	{
-		$this->attributes['rule'] = $value*100;
+	function setRuleAttribute($value) {
+		$this->attributes['rule'] = $value * 100;
 	}
 }

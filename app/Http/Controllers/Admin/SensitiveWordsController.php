@@ -15,28 +15,29 @@ use Validator;
  *
  * @package App\Http\Controllers\Controller
  */
-class SensitiveWordsController extends Controller
-{
+class SensitiveWordsController extends Controller {
 	// 敏感词列表
-	public function sensitiveWordsList()
-	{
+	public function sensitiveWordsList() {
 		$view['list'] = SensitiveWords::query()->orderBy('id', 'desc')->paginate(15);
 
 		return Response::view('admin.sensitiveWords.sensitiveWordsList', $view);
 	}
 
 	// 添加敏感词
-	public function addSensitiveWords(Request $request)
-	{
+	public function addSensitiveWords(Request $request) {
 		$validator = Validator::make($request->all(), [
 			'words' => 'required|unique:sensitive_words'
 		], [
-			'words.required' => '添加失败：请填写敏感词',
-			'words.unique'   => '添加失败：敏感词已存在'
-		]);
+			                             'words.required' => '添加失败：请填写敏感词',
+			                             'words.unique'   => '添加失败：敏感词已存在'
+		                             ]);
 
 		if($validator->fails()){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => $validator->getMessageBag()->first()]);
+			return Response::json([
+				                      'status'  => 'fail',
+				                      'data'    => '',
+				                      'message' => $validator->getMessageBag()->first()
+			                      ]);
 		}
 
 		$obj = new SensitiveWords();
@@ -51,8 +52,7 @@ class SensitiveWordsController extends Controller
 	}
 
 	// 删除敏感词
-	public function delSensitiveWords(Request $request)
-	{
+	public function delSensitiveWords(Request $request) {
 		$result = SensitiveWords::query()->whereId($request->input('id'))->delete();
 		if($result){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);

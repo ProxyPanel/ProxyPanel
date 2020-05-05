@@ -16,24 +16,21 @@ use Response;
  *
  * @package App\Http\Controllers\Controller
  */
-class AffiliateController extends Controller
-{
+class AffiliateController extends Controller {
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 提现申请列表
-	public function affiliateList(Request $request)
-	{
+	public function affiliateList(Request $request) {
 		$email = $request->input('email');
 		$status = $request->input('status');
 
 		$query = ReferralApply::with('user');
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email){
+			$query->whereHas('user', function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -48,15 +45,18 @@ class AffiliateController extends Controller
 	}
 
 	// 提现申请详情
-	public function affiliateDetail(Request $request)
-	{
+	public function affiliateDetail(Request $request) {
 		$id = $request->input('id');
 
-		$list = NULL;
+		$list = null;
 		$apply = ReferralApply::query()->with(['user'])->whereId($id)->first();
 		if($apply && $apply->link_logs){
 			$link_logs = explode(',', $apply->link_logs);
-			$list = ReferralLog::query()->with(['user', 'order.goods'])->whereIn('id', $link_logs)->paginate(15)->appends($request->except('page'));
+			$list = ReferralLog::query()
+			                   ->with(['user', 'order.goods'])
+			                   ->whereIn('id', $link_logs)
+			                   ->paginate(15)
+			                   ->appends($request->except('page'));
 		}
 
 		$view['info'] = $apply;
@@ -66,8 +66,7 @@ class AffiliateController extends Controller
 	}
 
 	// 设置提现申请状态
-	public function setAffiliateStatus(Request $request)
-	{
+	public function setAffiliateStatus(Request $request) {
 		$id = $request->input('id');
 		$status = $request->input('status');
 
@@ -87,8 +86,7 @@ class AffiliateController extends Controller
 	}
 
 	// 用户返利流水记录
-	public function userRebateList(Request $request)
-	{
+	public function userRebateList(Request $request) {
 		$email = $request->input('email');
 		$ref_email = $request->input('ref_email');
 		$status = $request->input('status');
@@ -96,13 +94,13 @@ class AffiliateController extends Controller
 		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status', 'asc')->orderBy('id', 'desc');
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email){
+			$query->whereHas('user', function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
 		if(isset($ref_email)){
-			$query->whereHas('ref_user', function($q) use ($ref_email){
+			$query->whereHas('ref_user', function($q) use ($ref_email) {
 				$q->where('email', 'like', '%'.$ref_email.'%');
 			});
 		}

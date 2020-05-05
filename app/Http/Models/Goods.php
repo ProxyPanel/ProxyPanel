@@ -11,20 +11,17 @@ use Illuminate\Support\Carbon;
 
 /**
  * 商品
- * Class Goods
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int                          $id
  * @property string                       $sku        商品服务SKU
  * @property string                       $name       商品名称
  * @property string                       $logo       商品图片地址
  * @property int                          $traffic    商品内含多少流量，单位MiB
- * @property int                          $type       商品类型：1-流量包、2-套餐、3-余额充值
+ * @property int                          $type       商品类型：1-流量包、2-套餐
  * @property int                          $price      售价，单位分
  * @property int                          $renew      流量重置价格，单位分
  * @property int                          $period     流量自动重置周期
- * @property string|null                  $info       商品
+ * @property string|null                  $info       商品信息
  * @property string|null                  $desc       商品描述
  * @property int                          $days       有效期
  * @property int                          $invite_num 赠送邀请码数
@@ -39,12 +36,10 @@ use Illuminate\Support\Carbon;
  * @property-read mixed                   $traffic_label
  * @property-read Collection|GoodsLabel[] $label
  * @property-read int|null                $label_count
- * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|Goods newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Goods newQuery()
  * @method static Builder|Goods onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Goods query()
- * @method static bool|null restore()
  * @method static \Illuminate\Database\Eloquent\Builder|Goods type($type)
  * @method static \Illuminate\Database\Eloquent\Builder|Goods whereColor($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Goods whereCreatedAt($value)
@@ -69,47 +64,40 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUpdatedAt($value)
  * @method static Builder|Goods withTrashed()
  * @method static Builder|Goods withoutTrashed()
+ * @mixin Eloquent
  */
-class Goods extends Model
-{
+class Goods extends Model {
 	use SoftDeletes;
 
 	protected $table = 'goods';
 	protected $primaryKey = 'id';
 	protected $dates = ['deleted_at'];
 
-	function scopeType($query, $type)
-	{
+	function scopeType($query, $type) {
 		return $query->whereType($type)->whereStatus(1)->orderBy('sort', 'desc');
 	}
 
-	function label()
-	{
+	function label() {
 		return $this->hasMany(GoodsLabel::class, 'goods_id', 'id');
 	}
 
-	function getPriceAttribute($value)
-	{
-		return $value/100;
+	function getPriceAttribute($value) {
+		return $value / 100;
 	}
 
-	function setPriceAttribute($value)
-	{
-		$this->attributes['price'] = $value*100;
+	function setPriceAttribute($value) {
+		$this->attributes['price'] = $value * 100;
 	}
 
-	function getRenewAttribute($value)
-	{
-		return $value/100;
+	function getRenewAttribute($value) {
+		return $value / 100;
 	}
 
-	function setRenewAttribute($value)
-	{
-		return $this->attributes['renew'] = $value*100;
+	function setRenewAttribute($value) {
+		return $this->attributes['renew'] = $value * 100;
 	}
 
-	function getTrafficLabelAttribute()
-	{
-		return flowAutoShow($this->attributes['traffic']*1048576);
+	function getTrafficLabelAttribute() {
+		return flowAutoShow($this->attributes['traffic'] * 1048576);
 	}
 }

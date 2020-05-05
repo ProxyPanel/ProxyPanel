@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * 用户订阅地址请求日志
- * Class UserSubscribeLog
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int                    $id
  * @property int|null               $sid            对应user_subscribe的id
  * @property string|null            $request_ip     请求IP
@@ -28,15 +25,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|UserSubscribeLog whereRequestIp($value)
  * @method static Builder|UserSubscribeLog whereRequestTime($value)
  * @method static Builder|UserSubscribeLog whereSid($value)
+ * @mixin Eloquent
  */
-class UserSubscribeLog extends Model
-{
-	public $timestamps = FALSE;
+class UserSubscribeLog extends Model {
+	public $timestamps = false;
 	protected $table = 'user_subscribe_log';
 	protected $primaryKey = 'id';
 
-	function user()
-	{
+	function user() {
 		return $this->hasManyThrough(User::class, UserSubscribe::class, 'id', 'id', 'sid', 'user_id');
 	}
 }

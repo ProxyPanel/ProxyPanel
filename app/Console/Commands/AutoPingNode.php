@@ -8,34 +8,30 @@ use App\Http\Models\SsNodePing;
 use Illuminate\Console\Command;
 use Log;
 
-class AutoPingNode extends Command
-{
+class AutoPingNode extends Command {
 	protected $signature = 'autoPingNode';
 	protected $description = '节点定时Ping测速';
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 	}
 
-	public function handle()
-	{
-		$jobStartTime = microtime(TRUE);
+	public function handle() {
+		$jobStartTime = microtime(true);
 
 		$nodeList = SsNode::query()->whereIsTransit(0)->whereStatus(1)->get();
 		foreach($nodeList as $node){
 			$this->pingNode($node->id, $node->is_ddns? $node->server : $node->ip);
 		}
 
-		$jobEndTime = microtime(TRUE);
-		$jobUsedTime = round(($jobEndTime-$jobStartTime), 4);
+		$jobEndTime = microtime(true);
+		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
 	// 节点Ping测速
-	private function pingNode($nodeId, $ip)
-	{
+	private function pingNode($nodeId, $ip) {
 		$result = NetworkDetection::ping($ip);
 
 		if($result){

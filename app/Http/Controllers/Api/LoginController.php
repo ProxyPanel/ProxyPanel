@@ -21,18 +21,15 @@ use Response;
  *
  * @package App\Http\Controllers
  */
-class LoginController extends Controller
-{
+class LoginController extends Controller {
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 登录返回订阅信息
-	public function login(Request $request)
-	{
+	public function login(Request $request) {
 		$email = trim($request->input('email'));
 		$password = trim($request->input('password'));
 		$cacheKey = 'request_times_'.md5(getClientIp());
@@ -82,14 +79,14 @@ class LoginController extends Controller
 			}
 
 			$nodeList = DB::table('ss_node')
-				->selectRaw('ss_node.*')
-				->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
-				->whereIn('ss_node_label.label_id', $userLabelIds)
-				->where('ss_node.status', 1)
-				->groupBy('ss_node.id')
-				->orderBy('ss_node.sort', 'desc')
-				->orderBy('ss_node.id', 'asc')
-				->get();
+			              ->selectRaw('ss_node.*')
+			              ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
+			              ->whereIn('ss_node_label.label_id', $userLabelIds)
+			              ->where('ss_node.status', 1)
+			              ->groupBy('ss_node.id')
+			              ->orderBy('ss_node.sort', 'desc')
+			              ->orderBy('ss_node.id', 'asc')
+			              ->get();
 
 			$c_nodes = collect();
 			foreach($nodeList as $node){
@@ -119,7 +116,7 @@ class LoginController extends Controller
 				'buy_link'     => '',
 				'money'        => '0.00',
 				'sspannelName' => 'ssrpanel',
-				'usedTraffic'  => flowAutoShow($user->u+$user->d),
+				'usedTraffic'  => flowAutoShow($user->u + $user->d),
 				'Traffic'      => flowAutoShow($user->transfer_enable),
 				'all'          => 1,
 				'residue'      => '',

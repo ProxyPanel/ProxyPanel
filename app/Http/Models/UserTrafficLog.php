@@ -8,16 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * 用户流量记录
- * Class UserTrafficLog
  *
- * @package App\Http\Models
- * @mixin Eloquent
  * @property int         $id
  * @property int         $user_id  用户ID
  * @property int         $u        上传流量
  * @property int         $d        下载流量
  * @property int         $node_id  节点ID
- * @property float       $rate     流量比例
+ * @property float       $rate     倍率
  * @property string      $traffic  产生流量
  * @property int         $log_time 记录时间
  * @property-read SsNode $node
@@ -33,23 +30,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|UserTrafficLog whereTraffic($value)
  * @method static Builder|UserTrafficLog whereU($value)
  * @method static Builder|UserTrafficLog whereUserId($value)
+ * @mixin Eloquent
  */
-class UserTrafficLog extends Model
-{
-	public $timestamps = FALSE;
+class UserTrafficLog extends Model {
+	public $timestamps = false;
 	protected $table = 'user_traffic_log';
 	protected $primaryKey = 'id';
 
 	// 关联账号
 
-	function user()
-	{
+	function user() {
 		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 
 	// 关联节点
-	function node()
-	{
+	function node() {
 		return $this->belongsTo(SsNode::class, 'node_id', 'id');
 	}
 

@@ -17,18 +17,15 @@ use Response;
  *
  * @package App\Http\Controllers\Controller
  */
-class SubscribeController extends Controller
-{
+class SubscribeController extends Controller {
 	protected static $systemConfig;
 
-	function __construct()
-	{
+	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 订阅码列表
-	public function subscribeList(Request $request)
-	{
+	public function subscribeList(Request $request) {
 		$user_id = $request->input('user_id');
 		$email = $request->input('email');
 		$status = $request->input('status');
@@ -40,7 +37,7 @@ class SubscribeController extends Controller
 		}
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email){
+			$query->whereHas('user', function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -55,8 +52,7 @@ class SubscribeController extends Controller
 	}
 
 	//订阅记录
-	public function subscribeLog(Request $request)
-	{
+	public function subscribeLog(Request $request) {
 		$id = $request->input('id');
 		$query = UserSubscribeLog::with('user:email');
 
@@ -70,8 +66,7 @@ class SubscribeController extends Controller
 	}
 
 	// 订阅设备列表
-	public function deviceList(Request $request)
-	{
+	public function deviceList(Request $request) {
 		$type = $request->input('type');
 		$platform = $request->input('platform');
 		$name = $request->input('name');
@@ -101,8 +96,7 @@ class SubscribeController extends Controller
 	}
 
 	// 设置用户的订阅的状态
-	public function setSubscribeStatus(Request $request)
-	{
+	public function setSubscribeStatus(Request $request) {
 		$id = $request->input('id');
 		$status = $request->input('status', 0);
 
@@ -120,8 +114,7 @@ class SubscribeController extends Controller
 	}
 
 	// 设置设备是否允许订阅的状态
-	public function setDeviceStatus(Request $request)
-	{
+	public function setDeviceStatus(Request $request) {
 		$id = $request->input('id');
 		$status = $request->input('status', 0);
 

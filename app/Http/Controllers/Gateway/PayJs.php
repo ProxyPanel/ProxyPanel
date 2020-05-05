@@ -8,12 +8,10 @@ use Log;
 use Response;
 use Xhat\Payjs\Payjs as Pay;
 
-class PayJs extends AbstractPayment
-{
+class PayJs extends AbstractPayment {
 	private static $config;
 
-	function __construct()
-	{
+	function __construct() {
 		parent::__construct();
 		self::$config = [
 			'mchid' => self::$systemConfig['payjs_mch_id'],   // 配置商户号
@@ -21,8 +19,7 @@ class PayJs extends AbstractPayment
 		];
 	}
 
-	public function purchase($request)
-	{
+	public function purchase($request) {
 		$payment = new Payment();
 		$payment->sn = self::generateGuid();
 		$payment->user_id = Auth::user()->id;
@@ -31,12 +28,12 @@ class PayJs extends AbstractPayment
 		$payment->save();
 
 		$result = (new Pay($this::$config))->native([
-			'body'         => parent::$systemConfig['subject_name']? : parent::$systemConfig['website_name'],
-			'total_fee'    => $payment->amount*100,
-			'out_trade_no' => $payment->sn,
-			'attach'       => '',
-			'notify_url'   => (parent::$systemConfig['website_callback_url']? : parent::$systemConfig['website_url']).'/callback/notify?method=payjs',
-		]);
+			                                            'body'         => parent::$systemConfig['subject_name']?: parent::$systemConfig['website_name'],
+			                                            'total_fee'    => $payment->amount * 100,
+			                                            'out_trade_no' => $payment->sn,
+			                                            'attach'       => '',
+			                                            'notify_url'   => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=payjs',
+		                                            ]);
 
 		if(!$result->return_code){
 			Log::error('PayJs '.$result->return_msg);
@@ -47,8 +44,7 @@ class PayJs extends AbstractPayment
 		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
 	}
 
-	public function notify($request)
-	{
+	public function notify($request) {
 		$data = (new Pay($this::$config))->notify();
 
 		if($data['return_code'] == 1){
@@ -58,13 +54,11 @@ class PayJs extends AbstractPayment
 		exit("fail");
 	}
 
-	public function getReturnHTML($request)
-	{
+	public function getReturnHTML($request) {
 		// TODO: Implement getReturnHTML() method.
 	}
 
-	public function getPurchaseHTML()
-	{
+	public function getPurchaseHTML() {
 		// TODO: Implement getReturnHTML() method.
 	}
 }

@@ -10,16 +10,15 @@ use Illuminate\Support\Carbon;
 
 /**
  * 支付单
- * Class Payment
  *
  * @property int             $id
- * @property string|null     $sn
- * @property int             $user_id 用户ID
- * @property int|null        $oid     本地订单ID
- * @property int             $amount  金额，单位分
- * @property string|null     $qr_code 支付二维码
- * @property string|null     $url     支付链接
- * @property int             $status  状态：-1-支付失败、0-等待支付、1-支付成功
+ * @property string|null     $trade_no 支付单号（本地订单号）
+ * @property int             $user_id  用户ID
+ * @property int|null        $oid      本地订单ID
+ * @property int             $amount   金额，单位分
+ * @property string|null     $qr_code  支付二维码
+ * @property string|null     $url      支付链接
+ * @property int             $status   支付状态：-1-支付失败、0-等待支付、1-支付成功
  * @property Carbon          $created_at
  * @property Carbon          $updated_at
  * @property-read mixed      $status_label
@@ -34,47 +33,40 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Payment whereId($value)
  * @method static Builder|Payment whereOid($value)
  * @method static Builder|Payment whereQrCode($value)
- * @method static Builder|Payment whereSn($value)
  * @method static Builder|Payment whereStatus($value)
+ * @method static Builder|Payment whereTradeNo($value)
  * @method static Builder|Payment whereUpdatedAt($value)
  * @method static Builder|Payment whereUrl($value)
  * @method static Builder|Payment whereUserId($value)
  * @mixin Eloquent
  */
-class Payment extends Model
-{
+class Payment extends Model {
 	protected $table = 'payment';
 	protected $primaryKey = 'id';
 	protected $appends = ['status_label'];
 
-	function scopeUid($query)
-	{
+	function scopeUid($query) {
 		return $query->whereUserId(Auth::user()->id);
 	}
 
-	function user()
-	{
+	function user() {
 		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 
-	function order()
-	{
+	function order() {
 		return $this->belongsTo(Order::class, 'oid', 'oid');
 	}
 
-	function getAmountAttribute($value)
-	{
-		return $value/100;
+	function getAmountAttribute($value) {
+		return $value / 100;
 	}
 
-	function setAmountAttribute($value)
-	{
-		return $this->attributes['amount'] = $value*100;
+	function setAmountAttribute($value) {
+		return $this->attributes['amount'] = $value * 100;
 	}
 
 	// 订单状态
-	function getStatusLabelAttribute()
-	{
+	function getStatusLabelAttribute() {
 		switch($this->attributes['status']){
 			case -1:
 				$status_label = '支付失败';
