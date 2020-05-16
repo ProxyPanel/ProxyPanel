@@ -1,10 +1,11 @@
 # SSRPanel_OtakuMod
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,VNET
 
-- [Demo](https://demo.ssrpanel.com) 待添加 coming soon
-- [Issues](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/issues) 
-- [WIKI](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/wiki)
-- [Update Log](https://github.com/ZBrettonYe/SSRPanel_OtakuMod/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
+- [Demo]( ) 待添加 coming soon
+- [Issues](https://github.com/ZBrettonYe/OtakuPanel_SSR/issues)
+- [WIKI](https://github.com/ZBrettonYe/OtakuPanel_SSR/wiki)
+- [Update Log](https://github.com/ZBrettonYe/OtakuPanel_SSR/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
+- [Telegram](https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA)
 
 ## Requirements
 - PHP 7.2 +

@@ -27,22 +27,22 @@
 	</ul>
 	<div class="tab-content py-15">
 		<div class="tab-pane active" id="android_client" role="tabpanel">
-			@include('user.components.help.client.android')
+			@include('user.components.help.clients.android')
 		</div>
 		<div class="tab-pane" id="ios_client" role="tabpanel">
-			@include('user.components.help.client.ios')
+			@include('user.components.help.clients.ios')
 		</div>
 		<div class="tab-pane" id="windows_client" role="tabpanel">
-			@include('user.components.help.client.windows')
+			@include('user.components.help.clients.windows')
 		</div>
 		<div class="tab-pane" id="game_client" role="tabpanel">
-			@include('user.components.help.client.game')
+			@include('user.components.help.clients.game')
 		</div>
 		<div class="tab-pane" id="linux_client" role="tabpanel">
-			@include('user.components.help.client.linux')
+			@include('user.components.help.clients.linux')
 		</div>
 		<div class="tab-pane" id="mac_client" role="tabpanel">
-			@include('user.components.help.client.mac')
+			@include('user.components.help.clients.mac')
 		</div>
 	</div>
 </div>
