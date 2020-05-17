@@ -121,6 +121,11 @@ class PayPal extends AbstractPayment {
 
 	public function notify(Request $request) {
 		$request->merge(['cmd' => '_notify-validate']);
+		foreach($request->input() as $key => $value){
+			if($value == null){
+				$request->request->set($key, '');
+			}
+		}
 		$post = $request->all();
 
 		$response = (string) $this->provider->verifyIPN($post);
