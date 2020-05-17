@@ -42,7 +42,7 @@ class Kernel extends HttpKernel {
 		CheckForMaintenanceMode::class,
 		ValidatePostSize::class,
 		TrimStrings::class,
-		//ConvertEmptyStringsToNull::class,
+		ConvertEmptyStringsToNull::class,
 		TrustProxies::class,
 	];
 
