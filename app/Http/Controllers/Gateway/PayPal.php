@@ -125,9 +125,9 @@ class PayPal extends AbstractPayment {
 
 		$response = (string) $this->provider->verifyIPN($post);
 
-		if($response === 'VERIFIED' && $request['mp_desc']){
-			if(Payment::whereSn($request['mp_desc'])->first()->status == 0){
-				self::postPayment($request['mp_desc'], 'PayPal');
+		if($response === 'VERIFIED' && $request['invoice']){
+			if(Payment::whereSn($request['invoice'])->first()->status == 0){
+				self::postPayment($request['invoice'], 'PayPal');
 			}
 			exit("success");
 		}
