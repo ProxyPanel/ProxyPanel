@@ -118,7 +118,7 @@ create TABLE `ss_node_ping` (
 -- ----------------------------
 create TABLE `ss_node_label` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
   `label_id` int(11) NOT NULL DEFAULT '0' COMMENT '标签ID',
   PRIMARY KEY (`id`),
   INDEX `idx_node_label` (`node_id`,`label_id`)
@@ -300,10 +300,10 @@ insert into `config` VALUES ('2', 'is_user_rand_port', 0);
 insert into `config` VALUES ('3', 'invite_num', 3);
 insert into `config` VALUES ('4', 'is_register', 1);
 insert into `config` VALUES ('5', 'is_invite_register', 2);
-insert into `config` VALUES ('6', 'website_name', 'SSRPanel');
+insert into `config` VALUES ('6', 'website_name', 'ProxyPanel');
 insert into `config` VALUES ('7', 'is_reset_password', 1);
 insert into `config` VALUES ('8', 'reset_password_times', 3);
-insert into `config` VALUES ('9', 'website_url', 'https://www.ssrpanel.com');
+insert into `config` VALUES ('9', 'website_url', 'https://demo.proxypanel.ml');
 insert into `config` VALUES ('10', 'referral_type', 0);
 insert into `config` VALUES ('11', 'active_times', 3);
 insert into `config` VALUES ('12', 'is_checkin', 1);
@@ -373,8 +373,8 @@ insert into `config` VALUES ('75', 'mix_subscribe', 0);
 insert into `config` VALUES ('76', 'rand_subscribe', 0);
 insert into `config` VALUES ('77', 'is_custom_subscribe', 0);
 insert into `config` VALUES ('78', 'is_AliPay', '');
-insert into `config` VALUES ('79', 'is_QQ', '');
-insert into `config` VALUES ('80', 'is_WeChat', '');
+insert into `config` VALUES ('79', 'is_QQPay', '');
+insert into `config` VALUES ('80', 'is_WeChatPay', '');
 insert into `config` VALUES ('81', 'is_otherPay', '');
 insert into `config` VALUES ('82', 'alipay_private_key', '');
 insert into `config` VALUES ('83', 'alipay_public_key', '');

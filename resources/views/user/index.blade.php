@@ -147,18 +147,6 @@
                                 @else
                                     <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
                                 @endif
-                                @if($not_paying_user)
-                                    <p class="card-link btn btn-sm btn-primary"><i class="wb-lock mr-5"></i>购买服务后解锁</p>
-                                @else
-                                    <div class="btn-group">
-                                        <a class="card-link btn btn-sm btn-pill-left btn-info"
-                                                href="https://jq.qq.com/?_wv=1027&k=52AI188" target="_blank" rel="noopener">
-                                            <i class="fa fa-qq"></i> QQ群</a>
-                                        <a class="card-link btn btn-sm btn-pill-right btn-success"
-                                                href="https://t.me/otakucloud" target="_blank" rel="noopener">TG群
-                                            <i class="fa fa-paper-plane"></i></a>
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     </div>
