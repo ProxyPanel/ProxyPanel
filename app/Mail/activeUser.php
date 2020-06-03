@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,8 +22,8 @@ class activeUser extends Mailable implements ShouldQueue {
 
 	public function build() {
 		return $this->view('emails.activeUser')->subject('激活账号')->with([
-			                                                               'activeUserUrl' => $this->activeUserUrl
-		                                                               ]);
+			'activeUserUrl' => $this->activeUserUrl
+		]);
 	}
 
 	// 发件失败处理

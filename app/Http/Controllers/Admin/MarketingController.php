@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Models\Marketing;
+use App\Models\Marketing;
 use DB;
 use Exception;
 use GuzzleHttp\Client;
@@ -58,7 +58,7 @@ class MarketingController extends Controller {
 
 	// 添加推送消息
 	public function addPushMarketing(Request $request) {
-		$title = trim($request->input('title'));
+		$title = $request->input('title');
 		$content = $request->input('content');
 
 		if(!self::$systemConfig['is_push_bear']){

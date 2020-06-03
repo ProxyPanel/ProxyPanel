@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Http\Models\Payment;
+use App\Models\Payment;
 use Auth;
 use Exception;
 use InvalidArgumentException;
 use Log;
 use Payment\Client;
 use Payment\Exceptions\ClassNotFoundException;
-use Payment\Exceptions\GatewayException;
 use Response;
 
 class F2Fpay extends AbstractPayment {
@@ -32,8 +31,8 @@ class F2Fpay extends AbstractPayment {
 
 	public function purchase($request) {
 		$payment = new Payment();
-		$payment->sn = self::generateGuid();
-		$payment->user_id = Auth::user()->id;
+		$payment->trade_no = self::generateGuid();
+		$payment->user_id = Auth::id();
 		$payment->oid = $request->input('oid');
 		$payment->amount = $request->input('amount');
 		$payment->save();
@@ -41,7 +40,7 @@ class F2Fpay extends AbstractPayment {
 		$data = [
 			'body'        => '',
 			'subject'     => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
-			'trade_no'    => $payment->sn,
+			'trade_no'    => $payment->trade_no,
 			'time_expire' => time() + 900, // 必须 15分钟 内付款
 			'amount'      => $payment->amount,
 		];
@@ -52,10 +51,6 @@ class F2Fpay extends AbstractPayment {
 		}catch(InvalidArgumentException $e){
 			Log::error("【支付宝当面付】输入信息错误: ".$e->getMessage());
 			exit;
-		}catch(GatewayException $e){
-			Log::error("【支付宝当面付】建立支付错误: ".$e->getMessage()." | ".var_dump($e->getRaw()));
-			var_dump($e->getRaw());
-			exit;
 		}catch(ClassNotFoundException $e){
 			Log::error("【支付宝当面付】未知类型: ".$e->getMessage());
 			exit;
@@ -64,11 +59,10 @@ class F2Fpay extends AbstractPayment {
 			exit;
 		}
 
-		Payment::whereId($payment->id)->update([
-			                                       'qr_code' => 'http://qr.topscan.com/api.php?text='.$result['qr_code'].'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png'
-		                                       ]);//后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
+		Payment::whereId($payment->id)
+		       ->update(['qr_code' => 'http://qr.topscan.com/api.php?text='.$result['qr_code'].'&bg=ffffff&fg=000000&pt=1c73bd&m=10&w=400&el=1&inpt=1eabfc&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png']);//后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
 
-		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
+		return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
 	}
 
 	public function notify($request) {
@@ -83,9 +77,6 @@ class F2Fpay extends AbstractPayment {
 			Log::info("【支付宝当面付】回调验证查询：".var_export($result, true));
 		}catch(InvalidArgumentException $e){
 			Log::error("【支付宝当面付】回调信息错误: ".$e->getMessage());
-			exit;
-		}catch(GatewayException $e){
-			Log::error("【支付宝当面付】建立支付错误: ".$e->getMessage());
 			exit;
 		}catch(ClassNotFoundException $e){
 			Log::error("【支付宝当面付】未知类型: ".$e->getMessage());

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Models\SensitiveWords;
+use App\Models\SensitiveWords;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
@@ -18,7 +18,7 @@ use Validator;
 class SensitiveWordsController extends Controller {
 	// 敏感词列表
 	public function sensitiveWordsList() {
-		$view['list'] = SensitiveWords::query()->orderBy('id', 'desc')->paginate(15);
+		$view['list'] = SensitiveWords::query()->orderByDesc('id')->paginate(15);
 
 		return Response::view('admin.sensitiveWords.sensitiveWordsList', $view);
 	}
@@ -28,16 +28,16 @@ class SensitiveWordsController extends Controller {
 		$validator = Validator::make($request->all(), [
 			'words' => 'required|unique:sensitive_words'
 		], [
-			                             'words.required' => '添加失败：请填写敏感词',
-			                             'words.unique'   => '添加失败：敏感词已存在'
-		                             ]);
+			'words.required' => '添加失败：请填写敏感词',
+			'words.unique'   => '添加失败：敏感词已存在'
+		]);
 
 		if($validator->fails()){
 			return Response::json([
-				                      'status'  => 'fail',
-				                      'data'    => '',
-				                      'message' => $validator->getMessageBag()->first()
-			                      ]);
+				'status'  => 'fail',
+				'data'    => '',
+				'message' => $validator->getMessageBag()->first()
+			]);
 		}
 
 		$obj = new SensitiveWords();

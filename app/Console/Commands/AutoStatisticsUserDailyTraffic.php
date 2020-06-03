@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\SsNode;
-use App\Http\Models\User;
-use App\Http\Models\UserTrafficDaily;
-use App\Http\Models\UserTrafficLog;
+use App\Models\SsNode;
+use App\Models\User;
+use App\Models\UserTrafficDaily;
+use App\Models\UserTrafficLog;
 use Illuminate\Console\Command;
 use Log;
 
@@ -26,7 +26,7 @@ class AutoStatisticsUserDailyTraffic extends Command {
 			$this->statisticsByNode($user->id);
 
 			// 统计每个节点产生的流量
-			$nodeList = SsNode::query()->whereStatus(1)->orderBy('id', 'asc')->get();
+			$nodeList = SsNode::query()->whereStatus(1)->orderBy('id')->get();
 			foreach($nodeList as $node){
 				$this->statisticsByNode($user->id, $node->id);
 			}

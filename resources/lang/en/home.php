@@ -32,7 +32,7 @@ return [
 	'subscribe_button'                => 'Subscribe',
 	'account_info'                    => 'Account Info',
 	'account_level'                   => 'Level',
-	'account_balance'                 => 'Balance',
+	'account_credit'                  => 'Credit',
 	'account_score'                   => 'Score',
 	'account_status'                  => 'Status',
 	'account_expire'                  => 'Overdue At',
@@ -58,7 +58,7 @@ return [
 	'reason_unknown'                  => 'Unknown, Please open a ticket and ask a customer service',
 	'never_loggedin'                  => 'Never logged in',
 	'announcement'                    => 'Announcement',
-	'recharge_balance'                => 'Recharge Balance',
+	'recharge_credit'                 => 'Recharge Credit',
 	'payment_method'                  => 'charge method',
 	'close'                           => 'Close',
 	'redeem_score'                    => 'Redeem for bandwidth',
@@ -111,7 +111,6 @@ return [
 	'redeem_coupon'                   => 'Redeem',
 	'service_type_1'                  => 'Flow Packet',
 	'service_type_2'                  => 'Flow Plans',
-	'service_type_3'                  => 'Balance',
 
 	// 流量日志
 	'traffic_log_tips'                => 'Tips: The update of the flow chart will be delayed.',

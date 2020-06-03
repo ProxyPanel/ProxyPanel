@@ -7,60 +7,58 @@
 <html lang="{{app()->getLocale()}}">
 <!--<![endif]-->
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-            content="">
-    <meta name="keywords"
-            content="">
-    <meta name="author" content="兔姬菌">
-    <meta name="copyright" content="2017-2020©兔姬菌">
-    <title>维护 | Maintenance</title>
-    <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
-    <!-- Stylesheets -->
-    <link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/css/site.min.css" type="text/css" rel="stylesheet">
-    <!-- Plugins -->
-    <link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/examples/css/pages/maintenance.css" type="text/css" rel="stylesheet">
-    <!-- Fonts -->
-    <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
-    <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="兔姬菌">
+	<meta name="copyright" content="2017-2020©兔姬菌">
+	<title>维护 | Maintenance</title>
+	<link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
+	<!-- Stylesheets -->
+	<link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/css/site.min.css" type="text/css" rel="stylesheet">
+	<!-- Plugins -->
+	<link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/examples/css/pages/maintenance.css" type="text/css" rel="stylesheet">
+	<!-- Fonts -->
+	<link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
+	<link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
 
-    <!--[if lt IE 9]>
-    <script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script> <![endif]-->
-    <!--[if lt IE 10]>
-    <script src="/assets/global/vendor/media-match/media.match.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/respond/respond.min.js" type="text/javascript"></script> <![endif]-->
+	<!--[if lt IE 9]>
+	<script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script> <![endif]-->
+	<!--[if lt IE 10]>
+	<script src="/assets/global/vendor/media-match/media.match.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/respond/respond.min.js" type="text/javascript"></script> <![endif]-->
 
-    <!-- Scripts -->
-    <script src="/assets/global/vendor/breakpoints/breakpoints.js" type="text/javascript"></script>
-    <script>
+	<!-- Scripts -->
+	<script src="/assets/global/vendor/breakpoints/breakpoints.js" type="text/javascript"></script>
+	<script>
 		Breakpoints();
-    </script>
+	</script>
 </head>
 <body class="animsition page-login-v3 layout-full" style="position: relative;">
 <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-    <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
-    browser. Please
-    <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
+	<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
+                                            browser. Please
+	<a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
 <!-- Page -->
 <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">>
-    <div class="page-content vertical-align-middle">
-        <i class="icon wb-settings icon-spin page-maintenance-icon" aria-hidden="true"></i>
-        <h2>维护建设中</h2>
-        {!! $message !!}
-        <footer class="page-copyright">
-            <p id="countdown"></p>
-        </footer>
-    </div>
+	<div class="page-content vertical-align-middle">
+		<i class="icon wb-settings icon-spin page-maintenance-icon" aria-hidden="true"></i>
+		<h2>维护建设中</h2>
+		{!! $message !!}
+		<footer class="page-copyright">
+			<p id="countdown"></p>
+		</footer>
+	</div>
 </div>
 <!-- End Page -->
 

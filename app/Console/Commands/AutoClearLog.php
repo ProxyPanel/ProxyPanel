@@ -3,17 +3,17 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Http\Models\SsNodeInfo;
-use App\Http\Models\SsNodeIp;
-use App\Http\Models\SsNodeOnlineLog;
-use App\Http\Models\SsNodeTrafficDaily;
-use App\Http\Models\SsNodeTrafficHourly;
-use App\Http\Models\UserBanLog;
-use App\Http\Models\UserLoginLog;
-use App\Http\Models\UserSubscribeLog;
-use App\Http\Models\UserTrafficDaily;
-use App\Http\Models\UserTrafficHourly;
-use App\Http\Models\UserTrafficLog;
+use App\Models\SsNodeInfo;
+use App\Models\SsNodeIp;
+use App\Models\SsNodeOnlineLog;
+use App\Models\SsNodeTrafficDaily;
+use App\Models\SsNodeTrafficHourly;
+use App\Models\UserBanLog;
+use App\Models\UserLoginLog;
+use App\Models\UserSubscribeLog;
+use App\Models\UserTrafficDaily;
+use App\Models\UserTrafficHourly;
+use App\Models\UserTrafficLog;
 use Exception;
 use Illuminate\Console\Command;
 use Log;
@@ -42,8 +42,8 @@ class AutoClearLog extends Command {
 
 	// 清除日志
 	private function clearLog() {
-		// 自动清除30分钟以前的节点负载信息日志
 		try{
+			// 自动清除30分钟以前的节点负载信息日志
 			SsNodeInfo::query()->where('log_time', '<=', strtotime("-30 minutes"))->delete();
 
 			// 自动清除1小时以前的节点在线用户数日志

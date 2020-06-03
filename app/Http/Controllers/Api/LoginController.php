@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Models\User;
-use App\Http\Models\UserLabel;
-use App\Http\Models\UserSubscribe;
+use App\Models\SsNode;
+use App\Models\User;
+use App\Models\UserSubscribe;
 use Cache;
 use DB;
 use Exception;
@@ -30,8 +30,8 @@ class LoginController extends Controller {
 
 	// 登录返回订阅信息
 	public function login(Request $request) {
-		$email = trim($request->input('email'));
-		$password = trim($request->input('password'));
+		$email = $request->input('email');
+		$password = $request->input('password');
 		$cacheKey = 'request_times_'.md5(getClientIp());
 
 		if(!$email || !$password){
@@ -58,8 +58,8 @@ class LoginController extends Controller {
 			return Response::json(['status' => 'fail', 'data' => [], 'message' => '用户名或密码错误']);
 		}
 
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
 			// 如果未生成过订阅链接则生成一个
 			$subscribe = UserSubscribe::query()->whereUserId($user->id)->first();
 
@@ -73,20 +73,8 @@ class LoginController extends Controller {
 			$url = self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url'];
 
 			// 节点列表
-			$userLabelIds = UserLabel::query()->whereUserId($user->id)->pluck('label_id');
-			if(empty($userLabelIds)){
-				return Response::json(['status' => 'fail', 'message' => '', 'data' => []]);
-			}
+			$nodeList = SsNode::query()->whereStatus(1)->where('level', '<=', $user->level)->get();
 
-			$nodeList = DB::table('ss_node')
-			              ->selectRaw('ss_node.*')
-			              ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
-			              ->whereIn('ss_node_label.label_id', $userLabelIds)
-			              ->where('ss_node.status', 1)
-			              ->groupBy('ss_node.id')
-			              ->orderBy('ss_node.sort', 'desc')
-			              ->orderBy('ss_node.id', 'asc')
-			              ->get();
 
 			$c_nodes = collect();
 			foreach($nodeList as $node){

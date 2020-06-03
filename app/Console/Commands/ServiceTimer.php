@@ -4,9 +4,8 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Http\Controllers\ServiceController;
-use App\Http\Models\Order;
-use App\Http\Models\User;
-use App\Http\Models\UserLabel;
+use App\Models\Order;
+use App\Models\User;
 use DB;
 use Exception;
 use Illuminate\Console\Command;
@@ -36,8 +35,8 @@ class ServiceTimer extends Command {
 	private function decGoodsTraffic() {
 		//获取失效的套餐
 		$orderList = Order::query()->with(['goods'])->whereStatus(2)->whereIsExpire(0)->whereHas('goods', function($q) {
-				$q->whereType(2);
-			})->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
+			$q->whereType(2);
+		})->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
 		if($orderList->isNotEmpty()){
 			try{
 				DB::beginTransaction();
@@ -60,24 +59,22 @@ class ServiceTimer extends Command {
 						continue;
 					}
 
-					// 清理全部流量
-					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $order->user->transfer_enable, 0,
-					                                 '[定时任务]用户所购商品到期，扣减商品对应的流量');
+					// 清理全部流量,重置重置日期和等级
 					User::query()->whereId($order->user_id)->update([
-						                                                'u'               => 0,
-						                                                'd'               => 0,
-						                                                'transfer_enable' => 0,
-						                                                'reset_time'      => null
-					                                                ]);
-
-					// 删除对应用户的所有标签
-					UserLabel::query()->whereUserId($order->user_id)->delete();
+						'u'               => 0,
+						'd'               => 0,
+						'transfer_enable' => 0,
+						'reset_time'      => null,
+						'level'           => 0
+					]);
+					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $order->user->transfer_enable, 0,
+						'[定时任务]用户所购商品到期，扣减商品对应的流量');
 
 					// 检查该订单对应用户是否有预支付套餐
 					$prepaidOrder = Order::query()
 					                     ->whereUserId($order->user_id)
 					                     ->whereStatus(3)
-					                     ->orderBy('oid', 'asc')
+					                     ->orderBy('oid')
 					                     ->first();
 
 					if($prepaidOrder){

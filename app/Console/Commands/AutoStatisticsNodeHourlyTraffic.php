@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Models\SsNode;
-use App\Http\Models\SsNodeTrafficHourly;
-use App\Http\Models\UserTrafficLog;
+use App\Models\SsNode;
+use App\Models\SsNodeTrafficHourly;
+use App\Models\UserTrafficLog;
 use Illuminate\Console\Command;
 use Log;
 
@@ -19,7 +19,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 	public function handle() {
 		$jobStartTime = microtime(true);
 
-		$nodeList = SsNode::query()->whereStatus(1)->orderBy('id', 'asc')->get();
+		$nodeList = SsNode::query()->whereStatus(1)->orderBy('id')->get();
 		foreach($nodeList as $node){
 			$this->statisticsByNode($node->id);
 		}

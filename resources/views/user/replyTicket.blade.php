@@ -1,85 +1,85 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/examples/css/structure/chat.css" type="text/css" rel="stylesheet">
+	<link href="/assets/examples/css/structure/chat.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
-    <div class="page-content">
-        <div class="panel panel-bordered">
-            <div class="panel-heading">
-                <h1 class="panel-title cyan-600"><i class="icon wb-help-circle"></i>{{$ticket->title}}</h1>
-                @if($ticket->status != 2)
-                    <div class="panel-actions">
-                        <button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
-                    </div>
-                @endif
-            </div>
-            <div class="panel-body">
-                <div class="chat-box">
-                    <div class="chats">
-                        <div class="chat">
-                            <div class="chat-avatar">
-                                <p class="avatar" data-toggle="tooltip" data-placement="right"
-                                        title="{{trans('home.ticket_reply_me')}}">
-                                    @include('user.components.avatar')
-                                </p>
-                            </div>
-                            <div class="chat-body">
-                                <div class="chat-content">
-                                    <p>
-                                        {!! $ticket->content !!}
-                                    </p>
-                                    <time class="chat-time">{{$ticket->created_at}}</time>
-                                </div>
-                            </div>
-                        </div>
-                        @foreach ($replyList as $reply)
-                            <div class="chat @if($reply->user->is_admin) chat-left @endif">
-                                <div class="chat-avatar">
-                                    @if ($reply->user->is_admin)
-                                        <p class="avatar" data-toggle="tooltip" data-placement="left"
-                                                title="{{trans('home.ticket_reply_master')}}">
-                                            <img src="/assets/images/logo64.png"
-                                                    alt="{{trans('home.ticket_reply_master')}}"/>
-                                        </p>
-                                    @else
-                                        <p class="avatar" data-toggle="tooltip" data-placement="left"
-                                                title="{{trans('home.ticket_reply_me')}}">
-                                            @include('user.components.avatar')
-                                        </p>
-                                    @endif
-                                </div>
-                                <div class="chat-body">
-                                    <div class="chat-content">
-                                        <p>
-                                            {!! $reply->content!!}
-                                        </p>
-                                        <time class="chat-time">{{$reply->created_at}}</time>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            @if($ticket->status != 2)
-                <div class="panel-footer pb-30">
-                    <form>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="editor"
-                                    placeholder="{{trans('home.ticket_reply_placeholder')}}"/>
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary"
-                                        onclick="replyTicket()"> {{trans('home.ticket_reply')}}</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-            @endif
-        </div>
-    </div>
+	<div class="page-content">
+		<div class="panel panel-bordered">
+			<div class="panel-heading">
+				<h1 class="panel-title cyan-600"><i class="icon wb-help-circle"></i>{{$ticket->title}}</h1>
+				@if($ticket->status != 2)
+					<div class="panel-actions">
+						<button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
+					</div>
+				@endif
+			</div>
+			<div class="panel-body">
+				<div class="chat-box">
+					<div class="chats">
+						<div class="chat">
+							<div class="chat-avatar">
+								<p class="avatar" data-toggle="tooltip" data-placement="right"
+										title="{{trans('home.ticket_reply_me')}}">
+									@include('user.components.avatar')
+								</p>
+							</div>
+							<div class="chat-body">
+								<div class="chat-content">
+									<p>
+										{!! $ticket->content !!}
+									</p>
+									<time class="chat-time">{{$ticket->created_at}}</time>
+								</div>
+							</div>
+						</div>
+						@foreach ($replyList as $reply)
+							<div class="chat @if($reply->user->is_admin) chat-left @endif">
+								<div class="chat-avatar">
+									@if ($reply->user->is_admin)
+										<p class="avatar" data-toggle="tooltip" data-placement="left"
+												title="{{trans('home.ticket_reply_master')}}">
+											<img src="/assets/images/logo64.png"
+													alt="{{trans('home.ticket_reply_master')}}"/>
+										</p>
+									@else
+										<p class="avatar" data-toggle="tooltip" data-placement="left"
+												title="{{trans('home.ticket_reply_me')}}">
+											@include('user.components.avatar')
+										</p>
+									@endif
+								</div>
+								<div class="chat-body">
+									<div class="chat-content">
+										<p>
+											{!! $reply->content!!}
+										</p>
+										<time class="chat-time">{{$reply->created_at}}</time>
+									</div>
+								</div>
+							</div>
+						@endforeach
+					</div>
+				</div>
+			</div>
+			@if($ticket->status != 2)
+				<div class="panel-footer pb-30">
+					<form>
+						<div class="input-group">
+							<input type="text" class="form-control" id="editor"
+									placeholder="{{trans('home.ticket_reply_placeholder')}}"/>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-primary"
+										onclick="replyTicket()"> {{trans('home.ticket_reply')}}</button>
+							</span>
+						</div>
+					</form>
+				</div>
+			@endif
+		</div>
+	</div>
 @endsection
 @section('script')
-    <script type="text/javascript">
+	<script type="text/javascript">
 		//回车检测
 		$(document).on("keypress", "input", function (e) {
 			if (e.which === 13) {
@@ -156,5 +156,5 @@
 				}
 			})
 		}
-    </script>
+	</script>
 @endsection

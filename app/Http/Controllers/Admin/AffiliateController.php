@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Models\ReferralApply;
-use App\Http\Models\ReferralLog;
+use App\Models\ReferralApply;
+use App\Models\ReferralLog;
 use Illuminate\Http\Request;
 use Response;
 
@@ -39,7 +39,7 @@ class AffiliateController extends Controller {
 			$query->whereStatus($status);
 		}
 
-		$view['applyList'] = $query->orderBy('id', 'desc')->paginate(15)->appends($request->except('page'));
+		$view['applyList'] = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.affiliate.affiliateList', $view);
 	}
@@ -91,7 +91,7 @@ class AffiliateController extends Controller {
 		$ref_email = $request->input('ref_email');
 		$status = $request->input('status');
 
-		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status', 'asc')->orderBy('id', 'desc');
+		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status')->orderByDesc('id');
 
 		if(isset($email)){
 			$query->whereHas('user', function($q) use ($email) {

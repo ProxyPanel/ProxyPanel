@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * 审计规则
+ *
+ * @property int                        $id
+ * @property int                        $type    类型：1-正则表达式、2-域名、3-IP、4-协议
+ * @property string                     $name    规则描述
+ * @property string                     $pattern 规则值
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property-read mixed                 $type_label
+ * @method static Builder|Rule newModelQuery()
+ * @method static Builder|Rule newQuery()
+ * @method static Builder|Rule query()
+ * @method static Builder|Rule whereCreatedAt($value)
+ * @method static Builder|Rule whereId($value)
+ * @method static Builder|Rule whereName($value)
+ * @method static Builder|Rule wherePattern($value)
+ * @method static Builder|Rule whereType($value)
+ * @method static Builder|Rule whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+class Rule extends Model {
+	protected $table = 'rule';
+	protected $primaryKey = 'id';
+
+	function getTypeLabelAttribute() {
+		switch($this->attributes['type']){
+			case 1:
+				$type_label = '正则表达式';
+				break;
+			case 2:
+				$type_label = '域 名';
+				break;
+			case 3:
+				$type_label = 'I P';
+				break;
+			case 4:
+				$type_label = '协 议';
+				break;
+			default:
+				$type_label = '未 知';
+
+		}
+		return $type_label;
+	}
+}

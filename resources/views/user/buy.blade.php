@@ -1,76 +1,76 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/examples/css/pages/invoice.css" type="text/css" rel="stylesheet">
+	<link href="/assets/examples/css/pages/invoice.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
-    <div class="page-content">
-        <div class="panel">
-            <div class="panel-body container-fluid">
-                <div class="page-invoice-table table-responsive">
-                    <table class="table table-hover text-md-center">
-                        <thead>
-                        <tr>
-                            <th>{{trans('home.service_name')}}</th>
-                            <th>{{trans('home.service_desc')}} </th>
-                            <th>{{trans('home.service_price')}}</th>
-                            <th>{{trans('home.service_quantity')}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="text-middle">{{$goods->name}} </td>
-                            <td>{{trans('home.service_days')}}
-                                <strong>{{$goods->type==1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
-                                <br>
-                                <strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
-                            </td>
-                            <td class="text-middle"> ￥{{$goods->price}} </td>
-                            <td class="text-middle"> x 1</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                @if($goods->type <= 2)
-                    <div class="row">
-                        <div class="col-lg-3 pl-30">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn"
-                                        placeholder="{{trans('home.coupon')}}"/>
-                                <div class="input-group-btn">
-                                    <button type="submit" class="btn btn-info" onclick="redeemCoupon()"><i
-                                                class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 offset-lg-6 text-right">
-                            <p>{{trans('home.service_subtotal_price')}}
-                                <span>￥{{$goods->price}}</span>
-                            </p>
-                            <p class="page-invoice-amount">{{trans('home.service_total_price')}}
-                                <span class="grand-total">￥{{$goods->price}}</span>
-                            </p>
-                        </div>
-                        @endif
-                        <div class="col-md-12 mb-30">
-                            <div class="float-right">
-                                <div class="btn-group btn-group-lg">
-                                    @include('user.components.purchase')
-                                    @if($goods->type <= 2)
-                                        <button class="btn btn-flat" onclick="pay('balance','0')"><img
-                                                    src="/assets/images/payment/creditpay.svg" height="48px"
-                                                    alt="{{trans('home.service_pay_button')}}"/></button>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-        </div>
-    </div>
+	<div class="page-content">
+		<div class="panel">
+			<div class="panel-body container-fluid">
+				<div class="page-invoice-table table-responsive">
+					<table class="table table-hover text-md-center">
+						<thead>
+						<tr>
+							<th>{{trans('home.service_name')}}</th>
+							<th>{{trans('home.service_desc')}} </th>
+							<th>{{trans('home.service_price')}}</th>
+							<th>{{trans('home.service_quantity')}}</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td class="text-middle">{{$goods->name}} </td>
+							<td>{{trans('home.service_days')}}
+								<strong>{{$goods->type==1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
+								<br>
+								<strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
+							</td>
+							<td class="text-middle"> ￥{{$goods->price}} </td>
+							<td class="text-middle"> x 1</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				@if($goods->type <= 2)
+					<div class="row">
+						<div class="col-lg-3 pl-30">
+							<div class="input-group">
+								<input type="text" class="form-control" name="coupon_sn" id="coupon_sn"
+										placeholder="{{trans('home.coupon')}}"/>
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-info" onclick="redeemCoupon()"><i
+												class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3 offset-lg-6 text-right">
+							<p>{{trans('home.service_subtotal_price')}}
+								<span>￥{{$goods->price}}</span>
+							</p>
+							<p class="page-invoice-amount">{{trans('home.service_total_price')}}
+								<span class="grand-total">￥{{$goods->price}}</span>
+							</p>
+						</div>
+						@endif
+						<div class="col-md-12 mb-30">
+							<div class="float-right">
+								<div class="btn-group btn-group-lg">
+									@include('user.components.purchase')
+									@if($goods->type <= 2)
+										<button class="btn btn-flat" onclick="pay('credit','0')"><img
+													src="/assets/images/payment/creditpay.svg" height="48px"
+													alt="{{trans('home.service_pay_button')}}"/></button>
+									@endif
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('script')
-    <script type="text/javascript">
+	<script type="text/javascript">
 		// 校验优惠券是否可用
 		function redeemCoupon() {
 			const coupon_sn = $('#coupon_sn').val();
@@ -164,7 +164,7 @@
 							timer: 1300,
 							showConfirmButton: false
 						});
-						if (method === 'balance') {
+						if (method === 'credit') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.href = '/invoices')
 						}
@@ -187,5 +187,5 @@
 				}
 			});
 		}
-    </script>
+	</script>
 @endsection

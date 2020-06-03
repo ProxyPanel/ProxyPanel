@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Gateway;
 
 
-use App\Http\Models\Payment;
+use App\Models\Payment;
 use Auth;
 use Illuminate\Http\Request;
 use Response;
@@ -19,23 +19,23 @@ class BitpayX extends AbstractPayment {
 	 */
 	public function purchase(Request $request) {
 		$payment = new Payment();
-		$payment->sn = self::generateGuid();
-		$payment->user_id = Auth::user()->id;
+		$payment->trade_no = self::generateGuid();
+		$payment->user_id = Auth::id();
 		$payment->oid = $request->input('oid');
 		$payment->amount = $request->input('amount');
 		$payment->save();
 
 		$data = [
-			'merchant_order_id' => $payment->sn,
+			'merchant_order_id' => $payment->trade_no,
 			'price_amount'      => (float) $request->input('amount'),
 			'price_currency'    => 'CNY',
 			'pay_currency'      => $request->input('type') == 1? 'ALIPAY' : 'WECHAT',
-			'title'             => '支付单号：'.$payment->sn,
+			'title'             => '支付单号：'.$payment->trade_no,
 			'description'       => parent::$systemConfig['subject_name']?: parent::$systemConfig['website_name'],
 			'callback_url'      => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=bitpayx',
 			'success_url'       => parent::$systemConfig['website_url'].'/invoices',
 			'cancel_url'        => parent::$systemConfig['website_url'],
-			'token'             => $this->sign($this->prepareSignId($payment->sn)),
+			'token'             => $this->sign($this->prepareSignId($payment->trade_no)),
 
 		];
 
@@ -47,10 +47,10 @@ class BitpayX extends AbstractPayment {
 			Payment::whereId($payment->id)->update(['url' => $result['payment_url']]);
 
 			return Response::json([
-				                      'status'  => 'success',
-				                      'url'     => $result['payment_url'] .= '&lang=zh',
-				                      'message' => '创建订单成功!'
-			                      ]);
+				'status'  => 'success',
+				'url'     => $result['payment_url'] .= '&lang=zh',
+				'message' => '创建订单成功!'
+			]);
 		}
 
 		return Response::json(['status' => 'fail', 'data' => $result, 'message' => '创建订单失败!']);

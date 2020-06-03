@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\PushNotification;
-use App\Http\Models\SsNode;
-use App\Http\Models\SsNodeTrafficDaily;
+use App\Models\SsNode;
+use App\Models\SsNodeTrafficDaily;
 use Illuminate\Console\Command;
 use Log;
 

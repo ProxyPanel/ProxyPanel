@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Http\Models\User;
 use App\Mail\userExpireWarning;
 use App\Mail\userExpireWarningToday;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Log;
 use Mail;

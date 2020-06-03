@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Http\Models\Payment;
+use App\Models\Payment;
 use Auth;
 use Response;
 
 class CodePay extends AbstractPayment {
 	public function purchase($request) {
 		$payment = new Payment();
-		$payment->sn = self::generateGuid();
-		$payment->user_id = Auth::user()->id;
+		$payment->trade_no = self::generateGuid();
+		$payment->user_id = Auth::id();
 		$payment->oid = $request->input('oid');
 		$payment->amount = $request->input('amount');
 		$payment->save();
 
 		$data = [
 			'id'         => parent::$systemConfig['codepay_id'],
-			'pay_id'     => $payment->sn,
+			'pay_id'     => $payment->trade_no,
 			'type'       => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
 			'price'      => $payment->amount,
 			'page'       => 1,
@@ -67,7 +67,7 @@ class CodePay extends AbstractPayment {
 		if(!$_POST['pay_no'] || md5($sign.parent::$systemConfig['codepay_key']) != $_POST['sign']){
 			exit('fail');
 		}
-		$payment = Payment::whereSn($_POST['pay_id'])->first();
+		$payment = Payment::whereTradeNo($_POST['pay_id'])->first();
 
 		if($payment){
 			if($payment->status == 0){

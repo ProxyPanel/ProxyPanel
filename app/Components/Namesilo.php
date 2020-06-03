@@ -38,19 +38,17 @@ class Namesilo {
 			// 出错
 			if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success'){
 				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-				                            self::$systemConfig['webmaster_email'], 0,
-				                            $result['namesilo']['reply']['detail']);
+					self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
 			}else{
 				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-				                            self::$systemConfig['webmaster_email'], 1,
-				                            $result['namesilo']['reply']['detail']);
+					self::$systemConfig['webmaster_email'], 1, $result['namesilo']['reply']['detail']);
 			}
 
 			return $result['namesilo']['reply'];
 		}catch(Exception $e){
 			Log::error('CURL请求失败：'.$e->getMessage().' --- '.$e->getLine());
 			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-			                            self::$systemConfig['webmaster_email'], 0, $e->getMessage());
+				self::$systemConfig['webmaster_email'], 0, $e->getMessage());
 
 			return false;
 		}

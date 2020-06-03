@@ -17,7 +17,7 @@ class isAdmin {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next) {
-		if(!Auth::user()->is_admin){
+		if(!Auth::getUser()->is_admin){
 			return Redirect::to('/');
 		}
 

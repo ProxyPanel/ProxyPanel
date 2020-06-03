@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Http\Models\Payment;
+use App\Models\Payment;
 use Auth;
 use Log;
 use Response;
@@ -21,19 +21,19 @@ class PayJs extends AbstractPayment {
 
 	public function purchase($request) {
 		$payment = new Payment();
-		$payment->sn = self::generateGuid();
-		$payment->user_id = Auth::user()->id;
+		$payment->trade_no = self::generateGuid();
+		$payment->user_id = Auth::id();
 		$payment->oid = $request->input('oid');
 		$payment->amount = $request->input('amount');
 		$payment->save();
 
 		$result = (new Pay($this::$config))->native([
-			                                            'body'         => parent::$systemConfig['subject_name']?: parent::$systemConfig['website_name'],
-			                                            'total_fee'    => $payment->amount * 100,
-			                                            'out_trade_no' => $payment->sn,
-			                                            'attach'       => '',
-			                                            'notify_url'   => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=payjs',
-		                                            ]);
+			'body'         => parent::$systemConfig['subject_name']?: parent::$systemConfig['website_name'],
+			'total_fee'    => $payment->amount * 100,
+			'out_trade_no' => $payment->trade_no,
+			'attach'       => '',
+			'notify_url'   => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=payjs',
+		]);
 
 		if(!$result->return_code){
 			Log::error('PayJs '.$result->return_msg);
@@ -41,7 +41,7 @@ class PayJs extends AbstractPayment {
 		// 获取收款二维码内容
 		Payment::whereId($payment->id)->update(['qr_code' => $result->qrcode]);
 
-		return Response::json(['status' => 'success', 'data' => $payment->sn, 'message' => '创建订单成功!']);
+		return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
 	}
 
 	public function notify($request) {
