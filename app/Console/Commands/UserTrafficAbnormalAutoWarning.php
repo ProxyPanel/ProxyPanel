@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\PushNotification;
-use App\Http\Models\User;
-use App\Http\Models\UserTrafficHourly;
+use App\Models\User;
+use App\Models\UserTrafficHourly;
 use Illuminate\Console\Command;
 use Log;
 

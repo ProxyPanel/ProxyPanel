@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Components\IPIP;
 use App\Components\QQWry;
-use App\Http\Models\Invite;
-use App\Http\Models\SensitiveWords;
-use App\Http\Models\User;
-use App\Http\Models\UserLabel;
-use App\Http\Models\UserLoginLog;
-use App\Http\Models\UserSubscribe;
-use App\Http\Models\Verify;
-use App\Http\Models\VerifyCode;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use App\Mail\sendVerifyCode;
+use App\Models\Invite;
+use App\Models\SensitiveWords;
+use App\Models\User;
+use App\Models\UserLoginLog;
+use App\Models\UserSubscribe;
+use App\Models\Verify;
+use App\Models\VerifyCode;
 use Auth;
 use Cache;
 use Captcha;
@@ -46,13 +45,13 @@ class AuthController extends Controller {
 	// 登录
 	public function login(Request $request) {
 		if($request->isMethod('POST')){
-			$this->validate($request, [
-				'email'    => 'required',
+			Validator::make($request->all(), [
+				'email'    => 'required|email',
 				'password' => 'required'
 			], [
-				                'email.required'    => trans('auth.email_null'),
-				                'password.required' => trans('auth.password_null')
-			                ]);
+				'email.required'    => trans('auth.email_null'),
+				'password.required' => trans('auth.password_null')
+			]);
 
 			$email = $request->input('email');
 			$password = $request->input('password');
@@ -68,15 +67,16 @@ class AuthController extends Controller {
 			if(!Auth::attempt(['email' => $email, 'password' => $password], $remember)){
 				return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
 			}
+			$user = Auth::getUser();
 
 			// 校验普通用户账号状态
-			if(!Auth::user()->is_admin){
-				if(Auth::user()->status < 0){
+			if(!$user->is_admin){
+				if($user->status < 0){
 					Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
 					return Redirect::back()->withInput()->withErrors(trans('auth.login_ban',
-					                                                       ['email' => self::$systemConfig['webmaster_email']]));
-				}elseif(Auth::user()->status == 0 && self::$systemConfig['is_activate_account']){
+						['email' => self::$systemConfig['webmaster_email']]));
+				}elseif($user->status == 0 && self::$systemConfig['is_activate_account']){
 					Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
 					return Redirect::back()
@@ -86,20 +86,20 @@ class AuthController extends Controller {
 			}
 
 			// 写入登录日志
-			$this->addUserLoginLog(Auth::user()->id, getClientIp());
+			$this->addUserLoginLog($user->id, getClientIp());
 
 			// 更新登录信息
 			User::uid()->update(['last_login' => time()]);
 
 			// 根据权限跳转
-			if(Auth::user()->is_admin){
+			if($user->is_admin){
 				return Redirect::to('admin');
 			}
 
 			return Redirect::to('/');
 		}else{
 			if(Auth::check()){
-				if(Auth::user()->is_admin){
+				if(Auth::getUser()->is_admin){
 					return Redirect::to('admin');
 				}
 
@@ -119,32 +119,32 @@ class AuthController extends Controller {
 				}
 				break;
 			case 2: // Geetest
-				$result = $this->validate($request, [
+				$validator = Validator::make($request->all(), [
 					'geetest_challenge' => 'required|geetest'
 				], [
-					                          'geetest' => trans('auth.captcha_fail')
-				                          ]);
+					'geetest' => trans('auth.captcha_fail')
+				]);
 
-				if(!$result){
-					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				if($validator->fails()){
+					return Redirect::back()->withInput()->withErrors(trans('auth.captcha_fail'));
 				}
 				break;
 			case 3: // Google reCAPTCHA
-				$result = $this->validate($request, [
+				$validator = Validator::make($request->all(), [
 					'g-recaptcha-response' => 'required|NoCaptcha'
 				]);
 
-				if(!$result){
-					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				if($validator->fails()){
+					return Redirect::back()->withInput()->withErrors(trans('auth.captcha_fail'));
 				}
 				break;
 			case 4: // hCaptcha
-				$result = $this->validate($request, [
+				$validator = Validator::make($request->all(), [
 					'h-captcha-response' => 'required|HCaptcha'
 				]);
 
-				if(!$result){
-					return Redirect::back()->withInput()->withErrors(trans('auth.fail_captcha'));
+				if($validator->fails()){
+					return Redirect::back()->withInput()->withErrors(trans('auth.captcha_fail'));
 				}
 				break;
 			default: // 不启用验证码
@@ -215,23 +215,23 @@ class AuthController extends Controller {
 		$cacheKey = 'register_times_'.md5(getClientIp()); // 注册限制缓存key
 
 		if($request->isMethod('POST')){
-			$this->validate($request, [
+			Validator::make($request->all(), [
 				'username'        => 'required',
 				'email'           => 'required|email|unique:user',
 				'password'        => 'required|min:6',
 				'confirmPassword' => 'required|same:password',
 				'term'            => 'accepted'
 			], [
-				                'username.required'        => trans('auth.email_null'),
-				                'email.required'           => trans('auth.email_null'),
-				                'email.email'              => trans('auth.email_legitimate'),
-				                'email.unique'             => trans('auth.email_exist'),
-				                'password.required'        => trans('auth.password_null'),
-				                'password.min'             => trans('auth.password_limit'),
-				                'confirmPassword.required' => trans('auth.confirm_password'),
-				                'confirmPassword.same'     => trans('auth.password_same'),
-				                'term.accepted'            => trans('auth.unaccepted')
-			                ]);
+				'username.required'        => trans('auth.email_null'),
+				'email.required'           => trans('auth.email_null'),
+				'email.email'              => trans('auth.email_legitimate'),
+				'email.unique'             => trans('auth.email_exist'),
+				'password.required'        => trans('auth.password_null'),
+				'password.min'             => trans('auth.password_limit'),
+				'confirmPassword.required' => trans('auth.confirm_password'),
+				'confirmPassword.same'     => trans('auth.password_same'),
+				'term.accepted'            => trans('auth.unaccepted')
+			]);
 
 			$username = $request->input('username');
 			$email = $request->input('email');
@@ -334,7 +334,7 @@ class AuthController extends Controller {
 
 			// 创建新用户
 			$uid = Helpers::addUser($email, Hash::make($password), $transfer_enable,
-			                        self::$systemConfig['default_days'], $referral_uid);
+				self::$systemConfig['default_days'], $referral_uid);
 
 			// 注册失败，抛出异常
 			if(!$uid){
@@ -355,17 +355,6 @@ class AuthController extends Controller {
 				Cache::increment($cacheKey);
 			}else{
 				Cache::put($cacheKey, 1, 86400); // 24小时
-			}
-
-			// 初始化默认标签
-			if(strlen(self::$systemConfig['initial_labels_for_user'])){
-				$labels = explode(',', self::$systemConfig['initial_labels_for_user']);
-				foreach($labels as $label){
-					$userLabel = new UserLabel();
-					$userLabel->user_id = $uid;
-					$userLabel->label_id = $label;
-					$userLabel->save();
-				}
 			}
 
 			// 更新邀请码
@@ -501,19 +490,19 @@ class AuthController extends Controller {
 	public function resetPassword(Request $request) {
 		if($request->isMethod('POST')){
 			// 校验请求
-			$this->validate($request, [
+			Validator::make($request->all(), [
 				'email' => 'required|email'
 			], [
-				                'email.required' => trans('auth.email_null'),
-				                'email.email'    => trans('auth.email_legitimate')
-			                ]);
+				'email.required' => trans('auth.email_null'),
+				'email.email'    => trans('auth.email_legitimate')
+			]);
 
 			$email = $request->input('email');
 
 			// 是否开启重设密码
 			if(!self::$systemConfig['is_reset_password']){
 				return Redirect::back()->withErrors(trans('auth.reset_password_close',
-				                                          ['email' => self::$systemConfig['webmaster_email']]));
+					['email' => self::$systemConfig['webmaster_email']]));
 			}
 
 			// 查找账号
@@ -528,7 +517,7 @@ class AuthController extends Controller {
 				$resetTimes = Cache::get('resetPassword_'.md5($email));
 				if($resetTimes >= self::$systemConfig['reset_password_times']){
 					return Redirect::back()->withErrors(trans('auth.reset_password_limit',
-					                                          ['time' => self::$systemConfig['reset_password_times']]));
+						['time' => self::$systemConfig['reset_password_times']]));
 				}
 			}
 
@@ -556,16 +545,16 @@ class AuthController extends Controller {
 		}
 
 		if($request->isMethod('POST')){
-			$this->validate($request, [
+			Validator::make($request->all(), [
 				'password'        => 'required|min:6',
 				'confirmPassword' => 'required|same:password'
 			], [
-				                'password.required'        => trans('auth.password_null'),
-				                'password.min'             => trans('auth.password_limit'),
-				                'confirmPassword.required' => trans('auth.password_null'),
-				                'confirmPassword.min'      => trans('auth.password_limit'),
-				                'confirmPassword.same'     => trans('auth.password_same'),
-			                ]);
+				'password.required'        => trans('auth.password_null'),
+				'password.min'             => trans('auth.password_limit'),
+				'confirmPassword.required' => trans('auth.password_null'),
+				'confirmPassword.min'      => trans('auth.password_limit'),
+				'confirmPassword.same'     => trans('auth.password_same'),
+			]);
 			$password = $request->input('password');
 			// 校验账号
 			$verify = Verify::type(1)->with('user')->whereToken($token)->first();
@@ -610,26 +599,26 @@ class AuthController extends Controller {
 	// 激活账号页
 	public function activeUser(Request $request) {
 		if($request->isMethod('POST')){
-			$this->validate($request, [
+			Validator::make($request->all(), [
 				'email' => 'required|email|exists:user,email'
 			], [
-				                'email.required' => trans('auth.email_null'),
-				                'email.email'    => trans('auth.email_legitimate'),
-				                'email.exists'   => trans('auth.email_notExist')
-			                ]);
+				'email.required' => trans('auth.email_null'),
+				'email.email'    => trans('auth.email_legitimate'),
+				'email.exists'   => trans('auth.email_notExist')
+			]);
 			$email = $request->input('email');
 
 			// 是否开启账号激活
 			if(self::$systemConfig['is_activate_account'] != 2){
 				return Redirect::back()->withInput()->withErrors(trans('auth.active_close',
-				                                                       ['email' => self::$systemConfig['webmaster_email']]));
+					['email' => self::$systemConfig['webmaster_email']]));
 			}
 
 			// 查找账号
 			$user = User::query()->whereEmail($email)->first();
 			if($user->status < 0){
 				return Redirect::back()->withErrors(trans('auth.login_ban',
-				                                          ['email' => self::$systemConfig['webmaster_email']]));
+					['email' => self::$systemConfig['webmaster_email']]));
 			}elseif($user->status > 0){
 				return Redirect::back()->withErrors(trans('auth.email_normal'));
 			}
@@ -640,7 +629,7 @@ class AuthController extends Controller {
 				$activeTimes = Cache::get('activeUser_'.md5($email));
 				if($activeTimes >= self::$systemConfig['active_times']){
 					return Redirect::back()->withErrors(trans('auth.active_limit',
-					                                          ['time' => self::$systemConfig['webmaster_email']]));
+						['time' => self::$systemConfig['webmaster_email']]));
 				}
 			}
 
@@ -723,10 +712,10 @@ class AuthController extends Controller {
 		$validator = Validator::make($request->all(), [
 			'email' => 'required|email|unique:user'
 		], [
-			                             'email.required' => trans('auth.email_null'),
-			                             'email.email'    => trans('auth.email_legitimate'),
-			                             'email.unique'   => trans('auth.email_exist')
-		                             ]);
+			'email.required' => trans('auth.email_null'),
+			'email.email'    => trans('auth.email_legitimate'),
+			'email.unique'   => trans('auth.email_exist')
+		]);
 
 		$email = $request->input('email');
 

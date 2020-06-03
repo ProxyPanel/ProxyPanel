@@ -4,12 +4,11 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\PushNotification;
-use App\Http\Models\Invite;
-use App\Http\Models\Order;
-use App\Http\Models\Ticket;
-use App\Http\Models\User;
-use App\Http\Models\UserBanLog;
-use App\Http\Models\UserLabel;
+use App\Models\Invite;
+use App\Models\Order;
+use App\Models\Ticket;
+use App\Models\User;
+use App\Models\UserBanLog;
 use Illuminate\Console\Command;
 use Log;
 
@@ -53,14 +52,14 @@ class DailyJob extends Command {
 		foreach($userList as $user){
 			if(self::$systemConfig['is_ban_status']){
 				User::query()->whereId($user->id)->update([
-					                                          'u'               => 0,
-					                                          'd'               => 0,
-					                                          'transfer_enable' => 0,
-					                                          'enable'          => 0,
-					                                          'reset_time'      => null,
-					                                          'ban_time'        => 0,
-					                                          'status'          => -1
-				                                          ]);
+					'u'               => 0,
+					'd'               => 0,
+					'transfer_enable' => 0,
+					'enable'          => 0,
+					'reset_time'      => null,
+					'ban_time'        => 0,
+					'status'          => -1
+				]);
 
 				$this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
 
@@ -71,37 +70,34 @@ class DailyJob extends Command {
 				Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
 			}else{
 				User::query()->whereId($user->id)->update([
-					                                          'u'               => 0,
-					                                          'd'               => 0,
-					                                          'transfer_enable' => 0,
-					                                          'enable'          => 0,
-					                                          'reset_time'      => null,
-					                                          'ban_time'        => 0
-				                                          ]);
+					'u'               => 0,
+					'd'               => 0,
+					'transfer_enable' => 0,
+					'enable'          => 0,
+					'reset_time'      => null,
+					'ban_time'        => 0
+				]);
 
 				$this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
 
 				// 写入用户流量变动记录
 				Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
 			}
-
-			// 移除标签
-			UserLabel::query()->whereUserId($user->id)->delete();
 		}
 	}
 
 	/**
 	 * 添加用户封禁日志
 	 *
-	 * @param  int     $userId   用户ID
-	 * @param  int     $minutes  封禁时长，单位分钟
-	 * @param  string  $desc     封禁理由
+	 * @param  int     $userId       用户ID
+	 * @param  int     $minutes      封禁时长，单位分钟
+	 * @param  string  $description  封禁理由
 	 */
-	private function addUserBanLog($userId, $minutes, $desc) {
+	private function addUserBanLog($userId, $minutes, $description) {
 		$log = new UserBanLog();
 		$log->user_id = $userId;
 		$log->minutes = $minutes;
-		$log->desc = $desc;
+		$log->description = $description;
 		$log->save();
 	}
 
@@ -167,15 +163,15 @@ class DailyJob extends Command {
 			// 可用流量 变动日志
 			if($user->transfer_enable != $order->goods->traffic * 1048576){
 				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable,
-				                                 $order->goods->traffic * 1048576, '【流量重置】重置可用流量');
+					$order->goods->traffic * 1048576, '【流量重置】重置可用流量');
 			}
 			// 重置流量
 			User::query()->whereId($user->id)->update([
-				                                          'u'               => 0,
-				                                          'd'               => 0,
-				                                          'transfer_enable' => $order->goods->traffic * 1048576,
-				                                          'reset_time'      => $nextResetTime
-			                                          ]);
+				'u'               => 0,
+				'd'               => 0,
+				'transfer_enable' => $order->goods->traffic * 1048576,
+				'reset_time'      => $nextResetTime
+			]);
 			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic * 1048576).'. 重置日期为 '.($nextResetTime?: '【无】'));
 		}
 	}

@@ -4,10 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Models\SsNode;
-use App\Http\Models\User;
-use App\Http\Models\UserLabel;
-use App\Http\Models\UserSubscribe;
+use App\Models\SsNode;
+use App\Models\User;
+use App\Models\UserSubscribe;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -26,7 +25,7 @@ class SubscribeController extends Controller {
 		}
 
 		// 校验合法性
-		$subscribe = UserSubscribe::query()->with('user')->whereStatus(1)->whereCode($code)->first();
+		$subscribe = UserSubscribe::query()->with('user')->whereCode($code)->whereStatus(1)->first();
 		if(!$subscribe){
 			exit($this->noneNode());
 		}
@@ -43,28 +42,14 @@ class SubscribeController extends Controller {
 		$this->log($subscribe->id, getClientIp(), $request->headers);
 
 		// 获取这个账号可用节点
-		$userLabelIds = UserLabel::query()->whereUserId($user->id)->pluck('label_id');
-		if(empty($userLabelIds)){
-			exit($this->noneNode());
-		}
-
-		$query = SsNode::query()
-		               ->selectRaw('ss_node.*')
-		               ->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id");
+		$query = SsNode::query()->whereStatus(1)->whereIsSubscribe(1)->where('level', '<=', $user->level);
 
 		// 启用混合订阅时，加入V2Ray节点，未启用时仅下发SSR节点信息
 		if(!self::$systemConfig['mix_subscribe']){
-			$query->where('ss_node.type', 1);
+			$query->whereType(1);
 		}
 
-		$nodeList = $query->where('ss_node.status', 1)
-		                  ->where('ss_node.is_subscribe', 1)
-		                  ->whereIn('ss_node_label.label_id', $userLabelIds)
-		                  ->groupBy('ss_node.id')
-		                  ->orderBy('ss_node.sort', 'desc')
-		                  ->orderBy('ss_node.id', 'asc')
-		                  ->get()
-		                  ->toArray();
+		$nodeList = $query->orderByDesc('sort')->orderBy('id')->get()->toArray();
 		if(empty($nodeList)){
 			exit($this->noneNode());
 		}

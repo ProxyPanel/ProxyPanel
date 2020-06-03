@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,8 +22,8 @@ class userTrafficWarning extends Mailable implements ShouldQueue {
 
 	public function build() {
 		return $this->view('emails.userTrafficWarning')->subject('流量警告')->with([
-			                                                                       'usedPercent' => $this->usedPercent
-		                                                                       ]);
+			'usedPercent' => $this->usedPercent
+		]);
 	}
 
 	// 发件失败处理

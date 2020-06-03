@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Components\Helpers;
 use App\Components\PushNotification;
 use App\Http\Controllers\Controller;
-use App\Http\Models\Ticket;
-use App\Http\Models\TicketReply;
 use App\Mail\closeTicket;
 use App\Mail\replyTicket;
+use App\Models\Ticket;
+use App\Models\TicketReply;
 use Auth;
 use Illuminate\Http\Request;
 use Mail;
@@ -40,7 +40,7 @@ class TicketController extends Controller {
 			});
 		}
 
-		$view['ticketList'] = $query->orderBy('id', 'desc')->paginate(10)->appends($request->except('page'));
+		$view['ticketList'] = $query->orderByDesc('id')->paginate(10)->appends($request->except('page'));
 
 		return Response::view('admin.ticket.ticketList', $view);
 	}
@@ -56,7 +56,7 @@ class TicketController extends Controller {
 
 			$obj = new TicketReply();
 			$obj->ticket_id = $id;
-			$obj->user_id = Auth::user()->id;
+			$obj->user_id = Auth::id();
 			$obj->content = $content;
 			$obj->save();
 
@@ -66,26 +66,22 @@ class TicketController extends Controller {
 				$ticket->status = 1;
 				$ticket->save();
 
-
 				$title = "工单回复提醒";
 				$content = "标题：".$ticket->title."<br>管理员回复：".$content;
 
 				// 发通知邮件
-				if(!Auth::user()->is_admin){
+				if(!Auth::getUser()->is_admin){
 					if(self::$systemConfig['webmaster_email']){
 						$logId = Helpers::addNotificationLog($title, $content, 1,
-						                                     self::$systemConfig['webmaster_email']);
+							self::$systemConfig['webmaster_email']);
 						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title,
-						                                                                       $content));
+							$content));
 					}
+					// 推送通知管理员
+					PushNotification::send($title, $content);
 				}else{
 					$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
 					Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
-				}
-
-				// 推送通知管理员
-				if(!Auth::user()->is_admin){
-					PushNotification::send($title, $content);
 				}
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
@@ -94,7 +90,7 @@ class TicketController extends Controller {
 			}
 		}else{
 			$view['ticket'] = Ticket::query()->whereId($id)->with('user')->first();
-			$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->orderBy('id', 'asc')->get();
+			$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->orderBy('id')->get();
 
 			return Response::view('admin.ticket.replyTicket', $view);
 		}

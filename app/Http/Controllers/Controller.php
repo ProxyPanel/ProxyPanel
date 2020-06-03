@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
-use App\Http\Models\SensitiveWords;
-use App\Http\Models\SsGroup;
-use App\Http\Models\SsNode;
-use App\Http\Models\User;
-use App\Http\Models\UserSubscribeLog;
+use App\Models\SensitiveWords;
+use App\Models\SsNode;
+use App\Models\User;
+use App\Models\UserSubscribeLog;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -22,8 +20,8 @@ class Controller extends BaseController {
 		return makeRandStr();
 	}
 
-	// 生成VmessId
-	public function makeVmessId() {
+	// 生成UUID
+	public function makeUUID() {
 		return createGuid();
 	}
 
@@ -47,7 +45,6 @@ class Controller extends BaseController {
 			try{
 				fseek($fp, -$pos, SEEK_END);
 			}catch(Exception $e){
-				fseek(0);
 				break;
 			}
 
@@ -103,7 +100,7 @@ class Controller extends BaseController {
 
 			$fileName = makeRandStr(18, true).".{$type}";
 			if(file_put_contents(public_path($path.$fileName),
-			                     base64_decode(str_replace($result[1], '', $base64_image_content)))){
+				base64_decode(str_replace($result[1], '', $base64_image_content)))){
 				chmod(public_path($path.$fileName), 0744);
 
 				return $path.$fileName;
@@ -129,58 +126,63 @@ class Controller extends BaseController {
 		$node = SsNode::whereId($nodeId)->first();
 		$scheme = null;
 		// 获取分组名称
-		$group = SsGroup::query()->whereId($node->group_id)->first();
+		$group = $node->getLevel()->first()->name;
 		$host = $node->server?: $node->ip;
-
-		if($node->type == 1){
-			$group = $group? $group->name : Helpers::systemConfig()['website_name'];
-			$obfs_param = $user->obfs_param?: $node->obfs_param;
-			if($node->single){
-				$port = $node->port;
-				$protocol = $node->protocol;
-				$method = $node->method;
-				$obfs = $node->obfs;
-				$passwd = $node->passwd;
-				$protocol_param = $user->port.':'.$user->passwd;
-			}else{
-				$port = $user->port;
-				$protocol = $user->protocol;
-				$method = $user->method;
-				$obfs = $user->obfs;
-				$passwd = $user->passwd;
-				$protocol_param = $user->protocol_param;
-			}
-			if($infoType != 1){
-				// 生成ss/ssr scheme
-				if($node->compatible){
-					$data = 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
+		$data = null;
+		switch($node->type){
+			case 1:
+				if($node->single){
+					$port = $node->port;
+					$protocol = $node->protocol;
+					$method = $node->method;
+					$obfs = $node->obfs;
+					$passwd = $node->passwd;
+					$protocol_param = $user->port.':'.$user->passwd;
 				}else{
-					$data = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
+					$port = $user->port;
+					$protocol = $user->protocol;
+					$method = $user->method;
+					$obfs = $user->obfs;
+					$passwd = $user->passwd;
+					$protocol_param = $node->protocol_param;
 				}
-			}else{
-				// 生成文本配置信息
-				$data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6?: '').PHP_EOL."远程端口：".$port.PHP_EOL."密码：".$passwd.PHP_EOL."加密方法：".$method.PHP_EOL."路由：绕过局域网及中国大陆地址".PHP_EOL."协议：".$protocol.PHP_EOL."协议参数：".$protocol_param.PHP_EOL."混淆方式：".$obfs.PHP_EOL."混淆参数：".$obfs_param.PHP_EOL."本地端口：1080".PHP_EOL;
-			}
-		}else{
-			// 生成v2ray scheme
-			if($infoType != 1){
+
+				if($infoType != 1){
+					// 生成ss/ssr scheme
+					if($node->compatible){
+						$data = 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
+					}else{
+						$data = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($node->obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.$group.'&udpport=0&uot=0');
+					}
+				}else{
+					// 生成文本配置信息
+					$data = "服务器：".$host.PHP_EOL."IPv6：".$node->ipv6.PHP_EOL."服务器端口：".$port.PHP_EOL."密码：".$passwd.PHP_EOL."加密：".$method.PHP_EOL.($node->compatible? '' : "协议：".$protocol.PHP_EOL."协议参数：".$protocol_param.PHP_EOL."混淆：".$obfs.PHP_EOL."混淆参数：".$node->obfs_param.PHP_EOL);
+				}
+				break;
+			case 2:
 				// 生成v2ray scheme
-				$data = 'vmess://'.base64_encode(json_encode([
-					                                             "v"    => "2",
-					                                             "ps"   => $node->name,
-					                                             "add"  => $host,
-					                                             "port" => $node->v2_port,
-					                                             "id"   => $user->vmess_id,
-					                                             "aid"  => $node->v2_alter_id,
-					                                             "net"  => $node->v2_net,
-					                                             "type" => $node->v2_type,
-					                                             "host" => $node->v2_host,
-					                                             "path" => $node->v2_path,
-					                                             "tls"  => $node->v2_tls? "tls" : ""
-				                                             ], JSON_PRETTY_PRINT));
-			}else{
-				$data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6?: "").PHP_EOL."端口：".$node->v2_port.PHP_EOL."加密方式：".$node->v2_method.PHP_EOL."用户ID：".$user->vmess_id.PHP_EOL."额外ID：".$node->v2_alter_id.PHP_EOL."传输协议：".$node->v2_net.PHP_EOL."伪装类型：".$node->v2_type.PHP_EOL."伪装域名：".($node->v2_host?: "").PHP_EOL."路径：".($node->v2_path?: "").PHP_EOL."TLS：".($node->v2_tls? "tls" : "").PHP_EOL;
-			}
+				if($infoType != 1){
+					// 生成v2ray scheme
+					$data = 'vmess://'.base64_encode(json_encode([
+							"v"    => "2",
+							"ps"   => $node->name,
+							"add"  => $host,
+							"port" => $node->v2_port,
+							"id"   => $user->uuid,
+							"aid"  => $node->v2_alter_id,
+							"net"  => $node->v2_net,
+							"type" => $node->v2_type,
+							"host" => $node->v2_host,
+							"path" => $node->v2_path,
+							"tls"  => $node->v2_tls? "tls" : ""
+						], JSON_PRETTY_PRINT));
+				}else{
+					$data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6?: "").PHP_EOL."端口：".$node->v2_port.PHP_EOL."加密方式：".$node->v2_method.PHP_EOL."用户ID：".$user->uuid.PHP_EOL."额外ID：".$node->v2_alter_id.PHP_EOL."传输协议：".$node->v2_net.PHP_EOL."伪装类型：".$node->v2_type.PHP_EOL."伪装域名：".($node->v2_host?: "").PHP_EOL."路径：".($node->v2_path?: "").PHP_EOL."TLS：".($node->v2_tls? "tls" : "").PHP_EOL;
+				}
+				break;
+			case 3:
+				break;
+			default:
 		}
 
 		return $data;

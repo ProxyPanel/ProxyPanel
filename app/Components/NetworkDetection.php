@@ -85,5 +85,3 @@ class NetworkDetection {
 		return $ret['data']; // 服务器宕机
 	}
 }
-
-?>

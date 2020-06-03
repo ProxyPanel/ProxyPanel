@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,8 +22,8 @@ class sendVerifyCode extends Mailable implements ShouldQueue {
 
 	public function build() {
 		return $this->view('emails.sendVerifyCode')->subject('发送注册验证码')->with([
-			                                                                      'code' => $this->code
-		                                                                      ]);
+			'code' => $this->code
+		]);
 	}
 
 	// 发件失败处理

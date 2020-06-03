@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,9 +24,9 @@ class replyTicket extends Mailable implements ShouldQueue {
 
 	public function build() {
 		return $this->view('emails.replyTicket')->subject('工单回复提醒')->with([
-			                                                                  'title'   => $this->title,
-			                                                                  'content' => $this->content
-		                                                                  ]);
+			'title'   => $this->title,
+			'content' => $this->content
+		]);
 	}
 
 	// 发件失败处理

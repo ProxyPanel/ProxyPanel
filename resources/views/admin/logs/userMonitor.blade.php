@@ -1,34 +1,34 @@
 @extends('admin.layouts')
 @section('content')
-    <div class="page-content container-fluid">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">用户流量</h2>
-            </div>
-            <div class="alert alert-info alert-dismissible">
-                <button class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
-                </button>
-                <h4 class="block">{{$email}}</h4>
-                <strong>提示：</strong> 月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日和每日0时因为没有统计流量，不显示流量)
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <canvas id="dailyChart" aria-label="小时流量图" role="img"></canvas>
-                    </div>
-                    <div class="col-md-6">
-                        <canvas id="monthlyChart" aria-label="月流量图" role="img"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="page-content container-fluid">
+		<div class="panel">
+			<div class="panel-heading">
+				<h2 class="panel-title">用户流量</h2>
+			</div>
+			<div class="alert alert-info alert-dismissible">
+				<button class="close" data-dismiss="alert" aria-label="Close"><span
+							aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
+				</button>
+				<h4 class="block">{{$email}}</h4>
+				<strong>提示：</strong> 月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日和每日0时因为没有统计流量，不显示流量)
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+						<canvas id="dailyChart" aria-label="小时流量图" role="img"></canvas>
+					</div>
+					<div class="col-md-6">
+						<canvas id="monthlyChart" aria-label="月流量图" role="img"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('script')
-    <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
 
-    <script type="text/javascript">
+	<script type="text/javascript">
 		const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
 			type: 'line',
 			data: {
@@ -122,5 +122,5 @@
 				}
 			}
 		});
-    </script>
+	</script>
 @endsection

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Models\Order;
-use App\Http\Models\ReferralApply;
-use App\Http\Models\ReferralLog;
-use App\Http\Models\User;
+use App\Models\Order;
+use App\Models\ReferralApply;
+use App\Models\ReferralLog;
+use App\Models\User;
 use Auth;
 use Response;
 
@@ -22,26 +22,23 @@ class AffiliateController extends Controller {
 	public function referral() {
 		if(Order::uid()->whereStatus(2)->doesntExist() && ReferralLog::uid()->doesntExist()){
 			return Response::view('auth.error',
-			                      ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
+				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
 		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
 		$view['referral_percent'] = self::$systemConfig['referral_percent'];
 		$view['referral_money'] = self::$systemConfig['referral_money'];
 		$view['totalAmount'] = ReferralLog::uid()->sum('ref_amount') / 100;
 		$view['canAmount'] = ReferralLog::uid()->whereStatus(0)->sum('ref_amount') / 100;
-		$view['link'] = self::$systemConfig['website_url'].'/register?aff='.Auth::user()->id;
-		$view['referralLogList'] = ReferralLog::uid()
-		                                      ->with('user')
-		                                      ->orderBy('id', 'desc')
-		                                      ->paginate(10, ['*'], 'log_page');
+		$view['link'] = self::$systemConfig['website_url'].'/register?aff='.Auth::id();
+		$view['referralLogList'] = ReferralLog::uid()->with('user')->orderByDesc('id')->paginate(10, ['*'], 'log_page');
 		$view['referralApplyList'] = ReferralApply::uid()
 		                                          ->with('user')
-		                                          ->orderBy('id', 'desc')
+		                                          ->orderByDesc('id')
 		                                          ->paginate(10, ['*'], 'apply_page');
 		$view['referralUserList'] = User::query()
 		                                ->select(['email', 'created_at'])
-		                                ->whereReferralUid(Auth::user()->id)
-		                                ->orderBy('id', 'desc')
+		                                ->whereReferralUid(Auth::id())
+		                                ->orderByDesc('id')
 		                                ->paginate(10, ['*'], 'user_page');
 
 		return Response::view('user.referral', $view);
@@ -50,7 +47,7 @@ class AffiliateController extends Controller {
 	// 申请提现
 	public function extractMoney() {
 		// 判断账户是否过期
-		if(Auth::user()->expire_time < date('Y-m-d')){
+		if(Auth::getUser()->expire_time < date('Y-m-d')){
 			return Response::json(['status' => 'fail', 'message' => '申请失败：账号已过期，请先购买服务吧']);
 		}
 
@@ -65,9 +62,9 @@ class AffiliateController extends Controller {
 		$ref_amount /= 100;
 		if($ref_amount < self::$systemConfig['referral_money']){
 			return Response::json([
-				                      'status'  => 'fail',
-				                      'message' => '申请失败：满'.self::$systemConfig['referral_money'].'元才可以提现，继续努力吧'
-			                      ]);
+				'status'  => 'fail',
+				'message' => '申请失败：满'.self::$systemConfig['referral_money'].'元才可以提现，继续努力吧'
+			]);
 		}
 
 		// 取出本次申请关联返利日志ID
@@ -79,7 +76,7 @@ class AffiliateController extends Controller {
 		$link_logs = rtrim($link_logs, ',');
 
 		$obj = new ReferralApply();
-		$obj->user_id = Auth::user()->id;
+		$obj->user_id = Auth::id();
 		$obj->before = $ref_amount;
 		$obj->after = 0;
 		$obj->amount = $ref_amount;

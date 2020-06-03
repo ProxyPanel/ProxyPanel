@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Components\Helpers;
 use App\Components\NetworkDetection;
 use App\Components\PushNotification;
-use App\Http\Models\SsNode;
 use App\Mail\nodeCrashWarning;
+use App\Models\SsNode;
 use Cache;
 use Illuminate\Console\Command;
 use Log;
@@ -42,13 +42,13 @@ class NodeBlockedDetection extends Command {
 
 	// 监测节点状态
 	private function checkNodes() {
-		$nodeList = SsNode::query()->whereIsTransit(0)->whereStatus(1)->where('detectionType', '>', 0)->get();
+		$nodeList = SsNode::query()->whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get();
 		$sendText = false;
 		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
 		$additionalMessage = '';
 		foreach($nodeList as $node){
 			$info = false;
-			if($node->detectionType == 0){
+			if($node->detection_type == 0){
 				continue;
 			}
 			// 使用DDNS的node先通过gethostbyname获取ipv4地址
@@ -61,7 +61,7 @@ class NodeBlockedDetection extends Command {
 					$this->notifyMaster("{$node->name}动态IP获取失败", "节点 {$node->name} ： IP获取失败 ");
 				}
 			}
-			if($node->detectionType != 1){
+			if($node->detection_type != 1){
 				$icmpCheck = NetworkDetection::networkCheck($node->ip, true);
 				if($icmpCheck != false && $icmpCheck != "通讯正常"){
 					$message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
@@ -69,7 +69,7 @@ class NodeBlockedDetection extends Command {
 					$info = true;
 				}
 			}
-			if($node->detectionType != 2){
+			if($node->detection_type != 2){
 				$tcpCheck = NetworkDetection::networkCheck($node->ip, false, $node->single? $node->port : null);
 				if($tcpCheck != false && $tcpCheck != "通讯正常"){
 					$message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";

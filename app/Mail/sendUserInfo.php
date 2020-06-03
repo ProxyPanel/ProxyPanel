@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,8 +22,8 @@ class sendUserInfo extends Mailable implements ShouldQueue {
 
 	public function build() {
 		return $this->view('emails.sendUserInfo')->subject('发送账号信息')->with([
-			                                                                   'content' => $this->content
-		                                                                   ]);
+			'content' => $this->content
+		]);
 	}
 
 	// 发件失败处理

@@ -2,24 +2,40 @@
 
 namespace App\Components;
 
-use App\Http\Models\Config;
-use App\Http\Models\CouponLog;
-use App\Http\Models\Level;
-use App\Http\Models\NotificationLog;
-use App\Http\Models\SsConfig;
-use App\Http\Models\User;
-use App\Http\Models\UserBalanceLog;
-use App\Http\Models\UserSubscribe;
-use App\Http\Models\UserTrafficModifyLog;
+use App\Models\Config;
+use App\Models\CouponLog;
+use App\Models\NotificationLog;
+use App\Models\SsConfig;
+use App\Models\User;
+use App\Models\UserCreditLog;
+use App\Models\UserSubscribe;
+use App\Models\UserTrafficModifyLog;
 
 class Helpers {
 	// 不生成的端口
 	private static $denyPorts = [
-		1068, 1109, 1434, 3127, 3128,
-		3129, 3130, 3332, 4444, 5554,
-		6669, 8080, 8081, 8082, 8181,
-		8282, 9996, 17185, 24554, 35601,
-		60177, 60179
+		1068,
+		1109,
+		1434,
+		3127,
+		3128,
+		3129,
+		3130,
+		3332,
+		4444,
+		5554,
+		6669,
+		8080,
+		8081,
+		8082,
+		8181,
+		8282,
+		9996,
+		17185,
+		24554,
+		35601,
+		60177,
+		60179
 	];
 
 	// 加密方式
@@ -35,11 +51,6 @@ class Helpers {
 	// 混淆
 	public static function obfsList() {
 		return SsConfig::type(3)->get();
-	}
-
-	// 等级
-	public static function levelList() {
-		return Level::query()->get()->sortBy('level');
 	}
 
 	// 生成用户的订阅码
@@ -71,14 +82,11 @@ class Helpers {
 		// 生成一个可用端口
 		$user->port = self::systemConfig()['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
 		$user->passwd = makeRandStr();
-		$user->vmess_id = createGuid();
+		$user->uuid = createGuid();
 		$user->enable = 1;
 		$user->method = Helpers::getDefaultMethod();
 		$user->protocol = Helpers::getDefaultProtocol();
-		$user->protocol_param = '';
 		$user->obfs = Helpers::getDefaultObfs();
-		$user->obfs_param = '';
-		$user->usage = 1;
 		$user->transfer_enable = $transfer_enable;
 		$user->enable_time = date('Y-m-d');
 		$user->expire_time = date('Y-m-d', strtotime("+".$data." days"));
@@ -179,19 +187,19 @@ class Helpers {
 	/**
 	 * 添加优惠券操作日志
 	 *
-	 * @param  int     $couponId  优惠券ID
-	 * @param  int     $goodsId   商品ID
-	 * @param  int     $orderId   订单ID
-	 * @param  string  $desc      备注
+	 * @param  int     $couponId     优惠券ID
+	 * @param  int     $goodsId      商品ID
+	 * @param  int     $orderId      订单ID
+	 * @param  string  $description  备注
 	 *
 	 * @return int
 	 */
-	public static function addCouponLog($couponId, $goodsId, $orderId, $desc = '') {
+	public static function addCouponLog($couponId, $goodsId, $orderId, $description = '') {
 		$log = new CouponLog();
 		$log->coupon_id = $couponId;
 		$log->goods_id = $goodsId;
 		$log->order_id = $orderId;
-		$log->desc = $desc;
+		$log->description = $description;
 
 		return $log->save();
 	}
@@ -199,23 +207,23 @@ class Helpers {
 	/**
 	 * 记录余额操作日志
 	 *
-	 * @param  int     $userId  用户ID
-	 * @param  string  $oid     订单ID
-	 * @param  int     $before  记录前余额
-	 * @param  int     $after   记录后余额
-	 * @param  int     $amount  发生金额
-	 * @param  string  $desc    描述
+	 * @param  int     $userId       用户ID
+	 * @param  string  $oid          订单ID
+	 * @param  int     $before       记录前余额
+	 * @param  int     $after        记录后余额
+	 * @param  int     $amount       发生金额
+	 * @param  string  $description  描述
 	 *
 	 * @return int
 	 */
-	public static function addUserBalanceLog($userId, $oid, $before, $after, $amount, $desc = '') {
-		$log = new UserBalanceLog();
+	public static function addUserCreditLog($userId, $oid, $before, $after, $amount, $description = '') {
+		$log = new UserCreditLog();
 		$log->user_id = $userId;
 		$log->order_id = $oid;
 		$log->before = $before;
 		$log->after = $after;
 		$log->amount = $amount;
-		$log->desc = $desc;
+		$log->description = $description;
 		$log->created_at = date('Y-m-d H:i:s');
 
 		return $log->save();
@@ -224,21 +232,21 @@ class Helpers {
 	/**
 	 * 记录流量变动日志
 	 *
-	 * @param  int     $userId  用户ID
-	 * @param  string  $oid     订单ID
-	 * @param  int     $before  记录前的值
-	 * @param  int     $after   记录后的值
-	 * @param  string  $desc    描述
+	 * @param  int     $userId       用户ID
+	 * @param  string  $oid          订单ID
+	 * @param  int     $before       记录前的值
+	 * @param  int     $after        记录后的值
+	 * @param  string  $description  描述
 	 *
 	 * @return int
 	 */
-	public static function addUserTrafficModifyLog($userId, $oid, $before, $after, $desc = '') {
+	public static function addUserTrafficModifyLog($userId, $oid, $before, $after, $description = '') {
 		$log = new UserTrafficModifyLog();
 		$log->user_id = $userId;
 		$log->order_id = $oid;
 		$log->before = $before;
 		$log->after = $after;
-		$log->desc = $desc;
+		$log->description = $description;
 
 		return $log->save();
 	}

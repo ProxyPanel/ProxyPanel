@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,10 +21,8 @@ class nodeCrashWarning extends Mailable implements ShouldQueue {
 	public function build() {
 
 		return $this->view('emails.nodeCrashWarning')->subject('节点阻断警告')->with([
-			                                                                       'content' => NotificationLog::query()
-			                                                                                                   ->whereId($this->id)
-			                                                                                                   ->first()->content
-		                                                                       ]);
+			'content' => NotificationLog::query()->whereId($this->id)->first()->content
+		]);
 	}
 
 	// 发件失败处理

@@ -68,7 +68,7 @@
 	})();
 </script>
 <style type="text/css">
-    .hide {
-        display: none;
-    }
+	.hide {
+		display: none;
+	}
 </style>

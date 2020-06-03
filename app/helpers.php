@@ -208,10 +208,7 @@ if(!function_exists('createGuid')){
 		$charid = strtoupper(md5(uniqid(rand(), true)));
 		$hyphen = chr(45);
 		$uuid = substr($charid, 0, 8).$hyphen.substr($charid, 8, 4).$hyphen.substr($charid, 12,
-		                                                                           4).$hyphen.substr($charid, 16,
-		                                                                                             4).$hyphen.substr($charid,
-		                                                                                                               20,
-		                                                                                                               12);
+				4).$hyphen.substr($charid, 16, 4).$hyphen.substr($charid, 20, 12);
 
 		return strtolower($uuid);
 	}
@@ -236,6 +233,6 @@ if(!function_exists('isMobile')){
 		}
 
 		return preg_match('#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#',
-		                  $mobile)? true : false;
+			$mobile)? true : false;
 	}
 }

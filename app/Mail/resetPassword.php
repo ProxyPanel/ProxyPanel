@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Http\Models\NotificationLog;
+use App\Models\NotificationLog;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,8 +22,8 @@ class resetPassword extends Mailable implements ShouldQueue {
 
 	public function build() {
 		return $this->view('emails.resetPassword')->subject('重置密码')->with([
-			                                                                  'resetPasswordUrl' => $this->resetPasswordUrl
-		                                                                  ]);
+			'resetPasswordUrl' => $this->resetPasswordUrl
+		]);
 	}
 
 	// 发件失败处理

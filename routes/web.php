@@ -14,7 +14,7 @@ Route::group(['middleware' => ['isForbidden', 'affiliate', 'isMaintenance']], fu
 	Route::post('sendCode', 'AuthController@sendCode'); // 发送注册验证码
 	Route::get('free', 'AuthController@free'); // 免费邀请码
 	Route::get('makePasswd', 'Controller@makePasswd'); // 生成密码
-	Route::get('makeVmessId', 'Controller@makeVmessId'); // 生成VmessId
+	Route::get('makeUUID', 'Controller@makeUUID'); // 生成UUID
 	Route::get('makeSecurityCode', 'Controller@makeSecurityCode'); // 生成网站安全码
 });
 Route::any('admin/login', 'AuthController@login')->middleware('isForbidden', 'isSecurity'); // 登录
@@ -39,11 +39,6 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::any('addArticle', 'AdminController@addArticle'); // 添加文章
 		Route::any('editArticle', 'AdminController@editArticle'); // 编辑文章
 		Route::post('delArticle', 'AdminController@delArticle'); // 删除文章
-		Route::get('groupList', 'AdminController@groupList'); // 分组列表
-		Route::any('addGroup', 'AdminController@addGroup'); // 添加分组
-		Route::any('editGroup/{id}', 'AdminController@editGroup'); // 编辑分组
-		Route::post('delGroup/{id}', 'AdminController@delGroup'); // 删除分组
-		Route::get('labelList', 'AdminController@labelList'); // 标签列表
 		Route::any('addLabel', 'AdminController@addLabel'); // 添加标签
 		Route::any('editLabel', 'AdminController@editLabel'); // 编辑标签
 		Route::post('delLabel', 'AdminController@delLabel'); // 删除标签
@@ -64,22 +59,17 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::get('system', 'AdminController@system'); // 系统设置
 		Route::post('setExtend', 'AdminController@setExtend'); // 设置客服、统计代码
 		Route::post('setConfig', 'AdminController@setConfig'); // 设置某个配置项
-		Route::get('userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动记录
+		Route::get('userCreditLogList', 'AdminController@userCreditLogList'); // 余额变动记录
 		Route::get('userTrafficLogList', 'AdminController@userTrafficLogList'); // 流量变动记录
 		Route::get('userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
 		Route::get('userOnlineIPList', 'AdminController@userOnlineIPList'); // 用户在线IP记录
 		Route::any('export/{id}', 'AdminController@export'); // 导出(查看)配置信息
 		Route::get('userMonitor/{id}', 'AdminController@userMonitor'); // 用户流量监控
 		Route::post('resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
-		Route::post('handleUserBalance', 'AdminController@handleUserBalance'); // 用户余额充值
+		Route::post('handleUserCredit', 'AdminController@handleUserCredit'); // 用户余额充值
 		Route::post("switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
 		Route::get("onlineIPMonitor", "AdminController@onlineIPMonitor"); // 在线IP监控
-		Route::any("decompile", "AdminController@decompile"); // SS(R)链接反解析
-		Route::get('download', 'AdminController@download'); // 下载转换过的JSON配置
-		Route::any('convert', 'AdminController@convert'); // 格式转换
-		Route::any('import', 'AdminController@import'); // 数据导入
 		Route::get('trafficLog', 'AdminController@trafficLog'); // 流量日志
-		Route::get('analysis', 'AdminController@analysis'); // 日志分析
 		Route::get('notificationLog', 'AdminController@notificationLog'); // 邮件发送日志
 		Route::post('sendTestNotification', 'AdminController@sendTestNotification'); //推送通知测试
 		Route::any('profile', 'AdminController@profile'); // 修改个人信息
@@ -118,9 +108,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::group(['prefix' => 'subscribe'], function() {
 			Route::get('subscribeList', 'SubscribeController@subscribeList'); // 订阅码列表
 			Route::get('subscribeLog', 'SubscribeController@subscribeLog'); // 订阅码记录
-			Route::get('deviceList', 'SubscribeController@deviceList'); // 订阅设备列表
 			Route::post('setSubscribeStatus', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
-			Route::post('setDeviceStatus', 'SubscribeController@setDeviceStatus'); // 是否允许设备订阅
 		});
 
 		Route::group(['prefix' => 'marketing'], function() {
@@ -133,6 +121,30 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::get("list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
 			Route::post("add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
 			Route::post("del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
+		});
+
+		// 工具相关
+		Route::group(['prefix' => 'tools'], function() {
+			Route::any("decompile", "ToolsController@decompile"); // SS(R)链接反解析
+			Route::get('download', 'ToolsController@download'); // 下载转换过的JSON配置
+			Route::any('convert', 'ToolsController@convert'); // 格式转换
+			Route::any('import', 'ToolsController@import'); // 数据导入
+			Route::get('analysis', 'ToolsController@analysis'); // 日志分析
+		});
+
+		// 节点审计规则相关
+		Route::group(['prefix' => 'rule'], function() {
+			Route::get('ruleList', 'RuleController@ruleList'); // 审计规则列表
+			Route::post('addRule', 'RuleController@addRule'); // 添加审计规则
+			Route::post('editRule', 'RuleController@editRule'); // 删除审计规则
+			Route::post('delRule/{id}', 'RuleController@delRule'); // 删除审计规则
+			Route::get('ruleGroupList', 'RuleController@ruleGroupList'); // 审计规则分组列表
+			Route::any('addRuleGroup', 'RuleController@addRuleGroup'); // 添加审计规则分组
+			Route::any('editRuleGroup', 'RuleController@editRuleGroup'); // 编辑审计规则分组
+			Route::post('delRuleGroup/{id}', 'RuleController@delRuleGroup'); // 删除审计规则分组
+			Route::any('assignNode', 'RuleController@assignNode'); // 规则分组关联节点
+			Route::get('ruleLogList', 'RuleController@ruleLogList'); // 用户触发审计规则日志
+			Route::post('clearLog', 'RuleController@clearLog'); // 清除所有审计触发日志
 		});
 	});
 
@@ -172,7 +184,7 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 	Route::group(['prefix' => 'payment'], function() {
 		Route::post('purchase', 'PaymentController@purchase'); // 创建支付
 		Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
-		Route::get('{sn}', 'PaymentController@detail'); // 支付单详情
+		Route::get('{trade_no}', 'PaymentController@detail'); // 支付单详情
 	});
 });
 
