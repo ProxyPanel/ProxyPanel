@@ -45,8 +45,8 @@ ALTER TABLE `ss_node`
     CHANGE `v2_tls` `v2_tls`                 BIT                  NOT NULL DEFAULT 0 COMMENT 'V2Ray连接TLS：0-未开启、1-开启',
     DROP `v2_insider_port`,
     DROP `v2_outsider_port`,
-    ADD `v2_tls_insecure`                    BIT                  NOT NULL DEFAULT 0 COMMENT '' 是否允许不安全连接 '' AFTER `v2_tls`,
-    ADD `v2_tls_insecure_ciphers`            BIT                  NOT NULL DEFAULT 0 COMMENT '' 是否允许不安全的加密方式 '' AFTER `v2_tls_insecure`;
+    ADD `v2_tls_insecure`                    BIT                  NOT NULL DEFAULT 0 COMMENT '是否允许不安全连接' AFTER `v2_tls`,
+    ADD `v2_tls_insecure_ciphers`            BIT                  NOT NULL DEFAULT 0 COMMENT '是否允许不安全的加密方式' AFTER `v2_tls_insecure`;
 
 DROP TABLE IF EXISTS `ss_node_deny`;
 
