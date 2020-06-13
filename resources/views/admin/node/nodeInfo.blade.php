@@ -160,10 +160,6 @@
 									<hr/>
 									<!-- SS/SSR 设置部分 -->
 									<div class="ssr-setting">
-											<div class="form-group row normal_port">
-												<label for="port" class="col-md-3 col-form-label">端口</label>
-												<input type="number" class="form-control col-md-4" name="port" id="port" value="443" required/>
-											</div>
 										<div class="form-group row">
 											<label for="method" class="col-md-3 col-form-label">加密方式</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
@@ -548,9 +544,7 @@
 				case 'single':
 					if (check) {
 						$(".single-setting").show();
-						$('.normal_port').hide()
 					} else {
-						$('.normal_port').show()
 						$(".single-setting").hide();
 					}
 					break;

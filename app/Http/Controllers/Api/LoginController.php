@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SsNode;
 use App\Models\User;
 use App\Models\UserSubscribe;
+use App\Models\UserSubscribeLog;
 use Cache;
 use DB;
 use Exception;
@@ -67,7 +68,7 @@ class LoginController extends Controller {
 			$subscribe->increment('times', 1);
 
 			// 记录每次请求
-			$this->log($subscribe->id, getClientIp(), 'API访问');
+			$this->subscribeLog($subscribe->id, getClientIp(), 'API访问');
 
 			// 订阅链接
 			$url = self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url'];
@@ -120,5 +121,15 @@ class LoginController extends Controller {
 
 			return Response::json(['status' => 'success', 'data' => [], 'message' => '登录失败']);
 		}
+	}
+
+	// 写入订阅访问日志
+	private function subscribeLog($subscribeId, $ip, $headers) {
+		$log = new UserSubscribeLog();
+		$log->sid = $subscribeId;
+		$log->request_ip = $ip;
+		$log->request_time = date('Y-m-d H:i:s');
+		$log->request_header = $headers;
+		$log->save();
 	}
 }

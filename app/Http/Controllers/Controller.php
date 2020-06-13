@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\SensitiveWords;
 use App\Models\SsNode;
 use App\Models\User;
-use App\Models\UserSubscribeLog;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -152,7 +151,7 @@ class Controller extends BaseController {
 					if($node->compatible){
 						$data = 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
 					}else{
-						$data = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($node->obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.$group.'&udpport=0&uot=0');
+						$data = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($node->obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
 					}
 				}else{
 					// 生成文本配置信息
@@ -163,7 +162,7 @@ class Controller extends BaseController {
 				// 生成v2ray scheme
 				if($infoType != 1){
 					// 生成v2ray scheme
-					$data = 'vmess://'.base64_encode(json_encode([
+					$data = 'vmess://'.base64url_encode(json_encode([
 							"v"    => "2",
 							"ps"   => $node->name,
 							"add"  => $host,
@@ -186,15 +185,5 @@ class Controller extends BaseController {
 		}
 
 		return $data;
-	}
-
-	// 写入订阅访问日志
-	public function log($subscribeId, $ip, $headers) {
-		$log = new UserSubscribeLog();
-		$log->sid = $subscribeId;
-		$log->request_ip = $ip;
-		$log->request_time = date('Y-m-d H:i:s');
-		$log->request_header = $headers;
-		$log->save();
 	}
 }

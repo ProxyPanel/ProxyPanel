@@ -148,7 +148,7 @@ CREATE TABLE `user`
     `d`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
     `t`               INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '最后使用时间',
     `ip`              CHAR(128)                     DEFAULT NULL COMMENT '最后连接IP',
-    `enable`          TINYINT(4)           NOT NULL DEFAULT '1' COMMENT '代理状态',
+    `enable`          BIT                  NOT NULL DEFAULT 1 COMMENT '代理状态',
     `method`          VARCHAR(30)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
     `protocol`        VARCHAR(30)          NOT NULL DEFAULT 'origin' COMMENT '协议',
     `obfs`            VARCHAR(30)          NOT NULL DEFAULT 'plain' COMMENT '混淆',

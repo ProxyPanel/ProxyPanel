@@ -316,7 +316,7 @@ class UserController extends Controller {
 		})->first();
 		$renewCost = Goods::query()->whereId($temp->goods_id)->first()->renew;
 		if($user->credit < $renewCost){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '余额不足，请充值余额']);
+			return Response::json(['status' => 'fail', 'message' => '余额不足，请充值余额']);
 		}else{
 			User::uid()->update(['u' => 0, 'd' => 0]);
 
@@ -327,7 +327,7 @@ class UserController extends Controller {
 			Helpers::addUserCreditLog($user->id, '', $user->credit, $user->credit - $renewCost, -1 * $renewCost,
 				'用户自行重置流量');
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '重置成功']);
+			return Response::json(['status' => 'success', 'message' => '重置成功']);
 		}
 	}
 
@@ -353,14 +353,14 @@ class UserController extends Controller {
 		$oid = $request->input('oid');
 		$prepaidOrder = Order::query()->whereOid($oid)->first();
 		if(!$prepaidOrder){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '查无此单！']);
+			return Response::json(['status' => 'fail', 'message' => '查无此单！']);
 		}elseif($prepaidOrder->status != 3){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非预支付订单，无需再次启动！']);
+			return Response::json(['status' => 'fail', 'message' => '非预支付订单，无需再次启动！']);
 		}else{
 			(new ServiceController)->activePrepaidOrder($oid);
 		}
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '激活成功']);
+		return Response::json(['status' => 'success', 'message' => '激活成功']);
 	}
 
 	// 订单明细
@@ -377,7 +377,7 @@ class UserController extends Controller {
 		$content = str_replace("eval", "", str_replace("atob", "", $content));
 
 		if(empty($title) || empty($content)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '请输入标题和内容']);
+			return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
 		}
 
 		$obj = new Ticket();
@@ -399,9 +399,9 @@ class UserController extends Controller {
 
 			PushNotification::send($emailTitle, $content);
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+			return Response::json(['status' => 'success', 'message' => '提交成功']);
 		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '提交失败']);
+			return Response::json(['status' => 'fail', 'message' => '提交失败']);
 		}
 	}
 
@@ -417,11 +417,11 @@ class UserController extends Controller {
 			$content = substr($content, 0, 300);
 
 			if(empty($content)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复内容不能为空']);
+				return Response::json(['status' => 'fail', 'message' => '回复内容不能为空']);
 			}
 
 			if($ticket->status == 2){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '错误：该工单已关闭']);
+				return Response::json(['status' => 'fail', 'message' => '错误：该工单已关闭']);
 			}
 
 			$obj = new TicketReply();
@@ -446,9 +446,9 @@ class UserController extends Controller {
 
 				PushNotification::send($title, $content);
 
-				return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
+				return Response::json(['status' => 'success', 'message' => '回复成功']);
 			}else{
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
+				return Response::json(['status' => 'fail', 'message' => '回复失败']);
 			}
 		}else{
 			$view['ticket'] = $ticket;
@@ -466,9 +466,9 @@ class UserController extends Controller {
 		if($ret){
 			PushNotification::send('工单关闭提醒', '工单：ID'.$id.'用户已手动关闭');
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
+			return Response::json(['status' => 'success', 'message' => '关闭成功']);
 		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
+			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 		}
 	}
 
@@ -490,7 +490,7 @@ class UserController extends Controller {
 	// 生成邀请码
 	public function makeInvite() {
 		if(Auth::getUser()->invite_num <= 0){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '生成失败：已无邀请码生成名额']);
+			return Response::json(['status' => 'fail', 'message' => '生成失败：已无邀请码生成名额']);
 		}
 
 		$obj = new Invite();
@@ -503,7 +503,7 @@ class UserController extends Controller {
 
 		User::uid()->decrement('invite_num', 1);
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
+		return Response::json(['status' => 'success', 'message' => '生成成功']);
 	}
 
 	// 使用优惠券
@@ -568,7 +568,20 @@ class UserController extends Controller {
 
 	// 帮助中心
 	public function help() {
-		$view['articleList'] = Article::type(1)->orderByDesc('sort')->orderByDesc('id')->limit(10)->paginate(5);
+		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->orderByDesc('id')->limit(10)->paginate(5);
+		$data = [];
+		if(SsNode::query()->whereType(1)->whereStatus(1)->exists()){
+			$data[] = 'ss';
+			//array_push
+		}
+		if(SsNode::query()->whereType(2)->whereStatus(1)->exists()){
+			$data[] = 'v2';
+		}
+		if(SsNode::query()->whereType(3)->whereStatus(1)->exists()){
+			$data[] = 'trojan';
+		}
+
+		$view['sub'] = $data;
 
 		//付费用户判断
 		$view['not_paying_user'] = Order::uid()
@@ -605,27 +618,27 @@ class UserController extends Controller {
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '更换成功']);
+			return Response::json(['status' => 'success', 'message' => '更换成功']);
 		}catch(Exception $e){
 			DB::rollBack();
 
 			Log::info("更换订阅地址异常：".$e->getMessage());
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '更换失败'.$e->getMessage()]);
+			return Response::json(['status' => 'fail', 'message' => '更换失败'.$e->getMessage()]);
 		}
 	}
 
 	// 转换成管理员的身份
 	public function switchToAdmin() {
 		if(!Session::has('admin')){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
+			return Response::json(['status' => 'fail', 'message' => '非法请求']);
 		}
 
 		// 管理员信息重新写入user
 		Auth::loginUsingId(Session::get('admin'));
 		Session::forget('admin');
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
+		return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
 	}
 
 	// 卡券余额充值
@@ -663,12 +676,12 @@ class UserController extends Controller {
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
+			return Response::json(['status' => 'success', 'message' => '充值成功']);
 		}catch(Exception $e){
 			Log::error($e);
 			DB::rollBack();
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败']);
+			return Response::json(['status' => 'fail', 'message' => '充值失败']);
 		}
 	}
 }
