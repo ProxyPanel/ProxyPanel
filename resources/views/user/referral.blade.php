@@ -22,8 +22,7 @@
 						<div class="card-text form">
 							<div class="mt-clipboard-container input-group">
 								<input type="text" id="mt-target-1" class="form-control" value="{{$link}}"/>
-								<button class="btn btn-info mt-clipboard" data-clipboard-action="copy"
-										data-clipboard-text="{{$link}}">
+								<button class="btn btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}">
 									<i class="icon wb-copy"></i> {{trans('home.referral_button')}}
 								</button>
 							</div>

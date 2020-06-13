@@ -7,12 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Models\SsNode;
 use App\Models\User;
 use App\Models\UserSubscribe;
+use App\Models\UserSubscribeLog;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
 
 class SubscribeController extends Controller {
 	protected static $systemConfig;
+	private $subType;
 
 	function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
@@ -23,35 +25,51 @@ class SubscribeController extends Controller {
 		if(empty($code)){
 			return Redirect::to('login');
 		}
+		$this->subType = $request->input('type');
 
-		// 校验合法性
-		$subscribe = UserSubscribe::query()->with('user')->whereCode($code)->whereStatus(1)->first();
+		// 检查订阅码是否有效
+		$subscribe = UserSubscribe::query()->whereCode($code)->first();
 		if(!$subscribe){
-			exit($this->noneNode());
+			exit($this->infoGenerator('使用的订阅链接错误！请重新从官网获取！'));
+		}elseif($subscribe->status != 1){
+			exit($this->infoGenerator('您的订阅链接已被封禁，请前往官网查询原因！'));
 		}
 
-		$user = User::query()->whereIn('status', [0, 1])->whereEnable(1)->whereId($subscribe->user_id)->first();
+		// 检查用户是否有效
+		$user = User::query()->whereId($subscribe->user_id)->first();
 		if(!$user){
-			exit($this->noneNode());
+			exit($this->infoGenerator('错误订阅链接，账号不存在！请前往官网重新获取订阅链接'));
+		}elseif($user->status == -1){
+			exit($this->infoGenerator('您的账号已经被禁止使用，请重新注册'));
+		}elseif($user->enable != 1){
+			$unusedTransfer = $user->transfer_enable - $user->u - $user->d;
+			if($user->ban_time > 0){
+				exit($this->infoGenerator('您的账号处于封禁状态，请在'.date('Y-m-d H:i:s', $user->ban_time).'之后再更新！'));
+			}elseif($unusedTransfer <= 0){
+				exit($this->infoGenerator('账号流量耗尽！请前往官网购买或重置流量！'));
+			}elseif($user->expire_time < date('Y-m-d')){
+				exit($this->infoGenerator('账号过期！请前往官网购买！'));
+			}else{
+				exit($this->infoGenerator('账号存在问题，请前往官网查询！'));
+			}
 		}
 
 		// 更新访问次数
 		$subscribe->increment('times', 1);
 
 		// 记录每次请求
-		$this->log($subscribe->id, getClientIp(), $request->headers);
+		$this->subscribeLog($subscribe->id, getClientIp(), $request->headers);
 
 		// 获取这个账号可用节点
 		$query = SsNode::query()->whereStatus(1)->whereIsSubscribe(1)->where('level', '<=', $user->level);
 
-		// 启用混合订阅时，加入V2Ray节点，未启用时仅下发SSR节点信息
-		if(!self::$systemConfig['mix_subscribe']){
-			$query->whereType(1);
+		if($this->subType){
+			$query = $query->whereType($this->subType);
 		}
 
 		$nodeList = $query->orderByDesc('sort')->orderBy('id')->get()->toArray();
 		if(empty($nodeList)){
-			exit($this->noneNode());
+			exit($this->infoGenerator('无可用节点'));
 		}
 
 		// 打乱数组
@@ -63,7 +81,7 @@ class SubscribeController extends Controller {
 
 		// 展示到期时间和剩余流量
 		if(self::$systemConfig['is_custom_subscribe']){
-			$scheme .= $this->expireDate($user).$this->lastTraffic($user);
+			$scheme .= $this->infoGenerator('到期时间: '.($user->expire_time < date('Y-m-d')? '过期' : $user->expire_time)).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
 		}
 
 		// 控制客户端最多获取节点数
@@ -72,51 +90,62 @@ class SubscribeController extends Controller {
 			if(self::$systemConfig['subscribe_max'] && $key >= self::$systemConfig['subscribe_max']){
 				break;
 			}
+
 			$scheme .= $this->getNodeInfo($user->id, $node['id'], 0).PHP_EOL;
 		}
 
+		$headers = [
+			'Content-type'  => 'application/octet-stream; charset=utf-8',
+			'Cache-Control' => 'no-store, no-cache, must-revalidate',
+			//'Content-Disposition' => 'attachment; filename='.$filename
+		];
+
 		// 适配Quantumult的自定义订阅头
 		if(self::$systemConfig['is_custom_subscribe']){
-			$headers = [
-				'Content-type'          => 'application/octet-stream; charset=utf-8',
-				'Cache-Control'         => 'no-store, no-cache, must-revalidate',
-				'Subscription-Userinfo' => 'upload='.$user->u.'; download='.$user->d.'; total='.$user->transfer_enable.'; expire='.strtotime($user->expire_time)
-			];
-
-			return Response::make(base64url_encode($scheme), 200, $headers);
-		}else{
-			return Response::make(base64url_encode($scheme));
+			$headers['Subscription-Userinfo'] = 'upload='.$user->u.'; download='.$user->d.'; total='.$user->transfer_enable.'; expire='.strtotime($user->expire_time);
 		}
+
+		return Response::make(base64url_encode($scheme), 200, $headers);
 	}
 
-	// 抛出无可用的节点信息，用于兼容防止客户端订阅失败
-	private function noneNode() {
-		return base64url_encode('ssr://'.base64url_encode('0.0.0.0:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode('无可用节点或账号被封禁或订阅被封禁').'&group='.base64url_encode('错误').'&udpport=0&uot=0')."\n");
+	// 抛出错误的节点信息，用于兼容防止客户端订阅失败
+	private function infoGenerator($text) {
+		$result = null;
+		switch($this->subType){
+			case 2:
+				$result = 'vmess://'.base64url_encode(json_encode([
+						"v"    => "2",
+						"ps"   => $text,
+						"add"  => "0.0.0.0",
+						"port" => 0,
+						"id"   => 0,
+						"aid"  => 0,
+						"net"  => "tcp",
+						"type" => "none",
+						"host" => "",
+						"path" => "/",
+						'tls'  => "tls"
+					], JSON_PRETTY_PRINT));
+				break;
+			case 3:
+				$result = 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text);
+				break;
+			case 1:
+			default:
+				$result = 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0');
+				break;
+
+		}
+		return $result.PHP_EOL;
 	}
 
-	/**
-	 * 过期时间
-	 *
-	 * @param  object  $user
-	 *
-	 * @return string
-	 */
-	private function expireDate($user) {
-		$text = '到期时间: '.$user->expire_time;
-
-		return 'ssr://'.base64url_encode('0.0.0.1:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0')."\n";
-	}
-
-	/**
-	 * 剩余流量
-	 *
-	 * @param  object  $user
-	 *
-	 * @return string
-	 */
-	private function lastTraffic($user) {
-		$text = '剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d);
-
-		return 'ssr://'.base64url_encode('0.0.0.2:1:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$systemConfig['website_name']).'&udpport=0&uot=0')."\n";
+	// 写入订阅访问日志
+	private function subscribeLog($subscribeId, $ip, $headers) {
+		$log = new UserSubscribeLog();
+		$log->sid = $subscribeId;
+		$log->request_ip = $ip;
+		$log->request_time = date('Y-m-d H:i:s');
+		$log->request_header = $headers;
+		$log->save();
 	}
 }

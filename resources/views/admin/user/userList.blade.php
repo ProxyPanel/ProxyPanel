@@ -88,8 +88,7 @@
 								{!!$user->port? : '<span class="badge badge-lg badge-danger"> 未分配 </span>'!!}
 							</td>
 							<td>
-								<a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy"
-										data-clipboard-text="{{$user->link}}">{{$user->subscribe->code}}</a>
+								<a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{$user->link}}">{{$user->subscribe->code}}</a>
 							</td>
 							<td> {{$user->used_flow}} / {{$user->transfer_enable}} </td>
 							<td> {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}} </td>

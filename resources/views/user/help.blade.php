@@ -58,18 +58,33 @@
 														{{trans('home.subscribe_warning')}}
 													</div>
 													<div class="input-group">
-														<input type="text" class="form-control" value="{{$link}}"/>
-														<span class="input-group-btn btn-group" role="group">
-															<button class="btn btn-outline-info"
-																	onclick="exchangeSubscribe();">
+														<input type="text" class="form-control" id="sub_link" value="{{$link}}"/>
+														<div class="input-group-btn btn-group" role="group">
+															@if(count($sub)>1)
+																<div class="btn-group" role="group">
+																	<button type="button" class="btn btn-primary dropdown-toggle" id="sublink" data-toggle="dropdown" aria-expanded="false">
+																		自定义订阅
+																	</button>
+																	<div class="dropdown-menu" aria-labelledby="sublink" role="menu">
+																		@if(in_array('ss',$sub))
+																			<button class="dropdown-item" onclick="linkManager('1')" role="menuitem">只订阅SS/SSR</button>
+																		@endif
+																		@if(in_array('v2',$sub))
+																			<a class="dropdown-item" onclick="linkManager('2')" role="menuitem">只订阅V2Ray</a>
+																		@endif
+																		@if(in_array('trojan',$sub))
+																			<a class="dropdown-item" onclick="linkManager('3')" role="menuitem">只订阅Trojan</a>
+																		@endif
+																	</div>
+																</div>
+															@endif
+															<button class="btn btn-outline-info" onclick="exchangeSubscribe();">
 																<i class="icon wb-refresh" aria-hidden="true"></i>
 																{{trans('home.exchange_subscribe')}}</button>
-															<button class="btn btn-outline-info mt-clipboard"
-																	data-clipboard-action="copy"
-																	data-clipboard-text="{{$link}}">
+															<button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#sub_link">
 																<i class="icon wb-copy" aria-hidden="true"></i>
 																{{trans('home.copy_subscribe_address')}}</button>
-														</span>
+														</div>
 													</div>
 												@else
 													<div class="alert alert-danger alert-dismissible" role="alert">
@@ -135,8 +150,7 @@
 									<!-- Question 2 -->
 									<div class="panel">
 										<div class="panel-heading" id="question-2" role="tab">
-											<a class="panel-title" aria-controls="answer-2" aria-expanded="false"
-													data-toggle="collapse" href="#answer-2" data-parent="#accordion2">
+											<a class="panel-title" aria-controls="answer-2" aria-expanded="false" data-toggle="collapse" href="#answer-2" data-parent="#accordion2">
 												我想续费/购买服务，该怎么操作？
 											</a>
 										</div>
@@ -150,8 +164,7 @@
 													<li>余额支付，本支付方法支持微信，支付宝。支付后需要等待充值到账，再购买服务。
 													    ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在<a
 																href="/services">【{{trans('home.services')}}】</a>
-													    页面查看您的账号余额。 在<a href="/services">【{{trans('home.services')}}
-													                                     】</a>选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。
+													    页面查看您的账号余额。 在<a href="/services">【{{trans('home.services')}}】</a>选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。
 													</li>
 												</ol>
 											</div>
@@ -301,6 +314,11 @@
 	<script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
 	<script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
 	<script type="text/javascript">
+		function linkManager($type) {
+			$('#sub_link').val('{{$link}}?type=' + $type);
+			return false;
+		}
+
 		// 更换订阅地址
 		function exchangeSubscribe() {
 			swal.fire({
