@@ -44,7 +44,7 @@ class UserExpireAutoWarning extends Command {
 			}
 
 			// 计算剩余可用时间
-			$lastCanUseDays = ceil(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / 3600 / 24);
+			$lastCanUseDays = ceil(round(strtotime($user->expire_time) - strtotime(date('Y-m-d H:i:s'))) / Day);
 			if($lastCanUseDays == 0){
 				$title = '账号过期提醒';
 				$content = '您的账号将于今天晚上【24:00】过期。';

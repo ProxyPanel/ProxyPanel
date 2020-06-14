@@ -161,18 +161,18 @@ class DailyJob extends Command {
 				$nextResetTime = null;
 			}
 			// 可用流量 变动日志
-			if($user->transfer_enable != $order->goods->traffic * 1048576){
+			if($user->transfer_enable != $order->goods->traffic * MB){
 				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable,
-					$order->goods->traffic * 1048576, '【流量重置】重置可用流量');
+					$order->goods->traffic * MB, '【流量重置】重置可用流量');
 			}
 			// 重置流量
 			User::query()->whereId($user->id)->update([
 				'u'               => 0,
 				'd'               => 0,
-				'transfer_enable' => $order->goods->traffic * 1048576,
+				'transfer_enable' => $order->goods->traffic * MB,
 				'reset_time'      => $nextResetTime
 			]);
-			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic * 1048576).'. 重置日期为 '.($nextResetTime?: '【无】'));
+			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic * MB).'. 重置日期为 '.($nextResetTime?: '【无】'));
 		}
 	}
 }

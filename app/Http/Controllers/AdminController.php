@@ -74,7 +74,7 @@ class AdminController extends Controller {
 		                                 ->whereEnable(1)
 		                                 ->where('t', '>', 0)
 		                                 ->count(); // 不活跃用户数
-		$view['onlineUserCount'] = User::query()->where('t', '>=', time() - 600)->count(); // 10分钟内在线用户数
+		$view['onlineUserCount'] = User::query()->where('t', '>=', time() - Minute * 10)->count(); // 10分钟内在线用户数
 		$view['expireWarningUserCount'] = User::query()
 		                                      ->where('expire_time', '>=', date('Y-m-d', strtotime("now")))
 		                                      ->where('expire_time', '<=', date('Y-m-d',
@@ -89,14 +89,14 @@ class AdminController extends Controller {
 		$tempUsers = [];
 		$userTotalTrafficList = UserTrafficHourly::query()
 		                                         ->whereNodeId(0)
-		                                         ->where('total', '>', 104857600)
+		                                         ->where('total', '>', MB * 100)
 		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 		                                         ->groupBy('user_id')
 		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
 		                                         ->get(); // 只统计100M以上的记录，加快速度
 		if(!$userTotalTrafficList->isEmpty()){
 			foreach($userTotalTrafficList as $vo){
-				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1073741824)){
+				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
 					$tempUsers[] = $vo->user_id;
 				}
 			}
@@ -183,7 +183,7 @@ class AdminController extends Controller {
 
 		// 当前在线
 		if($online){
-			$query->where('t', '>=', time() - 600);
+			$query->where('t', '>=', time() - Minute * 10);
 		}
 
 		// 不活跃用户
@@ -199,14 +199,14 @@ class AdminController extends Controller {
 			$tempUsers = [];
 			$userTotalTrafficList = UserTrafficHourly::query()
 			                                         ->whereNodeId(0)
-			                                         ->where('total', '>', 104857600)
+			                                         ->where('total', '>', MB * 100)
 			                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 			                                         ->groupBy('user_id')
 			                                         ->selectRaw("user_id, sum(total) as totalTraffic")
 			                                         ->get(); // 只统计100M以上的记录，加快速度
 			if(!$userTotalTrafficList->isEmpty()){
 				foreach($userTotalTrafficList as $vo){
-					if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)){
+					if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
 						$tempUsers[] = $vo->user_id;
 					}
 				}
@@ -235,7 +235,7 @@ class AdminController extends Controller {
 			                                 ->whereNodeId(0)
 			                                 ->where('created_at', '>=', $time)
 			                                 ->sum('total');
-			$user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1024 * 1024 * 1024)? 1 : 0;
+			$user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)? 1 : 0;
 
 			// 订阅地址
 			$user->link = (self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']).'/s/'.$user->subscribe->code;
@@ -579,8 +579,8 @@ class AdminController extends Controller {
 				$node->v2_method = $request->input('v2_method');
 				$node->v2_net = $request->input('v2_net');
 				$node->v2_type = $request->input('v2_type');
-				$node->v2_host = $request->input('v2_host')?: '';
-				$node->v2_path = $request->input('v2_path')?: '';
+				$node->v2_host = $request->input('v2_host');
+				$node->v2_path = $request->input('v2_path');
 				$node->v2_tls = intval($request->input('v2_tls'));
 				$node->v2_tls_insecure = intval($request->input('v2_tls_insecure'));
 				$node->v2_tls_insecure_ciphers = intval($request->input('v2_tls_insecure_ciphers'));
@@ -831,7 +831,7 @@ class AdminController extends Controller {
 			$dailyData[$x] = 0;
 		}
 		for($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++){
-			$dailyData[$x] = round($nodeTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
+			$dailyData[$x] = round($nodeTrafficDaily[$x - ($dailyTotal - $dailyCount)] / GB, 3);
 		}
 
 		// 节点一天内的流量
@@ -848,12 +848,12 @@ class AdminController extends Controller {
 			$hourlyData[$x] = 0;
 		}
 		for($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++){
-			$hourlyData[$x] = round($nodeTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
+			$hourlyData[$x] = round($nodeTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / GB, 3);
 		}
 
-		$view['trafficDaily'] = ['nodeName' => $node->name, 'dailyData' => "'".implode("','", $dailyData)."'"];
+		$view['trafficDaily'] = ['nodeName' => $node->name, 'dailyData' => json_encode($dailyData)];
 
-		$view['trafficHourly'] = ['nodeName' => $node->name, 'hourlyData' => "'".implode("','", $hourlyData)."'"];
+		$view['trafficHourly'] = ['nodeName' => $node->name, 'hourlyData' => json_encode($hourlyData)];
 
 
 		// 本月天数数据
@@ -869,8 +869,8 @@ class AdminController extends Controller {
 
 		$view['nodeName'] = $node->name;
 		$view['nodeServer'] = $node->server;
-		$view['monthDays'] = "'".implode("','", $monthDays)."'";
-		$view['dayHours'] = "'".implode("','", $dayHours)."'";
+		$view['monthDays'] = json_encode($monthDays);
+		$view['dayHours'] = json_encode($dayHours);
 
 		return Response::view('admin.node.nodeMonitor', $view);
 	}
@@ -1216,7 +1216,7 @@ EOF;
 			$dailyData[$x] = 0;
 		}
 		for($x = $dailyTotal - $dailyCount; $x < $dailyTotal; $x++){
-			$dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
+			$dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / GB, 3);
 		}
 
 		// 节点一天内的流量
@@ -1233,7 +1233,7 @@ EOF;
 			$hourlyData[$x] = 0;
 		}
 		for($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++){
-			$hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
+			$hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / GB, 3);
 		}
 
 		// 本月天数数据
@@ -1247,10 +1247,10 @@ EOF;
 			$dayHours[] = $i;
 		}
 
-		$view['trafficDaily'] = "'".implode("','", $dailyData)."'";
-		$view['trafficHourly'] = "'".implode("','", $hourlyData)."'";
-		$view['monthDays'] = "'".implode("','", $monthDays)."'";
-		$view['dayHours'] = "'".implode("','", $dayHours)."'";
+		$view['trafficDaily'] = json_encode($dailyData);
+		$view['trafficHourly'] = json_encode($hourlyData);
+		$view['monthDays'] = json_encode($monthDays);
+		$view['dayHours'] = json_encode($dayHours);
 		$view['email'] = $user->email;
 
 		return Response::view('admin.logs.userMonitor', $view);
@@ -1456,7 +1456,7 @@ EOF;
 		$validator = Validator::make($request->all(), [
 			'id' => 'required|numeric|exists:level,id',
 		]);
-		
+
 		if($validator->fails()){
 			return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
 		}

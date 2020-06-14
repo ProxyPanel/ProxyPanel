@@ -28,7 +28,7 @@ class ServiceController extends Controller {
 		//取出用户信息
 		$user = User::query()->whereId($prepaidOrder->user_id)->first();
 
-		$userTraffic = $prepaidGood->traffic * 1048576;
+		$userTraffic = $prepaidGood->traffic * MB;
 		//拿出可能存在的其余套餐, 推算 最新的到期时间
 		$expire_time = date('Y-m-d', strtotime("+".$prepaidGood->days." days"));
 		$prepaidOrders = Order::query()->whereUserId($prepaidOrder->user_id)->whereStatus(3)->get();

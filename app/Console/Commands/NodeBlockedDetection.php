@@ -109,7 +109,7 @@ class NodeBlockedDetection extends Command {
 		}
 
 		// 随机生成下次检测时间
-		Cache::put('LastCheckTime', time() + mt_rand(3000, 3600), 4000);
+		Cache::put('LastCheckTime', time() + mt_rand(3000, Hour), 3700);
 	}
 
 	/**

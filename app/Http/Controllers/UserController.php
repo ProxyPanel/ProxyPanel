@@ -56,8 +56,8 @@ class UserController extends Controller {
 		$usedTransfer = $user->u + $user->d;
 		$unusedTransfer = $totalTransfer - $usedTransfer > 0? $totalTransfer - $usedTransfer : 0;
 		$expireTime = $user->expire_time;
-		$view['remainDays'] = $expireTime < date('Y-m-d')? -1 : (strtotime($expireTime) - strtotime(date('Y-m-d'))) / 86400;
-		$view['resetDays'] = $user->reset_time? round((strtotime($user->reset_time) - strtotime(date('Y-m-d'))) / 86400) : 0;
+		$view['remainDays'] = $expireTime < date('Y-m-d')? -1 : (strtotime($expireTime) - strtotime(date('Y-m-d'))) / Day;
+		$view['resetDays'] = $user->reset_time? round((strtotime($user->reset_time) - strtotime(date('Y-m-d'))) / Day) : 0;
 		$view['unusedTransfer'] = $unusedTransfer;
 		$view['expireTime'] = $expireTime;
 		$view['banedTime'] = $user->ban_time? date('Y-m-d H:i:s', $user->ban_time) : 0;
@@ -67,9 +67,9 @@ class UserController extends Controller {
 		$hourlyTraffic = UserTrafficHourly::query()
 		                                  ->whereUserId($user->id)
 		                                  ->whereNodeId(0)
-		                                  ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
+		                                  ->where('created_at', '>=', date('Y-m-d H:i:s', time() - Minute * 65))
 		                                  ->sum('total');
-		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$systemConfig['traffic_ban_value'] * 1073741824)?: 0;
+		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)?: 0;
 		//付费用户判断
 		$view['not_paying_user'] = Order::uid()
 		                                ->whereStatus(2)
@@ -90,14 +90,13 @@ class UserController extends Controller {
 		                                    ->orderBy('created_at')
 		                                    ->pluck('total')
 		                                    ->toArray();
-
 		$dailyTotal = date('d', time()) - 1; // 今天不算，减一
 		$dailyCount = count($userTrafficDaily);
 		for($x = 0; $x < $dailyTotal - $dailyCount; $x++){
 			$dailyData[$x] = 0;
 		}
 		for($x = $dailyTotal - $dailyCount; $x < $dailyTotal; $x++){
-			$dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / (1024 * 1024 * 1024), 3);
+			$dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / GB, 3);
 		}
 
 		// 节点一天内的流量
@@ -114,7 +113,7 @@ class UserController extends Controller {
 			$hourlyData[$x] = 0;
 		}
 		for($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++){
-			$hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / (1024 * 1024 * 1024), 3);
+			$hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / GB, 3);
 		}
 
 		// 本月天数数据
@@ -128,10 +127,10 @@ class UserController extends Controller {
 			$dayHours[] = $i;
 		}
 
-		$view['trafficDaily'] = "'".implode("','", $dailyData)."'";
-		$view['trafficHourly'] = "'".implode("','", $hourlyData)."'";
-		$view['monthDays'] = "'".implode("','", $monthDays)."'";
-		$view['dayHours'] = "'".implode("','", $dayHours)."'";
+		$view['trafficDaily'] = json_encode($dailyData);
+		$view['trafficHourly'] = json_encode($hourlyData);
+		$view['monthDays'] = json_encode($monthDays);
+		$view['dayHours'] = json_encode($dayHours);
 
 		return Response::view('user.index', $view);
 	}
@@ -150,7 +149,7 @@ class UserController extends Controller {
 		}
 
 		$traffic = mt_rand((int) self::$systemConfig['min_rand_traffic'],
-				(int) self::$systemConfig['max_rand_traffic']) * 1048576;
+				(int) self::$systemConfig['max_rand_traffic']) * MB;
 		$ret = User::uid()->increment('transfer_enable', $traffic);
 		if(!$ret){
 			return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
@@ -161,7 +160,7 @@ class UserController extends Controller {
 			'[签到]');
 
 		// 多久后可以再签到
-		$ttl = self::$systemConfig['traffic_limit_time']? self::$systemConfig['traffic_limit_time'] * 60 : 86400;
+		$ttl = self::$systemConfig['traffic_limit_time']? self::$systemConfig['traffic_limit_time'] * Minute : Day;
 		Cache::put('userCheckIn_'.$user->id, '1', $ttl);
 
 		return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 '.flowAutoShow($traffic).'流量']);
@@ -302,7 +301,7 @@ class UserController extends Controller {
 		$view['renewTraffic'] = $renewPrice? $renewPrice->renew : 0;
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = $user->reset_time? $user->reset_time : $user->expire_time;
-		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / 86400) : 0;
+		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
 		$view['purchaseHTML'] = PaymentController::purchaseHTML();
 
 		return Response::view('user.services', $view);
@@ -481,7 +480,7 @@ class UserController extends Controller {
 
 		$view['num'] = Auth::getUser()->invite_num; // 还可以生成的邀请码数量
 		$view['inviteList'] = Invite::uid()->with(['generator', 'user'])->paginate(10); // 邀请码列表
-		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
+		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * MB);
 		$view['referral_percent'] = self::$systemConfig['referral_percent'];
 
 		return Response::view('user.invite', $view);
@@ -551,7 +550,7 @@ class UserController extends Controller {
 		}
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = Auth::getUser()->reset_time?: Auth::getUser()->expire_time;
-		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / 86400) : 0;
+		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
 		$view['activePlan'] = Order::uid()
 		                           ->with(['goods'])
 		                           ->whereIsExpire(0)

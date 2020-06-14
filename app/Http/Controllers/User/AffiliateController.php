@@ -24,7 +24,7 @@ class AffiliateController extends Controller {
 			return Response::view('auth.error',
 				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
-		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * 1048576);
+		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * MB);
 		$view['referral_percent'] = self::$systemConfig['referral_percent'];
 		$view['referral_money'] = self::$systemConfig['referral_money'];
 		$view['totalAmount'] = ReferralLog::uid()->sum('ref_amount') / 100;
