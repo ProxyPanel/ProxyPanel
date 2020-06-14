@@ -2,6 +2,16 @@
 
 use App\Components\Curl;
 
+define('KB', 1024);
+define('MB', 1048576);
+define('GB', 1073741824);
+define('TB', 1099511627776);
+define('PB', 1125899906842624);
+
+define('Minute', 60);
+define('Hour', 3600);
+define('Day', 86400);
+
 // 生成SS密码
 if(!function_exists('makeRandStr')){
 	function makeRandStr($length = 6, $isNumbers = false) {
@@ -38,21 +48,16 @@ if(!function_exists('base64url_decode')){
 // 根据流量值自动转换单位输出
 if(!function_exists('flowAutoShow')){
 	function flowAutoShow($value = 0) {
-		$kb = 1024;
-		$mb = 1048576;
-		$gb = 1073741824;
-		$tb = $gb * 1024;
-		$pb = $tb * 1024;
-		if(abs($value) >= $pb){
-			return round($value / $pb, 2)."PB";
-		}elseif(abs($value) >= $tb){
-			return round($value / $tb, 2)."TB";
-		}elseif(abs($value) >= $gb){
-			return round($value / $gb, 2)."GB";
-		}elseif(abs($value) >= $mb){
-			return round($value / $mb, 2)."MB";
-		}elseif(abs($value) >= $kb){
-			return round($value / $kb, 2)."KB";
+		if(abs($value) >= PB){
+			return round($value / PB, 2)."PB";
+		}elseif(abs($value) >= TB){
+			return round($value / TB, 2)."TB";
+		}elseif(abs($value) >= GB){
+			return round($value / GB, 2)."GB";
+		}elseif(abs($value) >= MB){
+			return round($value / MB, 2)."MB";
+		}elseif(abs($value) >= KB){
+			return round($value / KB, 2)."KB";
 		}else{
 			return round($value, 2)."B";
 		}
@@ -61,25 +66,19 @@ if(!function_exists('flowAutoShow')){
 
 if(!function_exists('toMB')){
 	function toMB($traffic) {
-		$mb = 1048576;
-
-		return $traffic * $mb;
+		return $traffic * MB;
 	}
 }
 
 if(!function_exists('toGB')){
 	function toGB($traffic) {
-		$gb = 1048576 * 1024;
-
-		return $traffic * $gb;
+		return $traffic * GB;
 	}
 }
 
 if(!function_exists('flowToGB')){
 	function flowToGB($traffic) {
-		$gb = 1048576 * 1024;
-
-		return $traffic / $gb;
+		return $traffic / GB;
 	}
 }
 
@@ -88,9 +87,9 @@ if(!function_exists('formatBytes')){
 	function formatBytes($bytes, $precision = 2) {
 		$units = ['B', 'KB', 'MB', 'GB', 'TB'];
 		$bytes = max($bytes, 0);
-		$pow = floor(($bytes? log($bytes) : 0) / log(1024));
+		$pow = floor(($bytes? log($bytes) : 0) / log(KB));
 		$pow = min($pow, count($units) - 1);
-		$bytes /= pow(1024, $pow);
+		$bytes /= pow(KB, $pow);
 
 		return round($bytes, $precision).' '.$units[$pow];
 	}
@@ -99,9 +98,9 @@ if(!function_exists('formatBytes')){
 // 秒转时间
 if(!function_exists('seconds2time')){
 	function seconds2time($seconds) {
-		$day = floor($seconds / (3600 * 24));
-		$hour = floor(($seconds % (3600 * 24)) / 3600);
-		$minute = floor((($seconds % (3600 * 24)) % 3600) / 60);
+		$day = floor($seconds / Day);
+		$hour = floor(($seconds % Day) / Hour);
+		$minute = floor((($seconds % Day) % Hour) / Minute);
 		if($day > 0){
 			return $day.'天'.$hour.'小时'.$minute.'分';
 		}else{

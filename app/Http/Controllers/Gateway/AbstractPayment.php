@@ -68,9 +68,9 @@ abstract class AbstractPayment {
 			case 1:
 				$order->status = 2;
 				$order->save();
-				User::query()->whereId($order->user_id)->increment('transfer_enable', $goods->traffic * 1048576);
+				User::query()->whereId($order->user_id)->increment('transfer_enable', $goods->traffic * MB);
 				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable,
-					$user->transfer_enable + $goods->traffic * 1048576, '['.$method.']加上用户购买的套餐流量');
+					$user->transfer_enable + $goods->traffic * MB, '['.$method.']加上用户购买的套餐流量');
 				break;
 			case 2:
 				$activePlan = Order::query()
@@ -106,7 +106,7 @@ abstract class AbstractPayment {
 					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable, 0,
 						'['.$method.']用户购买新套餐，先清空流量');
 
-					$userTraffic = $goods->traffic * 1048576;
+					$userTraffic = $goods->traffic * MB;
 					// 添加账号有效期
 					$expireTime = date('Y-m-d', strtotime("+".$goods->days." days"));
 					//账号下一个重置时间

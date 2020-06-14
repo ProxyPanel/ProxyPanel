@@ -330,7 +330,7 @@ class AuthController extends Controller {
 			$affArr = $this->getAff($code, $aff);
 			$referral_uid = $affArr['referral_uid'];
 
-			$transfer_enable = 1048576 * (self::$systemConfig['default_traffic'] + ($referral_uid? self::$systemConfig['referral_traffic'] : 0));
+			$transfer_enable = MB * (self::$systemConfig['default_traffic'] + ($referral_uid? self::$systemConfig['referral_traffic'] : 0));
 
 			// 创建新用户
 			$uid = Helpers::addUser($email, Hash::make($password), $transfer_enable,
@@ -354,7 +354,7 @@ class AuthController extends Controller {
 			if(Cache::has($cacheKey)){
 				Cache::increment($cacheKey);
 			}else{
-				Cache::put($cacheKey, 1, 86400); // 24小时
+				Cache::put($cacheKey, 1, Day); // 24小时
 			}
 
 			// 更新邀请码
@@ -383,7 +383,7 @@ class AuthController extends Controller {
 						if($referralUser->expire_time >= date('Y-m-d')){
 							User::query()
 							    ->whereId($referral_uid)
-							    ->increment('transfer_enable', self::$systemConfig['referral_traffic'] * 1048576);
+							    ->increment('transfer_enable', self::$systemConfig['referral_traffic'] * MB);
 						}
 					}
 				}
@@ -530,7 +530,7 @@ class AuthController extends Controller {
 			$logId = Helpers::addNotificationLog('重置密码', '请求地址：'.$resetPasswordUrl, 1, $email);
 			Mail::to($email)->send(new resetPassword($logId, $resetPasswordUrl));
 
-			Cache::put('resetPassword_'.md5($email), $resetTimes + 1, 86400);
+			Cache::put('resetPassword_'.md5($email), $resetTimes + 1, Day);
 
 			return Redirect::back()->with('successMsg', trans('auth.reset_password_success_tip'));
 		}else{
@@ -642,7 +642,7 @@ class AuthController extends Controller {
 			$logId = Helpers::addNotificationLog('激活账号', '请求地址：'.$activeUserUrl, 1, $email);
 			Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
 
-			Cache::put('activeUser_'.md5($email), $activeTimes + 1, 86400);
+			Cache::put('activeUser_'.md5($email), $activeTimes + 1, Day);
 
 			return Redirect::back()->with('successMsg', trans('auth.register_active_tip'));
 		}else{
@@ -695,7 +695,7 @@ class AuthController extends Controller {
 
 		// 账号激活后给邀请人送流量
 		if($verify->user->referral_uid){
-			$transfer_enable = self::$systemConfig['referral_traffic'] * 1048576;
+			$transfer_enable = self::$systemConfig['referral_traffic'] * MB;
 
 			User::query()
 			    ->whereId($verify->user->referral_uid)
@@ -748,7 +748,7 @@ class AuthController extends Controller {
 
 		$this->addVerifyCode($email, $code);
 
-		Cache::put('send_verify_code_'.md5(getClientIP()), getClientIP(), 60);
+		Cache::put('send_verify_code_'.md5(getClientIP()), getClientIP(), Minute);
 
 		return Response::json(['status' => 'success', 'message' => trans('auth.captcha_send')]);
 	}

@@ -259,7 +259,7 @@
 		const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
 			type: 'line',
 			data: {
-				labels: [{!! $dayHours !!}],
+				labels: {{$dayHours}},
 				datasets: [{
 					fill: true,
 					backgroundColor: "rgba(98, 168, 234, .1)",
@@ -270,7 +270,7 @@
 					pointBackgroundColor: Config.colors("primary", 600),
 					pointHoverBackgroundColor: "#fff",
 					pointHoverBorderColor: Config.colors("primary", 600),
-					data: [{!! $trafficHourly !!}],
+					data: {{$trafficHourly}},
 				}]
 			},
 			options: {
@@ -306,7 +306,7 @@
 		const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
 			type: 'line',
 			data: {
-				labels: [{!! $monthDays !!}],
+				labels: {{$monthDays}},
 				datasets: [{
 					fill: true,
 					backgroundColor: "rgba(98, 168, 234, .1)",
@@ -317,7 +317,7 @@
 					pointBackgroundColor: Config.colors("primary", 600),
 					pointHoverBackgroundColor: "#fff",
 					pointHoverBorderColor: Config.colors("primary", 600),
-					data: [{!! $trafficDaily !!}],
+					data: {{$trafficDaily}},
 				}]
 			},
 			options: {

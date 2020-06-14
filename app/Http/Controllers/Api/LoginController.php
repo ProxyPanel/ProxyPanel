@@ -47,7 +47,7 @@ class LoginController extends Controller {
 				return Response::json(['status' => 'fail', 'data' => [], 'message' => '请求失败超限，禁止访问1小时']);
 			}
 		}else{
-			Cache::put($cacheKey, 1, 3600);
+			Cache::put($cacheKey, 1, Hour);
 		}
 
 		$user = User::query()->whereEmail($email)->where('status', '>=', 0)->first();

@@ -238,7 +238,7 @@ class AutoJob extends Command {
 				                                 ->whereNodeId(0)
 				                                 ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 				                                 ->sum('total');
-				if($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * 1073741824)){
+				if($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)){
 					User::query()->whereId($user->id)->update([
 						'enable'   => 0,
 						'ban_time' => strtotime(date('Y-m-d H:i:s',
@@ -337,7 +337,7 @@ class AutoJob extends Command {
 							$times = Cache::get($cacheKey);
 						}else{
 							// 键将保留24小时
-							Cache::put($cacheKey, 1, 86400);
+							Cache::put($cacheKey, 1, Day);
 							$times = 1;
 						}
 

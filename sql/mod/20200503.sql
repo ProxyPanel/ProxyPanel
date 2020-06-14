@@ -90,7 +90,7 @@ ALTER TABLE `user`
     DROP `obfs_param`,
     DROP `speed_limit_per_con`,
     DROP `speed_limit_per_user`,
-    ADD `speed_limit`                          BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '用户限速，为0表示不限速，单位Byte' AFTER `obfs_param`,
+    ADD `speed_limit`                          BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '用户限速，为0表示不限速，单位Byte' AFTER `obfs`,
     DROP `usage`,
     DROP `pay_way`,
     CHANGE `balance` `credit`                  INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '余额，单位分',

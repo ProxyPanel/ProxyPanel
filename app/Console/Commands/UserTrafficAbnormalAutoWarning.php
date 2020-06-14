@@ -36,7 +36,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 		// 1小时内流量异常用户(多往前取5分钟，防止数据统计任务执行时间过长导致没有数据)
 		$userTotalTrafficList = UserTrafficHourly::query()
 		                                         ->whereNodeId(0)
-		                                         ->where('total', '>', 104857600)
+		                                         ->where('total', '>', MB * 100)
 		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 		                                         ->groupBy('user_id')
 		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
@@ -48,7 +48,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 				$user = User::query()->whereId($vo->user_id)->first();
 
 				// 推送通知管理员
-				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * 1073741824)){
+				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
 					$traffic = UserTrafficHourly::query()
 					                            ->whereNodeId(0)
 					                            ->whereUserId($vo->user_id)

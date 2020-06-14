@@ -89,6 +89,6 @@ class Goods extends Model {
 	}
 
 	function getTrafficLabelAttribute() {
-		return flowAutoShow($this->attributes['traffic'] * 1048576);
+		return flowAutoShow($this->attributes['traffic'] * MB);
 	}
 }

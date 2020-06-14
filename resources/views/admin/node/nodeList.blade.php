@@ -71,7 +71,7 @@
 											class="btn btn-primary"><i class="icon wb-edit"></i></a>
 									<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')"
 											class="btn btn-danger"><i class="icon wb-trash"></i></a>
-									<a href="/admin/nodeMonitor/{{$node->id}})" class="btn btn-primary"><i
+									<a href="/admin/nodeMonitor/{{$node->id}}" class="btn btn-primary"><i
 												class="icon wb-stats-bars"></i></a>
 								</div>
 							</td>
