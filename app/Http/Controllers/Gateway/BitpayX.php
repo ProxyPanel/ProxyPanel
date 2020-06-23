@@ -56,11 +56,11 @@ class BitpayX extends AbstractPayment {
 		return Response::json(['status' => 'fail', 'data' => $result, 'message' => '创建订单失败!']);
 	}
 
-	public function sign($data) {
+	private function sign($data) {
 		return strtolower(md5(md5($data).parent::$systemConfig['bitpay_secret']));
 	}
 
-	public function prepareSignId($tradeno) {
+	private function prepareSignId($tradeno) {
 		$data_sign = [
 			'merchant_order_id' => $tradeno,
 			'secret'            => parent::$systemConfig['bitpay_secret'],
@@ -71,7 +71,7 @@ class BitpayX extends AbstractPayment {
 		return http_build_query($data_sign);
 	}
 
-	public function mprequest($data, $type = 'pay') {
+	private function mprequest($data, $type = 'pay') {
 		$headers = ['content-type: application/json', 'token: '.parent::$systemConfig['bitpay_secret']];
 		$curl = curl_init();
 		if($type === 'pay'){
@@ -117,28 +117,18 @@ class BitpayX extends AbstractPayment {
 
 		if($resultVerify && $isPaid){
 			$this->postPayment($inputJSON['merchant_order_id'], 'BitPayX');
-			$return = [];
 			$return['status'] = 200;
 			echo json_encode($return);
 		}else{
-			$return = [];
 			$return['status'] = 400;
 			echo json_encode($return);
 		}
 		exit();
 	}
 
-	public function verify($data, $signature) {
+	private function verify($data, $signature) {
 		$mySign = $this->sign($data);
 
 		return $mySign === $signature;
-	}
-
-	public function getReturnHTML(Request $request) {
-		// TODO: Implement getReturnHTML() method.
-	}
-
-	public function getPurchaseHTML() {
-		// TODO: Implement getPurchaseHTML() method.
 	}
 }

@@ -33,12 +33,4 @@ class Local extends AbstractPayment {
 	public function notify(Request $request) {
 		// TODO: Implement notify() method.
 	}
-
-	public function getReturnHTML(Request $request) {
-		// TODO: Implement getReturnHTML() method.
-	}
-
-	public function getPurchaseHTML() {
-		// TODO: Implement getPurchaseHTML() method.
-	}
 }

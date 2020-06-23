@@ -77,12 +77,4 @@ class CodePay extends AbstractPayment {
 		}
 		exit('fail');
 	}
-
-	public function getReturnHTML($request) {
-		// TODO: Implement getReturnHTML() method.
-	}
-
-	public function getPurchaseHTML() {
-		// TODO: Implement getReturnHTML() method.
-	}
 }

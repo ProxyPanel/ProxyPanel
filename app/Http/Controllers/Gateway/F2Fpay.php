@@ -101,12 +101,4 @@ class F2Fpay extends AbstractPayment {
 		// 返回验证结果
 		exit($ret);
 	}
-
-	public function getReturnHTML($request) {
-		// TODO: Implement getReturnHTML() method.
-	}
-
-	public function getPurchaseHTML() {
-		// TODO: Implement getReturnHTML() method.
-	}
 }

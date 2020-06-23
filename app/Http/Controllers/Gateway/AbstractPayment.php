@@ -33,12 +33,7 @@ abstract class AbstractPayment {
 
 	abstract public function purchase(Request $request);
 
-
 	abstract public function notify(Request $request);
-
-	abstract public function getReturnHTML(Request $request);
-
-	abstract public function getPurchaseHTML();
 
 	public function postPayment($data, $method) {
 		// 获取需要的信息
@@ -55,6 +50,7 @@ abstract class AbstractPayment {
 
 		//余额充值
 		if($order->goods_id == -1){
+			Order::query()->whereOid($order->oid)->update(['status'=>2]);
 			User::query()->whereId($order->user_id)->increment('credit', $order->amount * 100);
 			// 余额变动记录日志
 			Helpers::addUserCreditLog($order->user_id, $order->oid, $order->user->credit,
@@ -66,8 +62,7 @@ abstract class AbstractPayment {
 		// 商品为流量或者套餐
 		switch($goods->type){
 			case 1:
-				$order->status = 2;
-				$order->save();
+				Order::query()->whereOid($order->oid)->update(['status'=>2]);
 				User::query()->whereId($order->user_id)->increment('transfer_enable', $goods->traffic * MB);
 				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable,
 					$user->transfer_enable + $goods->traffic * MB, '['.$method.']加上用户购买的套餐流量');
