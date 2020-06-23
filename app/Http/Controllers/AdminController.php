@@ -1338,8 +1338,9 @@ EOF;
 		$websiteAnalytics = $request->input('website_analytics');
 		$websiteCustomerService = $request->input('website_customer_service');
 
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
+
 			// 首页LOGO
 			if($request->hasFile('website_home_logo')){
 				$file = $request->file('website_home_logo');

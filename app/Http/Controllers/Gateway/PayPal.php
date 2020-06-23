@@ -138,12 +138,4 @@ class PayPal extends AbstractPayment {
 		}
 		exit("fail");
 	}
-
-	public function getReturnHTML(Request $request) {
-		// TODO: Implement getReturnHTML() method.
-	}
-
-	public function getPurchaseHTML() {
-		// TODO: Implement getPurchaseHTML() method.
-	}
 }
