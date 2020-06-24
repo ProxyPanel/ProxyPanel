@@ -142,7 +142,7 @@ CREATE TABLE `user`
     `password`        VARCHAR(64)          NOT NULL DEFAULT '' COMMENT '密码',
     `port`            SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '代理端口',
     `passwd`          VARCHAR(16)          NOT NULL DEFAULT '' COMMENT '代理密码',
-    `uuid`            VARCHAR(64)          NOT NULL DEFAULT '',
+    `vmess_id`        VARCHAR(64)          NOT NULL DEFAULT '',
     `transfer_enable` BIGINT(20) UNSIGNED  NOT NULL DEFAULT '1099511627776' COMMENT '可用流量，单位字节，默认1TiB',
     `u`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
     `d`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',

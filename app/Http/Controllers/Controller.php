@@ -167,7 +167,7 @@ class Controller extends BaseController {
 							"ps"   => $node->name,
 							"add"  => $host,
 							"port" => $node->v2_port,
-							"id"   => $user->uuid,
+							"id"   => $user->vmess_id,
 							"aid"  => $node->v2_alter_id,
 							"net"  => $node->v2_net,
 							"type" => $node->v2_type,
@@ -176,7 +176,7 @@ class Controller extends BaseController {
 							"tls"  => $node->v2_tls? "tls" : ""
 						], JSON_PRETTY_PRINT));
 				}else{
-					$data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6?: "").PHP_EOL."端口：".$node->v2_port.PHP_EOL."加密方式：".$node->v2_method.PHP_EOL."用户ID：".$user->uuid.PHP_EOL."额外ID：".$node->v2_alter_id.PHP_EOL."传输协议：".$node->v2_net.PHP_EOL."伪装类型：".$node->v2_type.PHP_EOL."伪装域名：".($node->v2_host?: "").PHP_EOL."路径：".($node->v2_path?: "").PHP_EOL."TLS：".($node->v2_tls? "tls" : "").PHP_EOL;
+					$data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6?: "").PHP_EOL."端口：".$node->v2_port.PHP_EOL."加密方式：".$node->v2_method.PHP_EOL."用户ID：".$user->vmess_id.PHP_EOL."额外ID：".$node->v2_alter_id.PHP_EOL."传输协议：".$node->v2_net.PHP_EOL."伪装类型：".$node->v2_type.PHP_EOL."伪装域名：".($node->v2_host?: "").PHP_EOL."路径：".($node->v2_path?: "").PHP_EOL."TLS：".($node->v2_tls? "tls" : "").PHP_EOL;
 				}
 				break;
 			case 3:

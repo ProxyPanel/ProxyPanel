@@ -353,7 +353,7 @@
 			$('#protocol').selectpicker('val', '{{$user->protocol}}')
 			$('#obfs').selectpicker('val', '{{$user->obfs}}')
 			$('#speed_limit').val('{{$user->speed_limit}}')
-			$('#uuid').val('{{$user->uuid}}')
+			$('#uuid').val('{{$user->vmess_id}}')
 			@else
 			$('#level').selectpicker('val', '0')
 			@endisset

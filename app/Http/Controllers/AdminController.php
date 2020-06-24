@@ -261,7 +261,7 @@ class AdminController extends Controller {
 			$user->password = Hash::make($request->input('password')?: makeRandStr());
 			$user->port = $request->input('port')?: $this->makePort();
 			$user->passwd = $request->input('passwd')?: makeRandStr();
-			$user->uuid = $request->input('uuid')?: createGuid();
+			$user->vmess_id = $request->input('uuid')?: createGuid();
 			$user->transfer_enable = toGB($request->input('transfer_enable')?: 0);
 			$user->enable = $request->input('enable')?: 0;
 			$user->method = $request->input('method');
@@ -382,7 +382,7 @@ class AdminController extends Controller {
 					'email'           => $email,
 					'port'            => $port,
 					'passwd'          => $request->input('passwd')?: makeRandStr(),
-					'uuid'            => $request->input('uuid')?: createGuid(),
+					'vmess_id'        => $request->input('uuid')?: createGuid(),
 					'transfer_enable' => toGB($transfer_enable?: 0),
 					'enable'          => $status < 0? 0 : $request->input('enable'),
 					'method'          => $request->input('method'),

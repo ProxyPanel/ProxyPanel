@@ -174,7 +174,7 @@ class ToolsController extends Controller {
 					$obj->password = Hash::make('123456');
 					$obj->port = $user->port;
 					$obj->passwd = $user->passwd;
-					$obj->uuid = $user->uuid;
+					$obj->vmess_id = $user->uuid;
 					$obj->transfer_enable = $user->transfer_enable;
 					$obj->method = $user->method;
 					$obj->protocol = $user->protocol;
