@@ -16,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string                                                                                                         $password        密码
  * @property int                                                                                                            $port            代理端口
  * @property string                                                                                                         $passwd          代理密码
- * @property string                                                                                                         $uuid
+ * @property string                                                                                                         $vmess_id
  * @property int                                                                                                            $transfer_enable 可用流量，单位字节，默认1TiB
  * @property int                                                                                                            $u               已上传流量，单位字节
  * @property int                                                                                                            $d               已下载流量，单位字节
@@ -88,7 +88,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static Builder|User whereU($value)
  * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User whereUsername($value)
- * @method static Builder|User whereUuid($value)
+ * @method static Builder|User whereVmessId($value)
  * @method static Builder|User whereWechat($value)
  * @mixin \Eloquent
  */

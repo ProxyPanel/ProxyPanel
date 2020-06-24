@@ -82,7 +82,7 @@ class Helpers {
 		// 生成一个可用端口
 		$user->port = self::systemConfig()['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
 		$user->passwd = makeRandStr();
-		$user->uuid = createGuid();
+		$user->vmess_id = createGuid();
 		$user->enable = 1;
 		$user->method = Helpers::getDefaultMethod();
 		$user->protocol = Helpers::getDefaultProtocol();
