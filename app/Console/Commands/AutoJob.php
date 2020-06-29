@@ -91,6 +91,7 @@ class AutoJob extends Command {
 				foreach($paymentList as $payment){
 					// 关闭支付单
 					Payment::query()->whereId($payment->id)->update(['status' => -1]);
+					// 关闭回调PaymentCallback::query()->whereTradeNo($payment->trade_no)->update(['status' => 0]);
 
 					// 关闭订单
 					Order::query()->whereOid($payment->oid)->update(['status' => -1]);

@@ -48,13 +48,8 @@ class PayPal extends AbstractPayment {
 		}
 	}
 
-	public function purchase(Request $request) {
-		$payment = new Payment();
-		$payment->trade_no = self::generateGuid();
-		$payment->user_id = Auth::id();
-		$payment->oid = $request->input('oid');
-		$payment->amount = $request->input('amount');
-		$payment->save();
+	public function purchase($request) {
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$data = $this->getCheckoutData($payment->trade_no, $payment->amount);
 
@@ -119,7 +114,7 @@ class PayPal extends AbstractPayment {
 		return redirect('/invoices');
 	}
 
-	public function notify(Request $request) {
+	public function notify($request) {
 		$request->merge(['cmd' => '_notify-validate']);
 		foreach($request->input() as $key => $value){
 			if($value == null){

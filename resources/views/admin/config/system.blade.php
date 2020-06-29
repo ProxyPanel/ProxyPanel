@@ -1211,7 +1211,7 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">PayJs</label>
 											<div class="col-md-7">
-												请到<a href="https://payjs.cn/dashboard/member" target="_blank">PayJs</a> 申请账号
+												请到<a href="https://payjs.cn/ref/zgxjnb" target="_blank">PayJs</a> 申请账号
 											</div>
 										</div>
 									</div>
@@ -1226,6 +1226,7 @@
 													</span>
 												</div>
 											</div>
+											<span class="text-help offset-md-3">在<a href="https://payjs.cn/dashboard/member" target="_blank">本界面</a>获取信息</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">

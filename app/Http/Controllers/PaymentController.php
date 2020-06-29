@@ -59,14 +59,6 @@ class PaymentController extends Controller {
 		}
 	}
 
-	public static function returnHTML(Request $request) {
-		return self::getClient()->getReturnHTML($request);
-	}
-
-	public static function purchaseHTML() {
-		return Response::view('user.components.purchase');
-	}
-
 	public static function getStatus(Request $request) {
 		$payment = Payment::whereTradeNo($request->input('trade_no'))->first();
 		if($payment){
@@ -171,7 +163,7 @@ class PaymentController extends Controller {
 		$order = new Order();
 		$order->order_sn = $orderSn;
 		$order->user_id = Auth::id();
-		$order->goods_id = $credit? -1 : $goods_id;
+		$order->goods_id = $credit? 0 : $goods_id;
 		$order->coupon_id = !empty($coupon)? $coupon->id : 0;
 		$order->origin_amount = $credit?: $goods->price;
 		$order->amount = $amount;
@@ -194,6 +186,26 @@ class PaymentController extends Controller {
 
 		// 生成支付单
 		return self::getClient()->purchase($request);
+	}
+
+	public function close($oid) {
+		$order = Order::query()->whereOid($oid)->first();
+		$payment = Payment::query()->whereOid($oid)->first();
+		if($order){
+			$ret = Order::query()->whereOid($oid)->update(['status' => -1]);
+			if(!$ret){
+				return Response::json(['status' => 'fail', 'message' => '关闭订单失败']);
+			}
+		}else{
+			return Response::json(['status' => 'fail', 'message' => '未找到订单']);
+		}
+		if($payment){
+			$ret = Payment::query()->whereOid($oid)->update(['status' => -1]);
+			if(!$ret){
+				return Response::json(['status' => 'fail', 'message' => '关闭在线订单失败']);
+			}
+		}
+		return Response::json(['status' => 'success', 'message' => '关闭订单成功']);
 	}
 
 	// 支付单详情

@@ -183,6 +183,7 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 
 	Route::group(['prefix' => 'payment'], function() {
 		Route::post('purchase', 'PaymentController@purchase'); // 创建支付
+		Route::post('close/{id}', 'PaymentController@close'); // 关闭支付单
 		Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
 		Route::get('{trade_no}', 'PaymentController@detail'); // 支付单详情
 	});

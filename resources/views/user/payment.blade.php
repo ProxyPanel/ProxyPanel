@@ -3,8 +3,8 @@
 	<div class="page-content container">
 		<div class="panel panel-bordered">
 			<div class="panel-heading">
-				<h1 class="panel-title cyan-600"><i
-							class="icon wb-payment"></i>{{\App\Components\Helpers::systemConfig()['website_name']}}{{trans('home.online_pay')}}
+				<h1 class="panel-title cyan-600">
+					<i class="icon wb-payment"></i>{{\App\Components\Helpers::systemConfig()['website_name']}}{{trans('home.online_pay')}}
 				</h1>
 			</div>
 			<div class="panel-body border-primary">
@@ -12,7 +12,7 @@
 					<div class="col-2"></div>
 					<div class="alert alert-info col-8 text-center">
 						请扫描二维码进行支付
-{{--						请使用<strong class="red-600"> 支付宝 </strong>扫描二维码进行支付--}}
+						{{--						请使用<strong class="red-600"> 支付宝 </strong>扫描二维码进行支付--}}
 					</div>
 					<div class="col-2"></div>
 					<div class="col-2"></div>

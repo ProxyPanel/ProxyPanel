@@ -8,11 +8,10 @@ use App\Models\Goods;
 use App\Models\Order;
 use App\Models\User;
 use Auth;
-use Illuminate\Http\Request;
 use Response;
 
 class Local extends AbstractPayment {
-	public function purchase(Request $request) {
+	public function purchase($request) {
 		$amount = $request->input('amount');
 		$order = Order::whereOid($request->input('oid'))->first();
 		$goods = Goods::query()->whereStatus(1)->whereId($request->input('goods_id'))->first();
@@ -30,7 +29,5 @@ class Local extends AbstractPayment {
 		return Response::json(['status' => 'success', 'message' => '购买完成!']);
 	}
 
-	public function notify(Request $request) {
-		// TODO: Implement notify() method.
-	}
+	public function notify($request) { }
 }

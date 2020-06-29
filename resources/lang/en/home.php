@@ -61,6 +61,7 @@ return [
 	'recharge_credit'                 => 'Recharge Credit',
 	'payment_method'                  => 'charge method',
 	'close'                           => 'Close',
+	'cancel'                          => 'Cancel',
 	'redeem_score'                    => 'Redeem for bandwidth',
 	'redeem'                          => 'Redeem',
 	'redeem_info'                     => 'You have got :score points and can redeem :score M free bandwidth.',

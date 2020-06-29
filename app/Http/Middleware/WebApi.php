@@ -3,11 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 use Illuminate\Http\Request;
 use Response;
 
-class WebApi extends Middleware {
+class WebApi{
 	/**
 	 * Handle an incoming request.
 	 *
