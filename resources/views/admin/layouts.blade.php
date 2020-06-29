@@ -135,32 +135,30 @@
 							<span class="site-menu-title">余额变动</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['subscribe/subscribeList']) ? 'active open' : ''}}">
-						<a href="/subscribe/subscribeList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['subscribe/list']) ? 'active open' : ''}}">
+						<a href="/subscribe/list" class="animsition-link">
 							<span class="site-menu-title">订阅管理</span>
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket/ticketList', 'ticket/addTicket','ticket/replyTicket', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/pushList', 'marketing/emailList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket/list', 'ticket/add','ticket/reply', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/push', 'marketing/email']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
 					<span class="site-menu-title">客服系统</span>
 					@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )
 						<div class="site-menu-badge">
-							<span
-									class="badge badge-pill badge-success">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+							<span class="badge badge-pill badge-success">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
 						</div>
 					@endif
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['ticket/ticketList', 'ticket/addTicket','ticket/replyTicket']) ? 'active open' : ''}}">
-						<a href="/ticket/ticketList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['ticket/list', 'ticket/add','ticket/reply']) ? 'active open' : ''}}">
+						<a href="/ticket/list" class="animsition-link">
 							<span class="site-menu-title">服务工单</span>
 							@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )
 								<div class="site-menu-label">
-									<span
-											class="badge badge-danger badge-round mr-25">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+									<span class="badge badge-danger badge-round mr-25">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
 								</div>
 							@endif
 						</a>
@@ -170,72 +168,72 @@
 							<span class="site-menu-title">文章管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['marketing/pushList']) ? 'active open' : ''}}">
-						<a href="/marketing/pushList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['marketing/push']) ? 'active open' : ''}}">
+						<a href="/marketing/push" class="animsition-link">
 							<span class="site-menu-title">消息推送</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['marketing/emailList']) ? 'active open' : ''}}">
-						<a href="/marketing/emailList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['marketing/email']) ? 'active open' : ''}}">
+						<a href="/marketing/email" class="animsition-link">
 							<span class="site-menu-title">邮件群发</span>
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor', 'admin/nodePingLog']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['node/list', 'node/add', 'node/edit', 'node/monitor', 'node/pingLog']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
 					<span class="site-menu-title">线路系统</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['admin/nodeList', 'admin/addNode', 'admin/editNode', 'admin/nodeMonitor']) ? 'active open' : ''}}">
-						<a href="/admin/nodeList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['node/list', 'node/add', 'node/edit', 'node/monitor']) ? 'active open' : ''}}">
+						<a href="/node/list" class="animsition-link">
 							<span class="site-menu-title">线路管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['admin/nodePingLog']) ? 'active open' : ''}}">
-						<a href="/admin/nodePingLog">
+					<li class="site-menu-item {{in_array(Request::path(), ['node/pingLog']) ? 'active open' : ''}}">
+						<a href="/node/pingLog">
 							<span class="site-menu-title">测速日志</span>
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['rule/ruleList', 'rule/addRule', 'rule/editRule', 'rule/ruleGroupList', 'rule/addRuleGroup', 'rule/editRuleGroup', 'rule/assignNode', 'rule/ruleLogList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['rule/list', 'rule/add', 'rule/edit', 'rule/group/list', 'rule/group/add', 'rule/group/edit', 'rule/group/assign', 'rule/log']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-eye" aria-hidden="true"></i>
 					<span class="site-menu-title">审计规则</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['rule/ruleList', 'rule/addRule', 'rule/editRule']) ? 'active open' : ''}}">
-						<a href="/rule/ruleList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['rule/list', 'rule/add', 'rule/edit']) ? 'active open' : ''}}">
+						<a href="/rule/list" class="animsition-link">
 							<span class="site-menu-title">规则列表</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['rule/ruleGroupList', 'rule/addRuleGroup', 'rule/editRuleGroup', 'rule/assignNode']) ? 'active open' : ''}}">
-						<a href="/rule/ruleGroupList">
+					<li class="site-menu-item {{in_array(Request::path(), ['rule/group/list', 'rule/group/add', 'rule/group/edit', 'rule/group/assign']) ? 'active open' : ''}}">
+						<a href="/rule/group/list">
 							<span class="site-menu-title">规则分组</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['rule/ruleLogList']) ? 'active open' : ''}}">
-						<a href="/rule/ruleLogList">
+					<li class="site-menu-item {{in_array(Request::path(), ['rule/log']) ? 'active open' : ''}}">
+						<a href="/rule/log">
 							<span class="site-menu-title">触发记录</span>
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['shop/goodsList', 'shop/addGoods', 'shop/editGoods', 'coupon/couponList', 'coupon/addCoupon','admin/orderList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['shop/list', 'shop/add', 'shop/edit', 'coupon/list', 'coupon/add','admin/orderList']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
 					<span class="site-menu-title">商品系统</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['shop/goodsList', 'shop/addGoods', 'shop/editGoods']) ? 'active open' : ''}}">
-						<a href="/shop/goodsList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['shop/list', 'shop/add', 'shop/edit']) ? 'active open' : ''}}">
+						<a href="/shop/list" class="animsition-link">
 							<span class="site-menu-title">商品管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['coupon/couponList', 'coupon/addCoupon']) ? 'active open' : ''}}">
-						<a href="/coupon/couponList" class="animsition-link">
+					<li class="site-menu-item {{in_array(Request::path(), ['coupon/list', 'coupon/add']) ? 'active open' : ''}}">
+						<a href="/coupon/list" class="animsition-link">
 							<span class="site-menu-title">卡券管理</span>
 						</a>
 					</li>

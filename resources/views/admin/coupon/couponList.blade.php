@@ -9,7 +9,7 @@
 				<h1 class="panel-title">卡券列表</h1>
 				<div class="panel-actions btn-group">
 					<button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>批量导出</button>
-					<a href="{{url('/coupon/addCoupon')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
+					<a href="{{url('/coupon/add')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
 				</div>
 			</div>
 			<div class="panel-body">
@@ -35,7 +35,7 @@
 					</div>
 					<div class="form-group col-lg-3 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="{{url('/coupon/couponList')}}" class="btn btn-danger">重 置</a>
+						<a href="{{url('/coupon/list')}}" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -134,7 +134,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/coupon/couponList' + '?sn=' + $("#sn").val() + '&type=' + $("#type").val() + '&status=' + $("#status").val();
+			window.location.href = '/coupon/list' + '?sn=' + $("#sn").val() + '&type=' + $("#type").val() + '&status=' + $("#status").val();
 		}
 
 		// 批量导出卡券
@@ -148,7 +148,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					window.location.href = '/coupon/exportCoupon';
+					window.location.href = '/coupon/export';
 				}
 			});
 		}
@@ -164,7 +164,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/coupon/delCoupon", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/coupon/delete", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())

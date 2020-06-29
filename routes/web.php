@@ -28,13 +28,6 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post('delUser', 'AdminController@delUser'); // 删除账号
 		Route::post('batchAddUsers', 'AdminController@batchAddUsers'); // 批量生成账号
 		Route::get('exportSSJson', 'AdminController@exportSSJson'); // 导出原版SS的json配置信息
-		Route::any('nodeList', 'AdminController@nodeList'); // 节点列表
-		Route::any('addNode', 'AdminController@addNode'); // 添加节点
-		Route::any('editNode', 'AdminController@editNode'); // 编辑节点
-		Route::post('delNode', 'AdminController@delNode'); // 删除节点
-		Route::get('nodeMonitor/{id}', 'AdminController@nodeMonitor'); // 节点流量监控
-		Route::post('pingNode', 'AdminController@pingNode'); // 节点ping测速
-		Route::get('nodePingLog', 'AdminController@nodePingLog'); //节点Ping测速日志
 		Route::get('articleList', 'AdminController@articleList'); // 文章列表
 		Route::any('addArticle', 'AdminController@addArticle'); // 添加文章
 		Route::any('editArticle', 'AdminController@editArticle'); // 编辑文章
@@ -83,38 +76,49 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::get('userRebateList', 'AffiliateController@userRebateList'); // 返利流水记录
 		});
 	});
+	Route::group(['prefix' => 'node'], function() {
+		Route::any('list', 'NodeController@nodeList'); // 节点列表
+		Route::any('add', 'NodeController@addNode'); // 添加节点
+		Route::any('edit', 'NodeController@editNode'); // 编辑节点
+		Route::post('delete', 'NodeController@delNode'); // 删除节点
+		Route::get('monitor/{id}', 'NodeController@nodeMonitor'); // 节点流量监控
+		Route::post('ping', 'NodeController@pingNode'); // 节点ping测速
+		Route::get('pingLog', 'NodeController@pingLog'); //节点Ping测速日志
+	});
 
 	Route::group(['namespace' => 'Admin'], function() {
 		Route::group(['prefix' => 'ticket'], function() {
-			Route::get('ticketList', 'TicketController@ticketList'); // 工单列表
-			Route::any('replyTicket', 'TicketController@replyTicket'); // 回复工单
-			Route::post('closeTicket', 'TicketController@closeTicket'); // 关闭工单
+			Route::get('list', 'TicketController@ticketList'); // 工单列表
+			// Todo: 创建工单
+			// Route::post('create', 'TicketController@createTicket'); // 创建工单
+			Route::post('close', 'TicketController@closeTicket'); // 关闭工单
+			Route::any('reply', 'TicketController@replyTicket'); // 回复工单
 		});
 
 		Route::group(['prefix' => 'coupon'], function() {
-			Route::any('couponList', 'CouponController@couponList'); // 优惠券列表
-			Route::any('addCoupon', 'CouponController@addCoupon'); // 添加优惠券
-			Route::post('delCoupon', 'CouponController@delCoupon'); // 删除优惠券
-			Route::get('exportCoupon', 'CouponController@exportCoupon'); // 导出优惠券
+			Route::any('list', 'CouponController@couponList'); // 优惠券列表
+			Route::any('add', 'CouponController@addCoupon'); // 添加优惠券
+			Route::post('delete', 'CouponController@delCoupon'); // 删除优惠券
+			Route::get('export', 'CouponController@exportCoupon'); // 导出优惠券
 		});
 
 		Route::group(['prefix' => 'shop'], function() {
-			Route::any('goodsList', 'ShopController@goodsList'); // 商品列表
-			Route::any('addGoods', 'ShopController@addGoods'); // 添加商品
-			Route::any('editGoods/{id}', 'ShopController@editGoods'); // 编辑商品
-			Route::post('delGoods', 'ShopController@delGoods'); // 删除商品
+			Route::any('list', 'ShopController@goodsList'); // 商品列表
+			Route::any('add', 'ShopController@addGoods'); // 添加商品
+			Route::any('edit/{id}', 'ShopController@editGoods'); // 编辑商品
+			Route::post('delete', 'ShopController@delGoods'); // 删除商品
 		});
 
 		Route::group(['prefix' => 'subscribe'], function() {
-			Route::get('subscribeList', 'SubscribeController@subscribeList'); // 订阅码列表
-			Route::get('subscribeLog', 'SubscribeController@subscribeLog'); // 订阅码记录
-			Route::post('setSubscribeStatus', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
+			Route::get('list', 'SubscribeController@subscribeList'); // 订阅码列表
+			Route::get('log', 'SubscribeController@subscribeLog'); // 订阅码记录
+			Route::post('set', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
 		});
 
 		Route::group(['prefix' => 'marketing'], function() {
-			Route::get("emailList", "MarketingController@emailList"); // 邮件消息列表
-			Route::get("pushList", "MarketingController@pushList"); // 推送消息列表
-			Route::post("addPushMarketing", "MarketingController@addPushMarketing"); // 推送消息
+			Route::get("email", "MarketingController@emailList"); // 邮件消息列表
+			Route::get("push", "MarketingController@pushList"); // 推送消息列表
+			Route::post("add", "MarketingController@addPushMarketing"); // 推送消息
 		});
 
 		Route::group(['prefix' => 'sensitiveWords'], function() {
@@ -134,17 +138,19 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 
 		// 节点审计规则相关
 		Route::group(['prefix' => 'rule'], function() {
-			Route::get('ruleList', 'RuleController@ruleList'); // 审计规则列表
-			Route::post('addRule', 'RuleController@addRule'); // 添加审计规则
-			Route::post('editRule', 'RuleController@editRule'); // 删除审计规则
-			Route::post('delRule/{id}', 'RuleController@delRule'); // 删除审计规则
-			Route::get('ruleGroupList', 'RuleController@ruleGroupList'); // 审计规则分组列表
-			Route::any('addRuleGroup', 'RuleController@addRuleGroup'); // 添加审计规则分组
-			Route::any('editRuleGroup', 'RuleController@editRuleGroup'); // 编辑审计规则分组
-			Route::post('delRuleGroup/{id}', 'RuleController@delRuleGroup'); // 删除审计规则分组
-			Route::any('assignNode', 'RuleController@assignNode'); // 规则分组关联节点
-			Route::get('ruleLogList', 'RuleController@ruleLogList'); // 用户触发审计规则日志
-			Route::post('clearLog', 'RuleController@clearLog'); // 清除所有审计触发日志
+			Route::get('list', 'RuleController@ruleList'); // 审计规则列表
+			Route::post('add', 'RuleController@addRule'); // 添加审计规则
+			Route::post('edit', 'RuleController@editRule'); // 删除审计规则
+			Route::post('delete/{id}', 'RuleController@delRule'); // 删除审计规则
+			Route::group(['prefix' => 'group'], function() {
+				Route::get('list', 'RuleController@ruleGroupList'); // 审计规则分组列表
+				Route::any('add', 'RuleController@addRuleGroup'); // 添加审计规则分组
+				Route::any('edit', 'RuleController@editRuleGroup'); // 编辑审计规则分组
+				Route::post('delete/{id}', 'RuleController@delRuleGroup'); // 删除审计规则分组
+				Route::any('assign', 'RuleController@assignNode'); // 规则分组关联节点
+			});
+			Route::get('log', 'RuleController@ruleLogList'); // 用户触发审计规则日志
+			Route::post('clear', 'RuleController@clearLog'); // 清除所有审计触发日志
 		});
 	});
 
@@ -160,7 +166,7 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 	Route::post('checkIn', 'UserController@checkIn'); // 签到
 	Route::get('services', 'UserController@services'); // 商品列表
 	Route::get('tickets', 'UserController@ticketList'); // 工单
-	Route::post('addTicket', 'UserController@addTicket'); // 快速添加工单
+	Route::post('createTicket', 'UserController@createTicket'); // 快速添加工单
 	Route::any('replyTicket', 'UserController@replyTicket'); // 回复工单
 	Route::post('closeTicket', 'UserController@closeTicket'); // 关闭工单
 	Route::get('invoices', 'UserController@invoices'); // 订单列表

@@ -27,7 +27,7 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<form action={{url('/rule/assignNode')}} method="post" enctype="multipart/form-data" class="form-horizontal">
+				<form action={{url('/rule/group/assign')}} method="post" enctype="multipart/form-data" class="form-horizontal">
 					<input name="id" value="{{$ruleGroup->id}}" required hidden/>
 					@csrf
 					<div class="form-group row">

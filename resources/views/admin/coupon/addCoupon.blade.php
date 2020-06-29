@@ -15,7 +15,7 @@
 			<div class="panel-heading">
 				<h1 class="panel-title">生成卡券</h1>
 				<div class="panel-actions">
-					<a href="{{url('/coupon/couponList')}}" class="btn btn-danger">返 回</a>
+					<a href="{{url('/coupon/list')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
@@ -33,7 +33,7 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<form action="{{url('/coupon/addCoupon')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+				<form action="{{url('/coupon/add')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					{{csrf_field()}}
 					<div class="form-group row">
 						<label class="col-md-2 col-form-label" for="name">卡券名称</label>

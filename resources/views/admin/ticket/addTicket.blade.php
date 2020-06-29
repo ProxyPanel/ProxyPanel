@@ -14,7 +14,7 @@
 				<h1 class="panel-title cyan-600"><i class="icon wb-add"></i>发起工单</h1>
 			</div>
 			<div class="panel-body">
-				<form action="/ticket/addTicket" method="post" enctype="multipart/form-data" class="form-horizontal"
+				<form action="/ticket/add" method="post" enctype="multipart/form-data" class="form-horizontal"
 						onsubmit="return Submit()">
 					<div class="form-body">
 						<div class="form-group">
@@ -57,7 +57,7 @@
 		function Submit() {
 			$.ajax({
 				type: "POST",
-				url: "/ticket/addTicket",
+				url: "/ticket/add",
 				async: false,
 				data: {
 					_token: '{{csrf_token()}}',
@@ -68,7 +68,7 @@
 				dataType: 'json',
 				success: function (ret) {
 					swal.fire({title: ret.message, type: 'success', timer: 1000})
-						.then(() => window.location.href = '/ticket/ticketList');
+						.then(() => window.location.href = '/ticket/list');
 				}
 			});
 			return false;

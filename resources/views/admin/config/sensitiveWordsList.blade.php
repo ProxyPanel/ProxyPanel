@@ -133,7 +133,7 @@
 				confirmButtonText: '确定',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/sensitiveWords/del", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/sensitiveWords/delete", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())

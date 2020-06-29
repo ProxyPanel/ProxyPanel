@@ -23,7 +23,7 @@
 					</div>
 					<div class="form-group col-lg-3 col-sm-6 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/marketing/emailList" class="btn btn-danger">重 置</a>
+						<a href="/marketing/email" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -81,7 +81,7 @@
 		}
 
 		function Search() {
-			window.location.href = "/marketing/emailList?status=" + $("#status option:selected").val();
+			window.location.href = "/marketing/email?status=" + $("#status option:selected").val();
 		}
 	</script>
 @endsection

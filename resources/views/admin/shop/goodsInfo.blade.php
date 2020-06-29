@@ -19,7 +19,7 @@
 					@isset($goods) 编辑商品 @else 添加商品 @endisset
 				</h1>
 				<div class="panel-actions">
-					<a href="{{url('/shop/goodsList')}}" class="btn btn-danger">返 回</a>
+					<a href="{{url('/shop/list')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
@@ -39,7 +39,7 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<form action=@isset($goods){{url('/shop/editGoods/'.$goods->id)}} @else {{url('/shop/addGoods')}} @endisset"" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+				<form action=@isset($goods){{url('/shop/edit/'.$goods->id)}} @else {{url('/shop/add')}} @endisset"" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					{{csrf_field()}}
 					<label>
 						<input name="id" hidden/>

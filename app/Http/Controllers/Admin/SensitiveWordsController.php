@@ -20,7 +20,7 @@ class SensitiveWordsController extends Controller {
 	public function sensitiveWordsList() {
 		$view['list'] = SensitiveWords::query()->orderByDesc('id')->paginate(15);
 
-		return Response::view('admin.sensitiveWords.sensitiveWordsList', $view);
+		return Response::view('admin.config.sensitiveWordsList', $view);
 	}
 
 	// 添加敏感词

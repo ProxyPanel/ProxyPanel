@@ -26,7 +26,7 @@
 						</select>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-						<a href="/rule/ruleList" class="btn btn-danger">重 置</a>
+						<a href="/rule/list" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -133,7 +133,7 @@
 	<script type="text/javascript">
 		// 添加规则
 		function addRule() {
-			$.post("/rule/addRule", {
+			$.post("/rule/add", {
 				_token: '{{csrf_token()}}',
 				type: $("#add_type").val(),
 				name: $("#name").val(),
@@ -150,7 +150,7 @@
 
 		// 编辑规则
 		function editRule(id) {
-			$.post("/rule/editRule", {
+			$.post("/rule/edit", {
 				_token: '{{csrf_token()}}',
 				id: id,
 				rule_name: $('#rule_name_' + id).val(),
@@ -176,7 +176,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/rule/delRule/" + id, {_token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/rule/delete/" + id, {_token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())
@@ -198,7 +198,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/rule/ruleList?type=' + $("#type").val();
+			window.location.href = '/rule/list?type=' + $("#type").val();
 		}
 	</script>
 @endsection

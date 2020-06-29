@@ -13,7 +13,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">节点列表</h3>
 				<div class="panel-actions">
-					<a href="/admin/addNode" class="btn btn-primary"><i class="icon wb-plus"></i> 添加节点</a>
+					<a href="/node/add" class="btn btn-primary"><i class="icon wb-plus"></i> 添加节点</a>
 				</div>
 			</div>
 			<div class="panel-body">
@@ -67,11 +67,11 @@
 												id="ping{{$node->id}}" class="icon wb-order"></i></a>
 									<a href="javascript:testNode('{{$node->id}}')" class="btn btn-primary"><i
 												id="node{{$node->id}}" class="icon wb-signal"></i></a>
-									<a href="/admin/editNode?id={{$node->id}}&page={{Request::get('page', 1)}}"
+									<a href="/node/edit?id={{$node->id}}&page={{Request::get('page', 1)}}"
 											class="btn btn-primary"><i class="icon wb-edit"></i></a>
 									<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')"
 											class="btn btn-danger"><i class="icon wb-trash"></i></a>
-									<a href="/admin/nodeMonitor/{{$node->id}}" class="btn btn-primary"><i
+									<a href="/node/monitor/{{$node->id}}" class="btn btn-primary"><i
 												class="icon wb-stats-bars"></i></a>
 								</div>
 							</td>
@@ -104,7 +104,7 @@
 		function testNode(id) {
 			$.ajax({
 				type: "POST",
-				url: '/admin/nodeList',
+				url: '/node/list',
 				data: {_token: '{{csrf_token()}}', id: id},
 				beforeSend: function () {
 					$("#node" + id).removeClass("wb-signal").addClass("wb-loop icon-spin");
@@ -131,7 +131,7 @@
 		function pingNode(id) {
 			$.ajax({
 				type: "POST",
-				url: '/admin/pingNode',
+				url: '/node/ping',
 				data: {_token: '{{csrf_token()}}', id: id},
 				beforeSend: function () {
 					$("#ping" + id).removeClass("wb-order").addClass("wb-loop icon-spin");
@@ -164,7 +164,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/admin/delNode", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/node/delete", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())

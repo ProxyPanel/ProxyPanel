@@ -21,7 +21,7 @@
 					</div>
 					<div class="form-group col-lg-1 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/admin/nodePingLog" class="btn btn-danger">重 置</a>
+						<a href="/node/pingLog" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -74,7 +74,7 @@
 	<script type="text/javascript">
 		// 搜索
 		function Search() {
-			window.location.href = '/admin/nodePingLog?&nodeId=' + $("#nodeId option:selected").val();
+			window.location.href = '/node/pingLog?&nodeId=' + $("#nodeId option:selected").val();
 		}
 	</script>
 @endsection

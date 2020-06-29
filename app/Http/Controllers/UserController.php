@@ -369,7 +369,7 @@ class UserController extends Controller {
 	}
 
 	// 添加工单
-	public function addTicket(Request $request) {
+	public function createTicket(Request $request) {
 		$title = $request->input('title');
 		$content = clean($request->input('content'));
 		$content = str_replace("eval", "", str_replace("atob", "", $content));
