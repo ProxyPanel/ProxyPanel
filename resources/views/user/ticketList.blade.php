@@ -132,7 +132,7 @@
 					<button type="button" data-dismiss="modal"
 							class="btn btn-danger"> {{trans('home.ticket_cancel')}} </button>
 					<button type="button" data-dismiss="modal" class="btn btn-success"
-							onclick="addTicket()"> {{trans('home.ticket_confirm')}} </button>
+							onclick="createTicket()"> {{trans('home.ticket_confirm')}} </button>
 				</div>
 			</div>
 		</div>
@@ -141,7 +141,7 @@
 @section('script')
 	<script type="text/javascript">
 		// 发起工单
-		function addTicket() {
+		function createTicket() {
 			const title = $('#title').val();
 			const content = $('#content').val();
 
@@ -163,7 +163,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/addTicket", {
+					$.post("/createTicket", {
 						_token: '{{csrf_token()}}',
 						title: title,
 						content: content

@@ -9,7 +9,7 @@
 				<h1 class="panel-title cyan-600"><i class="icon wb-help-circle"></i> {{$ticket->title}} </h1>
 				@if($ticket->status != 2)
 					<div class="panel-actions">
-						<a href="/ticket/ticketList" class="btn btn-default">返 回</a>
+						<a href="/ticket/list" class="btn btn-default">返 回</a>
 						<button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
 					</div>
 				@endif
@@ -113,7 +113,7 @@
 				if (result.value) {
 					$.ajax({
 						type: "POST",
-						url: "/ticket/closeTicket",
+						url: "/ticket/close",
 						async: true,
 						data: {_token: '{{csrf_token()}}', id: '{{$ticket->id}}'},
 						dataType: 'json',
@@ -123,7 +123,7 @@
 								type: 'success',
 								timer: 1000,
 								showConfirmButton: false
-							}).then(() => window.location.href = '/ticket/ticketList')
+							}).then(() => window.location.href = '/ticket/list')
 						},
 						error: function () {
 							swal.fire("未知错误！请通知客服！")
@@ -150,7 +150,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/ticket/replyTicket", {
+					$.post("/ticket/reply", {
 						_token: '{{csrf_token()}}',
 						id: '{{$ticket->id}}',
 						content: content

@@ -182,7 +182,7 @@ class ShopController extends Controller {
 				DB::rollBack();
 			}
 
-			return Redirect::to('shop/editGoods/'.$id);
+			return Redirect::to('shop/edit/'.$id);
 		}else{
 			$goods = Goods::query()->whereId($id)->first();
 

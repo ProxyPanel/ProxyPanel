@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">工单列表</h3>
 				<div class="panel-actions">
-					<a href="/ticket/addTicket" class="btn btn-primary btn-animate btn-animate-side">
+					<a href="/ticket/add" class="btn btn-primary btn-animate btn-animate-side">
 						<span><i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}
 						</span>
 					</a>
@@ -22,7 +22,7 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/ticket/ticketList" class="btn btn-danger">重 置</a>
+						<a href="/ticket/list" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -48,7 +48,7 @@
 							</td>
 
 							<td>
-								<a href="/ticket/replyTicket?id={{$ticket->id}}" target="_blank">{{$ticket->title}}</a>
+								<a href="/ticket/reply?id={{$ticket->id}}" target="_blank">{{$ticket->title}}</a>
 							</td>
 							<td>
 								{!!$ticket->status_label!!}
@@ -88,7 +88,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/ticket/ticketList?email=' + $("#email").val();
+			window.location.href = '/ticket/list?email=' + $("#email").val();
 		}
 	</script>
 @endsection

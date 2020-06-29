@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>商品列表</h1>
 				<div class="panel-actions">
-					<a href="/shop/addGoods" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
+					<a href="/shop/add" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
 				</div>
 			</div>
 			<div class="panel-body">
@@ -29,7 +29,7 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/shop/goodsList" class="btn btn-danger">重 置</a>
+						<a href="/shop/list" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -90,7 +90,7 @@
 							</td>
 							<td>
 								<div class="btn-group">
-									<a href="/shop/editGoods/{{$goods->id}}" class="btn btn-primary"><i
+									<a href="/shop/edit/{{$goods->id}}" class="btn btn-primary"><i
 												class="icon wb-edit"></i></a>
 									<button class="btn btn-danger"
 											onclick="delGoods('{{$goods->id}}','{{$goods->name}}')"><i
@@ -129,7 +129,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/shop/goodsList?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
+			window.location.href = '/shop/list?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
 		}
 
 		// 删除商品
@@ -143,7 +143,7 @@
 				confirmButtonText: '确定',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/shop/delGoods", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/shop/delete", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
 						swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false,})
 							.then(() => {
 								window.location.reload();

@@ -22,7 +22,7 @@
 				<strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
 			</div>
 			<div class="panel-body">
-				<form action=@isset($node){{url('/admin/editNode')}} @else {{url('/admin/addNode')}} @endisset method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return Submit()">
+				<form action=@isset($node){{url('/node/edit')}} @else {{url('/node/add')}} @endisset method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return Submit()">
 					<div class="row">
 						<div class="col-lg-6">
 							<div class="example-wrap">
@@ -473,7 +473,7 @@
 		function Submit() {
 			$.ajax({
 				type: "POST",
-				url: @isset($node) "/admin/editNode" @else "/admin/addNode" @endisset,
+				url: @isset($node) "/node/edit" @else "/node/add" @endisset,
 				async: false,
 				data: {
 					_token: '{{csrf_token()}}',
@@ -524,7 +524,7 @@
 				success: function (ret) {
 					if (ret.status === 'success') {
 						swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-							.then(() => window.location.href = '/admin/nodeList')
+							.then(() => window.location.href = '/node/list')
 					} else {
 						swal.fire({
 							title: '[错误 | Error]',

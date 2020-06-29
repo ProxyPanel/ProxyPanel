@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h2 class="panel-title">规则分组</h2>
 				<div class="panel-actions">
-					<a href="/rule/addRuleGroup" class="btn btn-outline-primary">
+					<a href="/rule/group/add" class="btn btn-outline-primary">
 						<i class="icon wb-plus" aria-hidden="true"></i>添加分组
 					</a>
 				</div>
@@ -31,10 +31,10 @@
 							<td> {!! $ruleGroup->type_label !!} </td>
 							<td>
 								<div class="btn-group">
-									<a href="/rule/assignNode?id={{$ruleGroup->id}}" class="btn btn-sm btn-outline-primary">
+									<a href="/rule/group/assign?id={{$ruleGroup->id}}" class="btn btn-sm btn-outline-primary">
 										<i class="icon wb-plus" aria-hidden="true"></i>分配节点
 									</a>
-									<a href="/rule/editRuleGroup?id={{$ruleGroup->id}}" class="btn btn-sm btn-outline-primary">
+									<a href="/rule/group/edit?id={{$ruleGroup->id}}" class="btn btn-sm btn-outline-primary">
 										<i class="icon wb-edit"></i>编辑
 									</a>
 									<button onclick="delRuleGroup('{{$ruleGroup->id}}', '{{$ruleGroup->name}}')" class="btn btn-sm btn-outline-danger">
@@ -77,7 +77,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/rule/delRuleGroup/" + id, {_token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/rule/group/delete/" + id, {_token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())

@@ -26,7 +26,7 @@
 						<tr>
 							<td>{{$loop->iteration}}</td>
 							<td>
-								<a href="/admin/editNode?id={{$node->id}}" target="_blank"> {{$node->name}} </a>
+								<a href="/node/edit?id={{$node->id}}" target="_blank"> {{$node->name}} </a>
 							</td>
 							<td>
 								@if($node->compatible) <span class="label label-info">兼</span> @endif
