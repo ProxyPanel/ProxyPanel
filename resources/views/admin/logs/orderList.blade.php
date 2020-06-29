@@ -116,7 +116,7 @@
 								@endif
 							</td>
 							<td> {{$order->order_sn}}</td>
-							<td> {{$order->goods_id == -1? "余额充值" :$order->goods->name}} </td>
+							<td> {{empty($order->goods) ? ($order->goods_id == 0 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}} </td>
 							<td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
 							<td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
 							<td> ￥{{$order->origin_amount}} </td>

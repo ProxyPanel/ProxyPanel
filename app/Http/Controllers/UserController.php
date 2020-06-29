@@ -302,7 +302,6 @@ class UserController extends Controller {
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = $user->reset_time? $user->reset_time : $user->expire_time;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
-		$view['purchaseHTML'] = PaymentController::purchaseHTML();
 
 		return Response::view('user.services', $view);
 	}
@@ -559,7 +558,6 @@ class UserController extends Controller {
 			                           $q->whereType(2);
 		                           })
 		                           ->exists();
-		$view['purchaseHTML'] = PaymentController::purchaseHTML();
 		$view['goods'] = $goods;
 
 		return Response::view('user.buy', $view);

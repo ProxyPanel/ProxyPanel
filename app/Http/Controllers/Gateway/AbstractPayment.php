@@ -6,6 +6,7 @@ use App\Components\Helpers;
 use App\Models\Goods;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\PaymentCallback;
 use App\Models\ReferralLog;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,24 +19,11 @@ abstract class AbstractPayment {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public static function generateGuid() {
-		mt_srand((double) microtime() * 10000);
-		$charId = strtoupper(md5(uniqid(mt_rand() + time(), true)));
-		$hyphen = chr(45);
-		$uuid = chr(123).substr($charId, 0, 8).$hyphen.substr($charId, 8, 4).$hyphen.substr($charId, 12,
-				4).$hyphen.substr($charId, 16, 4).$hyphen.substr($charId, 20, 12).chr(125);
-
-		$uuid = str_replace(['}', '{', '-'], '', $uuid);
-		$uuid = substr($uuid, 0, 8);
-
-		return $uuid;
-	}
-
 	abstract public function purchase(Request $request);
 
 	abstract public function notify(Request $request);
 
-	public function postPayment($data, $method) {
+	protected function postPayment($data, $method) {
 		// 获取需要的信息
 		$payment = Payment::whereTradeNo($data)->first();
 		// 是否为余额购买套餐
@@ -49,8 +37,8 @@ abstract class AbstractPayment {
 		$user = User::find($order->user_id);
 
 		//余额充值
-		if($order->goods_id == -1){
-			Order::query()->whereOid($order->oid)->update(['status'=>2]);
+		if($order->goods_id == 0 || $order->goods_id == NULL){
+			Order::query()->whereOid($order->oid)->update(['status' => 2]);
 			User::query()->whereId($order->user_id)->increment('credit', $order->amount * 100);
 			// 余额变动记录日志
 			Helpers::addUserCreditLog($order->user_id, $order->oid, $order->user->credit,
@@ -62,7 +50,7 @@ abstract class AbstractPayment {
 		// 商品为流量或者套餐
 		switch($goods->type){
 			case 1:
-				Order::query()->whereOid($order->oid)->update(['status'=>2]);
+				Order::query()->whereOid($order->oid)->update(['status' => 2]);
 				User::query()->whereId($order->user_id)->increment('transfer_enable', $goods->traffic * MB);
 				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable,
 					$user->transfer_enable + $goods->traffic * MB, '['.$method.']加上用户购买的套餐流量');
@@ -166,6 +154,45 @@ abstract class AbstractPayment {
 		$log->amount = $amount;
 		$log->ref_amount = $refAmount;
 		$log->status = 0;
+
+		return $log->save();
+	}
+
+	protected function creatNewPayment($uid, $oid, $amount) {
+		$payment = new Payment();
+		$payment->trade_no = self::generateGuid();
+		$payment->user_id = $uid;
+		$payment->oid = $oid;
+		$payment->amount = $amount;
+		$payment->save();
+
+		return $payment;
+	}
+
+	public static function generateGuid() {
+		mt_srand((double) microtime() * 10000);
+		$charId = strtoupper(md5(uniqid(mt_rand() + time(), true)));
+		$hyphen = chr(45);
+		$uuid = chr(123).substr($charId, 0, 8).$hyphen.substr($charId, 8, 4).$hyphen.substr($charId, 12,
+				4).$hyphen.substr($charId, 16, 4).$hyphen.substr($charId, 20, 12).chr(125);
+
+		$uuid = str_replace(['}', '{', '-'], '', $uuid);
+		$uuid = substr($uuid, 0, 8);
+
+		return $uuid;
+	}
+
+	/**
+	 * @param  string  $trade_no      本地订单号
+	 * @param  string  $out_trade_no  外部订单号
+	 * @param  int     $amount        交易金额
+	 * @return int
+	 */
+	protected function addPamentCallback($trade_no, $out_trade_no, $amount) {
+		$log = new PaymentCallback();
+		$log->trade_no = $trade_no;
+		$log->out_trade_no = $out_trade_no;
+		$log->amount = $amount;
 
 		return $log->save();
 	}

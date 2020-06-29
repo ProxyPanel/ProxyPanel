@@ -58,7 +58,7 @@
 						<tbody>
 						<tr>
 							<td>
-								<h3>{{empty($order->goods) ? ($order->goods_id == -1 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</h3>
+								<h3>{{empty($order->goods) ? ($order->goods_id == 0 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</h3>
 							</td>
 							<td>
 								@if($order->goods)

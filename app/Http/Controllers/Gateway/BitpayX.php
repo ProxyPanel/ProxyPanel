@@ -1,29 +1,16 @@
 <?php
 
-
 namespace App\Http\Controllers\Gateway;
-
 
 use App\Models\Payment;
 use Auth;
-use Illuminate\Http\Request;
 use Response;
 
 class BitpayX extends AbstractPayment {
 	private $bitpayGatewayUri = 'https://api.mugglepay.com/v1/';
 
-	/**
-	 * @param  Request  $request
-	 *
-	 * @return mixed
-	 */
-	public function purchase(Request $request) {
-		$payment = new Payment();
-		$payment->trade_no = self::generateGuid();
-		$payment->user_id = Auth::id();
-		$payment->oid = $request->input('oid');
-		$payment->amount = $request->input('amount');
-		$payment->save();
+	public function purchase($request) {
+		$payment = $this->creatNewPayment(Auth::id(),$request->input('oid'),$request->input('amount'));
 
 		$data = [
 			'merchant_order_id' => $payment->trade_no,
@@ -95,7 +82,7 @@ class BitpayX extends AbstractPayment {
 		return $data;
 	}
 
-	public function notify(Request $request) {
+	public function notify($request) {
 		$inputString = file_get_contents('php://input', 'r');
 		$inputStripped = str_replace(["\r", "\n", "\t", "\v"], '', $inputString);
 		$inputJSON = json_decode($inputStripped, true); //convert JSON into array

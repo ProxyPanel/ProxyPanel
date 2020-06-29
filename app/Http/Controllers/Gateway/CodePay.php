@@ -8,12 +8,7 @@ use Response;
 
 class CodePay extends AbstractPayment {
 	public function purchase($request) {
-		$payment = new Payment();
-		$payment->trade_no = self::generateGuid();
-		$payment->user_id = Auth::id();
-		$payment->oid = $request->input('oid');
-		$payment->amount = $request->input('amount');
-		$payment->save();
+		$payment = $this->creatNewPayment(Auth::id(),$request->input('oid'),$request->input('amount'));
 
 		$data = [
 			'id'         => parent::$systemConfig['codepay_id'],

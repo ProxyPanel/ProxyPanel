@@ -15,8 +15,7 @@
 						<div class="content-text text-center mb-0">
 							<span class="font-size-40 font-weight-100">{{Auth::getUser()->credit}}</span>
 							<br/>
-							<button class="btn btn-danger float-right mr-15" data-toggle="modal"
-									data-target="#charge_modal">{{trans('home.recharge')}}</button>
+							<button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{trans('home.recharge')}}</button>
 						</div>
 					</div>
 				</div>
@@ -39,7 +38,8 @@
 			<div class="col-xxl-10 col-lg-9">
 				<div class="panel">
 					<div class="panel-heading p-20">
-						<h1 class="panel-title cyan-700"><i class="icon wb-shopping-cart"></i>{{trans('home.services')}}
+						<h1 class="panel-title cyan-700">
+							<i class="icon wb-shopping-cart"></i>{{trans('home.services')}}
 						</h1>
 					</div>
 					<div class="panel-body">
@@ -47,27 +47,22 @@
 							@foreach($goodsList as $goods)
 								<div class="col-md-6 col-xl-4 col-xxl-3 pb-30">
 									<div class="pricing-list text-left">
-										<div class="pricing-header text-white"
-												style="background-color: {{$goods->color}}">
+										<div class="pricing-header text-white" style="background-color: {{$goods->color}}">
 											<div class="pricing-title font-size-20">{{$goods->name}}</div>
 											@if($goods->limit_num)
-												<div
-														class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-primary mr-10">
+												<div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-primary mr-10">
 													<span class="ribbon-inner h-auto">限<br>购</span>
 												</div>
 											@elseif($goods->is_hot)
-												<div
-														class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-danger mr-10">
+												<div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-danger mr-10">
 													<span class="ribbon-inner h-auto">热<br>销</span>
 												</div>
 											@endif
-											<div
-													class="pricing-price text-white @if($goods->type == 1) text-center @endif">
+											<div class="pricing-price text-white @if($goods->type == 1) text-center @endif">
 												<span class="pricing-currency">¥</span>
 												<span class="pricing-amount">{{$goods->price}}</span>
 												@if($goods->type == 2)
-													<span
-															class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
+													<span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
 												@endif
 											</div>
 											@if($goods->info)
@@ -84,8 +79,7 @@
 											{!!$goods->info!!}
 										</ul>
 										<div class="pricing-footer text-center bg-blue-grey-100">
-											<a href="/buy/{{$goods->id}}"
-													class="btn btn-lg btn-primary"> {{trans('home.service_buy_button')}}</a>
+											<a href="/buy/{{$goods->id}}" class="btn btn-lg btn-primary"> {{trans('home.service_buy_button')}}</a>
 										</div>
 									</div>
 								</div>
@@ -125,8 +119,7 @@
 							<div class="form-group row charge_credit">
 								<label for="amount" class="offset-md-1 col-md-2 col-form-label">充值金额</label>
 								<div class="col-md-8">
-									<input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1
-											data-max=300 data-from=40 data-prefix="￥"/>
+									<input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="￥"/>
 								</div>
 							</div>
 						@endif
@@ -139,17 +132,13 @@
 									</p>
 									@if(\App\Components\Helpers::systemConfig()['wechat_qrcode'])
 										<div class="col-md-6">
-											<img class="w-p75 mb-10"
-													src="{{\App\Components\Helpers::systemConfig()['wechat_qrcode']}}"
-													alt=""/>
+											<img class="w-p75 mb-10" src="{{\App\Components\Helpers::systemConfig()['wechat_qrcode']}}" alt=""/>
 											<p>微 信 | WeChat</p>
 										</div>
 									@endif
 									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'])
 										<div class="col-md-6">
-											<img class="w-p75 mb-10"
-													src="{{\App\Components\Helpers::systemConfig()['alipay_qrcode']}}"
-													alt=""/>
+											<img class="w-p75 mb-10" src="{{\App\Components\Helpers::systemConfig()['alipay_qrcode']}}" alt=""/>
 											<p>支 付 宝 | AliPay</p>
 										</div>
 									@endif
@@ -160,8 +149,7 @@
 							<label for="charge_coupon"
 									class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
 							<div class="col-md-6">
-								<input type="text" class="form-control round" name="charge_coupon" id="charge_coupon"
-										placeholder="{{trans('home.please_input_coupon')}}">
+								<input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
 							</div>
 						</div>
 					</form>
@@ -170,8 +158,7 @@
 					<div class="btn btn-group-lg charge_credit">
 						@include('user.components.purchase')
 					</div>
-					<button type="button" class="btn btn-primary" id="change_btn"
-							onclick="pay()">{{trans('home.recharge')}}</button>
+					<button type="button" class="btn btn-primary" id="change_btn" onclick="pay()">{{trans('home.recharge')}}</button>
 				</div>
 			</div>
 		</div>
