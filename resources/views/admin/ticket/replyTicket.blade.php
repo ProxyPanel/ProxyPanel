@@ -9,7 +9,7 @@
 				<h1 class="panel-title cyan-600"><i class="icon wb-help-circle"></i> {{$ticket->title}} </h1>
 				@if($ticket->status != 2)
 					<div class="panel-actions">
-						<a href="/ticket/list" class="btn btn-default">返 回</a>
+						<a href="/ticket" class="btn btn-default">返 回</a>
 						<button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
 					</div>
 				@endif
@@ -123,7 +123,7 @@
 								type: 'success',
 								timer: 1000,
 								showConfirmButton: false
-							}).then(() => window.location.href = '/ticket/list')
+							}).then(() => window.location.href = '/ticket')
 						},
 						error: function () {
 							swal.fire("未知错误！请通知客服！")

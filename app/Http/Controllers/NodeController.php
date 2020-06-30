@@ -29,60 +29,59 @@ use Validator;
 class NodeController extends Controller {
 	// 节点列表
 	public function nodeList(Request $request) {
-		if($request->isMethod('POST')){
-			$id = $request->input('id');
-			$node = SsNode::query()->whereId($id)->first();
-			// 使用DDNS的node先获取ipv4地址
-			if($node->is_ddns){
-				$ip = gethostbyname($node->server);
-				if(strcmp($ip, $node->server) != 0){
-					$node->ip = $ip;
-				}else{
-					return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
-				}
-			}
-			$data[0] = NetworkDetection::networkCheck($node->ip, true); //ICMP
-			$data[1] = NetworkDetection::networkCheck($node->ip, false, $node->single? $node->port : null); //TCP
+		$status = $request->input('status');
 
-			return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data]);
-		}else{
-			$status = $request->input('status');
+		$query = SsNode::query();
 
-			$query = SsNode::query();
-
-			if(isset($status)){
-				$query->whereStatus($status);
-			}
-
-			$nodeList = $query->orderByDesc('status')->orderBy('id')->paginate(15)->appends($request->except('page'));
-			foreach($nodeList as $node){
-				// 在线人数
-				$online_log = SsNodeOnlineLog::query()
-				                             ->whereNodeId($node->id)
-				                             ->where('log_time', '>=', strtotime("-5 minutes"))
-				                             ->orderByDesc('id')
-				                             ->first();
-				$node->online_users = empty($online_log)? 0 : $online_log->online_user;
-
-				// 已产生流量
-				$totalTraffic = SsNodeTrafficDaily::query()->whereNodeId($node->id)->sum('total');
-				$node->transfer = flowAutoShow($totalTraffic);
-
-				// 负载（10分钟以内）
-				$node_info = SsNodeInfo::query()
-				                       ->whereNodeId($node->id)
-				                       ->where('log_time', '>=', strtotime("-10 minutes"))
-				                       ->orderByDesc('id')
-				                       ->first();
-				$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
-				$node->load = $node->isOnline? $node_info->load : '离线';
-				$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
-			}
-
-			$view['nodeList'] = $nodeList;
+		if(isset($status)){
+			$query->whereStatus($status);
 		}
 
+		$nodeList = $query->orderByDesc('status')->orderBy('id')->paginate(15)->appends($request->except('page'));
+		foreach($nodeList as $node){
+			// 在线人数
+			$online_log = SsNodeOnlineLog::query()
+			                             ->whereNodeId($node->id)
+			                             ->where('log_time', '>=', strtotime("-5 minutes"))
+			                             ->orderByDesc('id')
+			                             ->first();
+			$node->online_users = empty($online_log)? 0 : $online_log->online_user;
+
+			// 已产生流量
+			$totalTraffic = SsNodeTrafficDaily::query()->whereNodeId($node->id)->sum('total');
+			$node->transfer = flowAutoShow($totalTraffic);
+
+			// 负载（10分钟以内）
+			$node_info = SsNodeInfo::query()
+			                       ->whereNodeId($node->id)
+			                       ->where('log_time', '>=', strtotime("-10 minutes"))
+			                       ->orderByDesc('id')
+			                       ->first();
+			$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
+			$node->load = $node->isOnline? $node_info->load : '离线';
+			$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
+		}
+
+		$view['nodeList'] = $nodeList;
+
 		return Response::view('admin.node.nodeList', $view);
+	}
+
+	public function checkNode($id){
+		$node = SsNode::query()->whereId($id)->first();
+		// 使用DDNS的node先获取ipv4地址
+		if($node->is_ddns){
+			$ip = gethostbyname($node->server);
+			if(strcmp($ip, $node->server) != 0){
+				$node->ip = $ip;
+			}else{
+				return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
+			}
+		}
+		$data[0] = NetworkDetection::networkCheck($node->ip, true); //ICMP
+		$data[1] = NetworkDetection::networkCheck($node->ip, false, $node->single? $node->port : null); //TCP
+
+		return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data]);
 	}
 
 	// 添加节点
