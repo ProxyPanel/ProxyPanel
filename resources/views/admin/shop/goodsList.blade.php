@@ -29,7 +29,7 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/shop/list" class="btn btn-danger">重 置</a>
+						<a href="/shop" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -129,7 +129,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/shop/list?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
+			window.location.href = '/shop?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
 		}
 
 		// 删除商品

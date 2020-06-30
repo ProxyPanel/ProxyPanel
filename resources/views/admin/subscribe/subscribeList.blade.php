@@ -27,7 +27,7 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-6 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/subscribe/list" class="btn btn-danger">重 置</a>
+						<a href="/subscribe" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -114,7 +114,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/subscribe/list' + '?user_id=' + $("#user_id").val() + '&email=' + $("#email").val() + '&status=' + $("#status option:selected").val();
+			window.location.href = '/subscribe' + '?user_id=' + $("#user_id").val() + '&email=' + $("#email").val() + '&status=' + $("#status option:selected").val();
 		}
 
 		// 启用禁用用户的订阅

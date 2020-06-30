@@ -68,7 +68,7 @@
 				dataType: 'json',
 				success: function (ret) {
 					swal.fire({title: ret.message, type: 'success', timer: 1000})
-						.then(() => window.location.href = '/ticket/list');
+						.then(() => window.location.href = '/ticket');
 				}
 			});
 			return false;

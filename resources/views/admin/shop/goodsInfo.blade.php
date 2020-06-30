@@ -19,7 +19,7 @@
 					@isset($goods) 编辑商品 @else 添加商品 @endisset
 				</h1>
 				<div class="panel-actions">
-					<a href="{{url('/shop/list')}}" class="btn btn-danger">返 回</a>
+					<a href="{{url('/shop')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))

@@ -77,18 +77,19 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		});
 	});
 	Route::group(['prefix' => 'node'], function() {
-		Route::any('list', 'NodeController@nodeList'); // 节点列表
+		Route::get('/', 'NodeController@nodeList'); // 节点列表
 		Route::any('add', 'NodeController@addNode'); // 添加节点
 		Route::any('edit', 'NodeController@editNode'); // 编辑节点
 		Route::post('delete', 'NodeController@delNode'); // 删除节点
 		Route::get('monitor/{id}', 'NodeController@nodeMonitor'); // 节点流量监控
+		Route::post('check/{id}', 'NodeController@checkNode'); // 节点阻断检测
 		Route::post('ping', 'NodeController@pingNode'); // 节点ping测速
 		Route::get('pingLog', 'NodeController@pingLog'); //节点Ping测速日志
 	});
 
 	Route::group(['namespace' => 'Admin'], function() {
 		Route::group(['prefix' => 'ticket'], function() {
-			Route::get('list', 'TicketController@ticketList'); // 工单列表
+			Route::get('/', 'TicketController@ticketList'); // 工单列表
 			// Todo: 创建工单
 			// Route::post('create', 'TicketController@createTicket'); // 创建工单
 			Route::post('close', 'TicketController@closeTicket'); // 关闭工单
@@ -96,21 +97,21 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		});
 
 		Route::group(['prefix' => 'coupon'], function() {
-			Route::any('list', 'CouponController@couponList'); // 优惠券列表
+			Route::any('/', 'CouponController@couponList'); // 优惠券列表
 			Route::any('add', 'CouponController@addCoupon'); // 添加优惠券
 			Route::post('delete', 'CouponController@delCoupon'); // 删除优惠券
 			Route::get('export', 'CouponController@exportCoupon'); // 导出优惠券
 		});
 
 		Route::group(['prefix' => 'shop'], function() {
-			Route::any('list', 'ShopController@goodsList'); // 商品列表
+			Route::any('/', 'ShopController@goodsList'); // 商品列表
 			Route::any('add', 'ShopController@addGoods'); // 添加商品
 			Route::any('edit/{id}', 'ShopController@editGoods'); // 编辑商品
 			Route::post('delete', 'ShopController@delGoods'); // 删除商品
 		});
 
 		Route::group(['prefix' => 'subscribe'], function() {
-			Route::get('list', 'SubscribeController@subscribeList'); // 订阅码列表
+			Route::get('/', 'SubscribeController@subscribeList'); // 订阅码列表
 			Route::get('log', 'SubscribeController@subscribeLog'); // 订阅码记录
 			Route::post('set', 'SubscribeController@setSubscribeStatus'); // 启用禁用用户的订阅
 		});
@@ -122,9 +123,9 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		});
 
 		Route::group(['prefix' => 'sensitiveWords'], function() {
-			Route::get("list", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
+			Route::get("/", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
 			Route::post("add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
-			Route::post("del", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
+			Route::post("delete", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
 		});
 
 		// 工具相关
@@ -138,12 +139,12 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 
 		// 节点审计规则相关
 		Route::group(['prefix' => 'rule'], function() {
-			Route::get('list', 'RuleController@ruleList'); // 审计规则列表
+			Route::get('/', 'RuleController@ruleList'); // 审计规则列表
 			Route::post('add', 'RuleController@addRule'); // 添加审计规则
 			Route::post('edit', 'RuleController@editRule'); // 删除审计规则
 			Route::post('delete/{id}', 'RuleController@delRule'); // 删除审计规则
 			Route::group(['prefix' => 'group'], function() {
-				Route::get('list', 'RuleController@ruleGroupList'); // 审计规则分组列表
+				Route::get('/', 'RuleController@ruleGroupList'); // 审计规则分组列表
 				Route::any('add', 'RuleController@addRuleGroup'); // 添加审计规则分组
 				Route::any('edit', 'RuleController@editRuleGroup'); // 编辑审计规则分组
 				Route::post('delete/{id}', 'RuleController@delRuleGroup'); // 删除审计规则分组

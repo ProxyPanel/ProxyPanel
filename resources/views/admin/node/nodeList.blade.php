@@ -28,7 +28,7 @@
 						<th> 存活</th>
 						<th> 状态</th>
 						<th> 在线</th>
-						<th>产生流量</th>
+						<th> 产生流量</th>
 						<th> 流量比例</th>
 						<th> 扩展</th>
 						<th> 操作</th>
@@ -58,21 +58,26 @@
 							<td>
 								@if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
 								@if($node->single) <span class="badge badge-lg badge-info">单</span> @endif
-								@if(!$node->is_subscribe) <span
-										class="badge badge-lg badge-danger"><s>订</s></span> @endif
+								@if(!$node->is_subscribe)
+									<span class="badge badge-lg badge-danger"><s>订</s></span> @endif
 							</td>
 							<td>
 								<div class="btn-group">
-									<a href="javascript:pingNode('{{$node->id}}')" class="btn btn-primary"><i
-												id="ping{{$node->id}}" class="icon wb-order"></i></a>
-									<a href="javascript:testNode('{{$node->id}}')" class="btn btn-primary"><i
-												id="node{{$node->id}}" class="icon wb-signal"></i></a>
-									<a href="/node/edit?id={{$node->id}}&page={{Request::get('page', 1)}}"
-											class="btn btn-primary"><i class="icon wb-edit"></i></a>
-									<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')"
-											class="btn btn-danger"><i class="icon wb-trash"></i></a>
-									<a href="/node/monitor/{{$node->id}}" class="btn btn-primary"><i
-												class="icon wb-stats-bars"></i></a>
+									<a href="javascript:pingNode('{{$node->id}}')" class="btn btn-primary">
+										<i id="ping{{$node->id}}" class="icon wb-order"></i>
+									</a>
+									<a href="javascript:checkNode('{{$node->id}}')" class="btn btn-primary">
+										<i id="node{{$node->id}}" class="icon wb-signal"></i>
+									</a>
+									<a href="/node/edit?id={{$node->id}}&page={{Request::get('page', 1)}}" class="btn btn-primary">
+										<i class="icon wb-edit"></i>
+									</a>
+									<a href="javascript:delNode('{{$node->id}}','{{$node->name}}')" class="btn btn-danger">
+										<i class="icon wb-trash"></i>
+									</a>
+									<a href="/node/monitor/{{$node->id}}" class="btn btn-primary">
+										<i class="icon wb-stats-bars"></i>
+									</a>
 								</div>
 							</td>
 						</tr>
@@ -101,11 +106,11 @@
 			type="text/javascript"></script>
 	<script type="text/javascript">
 		//节点连通性测试
-		function testNode(id) {
+		function checkNode(id) {
 			$.ajax({
 				type: "POST",
-				url: '/node/list',
-				data: {_token: '{{csrf_token()}}', id: id},
+				url: '/node/check/' + id,
+				data: {_token: '{{csrf_token()}}'},
 				beforeSend: function () {
 					$("#node" + id).removeClass("wb-signal").addClass("wb-loop icon-spin");
 				},

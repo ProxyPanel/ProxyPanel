@@ -26,7 +26,7 @@
 						</select>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-						<a href="/rule/list" class="btn btn-danger">重 置</a>
+						<a href="/rule" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -198,7 +198,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/rule/list?type=' + $("#type").val();
+			window.location.href = '/rule?type=' + $("#type").val();
 		}
 	</script>
 @endsection

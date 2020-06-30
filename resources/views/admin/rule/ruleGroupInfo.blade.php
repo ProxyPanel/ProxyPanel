@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h2 class="panel-title">@isset($ruleGroup)编辑@else添加@endisset规则分组</h2>
 				<div class="panel-actions">
-					<a href="/rule/group/list" class="btn btn-danger">返 回</a>
+					<a href="/rule/group" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))

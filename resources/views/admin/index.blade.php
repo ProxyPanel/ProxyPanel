@@ -110,7 +110,7 @@
 				</a>
 			</div>
 			<div class="col-xl-3 col-md-6 info-panel">
-				<a href="/node/list" class="card card-shadow">
+				<a href="/node" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-cloud"></i>
@@ -123,7 +123,7 @@
 				</a>
 			</div>
 			<div class="col-xl-3 col-md-6 info-panel">
-				<a href="/node/list?status=0" class="card card-shadow">
+				<a href="/node?status=0" class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-info">
 							<i class="icon md-cloud-off"></i>
