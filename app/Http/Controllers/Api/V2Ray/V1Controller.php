@@ -43,7 +43,7 @@ class V1Controller extends Controller {
 				'v2_host'         => $node->v2_host,
 				'v2_path'         => $node->v2_path,
 				'v2_tls'          => $node->v2_tls,
-				'v2_tls_provider' => $node->v2_tls_provider,
+				'v2_tls_provider' => $node->tls_provider,
 			],
 			'message' => '获取节点信息成功'
 		]);
