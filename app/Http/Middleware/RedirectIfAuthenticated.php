@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class RedirectIfAuthenticated {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next, $guard = null) {
-		if(auth()->guard($guard)->check()){
+		if(Auth::guard($guard)->check()){
 			return redirect('/');
 		}
 

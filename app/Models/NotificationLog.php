@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                             $id
  * @property int                             $type       类型：1-邮件、2-ServerChan、3-Bark、4-Telegram
  * @property string                          $address    收信地址
- * @property string                          $title      标题
- * @property string                          $content    内容
+ * @property string|null                     $title      邮件标题
+ * @property string|null                     $content    邮件内容
  * @property int                             $status     状态：-1发送失败、0-等待发送、1-发送成功
  * @property string|null                     $error      发送失败抛出的异常信息
  * @property \Illuminate\Support\Carbon|null $created_at 创建时间

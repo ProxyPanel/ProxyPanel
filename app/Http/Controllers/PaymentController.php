@@ -188,7 +188,8 @@ class PaymentController extends Controller {
 		return self::getClient()->purchase($request);
 	}
 
-	public function close($oid) {
+	public function close(Request $request) {
+		$oid = $request->input('oid');
 		$order = Order::query()->whereOid($oid)->first();
 		$payment = Payment::query()->whereOid($oid)->first();
 		if($order){

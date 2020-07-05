@@ -109,8 +109,8 @@
 		function checkNode(id) {
 			$.ajax({
 				type: "POST",
-				url: '/node/check/' + id,
-				data: {_token: '{{csrf_token()}}'},
+				url: '/node/check',
+				data: {_token: '{{csrf_token()}}', id: id},
 				beforeSend: function () {
 					$("#node" + id).removeClass("wb-signal").addClass("wb-loop icon-spin");
 				},

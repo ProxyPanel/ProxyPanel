@@ -45,7 +45,7 @@
 							</div>
 							<select class="form-control" name="nodes[]" id="nodes" data-plugin="multiSelect" multiple>
 								@foreach($nodeList as $node)
-									<option value="{{$node->id}}">{{$node->id . ' - ' . \Illuminate\Support\Str::limit($node->name, 30)}}</option>
+									<option value="{{$node->id}}">{{$node->id . ' - ' . Str::limit($node->name, 30)}}</option>
 								@endforeach
 							</select>
 						</div>
@@ -64,7 +64,7 @@
 	<script src="/assets/global/js/jquery.quicksearch.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('#nodes').multiSelect('select',{!! json_encode(explode(', ', $ruleGroup->nodes)) !!});
+			$('#nodes').multiSelect('select',{!! json_encode(explode(',', $ruleGroup->nodes)) !!});
 		})
 
 		// 权限列表

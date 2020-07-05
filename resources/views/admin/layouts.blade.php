@@ -120,17 +120,17 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/onlineIPMonitor', 'admin/userMonitor']) ? 'active open' : ''}}">
-						<a href="/admin/userList" class="animsition-link">
+						<a href="/admin/userList">
 							<span class="site-menu-title">用户管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userCreditLogList']) ? 'active open' : ''}}">
-						<a href="/admin/userCreditLogList" class="animsition-link">
+						<a href="/admin/userCreditLogList">
 							<span class="site-menu-title">余额变动</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['subscribe']) ? 'active open' : ''}}">
-						<a href="/subscribe" class="animsition-link">
+						<a href="/subscribe">
 							<span class="site-menu-title">订阅管理</span>
 						</a>
 					</li>
@@ -148,7 +148,7 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/add','ticket/reply']) ? 'active open' : ''}}">
-						<a href="/ticket" class="animsition-link">
+						<a href="/ticket">
 							<span class="site-menu-title">服务工单</span>
 							@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )
 								<div class="site-menu-label">
@@ -158,17 +158,17 @@
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
-						<a href="/admin/articleList" class="animsition-link">
+						<a href="/admin/articleList">
 							<span class="site-menu-title">文章管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['marketing/push']) ? 'active open' : ''}}">
-						<a href="/marketing/push" class="animsition-link">
+						<a href="/marketing/push">
 							<span class="site-menu-title">消息推送</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['marketing/email']) ? 'active open' : ''}}">
-						<a href="/marketing/email" class="animsition-link">
+						<a href="/marketing/email">
 							<span class="site-menu-title">邮件群发</span>
 						</a>
 					</li>
@@ -181,8 +181,13 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['node', 'node/add', 'node/edit', 'node/monitor']) ? 'active open' : ''}}">
-						<a href="/node" class="animsition-link">
+						<a href="/node">
 							<span class="site-menu-title">线路管理</span>
+						</a>
+					</li>
+					<li class="site-menu-item {{in_array(Request::path(), ['node/auth', 'node/auth/add', 'node/auth/delete', 'node/auth/refresh']) ? 'active open' : ''}}">
+						<a href="/node/auth">
+							<span class="site-menu-title">线路授权</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['node/pingLog']) ? 'active open' : ''}}">
@@ -199,7 +204,7 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['rule', 'rule/add', 'rule/edit']) ? 'active open' : ''}}">
-						<a href="/rule" class="animsition-link">
+						<a href="/rule">
 							<span class="site-menu-title">规则列表</span>
 						</a>
 					</li>
@@ -222,17 +227,17 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['shop', 'shop/add', 'shop/edit']) ? 'active open' : ''}}">
-						<a href="/shop" class="animsition-link">
+						<a href="/shop">
 							<span class="site-menu-title">商品管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['coupon', 'coupon/add']) ? 'active open' : ''}}">
-						<a href="/coupon" class="animsition-link">
+						<a href="/coupon">
 							<span class="site-menu-title">卡券管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/orderList']) ? 'active open' : ''}}">
-						<a href="/admin/orderList" class="animsition-link">
+						<a href="/admin/orderList">
 							<span class="site-menu-title">商品订单</span>
 						</a>
 					</li>
@@ -250,12 +255,12 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/inviteList']) ? 'active open' : ''}}">
-						<a href="/admin/inviteList" class="animsition-link">
+						<a href="/admin/inviteList">
 							<span class="site-menu-title">邀请管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/affList', 'admin/affDetail']) ? 'active open' : ''}}">
-						<a href="/admin/affList" class="animsition-link">
+						<a href="/admin/affList">
 							<span class="site-menu-title">提现管理</span>
 							@if(\App\Models\ReferralApply::query()->whereStatus(0)->count() > 0 )
 								<div class="site-menu-label">
@@ -265,7 +270,7 @@
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userRebateList']) ? 'active open' : ''}}">
-						<a href="/admin/userRebateList" class="animsition-link">
+						<a href="/admin/userRebateList">
 							<span class="site-menu-title">返利流水</span>
 						</a>
 					</li>
@@ -278,42 +283,42 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/trafficLog']) ? 'active open' : ''}}">
-						<a href="/admin/trafficLog" class="animsition-link">
+						<a href="/admin/trafficLog">
 							<span class="site-menu-title">流量使用</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userTrafficLogList']) ? 'active open' : ''}}">
-						<a href="/admin/userTrafficLogList" class="animsition-link">
+						<a href="/admin/userTrafficLogList">
 							<span class="site-menu-title">流量变动</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
-						<a href="/admin/userBanLogList" class="animsition-link">
+						<a href="/admin/userBanLogList">
 							<span class="site-menu-title">封禁记录</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userOnlineIPList']) ? 'active open' : ''}}">
-						<a href="/admin/userOnlineIPList" class="animsition-link">
+						<a href="/admin/userOnlineIPList">
 							<span class="site-menu-title">在线记录</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/onlineIPMonitor']) ? 'active open' : ''}}">
-						<a href="/admin/onlineIPMonitor" class="animsition-link">
+						<a href="/admin/onlineIPMonitor">
 							<span class="site-menu-title">在线监控</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/notificationLog']) ? 'active open' : ''}}">
-						<a href="/admin/notificationLog" class="animsition-link">
+						<a href="/admin/notificationLog">
 							<span class="site-menu-title">通知记录</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
-						<a href="/payment/callbackList" class="animsition-link">
+						<a href="/payment/callbackList">
 							<span class="site-menu-title">支付回调</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
-						<a href="/logs" class="animsition-link" target="_blank">
+						<a href="/logs" target="_blank">
 							<span class="site-menu-title">系统运行</span>
 						</a>
 					</li>
@@ -326,22 +331,22 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['tools/decompile']) ? 'active open' : ''}}">
-						<a href="/tools/decompile" class="animsition-link">
+						<a href="/tools/decompile">
 							<span class="site-menu-title">反解析</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['tools/convert']) ? 'active open' : ''}}">
-						<a href="/tools/convert" class="animsition-link">
+						<a href="/tools/convert">
 							<span class="site-menu-title">格式转换</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['tools/import']) ? 'active open' : ''}}">
-						<a href="/tools/import" class="animsition-link">
+						<a href="/tools/import">
 							<span class="site-menu-title">数据导入</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['tools/analysis']) ? 'active open' : ''}}">
-						<a href="/tools/analysis" class="animsition-link">
+						<a href="/tools/analysis">
 							<span class="site-menu-title">日志分析</span>
 						</a>
 					</li>
@@ -354,17 +359,17 @@
 				</a>
 				<ul class="site-menu-sub">
 					<li class="site-menu-item {{in_array(Request::path(), ['sensitiveWords']) ? 'active open' : ''}}">
-						<a href="/sensitiveWords" class="animsition-link">
+						<a href="/sensitiveWords">
 							<span class="site-menu-title">敏感词管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/config']) ? 'active open' : ''}}">
-						<a href="/admin/config" class="animsition-link">
+						<a href="/admin/config">
 							<span class="site-menu-title">通用配置</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/system']) ? 'active open' : ''}}">
-						<a href="/admin/system" class="animsition-link">
+						<a href="/admin/system">
 							<span class="site-menu-title">系统设置</span>
 						</a>
 					</li>

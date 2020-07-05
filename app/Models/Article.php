@@ -10,12 +10,12 @@ use Illuminate\Database\Query\Builder;
  * 文章
  *
  * @property int                             $id
- * @property int|null                        $type       类型：1-文章、2-站内公告、3-站外公告
  * @property string                          $title      标题
  * @property string|null                     $author     作者
  * @property string|null                     $summary    简介
  * @property string|null                     $logo       LOGO
  * @property string|null                     $content    内容
+ * @property int|null                        $type       类型：1-文章、2-站内公告、3-站外公告
  * @property int                             $sort       排序
  * @property \Illuminate\Support\Carbon|null $created_at 创建时间
  * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间

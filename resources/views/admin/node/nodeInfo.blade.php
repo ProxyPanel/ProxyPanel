@@ -57,10 +57,9 @@
 												placeholder="服务器IPv6地址，填写则用户可见，域名无效">
 									</div>
 									<div class="form-group row">
-										<label for="ssh_port" class="col-md-3 col-form-label"> SSH端口 </label>
-										<input type="number" class="form-control col-md-4" name="ssh_port" value="22"
-												id="ssh_port" placeholder="服务器SSH端口">
-										<span class="text-help offset-md-3">请务必正确填写此值，否则TCP阻断检测可能误报</span>
+										<label for="push_port" class="col-md-3 col-form-label"> 消息推送端口 </label>
+										<input type="number" class="form-control col-md-4" name="push_port" value="0" id="push_port">
+										<span class="text-help offset-md-3">必填且防火墙需放行，否则将导致消息推送异常</span>
 									</div>
 									<div class="form-group row">
 										<label for="traffic_rate" class="col-md-3 col-form-label"> 流量比例 </label>
@@ -290,19 +289,12 @@
 												<input type="checkbox" id="v2_tls" name="v2_tls" data-plugin="switchery" onchange="switchSetting('v2_tls')">
 											</div>
 										</div>
-										<!-- V2Ray tls设置 -->
-										<div class="v2_tls_setting hidden">
-											<div class="form-group row">
-												<label for="v2_tls_insecure" class="col-md-3 col-form-label">是否允许不安全连接</label>
-												<div class="col-md-9">
-													<input type="checkbox" id="v2_tls_insecure" name="v2_tls_insecure" data-plugin="switchery">
-												</div>
-											</div>
-											<div class="form-group row">
-												<label for="v2_tls_insecure_ciphers" class="col-md-3 col-form-label">是否允许不安全的加密方式</label>
-												<div class="col-md-9">
-													<input type="checkbox" id="v2_tls_insecure_ciphers" name="v2_tls_insecure_ciphers" data-plugin="switchery">
-												</div>
+										<div class="form-group row">
+											<label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
+											<input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider" required/>
+											<div class="text-help offset-md-3"> 不同后端配置不同：
+												<a href="https://github.com/Scyllaly/docs/wiki/tls" target="_blank">VNET-V2Ray</a> 、
+												<a href="https://github.com/ColetteContreras/v2ray-poseidon/wiki/020-%E5%AF%B9%E6%8E%A5-VNetPanel-%E6%95%99%E7%A8%8B#%E9%85%8D%E7%BD%AE-tls-%E8%AF%81%E4%B9%A6" target="_blank">V2Ray-Poseidon</a>
 											</div>
 										</div>
 									</div>
@@ -386,7 +378,7 @@
 	<script src="/assets/global/js/Plugin/switchery.js" type="text/javascript"></script>
 
 	<script type="text/javascript">
-		const string = "{{strtolower(\Illuminate\Support\Str::random())}}";
+		const string = "{{strtolower(Str::random())}}";
 		$(document).ready(function () {
 			const v2_path = $('#v2_path');
 
@@ -399,7 +391,7 @@
 			$('#server').val('{{$node->server}}');
 			$('#ip').val('{{$node->ip}}');
 			$('#ipv6').val('{{$node->ipv6}}');
-			$('#ssh_port').val('{{$node->ssh_port}}');
+			$('#push_port').val('{{$node->push_port}}');
 			$('#traffic_rate').val('{{$node->traffic_rate}}');
 			$('#level').selectpicker('val', '{{$node->level}}');
 			$('#speed_limit').val('{{$node->speed_limit}}');
@@ -448,12 +440,6 @@
 			v2_path.val('{{$node->v2_path}}');
 			@if($node->v2_tls)
 			$('#v2_tls').click();
-			@if($node->v2_tls_insecure)
-			$('#v2_tls_insecure').click();
-			@endif
-			@if($node->v2_tls_insecure_ciphers)
-			$('#v2_tls_insecure_ciphers').click();
-			@endif
 			@endif
 			@endif
 
@@ -483,7 +469,7 @@
 					server: $('#server').val(),
 					ip: $('#ip').val(),
 					ipv6: $('#ipv6').val(),
-					ssh_port: $('#ssh_port').val(),
+					push_port: $('#push_port').val(),
 					traffic_rate: $('#traffic_rate').val(),
 					level: $('#level').val(),
 					speed_limit: $('#speed_limit').val(),
@@ -514,8 +500,6 @@
 					v2_host: $('#v2_host').val(),
 					v2_path: $('#v2_path').val(),
 					v2_tls: document.getElementById("v2_tls").checked ? 1 : 0,
-					v2_tls_insecure: document.getElementById("v2_tls_insecure").checked ? 1 : 0,
-					v2_tls_insecure_ciphers: document.getElementById("v2_tls_insecure_ciphers").checked ? 1 : 0,
 					is_relay: document.getElementById("is_relay").checked ? 1 : 0,
 					relay_port: $('#relay_port').val(),
 					relay_server: $('#relay_server').val(),
@@ -546,13 +530,6 @@
 						$(".single-setting").show();
 					} else {
 						$(".single-setting").hide();
-					}
-					break;
-				case 'v2_tls':
-					if (check) {
-						$(".v2_tls_setting").show();
-					} else {
-						$(".v2_tls_setting").hide();
 					}
 					break;
 				//设置中转

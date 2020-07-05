@@ -40,7 +40,7 @@
 							@endif
 							<td>
 								<a href="/article?id={{$vo->id}}"
-										target="_blank"> {{\Illuminate\Support\Str::limit($vo->title, 80)}} </a>
+										target="_blank"> {{Str::limit($vo->title, 80)}} </a>
 							</td>
 							<td> {{$vo->sort}} </td>
 							<td> {{$vo->created_at}} </td>

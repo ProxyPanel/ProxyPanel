@@ -7,6 +7,7 @@ use App\Components\NetworkDetection;
 use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
+use App\Models\NodeAuth;
 use App\Models\SsNode;
 use App\Models\SsNodeInfo;
 use App\Models\SsNodeLabel;
@@ -67,7 +68,8 @@ class NodeController extends Controller {
 		return Response::view('admin.node.nodeList', $view);
 	}
 
-	public function checkNode($id){
+	public function checkNode(Request $request) {
+		$id = $request->input('id');
 		$node = SsNode::query()->whereId($id)->first();
 		// 使用DDNS的node先获取ipv4地址
 		if($node->is_ddns){
@@ -119,7 +121,7 @@ class NodeController extends Controller {
 				$node->is_ddns = intval($request->input('is_ddns'));
 				$node->is_relay = intval($request->input('is_relay'));
 				$node->is_udp = intval($request->input('is_udp'));
-				$node->ssh_port = $request->input('ssh_port');
+				$node->push_port = $request->input('push_port');
 				$node->detection_type = $request->input('detection_type');
 				$node->compatible = intval($request->input('compatible'));
 				$node->single = intval($request->input('single'));
@@ -135,8 +137,7 @@ class NodeController extends Controller {
 				$node->v2_host = $request->input('v2_host');
 				$node->v2_path = $request->input('v2_path');
 				$node->v2_tls = intval($request->input('v2_tls'));
-				$node->v2_tls_insecure = intval($request->input('v2_tls_insecure'));
-				$node->v2_tls_insecure_ciphers = intval($request->input('v2_tls_insecure_ciphers'));
+				$node->tls_provider = $request->input('tls_provider');
 				$node->save();
 
 				DB::commit();
@@ -175,40 +176,38 @@ class NodeController extends Controller {
 		}
 
 		$validator = Validator::make($request->all(), [
-			'type'                    => 'required|between:1,3',
-			'name'                    => 'required',
-			'country_code'            => 'required',
-			'server'                  => 'required_if:is_ddns,1',
-			'ssh_port'                => 'numeric|between:0,65535',
-			'traffic_rate'            => 'required|numeric|min:0',
-			'level'                   => 'required|numeric|between:0,255',
-			'speed_limit'             => 'required|numeric|min:0',
-			'client_limit'            => 'required|numeric|min:0',
-			'port'                    => 'numeric|between:0,65535',
-			'ip'                      => 'ipv4',
-			'ipv6'                    => 'nullable|ipv6',
-			'relay_server'            => 'required_if:is_relay,1',
-			'relay_port'              => 'required_if:is_relay,1|numeric|between:0,65535',
-			'method'                  => 'required_if:type,1',
-			'protocol'                => 'required_if:type,1',
-			'obfs'                    => 'required_if:type,1',
-			'is_subscribe'            => 'boolean',
-			'is_ddns'                 => 'boolean',
-			'is_relay'                => 'boolean',
-			'is_udp'                  => 'boolean',
-			'detection_type'          => 'between:0,3',
-			'compatible'              => 'boolean',
-			'single'                  => 'boolean',
-			'sort'                    => 'required|numeric|between:0,255',
-			'status'                  => 'boolean',
-			'v2_alter_id'             => 'required_if:type,2|numeric|between:0,65535',
-			'v2_port'                 => 'required_if:type,2|numeric|between:0,65535',
-			'v2_method'               => 'required_if:type,2',
-			'v2_net'                  => 'required_if:type,2',
-			'v2_type'                 => 'required_if:type,2',
-			'v2_tls'                  => 'boolean',
-			'v2_tls_insecure'         => 'required_if:v2_tls,1|boolean',
-			'v2_tls_insecure_ciphers' => 'required_if:v2_tls,1|boolean'
+			'type'           => 'required|between:1,3',
+			'name'           => 'required',
+			'country_code'   => 'required',
+			'server'         => 'required_if:is_ddns,1',
+			'push_port'      => 'numeric|between:0,65535',
+			'traffic_rate'   => 'required|numeric|min:0',
+			'level'          => 'required|numeric|between:0,255',
+			'speed_limit'    => 'required|numeric|min:0',
+			'client_limit'   => 'required|numeric|min:0',
+			'port'           => 'numeric|between:0,65535',
+			'ip'             => 'ipv4',
+			'ipv6'           => 'nullable|ipv6',
+			'relay_server'   => 'required_if:is_relay,1',
+			'relay_port'     => 'required_if:is_relay,1|numeric|between:0,65535',
+			'method'         => 'required_if:type,1',
+			'protocol'       => 'required_if:type,1',
+			'obfs'           => 'required_if:type,1',
+			'is_subscribe'   => 'boolean',
+			'is_ddns'        => 'boolean',
+			'is_relay'       => 'boolean',
+			'is_udp'         => 'boolean',
+			'detection_type' => 'between:0,3',
+			'compatible'     => 'boolean',
+			'single'         => 'boolean',
+			'sort'           => 'required|numeric|between:0,255',
+			'status'         => 'boolean',
+			'v2_alter_id'    => 'required_if:type,2|numeric|between:0,65535',
+			'v2_port'        => 'required_if:type,2|numeric|between:0,65535',
+			'v2_method'      => 'required_if:type,2',
+			'v2_net'         => 'required_if:type,2',
+			'v2_type'        => 'required_if:type,2',
+			'v2_tls'         => 'boolean'
 		], [
 			'server.required_unless' => '开启DDNS， 域名不能为空',
 		]);
@@ -248,46 +247,45 @@ class NodeController extends Controller {
 				DB::beginTransaction();
 
 				$data = [
-					'type'                    => $request->input('type'),
-					'name'                    => $request->input('name'),
-					'country_code'            => $request->input('country_code'),
-					'server'                  => $request->input('server'),
-					'ip'                      => $request->input('ip'),
-					'ipv6'                    => $request->input('ipv6'),
-					'relay_server'            => $request->input('relay_server'),
-					'relay_port'              => $request->input('relay_port'),
-					'level'                   => $request->input('level'),
-					'speed_limit'             => $request->input('speed_limit'),
-					'client_limit'            => $request->input('client_limit'),
-					'description'             => $request->input('description'),
-					'method'                  => $request->input('method'),
-					'protocol'                => $request->input('protocol'),
-					'protocol_param'          => $request->input('protocol_param'),
-					'obfs'                    => $request->input('obfs'),
-					'obfs_param'              => $request->input('obfs_param'),
-					'traffic_rate'            => $request->input('traffic_rate'),
-					'is_subscribe'            => intval($request->input('is_subscribe')),
-					'is_ddns'                 => intval($request->input('is_ddns')),
-					'is_relay'                => intval($request->input('is_relay')),
-					'is_udp'                  => intval($request->input('is_udp')),
-					'ssh_port'                => $request->input('ssh_port'),
-					'detection_type'          => $request->input('detection_type'),
-					'compatible'              => intval($request->input('compatible')),
-					'single'                  => intval($request->input('single')),
-					'port'                    => $request->input('port'),
-					'passwd'                  => $request->input('passwd'),
-					'sort'                    => $request->input('sort'),
-					'status'                  => intval($request->input('status')),
-					'v2_alter_id'             => $request->input('v2_alter_id'),
-					'v2_port'                 => $request->input('v2_port'),
-					'v2_method'               => $request->input('v2_method'),
-					'v2_net'                  => $request->input('v2_net'),
-					'v2_type'                 => $request->input('v2_type'),
-					'v2_host'                 => $request->input('v2_host'),
-					'v2_path'                 => $request->input('v2_path'),
-					'v2_tls'                  => intval($request->input('v2_tls')),
-					'v2_tls_insecure'         => intval($request->input('v2_tls_insecure')),
-					'v2_tls_insecure_ciphers' => intval($request->input('v2_tls_insecure_ciphers'))
+					'type'           => $request->input('type'),
+					'name'           => $request->input('name'),
+					'country_code'   => $request->input('country_code'),
+					'server'         => $request->input('server'),
+					'ip'             => $request->input('ip'),
+					'ipv6'           => $request->input('ipv6'),
+					'relay_server'   => $request->input('relay_server'),
+					'relay_port'     => $request->input('relay_port'),
+					'level'          => $request->input('level'),
+					'speed_limit'    => $request->input('speed_limit'),
+					'client_limit'   => $request->input('client_limit'),
+					'description'    => $request->input('description'),
+					'method'         => $request->input('method'),
+					'protocol'       => $request->input('protocol'),
+					'protocol_param' => $request->input('protocol_param'),
+					'obfs'           => $request->input('obfs'),
+					'obfs_param'     => $request->input('obfs_param'),
+					'traffic_rate'   => $request->input('traffic_rate'),
+					'is_subscribe'   => intval($request->input('is_subscribe')),
+					'is_ddns'        => intval($request->input('is_ddns')),
+					'is_relay'       => intval($request->input('is_relay')),
+					'is_udp'         => intval($request->input('is_udp')),
+					'push_port'      => $request->input('push_port'),
+					'detection_type' => $request->input('detection_type'),
+					'compatible'     => intval($request->input('compatible')),
+					'single'         => intval($request->input('single')),
+					'port'           => $request->input('port'),
+					'passwd'         => $request->input('passwd'),
+					'sort'           => $request->input('sort'),
+					'status'         => intval($request->input('status')),
+					'v2_alter_id'    => $request->input('v2_alter_id'),
+					'v2_port'        => $request->input('v2_port'),
+					'v2_method'      => $request->input('v2_method'),
+					'v2_net'         => $request->input('v2_net'),
+					'v2_type'        => $request->input('v2_type'),
+					'v2_host'        => $request->input('v2_host'),
+					'v2_path'        => $request->input('v2_path'),
+					'v2_tls'         => intval($request->input('v2_tls')),
+					'tls_provider'   => $request->input('tls_provider')
 				];
 
 				// 生成节点标签
@@ -451,7 +449,6 @@ class NodeController extends Controller {
 
 	// Ping节点延迟日志
 	public function pingLog(Request $request) {
-
 		$node_id = $request->input('nodeId');
 		$query = SsNodePing::query();
 		if(isset($node_id)){
@@ -462,5 +459,53 @@ class NodeController extends Controller {
 		$view['pingLogs'] = $query->orderBy('id')->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.logs.nodePingLog', $view);
+	}
+
+	// 节点授权列表
+	public function authList(Request $request) {
+		$view['list'] = NodeAuth::query()->orderBy('id')->paginate(15)->appends($request->except('page'));
+		return Response::view('admin.node.authList', $view);
+	}
+
+	// 添加节点授权
+	public function addAuth() {
+		$nodeArray = SsNode::query()->whereStatus(1)->orderBy('id')->pluck('id')->toArray();
+		$authArray = NodeAuth::query()->orderBy('id')->pluck('node_id')->toArray();
+
+		if($nodeArray == $authArray){
+			return Response::json(['status' => 'success', 'message' => '没有需要生成授权的节点']);
+		}else{
+			foreach(array_diff($nodeArray, $authArray) as $nodeId){
+				$obj = new NodeAuth();
+				$obj->node_id = $nodeId;
+				$obj->key = makeRandStr(16);
+				$obj->secret = makeRandStr(8);
+				$obj->save();
+			}
+		}
+		return Response::json(['status' => 'success', 'message' => '生成成功']);
+	}
+
+	// 删除节点授权
+	public function delAuth(Request $request) {
+		try{
+			NodeAuth::query()->whereId($request->input('id'))->delete();
+		}catch(Exception $e){
+			return Response::json(['status' => 'fail', 'message' => '错误：'.var_export($e, true)]);
+		}
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
+	}
+
+	// 重置节点授权
+	public function refreshAuth(Request $request) {
+		$ret = NodeAuth::query()->whereId($request->input('id'))->update([
+			'key'    => makeRandStr(16),
+			'secret' => makeRandStr(8)
+		]);
+		if($ret){
+			return Response::json(['status' => 'success', 'message' => '操作成功']);
+		}else{
+			return Response::json(['status' => 'fail', 'message' => '操作失败']);
+		}
 	}
 }

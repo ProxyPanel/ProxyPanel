@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string                     $pattern 规则值
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
+ * @property-read mixed                 $type_api_label
  * @property-read mixed                 $type_label
  * @method static Builder|Rule newModelQuery()
  * @method static Builder|Rule newQuery()
@@ -49,5 +50,26 @@ class Rule extends Model {
 
 		}
 		return $type_label;
+	}
+
+	function getTypeApiLabelAttribute() {
+		switch($this->attributes['type']){
+			case 1:
+				$type_api_label = 'reg';
+				break;
+			case 2:
+				$type_api_label = 'domain';
+				break;
+			case 3:
+				$type_api_label = 'ip';
+				break;
+			case 4:
+				$type_api_label = 'protocol';
+				break;
+			default:
+				$type_api_label = 'unknown';
+
+		}
+		return $type_api_label;
 	}
 }

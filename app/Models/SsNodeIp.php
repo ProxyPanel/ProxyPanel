@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * SS节点在线IP信息
  *
- * @property int                        $id
- * @property int                        $node_id    节点ID
- * @property int                        $user_id    用户ID
- * @property int                        $port       端口
- * @property string                     $type       类型：all、tcp、udp
- * @property string|null                $ip         连接IP：每个IP用,号隔开
- * @property \Illuminate\Support\Carbon $created_at 上报时间
- * @property-read \App\Models\SsNode    $node
- * @property-read \App\Models\User      $user
+ * @property int                     $id
+ * @property int                     $node_id    节点ID
+ * @property int                     $user_id    用户ID
+ * @property int                     $port       端口
+ * @property string                  $type       类型：all、tcp、udp
+ * @property string|null             $ip         连接IP：每个IP用,号隔开
+ * @property int                     $created_at 上报时间
+ * @property-read \App\Models\SsNode $node
+ * @property-read \App\Models\User   $user
  * @method static Builder|SsNodeIp newModelQuery()
  * @method static Builder|SsNodeIp newQuery()
  * @method static Builder|SsNodeIp query()
@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  */
 class SsNodeIp extends Model {
+	public $timestamps = false;
 	protected $table = 'ss_node_ip';
 	protected $primaryKey = 'id';
 
@@ -38,6 +39,6 @@ class SsNodeIp extends Model {
 	}
 
 	function user() {
-		return $this->belongsTo(User::class, 'port', 'port');
+		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 }

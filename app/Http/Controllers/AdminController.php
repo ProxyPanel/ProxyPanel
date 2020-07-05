@@ -664,7 +664,7 @@ class AdminController extends Controller {
 
 			$node = SsNode::query()->whereId($node_id)->first();
 			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
-			$data = $this->getNodeInfo($id, $node->id, $infoType != 'text'? 0 : 1);
+			$data = $this->getUserNodeInfo($id, $node->id, $infoType != 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 
@@ -1635,10 +1635,7 @@ EOF;
 		$nodeId = $request->input('nodeId');
 		$userId = $request->input('id');
 
-		$query = SsNodeIp::query()
-		                 ->with(['node', 'user'])
-		                 ->whereType('tcp')
-		                 ->where('created_at', '>=', strtotime("-120 seconds"));
+		$query = SsNodeIp::query()->with(['node', 'user'])->where('created_at', '>=', strtotime("-120 seconds"));
 
 		if(isset($ip)){
 			$query->whereIp($ip);
@@ -1668,14 +1665,12 @@ EOF;
 			});
 		}
 
-		$list = $query->groupBy('port')->orderByDesc('id');
-
+		$list = $query->groupBy('user_id','node_id')->orderByDesc('id');
 		foreach($list as $vo){
 			// 跳过上报多IP的
-			if(strpos($vo->ip, ',') == true){
+			if(strpos($vo->ip, ',') == true || $vo->ip == null){
 				continue;
 			}
-
 			$ipInfo = QQWry::ip($vo->ip);
 			if(isset($ipInfo['error'])){
 				// 用IPIP的库再试一下
@@ -1690,7 +1685,7 @@ EOF;
 			$vo->ipInfo = $ipInfo['country'].' '.$ipInfo['province'].' '.$ipInfo['city'];
 		}
 
-		$view['list'] = $list->paginate(20)->appends($request->except('page'));
+		$view['list'] = $list->paginate(20)->appends($request->except('page'));;
 		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->orderByDesc('id')->get();
 
 		return Response::view('admin.logs.onlineIPMonitor', $view);

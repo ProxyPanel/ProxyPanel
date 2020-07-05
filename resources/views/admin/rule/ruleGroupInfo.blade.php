@@ -89,7 +89,7 @@
 		$(document).ready(function () {
 			$('#name').val('{{$ruleGroup->name}}');
 			$("input[name='type'][value='{{$ruleGroup->type}}']").click();
-			$('#rules').multiSelect('select',{!! json_encode(explode(', ', $ruleGroup->rules)) !!});
+			$('#rules').multiSelect('select',{!! json_encode(explode(',', $ruleGroup->rules)) !!});
 		})
 		@endisset
 		// 权限列表

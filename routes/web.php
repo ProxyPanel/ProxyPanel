@@ -82,9 +82,16 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::any('edit', 'NodeController@editNode'); // 编辑节点
 		Route::post('delete', 'NodeController@delNode'); // 删除节点
 		Route::get('monitor/{id}', 'NodeController@nodeMonitor'); // 节点流量监控
-		Route::post('check/{id}', 'NodeController@checkNode'); // 节点阻断检测
+		Route::post('check', 'NodeController@checkNode'); // 节点阻断检测
 		Route::post('ping', 'NodeController@pingNode'); // 节点ping测速
 		Route::get('pingLog', 'NodeController@pingLog'); //节点Ping测速日志
+		// 授权
+		Route::group(['prefix' => 'auth'], function() {
+			Route::get('/', 'NodeController@authList'); // 节点授权列表
+			Route::post('add', 'NodeController@addAuth'); // 添加节点授权
+			Route::post('delete', 'NodeController@delAuth'); // 删除节点授权
+			Route::post('refresh', 'NodeController@refreshAuth'); // 重置节点授权
+		});
 	});
 
 	Route::group(['namespace' => 'Admin'], function() {
@@ -142,12 +149,12 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::get('/', 'RuleController@ruleList'); // 审计规则列表
 			Route::post('add', 'RuleController@addRule'); // 添加审计规则
 			Route::post('edit', 'RuleController@editRule'); // 删除审计规则
-			Route::post('delete/{id}', 'RuleController@delRule'); // 删除审计规则
+			Route::post('delete', 'RuleController@delRule'); // 删除审计规则
 			Route::group(['prefix' => 'group'], function() {
 				Route::get('/', 'RuleController@ruleGroupList'); // 审计规则分组列表
 				Route::any('add', 'RuleController@addRuleGroup'); // 添加审计规则分组
 				Route::any('edit', 'RuleController@editRuleGroup'); // 编辑审计规则分组
-				Route::post('delete/{id}', 'RuleController@delRuleGroup'); // 删除审计规则分组
+				Route::post('delete', 'RuleController@delRuleGroup'); // 删除审计规则分组
 				Route::any('assign', 'RuleController@assignNode'); // 规则分组关联节点
 			});
 			Route::get('log', 'RuleController@ruleLogList'); // 用户触发审计规则日志
@@ -190,7 +197,7 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 
 	Route::group(['prefix' => 'payment'], function() {
 		Route::post('purchase', 'PaymentController@purchase'); // 创建支付
-		Route::post('close/{id}', 'PaymentController@close'); // 关闭支付单
+		Route::post('close', 'PaymentController@close'); // 关闭支付单
 		Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
 		Route::get('{trade_no}', 'PaymentController@detail'); // 支付单详情
 	});

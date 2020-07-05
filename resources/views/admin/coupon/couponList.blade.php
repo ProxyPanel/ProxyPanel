@@ -35,7 +35,7 @@
 					</div>
 					<div class="form-group col-lg-3 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="{{url('/coupon/list')}}" class="btn btn-danger">重 置</a>
+						<a href="{{url('/coupon')}}" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -116,8 +116,7 @@
 @endsection
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-			type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$('#type').val({{Request::get('type')}});
@@ -134,7 +133,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/coupon/list' + '?sn=' + $("#sn").val() + '&type=' + $("#type").val() + '&status=' + $("#status").val();
+			window.location.href = '/coupon' + '?sn=' + $("#sn").val() + '&type=' + $("#type").val() + '&status=' + $("#status").val();
 		}
 
 		// 批量导出卡券

@@ -455,6 +455,45 @@
 											<span class="text-help offset-md-3"> 启用后，订阅信息顶部将显示过期时间、剩余流量（Quantumult有特殊效果） </span>
 										</div>
 									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="vnet_license">Vnet授权</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="vnet_license" value="{{$vnet_license}}"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('vnet_license')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="v2ray_license">V2Ray授权</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="v2ray_license" value="{{$v2ray_license}}"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('v2ray_license')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="trojan_license">Trojan授权</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="trojan_license" value="{{$trojan_license}}"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('trojan_license')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</form>
 						</div>

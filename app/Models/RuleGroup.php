@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * 审计规则分组
  *
  * @property int                             $id
- * @property int|null                        $type  模式：1-阻断、2-仅放行
+ * @property int|null                        $type  模式：1-阻断、0-放行
  * @property string|null                     $name  分组名称
  * @property string|null                     $rules 关联的规则ID，多个用,号分隔
  * @property string|null                     $nodes 关联的节点ID，多个用,号分隔

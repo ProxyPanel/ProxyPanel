@@ -78,15 +78,16 @@ class RuleController extends Controller {
 	}
 
 	// 删除审计规则
-	public function delRule($id) {
+	public function delRule(Request $request) {
+		$id = $request->input('id');
 		try{
 			Rule::query()->whereId($id)->delete();
 
 			$RuleGroupList = RuleGroup::query()->get();
 			foreach($RuleGroupList as $RuleGroup){
-				$rules = explode(', ', $RuleGroup->rules);
+				$rules = explode(',', $RuleGroup->rules);
 				if(in_array($id, $rules)){
-					$rules = implode(', ', array_diff($rules, (array) $id));
+					$rules = implode(',', array_diff($rules, (array) $id));
 					RuleGroup::query()->whereId($RuleGroup->id)->update(['rules' => $rules]);
 				}
 			}
@@ -118,7 +119,7 @@ class RuleController extends Controller {
 			$obj = new RuleGroup();
 			$obj->name = $request->input('name');
 			$obj->type = intval($request->input('type'));
-			$obj->rules = implode(", ", $request->input('rules'));
+			$obj->rules = implode(',', $request->input('rules'));
 			$obj->save();
 
 			if($obj->id){
@@ -138,10 +139,9 @@ class RuleController extends Controller {
 		$id = $request->input('id');
 		if($request->isMethod('POST')){
 			$validator = Validator::make($request->all(), [
-				'id'    => 'required',
-				'name'  => 'required',
-				'type'  => 'required|boolean',
-				'rules' => 'required',
+				'id'   => 'required',
+				'name' => 'required',
+				'type' => 'required|boolean'
 			]);
 
 			if($validator->fails()){
@@ -162,8 +162,15 @@ class RuleController extends Controller {
 			if($ruleGroup->type != $type){
 				$data['type'] = $type;
 			}
-			if($ruleGroup->rules != $rules){
-				$data['rules'] = implode(", ", $rules);
+			if($rules){
+				$ruleStr = implode(',', $rules);
+				if($ruleGroup->rules != $ruleStr){
+					$data['rules'] = $ruleStr;
+				}else{
+					return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
+				}
+			}elseif(isset($ruleGroup->rules)){
+				$data['rules'] = $rules;
 			}
 			$ret = RuleGroup::query()->whereId($id)->update($data);
 			if($ret){
@@ -183,7 +190,8 @@ class RuleController extends Controller {
 	}
 
 	// 删除审计规则分组
-	public function delRuleGroup($id) {
+	public function delRuleGroup(Request $request) {
+		$id = $request->input('id');
 		$ruleGroup = RuleGroup::query()->whereId($id)->get();
 		if(!$ruleGroup){
 			return Response::json(['status' => 'fail', 'message' => '删除失败，未找到审计规则分组']);
@@ -204,8 +212,7 @@ class RuleController extends Controller {
 		if($request->isMethod('POST')){
 			$nodes = $request->input('nodes');
 			$validator = Validator::make($request->all(), [
-				'id'    => 'required',
-				'nodes' => 'required',
+				'id' => 'required',
 			]);
 
 			if($validator->fails()){
@@ -216,18 +223,28 @@ class RuleController extends Controller {
 			if(!$ruleGroup){
 				return Redirect::back()->withInput()->withErrors('未找到审计规则分组！');
 			}
-			try{
-				if($ruleGroup->nodes != $nodes){
-					RuleGroup::query()->whereId($id)->update(['nodes' => implode(", ", $nodes)]);
-				}
-				RuleGroupNode::query()->whereRuleGroupId($id)->delete();
 
-				foreach($nodes as $nodeId){
-					$obj = new RuleGroupNode();
-					$obj->rule_group_id = $id;
-					$obj->node_id = $nodeId;
-					$obj->save();
+			try{
+				if($nodes){
+					$nodeStr = implode(',', $nodes);
+					// 无变动 不改动
+					if($ruleGroup->nodes == $nodeStr){
+						return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
+					}
+					RuleGroup::query()->whereId($id)->update(['nodes' => $nodeStr]);
+					RuleGroupNode::query()->whereRuleGroupId($id)->delete();
+
+					foreach($nodes as $nodeId){
+						$obj = new RuleGroupNode();
+						$obj->rule_group_id = $id;
+						$obj->node_id = $nodeId;
+						$obj->save();
+					}
+				}else{
+					RuleGroup::query()->whereId($id)->update(['nodes' => $nodes]);
+					RuleGroupNode::query()->whereRuleGroupId($id)->delete();
 				}
+
 			}catch(Exception $e){
 				return Redirect::back()->withInput()->withErrors($e->getMessage());
 			}

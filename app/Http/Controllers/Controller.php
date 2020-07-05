@@ -120,7 +120,7 @@ class Controller extends BaseController {
 	 *
 	 * @return string
 	 */
-	function getNodeInfo($uid, $nodeId, $infoType) {
+	function getUserNodeInfo($uid, $nodeId, $infoType) {
 		$user = User::whereId($uid)->first();
 		$node = SsNode::whereId($nodeId)->first();
 		$scheme = null;
