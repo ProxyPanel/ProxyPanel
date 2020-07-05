@@ -17,7 +17,7 @@ use Illuminate\Database\Query\Builder;
  * @property int                             $price       售价，单位分
  * @property int                             $level       购买后给用户授权的等级
  * @property int                             $renew       流量重置价格，单位分
- * @property int|null                        $period      流量自动重置周期
+ * @property int                             $period      流量自动重置周期
  * @property string|null                     $info        商品信息
  * @property string|null                     $description 商品描述
  * @property int                             $days        有效期

@@ -91,7 +91,7 @@ class SubscribeController extends Controller {
 				break;
 			}
 
-			$scheme .= $this->getNodeInfo($user->id, $node['id'], 0).PHP_EOL;
+			$scheme .= $this->getUserNodeInfo($user->id, $node['id'], 0).PHP_EOL;
 		}
 
 		$headers = [

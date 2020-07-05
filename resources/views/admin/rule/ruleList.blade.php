@@ -176,7 +176,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/rule/delete/" + id, {_token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/rule/delete", {_token: '{{csrf_token()}}', id: id}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())

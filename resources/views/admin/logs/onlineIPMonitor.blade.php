@@ -7,7 +7,7 @@
 		<div class="panel">
 			<div class="panel-heading">
 				<h3 class="panel-title">在线IP监控
-					<small>实时</small>
+					<small>2分钟内的实时数据</small>
 				</h3>
 			</div>
 			<div class="panel-body">
@@ -46,26 +46,23 @@
 					<thead class="thead-default">
 					<tr>
 						<th> #</th>
-						<th> 时间</th>
 						<th> 类型</th>
 						<th> 节点</th>
 						<th> 用户</th>
-						<th> 地址</th>
 						<th> IP</th>
 						<th> 归属地</th>
+						<th> 时间</th>
 					</tr>
 					</thead>
 					<tbody>
 					@foreach($list as $vo)
 						<tr>
 							<td>{{$vo->id}}</td>
-							<td>{{$vo->created_at}}</td>
 							<td>{{$vo->type}}</td>
 							<td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
 							<td>{{$vo->user ? $vo->user->email : '【用户已删除】'}}</td>
-							<td>{{$vo->user ? $vo->user->address : '【用户已删除】'}}</td>
 							<td>
-								@if (strpos($vo->ip, ',') == TRUE)
+								@if (strpos($vo->ip, ',') == true)
 									@foreach (explode(',', $vo->ip) as $ip)
 										<a href="https://www.ipip.net/ip/{{$ip}}.html" target="_blank">{{$ip}}</a>
 									@endforeach
@@ -73,7 +70,8 @@
 									<a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a>
 								@endif
 							</td>
-							<td>{{strpos($vo->ip, ',') == TRUE? '':$vo->ipInfo}}</td>
+							<td>{{strpos($vo->ip, ',') == true? '':$vo->ipInfo}}</td>
+							<td>{{date('Y-m-d H:i:s',$vo->created_at)}}</td>
 						</tr>
 					@endforeach
 					</tbody>

@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int                     $id
  * @property int                     $user_id  用户ID
- * @property int                     $node_id  节点ID
  * @property int                     $u        上传流量
  * @property int                     $d        下载流量
+ * @property int                     $node_id  节点ID
  * @property float                   $rate     倍率
  * @property string                  $traffic  产生流量
  * @property int                     $log_time 记录时间
@@ -37,7 +37,6 @@ class UserTrafficLog extends Model {
 	protected $primaryKey = 'id';
 
 	// 关联账号
-
 	function user() {
 		return $this->belongsTo(User::class, 'user_id', 'id');
 	}

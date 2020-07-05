@@ -54,8 +54,7 @@
 							<td> {{$vo->created_at}} </td>
 							<td>
 								@if($vo->status < 0)
-									<span
-											class="badge badge-danger"> {{\Illuminate\Support\Str::limit($vo->error)}} </span>
+									<span class="badge badge-danger"> {{Str::limit($vo->error)}} </span>
 								@elseif($vo->status > 0)
 									<labe class="badge badge-success">投递成功</labe>
 								@else

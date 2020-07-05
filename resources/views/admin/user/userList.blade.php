@@ -23,24 +23,19 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-xxl-1 col-lg-1 col-md-1 col-sm-4">
-						<input type="number" class="form-control" id="id" name="id" value="{{Request::get('id')}}"
-								placeholder="ID"/>
+						<input type="number" class="form-control" id="id" name="id" value="{{Request::get('id')}}" placeholder="ID"/>
 					</div>
 					<div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-						<input type="text" class="form-control" id="email" name="email"
-								value="{{Request::get('email')}}" placeholder="用户名"/>
+						<input type="text" class="form-control" id="email" name="email" value="{{Request::get('email')}}" placeholder="用户名"/>
 					</div>
 					<div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-						<input type="text" class="form-control" id="wechat" name="wechat"
-								value="{{Request::get('wechat')}}" placeholder="微信"/>
+						<input type="text" class="form-control" id="wechat" name="wechat" value="{{Request::get('wechat')}}" placeholder="微信"/>
 					</div>
 					<div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-						<input type="number" class="form-control" id="qq" name="qq" value="{{Request::get('qq')}}"
-								placeholder="QQ"/>
+						<input type="number" class="form-control" id="qq" name="qq" value="{{Request::get('qq')}}" placeholder="QQ"/>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-2 col-md-2 col-sm-4">
-						<input type="number" class="form-control" id="port" name="port" value="{{Request::get('port')}}"
-								placeholder="端口"/>
+						<input type="number" class="form-control" id="port" name="port" value="{{Request::get('port')}}" placeholder="端口"/>
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
 						<select class="form-control" id="status" name="status" onChange="Search()">
@@ -106,36 +101,47 @@
 							</td>
 							<td>
 								@if ($user->status > 0)
-									<span class="badge badge-lg badge-primary"><i class="wb-check"
-												aria-hidden="true"></i></span>
+									<span class="badge badge-lg badge-primary">
+										<i class="wb-check" aria-hidden="true"></i>
+									</span>
 								@elseif ($user->status < 0)
-									<span class="badge badge-lg badge-danger"><i class="wb-close"
-												aria-hidden="true"></i></span>
+									<span class="badge badge-lg badge-danger">
+										<i class="wb-close" aria-hidden="true"></i>
+									</span>
 								@else
-									<span class="badge badge-lg badge-default"><i class="wb-minus"
-												aria-hidden="true"></i></span>
+									<span class="badge badge-lg badge-default">
+										<i class="wb-minus" aria-hidden="true"></i>
+									</span>
 								@endif
 							</td>
 							<td>
-								<span class="badge badge-lg badge-{{$user->enable?'info':'danger'}}"><i
-											class="wb-{{$user->enable?'check':'close'}}" aria-hidden="true"></i></span>
+								<span class="badge badge-lg badge-{{$user->enable?'info':'danger'}}">
+									<i class="wb-{{$user->enable?'check':'close'}}" aria-hidden="true"></i>
+								</span>
 							</td>
 							<td>
 								<div class="btn-group">
-									<a href="/admin/editUser/{{$user->id}}{{Request::getQueryString()? '?'.Request::getQueryString() : ''}}"
-											class="btn btn-primary"><i class="icon wb-edit" aria-hidden="true"></i></a>
-									<a href="javascript:delUser('{{$user->id}}','{{$user->email}}');"
-											class="btn btn-danger"><i class="icon wb-trash" aria-hidden="true"></i></a>
-									<a href="/admin/export/{{$user->id}}" class="btn btn-primary"><i
-												class="icon wb-code" aria-hidden="true"></i></a>
-									<a href="/admin/userMonitor/{{$user->id}}" class="btn btn-primary"><i
-												class="icon wb-stats-bars" aria-hidden="true"></i></a>
-									<a href="/admin/onlineIPMonitor?id={{$user->id}}" class="btn btn-primary"><i
-												class="icon wb-cloud" aria-hidden="true"></i></a>
-									<a href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}');"
-											class="btn btn-primary"><i class="icon wb-reload" aria-hidden="true"></i></a>
-									<a href="javascript:switchToUser('{{$user->id}}');" class="btn btn-primary"><i
-												class="icon wb-user" aria-hidden="true"></i></a>
+									<a href="/admin/editUser/{{$user->id}}{{Request::getQueryString()? '?'.Request::getQueryString() : ''}}" class="btn btn-primary">
+										<i class="icon wb-edit" aria-hidden="true"></i>
+									</a>
+									<a href="javascript:delUser('{{$user->id}}','{{$user->email}}');" class="btn btn-danger">
+										<i class="icon wb-trash" aria-hidden="true"></i>
+									</a>
+									<a href="/admin/export/{{$user->id}}" class="btn btn-primary">
+										<i class="icon wb-code" aria-hidden="true"></i>
+									</a>
+									<a href="/admin/userMonitor/{{$user->id}}" class="btn btn-primary">
+										<i class="icon wb-stats-bars" aria-hidden="true"></i>
+									</a>
+									<a href="/admin/onlineIPMonitor?id={{$user->id}}" class="btn btn-primary">
+										<i class="icon wb-cloud" aria-hidden="true"></i>
+									</a>
+									<a href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}');" class="btn btn-primary">
+										<i class="icon wb-reload" aria-hidden="true"></i>
+									</a>
+									<a href="javascript:switchToUser('{{$user->id}}');" class="btn btn-primary">
+										<i class="icon wb-user" aria-hidden="true"></i>
+									</a>
 								</div>
 							</td>
 						</tr>

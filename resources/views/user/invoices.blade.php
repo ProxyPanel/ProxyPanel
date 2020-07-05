@@ -137,9 +137,9 @@
 				if (result.value) {
 					$.ajax({
 						type: "POST",
-						url: "payment/close/" + oid,
+						url: "payment/close",
 						async: false,
-						data: {_token: '{{csrf_token()}}'},
+						data: {_token: '{{csrf_token()}}', oid: oid},
 						dataType: 'json',
 						success: function (ret) {
 							if (ret.status === 'success') {

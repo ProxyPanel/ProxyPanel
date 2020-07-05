@@ -15,7 +15,7 @@
 			<div class="panel-heading">
 				<h1 class="panel-title">生成卡券</h1>
 				<div class="panel-actions">
-					<a href="{{url('/coupon/list')}}" class="btn btn-danger">返 回</a>
+					<a href="{{url('/coupon')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))

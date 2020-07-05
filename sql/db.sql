@@ -25,49 +25,48 @@
 -- ----------------------------
 CREATE TABLE `ss_node`
 (
-    `id`                      INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
-    `type`                    TINYINT(1) UNSIGNED  NOT NULL DEFAULT '1' COMMENT '服务类型：1-ShadowsocksR、2-V2ray',
-    `name`                    VARCHAR(128)         NOT NULL DEFAULT '' COMMENT '名称',
-    `country_code`            CHAR(5)              NOT NULL DEFAULT 'un' COMMENT '国家代码',
-    `server`                  VARCHAR(255)         NULL     DEFAULT NULL COMMENT '服务器域名地址',
-    `ip`                      CHAR(15)             NULL     DEFAULT NULL COMMENT '服务器IPV4地址',
-    `ipv6`                    VARCHAR(128)         NULL     DEFAULT NULL COMMENT '服务器IPV6地址',
-    `relay_server`            VARCHAR(255)         NULL     DEFAULT NULL COMMENT '中转地址',
-    `relay_port`              SMALLINT(5) UNSIGNED NULL     DEFAULT 0 COMMENT '中转端口',
-    `level`                   TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '等级：0-无等级，全部可见',
-    `speed_limit`             BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '节点限速，为0表示不限速，单位Byte',
-    `client_limit`            TINYINT(3) UNSIGNED  NOT NULL DEFAULT 0 COMMENT '设备数限制',
-    `description`             VARCHAR(255)         NULL     DEFAULT NULL COMMENT '节点简单描述',
-    `method`                  VARCHAR(32)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
-    `protocol`                VARCHAR(64)          NOT NULL DEFAULT 'origin' COMMENT '协议',
-    `protocol_param`          VARCHAR(128)         NULL     DEFAULT NULL COMMENT '协议参数',
-    `obfs`                    VARCHAR(64)          NOT NULL DEFAULT 'plain' COMMENT '混淆',
-    `obfs_param`              VARCHAR(255)         NULL     DEFAULT NULL COMMENT '混淆参数',
-    `traffic_rate`            FLOAT(6, 2) UNSIGNED NOT NULL DEFAULT '1.00' COMMENT '流量比率',
-    `is_subscribe`            BIT                  NOT NULL DEFAULT 1 COMMENT '是否允许用户订阅该节点：0-否、1-是',
-    `is_ddns`                 BIT                  NOT NULL DEFAULT 0 COMMENT '是否使用DDNS：0-否、1-是',
-    `is_relay`                BIT                  NOT NULL DEFAULT 0 COMMENT '是否中转节点：0-否、1-是',
-    `is_udp`                  BIT                  NOT NULL DEFAULT 1 COMMENT '是否启用UDP：0-不启用、1-启用',
-    `ssh_port`                SMALLINT(5) UNSIGNED NOT NULL DEFAULT '22' COMMENT 'SSH端口',
-    `detection_type`          TINYINT(1)           NOT NULL DEFAULT '1' COMMENT '节点检测: 0-关闭、1-只检测TCP、2-只检测ICMP、3-检测全部',
-    `compatible`              BIT                  NOT NULL DEFAULT 0 COMMENT '兼容SS',
-    `single`                  BIT                  NOT NULL DEFAULT 0 COMMENT '启用单端口功能：0-否、1-是',
-    `port`                    SMALLINT(5) UNSIGNED NULL     DEFAULT NULL COMMENT '单端口的端口号或连接端口号',
-    `passwd`                  VARCHAR(255)         NULL     DEFAULT NULL COMMENT '单端口的连接密码',
-    `sort`                    TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
-    `status`                  BIT                  NOT NULL DEFAULT 1 COMMENT '状态：0-维护、1-正常',
-    `v2_alter_id`             SMALLINT(5) UNSIGNED NOT NULL DEFAULT '16' COMMENT 'V2Ray额外ID',
-    `v2_port`                 SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'V2Ray服务端口',
-    `v2_method`               VARCHAR(32)          NOT NULL DEFAULT 'aes-128-gcm' COMMENT 'V2Ray加密方式',
-    `v2_net`                  VARCHAR(16)          NOT NULL DEFAULT 'tcp' COMMENT 'V2Ray传输协议',
-    `v2_type`                 VARCHAR(32)          NOT NULL DEFAULT 'none' COMMENT 'V2Ray伪装类型',
-    `v2_host`                 VARCHAR(255)         NOT NULL DEFAULT '' COMMENT 'V2Ray伪装的域名',
-    `v2_path`                 VARCHAR(255)         NOT NULL DEFAULT '' COMMENT 'V2Ray的WS/H2路径',
-    `v2_tls`                  BIT                  NOT NULL DEFAULT 0 COMMENT 'V2Ray后端TLS：0-未开启、1-开启',
-    `v2_tls_insecure`         BIT                  NOT NULL DEFAULT 0 COMMENT '是否允许不安全连接',
-    `v2_tls_insecure_ciphers` BIT                  NOT NULL DEFAULT 0 COMMENT '是否允许不安全的加密方式',
-    `created_at`              DATETIME             NOT NULL,
-    `updated_at`              DATETIME             NOT NULL,
+    `id`             INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
+    `type`           TINYINT(1) UNSIGNED  NOT NULL DEFAULT '1' COMMENT '服务类型：1-ShadowsocksR、2-V2ray',
+    `name`           VARCHAR(128)         NOT NULL DEFAULT '' COMMENT '名称',
+    `country_code`   CHAR(5)              NOT NULL DEFAULT 'un' COMMENT '国家代码',
+    `server`         VARCHAR(255)         NULL     DEFAULT NULL COMMENT '服务器域名地址',
+    `ip`             CHAR(15)             NULL     DEFAULT NULL COMMENT '服务器IPV4地址',
+    `ipv6`           VARCHAR(128)         NULL     DEFAULT NULL COMMENT '服务器IPV6地址',
+    `relay_server`   VARCHAR(255)         NULL     DEFAULT NULL COMMENT '中转地址',
+    `relay_port`     SMALLINT(5) UNSIGNED NULL     DEFAULT 0 COMMENT '中转端口',
+    `level`          TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '等级：0-无等级，全部可见',
+    `speed_limit`    BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '节点限速，为0表示不限速，单位Byte',
+    `client_limit`   TINYINT(3) UNSIGNED  NOT NULL DEFAULT 0 COMMENT '设备数限制',
+    `description`    VARCHAR(255)         NULL     DEFAULT NULL COMMENT '节点简单描述',
+    `method`         VARCHAR(32)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
+    `protocol`       VARCHAR(64)          NOT NULL DEFAULT 'origin' COMMENT '协议',
+    `protocol_param` VARCHAR(128)         NULL     DEFAULT NULL COMMENT '协议参数',
+    `obfs`           VARCHAR(64)          NOT NULL DEFAULT 'plain' COMMENT '混淆',
+    `obfs_param`     VARCHAR(255)         NULL     DEFAULT NULL COMMENT '混淆参数',
+    `traffic_rate`   FLOAT(6, 2) UNSIGNED NOT NULL DEFAULT '1.00' COMMENT '流量比率',
+    `is_subscribe`   BIT                  NOT NULL DEFAULT 1 COMMENT '是否允许用户订阅该节点：0-否、1-是',
+    `is_ddns`        BIT                  NOT NULL DEFAULT 0 COMMENT '是否使用DDNS：0-否、1-是',
+    `is_relay`       BIT                  NOT NULL DEFAULT 0 COMMENT '是否中转节点：0-否、1-是',
+    `is_udp`         BIT                  NOT NULL DEFAULT 1 COMMENT '是否启用UDP：0-不启用、1-启用',
+    `push_port`      SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '消息推送端口',
+    `detection_type` TINYINT(1)           NOT NULL DEFAULT '1' COMMENT '节点检测: 0-关闭、1-只检测TCP、2-只检测ICMP、3-检测全部',
+    `compatible`     BIT                  NOT NULL DEFAULT 0 COMMENT '兼容SS',
+    `single`         BIT                  NOT NULL DEFAULT 0 COMMENT '启用单端口功能：0-否、1-是',
+    `port`           SMALLINT(5) UNSIGNED NULL     DEFAULT NULL COMMENT '单端口的端口号或连接端口号',
+    `passwd`         VARCHAR(255)         NULL     DEFAULT NULL COMMENT '单端口的连接密码',
+    `sort`           TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
+    `status`         BIT                  NOT NULL DEFAULT 1 COMMENT '状态：0-维护、1-正常',
+    `v2_alter_id`    SMALLINT(5) UNSIGNED NOT NULL DEFAULT '16' COMMENT 'V2Ray额外ID',
+    `v2_port`        SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'V2Ray服务端口',
+    `v2_method`      VARCHAR(32)          NOT NULL DEFAULT 'aes-128-gcm' COMMENT 'V2Ray加密方式',
+    `v2_net`         VARCHAR(16)          NOT NULL DEFAULT 'tcp' COMMENT 'V2Ray传输协议',
+    `v2_type`        VARCHAR(32)          NOT NULL DEFAULT 'none' COMMENT 'V2Ray伪装类型',
+    `v2_host`        VARCHAR(255)         NOT NULL DEFAULT '' COMMENT 'V2Ray伪装的域名',
+    `v2_path`        VARCHAR(255)         NOT NULL DEFAULT '' COMMENT 'V2Ray的WS/H2路径',
+    `v2_tls`         BIT                  NOT NULL DEFAULT 0 COMMENT 'V2Ray后端TLS：0-未开启、1-开启',
+    `tls_provider`   TEXT                 NULL     DEFAULT NULL COMMENT 'V2Ray节点的TLS提供商授权信息',
+    `created_at`     DATETIME             NOT NULL,
+    `updated_at`     DATETIME             NOT NULL,
     PRIMARY KEY (`id`),
     INDEX `idx_sub` (`is_subscribe`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点信息表';
@@ -355,9 +354,9 @@ VALUES ('1', 'is_rand_port', 0),
        ('48', 'subscribe_domain', ''),
        ('49', 'auto_release_port', 1),
        ('50', 'website_callback_url', ''),
-       ('51', 'youzan_client_id', ''),
-       ('52', 'youzan_client_secret', ''),
-       ('53', 'kdt_id', ''),
+       ('51', 'vnet_license', ''),
+       ('52', 'v2ray_license', ''),
+       ('53', 'trojan_license', ''),
        ('54', 'initial_labels_for_user', ''),
        ('55', 'website_analytics', ''),
        ('56', 'website_customer_service', ''),
@@ -1368,6 +1367,37 @@ CREATE TABLE `node_rule`
     `updated_at` DATETIME         NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点审计规则关联';
+
+
+-- ----------------------------
+-- Table structure for `node_auth`
+-- ----------------------------
+CREATE TABLE `node_auth`
+(
+    `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `node_id`    INT(10) UNSIGNED NOT NULL                          DEFAULT '0' COMMENT '授权节点ID',
+    `key`        CHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '认证KEY',
+    `secret`     CHAR(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin  DEFAULT '' COMMENT '通信密钥',
+    `created_at` DATETIME         NULL                              DEFAULT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NULL                              DEFAULT NULL COMMENT '最后更新时间',
+    PRIMARY KEY (`id`),
+    INDEX `id` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点授权密钥表';
+
+
+-- ----------------------------
+-- Table structure for `node_certificate`
+-- ----------------------------
+CREATE TABLE `node_certificate`
+(
+    `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `domain`     VARCHAR(255)     NOT NULL COMMENT '域名',
+    `key`        TEXT             NULL COMMENT '域名证书KEY',
+    `pem`        TEXT             NULL COMMENT '域名证书PEM',
+    `created_at` DATETIME         NOT NULL,
+    `updated_at` DATETIME         NOT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB COLLATE = 'utf8mb4_unicode_ci' COMMENT ='域名证书';
 
 
 -- ----------------------------

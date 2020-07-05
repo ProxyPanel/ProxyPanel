@@ -175,7 +175,7 @@ class UserController extends Controller {
 			$node = SsNode::query()->whereId($node_id)->first();
 			// 生成节点信息
 			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
-			$data = $this->getNodeInfo(Auth::id(), $node->id, $infoType != 'text'? 0 : 1);
+			$data = $this->getUserNodeInfo(Auth::id(), $node->id, $infoType != 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 		}else{
