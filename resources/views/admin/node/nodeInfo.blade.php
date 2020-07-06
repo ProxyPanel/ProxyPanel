@@ -291,7 +291,7 @@
 										</div>
 										<div class="form-group row">
 											<label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
-											<input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider" required/>
+											<input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
 											<div class="text-help offset-md-3"> 不同后端配置不同：
 												<a href="https://github.com/Scyllaly/docs/wiki/tls" target="_blank">VNET-V2Ray</a> 、
 												<a href="https://github.com/ColetteContreras/v2ray-poseidon/wiki/020-%E5%AF%B9%E6%8E%A5-VNetPanel-%E6%95%99%E7%A8%8B#%E9%85%8D%E7%BD%AE-tls-%E8%AF%81%E4%B9%A6" target="_blank">V2Ray-Poseidon</a>
@@ -380,7 +380,7 @@
 	<script type="text/javascript">
 		const string = "{{strtolower(Str::random())}}";
 		$(document).ready(function () {
-			const v2_path = $('#v2_path');
+			let v2_path = $('#v2_path');
 
 			@isset($node)
 
@@ -441,6 +441,7 @@
 			@if($node->v2_tls)
 			$('#v2_tls').click();
 			@endif
+			$('#tls_provider').val('{!! $node->tls_provider !!}');
 			@endif
 
 			@if($node->is_relay)
@@ -500,6 +501,7 @@
 					v2_host: $('#v2_host').val(),
 					v2_path: $('#v2_path').val(),
 					v2_tls: document.getElementById("v2_tls").checked ? 1 : 0,
+					tls_provider: $('#tls_provider').val(),
 					is_relay: document.getElementById("is_relay").checked ? 1 : 0,
 					relay_port: $('#relay_port').val(),
 					relay_server: $('#relay_server').val(),
