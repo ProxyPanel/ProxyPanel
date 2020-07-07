@@ -147,9 +147,10 @@ CREATE TABLE `user`
     `d`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
     `t`               INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '最后使用时间',
     `ip`              CHAR(128)                     DEFAULT NULL COMMENT '最后连接IP',
-    `enable`          BIT                  NOT NULL DEFAULT 1 COMMENT '代理状态',
+    `enable`          TINYINT(1)           NOT NULL DEFAULT 1 COMMENT '代理状态',
     `method`          VARCHAR(30)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
     `protocol`        VARCHAR(30)          NOT NULL DEFAULT 'origin' COMMENT '协议',
+    `protocol_param`  VARCHAR(255)                  DEFAULT NULL COMMENT '协议参数',
     `obfs`            VARCHAR(30)          NOT NULL DEFAULT 'plain' COMMENT '混淆',
     `speed_limit`     BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '用户限速，为0表示不限速，单位Byte',
     `wechat`          VARCHAR(30)                   DEFAULT '' COMMENT '微信',
@@ -177,7 +178,7 @@ CREATE TABLE `user`
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user`(`id`, `username`, `email`, `password`, `port`, `passwd`, `uuid`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `obfs`, `wechat`, `qq`, `credit`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
+INSERT INTO `user`(`id`, `username`, `email`, `password`, `port`, `passwd`, `vmess_id`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `obfs`, `wechat`, `qq`, `credit`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
 VALUES (1, '管理员', 'test@test.com', '$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq', 10000, '@123', 'c6effafd-6046-7a84-376e-b0429751c304', 1099511627776, 0, 0, 0, 1, 'aes-256-cfb', 'origin', 'plain', '', '', 0.00, '2017-01-01', '2099-01-01', NULL, 1, '127.0.0.1', 1, Now(), Now());
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
