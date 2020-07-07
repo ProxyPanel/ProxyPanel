@@ -21,51 +21,31 @@ class WebApi {
 		$key = $request->header('key');
 		$time = $request->header('timestamp');
 
-		if($key === null){	// 未提供 key
-			return Response::json([
-				"status"  => "fail",
-				"code"    => 404,
-				"data"    => "",
-				"message" => "Your key is null"
-			]);
+		if($key === null){// 未提供 key
+			return $this->returnData('Your key is null!');
 		}elseif($id === null){// 未提供 node
-			return Response::json([
-				"status"  => "fail",
-				"code"    => 404,
-				"data"    => "",
-				"message" => "Your Node Id is null"
-			]);
+			return $this->returnData('Your Node Id is null!');
 		}
 
 		$node = SsNode::query()->whereId($id)->first();
 		if(!$node){// node不存在
-			return Response::json([
-				"status"  => "fail",
-				"code"    => 404,
-				"data"    => "",
-				"message" => "Unknown Node"
-			]);
+			return $this->returnData('Unknown Node!');
 		}
 
 		$nodeAuth = NodeAuth::query()->whereNodeId($id)->first();
 		if(!$nodeAuth || $key != $nodeAuth->key){// key不存在/不匹配
-			return Response::json([
-				"status"  => "fail",
-				"code"    => 404,
-				"data"    => "",
-				"message" => "Token is invalid"
-			]);
+			return $this->returnData('Token is invalid!');
 		}
 
-		if(abs($time - time()) >= 300){//时差超过5分钟
-			return Response::json([
-				"status"  => "fail",
-				"code"    => 404,
-				"data"    => "",
-				"message" => "Please resynchronize the server time!"
-			]);
+		if(abs($time - time()) >= 300){// 时差超过5分钟
+			return $this->returnData('Please resynchronize the server time!');
 		}
 
 		return $next($request);
+	}
+
+	// 返回数据
+	public function returnData($message) {
+		return Response::json(['status' => 'fail', 'code' => 404, 'data' => '', 'message' => $message]);
 	}
 }

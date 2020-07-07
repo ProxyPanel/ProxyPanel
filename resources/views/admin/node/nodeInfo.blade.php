@@ -163,7 +163,7 @@
 											<label for="method" class="col-md-3 col-form-label">加密方式</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
 												@foreach ($method_list as $method)
-													<option value="{{$method->name}}" @if($method->is_default) selected @endif>{{$method->name}}</option>
+													<option value="{{$method->name}}" @if(!isset($node) && $method->is_default) selected @endif>{{$method->name}}</option>
 												@endforeach
 											</select>
 										</div>
@@ -171,7 +171,7 @@
 											<label for="protocol" class="col-md-3 col-form-label">协议</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol" id="protocol">
 												@foreach ($protocol_list as $protocol)
-													<option value="{{$protocol->name}}" @if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
+													<option value="{{$protocol->name}}" @if(!isset($node) && $protocol->is_default) selected @endif>{{$protocol->name}}</option>
 												@endforeach
 											</select>
 										</div>
@@ -183,7 +183,7 @@
 											<label for="obfs" class="col-md-3 col-form-label">混淆</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
 												@foreach ($obfs_list as $obfs)
-													<option value="{{$obfs->name}}" @if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
+													<option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
 												@endforeach
 											</select>
 										</div>
@@ -241,7 +241,7 @@
 										<div class="form-group row">
 											<label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_method">
-												<option value="auto" selected>auto</option>
+												<option value="auto">auto</option>
 												<option value="none">none</option>
 												<option value="aes-128-gcm">aes-128-gcm</option>
 												<option value="chacha20-poly1305">chacha20-poly1305</option>
@@ -263,7 +263,7 @@
 										<div class="form-group row v2_type">
 											<label for="v2_type" class="col-md-3 col-form-label">伪装类型</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_type">
-												<option value="none" selected>无伪装</option>
+												<option value="none">无伪装</option>
 												<option value="http">HTTP数据流</option>
 												<optgroup id="type_option" label="">
 													<option value="srtp">视频通话数据 (SRTP)</option>
@@ -451,7 +451,9 @@
 			$('#relay_server').val('{{$node->relay_server}}');
 			@endif
 			@else
-			$('#v2_net').selectpicker('val', "tcp");
+			$('#status').click();
+			$('#is_udp').click();
+			$('#is_subscribe').click();
 			v2_path.val('/' + string);
 			@endisset
 		});
@@ -576,6 +578,7 @@
 					break;
 				case 2:
 					$v2ray_setting.show();
+					$('#v2_net').selectpicker('val', 'tcp');
 					break;
 				case 3:
 					$trojan_setting.show();

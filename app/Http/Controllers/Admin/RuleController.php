@@ -87,7 +87,7 @@ class RuleController extends Controller {
 			foreach($RuleGroupList as $RuleGroup){
 				$rules = explode(',', $RuleGroup->rules);
 				if(in_array($id, $rules)){
-					$rules = implode(',', array_diff($rules, (array) $id));
+					$rules = implode(',', array_diff($rules, [$id]));
 					RuleGroup::query()->whereId($RuleGroup->id)->update(['rules' => $rules]);
 				}
 			}

@@ -43,12 +43,7 @@ class BaseController {
 
 	// 返回数据
 	public function returnData($message, $status = 'fail', $code = 400, $data = '', $addition = false) {
-		$data = [
-			'status'  => $status,
-			'code'    => $code,
-			'data'    => $data,
-			'message' => $message,
-		];
+		$data = ['status' => $status, 'code' => $code, 'data' => $data, 'message' => $message];
 
 		if($addition){
 			$data = array_merge($data, $addition);

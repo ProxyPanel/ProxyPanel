@@ -8,6 +8,8 @@ use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
 use App\Models\NodeAuth;
+use App\Models\NodeRule;
+use App\Models\RuleGroup;
 use App\Models\SsNode;
 use App\Models\SsNodeInfo;
 use App\Models\SsNodeLabel;
@@ -134,7 +136,7 @@ class NodeController extends Controller {
 				$node->v2_method = $request->input('v2_method');
 				$node->v2_net = $request->input('v2_net');
 				$node->v2_type = $request->input('v2_type');
-				$node->v2_host = $request->input('v2_host');
+				$node->v2_host = $request->input('v2_host')?: '';
 				$node->v2_path = $request->input('v2_path');
 				$node->v2_tls = intval($request->input('v2_tls'));
 				$node->tls_provider = $request->input('tls_provider');
@@ -282,7 +284,7 @@ class NodeController extends Controller {
 					'v2_method'      => $request->input('v2_method'),
 					'v2_net'         => $request->input('v2_net'),
 					'v2_type'        => $request->input('v2_type'),
-					'v2_host'        => $request->input('v2_host'),
+					'v2_host'        => $request->input('v2_host')?: '',
 					'v2_path'        => $request->input('v2_path'),
 					'v2_tls'         => intval($request->input('v2_tls')),
 					'tls_provider'   => $request->input('tls_provider')
@@ -343,6 +345,16 @@ class NodeController extends Controller {
 			UserTrafficDaily::query()->whereNodeId($id)->delete();
 			UserTrafficHourly::query()->whereNodeId($id)->delete();
 			UserTrafficLog::query()->whereNodeId($id)->delete();
+			NodeAuth::query()->whereNodeId($id)->delete();
+			NodeRule::query()->whereNodeId($id)->delete();
+			$RuleGroupList = RuleGroup::query()->get();
+			foreach($RuleGroupList as $RuleGroup){
+				$nodes = explode(',', $RuleGroup->nodes);
+				if(in_array($id, $nodes)){
+					$nodes = implode(',', array_diff($nodes, [$id]));
+					RuleGroup::query()->whereId($RuleGroup->id)->update(['nodes' => $nodes]);
+				}
+			}
 
 			DB::commit();
 
