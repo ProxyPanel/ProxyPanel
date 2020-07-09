@@ -282,8 +282,8 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="speed_limit">用户限速</label>
 								<div class="col-xl-6 col-sm-8">
 									<div class="input-group">
-										<input type="number" class="form-control" name="speed_limit" id="speed_limit" value="10737418240"/>
-										<span class="input-group-text">Byte</span>
+										<input type="number" class="form-control" name="speed_limit" id="speed_limit" value="200"/>
+										<span class="input-group-text"> Mbps</span>
 									</div>
 									<span class="text-help">为 0 时不限速 </span>
 								</div>
@@ -352,7 +352,7 @@
 			$("input[name='enable'][value='{{$user->enable}}']").click()
 			$('#protocol').selectpicker('val', '{{$user->protocol}}')
 			$('#obfs').selectpicker('val', '{{$user->obfs}}')
-			$('#speed_limit').val('{{$user->speed_limit}}')
+			$('#speed_limit').val('{{$user->speed_limit/Mbps}}')
 			$('#uuid').val('{{$user->vmess_id}}')
 			@else
 			$('#level').selectpicker('val', '0')

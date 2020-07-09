@@ -32,7 +32,7 @@ class V2RayController extends BaseController {
 			'v2_host'         => $node->v2_host,
 			'v2_path'         => $node->v2_path,
 			'v2_tls'          => $node->v2_tls? true : false,
-			'v2_tls_provider' => $node->tls_provider,
+			'v2_tls_provider' => Helpers::systemConfig()['v2ray_tls_provider']?: $node->tls_provider,
 		]);
 	}
 

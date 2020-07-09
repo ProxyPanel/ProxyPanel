@@ -90,7 +90,7 @@
 								<div class="text-center red-700 mb-5">VNET-V2Ray</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s https://bit.ly/2xoemF2 \<br>
-								| WEB_API="{{\App\Components\Helpers::systemConfig()['vnet_license'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
 								bash
@@ -115,7 +115,7 @@
 								<div class="text-center red-700 mb-5">V2Ray-Poseidon</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s https://bit.ly/2VhvcPz \<br>
-								| WEB_API="{{\App\Components\Helpers::systemConfig()['vnet_license'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
 								bash
@@ -172,7 +172,7 @@
 								<div class="text-center red-700 mb-5">VNET</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s https://bit.ly/2RNkPk7 \<br>
-								| WEB_API="{{\App\Components\Helpers::systemConfig()['vnet_license'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
 								bash
