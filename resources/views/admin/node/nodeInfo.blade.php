@@ -80,7 +80,7 @@
 										<label for="speed_limit" class="col-md-3 col-form-label">节点限速</label>
 										<div class="col-md-4 input-group p-0">
 											<input type="number" class="form-control" id="speed_limit" name="speed_limit" value="1000" required>
-											<span class="input-group-text">M</span>
+											<span class="input-group-text">Mbps</span>
 										</div>
 									</div>
 									<div class="form-group row">
@@ -139,7 +139,7 @@
 											<li class="list-inline-item">
 												<div class="radio-custom radio-primary">
 													<input type="radio" id="shadowsocks" name="type" value="1" checked>
-													<label for="shadowsocks">Shadowsocks(R)</label>
+													<label for="shadowsocks">Shadowsocks(R) | VNET</label>
 												</div>
 											</li>
 											<li class="list-inline-item">
@@ -187,9 +187,9 @@
 												@endforeach
 											</select>
 										</div>
-										<div class="form-group row">
+										<div class="form-group row obfs_param">
 											<label for="obfs_param" class="col-md-3 col-form-label"> 混淆参数 </label>
-											<textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"></textarea>
+											<textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param" placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
 										</div>
 										<div class="form-group row">
 											<label for="compatible" class="col-md-3 col-form-label">兼容SS</label>
@@ -215,8 +215,8 @@
 												<label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
 												<input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
 												<span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
-												<span class="text-help offset-md-3"> 严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接
-												                                     （<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+												<span class="text-help offset-md-3">
+													严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接 （<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
 											</div>
 											<div class="form-group row">
 												<label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
@@ -232,7 +232,7 @@
 										</div>
 										<div class="form-group row">
 											<label for="v2ray_port" class="col-md-3 col-form-label">连接端口</label>
-											<input type="number" class="form-control col-md-4" name="port" id="v2ray_port" value="443" required/>
+											<input type="number" class="form-control col-md-4" name="port" id="v2ray_port" value="443"/>
 										</div>
 										<div class="form-group row">
 											<label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
@@ -302,7 +302,7 @@
 									<div class="trojan-setting hidden">
 										<div class="form-group row">
 											<label for="trojan_port" class="col-md-3 col-form-label">连接端口</label>
-											<input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443" required/>
+											<input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443"/>
 										</div>
 									</div>
 									<!-- 中转 设置部分 -->
@@ -394,7 +394,7 @@
 			$('#push_port').val('{{$node->push_port}}');
 			$('#traffic_rate').val('{{$node->traffic_rate}}');
 			$('#level').selectpicker('val', '{{$node->level}}');
-			$('#speed_limit').val('{{$node->speed_limit}}');
+			$('#speed_limit').val('{{$node->speed_limit/Mbps}}');
 			$('#client_limit').val('{{$node->client_limit}}');
 			$('#labels').selectpicker('val', {{$node->labels}});
 			$('#country_code').selectpicker('val', '{{$node->country_code}}');
@@ -422,7 +422,7 @@
 			$('#method').selectpicker('val', '{{$node->method}}');
 			$('#protocol').selectpicker('val', '{{$node->protocol}}');
 			$('#protocol_param').val('{{$node->protocol_param}}');
-			$('#obfs').val('{{$node->obfs}}');
+			$('#obfs').selectpicker('val', '{{$node->obfs}}');
 			$('#obfs_param').val('{{$node->obfs_param}}');
 			@if($node->compatible)
 			$('#compatible').click();
@@ -456,6 +456,9 @@
 			$('#is_subscribe').click();
 			v2_path.val('/' + string);
 			@endisset
+			if ($("#obfs").val() === 'plain') {
+				$('.obfs_param').hide();
+			}
 		});
 
 		// ajax同步提交
@@ -533,6 +536,8 @@
 					if (check) {
 						$(".single-setting").show();
 					} else {
+						$('#single_port').val('');
+						$('#passwd').val('');
 						$(".single-setting").hide();
 					}
 					break;
@@ -584,6 +589,16 @@
 					$trojan_setting.show();
 					break;
 				default:
+			}
+		});
+
+		$("#obfs").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+			const obfs_param = $('.obfs_param');
+			if ($("#obfs").val() === 'plain') {
+				$("#obfs_param").val('');
+				obfs_param.hide();
+			} else {
+				obfs_param.show();
 			}
 		});
 

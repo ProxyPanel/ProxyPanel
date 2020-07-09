@@ -355,10 +355,10 @@ VALUES ('1', 'is_rand_port', 0),
        ('48', 'subscribe_domain', ''),
        ('49', 'auto_release_port', 1),
        ('50', 'website_callback_url', ''),
-       ('51', 'vnet_license', ''),
+       ('51', 'web_api_url', ''),
        ('52', 'v2ray_license', ''),
        ('53', 'trojan_license', ''),
-       ('54', 'initial_labels_for_user', ''),
+       ('54', 'v2ray_tls_provider', ''),
        ('55', 'website_analytics', ''),
        ('56', 'website_customer_service', ''),
        ('57', 'register_ip_limit', 5),
@@ -1299,7 +1299,8 @@ VALUES (1, '1', '360',
        (16, '1', '流媒体',
         '(.*\.||)(youtube|googlevideo|hulu|netflix|nflxvideo|akamai|nflximg|hbo|mtv|bbc|tvb)\.(org|club|com|net|tv)',
         '2019-11-19 15:04:11', '2019-11-19 15:04:11'),
-       (17, '1', '测速类', '(.*\.||)(fast|speedtest)\.(org|com|net|cn)', '2019-11-19 15:04:11', '2019-11-19 15:04:11');
+       (17, '1', '测速类', '(.*\.||)(fast|speedtest)\.(org|com|net|cn)', '2019-11-19 15:04:11', '2019-11-19 15:04:11'),
+       (17, '1', '涉洗钱', '(.*\.||)(metatrader4|metatrader5|mql5)\.(org|com|net)', '2020-7-9 14:25:11', '2020-7-9 14:25:11');
 
 -- ----------------------------
 -- Table structure for rule_group

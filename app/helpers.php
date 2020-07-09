@@ -12,6 +12,8 @@ define('Minute', 60);
 define('Hour', 3600);
 define('Day', 86400);
 
+define('Mbps', 125000);
+
 // 生成SS密码
 if(!function_exists('makeRandStr')){
 	function makeRandStr($length = 6, $isNumbers = false) {
@@ -48,15 +50,16 @@ if(!function_exists('base64url_decode')){
 // 根据流量值自动转换单位输出
 if(!function_exists('flowAutoShow')){
 	function flowAutoShow($value = 0) {
-		if(abs($value) >= PB){
+		$value = abs($value);
+		if($value >= PB){
 			return round($value / PB, 2)."PB";
-		}elseif(abs($value) >= TB){
+		}elseif($value >= TB){
 			return round($value / TB, 2)."TB";
-		}elseif(abs($value) >= GB){
+		}elseif($value >= GB){
 			return round($value / GB, 2)."GB";
-		}elseif(abs($value) >= MB){
+		}elseif($value >= MB){
 			return round($value / MB, 2)."MB";
-		}elseif(abs($value) >= KB){
+		}elseif($value >= KB){
 			return round($value / KB, 2)."KB";
 		}else{
 			return round($value, 2)."B";

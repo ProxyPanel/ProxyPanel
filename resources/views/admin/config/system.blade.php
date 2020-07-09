@@ -457,13 +457,14 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="vnet_license">Vnet授权</label>
+											<label class="col-md-3 col-form-label" for="web_api_url">授权域名</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" id="vnet_license" value="{{$vnet_license}}"/>
+													<input type="text" class="form-control" id="web_api_url" value="{{$web_api_url}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('vnet_license')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('web_api_url')">修改</button>
 													</span>
+													<span class="text-help offset-md-3"> 用于 VNet后端 授权，此域名需要解析A记录到面板，例：https://demo.proxypanel.ml</span>
 												</div>
 											</div>
 										</div>
@@ -489,6 +490,19 @@
 													<input type="text" class="form-control" id="trojan_license" value="{{$trojan_license}}"/>
 													<span class="input-group-append">
 														<button class="btn btn-primary" type="button" onclick="update('trojan_license')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="v2ray_tls_provider">V2Ray TLS配置</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="v2ray_tls_provider" value="{{$v2ray_tls_provider}}"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('v2ray_tls_provider')">修改</button>
 													</span>
 												</div>
 											</div>

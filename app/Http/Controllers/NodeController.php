@@ -110,7 +110,7 @@ class NodeController extends Controller {
 				$node->relay_server = $request->input('relay_server');
 				$node->relay_port = $request->input('relay_port');
 				$node->level = $request->input('level');
-				$node->speed_limit = $request->input('speed_limit');
+				$node->speed_limit = intval($request->input('speed_limit')) * Mbps;
 				$node->client_limit = $request->input('client_limit');
 				$node->description = $request->input('description');
 				$node->method = $request->input('method');
@@ -187,7 +187,7 @@ class NodeController extends Controller {
 			'level'          => 'required|numeric|between:0,255',
 			'speed_limit'    => 'required|numeric|min:0',
 			'client_limit'   => 'required|numeric|min:0',
-			'port'           => 'numeric|between:0,65535',
+			'port'           => 'nullable|numeric|between:0,65535',
 			'ip'             => 'ipv4',
 			'ipv6'           => 'nullable|ipv6',
 			'relay_server'   => 'required_if:is_relay,1',
@@ -258,7 +258,7 @@ class NodeController extends Controller {
 					'relay_server'   => $request->input('relay_server'),
 					'relay_port'     => $request->input('relay_port'),
 					'level'          => $request->input('level'),
-					'speed_limit'    => $request->input('speed_limit'),
+					'speed_limit'    => intval($request->input('speed_limit')) * Mbps,
 					'client_limit'   => $request->input('client_limit'),
 					'description'    => $request->input('description'),
 					'method'         => $request->input('method'),

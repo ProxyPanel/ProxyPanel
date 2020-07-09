@@ -16,14 +16,15 @@ class VNetController extends BaseController {
 			'method'       => $node->method,
 			'protocol'     => $node->protocol,
 			'obfs'         => $node->obfs,
-			'obfs_param'   => $node->obfs_param,
+			'obfs_param'   => $node->obfs_param?: '',
 			'is_udp'       => $node->is_udp,
 			'speed_limit'  => $node->speed_limit,
 			'client_limit' => $node->client_limit,
 			'single'       => $node->single,
-			'port'         => $node->port,
-			'passwd'       => $node->passwd,
+			'port'         => strval($node->port),
+			'passwd'       => $node->passwd?: '',
 			'push_port'    => $node->push_port,
+			'secret'       => $node->auth->secret
 		]);
 	}
 
