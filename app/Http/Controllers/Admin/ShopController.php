@@ -113,7 +113,8 @@ class ShopController extends Controller {
 	}
 
 	// 编辑商品
-	public function editGoods(Request $request, $id) {
+	public function editGoods(Request $request) {
+		$id = $request->input('id');
 		if($request->isMethod('POST')){
 			Validator::make($request->all(), [
 				'name'    => 'required',
@@ -182,7 +183,7 @@ class ShopController extends Controller {
 				DB::rollBack();
 			}
 
-			return Redirect::to('shop/edit/'.$id);
+			return Redirect::to('shop/edit?id='.$id);
 		}else{
 			$goods = Goods::query()->whereId($id)->first();
 

@@ -130,7 +130,7 @@
 									<a href="/admin/export/{{$user->id}}" class="btn btn-primary">
 										<i class="icon wb-code" aria-hidden="true"></i>
 									</a>
-									<a href="/admin/userMonitor/{{$user->id}}" class="btn btn-primary">
+									<a href="/admin/userMonitor?id={{$user->id}}" class="btn btn-primary">
 										<i class="icon wb-stats-bars" aria-hidden="true"></i>
 									</a>
 									<a href="/admin/onlineIPMonitor?id={{$user->id}}" class="btn btn-primary">

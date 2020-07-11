@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">工单列表</h3>
 				<div class="panel-actions">
-					<a href="/ticket/add" class="btn btn-primary btn-animate btn-animate-side">
+					<a href="/ticket/create" class="btn btn-primary btn-animate btn-animate-side">
 						<span><i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}
 						</span>
 					</a>

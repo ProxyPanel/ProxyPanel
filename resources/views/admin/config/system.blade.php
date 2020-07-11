@@ -464,9 +464,9 @@
 													<span class="input-group-append">
 														<button class="btn btn-primary" type="button" onclick="update('web_api_url')">修改</button>
 													</span>
-													<span class="text-help offset-md-3"> 用于 VNet后端 授权，此域名需要解析A记录到面板，例：https://demo.proxypanel.ml</span>
 												</div>
 											</div>
+											<span class="text-help offset-md-3"> 用于 VNet后端 授权，此域名需要解析A记录到面板，例：https://demo.proxypanel.ml</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">

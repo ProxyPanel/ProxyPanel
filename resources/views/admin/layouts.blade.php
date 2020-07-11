@@ -113,13 +113,13 @@
 					<span class="site-menu-title">管理中心</span>
 				</a>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/onlineIPMonitor', 'admin/userMonitor', 'admin/userCreditLogList', 'subscribe/subscribeList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'admin/userCreditLogList', 'subscribe']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-user" aria-hidden="true"></i>
 					<span class="site-menu-title">用户系统</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/onlineIPMonitor', 'admin/userMonitor']) ? 'active open' : ''}}">
+					<li class="site-menu-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
 						<a href="/admin/userList">
 							<span class="site-menu-title">用户管理</span>
 						</a>
@@ -136,7 +136,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket', 'ticket/add','ticket/reply', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/push', 'marketing/email']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket', 'ticket/create', 'ticket/reply', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/push', 'marketing/email']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
 					<span class="site-menu-title">客服系统</span>
@@ -147,7 +147,7 @@
 					@endif
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/add','ticket/reply']) ? 'active open' : ''}}">
+					<li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/create', 'ticket/reply']) ? 'active open' : ''}}">
 						<a href="/ticket">
 							<span class="site-menu-title">服务工单</span>
 							@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )
@@ -174,7 +174,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['node', 'node/add', 'node/edit', 'node/monitor', 'node/pingLog']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['node', 'node/add', 'node/edit', 'node/monitor', 'node/auth', 'node/certificate', 'node/certificate/add', 'node/certificate/edit', 'node/pingLog',]) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
 					<span class="site-menu-title">线路系统</span>
@@ -185,9 +185,14 @@
 							<span class="site-menu-title">线路管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['node/auth', 'node/auth/add', 'node/auth/delete', 'node/auth/refresh']) ? 'active open' : ''}}">
+					<li class="site-menu-item {{in_array(Request::path(), ['node/auth']) ? 'active open' : ''}}">
 						<a href="/node/auth">
 							<span class="site-menu-title">线路授权</span>
+						</a>
+					</li>
+					<li class="site-menu-item {{in_array(Request::path(), ['node/certificate', 'node/certificate/add', 'node/certificate/edit']) ? 'active open' : ''}}">
+						<a href="/node/certificate">
+							<span class="site-menu-title">证书列表</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['node/pingLog']) ? 'active open' : ''}}">
@@ -197,13 +202,13 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['rule', 'rule/add', 'rule/edit', 'rule/group', 'rule/group/add', 'rule/group/edit', 'rule/group/assign', 'rule/log']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['rule', 'rule/group', 'rule/group/add', 'rule/group/edit', 'rule/group/assign', 'rule/log']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-eye" aria-hidden="true"></i>
 					<span class="site-menu-title">审计规则</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['rule', 'rule/add', 'rule/edit']) ? 'active open' : ''}}">
+					<li class="site-menu-item {{in_array(Request::path(), ['rule']) ? 'active open' : ''}}">
 						<a href="/rule">
 							<span class="site-menu-title">规则列表</span>
 						</a>
@@ -220,7 +225,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['shop', 'shop/add', 'shop/edit', 'coupon', 'coupon/add','admin/orderList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['shop', 'shop/add', 'shop/edit', 'coupon', 'coupon/add', 'admin/orderList']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
 					<span class="site-menu-title">商品系统</span>
@@ -249,7 +254,7 @@
 					<span class="site-menu-title">推广系统</span>
 					@if(\App\Models\ReferralApply::query()->whereStatus(0)->count() > 0 )
 						<div class="site-menu-badge">
-							<span class="badge badge-pill badge-success">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+							<span class="badge badge-pill badge-success">{{\App\Models\ReferralApply::query()->whereStatus(0)->count()}}</span>
 						</div>
 					@endif
 				</a>

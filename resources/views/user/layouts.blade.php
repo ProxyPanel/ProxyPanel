@@ -72,14 +72,14 @@
 				<li class="nav-item hidden-float" id="toggleMenubar">
 					<a class="nav-link" data-toggle="menubar" href="#" role="button">
 						<i class="icon hamburger hamburger-arrow-left">
-							<span class="sr-only">Toggle menubar切换菜单栏</span>
+							<span class="sr-only">Toggle menubar | 切换菜单栏</span>
 							<span class="hamburger-bar"></span>
 						</i>
 					</a>
 				</li>
 				<li class="nav-item hidden-sm-down" id="toggleFullscreen">
 					<a class="nav-link icon icon-fullscreen" data-toggle="fullscreen" href="#" role="button">
-						<span class="sr-only">Toggle fullscreen切换全屏</span>
+						<span class="sr-only">Toggle fullscreen | 切换全屏</span>
 					</a>
 				</li>
 			</ul>
