@@ -57,7 +57,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::get('userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
 		Route::get('userOnlineIPList', 'AdminController@userOnlineIPList'); // 用户在线IP记录
 		Route::any('export/{id}', 'AdminController@export'); // 导出(查看)配置信息
-		Route::get('userMonitor/{id}', 'AdminController@userMonitor'); // 用户流量监控
+		Route::get('userMonitor', 'AdminController@userMonitor'); // 用户流量监控
 		Route::post('resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
 		Route::post('handleUserCredit', 'AdminController@handleUserCredit'); // 用户余额充值
 		Route::post("switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
@@ -76,21 +76,29 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::get('userRebateList', 'AffiliateController@userRebateList'); // 返利流水记录
 		});
 	});
+
 	Route::group(['prefix' => 'node'], function() {
 		Route::get('/', 'NodeController@nodeList'); // 节点列表
 		Route::any('add', 'NodeController@addNode'); // 添加节点
 		Route::any('edit', 'NodeController@editNode'); // 编辑节点
 		Route::post('delete', 'NodeController@delNode'); // 删除节点
-		Route::get('monitor/{id}', 'NodeController@nodeMonitor'); // 节点流量监控
+		Route::get('monitor', 'NodeController@nodeMonitor'); // 节点流量监控
 		Route::post('check', 'NodeController@checkNode'); // 节点阻断检测
 		Route::post('ping', 'NodeController@pingNode'); // 节点ping测速
 		Route::get('pingLog', 'NodeController@pingLog'); //节点Ping测速日志
-		// 授权
+		// 节点Api授权相关
 		Route::group(['prefix' => 'auth'], function() {
 			Route::get('/', 'NodeController@authList'); // 节点授权列表
 			Route::post('add', 'NodeController@addAuth'); // 添加节点授权
 			Route::post('delete', 'NodeController@delAuth'); // 删除节点授权
 			Route::post('refresh', 'NodeController@refreshAuth'); // 重置节点授权
+		});
+		// 节点域名tls相关
+		Route::group(['prefix' => 'certificate'], function() {
+			Route::get('/', 'NodeController@certificateList'); // 域名证书列表
+			Route::any('add', 'NodeController@addCertificate'); // 添加域名证书
+			Route::any('edit', 'NodeController@editCertificate'); // 编辑域名证书
+			Route::post('delete', 'NodeController@delCertificate'); // 删除域名证书
 		});
 	});
 
@@ -113,7 +121,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::group(['prefix' => 'shop'], function() {
 			Route::any('/', 'ShopController@goodsList'); // 商品列表
 			Route::any('add', 'ShopController@addGoods'); // 添加商品
-			Route::any('edit/{id}', 'ShopController@editGoods'); // 编辑商品
+			Route::any('edit', 'ShopController@editGoods'); // 编辑商品
 			Route::post('delete', 'ShopController@delGoods'); // 删除商品
 		});
 

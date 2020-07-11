@@ -90,7 +90,7 @@
 							</td>
 							<td>
 								<div class="btn-group">
-									<a href="/shop/edit/{{$goods->id}}" class="btn btn-primary"><i
+									<a href="/shop/edit?id={{$goods->id}}" class="btn btn-primary"><i
 												class="icon wb-edit"></i></a>
 									<button class="btn btn-danger"
 											onclick="delGoods('{{$goods->id}}','{{$goods->name}}')"><i

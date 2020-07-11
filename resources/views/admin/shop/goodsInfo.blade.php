@@ -39,7 +39,7 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<form action=@isset($goods){{url('/shop/edit/'.$goods->id)}} @else {{url('/shop/add')}} @endisset"" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+				<form action=@isset($goods){{url('/shop/edit?id='.$goods->id)}} @else {{url('/shop/add')}} @endisset"" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					{{csrf_field()}}
 					<label>
 						<input name="id" hidden/>

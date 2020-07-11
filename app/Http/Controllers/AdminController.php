@@ -745,7 +745,8 @@ EOF;
 	}
 
 	// 用户流量监控
-	public function userMonitor($id) {
+	public function userMonitor(Request $request) {
+		$id = $request->input('id');
 		if(empty($id)){
 			return Redirect::to('admin/userList');
 		}
@@ -1665,7 +1666,7 @@ EOF;
 			});
 		}
 
-		$list = $query->groupBy('user_id','node_id')->orderByDesc('id');
+		$list = $query->groupBy('user_id', 'node_id')->orderByDesc('id');
 		foreach($list as $vo){
 			// 跳过上报多IP的
 			if(strpos($vo->ip, ',') == true || $vo->ip == null){
@@ -1685,7 +1686,7 @@ EOF;
 			$vo->ipInfo = $ipInfo['country'].' '.$ipInfo['province'].' '.$ipInfo['city'];
 		}
 
-		$view['list'] = $list->paginate(20)->appends($request->except('page'));;
+		$view['list'] = $list->paginate(20)->appends($request->except('page'));
 		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->orderByDesc('id')->get();
 
 		return Response::view('admin.logs.onlineIPMonitor', $view);

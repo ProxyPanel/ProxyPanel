@@ -276,7 +276,17 @@
 										</div>
 										<div class="form-group row v2_host">
 											<label for="v2_host" class="col-md-3 col-form-label">伪装域名</label>
-											<input type="text" class="form-control col-md-4" name="v2_host" id="v2_host">
+											<div class="col-md-4 pl-0">
+												<input type="text" class="form-control" name="v2_other" id="v2_host">
+												<div name="v2_ws">
+													<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" id="v2_ws">
+														<option value="" hidden></option>
+														@foreach($dv_list as $dv)
+															<option value="{{$dv->domain}}" @if(isset($node) && $node->v2_net == "ws" && $node->v2_host == $dv->domain) selected @endif>{{$dv->domain}}</option>
+														@endforeach
+													</select>
+												</div>
+											</div>
 											<div class="text-help offset-md-3"> 伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个</div>
 										</div>
 										<div class="form-group row">
@@ -381,7 +391,6 @@
 		const string = "{{strtolower(Str::random())}}";
 		$(document).ready(function () {
 			let v2_path = $('#v2_path');
-
 			@isset($node)
 
 			@if($node->is_ddns)
@@ -460,7 +469,6 @@
 				$('.obfs_param').hide();
 			}
 		});
-
 		// ajax同步提交
 		function Submit() {
 			$.ajax({
@@ -602,34 +610,44 @@
 			}
 		});
 
+		$("#v2_ws").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+			$('#v2_host').val($('#v2_ws').val());
+		})
+
 		// 设置V2Ray详细设置
 		$("#v2_net").on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
 			const type = $('.v2_type');
 			const type_option = $('#type_option');
 			const host = $('.v2_host');
 			const path = $('#v2_path');
+			const v2_ws = $('[name="v2_ws"]');
+			const v2_other = $('[name="v2_other"]');
 			type.show();
 			host.show();
+			v2_other.show();
+			v2_ws.hide();
 			path.val('/' + string);
-			switch (clickedIndex) {
-				case 1:
+			switch ($(this).val()) {
+				case 'kcp':
 					type_option.attr('disabled', false);
 					break;
-				case 2:
+				case 'ws':
+					v2_ws.show();
+					type.hide();
+					v2_other.hide();
+					break;
+				case 'http':
 					type.hide();
 					break;
-				case 3:
-					type.hide();
-					break;
-				case 4:
+				case 'domainsocket':
 					type.hide();
 					host.hide();
 					break;
-				case 5:
+				case 'quic':
 					type_option.attr('disabled', false);
 					path.val(string);
 					break;
-				case 0:
+				case 'tcp':
 				default:
 					type_option.attr('disabled', true);
 					break;

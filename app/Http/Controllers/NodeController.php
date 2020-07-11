@@ -8,6 +8,7 @@ use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
 use App\Models\NodeAuth;
+use App\Models\NodeCertificate;
 use App\Models\NodeRule;
 use App\Models\RuleGroup;
 use App\Models\SsNode;
@@ -160,6 +161,7 @@ class NodeController extends Controller {
 			$view['country_list'] = Country::query()->orderBy('code')->get();
 			$view['level_list'] = Level::query()->orderBy('level')->get();
 			$view['label_list'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
+			$view['dv_list'] = NodeCertificate::query()->orderBy('id')->get();
 
 			return Response::view('admin.node.nodeInfo', $view);
 		}
@@ -318,6 +320,7 @@ class NodeController extends Controller {
 			$view['country_list'] = Country::query()->orderBy('code')->get();
 			$view['level_list'] = Level::query()->orderBy('level')->get();
 			$view['label_list'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
+			$view['dv_list'] = NodeCertificate::query()->orderBy('id')->get();
 
 			return view('admin.node.nodeInfo', $view)->with(compact('node'));
 		}
@@ -368,7 +371,8 @@ class NodeController extends Controller {
 	}
 
 	// 节点流量监控
-	public function nodeMonitor($node_id) {
+	public function nodeMonitor(Request $request) {
+		$node_id = $request->input('id');
 		$node = SsNode::query()->whereId($node_id)->orderByDesc('sort')->first();
 		if(!$node){
 			Session::flash('errorMsg', '节点不存在，请重试');
@@ -519,5 +523,71 @@ class NodeController extends Controller {
 		}else{
 			return Response::json(['status' => 'fail', 'message' => '操作失败']);
 		}
+	}
+
+	// 域名证书列表
+	public function certificateList(Request $request) {
+		$DvList = NodeCertificate::query()->orderBy('id')->paginate(15)->appends($request->except('page'));
+		foreach($DvList as $Dv){
+			if($Dv->key && $Dv->pem){
+				$DvInfo = openssl_x509_parse($Dv->pem);
+				//dd($DvInfo);
+				$Dv->issuer = $DvInfo['issuer']['O'];
+				$Dv->from = $DvInfo['validFrom_time_t']? date('Y-m-d', $DvInfo['validFrom_time_t']) : null;
+				$Dv->to = $DvInfo['validTo']? date('Y-m-d', $DvInfo['validTo_time_t']) : null;
+			}
+		}
+			$view['list'] = $DvList;
+			return Response::view('admin.node.certificateList', $view);
+	}
+
+	// 添加域名证书
+	public function addCertificate(Request $request) {
+		if($request->isMethod('POST')){
+			$obj = new NodeCertificate();
+			$obj->domain = $request->input('domain');
+			$obj->key = str_replace(["\r", "\n"], '', $request->input('key'));
+			$obj->pem = str_replace(["\r", "\n"], '', $request->input('pem'));
+			$obj->save();
+
+			if($obj->id){
+				return Response::json(['status' => 'success', 'message' => '生成成功']);
+			}else{
+				return Response::json(['status' => 'fail', 'message' => '生成失败']);
+			}
+		}else{
+			return Response::view('admin.node.certificateInfo');
+		}
+	}
+
+	// 编辑域名证书
+	public function editCertificate(Request $request) {
+		$Dv = NodeCertificate::query()->find($request->input('id'));
+		if($request->isMethod('POST')){
+			if($Dv){
+				$ret = NodeCertificate::query()->update([
+					'domain' => $request->input('domain'),
+					'key'    => $request->input('key'),
+					'pem'    => $request->input('pem')
+				]);
+				if($ret){
+					return Response::json(['status' => 'success', 'message' => '修改成功']);
+				}
+			}
+			return Response::json(['status' => 'fail', 'message' => '修改失败']);
+		}else{
+			$view['Dv'] = $Dv;
+			return Response::view('admin.node.certificateInfo', $view);
+		}
+	}
+
+	// 删除域名证书
+	public function delCertificate(Request $request) {
+		try{
+			NodeCertificate::query()->whereId($request->input('id'))->delete();
+		}catch(Exception $e){
+			return Response::json(['status' => 'fail', 'message' => '错误：'.var_export($e, true)]);
+		}
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
 }

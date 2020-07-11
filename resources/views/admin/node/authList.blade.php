@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h2 class="panel-title">节点授权列表<small>WEBAPI</small></h2>
 				<div class="panel-actions">
-					<button class="btn btn-outline-default" onclick="addAuth()">
+					<button class="btn btn-primary" onclick="addAuth()">
 						<i class="icon wb-plus" aria-hidden="true"></i>生成授权
 					</button>
 				</div>
