@@ -136,7 +136,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket', 'ticket/create', 'ticket/reply', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/push', 'marketing/email']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket', 'ticket/reply', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/push', 'marketing/email']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
 					<span class="site-menu-title">客服系统</span>
@@ -147,7 +147,7 @@
 					@endif
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/create', 'ticket/reply']) ? 'active open' : ''}}">
+					<li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/reply']) ? 'active open' : ''}}">
 						<a href="/ticket">
 							<span class="site-menu-title">服务工单</span>
 							@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )

@@ -25,6 +25,7 @@ use Illuminate\Notifications\Notifiable;
  * @property int                                                                                                            $enable          代理状态
  * @property string                                                                                                         $method          加密方式
  * @property string                                                                                                         $protocol        协议
+ * @property string|null                                                                                                    $protocol_param  协议参数
  * @property string                                                                                                         $obfs            混淆
  * @property int                                                                                                            $speed_limit     用户限速，为0表示不限速，单位Byte
  * @property string|null                                                                                                    $wechat          微信
@@ -75,6 +76,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User wherePort($value)
  * @method static Builder|User whereProtocol($value)
+ * @method static Builder|User whereProtocolParam($value)
  * @method static Builder|User whereQq($value)
  * @method static Builder|User whereReferralUid($value)
  * @method static Builder|User whereRegIp($value)

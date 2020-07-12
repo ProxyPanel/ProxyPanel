@@ -9,6 +9,7 @@ use App\Mail\closeTicket;
 use App\Mail\replyTicket;
 use App\Models\Ticket;
 use App\Models\TicketReply;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Mail;
@@ -32,7 +33,7 @@ class TicketController extends Controller {
 	public function ticketList(Request $request) {
 		$email = $request->input('email');
 
-		$query = Ticket::query();
+		$query = Ticket::query()->whereIn('admin_id', [0, Auth::id()]);
 
 		if(isset($email)){
 			$query->whereHas('user', function($q) use ($email) {
@@ -43,6 +44,40 @@ class TicketController extends Controller {
 		$view['ticketList'] = $query->orderByDesc('id')->paginate(10)->appends($request->except('page'));
 
 		return Response::view('admin.ticket.ticketList', $view);
+	}
+
+	// 创建工单
+	public function createTicket(Request $request) {
+		$id = $request->input('id');
+		$email = $request->input('email');
+		$title = $request->input('title');
+		$content = $request->input('content');
+
+		$user = User::query()->find($id)?: User::query()->whereEmail($email)->first();
+
+		if(!$user){
+			return Response::json(['status' => 'fail', 'message' => '用户不存在']);
+		}elseif($user == Auth::user()){
+			return Response::json(['status' => 'fail', 'message' => '不能对自己发起工单']);
+		}
+
+		if(empty($title) || empty($content)){
+			return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
+		}
+
+		$obj = new Ticket();
+		$obj->user_id = $user->id;
+		$obj->admin_id = Auth::id();
+		$obj->title = $title;
+		$obj->content = $content;
+		$obj->status = 0;
+		$obj->save();
+
+		if($obj->id){
+			return Response::json(['status' => 'success', 'message' => '工单创建成功']);
+		}else{
+			return Response::json(['status' => 'fail', 'message' => '工单创建失败']);
+		}
 	}
 
 	// 回复工单
@@ -56,7 +91,7 @@ class TicketController extends Controller {
 
 			$obj = new TicketReply();
 			$obj->ticket_id = $id;
-			$obj->user_id = Auth::id();
+			$obj->admin_id = Auth::id();
 			$obj->content = $content;
 			$obj->save();
 
@@ -89,8 +124,8 @@ class TicketController extends Controller {
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
 			}
 		}else{
-			$view['ticket'] = Ticket::query()->whereId($id)->with('user')->first();
-			$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->orderBy('id')->get();
+			$view['ticket'] = Ticket::query()->whereId($id)->first();
+			$view['replyList'] = TicketReply::query()->whereTicketId($id)->orderBy('id')->get();
 
 			return Response::view('admin.ticket.replyTicket', $view);
 		}
