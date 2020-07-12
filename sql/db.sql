@@ -36,7 +36,7 @@ CREATE TABLE `ss_node`
     `relay_port`     SMALLINT(5) UNSIGNED NULL     DEFAULT 0 COMMENT '中转端口',
     `level`          TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '等级：0-无等级，全部可见',
     `speed_limit`    BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '节点限速，为0表示不限速，单位Byte',
-    `client_limit`   TINYINT(3) UNSIGNED  NOT NULL DEFAULT 0 COMMENT '设备数限制',
+    `client_limit`   SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT '设备数限制',
     `description`    VARCHAR(255)         NULL     DEFAULT NULL COMMENT '节点简单描述',
     `method`         VARCHAR(32)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
     `protocol`       VARCHAR(64)          NOT NULL DEFAULT 'origin' COMMENT '协议',

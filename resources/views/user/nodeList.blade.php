@@ -19,6 +19,7 @@
 							</div>
 							<div class="col-8 text-break text-right">
 								<p class="font-size-20 blue-600">
+									<span class="badge badge-pill up m-0 badge-default">{{$node->getLevel->name}}</span>
 									@if($node->offline)
 										<i class="red-600 icon wb-warning" data-content="线路不稳定/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
 									@endif
