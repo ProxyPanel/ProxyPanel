@@ -38,12 +38,17 @@
 					<strong>错误：</strong> {{$errors->first()}}
 				</div>
 			@endif
+			@if (Session::has('errorMsg'))
+				<div class="alert alert-success alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					{{Session::get('errorMsg')}}
+				</div>
+			@endif
 			<div class="panel-body">
 				<form action=@isset($goods){{url('/shop/edit?id='.$goods->id)}} @else {{url('/shop/add')}} @endisset"" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					{{csrf_field()}}
-					<label>
-						<input name="id" hidden/>
-					</label>
 					<div class="form-row">
 						<div class="col-lg-6 col-md-12">
 							<div class="form-group row">
@@ -223,7 +228,7 @@
 			$("#sort").val('{{$goods->sort}}')
 			$("#color").asColorPicker('val', '{{$goods->color}}')
 			$("#description").val('{{$goods->description}}')
-			$("#info").val('{{$goods->info}}')
+			$("#info").val('{!! $goods->info !!}')
 		})
 		@elseif(old('type'))
 		$(document).ready(function () {
