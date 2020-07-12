@@ -8,13 +8,13 @@
 			<div class="col-lg-8 order-lg-1 order-2">
 				<div class="panel panel-bordered">
 					<div class="panel-heading p-20">
-						<h1 class="panel-title cyan-600"><i
-									class="icon wb-user-circle"></i>{{trans('home.ticket_title')}}
+						<h1 class="panel-title cyan-600">
+							<i class="icon wb-user-circle"></i>{{trans('home.ticket_title')}}
 						</h1>
 						<div class="panel-actions">
-							<button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal"
-									data-target="#add_ticket_modal">
-								<span><i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}
+							<button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
+								<span>
+									<i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}
 								</span>
 							</button>
 						</div>
@@ -35,23 +35,17 @@
 									<tr>
 										<td>{{$ticket->id}}</td>
 										<td>{{$ticket->title}}</td>
+										<td>{!!$ticket->status_label!!}</td>
 										<td>
-											{!!$ticket->status_label!!}
-										</td>
-										<td>
-											@if($ticket->status == 2)
-												<a href="/replyTicket?id={{$ticket->id}}"
-														class="btn btn-animate btn-animate-vertical btn-outline-info">
-													<span><i class="icon wb-eye" aria-hidden="true"
-																style="left: 40%"> </i> {{trans('home.ticket_table_view')}}
-													</span></a>
-											@else
-												<a href="/replyTicket?id={{$ticket->id}}"
-														class="btn btn-animate btn-animate-vertical btn-outline-success">
-													<span><i class="icon wb-check" aria-hidden="true"
-																style="left: 40%"></i> {{trans('home.ticket_open')}}
-													</span></a>
-											@endif
+											<a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
+												<span>
+													@if($ticket->status == 2)
+														<i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_table_view')}}
+													@else
+														<i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_open')}}
+													@endif
+												</span>
+											</a>
 										</td>
 									</tr>
 								@endforeach
@@ -119,20 +113,16 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-xl-12 form-group">
-							<input type="text" class="form-control" name="title" id="title"
-									placeholder="{{trans('home.ticket_table_new_title')}}">
+							<input type="text" class="form-control" name="title" id="title" placeholder="{{trans('home.ticket_table_new_title')}}">
 						</div>
 						<div class="col-xl-12 form-group">
-                            <textarea class="form-control" rows="5" name="content" id="content"
-		                            placeholder="{{trans('home.ticket_table_content')}}"></textarea>
+							<textarea class="form-control" rows="5" name="content" id="content" placeholder="{{trans('home.ticket_table_content')}}"></textarea>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" data-dismiss="modal"
-							class="btn btn-danger"> {{trans('home.ticket_cancel')}} </button>
-					<button type="button" data-dismiss="modal" class="btn btn-success"
-							onclick="createTicket()"> {{trans('home.ticket_confirm')}} </button>
+					<button type="button" data-dismiss="modal" class="btn btn-danger"> {{trans('home.ticket_cancel')}} </button>
+					<button type="button" data-dismiss="modal" class="btn btn-success" onclick="createTicket()"> {{trans('home.ticket_confirm')}} </button>
 				</div>
 			</div>
 		</div>

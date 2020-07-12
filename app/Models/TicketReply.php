@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int                             $id
  * @property int                             $ticket_id  工单ID
- * @property int                             $user_id    回复用户的ID
+ * @property int                             $user_id    回复用户ID
+ * @property int                             $admin_id   管理员ID
  * @property string                          $content    回复内容
  * @property \Illuminate\Support\Carbon|null $created_at 创建时间
  * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|TicketReply newModelQuery()
  * @method static Builder|TicketReply newQuery()
  * @method static Builder|TicketReply query()
+ * @method static Builder|TicketReply whereAdminId($value)
  * @method static Builder|TicketReply whereContent($value)
  * @method static Builder|TicketReply whereCreatedAt($value)
  * @method static Builder|TicketReply whereId($value)
@@ -32,5 +34,9 @@ class TicketReply extends Model {
 
 	function user() {
 		return $this->hasOne(User::class, 'id', 'user_id');
+	}
+
+	function admin() {
+		return $this->hasOne(User::class, 'id', 'admin_id');
 	}
 }

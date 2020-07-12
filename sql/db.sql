@@ -675,6 +675,7 @@ CREATE TABLE `ticket`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+    `admin_id`   INT(10) UNSIGNED          DEFAULT '0' COMMENT '管理员ID',
     `title`      VARCHAR(255)     NOT NULL DEFAULT '' COMMENT '标题',
     `content`    TEXT             NOT NULL COMMENT '内容',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
@@ -691,7 +692,8 @@ CREATE TABLE `ticket_reply`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `ticket_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '工单ID',
-    `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '回复用户的ID',
+    `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '回复用户ID',
+    `admin_id`   INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '管理员ID',
     `content`    TEXT             NOT NULL COMMENT '回复内容',
     `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
     `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
@@ -1300,7 +1302,7 @@ VALUES (1, '1', '360',
         '(.*\.||)(youtube|googlevideo|hulu|netflix|nflxvideo|akamai|nflximg|hbo|mtv|bbc|tvb)\.(org|club|com|net|tv)',
         '2019-11-19 15:04:11', '2019-11-19 15:04:11'),
        (17, '1', '测速类', '(.*\.||)(fast|speedtest)\.(org|com|net|cn)', '2019-11-19 15:04:11', '2019-11-19 15:04:11'),
-       (17, '1', '涉洗钱', '(.*\.||)(metatrader4|metatrader5|mql5)\.(org|com|net)', '2020-7-9 14:25:11', '2020-7-9 14:25:11');
+       (18, '1', '涉洗钱', '(.*\.||)(metatrader4|metatrader5|mql5)\.(org|com|net)', '2020-7-9 14:25:11', '2020-7-9 14:25:11');
 
 -- ----------------------------
 -- Table structure for rule_group

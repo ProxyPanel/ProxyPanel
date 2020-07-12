@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int                             $id
  * @property int                             $user_id    用户ID
+ * @property int|null                        $admin_id   管理员ID
  * @property string                          $title      标题
  * @property string                          $content    内容
  * @property int                             $status     状态：0-待处理、1-已处理未关闭、2-已关闭
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Ticket newQuery()
  * @method static Builder|Ticket query()
  * @method static Builder|Ticket uid()
+ * @method static Builder|Ticket whereAdminId($value)
  * @method static Builder|Ticket whereContent($value)
  * @method static Builder|Ticket whereCreatedAt($value)
  * @method static Builder|Ticket whereId($value)
@@ -41,6 +43,10 @@ class Ticket extends Model {
 
 	function user() {
 		return $this->hasOne(User::class, 'id', 'user_id');
+	}
+
+	function admin() {
+		return $this->hasOne(User::class, 'id', 'admin_id');
 	}
 
 	function getStatusLabelAttribute() {

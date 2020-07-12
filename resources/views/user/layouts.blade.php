@@ -112,7 +112,7 @@
 					<a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"
 							data-toggle="dropdown" role="button">
 						<span class="avatar avatar-online">
-							@include('user.components.avatar')
+							@component('components.avatar',['user' => Auth::getUser()])@endcomponent
 							<i></i>
 						</span>
 					</a>

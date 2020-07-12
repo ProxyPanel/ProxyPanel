@@ -105,8 +105,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 	Route::group(['namespace' => 'Admin'], function() {
 		Route::group(['prefix' => 'ticket'], function() {
 			Route::get('/', 'TicketController@ticketList'); // 工单列表
-			// Todo: 创建工单
-			// Route::post('create', 'TicketController@createTicket'); // 创建工单
+			Route::post('create', 'TicketController@createTicket'); // 创建工单
 			Route::post('close', 'TicketController@closeTicket'); // 关闭工单
 			Route::any('reply', 'TicketController@replyTicket'); // 回复工单
 		});

@@ -719,7 +719,7 @@
 												<option value="1">首购返利</option>
 												<option value="2">循环返利</option>
 											</select>
-											<span class="text-help offset-md-3"> 启用后登录、注册需要输入验证码 </span>
+											<span class="text-help offset-md-3"> 切换模式后旧数据不变，新的返利按新的模式计算 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
