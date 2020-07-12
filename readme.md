@@ -3,7 +3,7 @@
 
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET
 
-- [Demo](https://demo.proxypanel.ml/admin/userList) 
+- [Demo](https://demo.proxypanel.ml/) 
     - Account: test@test.com
     - Password: 123456
 - [Issues](https://github.com/ZBrettonYe/ProxyPanel/issues)
@@ -42,4 +42,4 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
 
 ## License
 
-ProxyPanel also is open-sourced software licensed under the MIT license.
+ProxyPanel is open-sourced software licensed under the GPL-3.0 license.
