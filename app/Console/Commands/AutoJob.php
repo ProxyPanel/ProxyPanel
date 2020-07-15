@@ -36,7 +36,7 @@ class AutoJob extends Command {
 	/*
 	 * 警告：除非熟悉业务流程，否则不推荐更改以下执行顺序，随意变更以下顺序可能导致系统异常
 	 */
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 关闭超时未支付在线订单
@@ -64,11 +64,9 @@ class AutoJob extends Command {
 		$this->checkNodeStatus();
 
 		// 检查 维护模式
-		if(self::$systemConfig['maintenance_mode']){
-			if(strtotime(self::$systemConfig['maintenance_time']) < time()){
-				Config::query()->whereName('maintenance_mode')->update(['value' => 0]);
-				Config::query()->whereName('maintenance_time')->update(['value' => '']);
-			}
+		if(self::$systemConfig['maintenance_mode'] && strtotime(self::$systemConfig['maintenance_time']) < time()){
+			Config::query()->whereName('maintenance_mode')->update(['value' => 0]);
+			Config::query()->whereName('maintenance_time')->update(['value' => '']);
 		}
 
 		$jobEndTime = microtime(true);
@@ -78,7 +76,7 @@ class AutoJob extends Command {
 	}
 
 	// 关闭超时未在线支付订单
-	private function closePayments() {
+	private function closePayments(): void {
 		// 关闭超时未支付的在线订单（15分钟关闭订单）
 		$paymentList = Payment::query()
 		                      ->whereStatus(0)
@@ -116,19 +114,17 @@ class AutoJob extends Command {
 	}
 
 	//返回优惠券
-	private function returnCoupon($coupon_id) {
+	private function returnCoupon($coupon_id): bool {
 		$coupon = Coupon::query()->whereId($coupon_id)->get();
-		if($coupon){
-			if($coupon->type < 3){
-				Coupon::query()->whereId($coupon_id)->increment('usage_count', 1, ['status' => 0]);
-				return true;
-			}
+		if($coupon && $coupon->type < 3){
+			Coupon::query()->whereId($coupon_id)->increment('usage_count', 1, ['status' => 0]);
+			return true;
 		}
 		return false;
 	}
 
 	// 关闭超时未支付订单
-	private function closeOrders() {
+	private function closeOrders(): void {
 		// 关闭超时未支付的支付订单（15分钟关闭订单）
 		$orderList = Order::query()
 		                  ->whereStatus(0)
@@ -161,7 +157,7 @@ class AutoJob extends Command {
 	}
 
 	// 注册验证码自动置无效 & 优惠券无效化
-	private function expireCode() {
+	private function expireCode(): void {
 		// 注册验证码自动置无效
 		VerifyCode::query()
 		          ->whereStatus(0)
@@ -179,7 +175,7 @@ class AutoJob extends Command {
 	}
 
 	// 封禁访问异常的订阅链接
-	private function blockSubscribe() {
+	private function blockSubscribe(): void {
 		if(self::$systemConfig['is_subscribe_ban']){
 			$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
 			foreach($userList as $user){
@@ -214,7 +210,7 @@ class AutoJob extends Command {
 	 * @param  int     $minutes      封禁时长，单位分钟
 	 * @param  string  $description  封禁理由
 	 */
-	private function addUserBanLog($userId, $minutes, $description) {
+	private function addUserBanLog($userId, $minutes, $description): void {
 		$log = new UserBanLog();
 		$log->user_id = $userId;
 		$log->minutes = $minutes;
@@ -223,7 +219,7 @@ class AutoJob extends Command {
 	}
 
 	// 封禁账号
-	private function blockUsers() {
+	private function blockUsers(): void {
 		// 封禁1小时内流量异常账号
 		if(self::$systemConfig['is_traffic_ban']){
 			$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->whereBanTime(0)->get();
@@ -268,7 +264,7 @@ class AutoJob extends Command {
 	}
 
 	// 解封被临时封禁的账号
-	private function unblockUsers() {
+	private function unblockUsers(): void {
 		// 解封被临时封禁的账号
 		$userList = User::query()->whereEnable(0)->where('status', '>=', 0)->where('ban_time', '>', 0)->get();
 		foreach($userList as $user){
@@ -297,7 +293,7 @@ class AutoJob extends Command {
 	}
 
 	// 端口回收与分配
-	private function dispatchPort() {
+	private function dispatchPort(): void {
 		if(self::$systemConfig['auto_release_port']){
 			## 自动分配端口
 			$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->wherePort(0)->get();
@@ -320,7 +316,7 @@ class AutoJob extends Command {
 	}
 
 	// 检测节点是否离线
-	private function checkNodeStatus() {
+	private function checkNodeStatus(): void {
 		if(self::$systemConfig['is_node_offline']){
 			$nodeList = SsNode::whereIsRelay(0)->whereStatus(1)->get();
 			foreach($nodeList as $node){
@@ -330,22 +326,20 @@ class AutoJob extends Command {
 				                     ->where('log_time', '>=', strtotime("-10 minutes"))
 				                     ->orderByDesc('id')
 				                     ->doesntExist();
-				if($nodeTTL){
-					if(self::$systemConfig['offline_check_times']){
-						// 已通知次数
-						$cacheKey = 'offline_check_times'.$node->id;
-						if(Cache::has($cacheKey)){
-							$times = Cache::get($cacheKey);
-						}else{
-							// 键将保留24小时
-							Cache::put($cacheKey, 1, Day);
-							$times = 1;
-						}
+				if($nodeTTL && self::$systemConfig['offline_check_times']){
+					// 已通知次数
+					$cacheKey = 'offline_check_times'.$node->id;
+					if(Cache::has($cacheKey)){
+						$times = Cache::get($cacheKey);
+					}else{
+						// 键将保留24小时
+						Cache::put($cacheKey, 1, Day);
+						$times = 1;
+					}
 
-						if($times < self::$systemConfig['offline_check_times']){
-							Cache::increment($cacheKey);
-							PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
-						}
+					if($times < self::$systemConfig['offline_check_times']){
+						Cache::increment($cacheKey);
+						PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
 					}
 				}
 			}

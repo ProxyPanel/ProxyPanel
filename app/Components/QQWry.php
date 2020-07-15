@@ -12,7 +12,7 @@ class QQWry {
 	 *
 	 * @return array
 	 */
-	public static function ip($ip) {
+	public static function ip($ip): array {
 		$filePath = public_path('qqwry.dat');
 
 		return IpLocation::getLocation($ip, $filePath);

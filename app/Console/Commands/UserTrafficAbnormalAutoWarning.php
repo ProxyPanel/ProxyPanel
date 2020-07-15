@@ -19,7 +19,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 用户流量异常警告
@@ -32,7 +32,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 	}
 
 	// 用户流量异常警告
-	private function userTrafficAbnormalWarning() {
+	private function userTrafficAbnormalWarning(): void {
 		// 1小时内流量异常用户(多往前取5分钟，防止数据统计任务执行时间过长导致没有数据)
 		$userTotalTrafficList = UserTrafficHourly::query()
 		                                         ->whereNodeId(0)

@@ -7,6 +7,7 @@ use App\Models\Goods;
 use App\Models\Level;
 use DB;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Redirect;
@@ -23,7 +24,7 @@ use Validator;
  */
 class ShopController extends Controller {
 	// 商品列表
-	public function goodsList(Request $request) {
+	public function goodsList(Request $request): \Illuminate\Http\Response {
 		$type = $request->input('type');
 		$status = $request->input('status');
 
@@ -68,7 +69,7 @@ class ShopController extends Controller {
 					return Redirect::back()->withInput()->withErrors('LOGO不合法');
 				}
 
-				$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$logo = $move? '/upload/image/'.$logoName : '';
 			}
@@ -147,7 +148,7 @@ class ShopController extends Controller {
 					return Redirect::back()->withInput();
 				}
 
-				$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$logo = $move? '/upload/image/'.$logoName : '';
 				Goods::query()->whereId($id)->update(['logo' => $logo]);
@@ -184,17 +185,16 @@ class ShopController extends Controller {
 			}
 
 			return Redirect::to('shop/edit?id='.$id);
-		}else{
-			$goods = Goods::query()->whereId($id)->first();
-
-			$view['level_list'] = Level::query()->orderBy('level')->get();
-
-			return view('admin.shop.goodsInfo', $view)->with(compact('goods'));
 		}
+
+		$goods = Goods::query()->whereId($id)->first();
+		$view['level_list'] = Level::query()->orderBy('level')->get();
+
+		return view('admin.shop.goodsInfo', $view)->with(compact('goods'));
 	}
 
 	// 删除商品
-	public function delGoods(Request $request) {
+	public function delGoods(Request $request): JsonResponse {
 		try{
 			Goods::query()->whereId($request->input('id'))->delete();
 		}catch(Exception $e){

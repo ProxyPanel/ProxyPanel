@@ -34,10 +34,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Marketing extends Model {
 	protected $table = 'marketing';
-	protected $primaryKey = 'id';
 	protected $appends = ['status_label'];
 
-	function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute(): string {
 		$status_label = '';
 		switch($this->attributes['status']){
 			case -1:

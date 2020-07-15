@@ -7,36 +7,31 @@
 					<i class="icon wb-payment"></i>{{\App\Components\Helpers::systemConfig()['website_name']}}{{trans('home.online_pay')}}
 				</h1>
 			</div>
-			<div class="panel-body border-primary">
+			<div class="panel-body border-primary ml-auto mr-auto w-p75">
+				<div class="alert alert-info text-center">
+					请使用<strong class="red-600">{{$pay_type}}</strong>扫描二维码进行支付
+				</div>
 				<div class="row">
-					<div class="col-2"></div>
-					<div class="alert alert-info col-8 text-center">
-						请扫描二维码进行支付
-						{{--						请使用<strong class="red-600"> 支付宝 </strong>扫描二维码进行支付--}}
+					<div class="col-md-6">
+						<ul class="list-group list-group-dividered">
+							<li class="list-group-item">服务名称：{{$name}}</li>
+							<li class="list-group-item">支付金额：{{$payment->amount}}元</li>
+							@if($days != 0)
+								<li class="list-group-item">有效期：{{$days}} 天</li>
+							@endif
+							<li class="list-group-item"> 请在<code>15分钟</code>内完成支付，否者订单将会自动关闭</li>
+						</ul>
 					</div>
-					<div class="col-2"></div>
-					<div class="col-2"></div>
-					<div class="row col-8">
-						<div class="col-md-6">
-							<ul class="list-group list-group-dividered">
-								<li class="list-group-item">服务名称：{{$name}}</li>
-								<li class="list-group-item">支付金额：{{$payment->amount}}元</li>
-								@if($days != 0)
-									<li class="list-group-item">有效期：{{$days}} 天</li>
-								@endif
-								<li class="list-group-item"> 请在<code>15分钟</code>内完成支付，否者订单将会自动关闭</li>
-							</ul>
-						</div>
-						<div class="col-md-6 text-center mb-15">
+					<div class="col-auto ml-auto mr-auto">
+						@if($payment->qr_code && $payment->url)
+							<img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->style('round', 0.9)->size(250)->errorCorrection('H')->merge(url($pay_type_icon), .3, true)->generate($payment->url))!!}" alt="支付二维码">
+						@else
 							<img class="h-250 w-250" src="{{$payment->qr_code}}" alt="支付二维码">
-						</div>
+						@endif
 					</div>
-					<div class="col-2"></div>
-					<div class="col-2"></div>
-					<div class="alert alert-danger col-8 text-center">
-						<strong>手机用户</strong>：长按二维码 -> 保存图片 ->打开支付软件 -> 扫一扫 -> 选择相册 进行付款
-					</div>
-					<div class="col-2"></div>
+				</div>
+				<div class="alert alert-danger text-center">
+					<strong>手机用户</strong>：长按二维码 -> 保存图片 ->打开支付软件 -> 扫一扫 -> 选择相册 进行付款
 				</div>
 			</div>
 		</div>
@@ -67,11 +62,5 @@
 				}
 			});
 		}, 3000);
-
-		// 还原html脚本 < > & " '
-		function unescapeHTML(str) {
-			str = "" + str;
-			return str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#039;/g, "'");
-		}
 	</script>
 @endsection

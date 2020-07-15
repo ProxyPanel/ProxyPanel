@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Response;
 
 class BitpayX extends AbstractPayment {
 	private $bitpayGatewayUri = 'https://api.mugglepay.com/v1/';
 
-	public function purchase($request) {
-		$payment = $this->creatNewPayment(Auth::id(),$request->input('oid'),$request->input('amount'));
+	public function purchase($request): JsonResponse {
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$data = [
 			'merchant_order_id' => $payment->trade_no,
@@ -74,20 +75,20 @@ class BitpayX extends AbstractPayment {
 		}
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 		$data = curl_exec($curl);
 		curl_close($curl);
 
 		return $data;
 	}
 
-	public function notify($request) {
+	public function notify($request): void {
 		$inputString = file_get_contents('php://input', 'r');
 		$inputStripped = str_replace(["\r", "\n", "\t", "\v"], '', $inputString);
 		$inputJSON = json_decode($inputStripped, true); //convert JSON into array
 		$data = [];
-		if($inputJSON !== null){
+		if($inputJSON != null){
 			$data = [
 				'status'            => $inputJSON['status'],
 				'order_id'          => $inputJSON['order_id'],
@@ -100,7 +101,7 @@ class BitpayX extends AbstractPayment {
 		// 准备待签名数据
 		$str_to_sign = $this->prepareSignId($inputJSON['merchant_order_id']);
 		$resultVerify = $this->verify($str_to_sign, $inputJSON['token']);
-		$isPaid = $data !== null && $data['status'] !== null && $data['status'] === 'PAID';
+		$isPaid = $data != null && $data['status'] != null && $data['status'] === 'PAID';
 
 		if($resultVerify && $isPaid){
 			$this->postPayment($inputJSON['merchant_order_id'], 'BitPayX');
@@ -113,7 +114,7 @@ class BitpayX extends AbstractPayment {
 		exit();
 	}
 
-	private function verify($data, $signature) {
+	private function verify($data, $signature): bool {
 		$mySign = $this->sign($data);
 
 		return $mySign === $signature;

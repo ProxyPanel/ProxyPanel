@@ -44,11 +44,10 @@ class Article extends Model {
 	use SoftDeletes;
 
 	protected $table = 'article';
-	protected $primaryKey = 'id';
 	protected $dates = ['deleted_at'];
 
 	// 筛选类型
-	function scopeType($query, $type) {
+	public function scopeType($query, $type) {
 		return $query->whereType($type);
 	}
 }

@@ -33,6 +33,7 @@
 	"rap2hpoutre/laravel-log-viewer": "^1.6",
 	"riverslei/payment": "*",
 	"scyllaly/hcaptcha": "^4.1",
+	"simplesoftwareio/simple-qrcode": "^3.0",
 	"spatie/laravel-permission": "^3.13",
 	"srmklive/paypal": "~1.0",
 	"xhat/payjs": "^1.4"

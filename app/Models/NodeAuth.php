@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\NodeAuth
@@ -28,9 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class NodeAuth extends Model {
 	protected $table = 'node_auth';
-	protected $primaryKey = 'id';
 
-	function node() {
+	public function node(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
 	}
 }

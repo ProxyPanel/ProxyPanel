@@ -11,11 +11,7 @@ class updateUserName extends Command {
 	protected $signature = 'updateUserName';
 	protected $description = '升级用户昵称';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		Log::info('----------------------------【升级用户昵称】开始----------------------------');
 
 		$userList = User::query()->get();
@@ -48,20 +44,17 @@ function process($id) {
 	if($user->qq){
 		$name = QQInfo::getName3($user->qq);
 		// 检测用户注册是否为QQ邮箱
-	}elseif(strpos(strtolower($user->email), '@qq') != false){
+	}elseif(stripos($user->email, '@qq') != false){
 		// 分离QQ邮箱后缀
 		$email = explode('@', $user->email);
 		if(is_numeric($email[0])){
 			$name = QQInfo::getName3($email[0]);
-		}else{
-			// 分离www前缀
-			if(strpos($email[0], '.') != false){
-				$temp = explode('.', $email[0]);
-				if(is_numeric($temp[1])){
-					$name = QQInfo::getName3($temp[1]);
-				}else{
-					print_r($user->email.PHP_EOL);
-				}
+		}elseif(strpos($email[0], '.') !== false){
+			$temp = explode('.', $email[0]);
+			if(is_numeric($temp[1])){
+				$name = QQInfo::getName3($temp[1]);
+			}else{
+				print_r($user->email.PHP_EOL);
 			}
 		}
 	}

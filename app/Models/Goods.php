@@ -65,30 +65,29 @@ class Goods extends Model {
 	use SoftDeletes;
 
 	protected $table = 'goods';
-	protected $primaryKey = 'id';
 	protected $dates = ['deleted_at'];
 
-	function scopeType($query, $type) {
+	public function scopeType($query, $type) {
 		return $query->whereType($type)->whereStatus(1)->orderByDesc('sort');
 	}
 
-	function getPriceAttribute($value) {
+	public function getPriceAttribute($value) {
 		return $value / 100;
 	}
 
-	function setPriceAttribute($value) {
+	public function setPriceAttribute($value): void {
 		$this->attributes['price'] = $value * 100;
 	}
 
-	function getRenewAttribute($value) {
+	public function getRenewAttribute($value) {
 		return $value / 100;
 	}
 
-	function setRenewAttribute($value) {
+	public function setRenewAttribute($value) {
 		return $this->attributes['renew'] = $value * 100;
 	}
 
-	function getTrafficLabelAttribute() {
+	public function getTrafficLabelAttribute() {
 		return flowAutoShow($this->attributes['traffic'] * MB);
 	}
 }

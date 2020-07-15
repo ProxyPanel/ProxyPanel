@@ -18,12 +18,12 @@ class userExpireWarningToday extends Mailable implements ShouldQueue {
 		$this->id = $id;
 	}
 
-	public function build() {
+	public function build(): userExpireWarningToday {
 		return $this->view('emails.userExpireWarningToday')->subject('账号过期提醒');
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

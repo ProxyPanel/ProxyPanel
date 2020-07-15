@@ -21,12 +21,10 @@ class isForbidden {
 	 */
 	public function handle($request, Closure $next) {
 		// 拒绝机器人访问
-		if(Helpers::systemConfig()['is_forbid_robot']){
-			if(Agent::isRobot()){
-				Log::info("识别到机器人访问(".getClientIp().")");
+		if(Helpers::systemConfig()['is_forbid_robot'] && Agent::isRobot()){
+			Log::info("识别到机器人访问(".getClientIp().")");
 
-				return response()->view('auth.error', ['message' => trans('error.ForbiddenRobot')], 404);
-			}
+			return response()->view('auth.error', ['message' => trans('error.ForbiddenRobot')], 404);
 		}
 
 		// 拒绝通过订阅链接域名访问网站，防止网站被探测
@@ -72,9 +70,9 @@ class isForbidden {
 		if(!in_array($ipInfo['country'], ['本机地址', '局域网'])){
 			// 拒绝大陆IP访问
 			if(Helpers::systemConfig()['is_forbid_china']){
-				if(($ipInfo['country'] == '中国' && !in_array($ipInfo['province'], ['香港', '澳门', '台湾']))
-				   || ($isIPv6
-				       && $ipInfo['country'] == 'China')){
+				if(($isIPv6 && $ipInfo['country'] == 'China')
+				   || ($ipInfo['country'] == '中国'
+				       && !in_array($ipInfo['province'], ['香港', '澳门', '台湾']))){
 					Log::info('识别到大陆IP，拒绝访问：'.$ip);
 
 					return response()->view('auth.error', ['message' => trans('error.ForbiddenChina')], 403);
@@ -83,9 +81,8 @@ class isForbidden {
 
 			// 拒绝非大陆IP访问
 			if(Helpers::systemConfig()['is_forbid_oversea']){
-				if($ipInfo['country'] != '中国' || in_array($ipInfo['province'], ['香港', '澳门', '台湾'])
-				   || ($isIPv6
-				       && $ipInfo['country'] != 'China')){
+				if(($isIPv6 && $ipInfo['country'] != 'China') || $ipInfo['country'] != '中国'
+				   || in_array($ipInfo['province'], ['香港', '澳门', '台湾'])){
 					Log::info('识别到海外IP，拒绝访问：'.$ip.' - '.$ipInfo['country']);
 
 					return response()->view('auth.error', ['message' => trans('error.ForbiddenOversea')], 403);

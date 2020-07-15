@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 用户流量每小时统计
@@ -34,9 +35,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserTrafficHourly extends Model {
 	protected $table = 'user_traffic_hourly';
-	protected $primaryKey = 'id';
 
-	function node() {
+	public function node(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
 	}
 }

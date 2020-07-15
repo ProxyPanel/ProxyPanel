@@ -20,14 +20,14 @@ class resetPassword extends Mailable implements ShouldQueue {
 		$this->resetPasswordUrl = $resetPasswordUrl;
 	}
 
-	public function build() {
+	public function build(): resetPassword {
 		return $this->view('emails.resetPassword')->subject('重置密码')->with([
 			'resetPasswordUrl' => $this->resetPasswordUrl
 		]);
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

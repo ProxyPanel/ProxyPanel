@@ -11,11 +11,7 @@ class updateTicket extends Command {
 	protected $signature = 'updateTicket';
 	protected $description = '更新工单';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		Log::info('----------------------------【更新工单】开始----------------------------');
 		// 获取管理员
 		$adminList = User::query()->whereIsAdmin(1)->get();

@@ -7,10 +7,10 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Session\TokenMismatchException;
 use Log;
 use ReflectionException;
+use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler {
@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler {
 	 * @param  Request    $request
 	 * @param  Exception  $exception
 	 *
-	 * @return Response
+	 * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
 	 */
 	public function render($request, Exception $exception) {
 		// 调试模式下直接返回错误信息
@@ -71,57 +71,57 @@ class Handler extends ExceptionHandler {
 
 			if($request->ajax()){
 				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('error.MissingPage')]);
-			}else{
-				return Response::view('auth.error', ['message' => trans('error.MissingPage')]);
 			}
+
+			return Response::view('auth.error', ['message' => trans('error.MissingPage')]);
 		}
 
 		// 捕获身份校验异常
 		if($exception instanceof AuthenticationException){
 			if($request->ajax()){
-				return Respone::json(['status' => 'fail', 'data' => '', 'message' => trans('error.Unauthorized')]);
-			}else{
-				return Respone::view('auth.error', ['message' => trans('error.Unauthorized')]);
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('error.Unauthorized')]);
 			}
+
+			return Response::view('auth.error', ['message' => trans('error.Unauthorized')]);
 		}
 
 		// 捕获CSRF异常
 		if($exception instanceof TokenMismatchException){
 			if($request->ajax()){
-				return Respone::json([
+				return Response::json([
 					'status'  => 'fail',
 					'data'    => '',
 					'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
 				]);
-			}else{
-				return Respone::view('auth.error', [
-					'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
-				]);
 			}
+
+			return Response::view('auth.error', [
+				'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
+			]);
 		}
 
 		// 捕获反射异常
 		if($exception instanceof ReflectionException){
 			if($request->ajax()){
-				return Respone::json(['status' => 'fail', 'data' => '', 'message' => trans('error.SystemError')]);
-			}else{
-				return Respone::view('auth.error', ['message' => trans('error.SystemError')]);
+				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('error.SystemError')]);
 			}
+
+			return Response::view('auth.error', ['message' => trans('error.SystemError')]);
 		}
 
 		// 捕获系统错误异常
 		if($exception instanceof ErrorException){
 			if($request->ajax()){
-				return Respone::json([
+				return Response::json([
 					'status'  => 'fail',
 					'data'    => '',
 					'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
 				]);
-			}else{
-				return Respone::view('auth.error', [
-					'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
-				]);
 			}
+
+			return Response::view('auth.error', [
+				'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
+			]);
 		}
 
 		return parent::render($request, $exception);

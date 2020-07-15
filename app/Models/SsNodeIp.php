@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * SS节点在线IP信息
@@ -32,13 +33,12 @@ use Illuminate\Database\Eloquent\Model;
 class SsNodeIp extends Model {
 	public $timestamps = false;
 	protected $table = 'ss_node_ip';
-	protected $primaryKey = 'id';
 
-	function node() {
+	public function node(): BelongsTo {
 		return $this->belongsTo(SsNode::class, 'node_id', 'id');
 	}
 
-	function user() {
+	public function user(): BelongsTo {
 		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 }

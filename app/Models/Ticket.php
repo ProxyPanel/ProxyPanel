@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 工单
@@ -17,7 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                             $status     状态：0-待处理、1-已处理未关闭、2-已关闭
  * @property \Illuminate\Support\Carbon|null $created_at 创建时间
  * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
- * @property-read mixed                      $status_label
+ * @property-read \App\Models\User|null      $admin
+ * @property-read string                     $status_label
  * @property-read \App\Models\User|null      $user
  * @method static Builder|Ticket newModelQuery()
  * @method static Builder|Ticket newQuery()
@@ -35,21 +37,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ticket extends Model {
 	protected $table = 'ticket';
-	protected $primaryKey = 'id';
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());
 	}
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function admin() {
+	public function admin(): HasOne {
 		return $this->hasOne(User::class, 'id', 'admin_id');
 	}
 
-	function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute(): string {
 		switch($this->attributes['status']){
 			case 0:
 				$status_label = '<span class="badge badge-lg badge-success">'.trans('home.ticket_table_status_wait').'</span>';

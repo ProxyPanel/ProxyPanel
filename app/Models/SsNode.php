@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * SS节点信息
@@ -103,21 +105,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SsNode extends Model {
 	protected $table = 'ss_node';
-	protected $primaryKey = 'id';
 
-	function label() {
+	public function label(): HasMany {
 		return $this->hasMany(SsNodeLabel::class, 'node_id', 'id');
 	}
 
-	function auth() {
+	public function auth(): HasOne {
 		return $this->hasOne(NodeAuth::class, 'node_id', 'id');
 	}
 
-	function getLevel() {
+	public function getLevel(): HasOne {
 		return $this->hasOne(Level::class, 'level', 'level');
 	}
 
-	function getTypeLabelAttribute() {
+	public function getTypeLabelAttribute(): string {
 		switch($this->attributes['type']){
 			case 1:
 				$type_label = 'ShadowsocksR';

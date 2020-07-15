@@ -13,11 +13,7 @@ class AutoStatisticsUserDailyTraffic extends Command {
 	protected $signature = 'autoStatisticsUserDailyTraffic';
 	protected $description = '自动统计用户每日流量';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
@@ -38,7 +34,7 @@ class AutoStatisticsUserDailyTraffic extends Command {
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	private function statisticsByNode($user_id, $node_id = 0) {
+	private function statisticsByNode($user_id, $node_id = 0): void {
 		$start_time = strtotime(date('Y-m-d 00:00:00', strtotime("-1 day")));
 		$end_time = strtotime(date('Y-m-d 23:59:59', strtotime("-1 day")));
 

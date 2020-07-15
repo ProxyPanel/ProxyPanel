@@ -35,10 +35,8 @@ class QQInfo {
 		$url = 'https://api.toubiec.cn/qq?qq='.$qq.'&size=100';
 		$ret = json_decode(Curl::send($url), true);
 		// 接口是否异常
-		if($ret){
-			if($ret['code'] == 200){
-				return $ret['name'];
-			}
+		if($ret && $ret['code'] == 200){
+			return $ret['name'];
 		}
 
 		echo $qq.PHP_EOL;
@@ -51,10 +49,8 @@ class QQInfo {
 		$url = 'https://api.unipay.qq.com/v1/r/1450000186/wechat_query?cmd=1&pf=mds_storeopen_qb-__mds_qqclub_tab_-html5&pfkey=pfkey&from_h5=1&from_https=1&openid=openid&openkey=openkey&session_id=hy_gameid&session_type=st_dummy&qq_appid=&offerId=1450000186&sandbox=&provide_uin='.$qq;
 		$ret = json_decode(Curl::send($url), true);
 		// 接口是否异常
-		if($ret){
-			if($ret['ret'] == 0){
-				return urldecode($ret['nick']);
-			}
+		if($ret && $ret['ret'] == 0){
+			return urldecode($ret['nick']);
 		}
 
 		echo $qq.PHP_EOL;

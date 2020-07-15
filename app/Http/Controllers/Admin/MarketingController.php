@@ -8,6 +8,7 @@ use App\Models\Marketing;
 use DB;
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -22,12 +23,12 @@ use Response;
 class MarketingController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 邮件群发消息列表
-	public function emailList(Request $request) {
+	public function emailList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
 		$query = Marketing::query()->whereType(1);
@@ -42,7 +43,7 @@ class MarketingController extends Controller {
 	}
 
 	// 消息通道群发列表
-	public function pushList(Request $request) {
+	public function pushList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
 		$query = Marketing::query()->whereType(2);
@@ -57,7 +58,7 @@ class MarketingController extends Controller {
 	}
 
 	// 添加推送消息
-	public function addPushMarketing(Request $request) {
+	public function addPushMarketing(Request $request): ?JsonResponse {
 		$title = $request->input('title');
 		$content = $request->input('content');
 
@@ -76,7 +77,7 @@ class MarketingController extends Controller {
 				]
 			]);
 
-			$result = json_decode($response->getBody());
+			$result = json_decode($response->getBody(), true);
 			if($result->code){ // 失败
 				$this->addMarketing(2, $title, $content, -1, $result->message);
 
@@ -97,7 +98,8 @@ class MarketingController extends Controller {
 		}
 	}
 
-	private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = '') {
+	private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = ''
+	): bool {
 		$marketing = new Marketing();
 		$marketing->type = $type;
 		$marketing->receiver = $receiver;

@@ -48,12 +48,9 @@ class PingController extends Controller {
 			return response()->json(['status' => 0, 'message' => 'token invalid']);
 		}
 
-		// 如果不是IPv4
-		if(false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
-			// 如果是IPv6
-			if(filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){
-				$host = '['.$host.']';
-			}
+		if((false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))// 如果不是IPv4
+		   && filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){// 如果是IPv6
+			$host = '['.$host.']';
 		}
 
 		try{

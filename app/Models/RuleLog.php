@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 触发审计规则日志
@@ -32,17 +33,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RuleLog extends Model {
 	protected $table = 'rule_log';
-	protected $primaryKey = 'id';
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function node() {
+	public function node(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
 	}
 
-	function rule() {
+	public function rule(): HasOne {
 		return $this->hasOne(Rule::class, 'id', 'rule_id');
 	}
 }

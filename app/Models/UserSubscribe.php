@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 用户订阅地址
@@ -36,13 +37,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserSubscribe extends Model {
 	protected $table = 'user_subscribe';
-	protected $primaryKey = 'id';
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());
 	}
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 }

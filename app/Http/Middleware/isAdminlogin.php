@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Redirect;
 
-class isAdminlogin {
+class isAdminLogin {
 	/**
 	 * Handle an incoming request.
 	 *

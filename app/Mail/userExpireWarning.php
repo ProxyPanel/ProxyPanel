@@ -20,14 +20,14 @@ class userExpireWarning extends Mailable implements ShouldQueue {
 		$this->lastCanUseDays = $lastCanUseDays;
 	}
 
-	public function build() {
+	public function build(): userExpireWarning {
 		return $this->view('emails.userExpireWarning')->subject('账号过期提醒')->with([
 			'lastCanUseDays' => $this->lastCanUseDays
 		]);
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

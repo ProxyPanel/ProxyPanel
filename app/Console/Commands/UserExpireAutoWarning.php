@@ -20,7 +20,7 @@ class UserExpireAutoWarning extends Command {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 用户临近到期自动发邮件提醒
@@ -34,7 +34,7 @@ class UserExpireAutoWarning extends Command {
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	private function userExpireWarning() {
+	private function userExpireWarning(): void {
 		// 只取SSR没被禁用的用户，其他不用管
 		$userList = User::query()->whereEnable(1)->get();
 		foreach($userList as $user){

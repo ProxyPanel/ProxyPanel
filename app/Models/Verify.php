@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 注册时的验证激活地址
@@ -31,14 +32,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Verify extends Model {
 	protected $table = 'verify';
-	protected $primaryKey = 'id';
 
 	// 筛选类型
-	function scopeType($query, $type) {
+	public function scopeType($query, $type) {
 		return $query->whereType($type);
 	}
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 

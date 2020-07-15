@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 节点定时Ping测速
@@ -32,9 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SsNodePing extends Model {
 	protected $table = 'ss_node_ping';
-	protected $primaryKey = 'id';
 
-	public function node() {
+	public function node(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
 	}
 }

@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PaymentCallback;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -29,7 +30,7 @@ use Response;
 class PaymentController extends Controller {
 	private static $method;
 
-	public static function notify(Request $request) {
+	public static function notify(Request $request): int {
 		self::$method = $request->input('method');
 
 		Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), true));
@@ -59,16 +60,18 @@ class PaymentController extends Controller {
 		}
 	}
 
-	public static function getStatus(Request $request) {
+	public static function getStatus(Request $request): JsonResponse {
 		$payment = Payment::whereTradeNo($request->input('trade_no'))->first();
 		if($payment){
 			if($payment->status == 1){
 				return Response::json(['status' => 'success', 'message' => '支付成功']);
-			}elseif($payment->status == -1){
-				return Response::json(['status' => 'error', 'message' => '订单超时未支付，已自动关闭']);
-			}else{
-				return Response::json(['status' => 'fail', 'message' => '等待支付']);
 			}
+
+			if($payment->status == -1){
+				return Response::json(['status' => 'error', 'message' => '订单超时未支付，已自动关闭']);
+			}
+
+			return Response::json(['status' => 'fail', 'message' => '等待支付']);
 		}
 
 		return Response::json(['status' => 'error', 'message' => '未知订单']);
@@ -80,6 +83,7 @@ class PaymentController extends Controller {
 		$coupon_sn = $request->input('coupon_sn');
 		self::$method = $request->input('method');
 		$credit = $request->input('amount');
+		$pay_type = $request->input('pay_type');
 		$amount = 0;
 
 		$goods = Goods::query()->whereStatus(1)->whereId($goods_id)->first();
@@ -96,7 +100,7 @@ class PaymentController extends Controller {
 			}
 
 			// 是否有生效的套餐
-			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', function($q) {
+			$activePlan = Order::uid()->with(['goods'])->whereHas('goods', static function($q) {
 				$q->whereType(2);
 			})->whereStatus(2)->whereIsExpire(0)->doesntExist();
 
@@ -147,7 +151,9 @@ class PaymentController extends Controller {
 			// 价格异常判断
 			if($amount < 0){
 				return Response::json(['status' => 'fail', 'message' => '订单创建失败：订单总价异常']);
-			}elseif($amount == 0 && self::$method != 'credit'){
+			}
+
+			if($amount == 0 && self::$method != 'credit'){
 				return Response::json(['status' => 'fail', 'message' => '订单创建失败：订单总价为0，无需使用在线支付']);
 			}
 
@@ -157,7 +163,7 @@ class PaymentController extends Controller {
 			}
 		}
 
-		$orderSn = date('ymdHis').mt_rand(100000, 999999);
+		$orderSn = date('ymdHis').random_int(100000, 999999);
 
 		// 生成订单
 		$order = new Order();
@@ -169,6 +175,7 @@ class PaymentController extends Controller {
 		$order->amount = $amount;
 		$order->expire_at = $credit? null : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
 		$order->is_expire = 0;
+		$order->pay_type = $pay_type;
 		$order->pay_way = self::$method;
 		$order->status = 0;
 		$order->save();
@@ -188,7 +195,7 @@ class PaymentController extends Controller {
 		return self::getClient()->purchase($request);
 	}
 
-	public function close(Request $request) {
+	public function close(Request $request): JsonResponse {
 		$oid = $request->input('oid');
 		$order = Order::query()->whereOid($oid)->first();
 		$payment = Payment::query()->whereOid($oid)->first();
@@ -210,17 +217,20 @@ class PaymentController extends Controller {
 	}
 
 	// 支付单详情
-	public function detail($trade_no) {
+	public function detail($trade_no): \Illuminate\Http\Response {
 		$payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->first();
 		$view['payment'] = $payment;
-		$view['name'] = $payment->order->goods? $payment->order->goods->name : '余额充值';
-		$view['days'] = $payment->order->goods? $payment->order->goods->days : 0;
+		$goods = $payment->order->goods;
+		$view['name'] = $goods? $goods->name : '余额充值';
+		$view['days'] = $goods? $goods->days : 0;
+		$view['pay_type'] = $payment->order->pay_type_label?: 0;
+		$view['pay_type_icon'] = $payment->order->pay_type_icon;
 
 		return Response::view('user.payment', $view);
 	}
 
 	// 回调日志
-	public function callbackList(Request $request) {
+	public function callbackList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status', 0);
 
 		$query = PaymentCallback::query();

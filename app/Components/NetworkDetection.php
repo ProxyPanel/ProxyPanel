@@ -25,17 +25,16 @@ class NetworkDetection {
 				Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：".$url);
 
 				return false;
-			}elseif(!$ret['success']){
+			}
+
+			if(!$ret['success']){
 				if($ret['error'] == "execute timeout (3s)"){
 					sleep(10);
 
 					return self::networkCheck($ip, $type, $port);
-				}else{
-					Log::warning("【".$checkName."阻断检测】检测".$ip.($port?: '')."时，返回".json_encode($ret));
-
 				}
 
-
+				Log::warning("【".$checkName."阻断检测】检测".$ip.($port?: '')."时，返回".json_encode($ret));
 				return false;
 			}
 		}catch(Exception $e){
@@ -46,13 +45,17 @@ class NetworkDetection {
 
 		if($ret['firewall-enable'] && $ret['firewall-disable']){
 			return "通讯正常"; // 正常
-		}elseif($ret['firewall-enable'] && !$ret['firewall-disable']){
-			return "海外阻断"; // 国外访问异常
-		}elseif(!$ret['firewall-enable'] && $ret['firewall-disable']){
-			return "国内阻断"; // 被墙
-		}else{
-			return "机器宕机"; // 服务器宕机
 		}
+
+		if($ret['firewall-enable'] && !$ret['firewall-disable']){
+			return "海外阻断"; // 国外访问异常
+		}
+
+		if(!$ret['firewall-enable'] && $ret['firewall-disable']){
+			return "国内阻断"; // 被墙
+		}
+
+		return "机器宕机"; // 服务器宕机
 	}
 
 	/**
@@ -71,7 +74,9 @@ class NetworkDetection {
 				Log::warning("【PING】检测".$ip."时，接口返回异常访问链接：".$url);
 
 				return false;
-			}elseif($ret['code'] != 1 || $ret['msg'] != "检测成功！"){
+			}
+
+			if($ret['code'] != 1 || $ret['msg'] != "检测成功！"){
 				Log::warning("【PING】检测".$ip."时，返回".json_encode($ret));
 
 				return false;

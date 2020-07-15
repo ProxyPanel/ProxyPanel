@@ -9,7 +9,7 @@ use App\Models\Order;
 use App\Models\User;
 
 class ServiceController extends Controller {
-	public function activePrepaidOrder($oid) {
+	public function activePrepaidOrder($oid): void {
 		// 取出预支付订单
 		$prepaidOrder = Order::find($oid);
 		//去除使用中的套餐和 流量包

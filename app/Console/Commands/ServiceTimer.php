@@ -15,11 +15,7 @@ class ServiceTimer extends Command {
 	protected $signature = 'serviceTimer';
 	protected $description = '服务计时器';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 扣减用户到期商品的流量
@@ -32,11 +28,17 @@ class ServiceTimer extends Command {
 	}
 
 	// 扣减用户到期商品的流量
-	private function decGoodsTraffic() {
+	private function decGoodsTraffic(): void {
 		//获取失效的套餐
-		$orderList = Order::query()->with(['goods'])->whereStatus(2)->whereIsExpire(0)->whereHas('goods', function($q) {
-			$q->whereType(2);
-		})->where('expire_at', '<=', date('Y-m-d H:i:s'))->get();
+		$orderList = Order::query()
+		                  ->with(['goods'])
+		                  ->whereStatus(2)
+		                  ->whereIsExpire(0)
+		                  ->whereHas('goods', static function($q) {
+			                  $q->whereType(2);
+		                  })
+		                  ->where('expire_at', '<=', date('Y-m-d H:i:s'))
+		                  ->get();
 		if($orderList->isNotEmpty()){
 			try{
 				DB::beginTransaction();
@@ -50,7 +52,7 @@ class ServiceTimer extends Command {
 					     ->whereUserId($order->user_id)
 					     ->whereStatus(2)
 					     ->whereIsExpire(0)
-					     ->whereHas('goods', function($q) {
+					     ->whereHas('goods', static function($q) {
 						     $q->whereType(1);
 					     })
 					     ->update(['is_expire' => 1]);

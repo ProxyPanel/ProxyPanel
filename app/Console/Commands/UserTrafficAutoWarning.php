@@ -19,7 +19,7 @@ class UserTrafficAutoWarning extends Command {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 用户流量超过警告阈值自动发邮件提醒
@@ -34,7 +34,7 @@ class UserTrafficAutoWarning extends Command {
 	}
 
 	// 用户流量超过警告阈值自动发邮件提醒
-	private function userTrafficWarning() {
+	private function userTrafficWarning(): void {
 		$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->where('transfer_enable', '>', 0)->get();
 		foreach($userList as $user){
 			// 用户名不是邮箱的跳过

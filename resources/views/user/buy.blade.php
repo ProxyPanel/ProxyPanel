@@ -37,8 +37,8 @@
 								<input type="text" class="form-control" name="coupon_sn" id="coupon_sn"
 										placeholder="{{trans('home.coupon')}}"/>
 								<div class="input-group-btn">
-									<button type="submit" class="btn btn-info" onclick="redeemCoupon()"><i
-												class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
+									<button type="submit" class="btn btn-info" onclick="redeemCoupon()">
+										<i class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
 									</button>
 								</div>
 							</div>
@@ -57,9 +57,9 @@
 								<div class="btn-group btn-group-lg">
 									@include('user.components.purchase')
 									@if($goods->type <= 2)
-										<button class="btn btn-flat" onclick="pay('credit','0')"><img
-													src="/assets/images/payment/creditpay.svg" height="48px"
-													alt="{{trans('home.service_pay_button')}}"/></button>
+										<button class="btn btn-flat" onclick="pay('credit','0')">
+											<img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('home.service_pay_button')}}"/>
+										</button>
 									@endif
 								</div>
 							</div>

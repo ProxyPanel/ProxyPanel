@@ -21,7 +21,7 @@ class LogSendingMessage {
 	 *
 	 * @return void
 	 */
-	public function handle(MessageSending $event) {
+	public function handle(MessageSending $event): void {
 		//\Log::info('MessageSending:' . var_export($event->data, true));
 	}
 }

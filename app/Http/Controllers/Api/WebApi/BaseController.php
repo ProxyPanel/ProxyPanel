@@ -12,12 +12,13 @@ use App\Models\SsNodeIp;
 use App\Models\SsNodeOnlineLog;
 use App\Models\User;
 use App\Models\UserTrafficLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
 class BaseController {
 	// 上报节点心跳信息
-	public function setNodeStatus(Request $request, $id) {
+	public function setNodeStatus(Request $request, $id): JsonResponse {
 		$cpu = intval($request->input('cpu')) / 100;
 		$mem = intval($request->input('mem')) / 100;
 		$disk = intval($request->input('disk')) / 100;
@@ -42,7 +43,7 @@ class BaseController {
 	}
 
 	// 返回数据
-	public function returnData($message, $status = 'fail', $code = 400, $data = '', $addition = false) {
+	public function returnData($message, $status = 'fail', $code = 400, $data = '', $addition = false): JsonResponse {
 		$data = ['status' => $status, 'code' => $code, 'data' => $data, 'message' => $message];
 
 		if($addition){
@@ -53,13 +54,15 @@ class BaseController {
 	}
 
 	// 上报节点在线人数
-	public function setNodeOnline(Request $request, $id) {
+	public function setNodeOnline(Request $request, $id): JsonResponse {
 		$inputArray = $request->all();
 		$onlineCount = 0;
 		foreach($inputArray as $input){
 			if(!array_key_exists('ip', $input) || !array_key_exists('uid', $input)){
 				return $this->returnData('上报节点在线情况失败，请检查字段');
-			}elseif(!isset($input['ip']) || !isset($input['uid'])){
+			}
+
+			if(!isset($input['ip'], $input['uid'])){
 				return $this->returnData('上报节点在线情况失败，请检查字段');
 			}
 
@@ -91,7 +94,7 @@ class BaseController {
 	}
 
 	// 上报用户流量日志
-	public function setUserTraffic(Request $request, $id) {
+	public function setUserTraffic(Request $request, $id): JsonResponse {
 		$inputArray = $request->all();
 
 		foreach($inputArray as $input){
@@ -121,7 +124,7 @@ class BaseController {
 
 
 	// 获取节点的审计规则
-	public function getNodeRule($id) {
+	public function getNodeRule($id): JsonResponse {
 		$nodeRule = RuleGroupNode::whereNodeId($id)->first();
 		$data = [];
 		//节点未设置任何审计规则
@@ -137,7 +140,7 @@ class BaseController {
 							'type'    => $rule->type_api_label,
 							'pattern' => $rule->pattern
 						];
-						array_push($data, $new);
+						$data[] = $new;
 					}
 				}
 
@@ -151,7 +154,7 @@ class BaseController {
 	}
 
 	// 上报用户触发的审计规则记录
-	public function addRuleLog(Request $request, $id) {
+	public function addRuleLog(Request $request, $id): JsonResponse {
 		if($request->has(['uid', 'rule_id', 'reason'])){
 			$obj = new RuleLog();
 			$obj->user_id = $request->input('uid');

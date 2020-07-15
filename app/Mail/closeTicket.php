@@ -22,7 +22,7 @@ class closeTicket extends Mailable implements ShouldQueue {
 		$this->content = $content;
 	}
 
-	public function build() {
+	public function build(): closeTicket {
 		return $this->view('emails.closeTicket')->subject('工单关闭提醒')->with([
 			'title'   => $this->title,
 			'content' => $this->content
@@ -30,7 +30,7 @@ class closeTicket extends Mailable implements ShouldQueue {
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

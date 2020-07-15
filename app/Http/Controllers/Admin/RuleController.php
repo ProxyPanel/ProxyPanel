@@ -9,6 +9,7 @@ use App\Models\RuleGroupNode;
 use App\Models\RuleLog;
 use App\Models\SsNode;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -16,7 +17,7 @@ use Validator;
 
 class RuleController extends Controller {
 	// 审计规则列表
-	public function ruleList(Request $request) {
+	public function ruleList(Request $request): \Illuminate\Http\Response {
 		$type = $request->input('type');
 		$query = Rule::query();
 
@@ -29,7 +30,7 @@ class RuleController extends Controller {
 	}
 
 	// 添加审计规则
-	public function addRule(Request $request) {
+	public function addRule(Request $request): ?JsonResponse {
 		$validator = Validator::make($request->all(), [
 			'type'    => 'required|between:1,4',
 			'name'    => 'required',
@@ -48,13 +49,12 @@ class RuleController extends Controller {
 
 		if($obj->id){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 		}
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 	}
 
 	// 编辑审计规则
-	public function editRule(Request $request) {
+	public function editRule(Request $request): ?JsonResponse {
 		$validator = Validator::make($request->all(), [
 			'id'           => 'required|exists:rule,id',
 			'rule_name'    => 'required',
@@ -71,14 +71,12 @@ class RuleController extends Controller {
 		]);
 		if($ret){
 			return Response::json(['status' => 'success', 'message' => '操作成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => '操作失败']);
 		}
-
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 删除审计规则
-	public function delRule(Request $request) {
+	public function delRule(Request $request): JsonResponse {
 		$id = $request->input('id');
 		try{
 			Rule::query()->whereId($id)->delete();
@@ -86,7 +84,7 @@ class RuleController extends Controller {
 			$RuleGroupList = RuleGroup::query()->get();
 			foreach($RuleGroupList as $RuleGroup){
 				$rules = explode(',', $RuleGroup->rules);
-				if(in_array($id, $rules)){
+				if(in_array($id, $rules, true)){
 					$rules = implode(',', array_diff($rules, [$id]));
 					RuleGroup::query()->whereId($RuleGroup->id)->update(['rules' => $rules]);
 				}
@@ -98,7 +96,7 @@ class RuleController extends Controller {
 	}
 
 	// 审计规则分组列表
-	public function ruleGroupList(Request $request) {
+	public function ruleGroupList(Request $request): \Illuminate\Http\Response {
 		$view['ruleGroupList'] = RuleGroup::query()->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.rule.ruleGroupList', $view);
 	}
@@ -124,14 +122,11 @@ class RuleController extends Controller {
 
 			if($obj->id){
 				return Redirect::back()->with('successMsg', '操作成功');
-			}else{
-				return Redirect::back()->withInput()->withErrors('操作失败');
 			}
-
-		}else{
-			$view['ruleList'] = Rule::query()->get();
-			return Response::view('admin.rule.ruleGroupInfo', $view);
+			return Redirect::back()->withInput()->withErrors('操作失败');
 		}
+		$view['ruleList'] = Rule::query()->get();
+		return Response::view('admin.rule.ruleGroupInfo', $view);
 	}
 
 	// 编辑审计规则分组
@@ -177,20 +172,19 @@ class RuleController extends Controller {
 				return Redirect::back()->with('successMsg', '操作成功');
 			}
 			return Redirect::back()->withInput()->withErrors('操作失败');
-
-		}else{
-			$ruleGroup = RuleGroup::query()->find($id);
-			if(!$ruleGroup){
-				return Redirect::back();
-			}
-			$view['ruleList'] = Rule::query()->get();
-
-			return view('admin.rule.ruleGroupInfo', $view)->with(compact('ruleGroup'));
 		}
+
+		$ruleGroup = RuleGroup::query()->find($id);
+		if(!$ruleGroup){
+			return Redirect::back();
+		}
+		$view['ruleList'] = Rule::query()->get();
+
+		return view('admin.rule.ruleGroupInfo', $view)->with(compact('ruleGroup'));
 	}
 
 	// 删除审计规则分组
-	public function delRuleGroup(Request $request) {
+	public function delRuleGroup(Request $request): JsonResponse {
 		$id = $request->input('id');
 		$ruleGroup = RuleGroup::query()->whereId($id)->get();
 		if(!$ruleGroup){
@@ -203,6 +197,7 @@ class RuleController extends Controller {
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
 		}
+
 		return Response::json(['status' => 'success', 'message' => '清理成功']);
 	}
 
@@ -244,22 +239,21 @@ class RuleController extends Controller {
 					RuleGroup::query()->whereId($id)->update(['nodes' => $nodes]);
 					RuleGroupNode::query()->whereRuleGroupId($id)->delete();
 				}
-
 			}catch(Exception $e){
 				return Redirect::back()->withInput()->withErrors($e->getMessage());
 			}
+
 			return Redirect::back()->with('successMsg', '操作成功');
-
-		}else{
-			$view['ruleGroup'] = RuleGroup::query()->find($id);
-			$view['nodeList'] = SsNode::query()->get();
-
-			return Response::view('admin.rule.assignNode', $view);
 		}
+
+		$view['ruleGroup'] = RuleGroup::query()->find($id);
+		$view['nodeList'] = SsNode::query()->get();
+
+		return Response::view('admin.rule.assignNode', $view);
 	}
 
 	// 用户触发审计规则日志
-	public function ruleLogList(Request $request) {
+	public function ruleLogList(Request $request): \Illuminate\Http\Response {
 		$uid = $request->input('uid');
 		$email = $request->input('email');
 		$nodeId = $request->input('node_id');
@@ -270,7 +264,7 @@ class RuleController extends Controller {
 			$query->whereUserId($uid);
 		}
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -288,7 +282,7 @@ class RuleController extends Controller {
 	}
 
 	// 清除所有审计触发日志
-	public function clearLog() {
+	public function clearLog(): ?JsonResponse {
 		try{
 			$ret = RuleLog::query()->delete();
 		}catch(Exception $e){
@@ -297,8 +291,8 @@ class RuleController extends Controller {
 		$result = RuleLog::query()->doesntExist();
 		if($ret || $result){
 			return Response::json(['status' => 'success', 'message' => '清理成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => '清理失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'message' => '清理失败']);
 	}
 }

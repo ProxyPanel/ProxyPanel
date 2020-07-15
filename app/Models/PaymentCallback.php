@@ -30,10 +30,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PaymentCallback extends Model {
 	protected $table = 'payment_callback';
-	protected $primaryKey = 'id';
 	protected $appends = ['status_label'];
 
-	function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute(): string {
 		$status_label = '';
 		switch($this->attributes['status']){
 			case 'WAIT_BUYER_PAY':

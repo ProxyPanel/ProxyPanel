@@ -26,6 +26,5 @@ use Illuminate\Database\Eloquent\Model;
 class SsNodeInfo extends Model {
 	public $timestamps = false;
 	protected $table = 'ss_node_info';
-	protected $primaryKey = 'id';
 
 }

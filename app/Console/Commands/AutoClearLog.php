@@ -22,11 +22,7 @@ class AutoClearLog extends Command {
 	protected $signature = 'autoClearLog';
 	protected $description = '自动清除日志';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 清除日志
@@ -41,7 +37,7 @@ class AutoClearLog extends Command {
 	}
 
 	// 清除日志
-	private function clearLog() {
+	private function clearLog(): void {
 		try{
 			// 自动清除30分钟以前的节点负载信息日志
 			SsNodeInfo::query()->where('log_time', '<=', strtotime("-30 minutes"))->delete();

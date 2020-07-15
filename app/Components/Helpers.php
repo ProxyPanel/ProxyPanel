@@ -54,7 +54,7 @@ class Helpers {
 	}
 
 	// 生成用户的订阅码
-	public static function makeSubscribeCode() {
+	public static function makeSubscribeCode(): string {
 		$code = makeRandStr(5);
 		if(UserSubscribe::query()->whereCode($code)->exists()){
 			$code = self::makeSubscribeCode();
@@ -74,19 +74,19 @@ class Helpers {
 	 *
 	 * @return int
 	 */
-	public static function addUser($email, $password, $transfer_enable, $data, $referral_uid = 0) {
+	public static function addUser($email, $password, $transfer_enable, $data, $referral_uid = 0): int {
 		$user = new User();
 		$user->username = $email;
 		$user->email = $email;
 		$user->password = $password;
 		// 生成一个可用端口
-		$user->port = self::systemConfig()['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
+		$user->port = self::systemConfig()['is_rand_port']? self::getRandPort() : self::getOnlyPort();
 		$user->passwd = makeRandStr();
 		$user->vmess_id = createGuid();
 		$user->enable = 1;
-		$user->method = Helpers::getDefaultMethod();
-		$user->protocol = Helpers::getDefaultProtocol();
-		$user->obfs = Helpers::getDefaultObfs();
+		$user->method = self::getDefaultMethod();
+		$user->protocol = self::getDefaultProtocol();
+		$user->obfs = self::getDefaultObfs();
 		$user->transfer_enable = $transfer_enable;
 		$user->enable_time = date('Y-m-d');
 		$user->expire_time = date('Y-m-d', strtotime("+".$data." days"));
@@ -100,7 +100,7 @@ class Helpers {
 	}
 
 	// 获取系统配置
-	public static function systemConfig() {
+	public static function systemConfig(): array {
 		$config = Config::query()->get();
 		$data = [];
 		foreach($config as $vo){
@@ -115,10 +115,10 @@ class Helpers {
 	// 获取一个随机端口
 	public static function getRandPort() {
 		$config = self::systemConfig();
-		$port = mt_rand($config['min_port'], $config['max_port']);
+		$port = random_int($config['min_port'], $config['max_port']);
 
 		$exists_port = User::query()->pluck('port')->toArray();
-		if(in_array($port, $exists_port) || in_array($port, self::$denyPorts)){
+		if(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts)){
 			$port = self::getRandPort();
 		}
 
@@ -131,8 +131,8 @@ class Helpers {
 		$port = $config['min_port'];
 
 		$exists_port = User::query()->where('port', '>=', $port)->pluck('port')->toArray();
-		while(in_array($port, $exists_port) || in_array($port, self::$denyPorts)){
-			$port = $port + 1;
+		while(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
+			++$port;
 		}
 
 		return $port;
@@ -171,7 +171,8 @@ class Helpers {
 	 *
 	 * @return int
 	 */
-	public static function addNotificationLog($title, $content, $type, $address = 'admin', $status = 1, $error = '') {
+	public static function addNotificationLog($title, $content, $type, $address = 'admin', $status = 1, $error = ''
+	): int {
 		$log = new NotificationLog();
 		$log->type = $type;
 		$log->address = $address;
@@ -194,7 +195,7 @@ class Helpers {
 	 *
 	 * @return int
 	 */
-	public static function addCouponLog($couponId, $goodsId, $orderId, $description = '') {
+	public static function addCouponLog($couponId, $goodsId, $orderId, $description = ''): int {
 		$log = new CouponLog();
 		$log->coupon_id = $couponId;
 		$log->goods_id = $goodsId;
@@ -216,7 +217,7 @@ class Helpers {
 	 *
 	 * @return int
 	 */
-	public static function addUserCreditLog($userId, $oid, $before, $after, $amount, $description = '') {
+	public static function addUserCreditLog($userId, $oid, $before, $after, $amount, $description = ''): int {
 		$log = new UserCreditLog();
 		$log->user_id = $userId;
 		$log->order_id = $oid;
@@ -240,7 +241,7 @@ class Helpers {
 	 *
 	 * @return int
 	 */
-	public static function addUserTrafficModifyLog($userId, $oid, $before, $after, $description = '') {
+	public static function addUserTrafficModifyLog($userId, $oid, $before, $after, $description = ''): int {
 		$log = new UserTrafficModifyLog();
 		$log->user_id = $userId;
 		$log->order_id = $oid;

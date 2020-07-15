@@ -209,7 +209,7 @@
 </div>
 <footer class="site-footer">
 	<div class="site-footer-legal"> Copyright &copy; 2017 - 2020
-		<a href="{{\App\Components\Helpers::systemConfig()['website_url']}}" target="_blank">{{\App\Components\Helpers::systemConfig()['website_name']}}</a> | 基于<a href="https://github.com/ZBrettonYe/SSRPanel_OtakuMod">{{config('version.name')}}</a> 版本: {{config('version.number')}}  开发
+		<a href="{{\App\Components\Helpers::systemConfig()['website_url']}}" target="_blank">{{\App\Components\Helpers::systemConfig()['website_name']}}</a> | 基于<a href="https://github.com/ZBrettonYe/ProxyPane">{{config('version.name')}}</a> 版本: {{config('version.number')}}  开发
 	</div>
 	<div class="site-footer-right">
 		由 <i class="red-600 wb-heart"></i>
