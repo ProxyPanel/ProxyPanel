@@ -1,8 +1,5 @@
 # Table of contents
 
-* [ProxyPanel](README.md)
-
-## API
-
-* [Vnet](api/vnet.md)
+* [Initial page](README.md)
+* [ProxyPanel](undefined.md)
 
