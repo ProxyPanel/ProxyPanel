@@ -20,14 +20,14 @@ class sendUserInfo extends Mailable implements ShouldQueue {
 		$this->content = $content;
 	}
 
-	public function build() {
+	public function build(): sendUserInfo {
 		return $this->view('emails.sendUserInfo')->subject('发送账号信息')->with([
 			'content' => $this->content
 		]);
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

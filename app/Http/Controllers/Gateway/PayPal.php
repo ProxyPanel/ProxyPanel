@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use Auth;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -41,14 +42,12 @@ class PayPal extends AbstractPayment {
 		$this->exChange = 7;
 		$exChangeRate = json_decode(Curl::send('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4'),
 			true);
-		if($exChangeRate){
-			if($exChangeRate['success']){
-				$this->exChange = $exChangeRate['result']['rate'];
-			}
+		if($exChangeRate && $exChangeRate['success']){
+			$this->exChange = $exChangeRate['result']['rate'];
 		}
 	}
 
-	public function purchase($request) {
+	public function purchase($request): JsonResponse {
 		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$data = $this->getCheckoutData($payment->trade_no, $payment->amount);
@@ -69,7 +68,7 @@ class PayPal extends AbstractPayment {
 		}
 	}
 
-	protected function getCheckoutData($trade_no, $amount) {
+	protected function getCheckoutData($trade_no, $amount): array {
 		$amount = 0.3 + ceil($amount / $this->exChange * 100) / 100;
 
 		return [
@@ -114,7 +113,7 @@ class PayPal extends AbstractPayment {
 		return redirect('/invoices');
 	}
 
-	public function notify($request) {
+	public function notify($request): void {
 		$request->merge(['cmd' => '_notify-validate']);
 		foreach($request->input() as $key => $value){
 			if($value == null){
@@ -125,9 +124,9 @@ class PayPal extends AbstractPayment {
 
 		$response = (string) $this->provider->verifyIPN($post);
 
-		if($response === 'VERIFIED' && $request['invoice']){
+		if($response == 'VERIFIED' && $request['invoice']){
 			if(Payment::whereTradeNo($request['invoice'])->first()->status == 0){
-				self::postPayment($request['invoice'], 'PayPal');
+				$this->postPayment($request['invoice'], 'PayPal');
 			}
 			exit("success");
 		}

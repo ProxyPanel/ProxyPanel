@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 账号余额操作日志
@@ -33,33 +34,32 @@ use Illuminate\Database\Eloquent\Model;
 class UserCreditLog extends Model {
 	public $timestamps = false;
 	protected $table = 'user_credit_log';
-	protected $primaryKey = 'id';
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function getBeforeAttribute($value) {
+	public function getBeforeAttribute($value) {
 		return $value / 100;
 	}
 
-	function setBeforeAttribute($value) {
+	public function setBeforeAttribute($value) {
 		return $this->attributes['before'] = $value * 100;
 	}
 
-	function getAfterAttribute($value) {
+	public function getAfterAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAfterAttribute($value) {
+	public function setAfterAttribute($value) {
 		return $this->attributes['after'] = $value * 100;
 	}
 
-	function getAmountAttribute($value) {
+	public function getAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAmountAttribute($value) {
+	public function setAmountAttribute($value) {
 		return $this->attributes['amount'] = $value * 100;
 	}
 }

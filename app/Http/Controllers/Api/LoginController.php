@@ -12,6 +12,7 @@ use Cache;
 use DB;
 use Exception;
 use Hash;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -25,12 +26,12 @@ use Response;
 class LoginController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 登录返回订阅信息
-	public function login(Request $request) {
+	public function login(Request $request): ?JsonResponse {
 		$email = $request->input('email');
 		$password = $request->input('password');
 		$cacheKey = 'request_times_'.md5(getClientIp());
@@ -55,7 +56,9 @@ class LoginController extends Controller {
 			Cache::increment($cacheKey);
 
 			return Response::json(['status' => 'fail', 'data' => [], 'message' => '账号不存在或已被禁用']);
-		}elseif(!Hash::check($password, $user->password)){
+		}
+
+		if(!Hash::check($password, $user->password)){
 			return Response::json(['status' => 'fail', 'data' => [], 'message' => '用户名或密码错误']);
 		}
 
@@ -71,7 +74,7 @@ class LoginController extends Controller {
 			$this->subscribeLog($subscribe->id, getClientIp(), 'API访问');
 
 			// 订阅链接
-			$url = self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url'];
+			$url = self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url'];
 
 			// 节点列表
 			$nodeList = SsNode::query()->whereStatus(1)->where('level', '<=', $user->level)->get();
@@ -124,7 +127,7 @@ class LoginController extends Controller {
 	}
 
 	// 写入订阅访问日志
-	private function subscribeLog($subscribeId, $ip, $headers) {
+	private function subscribeLog($subscribeId, $ip, $headers): void {
 		$log = new UserSubscribeLog();
 		$log->sid = $subscribeId;
 		$log->request_ip = $ip;

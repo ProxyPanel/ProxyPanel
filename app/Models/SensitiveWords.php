@@ -22,5 +22,4 @@ use Illuminate\Database\Eloquent\Model;
 class SensitiveWords extends Model {
 	public $timestamps = false;
 	protected $table = 'sensitive_words';
-	protected $primaryKey = 'id';
 }

@@ -29,5 +29,4 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ProductsPool extends Model {
 	protected $table = 'products_pool';
-	protected $primaryKey = 'id';
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use DB;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -23,7 +24,7 @@ use Validator;
  */
 class CouponController extends Controller {
 	// 优惠券列表
-	public function couponList(Request $request) {
+	public function couponList(Request $request): \Illuminate\Http\Response {
 		$sn = $request->input('sn');
 		$type = $request->input('type');
 		$status = $request->input('status');
@@ -97,7 +98,7 @@ class CouponController extends Controller {
 					return Redirect::back()->withInput()->withErrors('LOGO不合法');
 				}
 
-				$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$logo = $move? '/upload/image/'.$logoName : '';
 			}else{
@@ -110,7 +111,7 @@ class CouponController extends Controller {
 					$obj = new Coupon();
 					$obj->name = $request->input('name');
 					$obj->logo = $logo;
-					$obj->sn = $num == 1? ($request->input('sn')?: makeRandStr(8)) : makeRandStr(8);
+					$obj->sn = $num == 1 && $request->input('sn')? $request->input('sn') : makeRandStr(8);
 					$obj->type = $type;
 					$obj->usage_count = $request->input('usage_count');
 					$obj->amount = $type == 2? 0 : $request->input('amount');
@@ -140,14 +141,14 @@ class CouponController extends Controller {
 	}
 
 	// 删除优惠券
-	public function delCoupon(Request $request) {
+	public function delCoupon(Request $request): JsonResponse {
 		Coupon::query()->whereId($request->input('id'))->delete();
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
 	}
 
 	// 导出卡券
-	public function exportCoupon() {
+	public function exportCoupon(): void {
 		$voucherList = Coupon::type(1)->whereStatus(0)->get();
 		$discountCouponList = Coupon::type(2)->whereStatus(0)->get();
 		$refillList = Coupon::type(3)->whereStatus(0)->get();

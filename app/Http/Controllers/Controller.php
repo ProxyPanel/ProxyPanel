@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use RuntimeException;
 
 class Controller extends BaseController {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -36,7 +37,7 @@ class Controller extends BaseController {
 			return false;
 		}
 
-		$fp = fopen($file, "r+");
+		$fp = fopen($file, 'rb+');
 		assert($n > 0);
 		$pos = $n + 1;
 		$lines = [];
@@ -63,8 +64,8 @@ class Controller extends BaseController {
 	 *
 	 * @return int
 	 */
-	public function countLine($file) {
-		$fp = fopen($file, "r");
+	public function countLine($file): int {
+		$fp = fopen($file, 'rb');
 		$i = 0;
 		while(!feof($fp)){
 			//每次读取2M
@@ -81,20 +82,23 @@ class Controller extends BaseController {
 	}
 
 	// 获取敏感词
-	public function sensitiveWords($type) {
+	public function sensitiveWords($type): array {
 		return SensitiveWords::query()->whereType($type)->get()->pluck('words')->toArray();
 	}
 
 	// 将Base64图片转换为本地图片并保存
-	function base64ImageSaver($base64_image_content) {
+	public function base64ImageSaver($base64_image_content): ?string {
 		// 匹配出图片的格式
 		if(preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)){
 			$type = $result[2];
 
 			$directory = date('Ymd');
 			$path = '/assets/images/qrcode/'.$directory.'/';
-			if(!file_exists(public_path($path))){ // 检查是否有该文件夹，如果没有就创建，并给予最高权限
-				mkdir(public_path($path), 0755, true);
+			// 检查是否有该文件夹，如果没有就创建，并给予最高权限
+			if(!file_exists(public_path($path))
+			   && !mkdir($concurrentDirectory = public_path($path), 0755, true)
+			   && !is_dir($concurrentDirectory)){
+				throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
 			}
 
 			$fileName = makeRandStr(18, true).".{$type}";
@@ -103,12 +107,10 @@ class Controller extends BaseController {
 				chmod(public_path($path.$fileName), 0744);
 
 				return $path.$fileName;
-			}else{
-				return '';
 			}
-		}else{
-			return '';
 		}
+
+		return '';
 	}
 
 	/**
@@ -120,12 +122,12 @@ class Controller extends BaseController {
 	 *
 	 * @return string
 	 */
-	function getUserNodeInfo($uid, $nodeId, $infoType) {
+	public function getUserNodeInfo($uid, $nodeId, $infoType): ?string {
 		$user = User::whereId($uid)->first();
 		$node = SsNode::whereId($nodeId)->first();
 		$scheme = null;
 		// 获取分组名称
-		$group = $node->getLevel()->first()->name;
+		$group = $node->getLevel->name;
 		$host = $node->server?: $node->ip;
 		$data = null;
 		switch($node->type){

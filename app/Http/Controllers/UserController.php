@@ -27,6 +27,7 @@ use Cache;
 use DB;
 use Exception;
 use Hash;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Log;
@@ -46,11 +47,11 @@ use Validator;
 class UserController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function index() {
+	public function index(): \Illuminate\Http\Response {
 		$user = Auth::getUser();
 		$totalTransfer = $user->transfer_enable;
 		$usedTransfer = $user->u + $user->d;
@@ -86,11 +87,11 @@ class UserController extends Controller {
 		$userTrafficDaily = UserTrafficDaily::query()
 		                                    ->whereUserId($user->id)
 		                                    ->whereNodeId(0)
-		                                    ->where('created_at', '<=', date('Y-m-d', time()))
+		                                    ->where('created_at', '<=', date('Y-m-d'))
 		                                    ->orderBy('created_at')
 		                                    ->pluck('total')
 		                                    ->toArray();
-		$dailyTotal = date('d', time()) - 1; // 今天不算，减一
+		$dailyTotal = date('d') - 1; // 今天不算，减一
 		$dailyCount = count($userTrafficDaily);
 		for($x = 0; $x < $dailyTotal - $dailyCount; $x++){
 			$dailyData[$x] = 0;
@@ -103,7 +104,7 @@ class UserController extends Controller {
 		$userTrafficHourly = UserTrafficHourly::query()
 		                                      ->whereUserId($user->id)
 		                                      ->whereNodeId(0)
-		                                      ->where('created_at', '>=', date('Y-m-d', time()))
+		                                      ->where('created_at', '>=', date('Y-m-d'))
 		                                      ->orderBy('created_at')
 		                                      ->pluck('total')
 		                                      ->toArray();
@@ -136,7 +137,7 @@ class UserController extends Controller {
 	}
 
 	// 签到
-	public function checkIn() {
+	public function checkIn(): JsonResponse {
 		$user = Auth::getUser();
 		// 系统开启登录加积分功能才可以签到
 		if(!self::$systemConfig['is_checkin']){
@@ -148,7 +149,7 @@ class UserController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => '已经签到过了，明天再来吧']);
 		}
 
-		$traffic = mt_rand((int) self::$systemConfig['min_rand_traffic'],
+		$traffic = random_int((int) self::$systemConfig['min_rand_traffic'],
 				(int) self::$systemConfig['max_rand_traffic']) * MB;
 		$ret = User::uid()->increment('transfer_enable', $traffic);
 		if(!$ret){
@@ -174,47 +175,51 @@ class UserController extends Controller {
 
 			$node = SsNode::query()->whereId($node_id)->first();
 			// 生成节点信息
-			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
+			if($node->type == 1){
+				$proxyType = $node->compatible? 'SS' : 'SSR';
+			}else{
+				$proxyType = 'V2Ray';
+			}
 			$data = $this->getUserNodeInfo(Auth::id(), $node->id, $infoType != 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
-		}else{
-			// 获取当前用户可用节点
-			$nodeList = SsNode::query()
-			                  ->whereStatus(1)
-			                  ->where('level', '<=', Auth::getUser()->level)
-			                  ->orderByDesc('sort')
-			                  ->orderBy('id')
-			                  ->get();
-
-			foreach($nodeList as $node){
-				$node->ct = number_format(SsNodePing::query()->whereNodeId($node->id)->where('ct', '>', '0')->avg('ct'),
-					1, '.', '');
-				$node->cu = number_format(SsNodePing::query()->whereNodeId($node->id)->where('cu', '>', '0')->avg('cu'),
-					1, '.', '');
-				$node->cm = number_format(SsNodePing::query()->whereNodeId($node->id)->where('cm', '>', '0')->avg('cm'),
-					1, '.', '');
-				$node->hk = number_format(SsNodePing::query()->whereNodeId($node->id)->where('hk', '>', '0')->avg('hk'),
-					1, '.', '');
-
-				// 节点在线状态
-				$node->offline = SsNodeInfo::query()
-				                           ->whereNodeId($node->id)
-				                           ->where('log_time', '>=', strtotime("-10 minutes"))
-				                           ->orderByDesc('id')
-				                           ->doesntExist();
-				// 节点标签
-				$node->labels = SsNodeLabel::query()->whereNodeId($node->id)->get();
-			}
-			$view['nodeList'] = $nodeList?: [];
 		}
+
+		// 获取当前用户可用节点
+		$nodeList = SsNode::query()
+		                  ->whereStatus(1)
+		                  ->where('level', '<=', Auth::getUser()->level)
+		                  ->orderByDesc('sort')
+		                  ->orderBy('id')
+		                  ->get();
+
+		foreach($nodeList as $node){
+			$node->ct = number_format(SsNodePing::query()->whereNodeId($node->id)->where('ct', '>', '0')->avg('ct'), 1,
+				'.', '');
+			$node->cu = number_format(SsNodePing::query()->whereNodeId($node->id)->where('cu', '>', '0')->avg('cu'), 1,
+				'.', '');
+			$node->cm = number_format(SsNodePing::query()->whereNodeId($node->id)->where('cm', '>', '0')->avg('cm'), 1,
+				'.', '');
+			$node->hk = number_format(SsNodePing::query()->whereNodeId($node->id)->where('hk', '>', '0')->avg('hk'), 1,
+				'.', '');
+
+			// 节点在线状态
+			$node->offline = SsNodeInfo::query()
+			                           ->whereNodeId($node->id)
+			                           ->where('log_time', '>=', strtotime("-10 minutes"))
+			                           ->orderByDesc('id')
+			                           ->doesntExist();
+			// 节点标签
+			$node->labels = SsNodeLabel::query()->whereNodeId($node->id)->get();
+		}
+		$view['nodeList'] = $nodeList?: [];
 
 
 		return Response::view('user.nodeList', $view);
 	}
 
 	// 公告详情
-	public function article(Request $request) {
+	public function article(Request $request): \Illuminate\Http\Response {
 		$view['info'] = Article::query()->findOrFail($request->input('id'));
 
 		return Response::view('user.article', $view);
@@ -235,49 +240,53 @@ class UserController extends Controller {
 			if($old_password && $new_password){
 				if(!Hash::check($old_password, $user->password)){
 					return Redirect::to('profile#tab_1')->withErrors('旧密码错误，请重新输入');
-				}elseif(Hash::check($new_password, $user->password)){
+				}
+
+				if(Hash::check($new_password, $user->password)){
 					return Redirect::to('profile#tab_1')->withErrors('新密码不可与旧密码一样，请重新输入');
 				}
 
 				// 演示环境禁止改管理员密码
-				if(env('APP_DEMO') && $user->id == 1){
+				if($user->id == 1 && env('APP_DEMO')){
 					return Redirect::to('profile#tab_1')->withErrors('演示环境禁止修改管理员密码');
 				}
 
 				$ret = User::uid()->update(['password' => Hash::make($new_password)]);
 				if(!$ret){
 					return Redirect::to('profile#tab_1')->withErrors('修改失败');
-				}else{
-					return Redirect::to('profile#tab_1')->with('successMsg', '修改成功');
 				}
+
+				return Redirect::to('profile#tab_1')->with('successMsg', '修改成功');
 				// 修改代理密码
-			}elseif($passwd){
+			}
+
+			if($passwd){
 				$ret = User::uid()->update(['passwd' => $passwd]);
 				if(!$ret){
 					return Redirect::to('profile#tab_3')->withErrors('修改失败');
-				}else{
-					return Redirect::to('profile#tab_3')->with('successMsg', '修改成功');
-				}
-			}else{
-				// 修改联系方式
-				if(empty($username)){
-					return Redirect::to('profile#tab_2')->withErrors('修改失败,昵称不能为空值');
 				}
 
-				$ret = User::uid()->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq]);
-				if(!$ret){
-					return Redirect::to('profile#tab_2')->withErrors('修改失败');
-				}else{
-					return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
-				}
+				return Redirect::to('profile#tab_3')->with('successMsg', '修改成功');
 			}
-		}else{
-			return Response::view('user.profile');
+
+			// 修改联系方式
+			if(empty($username)){
+				return Redirect::to('profile#tab_2')->withErrors('修改失败,昵称不能为空值');
+			}
+
+			$ret = User::uid()->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq]);
+			if(!$ret){
+				return Redirect::to('profile#tab_2')->withErrors('修改失败');
+			}
+
+			return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
 		}
+
+		return Response::view('user.profile');
 	}
 
 	// 商品列表
-	public function services(Request $request) {
+	public function services(Request $request): \Illuminate\Http\Response {
 		$user = Auth::getUser();
 		// 余额充值商品，只取10个
 		$view['chargeGoodsList'] = Goods::type(3)->whereStatus(1)->orderBy('price')->limit(10)->get();
@@ -293,51 +302,51 @@ class UserController extends Controller {
 		                   ->whereUserId($user->id)
 		                   ->whereStatus(2)
 		                   ->whereIsExpire(0)
-		                   ->whereHas('goods', function($q) {
+		                   ->whereHas('goods', static function($q) {
 			                   $q->whereType(2);
 		                   })
 		                   ->first();
 		$renewPrice = $renewOrder? Goods::query()->whereId($renewOrder->goods_id)->first() : 0;
 		$view['renewTraffic'] = $renewPrice? $renewPrice->renew : 0;
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
-		$dataPlusDays = $user->reset_time? $user->reset_time : $user->expire_time;
+		$dataPlusDays = $user->reset_time?: $user->expire_time;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
 
 		return Response::view('user.services', $view);
 	}
 
 	//重置流量
-	public function resetUserTraffic() {
+	public function resetUserTraffic(): ?JsonResponse {
 		$user = Auth::getUser();
-		$temp = Order::uid()->whereStatus(2)->whereIsExpire(0)->with(['goods'])->whereHas('goods', function($q) {
+		$temp = Order::uid()->whereStatus(2)->whereIsExpire(0)->with(['goods'])->whereHas('goods', static function($q) {
 			$q->whereType(2);
 		})->first();
 		$renewCost = Goods::query()->whereId($temp->goods_id)->first()->renew;
 		if($user->credit < $renewCost){
 			return Response::json(['status' => 'fail', 'message' => '余额不足，请充值余额']);
-		}else{
-			User::uid()->update(['u' => 0, 'd' => 0]);
-
-			// 扣余额
-			User::query()->whereId($user->id)->decrement('credit', $renewCost * 100);
-
-			// 记录余额操作日志
-			Helpers::addUserCreditLog($user->id, '', $user->credit, $user->credit - $renewCost, -1 * $renewCost,
-				'用户自行重置流量');
-
-			return Response::json(['status' => 'success', 'message' => '重置成功']);
 		}
+
+		User::uid()->update(['u' => 0, 'd' => 0]);
+
+		// 扣余额
+		User::query()->whereId($user->id)->decrement('credit', $renewCost * 100);
+
+		// 记录余额操作日志
+		Helpers::addUserCreditLog($user->id, '', $user->credit, $user->credit - $renewCost, -1 * $renewCost,
+			'用户自行重置流量');
+
+		return Response::json(['status' => 'success', 'message' => '重置成功']);
 	}
 
 	// 工单
-	public function ticketList(Request $request) {
+	public function ticketList(Request $request): \Illuminate\Http\Response {
 		$view['ticketList'] = Ticket::uid()->orderByDesc('id')->paginate(10)->appends($request->except('page'));
 
 		return Response::view('user.ticketList', $view);
 	}
 
 	// 订单
-	public function invoices(Request $request) {
+	public function invoices(Request $request): \Illuminate\Http\Response {
 		$view['orderList'] = Order::uid()
 		                          ->with(['user', 'goods', 'coupon', 'payment'])
 		                          ->orderByDesc('oid')
@@ -347,32 +356,34 @@ class UserController extends Controller {
 		return Response::view('user.invoices', $view);
 	}
 
-	public function activeOrder(Request $request) {
+	public function activeOrder(Request $request): JsonResponse {
 		$oid = $request->input('oid');
 		$prepaidOrder = Order::query()->whereOid($oid)->first();
 		if(!$prepaidOrder){
 			return Response::json(['status' => 'fail', 'message' => '查无此单！']);
-		}elseif($prepaidOrder->status != 3){
-			return Response::json(['status' => 'fail', 'message' => '非预支付订单，无需再次启动！']);
-		}else{
-			(new ServiceController)->activePrepaidOrder($oid);
 		}
+
+		if($prepaidOrder->status != 3){
+			return Response::json(['status' => 'fail', 'message' => '非预支付订单，无需再次启动！']);
+		}
+
+		(new ServiceController)->activePrepaidOrder($oid);
 
 		return Response::json(['status' => 'success', 'message' => '激活成功']);
 	}
 
 	// 订单明细
-	public function invoiceDetail($sn) {
+	public function invoiceDetail($sn): \Illuminate\Http\Response {
 		$view['order'] = Order::uid()->with(['goods', 'coupon', 'payment'])->whereOrderSn($sn)->firstOrFail();
 
 		return Response::view('user.invoiceDetail', $view);
 	}
 
 	// 添加工单
-	public function createTicket(Request $request) {
+	public function createTicket(Request $request): ?JsonResponse {
 		$title = $request->input('title');
 		$content = clean($request->input('content'));
-		$content = str_replace("eval", "", str_replace("atob", "", $content));
+		$content = str_replace(["atob", "eval"], "", $content);
 
 		if(empty($title) || empty($content)){
 			return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
@@ -398,9 +409,9 @@ class UserController extends Controller {
 			PushNotification::send($emailTitle, $content);
 
 			return Response::json(['status' => 'success', 'message' => '提交成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => '提交失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'message' => '提交失败']);
 	}
 
 	// 回复工单
@@ -411,7 +422,7 @@ class UserController extends Controller {
 
 		if($request->isMethod('POST')){
 			$content = clean($request->input('content'));
-			$content = str_replace("eval", "", str_replace("atob", "", $content));
+			$content = str_replace(["atob", "eval"], "", $content);
 			$content = substr($content, 0, 300);
 
 			if(empty($content)){
@@ -445,19 +456,19 @@ class UserController extends Controller {
 				PushNotification::send($title, $content);
 
 				return Response::json(['status' => 'success', 'message' => '回复成功']);
-			}else{
-				return Response::json(['status' => 'fail', 'message' => '回复失败']);
 			}
-		}else{
-			$view['ticket'] = $ticket;
-			$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->orderBy('id')->get();
 
-			return Response::view('user.replyTicket', $view);
+			return Response::json(['status' => 'fail', 'message' => '回复失败']);
 		}
+
+		$view['ticket'] = $ticket;
+		$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->orderBy('id')->get();
+
+		return Response::view('user.replyTicket', $view);
 	}
 
 	// 关闭工单
-	public function closeTicket(Request $request) {
+	public function closeTicket(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		$ret = Ticket::uid()->whereId($id)->update(['status' => 2]);
@@ -465,13 +476,13 @@ class UserController extends Controller {
 			PushNotification::send('工单关闭提醒', '工单：ID'.$id.'用户已手动关闭');
 
 			return Response::json(['status' => 'success', 'message' => '关闭成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 	}
 
 	// 邀请码
-	public function invite() {
+	public function invite(): \Illuminate\Http\Response {
 		if(Order::uid()->whereStatus(2)->whereIsExpire(0)->where('origin_amount', '>', 0)->doesntExist()){
 			return Response::view('auth.error',
 				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
@@ -486,7 +497,7 @@ class UserController extends Controller {
 	}
 
 	// 生成邀请码
-	public function makeInvite() {
+	public function makeInvite(): JsonResponse {
 		if(Auth::getUser()->invite_num <= 0){
 			return Response::json(['status' => 'fail', 'message' => '生成失败：已无邀请码生成名额']);
 		}
@@ -505,7 +516,7 @@ class UserController extends Controller {
 	}
 
 	// 使用优惠券
-	public function redeemCoupon(Request $request) {
+	public function redeemCoupon(Request $request): JsonResponse {
 		$coupon_sn = $request->input('coupon_sn');
 		$good_price = $request->input('price');
 
@@ -516,18 +527,28 @@ class UserController extends Controller {
 		$coupon = Coupon::query()->whereSn($coupon_sn)->whereIn('type', [1, 2])->first();
 		if(!$coupon){
 			return Response::json(['status' => 'fail', 'title' => '优惠券不存在', 'message' => '请确认优惠券是否输入正确！']);
-		}elseif($coupon->status == 1){
+		}
+
+		if($coupon->status == 1){
 			return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已被使用！']);
-		}elseif($coupon->status == 2){
+		}
+
+		if($coupon->status == 2){
 			return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已失效！']);
-		}elseif($coupon->available_end < time()){
+		}
+
+		if($coupon->available_end < time()){
 			$coupon->status = 2;
 			$coupon->save();
 
 			return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已失效！']);
-		}elseif($coupon->available_start > time()){
+		}
+
+		if($coupon->available_start > time()){
 			return Response::json(['status' => 'fail', 'title' => '优惠券尚未生效', 'message' => '请等待活动正式开启']);
-		}elseif($good_price < $coupon->rule){
+		}
+
+		if($good_price < $coupon->rule){
 			return Response::json(['status' => 'fail', 'title' => '使用条件未满足', 'message' => '请购买价格更高的套餐']);
 		}
 
@@ -554,7 +575,7 @@ class UserController extends Controller {
 		                           ->with(['goods'])
 		                           ->whereIsExpire(0)
 		                           ->whereStatus(2)
-		                           ->whereHas('goods', function($q) {
+		                           ->whereHas('goods', static function($q) {
 			                           $q->whereType(2);
 		                           })
 		                           ->exists();
@@ -564,7 +585,7 @@ class UserController extends Controller {
 	}
 
 	// 帮助中心
-	public function help() {
+	public function help(): \Illuminate\Http\Response {
 		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->orderByDesc('id')->limit(10)->paginate(5);
 		$data = [];
 		if(SsNode::query()->whereType(1)->whereStatus(1)->exists()){
@@ -592,7 +613,7 @@ class UserController extends Controller {
 		// 订阅连接
 		$subscribe = UserSubscribe::query()->whereUserId(Auth::id())->first();
 		$view['subscribe_status'] = $subscribe->status;
-		$subscribe_link = (self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']).'/s/'.$subscribe->code;
+		$subscribe_link = (self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url']).'/s/'.$subscribe->code;
 		$view['link'] = $subscribe_link;
 		$view['subscribe_link'] = 'sub://'.base64url_encode($subscribe_link);
 		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(self::$systemConfig['website_name'].'-'.self::$systemConfig['website_url']);
@@ -604,7 +625,7 @@ class UserController extends Controller {
 	}
 
 	// 更换订阅地址
-	public function exchangeSubscribe() {
+	public function exchangeSubscribe(): ?JsonResponse {
 		DB::beginTransaction();
 		try{
 			// 更换订阅码
@@ -626,7 +647,7 @@ class UserController extends Controller {
 	}
 
 	// 转换成管理员的身份
-	public function switchToAdmin() {
+	public function switchToAdmin(): JsonResponse {
 		if(!Session::has('admin')){
 			return Response::json(['status' => 'fail', 'message' => '非法请求']);
 		}
@@ -639,11 +660,11 @@ class UserController extends Controller {
 	}
 
 	// 卡券余额充值
-	public function charge(Request $request) {
+	public function charge(Request $request): ?JsonResponse {
 		$validator = Validator::make($request->all(), [
 			'coupon_sn' => [
 				'required',
-				Rule::exists('coupon', 'sn')->where(function($query) {
+				Rule::exists('coupon', 'sn')->where(static function($query) {
 					$query->whereType(3)->whereStatus(0);
 				}),
 			]

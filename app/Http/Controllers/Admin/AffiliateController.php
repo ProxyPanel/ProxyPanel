@@ -6,6 +6,7 @@ use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -19,18 +20,18 @@ use Response;
 class AffiliateController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 提现申请列表
-	public function affiliateList(Request $request) {
+	public function affiliateList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 		$status = $request->input('status');
 
 		$query = ReferralApply::with('user');
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -45,7 +46,7 @@ class AffiliateController extends Controller {
 	}
 
 	// 提现申请详情
-	public function affiliateDetail(Request $request) {
+	public function affiliateDetail(Request $request): \Illuminate\Http\Response {
 		$id = $request->input('id');
 
 		$list = null;
@@ -66,7 +67,7 @@ class AffiliateController extends Controller {
 	}
 
 	// 设置提现申请状态
-	public function setAffiliateStatus(Request $request) {
+	public function setAffiliateStatus(Request $request): JsonResponse {
 		$id = $request->input('id');
 		$status = $request->input('status');
 
@@ -86,7 +87,7 @@ class AffiliateController extends Controller {
 	}
 
 	// 用户返利流水记录
-	public function userRebateList(Request $request) {
+	public function userRebateList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 		$ref_email = $request->input('ref_email');
 		$status = $request->input('status');
@@ -94,13 +95,13 @@ class AffiliateController extends Controller {
 		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status')->orderByDesc('id');
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
 		if(isset($ref_email)){
-			$query->whereHas('ref_user', function($q) use ($ref_email) {
+			$query->whereHas('ref_user', static function($q) use ($ref_email) {
 				$q->where('email', 'like', '%'.$ref_email.'%');
 			});
 		}

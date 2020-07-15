@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 节点标签
@@ -23,9 +24,8 @@ use Illuminate\Database\Eloquent\Model;
 class SsNodeLabel extends Model {
 	public $timestamps = false;
 	protected $table = 'ss_node_label';
-	protected $primaryKey = 'id';
 
-	function labelInfo() {
+	public function labelInfo(): HasOne {
 		return $this->hasOne(Label::class, 'id', 'label_id');
 	}
 }

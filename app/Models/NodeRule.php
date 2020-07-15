@@ -27,5 +27,4 @@ use Illuminate\Database\Eloquent\Model;
  */
 class NodeRule extends Model {
 	protected $table = 'node_rule';
-	protected $primaryKey = 'id';
 }

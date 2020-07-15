@@ -24,6 +24,5 @@ use Illuminate\Database\Eloquent\Model;
 class SsNodeOnlineLog extends Model {
 	public $timestamps = false;
 	protected $table = 'ss_node_online_log';
-	protected $primaryKey = 'id';
 
 }

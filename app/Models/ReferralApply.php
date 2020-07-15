@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 返利申请
@@ -36,37 +37,36 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ReferralApply extends Model {
 	protected $table = 'referral_apply';
-	protected $primaryKey = 'id';
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());
 	}
 
-	function User() {
+	public function User(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function getBeforeAttribute($value) {
+	public function getBeforeAttribute($value) {
 		return $value / 100;
 	}
 
-	function setBeforeAttribute($value) {
+	public function setBeforeAttribute($value): void {
 		$this->attributes['before'] = $value * 100;
 	}
 
-	function getAfterAttribute($value) {
+	public function getAfterAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAfterAttribute($value) {
+	public function setAfterAttribute($value): void {
 		$this->attributes['after'] = $value * 100;
 	}
 
-	function getAmountAttribute($value) {
+	public function getAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAmountAttribute($value) {
+	public function setAmountAttribute($value): void {
 		$this->attributes['amount'] = $value * 100;
 	}
 }

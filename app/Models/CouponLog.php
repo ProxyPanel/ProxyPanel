@@ -29,6 +29,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CouponLog extends Model {
 	protected $table = 'coupon_log';
-	protected $primaryKey = 'id';
 
 }

@@ -34,7 +34,7 @@ class PushNotification {
 		try{
 			// TODO：一天仅可发送不超过500条
 			$url = 'https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content);
-			$result = json_decode(Curl::send($url));
+			$result = json_decode(Curl::send($url), true);
 			if(empty(Helpers::systemConfig()['server_chan_key'])){
 				$result = new stdClass();
 				$result->errno = true;
@@ -49,7 +49,6 @@ class PushNotification {
 		}catch(Exception $e){
 			Log::error('ServerChan消息推送异常：'.$e);
 		}
-
 
 		return $ret;
 	}
@@ -66,7 +65,7 @@ class PushNotification {
 		$ret = false;
 		try{
 			$url = 'https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content;
-			$result = json_decode(Curl::send($url));
+			$result = json_decode(Curl::send($url), true);
 			if($result){
 				if($result->code == 200){
 					Helpers::addNotificationLog($title, $content, 3);

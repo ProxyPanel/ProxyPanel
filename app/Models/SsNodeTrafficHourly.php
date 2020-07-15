@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 节点每日流量统计
@@ -32,9 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SsNodeTrafficHourly extends Model {
 	protected $table = 'ss_node_traffic_hourly';
-	protected $primaryKey = 'id';
 
-	function info() {
+	public function info(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
 	}
 }

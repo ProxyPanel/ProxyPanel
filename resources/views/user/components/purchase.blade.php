@@ -14,12 +14,12 @@
 	</button>'
 @endif
 @if(\App\Components\Helpers::systemConfig()['is_otherPay'] == 'bitpayx')
-	<button class="btn btn-flat" onclick="pay('{{\App\Components\Helpers::systemConfig()['is_otherPay']}}','')">
+	<button class="btn btn-flat" onclick="pay('{{\App\Components\Helpers::systemConfig()['is_otherPay']}}','4')">
 		<img src="/assets/images/payment/btc.svg" height="36px" alt="other"/>
 		<span class="font-size-24 black"> 虚拟货币</span>
 	</button>'
 @elseif(\App\Components\Helpers::systemConfig()['is_otherPay'] == 'paypal')
-	<button class="btn btn-flat" onclick="pay('{{\App\Components\Helpers::systemConfig()['is_otherPay']}}','')">
+	<button class="btn btn-flat" onclick="pay('{{\App\Components\Helpers::systemConfig()['is_otherPay']}}','5')">
 		<img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-150px.png" height="32px" alt="PayPal"/>
 	</button>'
 @endif

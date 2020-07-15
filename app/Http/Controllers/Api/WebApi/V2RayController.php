@@ -6,11 +6,12 @@ use App\Components\Helpers;
 use App\Models\NodeCertificate;
 use App\Models\SsNode;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class V2RayController extends BaseController {
 	// 获取节点信息
-	public function getNodeInfo($id) {
+	public function getNodeInfo($id): JsonResponse {
 		$node = SsNode::query()->whereId($id)->first();
 		$nodeTls = NodeCertificate::query()->whereId($node->server)->first();
 
@@ -37,7 +38,7 @@ class V2RayController extends BaseController {
 	}
 
 	// 获取节点可用的用户列表
-	public function getUserList(Request $request, $id) {
+	public function getUserList($id): JsonResponse {
 		$node = SsNode::query()->whereId($id)->first();
 		$users = User::query()->where('status', '<>', -1)->whereEnable(1)->where('level', '>=', $node->level)->get();
 		$data = [];
@@ -48,7 +49,7 @@ class V2RayController extends BaseController {
 				'vmess_uid'   => $user->vmess_id,
 				'speed_limit' => $user->speed_limit
 			];
-			array_push($data, $new);
+			$data[] = $new;
 		}
 
 		if($data){
@@ -59,7 +60,7 @@ class V2RayController extends BaseController {
 	}
 
 	// 上报节点伪装域名证书信息
-	public function addCertificate(Request $request, $id) {
+	public function addCertificate(Request $request, $id): JsonResponse {
 		if($request->has(['key', 'pem'])){
 			$node = SsNode::find($id);
 			$obj = new NodeCertificate();

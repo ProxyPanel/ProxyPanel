@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * 用户订阅地址请求日志
@@ -28,9 +29,8 @@ use Illuminate\Database\Eloquent\Model;
 class UserSubscribeLog extends Model {
 	public $timestamps = false;
 	protected $table = 'user_subscribe_log';
-	protected $primaryKey = 'id';
 
-	function user() {
+	public function user(): HasManyThrough {
 		return $this->hasManyThrough(User::class, UserSubscribe::class, 'id', 'id', 'sid', 'user_id');
 	}
 }

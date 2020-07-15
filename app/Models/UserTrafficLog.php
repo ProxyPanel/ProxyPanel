@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 用户流量记录
@@ -34,15 +35,14 @@ use Illuminate\Database\Eloquent\Model;
 class UserTrafficLog extends Model {
 	public $timestamps = false;
 	protected $table = 'user_traffic_log';
-	protected $primaryKey = 'id';
 
 	// 关联账号
-	function user() {
+	public function user(): BelongsTo {
 		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 
 	// 关联节点
-	function node() {
+	public function node(): BelongsTo {
 		return $this->belongsTo(SsNode::class, 'node_id', 'id');
 	}
 

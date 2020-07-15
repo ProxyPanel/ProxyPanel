@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 用户流量变动记录
@@ -33,23 +34,22 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserTrafficModifyLog extends Model {
 	protected $table = 'user_traffic_modify_log';
-	protected $primaryKey = 'id';
 
 	// 关联账号
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
 	// 关联订单
-	function order() {
+	public function order(): HasOne {
 		return $this->hasOne(Order::class, 'oid', 'order_id');
 	}
 
-	function getBeforeAttribute($value) {
+	public function getBeforeAttribute($value) {
 		return $this->attributes['before'] = flowAutoShow($value);
 	}
 
-	function getAfterAttribute($value) {
+	public function getAfterAttribute($value) {
 		return $this->attributes['after'] = flowAutoShow($value);
 	}
 

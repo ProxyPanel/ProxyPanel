@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 支付单
@@ -40,31 +41,30 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Payment extends Model {
 	protected $table = 'payment';
-	protected $primaryKey = 'id';
 	protected $appends = ['status_label'];
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());
 	}
 
-	function user() {
+	public function user(): BelongsTo {
 		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 
-	function order() {
+	public function order(): BelongsTo {
 		return $this->belongsTo(Order::class, 'oid', 'oid');
 	}
 
-	function getAmountAttribute($value) {
+	public function getAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAmountAttribute($value) {
+	public function setAmountAttribute($value) {
 		return $this->attributes['amount'] = $value * 100;
 	}
 
 	// 订单状态
-	function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute(): string {
 		switch($this->attributes['status']){
 			case -1:
 				$status_label = '支付失败';

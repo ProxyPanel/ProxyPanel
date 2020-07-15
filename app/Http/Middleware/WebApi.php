@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\NodeAuth;
 use App\Models\SsNode;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Response;
 
 class WebApi {
@@ -21,9 +22,11 @@ class WebApi {
 		$key = $request->header('key');
 		$time = $request->header('timestamp');
 
-		if($key === null){// 未提供 key
+		if(isset($key)){// 未提供 key
 			return $this->returnData('Your key is null!');
-		}elseif($id === null){// 未提供 node
+		}
+
+		if(isset($id)){// 未提供 node
 			return $this->returnData('Your Node Id is null!');
 		}
 
@@ -45,7 +48,7 @@ class WebApi {
 	}
 
 	// 返回数据
-	public function returnData($message) {
+	public function returnData($message): JsonResponse {
 		return Response::json(['status' => 'fail', 'code' => 404, 'data' => '', 'message' => $message]);
 	}
 }

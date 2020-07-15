@@ -9,18 +9,19 @@ use App\Models\ReferralApply;
 use App\Models\ReferralLog;
 use App\Models\User;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Response;
 
 class AffiliateController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 推广返利
-	public function referral() {
-		if(Order::uid()->whereStatus(2)->doesntExist() && ReferralLog::uid()->doesntExist()){
+	public function referral(): \Illuminate\Http\Response {
+		if(ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()){
 			return Response::view('auth.error',
 				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
@@ -45,7 +46,7 @@ class AffiliateController extends Controller {
 	}
 
 	// 申请提现
-	public function extractMoney() {
+	public function extractMoney(): JsonResponse {
 		// 判断账户是否过期
 		if(Auth::getUser()->expire_time < date('Y-m-d')){
 			return Response::json(['status' => 'fail', 'message' => '申请失败：账号已过期，请先购买服务吧']);

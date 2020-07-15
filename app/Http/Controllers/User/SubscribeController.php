@@ -16,7 +16,7 @@ class SubscribeController extends Controller {
 	protected static $systemConfig;
 	private $subType;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
@@ -31,7 +31,9 @@ class SubscribeController extends Controller {
 		$subscribe = UserSubscribe::query()->whereCode($code)->first();
 		if(!$subscribe){
 			exit($this->infoGenerator('使用的订阅链接错误！请重新从官网获取！'));
-		}elseif($subscribe->status != 1){
+		}
+
+		if($subscribe->status != 1){
 			exit($this->infoGenerator('您的订阅链接已被封禁，请前往官网查询原因！'));
 		}
 
@@ -39,19 +41,27 @@ class SubscribeController extends Controller {
 		$user = User::query()->whereId($subscribe->user_id)->first();
 		if(!$user){
 			exit($this->infoGenerator('错误订阅链接，账号不存在！请前往官网重新获取订阅链接'));
-		}elseif($user->status == -1){
+		}
+
+		if($user->status == -1){
 			exit($this->infoGenerator('您的账号已经被禁止使用，请重新注册'));
-		}elseif($user->enable != 1){
+		}
+
+		if($user->enable != 1){
 			$unusedTransfer = $user->transfer_enable - $user->u - $user->d;
 			if($user->ban_time > 0){
 				exit($this->infoGenerator('您的账号处于封禁状态，请在'.date('Y-m-d H:i:s', $user->ban_time).'之后再更新！'));
-			}elseif($unusedTransfer <= 0){
-				exit($this->infoGenerator('账号流量耗尽！请前往官网购买或重置流量！'));
-			}elseif($user->expire_time < date('Y-m-d')){
-				exit($this->infoGenerator('账号过期！请前往官网购买！'));
-			}else{
-				exit($this->infoGenerator('账号存在问题，请前往官网查询！'));
 			}
+
+			if($unusedTransfer <= 0){
+				exit($this->infoGenerator('账号流量耗尽！请前往官网购买或重置流量！'));
+			}
+
+			if($user->expire_time < date('Y-m-d')){
+				exit($this->infoGenerator('账号过期！请前往官网购买！'));
+			}
+
+			exit($this->infoGenerator('账号存在问题，请前往官网查询！'));
 		}
 
 		// 更新访问次数
@@ -109,7 +119,7 @@ class SubscribeController extends Controller {
 	}
 
 	// 抛出错误的节点信息，用于兼容防止客户端订阅失败
-	private function infoGenerator($text) {
+	private function infoGenerator($text): string {
 		$result = null;
 		switch($this->subType){
 			case 2:
@@ -140,7 +150,7 @@ class SubscribeController extends Controller {
 	}
 
 	// 写入订阅访问日志
-	private function subscribeLog($subscribeId, $ip, $headers) {
+	private function subscribeLog($subscribeId, $ip, $headers): void {
 		$log = new UserSubscribeLog();
 		$log->sid = $subscribeId;
 		$log->request_ip = $ip;

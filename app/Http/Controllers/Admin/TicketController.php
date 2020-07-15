@@ -11,6 +11,7 @@ use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Mail;
 use Response;
@@ -25,18 +26,18 @@ use Response;
 class TicketController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 工单列表
-	public function ticketList(Request $request) {
+	public function ticketList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
 		$query = Ticket::query()->whereIn('admin_id', [0, Auth::id()]);
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -47,7 +48,7 @@ class TicketController extends Controller {
 	}
 
 	// 创建工单
-	public function createTicket(Request $request) {
+	public function createTicket(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 		$email = $request->input('email');
 		$title = $request->input('title');
@@ -57,7 +58,9 @@ class TicketController extends Controller {
 
 		if(!$user){
 			return Response::json(['status' => 'fail', 'message' => '用户不存在']);
-		}elseif($user == Auth::user()){
+		}
+
+		if($user == Auth::user()){
 			return Response::json(['status' => 'fail', 'message' => '不能对自己发起工单']);
 		}
 
@@ -75,9 +78,9 @@ class TicketController extends Controller {
 
 		if($obj->id){
 			return Response::json(['status' => 'success', 'message' => '工单创建成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => '工单创建失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'message' => '工单创建失败']);
 	}
 
 	// 回复工单
@@ -86,7 +89,7 @@ class TicketController extends Controller {
 
 		if($request->isMethod('POST')){
 			$content = clean($request->input('content'));
-			$content = str_replace("eval", "", str_replace("atob", "", $content));
+			$content = str_replace(["atob", "eval"], "", $content);
 			$content = substr($content, 0, 300);
 
 			$obj = new TicketReply();
@@ -98,8 +101,7 @@ class TicketController extends Controller {
 			if($obj->id){
 				// 将工单置为已回复
 				$ticket = Ticket::query()->with(['user'])->whereId($id)->first();
-				$ticket->status = 1;
-				$ticket->save();
+				Ticket::query()->whereId($id)->update(['status' => 1]);
 
 				$title = "工单回复提醒";
 				$content = "标题：".$ticket->title."<br>管理员回复：".$content;
@@ -120,19 +122,19 @@ class TicketController extends Controller {
 				}
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
-			}else{
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
 			}
-		}else{
-			$view['ticket'] = Ticket::query()->whereId($id)->first();
-			$view['replyList'] = TicketReply::query()->whereTicketId($id)->orderBy('id')->get();
 
-			return Response::view('admin.ticket.replyTicket', $view);
+			return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
 		}
+
+		$view['ticket'] = Ticket::query()->whereId($id)->first();
+		$view['replyList'] = TicketReply::query()->whereTicketId($id)->orderBy('id')->get();
+
+		return Response::view('admin.ticket.replyTicket', $view);
 	}
 
 	// 关闭工单
-	public function closeTicket(Request $request) {
+	public function closeTicket(Request $request): JsonResponse {
 		$id = $request->input('id');
 
 		$ticket = Ticket::query()->with(['user'])->whereId($id)->first();
@@ -140,8 +142,7 @@ class TicketController extends Controller {
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
 		}
 
-		$ticket->status = 2;
-		$ret = $ticket->save();
+		$ret = Ticket::query()->whereId($id)->update(['status' => 2]);
 		if(!$ret){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
 		}
@@ -155,5 +156,4 @@ class TicketController extends Controller {
 
 		return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
 	}
-
 }

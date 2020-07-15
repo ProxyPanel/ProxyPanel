@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 用户登录日志
@@ -38,9 +39,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserLoginLog extends Model {
 	protected $table = 'user_login_log';
-	protected $primaryKey = 'id';
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 }

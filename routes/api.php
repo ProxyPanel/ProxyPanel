@@ -11,7 +11,7 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => ['webApi']], function
 		Route::get('nodeRule/{id}', 'BaseController@getNodeRule'); // 获取节点的审计规则
 		Route::post('trigger/{id}', 'BaseController@addRuleLog'); // 上报用户触发的审计规则记录
 	});
-	
+
 	// VNet后端WEBAPI V2版
 	Route::group(['prefix' => 'vnet/v2'], function() {
 		Route::get('node/{id}', 'VNetController@getNodeInfo'); // 获取节点信息

@@ -6,6 +6,7 @@ use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -19,12 +20,12 @@ use Response;
 class SubscribeController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
 	// 订阅码列表
-	public function subscribeList(Request $request) {
+	public function subscribeList(Request $request): \Illuminate\Http\Response {
 		$user_id = $request->input('user_id');
 		$email = $request->input('email');
 		$status = $request->input('status');
@@ -36,7 +37,7 @@ class SubscribeController extends Controller {
 		}
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -51,7 +52,7 @@ class SubscribeController extends Controller {
 	}
 
 	//订阅记录
-	public function subscribeLog(Request $request) {
+	public function subscribeLog(Request $request): \Illuminate\Http\Response {
 		$id = $request->input('id');
 		$query = UserSubscribeLog::with('user:email');
 
@@ -65,7 +66,7 @@ class SubscribeController extends Controller {
 	}
 
 	// 设置用户的订阅的状态
-	public function setSubscribeStatus(Request $request) {
+	public function setSubscribeStatus(Request $request): JsonResponse {
 		$id = $request->input('id');
 		$status = $request->input('status', 0);
 

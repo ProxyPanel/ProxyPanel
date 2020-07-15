@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -98,29 +100,28 @@ class User extends Authenticatable {
 	use Notifiable;
 
 	protected $table = 'user';
-	protected $primaryKey = 'id';
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereId(Auth::id());
 	}
 
-	function payment() {
+	public function payment(): HasMany {
 		return $this->hasMany(Payment::class, 'user_id', 'id');
 	}
 
-	function subscribe() {
+	public function subscribe(): HasOne {
 		return $this->hasOne(UserSubscribe::class, 'user_id', 'id');
 	}
 
-	function referral() {
-		return $this->hasOne(User::class, 'id', 'referral_uid');
+	public function referral(): HasOne {
+		return $this->hasOne(__CLASS__, 'id', 'referral_uid');
 	}
 
-	function getCreditAttribute($value) {
+	public function getCreditAttribute($value) {
 		return $value / 100;
 	}
 
-	function setCreditAttribute($value) {
+	public function setCreditAttribute($value) {
 		return $this->attributes['credit'] = $value * 100;
 	}
 }

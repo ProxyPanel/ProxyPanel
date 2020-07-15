@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 
@@ -44,22 +45,21 @@ class Invite extends Model {
 	use SoftDeletes;
 
 	protected $table = 'invite';
-	protected $primaryKey = 'id';
 	protected $dates = ['deleted_at'];
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereUid(Auth::id());
 	}
 
-	function generator() {
+	public function generator(): HasOne {
 		return $this->hasOne(User::class, 'id', 'uid');
 	}
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'fuid');
 	}
 
-	function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute(): string {
 		switch($this->attributes['status']){
 			case 0:
 				$status_label = '<span class="badge badge-success">'.trans('home.invite_code_table_status_un').'</span>';

@@ -29,9 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Rule extends Model {
 	protected $table = 'rule';
-	protected $primaryKey = 'id';
 
-	function getTypeLabelAttribute() {
+	public function getTypeLabelAttribute(): string {
 		switch($this->attributes['type']){
 			case 1:
 				$type_label = '正则表达式';
@@ -52,7 +51,7 @@ class Rule extends Model {
 		return $type_label;
 	}
 
-	function getTypeApiLabelAttribute() {
+	public function getTypeApiLabelAttribute(): string {
 		switch($this->attributes['type']){
 			case 1:
 				$type_api_label = 'reg';

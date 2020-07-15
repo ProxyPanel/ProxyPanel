@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Redirect;
 use Response;
 use Session;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ToolsController extends Controller {
 	// SS(R)链接反解析
@@ -43,9 +44,8 @@ class ToolsController extends Controller {
 			file_put_contents(public_path('downloads/decompile.json'), $txt);
 
 			return Response::json(['status' => 'success', 'data' => $txt, 'message' => '反解析成功']);
-		}else{
-			return Response::view('admin.tools.decompile');
 		}
+		return Response::view('admin.tools.decompile');
 	}
 
 	// 格式转换(SS转SSR)
@@ -64,7 +64,7 @@ class ToolsController extends Controller {
 			}
 
 			// 校验格式
-			$content = json_decode($content);
+			$content = json_decode($content, true);
 			if(empty($content->port_password)){
 				return Response::json([
 					'status'  => 'fail',
@@ -98,18 +98,18 @@ class ToolsController extends Controller {
 			file_put_contents(public_path('downloads/convert.json'), $json);
 
 			return Response::json(['status' => 'success', 'data' => $json, 'message' => '转换成功']);
-		}else{
-			// 加密方式、协议、混淆
-			$view['method_list'] = Helpers::methodList();
-			$view['protocol_list'] = Helpers::protocolList();
-			$view['obfs_list'] = Helpers::obfsList();
-
-			return Response::view('admin.tools.convert', $view);
 		}
+
+		// 加密方式、协议、混淆
+		$view['method_list'] = Helpers::methodList();
+		$view['protocol_list'] = Helpers::protocolList();
+		$view['obfs_list'] = Helpers::obfsList();
+
+		return Response::view('admin.tools.convert', $view);
 	}
 
 	// 下载转换好的JSON文件
-	public function download(Request $request) {
+	public function download(Request $request): BinaryFileResponse {
 		$type = $request->input('type');
 		if(empty($type)){
 			exit('参数异常');
@@ -158,7 +158,7 @@ class ToolsController extends Controller {
 
 			// 读取文件内容
 			$data = file_get_contents($save_path.'/'.$new_name);
-			$data = json_decode($data);
+			$data = json_decode($data, true);
 			if(!$data){
 				Session::flash('errorMsg', '内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
 
@@ -199,13 +199,13 @@ class ToolsController extends Controller {
 			Session::flash('successMsg', '导入成功');
 
 			return Redirect::back();
-		}else{
-			return Response::view('admin.tools.import');
 		}
+
+		return Response::view('admin.tools.import');
 	}
 
 	// 日志分析
-	public function analysis() {
+	public function analysis(): \Illuminate\Http\Response {
 		$file = storage_path('app/ssserver.log');
 		if(!file_exists($file)){
 			Session::flash('analysisErrorMsg', $file.' 不存在，请先创建文件');

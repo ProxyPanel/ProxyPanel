@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 用户封禁日志
@@ -30,9 +31,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserBanLog extends Model {
 	protected $table = 'user_ban_log';
-	protected $primaryKey = 'id';
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 }

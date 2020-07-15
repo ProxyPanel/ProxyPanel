@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 返利日志
@@ -38,37 +39,36 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ReferralLog extends Model {
 	protected $table = 'referral_log';
-	protected $primaryKey = 'id';
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereRefUserId(Auth::id());
 	}
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function ref_user() {
+	public function ref_user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'ref_user_id');
 	}
 
-	function order() {
+	public function order(): HasOne {
 		return $this->hasOne(Order::class, 'oid', 'order_id');
 	}
 
-	function getAmountAttribute($value) {
+	public function getAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAmountAttribute($value) {
+	public function setAmountAttribute($value): void {
 		$this->attributes['amount'] = $value * 100;
 	}
 
-	function getRefAmountAttribute($value) {
+	public function getRefAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setRefAmountAttribute($value) {
+	public function setRefAmountAttribute($value): void {
 		$this->attributes['ref_amount'] = $value * 100;
 	}
 }

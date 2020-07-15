@@ -12,11 +12,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 	protected $signature = 'autoStatisticsNodeHourlyTraffic';
 	protected $description = '自动统计节点每小时流量';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		$nodeList = SsNode::query()->whereStatus(1)->orderBy('id')->get();
@@ -30,7 +26,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	private function statisticsByNode($node_id) {
+	private function statisticsByNode($node_id): void {
 		$start_time = strtotime(date('Y-m-d H:i:s', strtotime("-1 hour")));
 		$end_time = time();
 

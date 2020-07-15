@@ -10,7 +10,7 @@ class Namesilo {
 	protected static $host;
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$host = 'https://www.namesilo.com/api/';
 		self::$systemConfig = Helpers::systemConfig();
 	}

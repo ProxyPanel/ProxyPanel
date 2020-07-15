@@ -12,11 +12,7 @@ class updateUserLevel extends Command {
 	protected $signature = 'updateUserLevel';
 	protected $description = '更新用户等级';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		Log::info('----------------------------【用户等级升级】开始----------------------------');
 		// 预设level 0
 		$users = User::query()->where('level', '<>', 0)->get();
@@ -26,7 +22,11 @@ class updateUserLevel extends Command {
 		// 获取商品列表，取新等级
 		$goodList = Goods::query()->where('level', '<>', 0)->whereType(2)->get();
 		// 取生效的套餐
-		$orderList = Order::query()->whereIn('goods_id', $goodList->pluck('id')->toArray())->whereStatus(2)->whereIsExpire(0)->get();
+		$orderList = Order::query()
+		                  ->whereIn('goods_id', $goodList->pluck('id')->toArray())
+		                  ->whereStatus(2)
+		                  ->whereIsExpire(0)
+		                  ->get();
 		foreach($orderList as $order){
 			$ret = User::query()->whereId($order->user_id)->update(['level' => $order->goods->level]);
 

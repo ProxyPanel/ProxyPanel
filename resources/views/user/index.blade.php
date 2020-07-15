@@ -145,7 +145,7 @@
 							<div class="card-block">
 								@if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
-									<p class="card-text" id="subscribe_qrcode"></p>
+									<img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->style('round', 0.9)->size(175)->errorCorrection('H')->merge(url('assets/images/wechat.png'), .3, true)->generate(\App\Components\Helpers::systemConfig()['push_bear_qrcode']))!!}" alt="支付二维码">
 								@else
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
 								@endif
@@ -235,7 +235,6 @@
 
 @endsection
 @section('script')
-	<script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
@@ -349,16 +348,6 @@
 				}
 			}
 		});
-
-		@if(\App\Components\Helpers::systemConfig()['push_bear_qrcode'])
-		// 生成消息通道订阅二维码
-		$('#subscribe_qrcode').qrcode({
-			render: "canvas",
-			text: "{{\App\Components\Helpers::systemConfig()['push_bear_qrcode']}}",
-			width: 90,
-			height: 90
-		});
-		@endif
 
 		@if($banedTime != 0)
 		// 每秒更新计时器

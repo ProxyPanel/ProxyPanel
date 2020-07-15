@@ -28,16 +28,15 @@ use Illuminate\Database\Eloquent\Model;
 class SsConfig extends Model {
 	public $timestamps = false;
 	protected $table = 'ss_config';
-	protected $primaryKey = 'id';
 
 	// 筛选默认
 
-	function scopeDefault($query) {
+	public function scopeDefault($query): void {
 		$query->whereIsDefault(1);
 	}
 
 	// 筛选类型
-	function scopeType($query, $type) {
+	public function scopeType($query, $type): void {
 		$query->whereType($type);
 	}
 }

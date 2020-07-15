@@ -22,7 +22,7 @@ class NodeBlockedDetection extends Command {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 		if(self::$systemConfig['nodes_detection']){
 			if(!Cache::has('LastCheckTime')){
@@ -41,7 +41,7 @@ class NodeBlockedDetection extends Command {
 	}
 
 	// 监测节点状态
-	private function checkNodes() {
+	private function checkNodes(): void {
 		$nodeList = SsNode::query()->whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get();
 		$sendText = false;
 		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
@@ -79,25 +79,23 @@ class NodeBlockedDetection extends Command {
 			}
 
 			// 节点检测次数
-			if($info){
-				if(self::$systemConfig['detection_check_times']){
-					// 已通知次数
-					$cacheKey = 'detection_check_times'.$node->id;
-					if(Cache::has($cacheKey)){
-						$times = Cache::get($cacheKey);
-					}else{
-						// 键将保留12小时，多10分钟防意外
-						Cache::put($cacheKey, 1, 43800);
-						$times = 1;
-					}
+			if($info && self::$systemConfig['detection_check_times']){
+				// 已通知次数
+				$cacheKey = 'detection_check_times'.$node->id;
+				if(Cache::has($cacheKey)){
+					$times = Cache::get($cacheKey);
+				}else{
+					// 键将保留12小时，多10分钟防意外
+					Cache::put($cacheKey, 1, 43800);
+					$times = 1;
+				}
 
-					if($times < self::$systemConfig['detection_check_times']){
-						Cache::increment($cacheKey);
-					}else{
-						Cache::forget($cacheKey);
-						SsNode::query()->whereId($node->id)->update(['status' => 0]);
-						$additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
-					}
+				if($times < self::$systemConfig['detection_check_times']){
+					Cache::increment($cacheKey);
+				}else{
+					Cache::forget($cacheKey);
+					SsNode::query()->whereId($node->id)->update(['status' => 0]);
+					$additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
 				}
 			}
 		}
@@ -109,7 +107,7 @@ class NodeBlockedDetection extends Command {
 		}
 
 		// 随机生成下次检测时间
-		Cache::put('LastCheckTime', time() + mt_rand(3000, Hour), 3700);
+		Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700);
 	}
 
 	/**
@@ -119,7 +117,7 @@ class NodeBlockedDetection extends Command {
 	 * @param  string  $content  消息内容
 	 *
 	 */
-	private function notifyMaster($title, $content) {
+	private function notifyMaster($title, $content): void {
 		$result = PushNotification::send($title, $content);
 		if(!$result && self::$systemConfig['webmaster_email']){
 			$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);

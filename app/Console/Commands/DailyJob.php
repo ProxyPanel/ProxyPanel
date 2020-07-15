@@ -22,7 +22,7 @@ class DailyJob extends Command {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 过期用户处理
@@ -42,7 +42,7 @@ class DailyJob extends Command {
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	private function expireUser() {
+	private function expireUser(): void {
 		// 过期用户处理
 		$userList = User::query()
 		                ->where('status', '>=', 0)
@@ -93,7 +93,7 @@ class DailyJob extends Command {
 	 * @param  int     $minutes      封禁时长，单位分钟
 	 * @param  string  $description  封禁理由
 	 */
-	private function addUserBanLog($userId, $minutes, $description) {
+	private function addUserBanLog($userId, $minutes, $description): void {
 		$log = new UserBanLog();
 		$log->user_id = $userId;
 		$log->minutes = $minutes;
@@ -102,7 +102,7 @@ class DailyJob extends Command {
 	}
 
 	// 关闭超过72小时未处理的工单
-	private function closeTickets() {
+	private function closeTickets(): void {
 		$ticketList = Ticket::query()
 		                    ->where('updated_at', '<=', date('Y-m-d', strtotime("-3 days")))
 		                    ->whereStatus(1)
@@ -116,7 +116,7 @@ class DailyJob extends Command {
 	}
 
 	// 重置用户流量
-	private function resetUserTraffic() {
+	private function resetUserTraffic(): void {
 		$userList = User::query()
 		                ->where('status', '>=', 0)
 		                ->where('expire_time', '>', date('Y-m-d'))
@@ -134,7 +134,7 @@ class DailyJob extends Command {
 			              ->whereUserId($user->id)
 			              ->whereStatus(2)
 			              ->whereIsExpire(0)
-			              ->whereHas('goods', function($q) {
+			              ->whereHas('goods', static function($q) {
 				              $q->whereType(2);
 			              })
 			              ->first();
@@ -150,7 +150,7 @@ class DailyJob extends Command {
 			     ->whereUserId($user->id)
 			     ->whereStatus(2)
 			     ->whereIsExpire(0)
-			     ->whereHas('goods', function($q) {
+			     ->whereHas('goods', static function($q) {
 				     $q->whereType(1);
 			     })
 			     ->update(['is_expire' => 1]);

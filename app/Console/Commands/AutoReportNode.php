@@ -13,11 +13,7 @@ class AutoReportNode extends Command {
 	protected $signature = 'autoReportNode';
 	protected $description = '自动报告节点昨日使用情况';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		if(Helpers::systemConfig()['node_daily_report']){

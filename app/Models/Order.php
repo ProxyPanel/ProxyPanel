@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 订单
@@ -18,13 +19,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                             $amount        订单总价，单位分
  * @property string|null                     $expire_at     过期时间
  * @property int                             $is_expire     是否已过期：0-未过期、1-已过期
+ * @property int|null                        $pay_type      支付渠道：0-余额、1-支付宝、2-QQ、3-微信、4-虚拟货币、5-paypal
  * @property string                          $pay_way       支付方式：balance、f2fpay、codepay、payjs、bitpayx等
  * @property int                             $status        订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成
  * @property \Illuminate\Support\Carbon|null $created_at    创建时间
  * @property \Illuminate\Support\Carbon|null $updated_at    最后一次更新时间
  * @property-read \App\Models\Coupon|null    $coupon
- * @property-read mixed                      $pay_way_label
- * @property-read mixed                      $status_label
+ * @property-read string                     $pay_type_icon
+ * @property-read string                     $pay_type_label
+ * @property-read string                     $pay_way_label
+ * @property-read string                     $status_label
  * @property-read \App\Models\Goods|null     $goods
  * @property-read \App\Models\Payment|null   $payment
  * @property-read \App\Models\User|null      $user
@@ -41,6 +45,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Order whereOid($value)
  * @method static Builder|Order whereOrderSn($value)
  * @method static Builder|Order whereOriginAmount($value)
+ * @method static Builder|Order wherePayType($value)
  * @method static Builder|Order wherePayWay($value)
  * @method static Builder|Order whereStatus($value)
  * @method static Builder|Order whereUpdatedAt($value)
@@ -52,28 +57,28 @@ class Order extends Model {
 	protected $primaryKey = 'oid';
 	protected $appends = ['status_label'];
 
-	function scopeUid($query) {
+	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());
 	}
 
-	function user() {
+	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	function goods() {
+	public function goods(): HasOne {
 		return $this->hasOne(Goods::class, 'id', 'goods_id')->withTrashed();
 	}
 
-	function coupon() {
+	public function coupon(): HasOne {
 		return $this->hasOne(Coupon::class, 'id', 'coupon_id')->withTrashed();
 	}
 
-	function payment() {
+	public function payment(): HasOne {
 		return $this->hasOne(Payment::class, 'oid', 'oid');
 	}
 
 	// 订单状态
-	function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute() {
 		switch($this->attributes['status']){
 			case -1:
 				$status_label = trans('home.invoice_status_closed');
@@ -95,24 +100,80 @@ class Order extends Model {
 	}
 
 
-	function getOriginAmountAttribute($value) {
+	public function getOriginAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setOriginAmountAttribute($value) {
+	public function setOriginAmountAttribute($value) {
 		return $this->attributes['origin_amount'] = $value * 100;
 	}
 
-	function getAmountAttribute($value) {
+	public function getAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAmountAttribute($value) {
+	public function setAmountAttribute($value) {
 		return $this->attributes['amount'] = $value * 100;
 	}
 
+	// 支付渠道
+	public function getPayTypeLabelAttribute(): string {
+		switch($this->attributes['pay_type']){
+			case 0:
+				$pay_type_label = '余额';
+				break;
+			case 1:
+				$pay_type_label = '支付宝';
+				break;
+			case 2:
+				$pay_type_label = 'QQ';
+				break;
+			case 3:
+				$pay_type_label = '微信';
+				break;
+			case 4:
+				$pay_type_label = '虚拟货币';
+				break;
+			case 5:
+				$pay_type_label = 'PayPal';
+				break;
+			default:
+				$pay_type_label = '';
+		}
+		return $pay_type_label;
+	}
+
+	// 支付图标
+	public function getPayTypeIconAttribute(): string {
+		$base_path = '/assets/images/payment/';
+
+		switch($this->attributes['pay_type']){
+			case 0:
+				$pay_type_icon = $base_path.'coin.png';
+				break;
+			case 1:
+				$pay_type_icon = $base_path.'alipay.png';
+				break;
+			case 2:
+				$pay_type_icon = $base_path.'qq.png';
+				break;
+			case 3:
+				$pay_type_icon = $base_path.'wechat.png';
+				break;
+			case 4:
+				$pay_type_icon = $base_path.'coin.png';
+				break;
+			case 5:
+				$pay_type_icon = $base_path.'paypal.png';
+				break;
+			default:
+				$pay_type_icon = '';
+		}
+		return $pay_type_icon;
+	}
+
 	// 支付方式
-	function getPayWayLabelAttribute() {
+	public function getPayWayLabelAttribute(): string {
 		switch($this->attributes['pay_way']){
 			case 'credit':
 				$pay_way_label = '余额';

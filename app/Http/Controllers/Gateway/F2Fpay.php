@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Gateway;
 use App\Models\Payment;
 use Auth;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 use Log;
 use Payment\Client;
@@ -14,7 +15,7 @@ use Response;
 class F2Fpay extends AbstractPayment {
 	private static $aliConfig;
 
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		self::$aliConfig = [
 			'use_sandbox'     => false,
@@ -29,8 +30,8 @@ class F2Fpay extends AbstractPayment {
 		];
 	}
 
-	public function purchase($request) {
-		$payment = $this->creatNewPayment(Auth::id(),$request->input('oid'),$request->input('amount'));
+	public function purchase($request): JsonResponse {
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$data = [
 			'body'        => '',
@@ -54,13 +55,12 @@ class F2Fpay extends AbstractPayment {
 			exit;
 		}
 
-		Payment::whereId($payment->id)
-		       ->update(['qr_code' => 'http://qr.topscan.com/api.php?text='.urlencode($result['qr_code']).'&el=1&w=400&m=10&logo=https://t.alipayobjects.com/tfscom/T1Z5XfXdxmXXXXXXXX.png']);//后备：https://cli.im/api/qrcode/code?text=".$result['qr_code']."&mhid=5EfGCwztyckhMHcmI9ZcOKs
+		Payment::whereId($payment->id)->update(['qr_code' => 1, 'url' => $result['qr_code']]);
 
 		return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
 	}
 
-	public function notify($request) {
+	public function notify($request): void {
 		$data = [
 			'trade_no'       => $request->input('out_trade_no'),
 			'transaction_id' => $request->input('trade_no'),
@@ -85,7 +85,7 @@ class F2Fpay extends AbstractPayment {
 		if($result['code'] == 10000 && $result['msg'] == "Success"){
 			$ret = "success";
 			if($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS'){
-				self::postPayment($request->input('out_trade_no'), '支付宝当面付');
+				$this->postPayment($request->input('out_trade_no'), '支付宝当面付');
 			}else{
 				Log::info('支付宝当面付-POST:交易失败['.getClientIp().']');
 			}

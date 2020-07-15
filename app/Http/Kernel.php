@@ -6,7 +6,7 @@ use App\Http\Middleware\Affiliate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\isAdmin;
-use App\Http\Middleware\isAdminlogin;
+use App\Http\Middleware\isAdminLogin;
 use App\Http\Middleware\isForbidden;
 use App\Http\Middleware\isLogin;
 use App\Http\Middleware\isMaintenance;

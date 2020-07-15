@@ -34,6 +34,8 @@ use Auth;
 use DB;
 use Exception;
 use Hash;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -41,6 +43,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Redirect;
 use Response;
 use Session;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Validator;
 
 /**
@@ -53,11 +56,11 @@ use Validator;
 class AdminController extends Controller {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	public function index() {
+	public function index(): \Illuminate\Http\Response {
 		$past = strtotime(date('Y-m-d', strtotime("-".self::$systemConfig['expire_days']." days")));
 
 		$view['expireDays'] = self::$systemConfig['expire_days'];
@@ -71,7 +74,7 @@ class AdminController extends Controller {
 		                                 ->count(); // 不活跃用户数
 		$view['onlineUserCount'] = User::query()->where('t', '>=', time() - Minute * 10)->count(); // 10分钟内在线用户数
 		$view['expireWarningUserCount'] = User::query()
-		                                      ->where('expire_time', '>=', date('Y-m-d', strtotime("now")))
+		                                      ->where('expire_time', '>=', date('Y-m-d'))
 		                                      ->where('expire_time', '<=', date('Y-m-d',
 			                                      strtotime("+".self::$systemConfig['expire_days']." days")))
 		                                      ->count(); // 临近过期用户数
@@ -121,7 +124,7 @@ class AdminController extends Controller {
 	}
 
 	// 用户列表
-	public function userList(Request $request) {
+	public function userList(Request $request): \Illuminate\Http\Response {
 		$id = $request->input('id');
 		$email = $request->input('email');
 		$wechat = $request->input('wechat');
@@ -233,7 +236,7 @@ class AdminController extends Controller {
 			$user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)? 1 : 0;
 
 			// 订阅地址
-			$user->link = (self::$systemConfig['subscribe_domain']? self::$systemConfig['subscribe_domain'] : self::$systemConfig['website_url']).'/s/'.$user->subscribe->code;
+			$user->link = (self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url']).'/s/'.$user->subscribe->code;
 		}
 
 		$view['userList'] = $userList;
@@ -267,7 +270,7 @@ class AdminController extends Controller {
 			$user->qq = $request->input('qq');
 			$user->enable_time = $request->input('enable_time')?: date('Y-m-d');
 			$user->expire_time = $request->input('expire_time')?: date('Y-m-d', strtotime("+365 days"));
-			$user->remark = str_replace("eval", "", str_replace("atob", "", $request->input('remark')));
+			$user->remark = str_replace(["atob", "eval"], "", $request->input('remark'));
 			$user->level = $request->input('level')?: 0;
 			$user->reg_ip = getClientIp();
 			$user->reset_time = $request->input('reset_time') > date('Y-m-d')? $request->input('reset_time') : null;
@@ -288,18 +291,18 @@ class AdminController extends Controller {
 					'后台手动添加用户');
 
 				return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
-			}else{
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
 			}
-		}else{
-			// 生成一个可用端口
-			$view['method_list'] = Helpers::methodList();
-			$view['protocol_list'] = Helpers::protocolList();
-			$view['obfs_list'] = Helpers::obfsList();
-			$view['level_list'] = Level::query()->orderBy('level')->get();
 
-			return Response::view('admin.user.userInfo', $view);
+			return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
 		}
+
+		// 生成一个可用端口
+		$view['method_list'] = Helpers::methodList();
+		$view['protocol_list'] = Helpers::protocolList();
+		$view['obfs_list'] = Helpers::obfsList();
+		$view['level_list'] = Level::query()->orderBy('level')->get();
+
+		return Response::view('admin.user.userInfo', $view);
 	}
 
 	// 生成端口
@@ -308,7 +311,7 @@ class AdminController extends Controller {
 	}
 
 	// 批量生成账号
-	public function batchAddUsers(Request $request) {
+	public function batchAddUsers(Request $request): ?JsonResponse {
 		$amount = $request->input('amount');
 		DB::beginTransaction();
 		try{
@@ -399,11 +402,9 @@ class AdminController extends Controller {
 					$data['is_admin'] = intval($is_admin);
 				}
 
-				if(!empty($password)){
-					// 非演示环境才可以修改管理员密码
-					if(!(env('APP_DEMO') && $id == 1)){
-						$data['password'] = Hash::make($password);
-					}
+				// 非演示环境才可以修改管理员密码
+				if(!empty($password) && !(env('APP_DEMO') && $id == 1)){
+					$data['password'] = Hash::make($password);
 				}
 
 				User::query()->whereId($id)->update($data);
@@ -440,7 +441,7 @@ class AdminController extends Controller {
 	}
 
 	// 删除用户
-	public function delUser(Request $request) {
+	public function delUser(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		if($id <= 1){
@@ -469,7 +470,7 @@ class AdminController extends Controller {
 	}
 
 	// 文章列表
-	public function articleList(Request $request) {
+	public function articleList(Request $request): \Illuminate\Http\Response {
 		$view['list'] = Article::query()->orderByDesc('sort')->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.article.articleList', $view);
@@ -499,7 +500,7 @@ class AdminController extends Controller {
 						return Redirect::back()->withInput();
 					}
 
-					$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+					$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 					$move = $file->move(base_path().'/public/upload/image/', $logoName);
 					$logo = $move? '/upload/image/'.$logoName : '';
 				}
@@ -521,9 +522,9 @@ class AdminController extends Controller {
 			}
 
 			return Redirect::to('admin/articleList');
-		}else{
-			return Response::view('admin.article.addArticle');
 		}
+
+		return Response::view('admin.article.addArticle');
 	}
 
 	// 编辑文章
@@ -553,7 +554,7 @@ class AdminController extends Controller {
 						return Redirect::back()->withInput();
 					}
 
-					$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+					$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 					$move = $file->move(base_path().'/public/upload/image/', $logoName);
 					$logo = $move? '/upload/image/'.$logoName : '';
 				}
@@ -573,27 +574,27 @@ class AdminController extends Controller {
 			}
 
 			return Redirect::to('admin/editArticle?id='.$id);
-		}else{
-			$view['article'] = Article::query()->whereId($id)->first();
-
-			return Response::view('admin.article.editArticle', $view);
 		}
+
+		$view['article'] = Article::query()->whereId($id)->first();
+
+		return Response::view('admin.article.editArticle', $view);
 	}
 
 	// 删除文章
-	public function delArticle(Request $request) {
+	public function delArticle(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		$ret = Article::query()->whereId($id)->delete();
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
 	}
 
 	// 流量日志
-	public function trafficLog(Request $request) {
+	public function trafficLog(Request $request): \Illuminate\Http\Response {
 		$port = $request->input('port');
 		$user_id = $request->input('user_id');
 		$email = $request->input('email');
@@ -604,7 +605,7 @@ class AdminController extends Controller {
 		$query = UserTrafficLog::query()->with(['user', 'node']);
 
 		if(isset($port)){
-			$query->whereHas('user', function($q) use ($port) {
+			$query->whereHas('user', static function($q) use ($port) {
 				$q->wherePort($port);
 			});
 		}
@@ -614,7 +615,7 @@ class AdminController extends Controller {
 		}
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -663,50 +664,53 @@ class AdminController extends Controller {
 			$infoType = $request->input('type');
 
 			$node = SsNode::query()->whereId($node_id)->first();
-			$proxyType = $node->type == 1? ($node->compatible? 'SS' : 'SSR') : 'V2Ray';
+			if($node->type == 1){
+				if($node->compatible){
+					$proxyType = 'SS';
+				}else{
+					$proxyType = 'SSR';
+				}
+			}else{
+				$proxyType = 'V2Ray';
+			}
+
 			$data = $this->getUserNodeInfo($id, $node->id, $infoType != 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 
-		}else{
-			$view['nodeList'] = SsNode::query()
-			                          ->whereStatus(1)
-			                          ->orderByDesc('sort')
-			                          ->orderBy('id')
-			                          ->paginate(15)
-			                          ->appends($request->except('page'));
-			$view['user'] = $user;
 		}
+
+		$view['nodeList'] = SsNode::query()
+		                          ->whereStatus(1)
+		                          ->orderByDesc('sort')
+		                          ->orderBy('id')
+		                          ->paginate(15)
+		                          ->appends($request->except('page'));
+		$view['user'] = $user;
 
 		return Response::view('admin.user.export', $view);
 	}
 
 	// 导出原版SS用户配置信息
-	public function exportSSJson() {
+	public function exportSSJson(): BinaryFileResponse {
 		$userList = User::query()->where('port', '>', 0)->get();
-		$defaultMethod = Helpers::getDefaultMethod();
 
 		$json = '';
 		if(!$userList->isEmpty()){
-			$tmp = [];
-			foreach($userList as $key => $user){
-				$tmp[] = '"'.$user->port.'":"'.$user->passwd.'"';
+			$userPassword = [];
+			foreach($userList as $user){
+				$userPassword[] = $user->port.":".$user->passwd;
 			}
 
-			$userPassword = implode(",\n\t\t", $tmp);
-			$json = <<<EOF
-{
-	"server":"0.0.0.0",
-    "local_address":"127.0.0.1",
-    "local_port":1080,
-    "port_password":{
-        {$userPassword}
-    },
-    "timeout":300,
-    "method":"{$defaultMethod}",
-    "fast_open":false
-}
-EOF;
+			$json = json_encode([
+				'server'        => '0.0.0.0',
+				'local_address' => '127.0.0.1',
+				'local_port'    => 1080,
+				'port_password' => $userPassword,
+				'timeout'       => 300,
+				'method'        => Helpers::getDefaultMethod(),
+				'fast_open'     => false,
+			]);
 		}
 
 		// 生成JSON文件
@@ -724,24 +728,25 @@ EOF;
 	// 修改个人资料
 	public function profile(Request $request) {
 		if($request->isMethod('POST')){
-			$old_password = $request->input('old_password');
 			$new_password = $request->input('new_password');
 
-			if(!Hash::check($old_password, Auth::getUser()->password)){
+			if(!Hash::check($request->input('old_password'), Auth::getUser()->password)){
 				return Redirect::back()->withErrors('旧密码错误，请重新输入');
-			}elseif(Hash::check($new_password, Auth::getUser()->password)){
+			}
+
+			if(Hash::check($new_password, Auth::getUser()->password)){
 				return Redirect::back()->withErrors('新密码不可与旧密码一样，请重新输入');
 			}
 
 			$ret = User::uid()->update(['password' => Hash::make($new_password)]);
 			if(!$ret){
 				return Redirect::back()->withErrors('修改失败');
-			}else{
-				return Redirect::back()->with('successMsg', '修改成功');
 			}
-		}else{
-			return Response::view('admin.config.profile');
+
+			return Redirect::back()->with('successMsg', '修改成功');
 		}
+
+		return Response::view('admin.config.profile');
 	}
 
 	// 用户流量监控
@@ -763,7 +768,7 @@ EOF;
 		$userTrafficDaily = UserTrafficDaily::query()
 		                                    ->whereUserId($user->id)
 		                                    ->whereNodeId(0)
-		                                    ->where('created_at', '>=', date('Y-m', time()))
+		                                    ->where('created_at', '>=', date('Y-m'))
 		                                    ->orderBy('created_at')
 		                                    ->pluck('total')
 		                                    ->toArray();
@@ -781,7 +786,7 @@ EOF;
 		$userTrafficHourly = UserTrafficHourly::query()
 		                                      ->whereUserId($user->id)
 		                                      ->whereNodeId(0)
-		                                      ->where('created_at', '>=', date('Y-m-d', time()))
+		                                      ->where('created_at', '>=', date('Y-m-d'))
 		                                      ->orderBy('created_at')
 		                                      ->pluck('total')
 		                                      ->toArray();
@@ -840,37 +845,37 @@ EOF;
 			$ssConfig->save();
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
-		}else{
-			$labelList = Label::query()->get();
-			foreach($labelList as $label){
-				$label->nodeCount = SsNodeLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
-			}
-
-			$view['method_list'] = SsConfig::type(1)->get();
-			$view['protocol_list'] = SsConfig::type(2)->get();
-			$view['obfs_list'] = SsConfig::type(3)->get();
-			$view['country_list'] = Country::query()->get();
-			$view['level_list'] = Level::query()->get();
-			$view['labelList'] = $labelList;
-
-			return Response::view('admin.config.config', $view);
 		}
+
+		$labelList = Label::query()->get();
+		foreach($labelList as $label){
+			$label->nodeCount = SsNodeLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
+		}
+
+		$view['method_list'] = SsConfig::type(1)->get();
+		$view['protocol_list'] = SsConfig::type(2)->get();
+		$view['obfs_list'] = SsConfig::type(3)->get();
+		$view['country_list'] = Country::query()->get();
+		$view['level_list'] = Level::query()->get();
+		$view['labelList'] = $labelList;
+
+		return Response::view('admin.config.config', $view);
 	}
 
 	// 删除配置
-	public function delConfig(Request $request) {
+	public function delConfig(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		$ret = SsConfig::query()->whereId($id)->delete();
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
 	}
 
 	// 设置默认配置
-	public function setDefaultConfig(Request $request) {
+	public function setDefaultConfig(Request $request): JsonResponse {
 		$id = $request->input('id');
 
 		if(empty($id)){
@@ -892,7 +897,7 @@ EOF;
 	}
 
 	// 设置系统扩展信息，例如客服、统计代码
-	public function setExtend(Request $request) {
+	public function setExtend(Request $request): ?RedirectResponse {
 		$websiteAnalytics = $request->input('website_analytics');
 		$websiteCustomerService = $request->input('website_customer_service');
 
@@ -911,7 +916,7 @@ EOF;
 					return Redirect::back();
 				}
 
-				$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$websiteHomeLogo = $move? '/upload/image/'.$logoName : '';
 
@@ -930,7 +935,7 @@ EOF;
 					return Redirect::back();
 				}
 
-				$logoName = date('YmdHis').mt_rand(1000, 2000).'.'.$fileType;
+				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
 				$move = $file->move(base_path().'/public/upload/image/', $logoName);
 				$websiteLogo = $move? '/upload/image/'.$logoName : '';
 
@@ -955,7 +960,7 @@ EOF;
 	}
 
 	// 添加等级
-	public function addLevel(Request $request) {
+	public function addLevel(Request $request): ?JsonResponse {
 		$validator = Validator::make($request->all(), [
 			'level'      => 'required|numeric|unique:level,level',
 			'level_name' => 'required',
@@ -972,13 +977,13 @@ EOF;
 
 		if($obj->id){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 	}
 
 	// 编辑等级
-	public function updateLevel(Request $request) {
+	public function updateLevel(Request $request): JsonResponse {
 		$id = $request->input('id');
 		$level = $request->input('level');
 
@@ -1009,7 +1014,7 @@ EOF;
 	}
 
 	// 删除等级
-	public function delLevel(Request $request) {
+	public function delLevel(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		$validator = Validator::make($request->all(), [
@@ -1035,13 +1040,13 @@ EOF;
 		}
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 	}
 
 	// 添加国家/地区
-	public function addCountry(Request $request) {
+	public function addCountry(Request $request): ?JsonResponse {
 		$name = $request->input('country_name');
 		$code = $request->input('country_code');
 
@@ -1065,13 +1070,13 @@ EOF;
 
 		if($obj->id){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 	}
 
 	// 编辑国家/地区
-	public function updateCountry(Request $request) {
+	public function updateCountry(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 		$name = $request->input('country_name');
 		$code = $request->input('country_code');
@@ -1102,13 +1107,13 @@ EOF;
 		$ret = Country::query()->whereId($id)->update(['name' => $name, 'code' => $code]);
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 	}
 
 	// 删除国家/地区
-	public function delCountry(Request $request) {
+	public function delCountry(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		if(empty($id)){
@@ -1133,13 +1138,13 @@ EOF;
 		}
 		if($ret){
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
 	}
 
 	// 系统设置
-	public function system() {
+	public function system(): \Illuminate\Http\Response {
 		$view = self::$systemConfig;
 		$view['label_list'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
 
@@ -1147,7 +1152,7 @@ EOF;
 	}
 
 	// 设置某个配置项
-	public function setConfig(Request $request) {
+	public function setConfig(Request $request): JsonResponse {
 		$name = $request->input('name');
 		$value = $request->input('value');
 
@@ -1161,8 +1166,8 @@ EOF;
 		}
 
 		// 如果开启用户邮件重置密码，则先设置网站名称和网址
-		if(in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'])
-		   && $value != '0'){
+		if($value != '0'
+		   && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'])){
 			$config = Config::query()->whereName('website_name')->first();
 			if($config->value == ''){
 				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
@@ -1175,7 +1180,7 @@ EOF;
 		}
 
 		// 支付设置判断
-		if(in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay']) && $value != ''){
+		if($value != '' && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])){
 			switch($value){
 				case 'f2fpay':
 					if(!self::$systemConfig['f2fpay_app_id'] || !self::$systemConfig['f2fpay_private_key']
@@ -1223,13 +1228,13 @@ EOF;
 				'website_security_code'
 			];
 
-			if(in_array($name, $denyConfig)){
+			if(in_array($name, $denyConfig, true)){
 				return Response::json(['status' => 'fail', 'message' => '演示环境禁止修改该配置']);
 			}
 		}
 
 		// 如果是返利比例，则需要除100
-		if(in_array($name, ['referral_percent'])){
+		if($name == 'referral_percent'){
 			$value = intval($value) / 100;
 		}
 
@@ -1240,7 +1245,7 @@ EOF;
 	}
 
 	// 推送通知测试
-	public function sendTestNotification() {
+	public function sendTestNotification(): JsonResponse {
 		if(self::$systemConfig['is_notification']){
 			$result = PushNotification::send('这是测试的标题', 'SSRPanel_OM测试内容');
 			if($result == false){
@@ -1250,16 +1255,16 @@ EOF;
 				case 'serverChan':
 					if(!$result->errno){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
-					}else{
-						return Response::json(['status' => 'fail', 'message' => $result? $result->errmsg : '未知']);
 					}
+
+					return Response::json(['status' => 'fail', 'message' => $result? $result->errmsg : '未知']);
 					break;
 				case 'bark':
 					if($result->code == 200){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
-					}else{
-						return Response::json(['status' => 'fail', 'message' => $result->message]);
 					}
+
+					return Response::json(['status' => 'fail', 'message' => $result->message]);
 					break;
 				default:
 			}
@@ -1269,7 +1274,7 @@ EOF;
 	}
 
 	// 邀请码列表
-	public function inviteList(Request $request) {
+	public function inviteList(Request $request): \Illuminate\Http\Response {
 		$view['inviteList'] = Invite::query()
 		                            ->with(['generator', 'user'])
 		                            ->orderBy('status')
@@ -1281,7 +1286,7 @@ EOF;
 	}
 
 	// 生成邀请码
-	public function makeInvite() {
+	public function makeInvite(): JsonResponse {
 		for($i = 0; $i < 10; $i++){
 			$obj = new Invite();
 			$obj->uid = 0;
@@ -1296,7 +1301,7 @@ EOF;
 	}
 
 	// 导出邀请码
-	public function exportInvite() {
+	public function exportInvite(): void {
 		$inviteList = Invite::query()->whereStatus(0)->orderBy('id')->get();
 
 		$filename = '邀请码'.date('Ymd').'.xlsx';
@@ -1333,7 +1338,7 @@ EOF;
 	}
 
 	// 订单列表
-	public function orderList(Request $request) {
+	public function orderList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 		$order_sn = $request->input('order_sn');
 		$is_coupon = $request->input('is_coupon');
@@ -1347,7 +1352,7 @@ EOF;
 		$query = Order::query()->with(['user', 'goods', 'coupon']);
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -1396,7 +1401,7 @@ EOF;
 	}
 
 	// 重置用户流量
-	public function resetUserTraffic(Request $request) {
+	public function resetUserTraffic(Request $request): JsonResponse {
 		$id = $request->input('id');
 
 		User::query()->whereId($id)->update(['u' => 0, 'd' => 0]);
@@ -1443,13 +1448,13 @@ EOF;
 	}
 
 	// 用户余额变动记录
-	public function userCreditLogList(Request $request) {
+	public function userCreditLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
 		$query = UserCreditLog::query()->with(['user'])->orderByDesc('id');
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -1460,13 +1465,13 @@ EOF;
 	}
 
 	// 用户封禁记录
-	public function userBanLogList(Request $request) {
+	public function userBanLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
 		$query = UserBanLog::query()->with(['user'])->orderByDesc('id');
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -1477,13 +1482,13 @@ EOF;
 	}
 
 	// 用户流量变动记录
-	public function userTrafficLogList(Request $request) {
+	public function userTrafficLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
 		$query = UserTrafficModifyLog::query()->with(['user', 'order', 'order.goods']);
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
@@ -1494,7 +1499,7 @@ EOF;
 	}
 
 	// 用户在线IP记录
-	public function userOnlineIPList(Request $request) {
+	public function userOnlineIPList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 		$port = $request->input('port');
 		$wechat = $request->input('wechat');
@@ -1539,7 +1544,7 @@ EOF;
 	}
 
 	// 转换成某个用户的身份
-	public function switchToUser(Request $request) {
+	public function switchToUser(Request $request): JsonResponse {
 		$id = $request->input('user_id');
 
 		$user = User::query()->find($id);
@@ -1566,9 +1571,9 @@ EOF;
 			$label->save();
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
-		}else{
-			return Response::view('admin.label.addLabel');
 		}
+
+		return Response::view('admin.label.addLabel');
 	}
 
 	// 编辑标签
@@ -1581,16 +1586,16 @@ EOF;
 			Label::query()->whereId($id)->update(['name' => $name, 'sort' => $sort]);
 
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
-		}else{
-			$id = $request->input('id');
-			$view['label'] = Label::query()->whereId($id)->first();
-
-			return Response::view('admin.label.editLabel', $view);
 		}
+
+		$id = $request->input('id');
+		$view['label'] = Label::query()->whereId($id)->first();
+
+		return Response::view('admin.label.editLabel', $view);
 	}
 
 	// 删除标签
-	public function delLabel(Request $request) {
+	public function delLabel(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		DB::beginTransaction();
@@ -1609,7 +1614,7 @@ EOF;
 	}
 
 	// 邮件发送日志列表
-	public function notificationLog(Request $request) {
+	public function notificationLog(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 		$type = $request->input('type');
 
@@ -1629,7 +1634,7 @@ EOF;
 	}
 
 	// 在线IP监控（实时）
-	public function onlineIPMonitor(Request $request) {
+	public function onlineIPMonitor(Request $request): \Illuminate\Http\Response {
 		$ip = $request->input('ip');
 		$email = $request->input('email');
 		$port = $request->input('port');
@@ -1643,25 +1648,25 @@ EOF;
 		}
 
 		if(isset($email)){
-			$query->whereHas('user', function($q) use ($email) {
+			$query->whereHas('user', static function($q) use ($email) {
 				$q->where('email', 'like', '%'.$email.'%');
 			});
 		}
 
 		if(isset($port)){
-			$query->whereHas('user', function($q) use ($port) {
+			$query->whereHas('user', static function($q) use ($port) {
 				$q->wherePort($port);
 			});
 		}
 
 		if(isset($nodeId)){
-			$query->whereHas('node', function($q) use ($nodeId) {
+			$query->whereHas('node', static function($q) use ($nodeId) {
 				$q->whereId($nodeId);
 			});
 		}
 
 		if(isset($userId)){
-			$query->whereHas('user', function($q) use ($userId) {
+			$query->whereHas('user', static function($q) use ($userId) {
 				$q->whereId($userId);
 			});
 		}
@@ -1669,7 +1674,7 @@ EOF;
 		$list = $query->groupBy('user_id', 'node_id')->orderByDesc('id');
 		foreach($list as $vo){
 			// 跳过上报多IP的
-			if(strpos($vo->ip, ',') == true || $vo->ip == null){
+			if($vo->ip == null || strpos($vo->ip, ',') === true){
 				continue;
 			}
 			$ipInfo = QQWry::ip($vo->ip);

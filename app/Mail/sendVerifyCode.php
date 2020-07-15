@@ -20,14 +20,14 @@ class sendVerifyCode extends Mailable implements ShouldQueue {
 		$this->code = $code;
 	}
 
-	public function build() {
+	public function build(): sendVerifyCode {
 		return $this->view('emails.sendVerifyCode')->subject('发送注册验证码')->with([
 			'code' => $this->code
 		]);
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

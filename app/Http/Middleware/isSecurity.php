@@ -29,9 +29,9 @@ class isSecurity {
 				return response()->view('auth.error', [
 					'message' => trans('error.SecurityError').', '.trans('error.Visit').'<a href="/login?securityCode=" target="_self">'.trans('error.SecurityEnter').'</a>'
 				]);
-			}else{
-				Cache::put($cacheKey, $ip, 7200); // 2小时之内无需再次输入安全码访问
 			}
+
+			Cache::put($cacheKey, $ip, 7200); // 2小时之内无需再次输入安全码访问
 		}
 
 		return $next($request);

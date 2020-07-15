@@ -10,11 +10,7 @@ class upgradeUserResetTime extends Command {
 	protected $signature = 'upgradeUserResetTime';
 	protected $description = '升级用户重置日期';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		Log::info('----------------------------【升级用户重置日期】开始----------------------------');
 
 		$userList = User::query()->get();
@@ -28,7 +24,7 @@ class upgradeUserResetTime extends Command {
 				// 案例：31 29，重置日 大于 本月最后一天
 				if($resetDay > $last_day){
 					//往后推一个月
-					$resetDay = $resetDay - $last_day;
+					$resetDay -= $last_day;
 					$reset_time = date('Y-m-'.$resetDay, strtotime("+1 month"));
 					//案例：20<30<31
 				}elseif($resetDay < $last_day && $resetDay > $today){
@@ -40,7 +36,7 @@ class upgradeUserResetTime extends Command {
 				}elseif($resetDay < $today){
 					//类似第一种情况，向后推一月
 					if($resetDay > $next_last_day){
-						$resetDay = $resetDay - $next_last_day;
+						$resetDay -= $next_last_day;
 						$reset_time = date('Y-m-'.$resetDay, strtotime("+1 month"));
 					}else{
 						$reset_time = date('Y-m-'.$resetDay, strtotime("+1 month"));

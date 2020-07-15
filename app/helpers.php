@@ -26,7 +26,7 @@ if(!function_exists('makeRandStr')){
 
 		$char = '';
 		for($i = 0; $i < $length; $i++){
-			$char .= $chars[mt_rand(0, strlen($chars) - 1)];
+			$char .= $chars[random_int(0, strlen($chars) - 1)];
 		}
 
 		return $char;
@@ -53,17 +53,25 @@ if(!function_exists('flowAutoShow')){
 		$value = abs($value);
 		if($value >= PB){
 			return round($value / PB, 2)."PB";
-		}elseif($value >= TB){
-			return round($value / TB, 2)."TB";
-		}elseif($value >= GB){
-			return round($value / GB, 2)."GB";
-		}elseif($value >= MB){
-			return round($value / MB, 2)."MB";
-		}elseif($value >= KB){
-			return round($value / KB, 2)."KB";
-		}else{
-			return round($value, 2)."B";
 		}
+
+		if($value >= TB){
+			return round($value / TB, 2)."TB";
+		}
+
+		if($value >= GB){
+			return round($value / GB, 2)."GB";
+		}
+
+		if($value >= MB){
+			return round($value / MB, 2)."MB";
+		}
+
+		if($value >= KB){
+			return round($value / KB, 2)."KB";
+		}
+
+		return round($value, 2)."B";
 	}
 }
 
@@ -92,7 +100,7 @@ if(!function_exists('formatBytes')){
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes? log($bytes) : 0) / log(KB));
 		$pow = min($pow, count($units) - 1);
-		$bytes /= pow(KB, $pow);
+		$bytes /= KB ** $pow;
 
 		return round($bytes, $precision).' '.$units[$pow];
 	}
@@ -106,13 +114,13 @@ if(!function_exists('seconds2time')){
 		$minute = floor((($seconds % Day) % Hour) / Minute);
 		if($day > 0){
 			return $day.'天'.$hour.'小时'.$minute.'分';
-		}else{
-			if($hour != 0){
-				return $hour.'小时'.$minute.'分';
-			}else{
-				return $minute.'分';
-			}
 		}
+
+		if($hour != 0){
+			return $hour.'小时'.$minute.'分';
+		}
+
+		return $minute.'分';
 	}
 }
 
@@ -137,15 +145,12 @@ if(!function_exists('getClientIP')){
 			}else{
 				$ip = 'unknown';
 			}
+		}elseif(getenv('HTTP_X_FORWARDED_FOR')){
+			$ip = getenv('HTTP_X_FORWARDED_FOR');
+		}elseif(getenv('HTTP_CLIENT_IP')){
+			$ip = getenv('HTTP_CLIENT_IP');
 		}else{
-			// 绕过CDN获取真实访客IP
-			if(getenv('HTTP_X_FORWARDED_FOR')){
-				$ip = getenv('HTTP_X_FORWARDED_FOR');
-			}elseif(getenv('HTTP_CLIENT_IP')){
-				$ip = getenv('HTTP_CLIENT_IP');
-			}else{
-				$ip = getenv('REMOTE_ADDR');
-			}
+			$ip = getenv('REMOTE_ADDR');
 		}
 
 		if(trim($ip) == '::1'){
@@ -191,7 +196,7 @@ if(!function_exists('getIPv6')){
 		try{
 			$result = json_decode(Curl::send($url), true);
 			if(!is_array($result) || isset($result['code'])){
-				throw new Exception('解析IPv6异常：'.$ip);
+				throw new \RuntimeException('解析IPv6异常：'.$ip);
 			}
 
 			return $result;
@@ -207,7 +212,7 @@ if(!function_exists('getIPv6')){
 if(!function_exists('createGuid')){
 	function createGuid() {
 		mt_srand((double) microtime() * 10000);
-		$charid = strtoupper(md5(uniqid(rand(), true)));
+		$charid = strtoupper(md5(uniqid(mt_rand(), true)));
 		$hyphen = chr(45);
 		$uuid = substr($charid, 0, 8).$hyphen.substr($charid, 8, 4).$hyphen.substr($charid, 12,
 				4).$hyphen.substr($charid, 16, 4).$hyphen.substr($charid, 20, 12);
@@ -219,22 +224,10 @@ if(!function_exists('createGuid')){
 // 过滤emoji表情
 if(!function_exists('filterEmoji')){
 	function filterEmoji($str) {
-		$str = preg_replace_callback('/./u', function(array $match) {
+		$str = preg_replace_callback('/./u', static function(array $match) {
 			return strlen($match[0]) >= 4? '' : $match[0];
 		}, $str);
 
 		return $str;
-	}
-}
-
-// 验证手机号是否正确
-if(!function_exists('isMobile')){
-	function isMobile($mobile) {
-		if(!is_numeric($mobile)){
-			return false;
-		}
-
-		return preg_match('#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#',
-			$mobile)? true : false;
 	}
 }

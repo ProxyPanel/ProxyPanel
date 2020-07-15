@@ -21,15 +21,4 @@ class EventServiceProvider extends ServiceProvider {
 			'App\Listeners\LogSentMessage',
 		],
 	];
-
-	/**
-	 * Register any events for your application.
-	 *
-	 * @return void
-	 */
-	public function boot() {
-		parent::boot();
-
-		//
-	}
 }

@@ -9,21 +9,22 @@ use App\Models\Payment;
 use App\Models\PaymentCallback;
 use App\Models\ReferralLog;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 
 abstract class AbstractPayment {
 	protected static $systemConfig;
 
-	function __construct() {
+	public function __construct() {
 		self::$systemConfig = Helpers::systemConfig();
 	}
 
-	abstract public function purchase(Request $request);
+	abstract public function purchase(Request $request): JsonResponse;
 
-	abstract public function notify(Request $request);
+	abstract public function notify(Request $request): void;
 
-	protected function postPayment($data, $method) {
+	protected function postPayment($data, $method): int {
 		// 获取需要的信息
 		$payment = Payment::whereTradeNo($data)->first();
 		// 是否为余额购买套餐
@@ -37,7 +38,7 @@ abstract class AbstractPayment {
 		$user = User::find($order->user_id);
 
 		//余额充值
-		if($order->goods_id == 0 || $order->goods_id == NULL){
+		if($order->goods_id == 0 || $order->goods_id == null){
 			Order::query()->whereOid($order->oid)->update(['status' => 2]);
 			User::query()->whereId($order->user_id)->increment('credit', $order->amount * 100);
 			// 余额变动记录日志
@@ -61,7 +62,7 @@ abstract class AbstractPayment {
 				                   ->with(['goods'])
 				                   ->whereIsExpire(0)
 				                   ->whereStatus(2)
-				                   ->whereHas('goods', function($q) {
+				                   ->whereHas('goods', static function($q) {
 					                   $q->whereType(2);
 				                   })
 				                   ->exists();
@@ -78,7 +79,7 @@ abstract class AbstractPayment {
 					]);
 				}else{
 					// 如果买的是套餐，则先将之前购买的套餐都无效化，重置用户已用、可用流量为0
-					Order::query()->whereUserId($user->id)->with(['goods'])->whereHas('goods', function($q) {
+					Order::query()->whereUserId($user->id)->with(['goods'])->whereHas('goods', static function($q) {
 						$q->where('type', '<=', 2);
 					})->whereIsExpire(0)->whereStatus(2)->where('oid', '<>', $order->oid)->update([
 						'expire_at' => date('Y-m-d H:i:s'),
@@ -146,7 +147,7 @@ abstract class AbstractPayment {
 	 *
 	 * @return int
 	 */
-	private function addReferralLog($userId, $refUserId, $oid, $amount, $refAmount) {
+	private function addReferralLog($userId, $refUserId, $oid, $amount, $refAmount): int {
 		$log = new ReferralLog();
 		$log->user_id = $userId;
 		$log->ref_user_id = $refUserId;
@@ -154,11 +155,12 @@ abstract class AbstractPayment {
 		$log->amount = $amount;
 		$log->ref_amount = $refAmount;
 		$log->status = 0;
+		$log->save();
 
-		return $log->save();
+		return 0;
 	}
 
-	protected function creatNewPayment($uid, $oid, $amount) {
+	protected function creatNewPayment($uid, $oid, $amount): Payment {
 		$payment = new Payment();
 		$payment->trade_no = self::generateGuid();
 		$payment->user_id = $uid;
@@ -169,7 +171,7 @@ abstract class AbstractPayment {
 		return $payment;
 	}
 
-	public static function generateGuid() {
+	public static function generateGuid(): string {
 		mt_srand((double) microtime() * 10000);
 		$charId = strtoupper(md5(uniqid(mt_rand() + time(), true)));
 		$hyphen = chr(45);
@@ -188,7 +190,7 @@ abstract class AbstractPayment {
 	 * @param  int     $amount        交易金额
 	 * @return int
 	 */
-	protected function addPamentCallback($trade_no, $out_trade_no, $amount) {
+	protected function addPamentCallback($trade_no, $out_trade_no, $amount): int {
 		$log = new PaymentCallback();
 		$log->trade_no = $trade_no;
 		$log->out_trade_no = $out_trade_no;

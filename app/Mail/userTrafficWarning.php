@@ -20,14 +20,14 @@ class userTrafficWarning extends Mailable implements ShouldQueue {
 		$this->usedPercent = $usedPercent;
 	}
 
-	public function build() {
+	public function build(): userTrafficWarning {
 		return $this->view('emails.userTrafficWarning')->subject('流量警告')->with([
 			'usedPercent' => $this->usedPercent
 		]);
 	}
 
 	// 发件失败处理
-	public function failed(Exception $e) {
+	public function failed(Exception $e): void {
 		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

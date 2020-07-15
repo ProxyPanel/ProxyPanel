@@ -12,7 +12,7 @@ class IPIP {
 	 *
 	 * @return array|null
 	 */
-	public static function ip($ip) {
+	public static function ip($ip): ?array {
 		$filePath = public_path('ipip.ipdb');
 		$loc = new City($filePath);
 

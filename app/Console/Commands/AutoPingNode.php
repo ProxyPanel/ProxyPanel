@@ -12,11 +12,7 @@ class AutoPingNode extends Command {
 	protected $signature = 'autoPingNode';
 	protected $description = '节点定时Ping测速';
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function handle() {
+	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		$nodeList = SsNode::query()->whereIsRelay(0)->whereStatus(1)->get();
@@ -31,7 +27,7 @@ class AutoPingNode extends Command {
 	}
 
 	// 节点Ping测速
-	private function pingNode($nodeId, $ip) {
+	private function pingNode($nodeId, $ip): void {
 		$result = NetworkDetection::ping($ip);
 
 		if($result){

@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Response;
 
 class CodePay extends AbstractPayment {
-	public function purchase($request) {
-		$payment = $this->creatNewPayment(Auth::id(),$request->input('oid'),$request->input('amount'));
+	public function purchase($request): JsonResponse {
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$data = [
 			'id'         => parent::$systemConfig['codepay_id'],
@@ -46,7 +47,7 @@ class CodePay extends AbstractPayment {
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
 	}
 
-	public function notify($request) {
+	public function notify($request): void {
 		ksort($_POST);
 		reset($_POST);
 		$sign = '';

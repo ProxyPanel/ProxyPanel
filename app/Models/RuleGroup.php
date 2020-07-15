@@ -30,9 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RuleGroup extends Model {
 	protected $table = 'rule_group';
-	protected $primaryKey = 'id';
 
-	function getTypeLabelAttribute() {
+	public function getTypeLabelAttribute(): string {
 		if($this->attributes['type']){
 			$type_label = '<span class="badge badge-danger">阻 断</span>';
 		}else{

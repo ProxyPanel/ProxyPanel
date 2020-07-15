@@ -52,35 +52,34 @@ class Coupon extends Model {
 	use SoftDeletes;
 
 	protected $table = 'coupon';
-	protected $primaryKey = 'id';
 	protected $dates = ['deleted_at'];
 
 	// 筛选类型
-	function scopeType($query, $type) {
+	public function scopeType($query, $type) {
 		return $query->whereType($type);
 	}
 
-	function getAmountAttribute($value) {
+	public function getAmountAttribute($value) {
 		return $value / 100;
 	}
 
-	function setAmountAttribute($value) {
+	public function setAmountAttribute($value): void {
 		$this->attributes['amount'] = $value * 100;
 	}
 
-	function getDiscountAttribute($value) {
+	public function getDiscountAttribute($value) {
 		return $value * 10;
 	}
 
-	function setDiscountAttribute($value) {
+	public function setDiscountAttribute($value): void {
 		$this->attributes['discount'] = $value / 10;
 	}
 
-	function getRuleAttribute($value) {
+	public function getRuleAttribute($value) {
 		return $value / 100;
 	}
 
-	function setRuleAttribute($value) {
+	public function setRuleAttribute($value): void {
 		$this->attributes['rule'] = $value * 100;
 	}
 }

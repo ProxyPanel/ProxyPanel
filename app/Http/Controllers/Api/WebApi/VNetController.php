@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api\WebApi;
 
 use App\Models\SsNode;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class VNetController extends BaseController {
 	// 获取节点信息
-	public function getNodeInfo($id) {
+	public function getNodeInfo($id): JsonResponse {
 		$node = SsNode::query()->whereId($id)->first();
 
 		return $this->returnData('获取节点信息成功', 'success', 200, [
@@ -29,7 +29,7 @@ class VNetController extends BaseController {
 	}
 
 	// 获取节点可用的用户列表
-	public function getUserList(Request $request, $id) {
+	public function getUserList($id): JsonResponse {
 		$node = SsNode::query()->whereId($id)->first();
 		$users = User::query()->where('status', '<>', -1)->whereEnable(1)->where('level', '>=', $node->level)->get();
 		$data = [];
@@ -46,7 +46,7 @@ class VNetController extends BaseController {
 				'speed_limit' => $user->speed_limit,
 				'enable'      => $user->enable
 			];
-			array_push($data, $new);
+			$data[] = $new;
 		}
 
 		if($data){

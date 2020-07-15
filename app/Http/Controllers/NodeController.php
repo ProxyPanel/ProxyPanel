@@ -23,6 +23,7 @@ use App\Models\UserTrafficHourly;
 use App\Models\UserTrafficLog;
 use DB;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Redirect;
@@ -32,7 +33,7 @@ use Validator;
 
 class NodeController extends Controller {
 	// 节点列表
-	public function nodeList(Request $request) {
+	public function nodeList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
 		$query = SsNode::query();
@@ -71,7 +72,7 @@ class NodeController extends Controller {
 		return Response::view('admin.node.nodeList', $view);
 	}
 
-	public function checkNode(Request $request) {
+	public function checkNode(Request $request): JsonResponse {
 		$id = $request->input('id');
 		$node = SsNode::query()->whereId($id)->first();
 		// 使用DDNS的node先获取ipv4地址
@@ -174,7 +175,7 @@ class NodeController extends Controller {
 			$domain = explode('.', $domain);
 			$domainSuffix = end($domain); // 取得域名后缀
 
-			if(!in_array($domainSuffix, config('domains'))){
+			if(!in_array($domainSuffix, config('domains'), true)){
 				return Response::json(['status' => 'fail', 'message' => '绑定域名不合法']);
 			}
 		}
@@ -223,7 +224,7 @@ class NodeController extends Controller {
 	}
 
 	// 生成节点标签
-	private function makeLabels($nodeId, $labels) {
+	private function makeLabels($nodeId, $labels): void {
 		// 先删除所有该节点的标签
 		SsNodeLabel::query()->whereNodeId($nodeId)->delete();
 
@@ -327,7 +328,7 @@ class NodeController extends Controller {
 	}
 
 	// 删除节点
-	public function delNode(Request $request) {
+	public function delNode(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
 		$node = SsNode::query()->whereId($id)->first();
@@ -353,7 +354,7 @@ class NodeController extends Controller {
 			$RuleGroupList = RuleGroup::query()->get();
 			foreach($RuleGroupList as $RuleGroup){
 				$nodes = explode(',', $RuleGroup->nodes);
-				if(in_array($id, $nodes)){
+				if(in_array($id, $nodes, true)){
 					$nodes = implode(',', array_diff($nodes, [$id]));
 					RuleGroup::query()->whereId($RuleGroup->id)->update(['nodes' => $nodes]);
 				}
@@ -388,11 +389,11 @@ class NodeController extends Controller {
 		$nodeTrafficDaily = SsNodeTrafficDaily::query()
 		                                      ->with(['info'])
 		                                      ->whereNodeId($node->id)
-		                                      ->where('created_at', '>=', date('Y-m', time()))
+		                                      ->where('created_at', '>=', date('Y-m'))
 		                                      ->orderBy('created_at')
 		                                      ->pluck('total')
 		                                      ->toArray();
-		$dailyTotal = date('d', time()) - 1;//今天不算，减一
+		$dailyTotal = date('d') - 1;//今天不算，减一
 		$dailyCount = count($nodeTrafficDaily);
 		for($x = 0; $x < ($dailyTotal - $dailyCount); $x++){
 			$dailyData[$x] = 0;
@@ -405,11 +406,11 @@ class NodeController extends Controller {
 		$nodeTrafficHourly = SsNodeTrafficHourly::query()
 		                                        ->with(['info'])
 		                                        ->whereNodeId($node->id)
-		                                        ->where('created_at', '>=', date('Y-m-d', time()))
+		                                        ->where('created_at', '>=', date('Y-m-d'))
 		                                        ->orderBy('created_at')
 		                                        ->pluck('total')
 		                                        ->toArray();
-		$hourlyTotal = date('H', time());
+		$hourlyTotal = date('H');
 		$hourlyCount = count($nodeTrafficHourly);
 		for($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++){
 			$hourlyData[$x] = 0;
@@ -443,7 +444,7 @@ class NodeController extends Controller {
 	}
 
 	// Ping节点延迟
-	public function pingNode(Request $request) {
+	public function pingNode(Request $request): ?JsonResponse {
 		$node = SsNode::query()->whereId($request->input('id'))->first();
 		if(!$node){
 			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
@@ -458,13 +459,13 @@ class NodeController extends Controller {
 			$data[3] = $result['Hong Kong']['time']?: '无';
 
 			return Response::json(['status' => 'success', 'message' => $data]);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
 	}
 
 	// Ping节点延迟日志
-	public function pingLog(Request $request) {
+	public function pingLog(Request $request): \Illuminate\Http\Response {
 		$node_id = $request->input('nodeId');
 		$query = SsNodePing::query();
 		if(isset($node_id)){
@@ -478,32 +479,32 @@ class NodeController extends Controller {
 	}
 
 	// 节点授权列表
-	public function authList(Request $request) {
+	public function authList(Request $request): \Illuminate\Http\Response {
 		$view['list'] = NodeAuth::query()->orderBy('id')->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.node.authList', $view);
 	}
 
 	// 添加节点授权
-	public function addAuth() {
+	public function addAuth(): JsonResponse {
 		$nodeArray = SsNode::query()->whereStatus(1)->orderBy('id')->pluck('id')->toArray();
 		$authArray = NodeAuth::query()->orderBy('id')->pluck('node_id')->toArray();
 
 		if($nodeArray == $authArray){
 			return Response::json(['status' => 'success', 'message' => '没有需要生成授权的节点']);
-		}else{
-			foreach(array_diff($nodeArray, $authArray) as $nodeId){
-				$obj = new NodeAuth();
-				$obj->node_id = $nodeId;
-				$obj->key = makeRandStr(16);
-				$obj->secret = makeRandStr(8);
-				$obj->save();
-			}
+		}
+
+		foreach(array_diff($nodeArray, $authArray) as $nodeId){
+			$obj = new NodeAuth();
+			$obj->node_id = $nodeId;
+			$obj->key = makeRandStr(16);
+			$obj->secret = makeRandStr(8);
+			$obj->save();
 		}
 		return Response::json(['status' => 'success', 'message' => '生成成功']);
 	}
 
 	// 删除节点授权
-	public function delAuth(Request $request) {
+	public function delAuth(Request $request): JsonResponse {
 		try{
 			NodeAuth::query()->whereId($request->input('id'))->delete();
 		}catch(Exception $e){
@@ -513,20 +514,20 @@ class NodeController extends Controller {
 	}
 
 	// 重置节点授权
-	public function refreshAuth(Request $request) {
+	public function refreshAuth(Request $request): ?JsonResponse {
 		$ret = NodeAuth::query()->whereId($request->input('id'))->update([
 			'key'    => makeRandStr(16),
 			'secret' => makeRandStr(8)
 		]);
 		if($ret){
 			return Response::json(['status' => 'success', 'message' => '操作成功']);
-		}else{
-			return Response::json(['status' => 'fail', 'message' => '操作失败']);
 		}
+
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 域名证书列表
-	public function certificateList(Request $request) {
+	public function certificateList(Request $request): \Illuminate\Http\Response {
 		$DvList = NodeCertificate::query()->orderBy('id')->paginate(15)->appends($request->except('page'));
 		foreach($DvList as $Dv){
 			if($Dv->key && $Dv->pem){
@@ -537,8 +538,8 @@ class NodeController extends Controller {
 				$Dv->to = $DvInfo['validTo']? date('Y-m-d', $DvInfo['validTo_time_t']) : null;
 			}
 		}
-			$view['list'] = $DvList;
-			return Response::view('admin.node.certificateList', $view);
+		$view['list'] = $DvList;
+		return Response::view('admin.node.certificateList', $view);
 	}
 
 	// 添加域名证书
@@ -552,12 +553,12 @@ class NodeController extends Controller {
 
 			if($obj->id){
 				return Response::json(['status' => 'success', 'message' => '生成成功']);
-			}else{
-				return Response::json(['status' => 'fail', 'message' => '生成失败']);
 			}
-		}else{
-			return Response::view('admin.node.certificateInfo');
+
+			return Response::json(['status' => 'fail', 'message' => '生成失败']);
 		}
+
+		return Response::view('admin.node.certificateInfo');
 	}
 
 	// 编辑域名证书
@@ -575,14 +576,14 @@ class NodeController extends Controller {
 				}
 			}
 			return Response::json(['status' => 'fail', 'message' => '修改失败']);
-		}else{
-			$view['Dv'] = $Dv;
-			return Response::view('admin.node.certificateInfo', $view);
 		}
+
+		$view['Dv'] = $Dv;
+		return Response::view('admin.node.certificateInfo', $view);
 	}
 
 	// 删除域名证书
-	public function delCertificate(Request $request) {
+	public function delCertificate(Request $request): JsonResponse {
 		try{
 			NodeCertificate::query()->whereId($request->input('id'))->delete();
 		}catch(Exception $e){
