@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller as BaseController;
 use RuntimeException;
 
@@ -113,6 +114,21 @@ class Controller extends BaseController {
 		return '';
 	}
 
+	// 上传文件处理
+	public function uploadFile(UploadedFile $file): string {
+		$fileType = $file->getClientOriginalExtension();
+
+		// 验证文件合法性
+		if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+			return false;
+		}
+
+		$name = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
+		$move = $file->move(base_path().'/public/upload/image/', $name);
+
+		return $move? '/upload/image/'.$name : '';
+	}
+
 	/**
 	 * 节点信息
 	 *
@@ -122,7 +138,7 @@ class Controller extends BaseController {
 	 *
 	 * @return string
 	 */
-	public function getUserNodeInfo($uid, $nodeId, $infoType): ?string {
+	public function getUserNodeInfo($uid, $nodeId, $infoType): string {
 		$user = User::whereId($uid)->first();
 		$node = SsNode::whereId($nodeId)->first();
 		$scheme = null;

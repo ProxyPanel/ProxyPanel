@@ -180,7 +180,7 @@ class UserController extends Controller {
 			}else{
 				$proxyType = 'V2Ray';
 			}
-			$data = $this->getUserNodeInfo(Auth::id(), $node->id, $infoType != 'text'? 0 : 1);
+			$data = $this->getUserNodeInfo(Auth::id(), $node->id, $infoType !== 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 		}

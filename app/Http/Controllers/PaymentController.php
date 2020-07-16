@@ -110,7 +110,7 @@ class PaymentController extends Controller {
 			}
 
 			//非余额付款下，检查对应的在线支付是否开启
-			if(self::$method != 'credit'){
+			if(self::$method !== 'credit'){
 				// 判断是否开启在线支付
 				if(!Helpers::systemConfig()['is_onlinePay']){
 					return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
@@ -153,12 +153,12 @@ class PaymentController extends Controller {
 				return Response::json(['status' => 'fail', 'message' => '订单创建失败：订单总价异常']);
 			}
 
-			if($amount == 0 && self::$method != 'credit'){
+			if($amount == 0 && self::$method !== 'credit'){
 				return Response::json(['status' => 'fail', 'message' => '订单创建失败：订单总价为0，无需使用在线支付']);
 			}
 
 			// 验证账号余额是否充足
-			if(self::$method == 'credit' && Auth::getUser()->credit < $amount){
+			if(self::$method === 'credit' && Auth::getUser()->credit < $amount){
 				return Response::json(['status' => 'fail', 'message' => '您的余额不足，请先充值']);
 			}
 		}

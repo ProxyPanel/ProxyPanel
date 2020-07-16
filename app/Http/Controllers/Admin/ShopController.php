@@ -58,20 +58,14 @@ class ShopController extends Controller {
 				'traffic.max' => '内含流量不能超过10TB',
 			]);
 
-			$logo = null;
 			// 商品LOGO
+			$logo = null;
 			if($request->hasFile('logo')){
-				$file = $request->file('logo');
-				$fileType = $file->getClientOriginalExtension();
+				$logo = $this->uploadFile($request->file('logo'));
 
-				// 验证文件合法性
-				if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+				if(!$logo){
 					return Redirect::back()->withInput()->withErrors('LOGO不合法');
 				}
-
-				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
-				$move = $file->move(base_path().'/public/upload/image/', $logoName);
-				$logo = $move? '/upload/image/'.$logoName : '';
 			}
 
 			try{
@@ -138,19 +132,13 @@ class ShopController extends Controller {
 
 			// 商品LOGO
 			if($request->hasFile('logo')){
-				$file = $request->file('logo');
-				$fileType = $file->getClientOriginalExtension();
+				$logo = $this->uploadFile($request->file('logo'));
 
-				// 验证文件合法性
-				if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+				if(!$logo){
 					Session::flash('errorMsg', 'LOGO不合法');
 
 					return Redirect::back()->withInput();
 				}
-
-				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
-				$move = $file->move(base_path().'/public/upload/image/', $logoName);
-				$logo = $move? '/upload/image/'.$logoName : '';
 				Goods::query()->whereId($id)->update(['logo' => $logo]);
 			}
 

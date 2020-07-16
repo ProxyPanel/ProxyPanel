@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
+use RuntimeException;
 
 /**
  * 促销控制器
@@ -81,7 +82,7 @@ class MarketingController extends Controller {
 			if($result->code){ // 失败
 				$this->addMarketing(2, $title, $content, -1, $result->message);
 
-				throw new Exception($result->message);
+				throw new RuntimeException($result->message);
 			}
 
 			$this->addMarketing(2, $title, $content, 1);
