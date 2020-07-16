@@ -115,8 +115,8 @@ class AutoJob extends Command {
 
 	//返回优惠券
 	private function returnCoupon($coupon_id): bool {
-		$coupon = Coupon::query()->whereId($coupon_id)->get();
-		if($coupon && $coupon->type < 3){
+		$coupon = Coupon::find($coupon_id);
+		if($coupon && $coupon->type !== 3){
 			Coupon::query()->whereId($coupon_id)->increment('usage_count', 1, ['status' => 0]);
 			return true;
 		}
