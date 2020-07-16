@@ -89,7 +89,7 @@ class CouponController extends Controller {
 			$type = $request->input('type');
 
 			// 优惠卷LOGO
-			$logo = null;
+			$logo = '';
 			if($request->hasFile('logo')){
 				$logo = $this->uploadFile($request->file('logo'));
 

@@ -66,7 +66,7 @@ class NetworkDetection {
 	 * @return bool|array
 	 */
 	public static function ping($ip) {
-		$url = 'https://api.iiwl.cc/api/ping.php?url='.$ip;
+		$url = 'https://api.iiwl.cc/api/ping.php?host='.$ip;
 
 		try{
 			$ret = json_decode(Curl::send($url), true);
