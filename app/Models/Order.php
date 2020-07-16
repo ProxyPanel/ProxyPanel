@@ -148,9 +148,6 @@ class Order extends Model {
 		$base_path = '/assets/images/payment/';
 
 		switch($this->attributes['pay_type']){
-			case 0:
-				$pay_type_icon = $base_path.'coin.png';
-				break;
 			case 1:
 				$pay_type_icon = $base_path.'alipay.png';
 				break;
@@ -160,14 +157,13 @@ class Order extends Model {
 			case 3:
 				$pay_type_icon = $base_path.'wechat.png';
 				break;
-			case 4:
-				$pay_type_icon = $base_path.'coin.png';
-				break;
 			case 5:
 				$pay_type_icon = $base_path.'paypal.png';
 				break;
+			case 0:
+			case 4:
 			default:
-				$pay_type_icon = '';
+				$pay_type_icon = $base_path.'coin.png';
 		}
 		return $pay_type_icon;
 	}

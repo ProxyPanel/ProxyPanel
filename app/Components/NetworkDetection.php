@@ -28,7 +28,7 @@ class NetworkDetection {
 			}
 
 			if(!$ret['success']){
-				if($ret['error'] == "execute timeout (3s)"){
+				if($ret['error'] === "execute timeout (3s)"){
 					sleep(10);
 
 					return self::networkCheck($ip, $type, $port);
@@ -76,7 +76,7 @@ class NetworkDetection {
 				return false;
 			}
 
-			if($ret['code'] != 1 || $ret['msg'] != "检测成功！"){
+			if($ret['code'] != 1 || $ret['msg'] !== "检测成功！"){
 				Log::warning("【PING】检测".$ip."时，返回".json_encode($ret));
 
 				return false;

@@ -82,9 +82,9 @@ class F2Fpay extends AbstractPayment {
 		}
 
 		$ret = "fail";
-		if($result['code'] == 10000 && $result['msg'] == "Success"){
+		if($result['code'] == 10000 && $result['msg'] === "Success"){
 			$ret = "success";
-			if($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS'){
+			if($_POST['trade_status'] === 'TRADE_FINISHED' || $_POST['trade_status'] === 'TRADE_SUCCESS'){
 				$this->postPayment($request->input('out_trade_no'), '支付宝当面付');
 			}else{
 				Log::info('支付宝当面付-POST:交易失败['.getClientIp().']');

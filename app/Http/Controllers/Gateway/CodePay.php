@@ -30,7 +30,7 @@ class CodePay extends AbstractPayment {
 		$urls = '';
 
 		foreach($data as $key => $val){
-			if($val == '' || $key == 'sign'){
+			if($val == '' || $key === 'sign'){
 				continue;
 			}
 			if($sign != ''){
@@ -52,7 +52,7 @@ class CodePay extends AbstractPayment {
 		reset($_POST);
 		$sign = '';
 		foreach($_POST as $key => $val){
-			if($val == '' || $key == 'sign'){
+			if($val == '' || $key === 'sign'){
 				continue;
 			}
 			if($sign){

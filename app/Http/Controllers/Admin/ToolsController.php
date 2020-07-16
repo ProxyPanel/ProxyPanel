@@ -140,7 +140,7 @@ class ToolsController extends Controller {
 			$file = $request->file('uploadFile');
 
 			// 只能上传JSON文件
-			if($file->getClientMimeType() != 'application/json' || $file->getClientOriginalExtension() != 'json'){
+			if($file->getClientMimeType() !== 'application/json' || $file->getClientOriginalExtension() !== 'json'){
 				Session::flash('errorMsg', '只允许上传JSON文件');
 
 				return Redirect::back();

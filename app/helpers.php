@@ -153,7 +153,7 @@ if(!function_exists('getClientIP')){
 			$ip = getenv('REMOTE_ADDR');
 		}
 
-		if(trim($ip) == '::1'){
+		if(trim($ip) === '::1'){
 			$ip = '127.0.0.1';
 		}
 
@@ -196,7 +196,7 @@ if(!function_exists('getIPv6')){
 		try{
 			$result = json_decode(Curl::send($url), true);
 			if(!is_array($result) || isset($result['code'])){
-				throw new \RuntimeException('解析IPv6异常：'.$ip);
+				throw new RuntimeException('解析IPv6异常：'.$ip);
 			}
 
 			return $result;

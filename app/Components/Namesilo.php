@@ -36,7 +36,7 @@ class Namesilo {
 			$result = XML2Array::createArray($result);
 
 			// 出错
-			if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] != 'success'){
+			if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] !== 'success'){
 				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
 					self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
 			}else{

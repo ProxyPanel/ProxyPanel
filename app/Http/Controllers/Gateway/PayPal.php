@@ -124,7 +124,7 @@ class PayPal extends AbstractPayment {
 
 		$response = (string) $this->provider->verifyIPN($post);
 
-		if($response == 'VERIFIED' && $request['invoice']){
+		if($response === 'VERIFIED' && $request['invoice']){
 			if(Payment::whereTradeNo($request['invoice'])->first()->status == 0){
 				$this->postPayment($request['invoice'], 'PayPal');
 			}

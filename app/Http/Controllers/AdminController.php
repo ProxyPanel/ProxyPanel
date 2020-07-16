@@ -83,23 +83,7 @@ class AdminController extends Controller {
 		                                     ->whereIn('status', [0, 1])
 		                                     ->count(); // 流量超过100G的用户
 
-		// 1小时内流量异常用户
-		$tempUsers = [];
-		$userTotalTrafficList = UserTrafficHourly::query()
-		                                         ->whereNodeId(0)
-		                                         ->where('total', '>', MB * 100)
-		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
-		                                         ->groupBy('user_id')
-		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
-		                                         ->get(); // 只统计100M以上的记录，加快速度
-		if(!$userTotalTrafficList->isEmpty()){
-			foreach($userTotalTrafficList as $vo){
-				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
-					$tempUsers[] = $vo->user_id;
-				}
-			}
-		}
-		$view['flowAbnormalUserCount'] = User::query()->whereIn('id', $tempUsers)->count();
+		$view['flowAbnormalUserCount'] = count($this->trafficAbnormal());// 1小时内流量异常用户
 		$view['nodeCount'] = SsNode::query()->count();
 		$view['unnormalNodeCount'] = SsNode::query()->whereStatus(0)->count();
 		$flowCount = SsNodeTrafficDaily::query()
@@ -121,6 +105,24 @@ class AdminController extends Controller {
 		                                  ->count();
 
 		return Response::view('admin.index', $view);
+	}
+
+	// 1小时内流量异常用户
+	private function trafficAbnormal(): array {
+		$result = [];
+		$userTotalTrafficList = UserTrafficHourly::query()
+		                                         ->whereNodeId(0)
+		                                         ->where('total', '>', 50 * MB)
+		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
+		                                         ->groupBy('user_id')
+		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
+		                                         ->get(); // 只统计50M以上的记录，加快速度
+		foreach($userTotalTrafficList as $user){
+			if($user->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
+				$result[] = $user->user_id;
+			}
+		}
+		return $result;
 	}
 
 	// 用户列表
@@ -194,22 +196,7 @@ class AdminController extends Controller {
 
 		// 1小时内流量异常用户
 		if($flowAbnormal){
-			$tempUsers = [];
-			$userTotalTrafficList = UserTrafficHourly::query()
-			                                         ->whereNodeId(0)
-			                                         ->where('total', '>', MB * 100)
-			                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
-			                                         ->groupBy('user_id')
-			                                         ->selectRaw("user_id, sum(total) as totalTraffic")
-			                                         ->get(); // 只统计100M以上的记录，加快速度
-			if(!$userTotalTrafficList->isEmpty()){
-				foreach($userTotalTrafficList as $vo){
-					if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
-						$tempUsers[] = $vo->user_id;
-					}
-				}
-			}
-			$query->whereIn('id', $tempUsers);
+			$query->whereIn('id', $this->trafficAbnormal());
 		}
 
 		$userList = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
@@ -490,20 +477,15 @@ class AdminController extends Controller {
 			}else{
 				$logo = '';
 				if($request->hasFile('logo')){
-					$file = $request->file('logo');
-					$fileType = $file->getClientOriginalExtension();
+					$logo = $this->uploadFile($request->file('logo'));
 
-					// 验证文件合法性
-					if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+					if(!$logo){
 						Session::flash('errorMsg', 'LOGO不合法');
 
 						return Redirect::back()->withInput();
 					}
-
-					$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
-					$move = $file->move(base_path().'/public/upload/image/', $logoName);
-					$logo = $move? '/upload/image/'.$logoName : '';
 				}
+
 				$article = new Article();
 				$article->title = $request->input('title');
 				$article->type = $request->input('type', 1);
@@ -544,19 +526,13 @@ class AdminController extends Controller {
 			}else{
 				$logo = '';
 				if($request->hasFile('logo')){
-					$file = $request->file('logo');
-					$fileType = $file->getClientOriginalExtension();
+					$logo = $this->uploadFile($request->file('logo'));
 
-					// 验证文件合法性
-					if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+					if(!$logo){
 						Session::flash('errorMsg', 'LOGO不合法');
 
 						return Redirect::back()->withInput();
 					}
-
-					$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
-					$move = $file->move(base_path().'/public/upload/image/', $logoName);
-					$logo = $move? '/upload/image/'.$logoName : '';
 				}
 			}
 
@@ -674,7 +650,7 @@ class AdminController extends Controller {
 				$proxyType = 'V2Ray';
 			}
 
-			$data = $this->getUserNodeInfo($id, $node->id, $infoType != 'text'? 0 : 1);
+			$data = $this->getUserNodeInfo($id, $node->id, $infoType !== 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 
@@ -906,40 +882,22 @@ class AdminController extends Controller {
 
 			// 首页LOGO
 			if($request->hasFile('website_home_logo')){
-				$file = $request->file('website_home_logo');
-				$fileType = $file->getClientOriginalExtension();
-
-				// 验证文件合法性
-				if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+				$ret = $this->uploadFile($request->file('website_home_logo'));
+				if(!$ret){
 					Session::flash('errorMsg', 'LOGO不合法');
-
 					return Redirect::back();
 				}
-
-				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
-				$move = $file->move(base_path().'/public/upload/image/', $logoName);
-				$websiteHomeLogo = $move? '/upload/image/'.$logoName : '';
-
-				Config::query()->whereName('website_home_logo')->update(['value' => $websiteHomeLogo]);
+				Config::query()->whereName('website_home_logo')->update(['value' => $ret]);
 			}
 
 			// 站内LOGO
 			if($request->hasFile('website_logo')){
-				$file = $request->file('website_logo');
-				$fileType = $file->getClientOriginalExtension();
-
-				// 验证文件合法性
-				if(!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])){
+				$ret = $this->uploadFile($request->file('website_logo'));
+				if(!$ret){
 					Session::flash('errorMsg', 'LOGO不合法');
-
 					return Redirect::back();
 				}
-
-				$logoName = date('YmdHis').random_int(1000, 2000).'.'.$fileType;
-				$move = $file->move(base_path().'/public/upload/image/', $logoName);
-				$websiteLogo = $move? '/upload/image/'.$logoName : '';
-
-				Config::query()->whereName('website_logo')->update(['value' => $websiteLogo]);
+				Config::query()->whereName('website_logo')->update(['value' => $ret]);
 			}
 
 			Config::query()->whereName('website_analytics')->update(['value' => $websiteAnalytics]);
@@ -1094,13 +1052,13 @@ class AdminController extends Controller {
 		}
 
 		$country = Country::query()->whereId($id)->first();
-		if(empty($country)){
+		if($country){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
 		}
 
 		// 校验该国家/地区下是否存在关联节点
 		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
-		if(!$existNode->isEmpty()){
+		if(!$existNode){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
 
@@ -1121,13 +1079,13 @@ class AdminController extends Controller {
 		}
 
 		$country = Country::query()->whereId($id)->first();
-		if(empty($country)){
+		if(!$country){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
 		}
 
 		// 校验该国家/地区下是否存在关联节点
 		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
-		if(!$existNode->isEmpty()){
+		if(!$existNode){
 			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
 		$ret = false;
@@ -1234,7 +1192,7 @@ class AdminController extends Controller {
 		}
 
 		// 如果是返利比例，则需要除100
-		if($name == 'referral_percent'){
+		if($name === 'referral_percent'){
 			$value = intval($value) / 100;
 		}
 
@@ -1380,7 +1338,7 @@ class AdminController extends Controller {
 			$query->whereStatus($status);
 		}
 
-		if(isset($range_time) && $range_time != ','){
+		if(isset($range_time) && $range_time !== ','){
 			$range_time = explode(',', $range_time);
 			$query->where('created_at', '>=', $range_time[0])->where('created_at', '<=', $range_time[1]);
 		}
