@@ -22,11 +22,11 @@ class WebApi {
 		$key = $request->header('key');
 		$time = $request->header('timestamp');
 
-		if(isset($key)){// 未提供 key
+		if(!isset($key)){// 未提供 key
 			return $this->returnData('Your key is null!');
 		}
 
-		if(isset($id)){// 未提供 node
+		if(!isset($id)){// 未提供 node
 			return $this->returnData('Your Node Id is null!');
 		}
 
