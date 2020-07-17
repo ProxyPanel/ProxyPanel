@@ -24,7 +24,7 @@
 					</div>
 					<div class="col-auto ml-auto mr-auto">
 						@if($payment->qr_code && $payment->url)
-							<img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->style('round', 0.9)->size(250)->errorCorrection('H')->merge(url($pay_type_icon), .3, true)->generate($payment->url))!!}" alt="支付二维码">
+							<img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->size(250)->errorCorrection('H')->merge(url($pay_type_icon), .3, true)->generate($payment->url))!!}" alt="支付二维码">
 						@else
 							<img class="h-250 w-250" src="{{$payment->qr_code}}" alt="支付二维码">
 						@endif

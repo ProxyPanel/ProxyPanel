@@ -122,7 +122,6 @@ class BaseController {
 		return $this->returnData('上报用户流量日志成功', 'success', 200);
 	}
 
-
 	// 获取节点的审计规则
 	public function getNodeRule($id): JsonResponse {
 		$nodeRule = RuleGroupNode::whereNodeId($id)->first();
