@@ -5,6 +5,5 @@ git pull
 php composer.phar install
 php artisan key:generate
 php artisan view:clear
-php artisan route:cache
-php artisan config:cache
+php artisan optimize
 chown -R www:www ./

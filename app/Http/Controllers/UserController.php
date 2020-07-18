@@ -588,7 +588,7 @@ class UserController extends Controller {
 	public function help(): \Illuminate\Http\Response {
 		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->orderByDesc('id')->limit(10)->paginate(5);
 		$data = [];
-		if(SsNode::query()->whereType(1)->whereStatus(1)->exists()){
+		if(SsNode::query()->whereIn('type',[1,4])->whereStatus(1)->exists()){
 			$data[] = 'ss';
 			//array_push
 		}
