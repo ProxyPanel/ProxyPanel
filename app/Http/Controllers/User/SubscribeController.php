@@ -73,7 +73,9 @@ class SubscribeController extends Controller {
 		// 获取这个账号可用节点
 		$query = SsNode::query()->whereStatus(1)->whereIsSubscribe(1)->where('level', '<=', $user->level);
 
-		if($this->subType){
+		if($this->subType === 1){
+			$query = $query->whereIn('type', [1, 4]);
+		}elseif($this->subType){
 			$query = $query->whereType($this->subType);
 		}
 

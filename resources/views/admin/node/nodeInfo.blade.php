@@ -139,7 +139,7 @@
 											<li class="list-inline-item">
 												<div class="radio-custom radio-primary">
 													<input type="radio" id="shadowsocks" name="type" value="1" checked>
-													<label for="shadowsocks">Shadowsocks(R) | VNET</label>
+													<label for="shadowsocks">Shadowsocks(R)</label>
 												</div>
 											</li>
 											<li class="list-inline-item">
@@ -152,6 +152,12 @@
 												<div class="radio-custom radio-primary">
 													<input type="radio" id="trojan" name="type" value="3">
 													<label for="trojan">Trojan</label>
+												</div>
+											</li>
+											<li class="list-inline-item">
+												<div class="radio-custom radio-primary">
+													<input type="radio" id="vnet" name="type" value="4" checked>
+													<label for="vnet">VNET</label>
 												</div>
 											</li>
 										</ul>
@@ -469,6 +475,7 @@
 				$('.obfs_param').hide();
 			}
 		});
+
 		// ajax同步提交
 		function Submit() {
 			$.ajax({
@@ -595,6 +602,9 @@
 					break;
 				case 3:
 					$trojan_setting.show();
+					break;
+				case 4:
+					$ssr_setting.show();
 					break;
 				default:
 			}

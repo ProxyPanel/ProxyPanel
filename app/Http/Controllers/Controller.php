@@ -139,69 +139,94 @@ class Controller extends BaseController {
 	 * @return string
 	 */
 	public function getUserNodeInfo($uid, $nodeId, $infoType): string {
-		$user = User::whereId($uid)->first();
-		$node = SsNode::whereId($nodeId)->first();
+		$user = User::whereId($uid)->firstOrFail();
+		$node = SsNode::whereId($nodeId)->firstOrFail();
 		$scheme = null;
 		// 获取分组名称
 		$group = $node->getLevel->name;
 		$host = $node->server?: $node->ip;
 		$data = null;
 		switch($node->type){
-			case 1:
-				if($node->single){
-					$port = $node->port;
-					$protocol = $node->protocol;
-					$method = $node->method;
-					$obfs = $node->obfs;
-					$passwd = $node->passwd;
-					$protocol_param = $user->port.':'.$user->passwd;
-				}else{
-					$port = $user->port;
-					$protocol = $user->protocol;
-					$method = $user->method;
-					$obfs = $user->obfs;
-					$passwd = $user->passwd;
-					$protocol_param = $node->protocol_param;
-				}
-
-				if($infoType != 1){
-					// 生成ss/ssr scheme
-					if($node->compatible){
-						$data = 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
-					}else{
-						$data = 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($node->obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($node->name).'&group='.base64url_encode($group).'&udpport=0&uot=0');
-					}
-				}else{
-					// 生成文本配置信息
-					$data = "服务器：".$host.PHP_EOL."IPv6：".$node->ipv6.PHP_EOL."服务器端口：".$port.PHP_EOL."密码：".$passwd.PHP_EOL."加密：".$method.PHP_EOL.($node->compatible? '' : "协议：".$protocol.PHP_EOL."协议参数：".$protocol_param.PHP_EOL."混淆：".$obfs.PHP_EOL."混淆参数：".$node->obfs_param.PHP_EOL);
-				}
-				break;
 			case 2:
 				// 生成v2ray scheme
-				if($infoType != 1){
+				if($infoType !== 1){
 					// 生成v2ray scheme
-					$data = 'vmess://'.base64url_encode(json_encode([
-							"v"    => "2",
-							"ps"   => $node->name,
-							"add"  => $host,
-							"port" => $node->v2_port,
-							"id"   => $user->vmess_id,
-							"aid"  => $node->v2_alter_id,
-							"net"  => $node->v2_net,
-							"type" => $node->v2_type,
-							"host" => $node->v2_host,
-							"path" => $node->v2_path,
-							"tls"  => $node->v2_tls? "tls" : ""
-						], JSON_PRETTY_PRINT));
+					$data = $this->v2raySubUrl($node->name, $host, $node->v2_port, $user->vmess_id, $node->v2_alter_id,
+						$node->v2_net, $node->v2_type, $node->v2_host, $node->v2_path, $node->v2_tls? "tls" : "");
 				}else{
 					$data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6?: "").PHP_EOL."端口：".$node->v2_port.PHP_EOL."加密方式：".$node->v2_method.PHP_EOL."用户ID：".$user->vmess_id.PHP_EOL."额外ID：".$node->v2_alter_id.PHP_EOL."传输协议：".$node->v2_net.PHP_EOL."伪装类型：".$node->v2_type.PHP_EOL."伪装域名：".($node->v2_host?: "").PHP_EOL."路径：".($node->v2_path?: "").PHP_EOL."TLS：".($node->v2_tls? "tls" : "").PHP_EOL;
 				}
 				break;
 			case 3:
+				if($infoType !== 1){
+					$data = $this->trojanSubUrl($user->passwd, $host, $node->port, $node->name);
+				}else{
+					$data = "备注：".$node->name.PHP_EOL."服务器：".$host.PHP_EOL."密码：".$user->passwd.PHP_EOL."端口：".$node->port.PHP_EOL;
+				}
+				break;
+			case 1:
+			case 4:
+				$protocol = $node->protocol;
+				$method = $node->method;
+				$obfs = $node->obfs;
+				if($node->single){
+					$port = $node->port;
+					$passwd = $node->passwd;
+					$protocol_param = $user->port.':'.$user->passwd;
+				}else{
+					$port = $user->port;
+					$passwd = $user->passwd;
+					$protocol_param = $node->protocol_param;
+					if($node->type === 1){
+						$protocol = $user->protocol;
+						$method = $user->method;
+						$obfs = $user->obfs;
+					}
+				}
+
+				if($infoType !== 1){
+					// 生成ss/ssr scheme
+					$data = $node->compatible? $this->ssSubUrl($host, $port, $method, $passwd,
+						$group) : $this->ssrSubUrl($host, $port, $protocol, $method, $obfs, $passwd, $node->obfs_param,
+						$protocol_param, $node->name, $group, $node->is_udp);
+				}else{
+					// 生成文本配置信息
+					$data = "服务器：".$host.PHP_EOL."IPv6：".$node->ipv6.PHP_EOL."服务器端口：".$port.PHP_EOL."密码：".$passwd.PHP_EOL."加密：".$method.PHP_EOL.($node->compatible? '' : "协议：".$protocol.PHP_EOL."协议参数：".$protocol_param.PHP_EOL."混淆：".$obfs.PHP_EOL."混淆参数：".$node->obfs_param.PHP_EOL);
+				}
 				break;
 			default:
 		}
 
 		return $data;
+	}
+
+	public function v2raySubUrl($name, $host, $port, $uuid, $alter_id, $net, $type, $domain, $path, $tls): string {
+		return 'vmess://'.base64url_encode(json_encode([
+				"v"    => "2",
+				"ps"   => $name,
+				"add"  => $host,
+				"port" => $port,
+				"id"   => $uuid,
+				"aid"  => $alter_id,
+				"net"  => $net,
+				"type" => $type,
+				"host" => $domain,
+				"path" => $path,
+				"tls"  => $tls? "tls" : ""
+			], JSON_PRETTY_PRINT));
+	}
+
+	public function trojanSubUrl($password, $domain, $port, $remark): string {
+		return 'trojan://'.urlencode($password).'@'.$domain.':'.$port.'#'.urlencode($remark);
+	}
+
+	public function ssSubUrl($host, $port, $method, $passwd, $group): string {
+		return 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
+	}
+
+	public function ssrSubUrl(
+		$host, $port, $protocol, $method, $obfs, $passwd, $obfs_param, $protocol_param, $name, $group, $is_udp
+	): string {
+		return 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($name).'&group='.base64url_encode($group).'&udpport='.$is_udp.'&uot=0');
 	}
 }
