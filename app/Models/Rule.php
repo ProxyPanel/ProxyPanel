@@ -8,23 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 审计规则
  *
- * @property int                        $id
- * @property int                        $type    类型：1-正则表达式、2-域名、3-IP、4-协议
- * @property string                     $name    规则描述
- * @property string                     $pattern 规则值
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property-read mixed                 $type_api_label
- * @property-read mixed                 $type_label
+ * @property int         $id
+ * @property int         $type    类型：1-正则表达式、2-域名、3-IP、4-协议
+ * @property string      $name    规则描述
+ * @property string      $pattern 规则值
+ * @property-read string $type_api_label
+ * @property-read string $type_label
  * @method static Builder|Rule newModelQuery()
  * @method static Builder|Rule newQuery()
  * @method static Builder|Rule query()
- * @method static Builder|Rule whereCreatedAt($value)
  * @method static Builder|Rule whereId($value)
  * @method static Builder|Rule whereName($value)
  * @method static Builder|Rule wherePattern($value)
  * @method static Builder|Rule whereType($value)
- * @method static Builder|Rule whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Rule extends Model {

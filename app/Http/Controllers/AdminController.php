@@ -1205,7 +1205,7 @@ class AdminController extends Controller {
 	// 推送通知测试
 	public function sendTestNotification(): JsonResponse {
 		if(self::$systemConfig['is_notification']){
-			$result = PushNotification::send('这是测试的标题', 'SSRPanel_OM测试内容');
+			$result = PushNotification::send('这是测试的标题', 'ProxyPanel测试内容');
 			if($result == false){
 				return Response::json(['status' => 'fail', 'message' => '发送失败，请重新尝试！']);
 			}
@@ -1266,8 +1266,8 @@ class AdminController extends Controller {
 
 		$spreadsheet = new Spreadsheet();
 		$spreadsheet->getProperties()
-		            ->setCreator('SSRPanel')
-		            ->setLastModifiedBy('SSRPanel')
+		            ->setCreator('ProxyPanel')
+		            ->setLastModifiedBy('ProxyPanel')
 		            ->setTitle('邀请码')
 		            ->setSubject('邀请码')
 		            ->setDescription('')

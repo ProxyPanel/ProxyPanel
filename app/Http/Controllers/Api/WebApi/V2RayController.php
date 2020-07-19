@@ -13,7 +13,7 @@ class V2RayController extends BaseController {
 	// 获取节点信息
 	public function getNodeInfo($id): JsonResponse {
 		$node = SsNode::query()->whereId($id)->first();
-		$nodeTls = NodeCertificate::query()->whereId($node->server)->first();
+		$nodeDv = NodeCertificate::query()->whereId($node->server)->first();
 
 		return $this->returnData('获取节点信息成功', 'success', 200, [
 			'id'              => $node->id,
@@ -21,9 +21,10 @@ class V2RayController extends BaseController {
 			'speed_limit'     => $node->speed_limit,
 			'client_limit'    => $node->client_limit,
 			'push_port'       => $node->push_port,
+			'redirect_url'    => Helpers::systemConfig()['redirect_url'],
 			'secret'          => $node->auth->secret,
-			'key'             => $nodeTls? $nodeTls->key : '',
-			'pem'             => $nodeTls? $nodeTls->pem : '',
+			'key'             => $nodeDv? $nodeDv->key : '',
+			'pem'             => $nodeDv? $nodeDv->pem : '',
 			'v2_license'      => Helpers::systemConfig()['v2ray_license'],
 			'v2_alter_id'     => $node->v2_alter_id,
 			'v2_port'         => $node->v2_port,

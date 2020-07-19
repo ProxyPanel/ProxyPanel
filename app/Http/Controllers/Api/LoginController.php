@@ -107,7 +107,7 @@ class LoginController extends Controller {
 				'text'         => '',
 				'buy_link'     => '',
 				'money'        => '0.00',
-				'sspannelName' => 'ssrpanel',
+				'sspannelName' => 'proxypanel',
 				'usedTraffic'  => flowAutoShow($user->u + $user->d),
 				'Traffic'      => flowAutoShow($user->transfer_enable),
 				'all'          => 1,

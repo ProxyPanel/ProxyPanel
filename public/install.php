@@ -9,17 +9,9 @@
 
 // error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 // ini_set('display_errors', '1');
-// 定义目录分隔符
-define('DS', DIRECTORY_SEPARATOR);
-
-// 定义根目录
-define('ROOT_PATH', __DIR__.DS.'..'.DS);
-
-// 定义应用目录
-define('APP_PATH', ROOT_PATH.'app'.DS);
-
-// 安装包目录
-define('INSTALL_PATH', ROOT_PATH.'sql'.DS);
+define('DS', DIRECTORY_SEPARATOR); // 定义目录分隔符
+define('ROOT_PATH', __DIR__.DS.'..'.DS); // 定义根目录
+define('DB_PATH', ROOT_PATH.'sql'.DS.'db.sql');// 数据库
 
 // 判断文件或目录是否有写的权限
 function is_really_writable($file) {
@@ -36,54 +28,9 @@ function is_really_writable($file) {
 	return true;
 }
 
-// 写配置文件
-function write_ini_file($assoc_arr, $path, $has_sections = false) {
-	$content = "";
-	if($has_sections){
-		foreach($assoc_arr as $key => $elem){
-			$content .= "[".$key."]\n";
-			foreach($elem as $key2 => $elem2){
-				if(is_array($elem2)){
-					for($i = 0; $i < count($elem2); $i++){
-						$content .= $key2."[] = \"".$elem2[$i]."\"\n";
-					}
-				}elseif($elem2 == ""){
-					$content .= $key2." = \n";
-				}else{
-					$content .= $key2." = \"".$elem2."\"\n";
-				}
-			}
-		}
-	}else{
-		foreach($assoc_arr as $key => $elem){
-			if(is_array($elem)){
-				for($i = 0; $i < count($elem); $i++){
-					$content .= $key."[] = \"".$elem[$i]."\"\n";
-				}
-			}elseif($elem == ""){
-				$content .= $key." = \n";
-			}else{
-				$content .= $key." = \"".$elem."\"\n";
-			}
-		}
-	}
+$name = "ProxyPanel";
 
-	if(!$handle = fopen($path, 'w')){
-		return false;
-	}
-
-	if(!fwrite($handle, $content)){
-		return false;
-	}
-
-	fclose($handle);
-
-	return true;
-}
-
-$sitename = "OtakuCloud";
-
-// 检测目录是否存在
+// 检测依赖组件目录是否存在
 $checkDirs = [
 	'vendor',
 ];
@@ -100,11 +47,13 @@ $exampleConfigFile = ROOT_PATH.'.env.example';
 // 锁定的文件
 $lockFile = ROOT_PATH.'.env';
 if(is_file($lockFile)){
-	$errInfo = "当前已经安装{$sitename}，如果需要重新安装，请手动移除.env文件";
-}elseif(version_compare(PHP_VERSION, '7.1.3', '<')){
-	$errInfo = "当前PHP版本(".PHP_VERSION.")过低，请使用PHP7.1.3及以上版本";
+	$errInfo = "如果需要重新安装，请备份数据库后手动移除 .env 文件";
+}elseif(version_compare(PHP_VERSION, '7.3.0', '<')){
+	$errInfo = "当前PHP版本(".PHP_VERSION.")过低，请使用PHP7.3.0及以上版本";
+}elseif(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+	$errInfo = "当前系统环境为Windows，无法进行安装";
 }elseif(!is_file($exampleConfigFile)){
-	$errInfo = "缺失标准配置文件.env.example";
+	$errInfo = "缺失标准配置文件 .env.example";
 }elseif(!extension_loaded("PDO")){
 	$errInfo = "当前PHP环境未启用PDO组件，无法进行安装";
 }elseif(!is_really_writable(ROOT_PATH)){
@@ -123,7 +72,7 @@ if(is_file($lockFile)){
 	$dirArr = [];
 	foreach($checkDirs as $k => $v){
 		if(!is_dir(ROOT_PATH.$v)){
-			$errInfo = '请先在'.$sitename.'根目录下执行 php composer.phar install 安装依赖';
+			$errInfo = '请先在'.$name."根目录下执行<b>php composer.phar install</b> 安装依赖";
 			break;
 		}
 	}
@@ -138,41 +87,27 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 
 	$err = '';
 	$APP_KEY = md5(time().mt_rand(1, 1000000));
-	$DB_HOST = isset($_POST['mysqlHost'])? $_POST['mysqlHost'] : '127.0.0.1';
-	$DB_PORT = isset($_POST['mysqlHostport'])? $_POST['mysqlHostport'] : 3306;
+	$DB_HOST = isset($_POST['mysqlHost'])? trim($_POST['mysqlHost']) : '127.0.0.1';
+	$DB_PORT = isset($_POST['mysqlPort'])? trim($_POST['mysqlPort']) : 3306;
 	$hostArr = explode(':', $DB_HOST);
 	if(count($hostArr) > 1){
 		$DB_HOST = $hostArr[0];
 		$DB_PORT = $hostArr[1];
 	}
-	$DB_USERNAME = isset($_POST['mysqlUsername'])? $_POST['mysqlUsername'] : 'root';
-	$DB_PASSWORD = isset($_POST['mysqlPassword'])? $_POST['mysqlPassword'] : '';
-	$DB_DATABASE = isset($_POST['mysqlDatabase'])? $_POST['mysqlDatabase'] : 'proxypanel';
-	//    $adminUsername = isset($_POST['adminUsername']) ? $_POST['adminUsername'] : 'admin';
-	//    $adminPassword = isset($_POST['adminPassword']) ? $_POST['adminPassword'] : 'admin';
-	//    $adminPasswordConfirmation = isset($_POST['adminPasswordConfirmation']) ? $_POST['adminPasswordConfirmation'] : 'admin';
-	//    $adminEmail = isset($_POST['adminEmail']) ? $_POST['adminEmail'] : 'admin@admin.com';
-	//    if ($adminPassword !== $adminPasswordConfirmation) {
-	//        echo "两次输入的密码不一致";
-	//        exit;
-	//    } else if (!preg_match("/^\w+$/", $adminUsername)) {
-	//        echo "用户名只能输入字母、数字、下划线";
-	//        exit;
-	//    } else if (!preg_match("/^[\S]+$/", $adminPassword)) {
-	//        echo "密码不能包含空格";
-	//        exit;
-	//    } else if (strlen($adminUsername) < 3 || strlen($adminUsername) > 12) {
-	//        echo "用户名请输入3~12位字符";
-	//        exit;
-	//    } else if (strlen($adminPassword) < 6 || strlen($adminPassword) > 16 || stripos($adminPassword, ' ') !== false) {
-	//        echo "密码请输入6~16位字符,不能包含空格";
-	//        exit;
-	//    }
+	$DB_USERNAME = isset($_POST['mysqlUsername'])? trim($_POST['mysqlUsername']) : 'proxypanel';
+	$DB_PASSWORD = isset($_POST['mysqlPassword'])? trim($_POST['mysqlPassword']) : 'proxypanel';
+	$DB_DATABASE = isset($_POST['mysqlDatabase'])? trim($_POST['mysqlDatabase']) : 'proxypanel';
+
 	try{
-		// 检测能否读取安装文件
-		$sql = @file_get_contents(INSTALL_PATH.'db.sql');
+		// 检测能否读取数据库文件
+		$sql = @file_get_contents(DB_PATH);
 		if(!$sql){
-			throw new Exception("无法读取所需的sql/db.sql，请检查是否有读权限");
+			throw new Exception("无法读取所需的".DB_PATH."，请检查是否有读权限");
+		}
+
+		$config = @file_get_contents($exampleConfigFile);
+		if(!$config){
+			throw new Exception("无法读取配置.env.example文件，请检查是否有读权限");
 		}
 
 		$pdo = new PDO("mysql:host={$DB_HOST};port={$DB_PORT}", $DB_USERNAME, $DB_PASSWORD, [
@@ -191,21 +126,14 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 		$pdo->query("USE `{$DB_DATABASE}`");
 		$pdo->exec($sql);
 
-		$config = @file_get_contents($exampleConfigFile);
-		if(!$config){
-			throw new Exception("无法写入读取配置.env.example文件，请检查是否有读权限");
-		}
-
+		// 写入数据库配置到.env文件
 		$callback = function($matches) use ($APP_KEY, $DB_HOST, $DB_PORT, $DB_USERNAME, $DB_PASSWORD, $DB_DATABASE) {
 			$field = $matches[1];
 			$replace = ${"{$field}"};
 			return "{$matches[1]}={$replace}".PHP_EOL;
 		};
-
 		$config = preg_replace_callback("/(APP_KEY|DB_HOST|DB_DATABASE|DB_USERNAME|DB_PASSWORD|DB_PORT)=(.*)(\s+)/",
 			$callback, $config);
-
-		// 检测能否成功写入数据库配置
 		$result = @file_put_contents($ConfigFile, $config);
 		if(!$result){
 			throw new Exception("无法写入数据库信息到.env文件，请检查是否有写权限");
@@ -228,11 +156,11 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>安装<?php
-		echo $sitename; ?></title>
+		echo $name; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
 	<meta name="renderer" content="webkit">
 
-	<style type="text/css">
+	<style>
 		body {
 			background: #5c97bd;
 			margin: 0;
@@ -356,7 +284,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 <body>
 <div class="container">
 	<h2>安装 <?php
-		echo $sitename; ?></h2>
+		echo $name; ?></h2>
 	<div>
 		<form method="post">
 			<?php
@@ -393,58 +321,32 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 
 				<div class="form-field">
 					<label>MySQL 端口号</label>
-					<input type="number" name="mysqlHostport" value="3306">
+					<input type="number" name="mysqlPort" value="3306">
 				</div>
 			</div>
 
-			<!--            <div class="form-group">-->
-			<!--                <div class="form-field">-->
-			<!--                    <label>管理者用户名</label>-->
-			<!--                    <input name="adminUsername" value="admin" required=""/>-->
-			<!--                </div>-->
-			<!---->
-			<!--                <div class="form-field">-->
-			<!--                    <label>管理者Email</label>-->
-			<!--                    <input name="adminEmail" value="admin@admin.com" required="">-->
-			<!--                </div>-->
-			<!---->
-			<!--                <div class="form-field">-->
-			<!--                    <label>管理者密码</label>-->
-			<!--                    <input type="password" name="adminPassword" required="">-->
-			<!--                </div>-->
-			<!---->
-			<!--                <div class="form-field">-->
-			<!--                    <label>重复密码</label>-->
-			<!--                    <input type="password" name="adminPasswordConfirmation" required="">-->
-			<!--                </div>-->
-			<!--            </div>-->
-
 			<div class="form-buttons">
 				<button type="submit" <?php
-				echo $errInfo? 'disabled' : '' ?>>点击安装
+				echo $errInfo? 'disabled' : '' ?>>安装
 				</button>
 			</div>
 		</form>
 
-		<!-- jQuery -->
 		<script src="//cdn.staticfile.org/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
-
-		<script type="text/javascript">
+		<script>
 			$(function () {
 
 				$('form').on('submit', function (e) {
 					e.preventDefault();
 
-					var $button = $(this).find('button')
-						.text('安装中...')
-						.prop('disabled', true);
+					var $button = $(this).find('button').text('安装中...').prop('disabled', true);
 
 					$.post('', $(this).serialize())
 						.done(function (ret) {
 							if (ret === 'success') {
 								$('#error').hide();
-								$("#success").text("<?php echo $sitename; ?>安装成功，请使用默认用户名test@test.com、密码123456登录，并尽快修改密码并重置订阅地址。").show();
-								$('<a class="btn" href="./">进入ProxyPanel</a>').insertAfter($button);
+								$("#success").text("安装成功，请使用[用户名：test@test.com、密码：123456]登录").show();
+								$('<a class="btn" href="./admin/login">登录后台</a>').insertAfter($button);
 								$button.remove();
 								localStorage.setItem("fastep", "installed");
 							} else {

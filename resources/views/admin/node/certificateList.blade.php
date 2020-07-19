@@ -32,8 +32,8 @@
 						<tr>
 							<td> {{$vo->id}} </td>
 							<td> {{$vo->domain}} </td>
-							<td> {{$vo->key ? '✔' : '❌'}} </td>
-							<td> {{$vo->pem ? '✔' : '❌'}} </td>
+							<td> {{$vo->key ? '✔️' : '❌'}} </td>
+							<td> {{$vo->pem ? '✔️' : '❌'}} </td>
 							<td> {{$vo->issuer}} </td>
 							<td> {{$vo->from}} </td>
 							<td> {{$vo->to}} </td>
