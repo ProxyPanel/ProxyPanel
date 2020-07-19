@@ -18,6 +18,7 @@ class TrojanController extends BaseController {
 			'speed_limit'  => $node->speed_limit,
 			'client_limit' => $node->client_limit,
 			'push_port'    => $node->push_port,
+			'redirect_url' => Helpers::systemConfig()['redirect_url'],
 			'trojan_port'  => $node->port,
 			'secret'       => $node->auth->secret,
 			'license'      => Helpers::systemConfig()['trojan_license'],

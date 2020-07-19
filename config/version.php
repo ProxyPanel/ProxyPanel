@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'number' => '210',
-    'name' => 'SSRPanel_OtakuMod'
+    'number' => '2.4.a',
+    'name' => 'ProxyPanel'
 ];

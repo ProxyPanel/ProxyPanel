@@ -209,6 +209,20 @@
 											<span class="offset-md-3 text-help"> 自定义维护内容信息 </span>
 										</div>
 									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3" for="redirect_url">重定向地址</label>
+											<div class="col-md-6">
+												<div class="input-group">
+													<textarea class="form-control" rows="3" id="redirect_url">{{$redirect_url}}</textarea>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('redirect_url')">修改</button>
+													</span>
+												</div>
+											</div>
+											<span class="offset-md-3 text-help"> 触发审计规则时访问请求被阻断并重定向至该地址 </span>
+										</div>
+									</div>
 								</div>
 							</form>
 						</div>
@@ -506,6 +520,7 @@
 													</span>
 												</div>
 											</div>
+											<span class="text-help offset-md-3">后端自动签发/载入TLS证书时用（节点的设置值优先级高于此处）</span>
 										</div>
 									</div>
 								</div>

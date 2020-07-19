@@ -671,11 +671,10 @@
 				'<ol>' +
 				'<li>请勿直接复制黏贴以下配置，SSR(R)会报错的</li>' +
 				'<li>确保服务器时间为CST</li>' +
-				'<li>具体请看<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank">WIKI</a></li>' +
 				'</ol>' +
 				'&emsp;&emsp;"additional_ports" : {<br />' +
 				'&emsp;&emsp;&emsp;"443": {<br />' +
-				'&emsp;&emsp;&emsp;&emsp;"passwd": "@HentaiCloud!",<br />' +
+				'&emsp;&emsp;&emsp;&emsp;"passwd": "ProxyPanel",<br />' +
 				'&emsp;&emsp;&emsp;&emsp;"method": "none",<br />' +
 				'&emsp;&emsp;&emsp;&emsp;"protocol": "auth_chain_a",<br />' +
 				'&emsp;&emsp;&emsp;&emsp;"protocol_param": "#",<br />' +

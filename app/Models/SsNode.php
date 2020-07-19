@@ -53,7 +53,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \Illuminate\Support\Carbon                                              $created_at
  * @property \Illuminate\Support\Carbon                                              $updated_at
  * @property-read \App\Models\NodeAuth|null                                          $auth
- * @property-read mixed                                                              $type_label
+ * @property-read string                                                             $type_label
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SsNodeLabel[] $label
  * @property-read int|null                                                           $label_count
  * @method static Builder|SsNode newModelQuery()
@@ -128,6 +128,9 @@ class SsNode extends Model {
 				break;
 			case 3:
 				$type_label = 'Trojan';
+				break;
+			case 4:
+				$type_label = 'VNet';
 				break;
 			default:
 				$type_label = 'UnKnown';
