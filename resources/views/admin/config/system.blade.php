@@ -214,7 +214,7 @@
 											<label class="col-md-3" for="redirect_url">重定向地址</label>
 											<div class="col-md-6">
 												<div class="input-group">
-													<textarea class="form-control" rows="3" id="redirect_url">{{$redirect_url}}</textarea>
+													<input type="text" class="form-control" id="redirect_url" value="{{$redirect_url}}"/>
 													<span class="input-group-append">
 														<button class="btn btn-primary" type="button" onclick="update('redirect_url')">修改</button>
 													</span>
