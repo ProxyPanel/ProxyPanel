@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserCreditLog;
 use App\Models\UserSubscribe;
 use App\Models\UserTrafficModifyLog;
+use Str;
 
 class Helpers {
 	// 不生成的端口
@@ -82,7 +83,7 @@ class Helpers {
 		// 生成一个可用端口
 		$user->port = self::systemConfig()['is_rand_port']? self::getRandPort() : self::getOnlyPort();
 		$user->passwd = makeRandStr();
-		$user->vmess_id = createGuid();
+		$user->vmess_id = Str::uuid();
 		$user->enable = 1;
 		$user->method = self::getDefaultMethod();
 		$user->protocol = self::getDefaultProtocol();

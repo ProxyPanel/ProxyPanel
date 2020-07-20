@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Http\Controllers\Gateway\BitpayX;
 use App\Http\Controllers\Gateway\CodePay;
+use App\Http\Controllers\Gateway\EPay;
 use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\Local;
 use App\Http\Controllers\Gateway\PayJs;
@@ -53,6 +54,8 @@ class PaymentController extends Controller {
 				return new BitpayX();
 			case 'paypal':
 				return new PayPal();
+			case 'epay':
+				return new EPay();
 			default:
 				Log::error("未知支付：".self::$method);
 
@@ -189,7 +192,7 @@ class PaymentController extends Controller {
 			Helpers::addCouponLog($coupon->id, $goods_id, $order->oid, '订单支付使用');
 		}
 
-		$request->merge(['oid' => $order->oid, 'amount' => $amount, 'type' => $request->input('pay_type')]);
+		$request->merge(['oid' => $order->oid, 'amount' => $amount, 'type' => $pay_type]);
 
 		// 生成支付单
 		return self::getClient()->purchase($request);

@@ -44,7 +44,7 @@
 								@if($node->is_relay)
 									中转
 								@else
-									{{$node->type == 2 ? 'V2' : 'SSR'}}
+									{{$node->type_label}}
 								@endif
 							</td>
 							<td> {{$node->name}} </td>

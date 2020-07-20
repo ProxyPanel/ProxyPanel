@@ -43,6 +43,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Redirect;
 use Response;
 use Session;
+use Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Validator;
 
@@ -246,7 +247,7 @@ class AdminController extends Controller {
 			$user->password = Hash::make($request->input('password')?: makeRandStr());
 			$user->port = $request->input('port')?: $this->makePort();
 			$user->passwd = $request->input('passwd')?: makeRandStr();
-			$user->vmess_id = $request->input('uuid')?: createGuid();
+			$user->vmess_id = $request->input('uuid')?: Str::uuid();
 			$user->transfer_enable = toGB($request->input('transfer_enable')?: 0);
 			$user->enable = $request->input('enable')?: 0;
 			$user->method = $request->input('method');
@@ -367,7 +368,7 @@ class AdminController extends Controller {
 					'email'           => $email,
 					'port'            => $port,
 					'passwd'          => $request->input('passwd')?: makeRandStr(),
-					'vmess_id'        => $request->input('uuid')?: createGuid(),
+					'vmess_id'        => $request->input('uuid')?: Str::uuid(),
 					'transfer_enable' => toGB($transfer_enable?: 0),
 					'enable'          => $status < 0? 0 : $request->input('enable'),
 					'method'          => $request->input('method'),
@@ -1150,6 +1151,11 @@ class AdminController extends Controller {
 					if(!self::$systemConfig['codepay_url'] || !self::$systemConfig['codepay_id']
 					   || !self::$systemConfig['codepay_key']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【码支付】必要参数']);
+					}
+					break;
+				case 'epay':
+					if(!self::$systemConfig['epay_url'] || !self::$systemConfig['epay_mch_id'] || !self::$systemConfig['epay_key']){
+						return Response::json(['status' => 'fail', 'message' => '请先设置【易支付】必要参数']);
 					}
 					break;
 				case 'payjs':

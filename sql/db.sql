@@ -416,7 +416,10 @@ VALUES ('1', 'is_rand_port', 0),
        ('109', 'paypal_secret', ''),
        ('110', 'paypal_certificate', ''),
        ('111', 'paypal_app_id', ''),
-       ('112', 'redirect_url', '');
+       ('112', 'redirect_url', ''),
+       ('113', 'epay_url', ''),
+       ('114', 'epay_mch_id', ''),
+       ('115', 'epay_key', '');
 
 -- ----------------------------
 -- Table structure for article
