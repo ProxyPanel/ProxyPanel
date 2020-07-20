@@ -432,7 +432,7 @@
 			$('#passwd').val('{{$node->passwd}}');
 			$("input[name='type'][value='{{$node->type}}']").click();
 
-			@if($node->type==1)
+			@if($node->type == 1 || $node->type == 4)
 			// ShadowsocksR
 			$('#method').selectpicker('val', '{{$node->method}}');
 			$('#protocol').selectpicker('val', '{{$node->protocol}}');
@@ -444,7 +444,7 @@
 			@endif
 			@endif
 
-			@if($node->type==2)
+			@if($node->type == 2)
 			//V2Ray
 			$('#v2_alter_id').val('{{$node->v2_alter_id}}');
 			$('#v2_port').val('{{$node->v2_port}}');

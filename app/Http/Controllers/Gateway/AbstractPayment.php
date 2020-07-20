@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
+use Str;
 
 abstract class AbstractPayment {
 	protected static $systemConfig;
@@ -26,7 +27,7 @@ abstract class AbstractPayment {
 
 	protected function postPayment($data, $method): int {
 		// 获取需要的信息
-		$payment = Payment::whereTradeNo($data)->first();
+		$payment = Payment::whereTradeNo($data)->latest()->first();
 		// 是否为余额购买套餐
 		if($payment){
 			Payment::whereTradeNo($data)->update(['status' => 1]);
@@ -120,9 +121,7 @@ abstract class AbstractPayment {
 						User::query()->whereId($order->user->referral_uid)->increment('invite_num', 1);
 					}
 					//按照返利模式进行返利判断
-					if(self::$systemConfig['referral_type'] == 2
-					   || (self::$systemConfig['referral_type'] == 1
-					       && !$referral)){
+					if(self::$systemConfig['referral_type'] == 2 || (self::$systemConfig['referral_type'] == 1 && !$referral)){
 						$this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount,
 							$order->amount * self::$systemConfig['referral_percent']);
 					}
@@ -155,33 +154,19 @@ abstract class AbstractPayment {
 		$log->amount = $amount;
 		$log->ref_amount = $refAmount;
 		$log->status = 0;
-		$log->save();
 
-		return 0;
+		return $log->save();
 	}
 
 	protected function creatNewPayment($uid, $oid, $amount): Payment {
 		$payment = new Payment();
-		$payment->trade_no = self::generateGuid();
+		$payment->trade_no = substr(str_replace('-', '', Str::uuid()), 0, 8);
 		$payment->user_id = $uid;
 		$payment->oid = $oid;
 		$payment->amount = $amount;
 		$payment->save();
 
 		return $payment;
-	}
-
-	public static function generateGuid(): string {
-		mt_srand((double) microtime() * 10000);
-		$charId = strtoupper(md5(uniqid(mt_rand() + time(), true)));
-		$hyphen = chr(45);
-		$uuid = chr(123).substr($charId, 0, 8).$hyphen.substr($charId, 8, 4).$hyphen.substr($charId, 12,
-				4).$hyphen.substr($charId, 16, 4).$hyphen.substr($charId, 20, 12).chr(125);
-
-		$uuid = str_replace(['}', '{', '-'], '', $uuid);
-		$uuid = substr($uuid, 0, 8);
-
-		return $uuid;
 	}
 
 	/**

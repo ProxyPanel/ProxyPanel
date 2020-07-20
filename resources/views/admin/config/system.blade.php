@@ -1112,6 +1112,7 @@
 												<option value="">关闭</option>
 												<option value="f2fpay">F2F</option>
 												<option value="codepay">码支付</option>
+												<option value="epay">易支付</option>
 											</select>
 										</div>
 									</div>
@@ -1121,6 +1122,7 @@
 											<select class="col-md-3" id="is_QQPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_QQPay')">
 												<option value="">关闭</option>
 												<option value="codepay">码支付</option>
+												<option value="epay">易支付</option>
 											</select>
 										</div>
 									</div>
@@ -1131,6 +1133,7 @@
 												<option value="">关闭</option>
 												<option value="codepay">码支付</option>
 												<option value="payjs">PayJS</option>
+												<option value="epay">易支付</option>
 											</select>
 										</div>
 									</div>
@@ -1268,6 +1271,55 @@
 													<input type="text" class="form-control" id="codepay_key" value="{{$codepay_key}}"/>
 													<span class="input-group-append">
 														<button class="btn btn-primary" type="button" onclick="update('codepay_key')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row pb-70">
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label">易支付</label>
+											<div class="col-md-7">
+												{{--												请到 <a href="https://codepay.fateqq.com/i/377289" target="_blank">码支付</a>申请账号，然后下载登录其挂机软件--}}
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="epay_url">请求URL</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="epay_url" value="{{$epay_url}}" placeholder="https://www.example.com"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('epay_url')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="epay_mch_id">商户ID</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="epay_mch_id" value="{{$epay_mch_id}}"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('epay_mch_id')">修改</button>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="epay_key">商户签名</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="text" class="form-control" id="epay_key" value="{{$epay_key}}"/>
+													<span class="input-group-append">
+														<button class="btn btn-primary" type="button" onclick="update('epay_key')">修改</button>
 													</span>
 												</div>
 											</div>

@@ -12,22 +12,13 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller as BaseController;
 use RuntimeException;
+use Str;
 
 class Controller extends BaseController {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-	// 生成随机密码
-	public function makePasswd() {
-		return makeRandStr();
-	}
-
-	// 生成UUID
-	public function makeUUID() {
-		return createGuid();
-	}
-
 	// 生成网站安全码
-	public function makeSecurityCode() {
+	public function makeSecurityCode(): string {
 		return strtolower(makeRandStr(8));
 	}
 
