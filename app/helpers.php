@@ -1,6 +1,6 @@
 <?php
 
-use App\Components\Curl;
+use GuzzleHttp\Client;
 
 define('KB', 1024);
 define('MB', 1048576);
@@ -163,48 +163,17 @@ if(!function_exists('getClientIP')){
 
 // 获取IPv6信息
 if(!function_exists('getIPv6')){
-	/*
-	 * {
-	 *     "longitude": 105,
-	 *     "latitude": 35,
-	 *     "area_code": "0",
-	 *     "dma_code": "0",
-	 *     "organization": "AS23910 China Next Generation Internet CERNET2",
-	 *     "country": "China",
-	 *     "ip": "2001:da8:202:10::36",
-	 *     "country_code3": "CHN",
-	 *     "continent_code": "AS",
-	 *     "country_code": "CN"
-	 * }
-	 *
-	 * {
-	 *     "longitude": 105,
-	 *     "latitude": 35,
-	 *     "area_code": "0",
-	 *     "dma_code": "0",
-	 *     "organization": "AS9808 Guangdong Mobile Communication Co.Ltd.",
-	 *     "country": "China",
-	 *     "ip": "2409:8a74:487:1f30:5178:e5a5:1f36:3525",
-	 *     "country_code3": "CHN",
-	 *     "continent_code": "AS",
-	 *     "country_code": "CN"
-	 * }
-	 */
 	function getIPv6($ip) {
-		$url = 'https://api.ip.sb/geoip/'.$ip;
+		$client = new Client(['timeout' => 5]);
+		$request = $client->get('https://api.ip.sb/geoip/'.$ip);
+		$message = json_decode($request->getBody(), true);
 
-		try{
-			$result = json_decode(Curl::send($url), true);
-			if(!is_array($result) || isset($result['code'])){
-				throw new RuntimeException('解析IPv6异常：'.$ip);
-			}
-
-			return $result;
-		}catch(Exception $e){
-			Log::error($e->getMessage());
-
-			return [];
+		if($request->getStatusCode() == 200){
+			return $message;
 		}
+
+		Log::debug('解析IPv6异常：'.$ip.PHP_EOL.var_export($request, true));
+		return false;
 	}
 }
 

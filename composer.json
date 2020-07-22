@@ -16,7 +16,7 @@
 	"barryvdh/laravel-debugbar": "^3",
 	"barryvdh/laravel-ide-helper": "^2.7",
 	"fideloper/proxy": "^4.3",
-	"guzzlehttp/guzzle": "^6.5",
+	"guzzlehttp/guzzle": "^6",
 	"ipip/db": "^1.0",
 	"itbdw/ip-database": "^2.0",
 	"jenssegers/agent": "^2.6",

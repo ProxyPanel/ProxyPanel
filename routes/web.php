@@ -13,8 +13,8 @@ Route::group(['middleware' => ['isForbidden', 'affiliate', 'isMaintenance']], fu
 	Route::get('active/{token}', 'AuthController@active'); // 激活账号
 	Route::post('sendCode', 'AuthController@sendCode'); // 发送注册验证码
 	Route::get('free', 'AuthController@free'); // 免费邀请码
-	Route::get('makePasswd', makeRandStr()); // 生成随机密码
-	Route::get('makeUUID', Str::uuid()); // 生成UUID
+	Route::get('makePasswd', 'Controller@makePasswd'); // 生成随机密码
+	Route::get('makeUUID', 'Controller@makeUUID'); // 生成UUID
 	Route::get('makeSecurityCode', 'Controller@makeSecurityCode'); // 生成网站安全码
 });
 Route::any('admin/login', 'AuthController@login')->middleware('isForbidden', 'isSecurity'); // 登录

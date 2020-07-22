@@ -17,6 +17,16 @@ use Str;
 class Controller extends BaseController {
 	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+	// 生成随机密码
+	public function makePasswd() {
+		return makeRandStr();
+	}
+
+	// 生成UUID
+	public function makeUUID() {
+		return Str::uuid();
+	}
+
 	// 生成网站安全码
 	public function makeSecurityCode(): string {
 		return strtolower(makeRandStr(8));

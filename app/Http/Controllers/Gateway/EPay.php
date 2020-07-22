@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Components\Curl;
 use App\Models\Payment;
 use Auth;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
 class EPay extends AbstractPayment {
+	// Todo Debug测试
 	public function purchase(Request $request): JsonResponse {
 		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
@@ -39,7 +40,14 @@ class EPay extends AbstractPayment {
 		];
 		$data['sign'] = $this->sign($this->prepareSign($data));
 
-		$result = json_decode(Curl::send(self::$systemConfig['epay_url'].'/submit.php', $data), true);
+		$client = new Client(['timeout' => 5]);
+		$request = $client->get(self::$systemConfig['epay_url'].'/submit.php');
+		$result = json_decode($request->getBody(), true);
+
+		if($request->getStatusCode() != 200){
+			return Response::json(['status' => 'fail', 'message' => '网关处理失败!']);
+		}
+
 		if(!$result){
 			return Response::json(['status' => 'fail', 'message' => '支付处理失败!']);
 		}
