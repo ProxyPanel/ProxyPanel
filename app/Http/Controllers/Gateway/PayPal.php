@@ -3,11 +3,11 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Components\Curl;
 use App\Models\Order;
 use App\Models\Payment;
 use Auth;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -40,8 +40,10 @@ class PayPal extends AbstractPayment {
 		];
 		$this->provider->setApiCredentials($config);
 		$this->exChange = 7;
-		$exChangeRate = json_decode(Curl::send('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4'),
-			true);
+		$client = new Client(['timeout' => 5]);
+		$exChangeRate = json_decode($client->get('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4')
+		                                   ->getBody(), true);
+
 		if($exChangeRate && $exChangeRate['success']){
 			$this->exChange = $exChangeRate['result']['rate'];
 		}

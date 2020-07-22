@@ -1212,23 +1212,23 @@ class AdminController extends Controller {
 	public function sendTestNotification(): JsonResponse {
 		if(self::$systemConfig['is_notification']){
 			$result = PushNotification::send('这是测试的标题', 'ProxyPanel测试内容');
-			if($result == false){
+			if($result === false){
 				return Response::json(['status' => 'fail', 'message' => '发送失败，请重新尝试！']);
 			}
 			switch(self::$systemConfig['is_notification']){
 				case 'serverChan':
-					if(!$result->errno){
+					if(!$result['errno']){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
 					}
 
-					return Response::json(['status' => 'fail', 'message' => $result? $result->errmsg : '未知']);
+					return Response::json(['status' => 'fail', 'message' => $result? $result['errmsg'] : '未知']);
 					break;
 				case 'bark':
-					if($result->code == 200){
+					if($result['code'] == 200){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
 					}
 
-					return Response::json(['status' => 'fail', 'message' => $result->message]);
+					return Response::json(['status' => 'fail', 'message' => $result['message']]);
 					break;
 				default:
 			}

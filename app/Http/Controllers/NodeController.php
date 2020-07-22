@@ -453,12 +453,15 @@ class NodeController extends Controller {
 		$result = NetworkDetection::ping($node->is_ddns? $node->server : $node->ip);
 
 		if($result){
-			$data[0] = $result['China Telecom']['time']?: '无';
-			$data[1] = $result['China Unicom']['time']?: '无';
-			$data[2] = $result['China Mobile']['time']?: '无';
-			$data[3] = $result['Hong Kong']['time']?: '无';
-
-			return Response::json(['status' => 'success', 'message' => $data]);
+			return Response::json([
+				'status'  => 'success',
+				'message' => [
+					$result['telecom']['time']?: '无',//电信
+					$result['Unicom']['time']?: '无',// 联通
+					$result['move']['time']?: '无',// 移动
+					$result['HongKong']['time']?: '无'// 香港
+				]
+			]);
 		}
 
 		return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
