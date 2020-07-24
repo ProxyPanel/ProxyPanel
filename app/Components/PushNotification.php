@@ -3,9 +3,8 @@
 
 namespace App\Components;
 
-use Exception;
+use GuzzleHttp\Client;
 use Log;
-use stdClass;
 
 class PushNotification {
 	public static function send($title, $content) {
@@ -30,27 +29,24 @@ class PushNotification {
 	 * @return mixed
 	 */
 	private static function ServerChan($title, $content) {
-		$ret = false;
-		try{
-			// TODO：一天仅可发送不超过500条
-			$url = 'https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content);
-			$result = json_decode(Curl::send($url), true);
-			if(empty(Helpers::systemConfig()['server_chan_key'])){
-				$result = new stdClass();
-				$result->errno = true;
-				$result->errmsg = "未正确配置ServerChan";
-			}
-			if($result != null && !$result->errno){
+		// TODO：一天仅可发送不超过500条
+		$client = new Client(['timeout' => 5]);
+		$request = $client->get('https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content));
+		$message = json_decode($request->getBody(), true);
+		Log::debug($message);
+		// 发送成功
+		if($request->getStatusCode() == 200){
+			if(!$message['errno']){
 				Helpers::addNotificationLog($title, $content, 2);
-				$ret = true;
-			}else{
-				Helpers::addNotificationLog($title, $content, 2, 'admin', 1, $result? $result->errmsg : '未知');
+				return $message;
 			}
-		}catch(Exception $e){
-			Log::error('ServerChan消息推送异常：'.$e);
+			// 发送失败
+			Helpers::addNotificationLog($title, $content, 2, 'admin', -1, $message? $message['errmsg'] : '未知');
+			return false;
 		}
-
-		return $ret;
+		// 发送错误
+		Log::debug('ServerChan消息推送异常：'.var_export($request, true));
+		return false;
 	}
 
 	/**
@@ -62,22 +58,22 @@ class PushNotification {
 	 * @return mixed
 	 */
 	private static function Bark($title, $content) {
-		$ret = false;
-		try{
-			$url = 'https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content;
-			$result = json_decode(Curl::send($url), true);
-			if($result){
-				if($result->code == 200){
-					Helpers::addNotificationLog($title, $content, 3);
-					$ret = true;
-				}else{
-					Helpers::addNotificationLog($title, $content, 3, 'admin', $result->message);
-				}
-			}
-		}catch(Exception $e){
-			Log::error('Bark消息推送异常：'.$e);
-		}
+		$client = new Client(['timeout' => 5]);
+		$request = $client->get('https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content);
+		$message = json_decode($request->getBody(), true);
 
-		return $ret;
+		if($request->getStatusCode() == 200){
+			// 发送成功
+			if($message['code'] == 200){
+				Helpers::addNotificationLog($title, $content, 3);
+				return $message;
+			}
+			// 发送失败
+			Helpers::addNotificationLog($title, $content, 3, 'admin', -1, $message);
+			return false;
+		}
+		// 发送错误
+		Log::debug('Bark消息推送异常：'.var_export($request, true));
+		return false;
 	}
 }

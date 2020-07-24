@@ -1282,13 +1282,14 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">易支付</label>
 											<div class="col-md-7">
+												<button class="btn btn-primary" type="button" onclick="epayInfo()">咨询查询</button>
 												{{--												请到 <a href="https://codepay.fateqq.com/i/377289" target="_blank">码支付</a>申请账号，然后下载登录其挂机软件--}}
 											</div>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="epay_url">请求URL</label>
+											<label class="col-md-3 col-form-label" for="epay_url">接口对接地址</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="epay_url" value="{{$epay_url}}" placeholder="https://www.example.com"/>
@@ -1314,7 +1315,7 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="epay_key">商户签名</label>
+											<label class="col-md-3 col-form-label" for="epay_key">商户密钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="epay_key" value="{{$epay_key}}"/>
@@ -1561,6 +1562,20 @@
 		function makeWebsiteSecurityCode() {
 			$.get("/makeSecurityCode", function (ret) {
 				$("#website_security_code").val(ret);
+			});
+		}
+
+		function epayInfo() {
+			$.get("/admin/epayInfo", function (ret) {
+				if (ret.status === 'success') {
+					swal.fire({
+						title: '易支付信息(仅供参考)',
+						html: '商户状态: ' + ret.data["active"] + ' | 账号余额： ' + ret.data["money"] + ' | 结算账号：' + ret.data["account"]+'<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data["alirate"]) + '% | 微信 - ' + (100 - ret.data["wxrate"]) + '% | QQ钱包 - ' + (100 - ret.data["qqrate"]) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+						type: 'info'
+					});
+				} else {
+					swal.fire({title: ret.message, type: 'error'});
+				}
 			});
 		}
 	</script>

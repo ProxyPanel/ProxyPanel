@@ -10,8 +10,6 @@ use Log;
 use Response;
 
 class BitpayX extends AbstractPayment {
-	private $bitpayGatewayUrl = 'https://api.mugglepay.com/v1/';
-
 	public function purchase($request): JsonResponse {
 		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
@@ -26,7 +24,6 @@ class BitpayX extends AbstractPayment {
 			'success_url'       => parent::$systemConfig['website_url'].'/invoices',
 			'cancel_url'        => parent::$systemConfig['website_url'],
 			'token'             => $this->sign($this->prepareSignId($payment->trade_no)),
-
 		];
 
 		$result = json_decode($this->mprequest($data), true);
@@ -55,12 +52,13 @@ class BitpayX extends AbstractPayment {
 			'secret'            => parent::$systemConfig['bitpay_secret'],
 			'type'              => 'FIAT'
 		];
+		ksort($data_sign);
 
-		return http_build_query(ksort($data_sign));
+		return http_build_query($data_sign);
 	}
 
 	private function mprequest($data, $type = 'pay') {
-		$client = new Client(['base_uri' => $this->bitpayGatewayUrl, 'timeout' => 10]);
+		$client = new Client(['base_uri' => 'https://api.mugglepay.com/v1/', 'timeout' => 10]);
 
 		if($type === 'query'){
 			$request = $client->get('orders/merchant_order_id/status?id='.$data['merchant_order_id'],

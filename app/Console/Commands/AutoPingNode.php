@@ -33,10 +33,10 @@ class AutoPingNode extends Command {
 		if($result){
 			$obj = new SsNodePing();
 			$obj->node_id = $nodeId;
-			$obj->ct = intval($result['China Telecom']['time']);
-			$obj->cu = intval($result['China Unicom']['time']);
-			$obj->cm = intval($result['China Mobile']['time']);
-			$obj->hk = intval($result['Hong Kong']['time']);
+			$obj->ct = intval($result['telecom']['time']);//电信
+			$obj->cu = intval($result['Unicom']['time']);// 联通
+			$obj->cm = intval($result['move']['time']);// 移动
+			$obj->hk = intval($result['HongKong']['time']);// 香港
 			$obj->save();
 		}else{
 			Log::info("【".$ip."】Ping测速获取失败");

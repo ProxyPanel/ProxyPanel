@@ -2,7 +2,7 @@
 
 namespace App\Components;
 
-use Exception;
+use GuzzleHttp\Client;
 use Log;
 use LSS\XML2Array;
 
@@ -10,6 +10,7 @@ class Namesilo {
 	protected static $host;
 	protected static $systemConfig;
 
+	// Todo Debug测试
 	public function __construct() {
 		self::$host = 'https://www.namesilo.com/api/';
 		self::$systemConfig = Helpers::systemConfig();
@@ -31,27 +32,28 @@ class Namesilo {
 
 		$content = '请求操作：['.$operation.'] --- 请求数据：['.http_build_query($query).']';
 
-		try{
-			$result = Curl::send(self::$host.$operation.'?'.http_build_query($query));
-			$result = XML2Array::createArray($result);
+		$client = new Client(['timeout' => 10]);
+		$request = $client->get(self::$host.$operation.'?'.http_build_query($query));
+		$result = XML2Array::createArray(json_decode($request->getBody(), true));
 
-			// 出错
-			if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] !== 'success'){
-				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-					self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
-			}else{
-				Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-					self::$systemConfig['webmaster_email'], 1, $result['namesilo']['reply']['detail']);
-			}
-
-			return $result['namesilo']['reply'];
-		}catch(Exception $e){
-			Log::error('CURL请求失败：'.$e->getMessage().' --- '.$e->getLine());
+		if($request->getStatusCode() != 200){
+			Log::error('请求失败：'.var_export($request, true));
 			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-				self::$systemConfig['webmaster_email'], 0, $e->getMessage());
+				self::$systemConfig['webmaster_email'], 0, var_export($request, true));
 
 			return false;
 		}
+
+		// 出错
+		if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] !== 'success'){
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+				self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
+		}else{
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+				self::$systemConfig['webmaster_email'], 1, $result['namesilo']['reply']['detail']);
+		}
+
+		return $result['namesilo']['reply'];
 	}
 
 	// 列出指定域名的所有DNS记录

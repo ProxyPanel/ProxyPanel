@@ -67,6 +67,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post('sendTestNotification', 'AdminController@sendTestNotification'); //推送通知测试
 		Route::any('profile', 'AdminController@profile'); // 修改个人信息
 		Route::get('makePort', 'AdminController@makePort'); // 生成端口
+		Route::get('epayInfo', 'Gateway\EPay@queryInfo');// 易支付信息
 
 		//返利相关
 		Route::group(['namespace' => 'Admin'], function() {
@@ -212,5 +213,5 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 
 Route::group(['prefix' => 'callback'], function() {
 	Route::get('checkout', 'Gateway\PayPal@getCheckout');
-	Route::post('notify', 'PaymentController@notify'); //支付回调
+	Route::any('notify', 'PaymentController@notify'); //支付回调
 });

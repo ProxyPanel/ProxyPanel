@@ -27,7 +27,6 @@ class EPay extends AbstractPayment {
 				break;
 		}
 
-
 		$data = [
 			'pid'          => self::$systemConfig['epay_mch_id'],
 			'type'         => $type,
@@ -36,7 +35,7 @@ class EPay extends AbstractPayment {
 			'return_url'   => self::$systemConfig['website_url'].'/invoices',
 			'name'         => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
 			'money'        => $payment->amount,
-
+			'sign_type'    => 'MD5'
 		];
 		$data['sign'] = $this->sign($this->prepareSign($data));
 
@@ -59,26 +58,40 @@ class EPay extends AbstractPayment {
 
 	// 签名字符串
 	private function sign($data): string {
-		return strtolower(md5($data.self::$systemConfig['epay_key']));
-	}
-
-	private function prepareSign($data): string {
+		unset($data['sign'], $data['sign_type']);
+		array_filter($data);
 		ksort($data);
-		return http_build_query($data);
+		reset($data);
+
+		return md5(urldecode(http_build_query($data).self::$systemConfig['epay_key']));
 	}
 
 	public function notify(Request $request): void {
-
-		if(!$this->verify($request->all(), $request->input('sign'))){
-			die('FAIL');
+		if($this->verify($request->except('method'), $request->input('sign'))
+		   && $request->input('trade_status') == 'TRADE_SUCCESS'){
+			$this->postPayment($request->input('out_trade_no'), 'EPay');
+			die('SUCCESS');
 		}
-		$this->postPayment($request->input('out_trade_no'), 'EPay');
-		die('SUCCESS');
+		die('FAIL');
 	}
 
 	// 验证签名
 	private function verify($data, $signature): bool {
-		unset($data['sign']);
-		return $this->sign($this->prepareSign($data)) === $signature;
+		return $this->sign($data) === $signature;
+	}
+
+	public function queryInfo(): JsonResponse {
+		$request = self::$client->get('api.php', [
+			'query' => [
+				'act' => 'query',
+				'pid' => self::$systemConfig['epay_mch_id'],
+				'key' => self::$systemConfig['epay_key']
+			]
+		]);
+		if($request->getStatusCode() == 200){
+			return Response::json(['status' => 'success', 'data' => json_decode($request->getBody(), true)]);
+		}
+
+		return Response::json(['status' => 'fail', 'message' => '获取失败！请检查配置信息']);
 	}
 }
