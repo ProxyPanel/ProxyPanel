@@ -160,7 +160,7 @@ abstract class AbstractPayment {
 
 	protected function creatNewPayment($uid, $oid, $amount): Payment {
 		$payment = new Payment();
-		$payment->trade_no = substr(str_replace('-', '', Str::uuid()), 0, 8);
+		$payment->trade_no = makeRandStr(8);
 		$payment->user_id = $uid;
 		$payment->oid = $oid;
 		$payment->amount = $amount;

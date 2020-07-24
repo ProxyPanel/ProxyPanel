@@ -19,7 +19,7 @@ if(!function_exists('makeRandStr')){
 	function makeRandStr($length = 6, $isNumbers = false) {
 		// 密码字符集，可任意添加你需要的字符
 		if(!$isNumbers){
-			$chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
+			$chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ0123456789';
 		}else{
 			$chars = '0123456789';
 		}
