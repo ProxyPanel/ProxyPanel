@@ -12,7 +12,10 @@
 		<div class="panel">
 			<div class="panel-heading">
 				<h3 class="panel-title">节点列表</h3>
-				<div class="panel-actions">
+				<div class="panel-actions btn-group">
+					<button type="button" onclick="refreshGeo()" class="btn btn-info">
+						<i class="icon wb-map"></i> 刷新节点地理信息
+					</button>
 					<a href="/node/add" class="btn btn-primary"><i class="icon wb-plus"></i> 添加节点</a>
 				</div>
 			</div>
@@ -63,6 +66,9 @@
 							</td>
 							<td>
 								<div class="btn-group">
+									<button type="button" onclick="refreshGeo('{{$node->id}}')" class="btn btn-primary">
+										<i id="geo{{$node->id}}" class="icon wb-map"></i>
+									</button>
 									<a href="javascript:pingNode('{{$node->id}}')" class="btn btn-primary">
 										<i id="ping{{$node->id}}" class="icon wb-order"></i>
 									</a>
@@ -102,10 +108,9 @@
 @endsection
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-			type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		//节点连通性测试
+		// 节点连通性测试
 		function checkNode(id) {
 			$.ajax({
 				type: "POST",
@@ -123,7 +128,7 @@
 							showConfirmButton: false
 						})
 					} else {
-						swal.fire({title: ret.title, type: "error"})
+						swal.fire({title: ret.title, text: ret.message, type: "error"})
 					}
 				},
 				complete: function () {
@@ -132,7 +137,7 @@
 			});
 		}
 
-		//Ping 节点获取延迟
+		// Ping节点获取延迟
 		function pingNode(id) {
 			$.ajax({
 				type: "POST",
@@ -149,11 +154,33 @@
 							showConfirmButton: false
 						})
 					} else {
-						swal.fire({title: ret.title, type: "error"})
+						swal.fire({title: ret.message, type: "error"})
 					}
 				},
 				complete: function () {
 					$("#ping" + id).removeClass("wb-loop icon-spin").addClass("wb-order");
+				}
+			});
+		}
+
+		// 刷新节点地理信息
+		function refreshGeo(id) {
+			$.ajax({
+				type: "GET",
+				url: '/node/refreshGeo',
+				data: {_token: '{{csrf_token()}}', id: id},
+				beforeSend: function () {
+					$("#geo" + id).removeClass("wb-map").addClass("wb-loop icon-spin");
+				},
+				success: function (ret) {
+					if (ret.status === 'success') {
+						swal.fire({type: 'info', title: ret.message, showConfirmButton: false})
+					} else {
+						swal.fire({title: ret.message, type: "error"})
+					}
+				},
+				complete: function () {
+					$("#geo" + id).removeClass("wb-loop icon-spin").addClass("wb-map");
 				}
 			});
 		}

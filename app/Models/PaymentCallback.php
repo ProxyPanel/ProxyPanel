@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null                        $status       交易状态：0-失败、1-成功
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed                      $status_label
+ * @property-read string                     $status_label
  * @method static Builder|PaymentCallback newModelQuery()
  * @method static Builder|PaymentCallback newQuery()
  * @method static Builder|PaymentCallback query()

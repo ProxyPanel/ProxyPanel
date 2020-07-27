@@ -28,7 +28,12 @@ class TrojanController extends BaseController {
 	// 获取节点可用的用户列表
 	public function getUserList($id): JsonResponse {
 		$node = SsNode::query()->whereId($id)->first();
-		$users = User::query()->where('status', '<>', -1)->whereEnable(1)->where('level', '>=', $node->level)->get();
+		$users = User::query()
+		             ->where('status', '<>', -1)
+		             ->whereEnable(1)
+		             ->groupUserPermit($node->id)
+		             ->where('level', '>=', $node->level)
+		             ->get();
 		$data = [];
 
 		foreach($users as $user){

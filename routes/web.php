@@ -87,6 +87,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::post('check', 'NodeController@checkNode'); // 节点阻断检测
 		Route::post('ping', 'NodeController@pingNode'); // 节点ping测速
 		Route::get('pingLog', 'NodeController@pingLog'); //节点Ping测速日志
+		Route::get('refreshGeo', 'NodeController@refreshGeo'); //更新节点
 		// 节点Api授权相关
 		Route::group(['prefix' => 'auth'], function() {
 			Route::get('/', 'NodeController@authList'); // 节点授权列表
@@ -167,6 +168,13 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			});
 			Route::get('log', 'RuleController@ruleLogList'); // 用户触发审计规则日志
 			Route::post('clear', 'RuleController@clearLog'); // 清除所有审计触发日志
+		});
+
+		Route::group(['prefix' => 'group'], function() {
+			Route::get('/', 'GroupController@userGroupList'); // 用户分组列表（分组控制）
+			Route::match(['GET', 'POST'], 'add', 'GroupController@addUserGroup'); // 添加用户分组
+			Route::match(['GET', 'POST'], 'edit', 'GroupController@editUserGroup');// 编辑用户分组
+			Route::delete('delete', 'GroupController@delUserGroup'); // 删除用户分组
 		});
 	});
 

@@ -70,7 +70,7 @@
 									<div class="form-group row">
 										<label for="level" class="col-md-3 col-form-label">等级</label>
 										<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="level" name="level">
-											@foreach($level_list as $level)
+											@foreach($levelList as $level)
 												<option value="{{$level->level}}">{{$level->name}}</option>
 											@endforeach
 										</select>
@@ -90,7 +90,7 @@
 									<div class="form-group row">
 										<label for="labels" class="col-md-3 col-form-label">标签</label>
 										<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="labels" name="labels" multiple>
-											@foreach($label_list as $label)
+											@foreach($labelList as $label)
 												<option value="{{$label->id}}">{{$label->name}}</option>
 											@endforeach
 										</select>
@@ -100,7 +100,7 @@
 										<select data-plugin="selectpicker" data-style="btn-outline btn-primary"
 												class="col-md-5 form-control" name="country_code" id="country_code">
 											<option value="un" selected hidden>请选择</option>
-											@foreach($country_list as $country)
+											@foreach($countryList as $country)
 												<option value="{{$country->code}}">{{$country->code}}- {{$country->name}}</option>
 											@endforeach
 										</select>
@@ -168,7 +168,7 @@
 										<div class="form-group row">
 											<label for="method" class="col-md-3 col-form-label">加密方式</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
-												@foreach ($method_list as $method)
+												@foreach ($methodList as $method)
 													<option value="{{$method->name}}" @if(!isset($node) && $method->is_default) selected @endif>{{$method->name}}</option>
 												@endforeach
 											</select>
@@ -176,7 +176,7 @@
 										<div class="form-group row">
 											<label for="protocol" class="col-md-3 col-form-label">协议</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol" id="protocol">
-												@foreach ($protocol_list as $protocol)
+												@foreach ($protocolList as $protocol)
 													<option value="{{$protocol->name}}" @if(!isset($node) && $protocol->is_default) selected @endif>{{$protocol->name}}</option>
 												@endforeach
 											</select>
@@ -188,7 +188,7 @@
 										<div class="form-group row">
 											<label for="obfs" class="col-md-3 col-form-label">混淆</label>
 											<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
-												@foreach ($obfs_list as $obfs)
+												@foreach ($obfsList as $obfs)
 													<option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
 												@endforeach
 											</select>
@@ -287,7 +287,7 @@
 												<div name="v2_ws">
 													<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" id="v2_ws">
 														<option value="" hidden></option>
-														@foreach($dv_list as $dv)
+														@foreach($dvList as $dv)
 															<option value="{{$dv->domain}}" @if(isset($node) && $node->v2_net == "ws" && $node->v2_host == $dv->domain) selected @endif>{{$dv->domain}}</option>
 														@endforeach
 													</select>
@@ -309,8 +309,8 @@
 											<label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
 											<input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
 											<div class="text-help offset-md-3"> 不同后端配置不同：
-												<a href="https://github.com/Scyllaly/docs/wiki/tls" target="_blank">VNET-V2Ray</a> 、
-												<a href="https://github.com/ColetteContreras/v2ray-poseidon/wiki/020-%E5%AF%B9%E6%8E%A5-VNetPanel-%E6%95%99%E7%A8%8B#%E9%85%8D%E7%BD%AE-tls-%E8%AF%81%E4%B9%A6" target="_blank">V2Ray-Poseidon</a>
+												<a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a> 、
+												<a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan" target="_blank">V2Ray-Poseidon</a>
 											</div>
 										</div>
 									</div>

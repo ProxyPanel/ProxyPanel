@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\NodeCertificate
+ * 伪装域名证书
  *
  * @property int                        $id
  * @property string                     $domain 域名

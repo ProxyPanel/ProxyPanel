@@ -15,8 +15,7 @@ class AutoPingNode extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		$nodeList = SsNode::query()->whereIsRelay(0)->whereStatus(1)->get();
-		foreach($nodeList as $node){
+		foreach(SsNode::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
 			$this->pingNode($node->id, $node->is_ddns? $node->server : $node->ip);
 		}
 
@@ -33,10 +32,10 @@ class AutoPingNode extends Command {
 		if($result){
 			$obj = new SsNodePing();
 			$obj->node_id = $nodeId;
-			$obj->ct = intval($result['telecom']['time']);//电信
-			$obj->cu = intval($result['Unicom']['time']);// 联通
-			$obj->cm = intval($result['move']['time']);// 移动
-			$obj->hk = intval($result['HongKong']['time']);// 香港
+			$obj->ct = (int) $result['telecom']['time'];//电信
+			$obj->cu = (int) $result['Unicom']['time'];// 联通
+			$obj->cm = (int) $result['move']['time'];// 移动
+			$obj->hk = (int) $result['HongKong']['time'];// 香港
 			$obj->save();
 		}else{
 			Log::info("【".$ip."】Ping测速获取失败");

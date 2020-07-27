@@ -19,9 +19,9 @@ use Response;
 class BaseController {
 	// 上报节点心跳信息
 	public function setNodeStatus(Request $request, $id): JsonResponse {
-		$cpu = intval($request->input('cpu')) / 100;
-		$mem = intval($request->input('mem')) / 100;
-		$disk = intval($request->input('disk')) / 100;
+		$cpu = (int) $request->input('cpu') / 100;
+		$mem = (int) $request->input('mem') / 100;
+		$disk = (int) $request->input('disk') / 100;
 
 		if(is_null($request->input('uptime'))){
 			return $this->returnData('上报节点心跳信息失败，请检查字段');
@@ -29,7 +29,7 @@ class BaseController {
 
 		$obj = new SsNodeInfo();
 		$obj->node_id = $id;
-		$obj->uptime = intval($request->input('uptime'));
+		$obj->uptime = (int) $request->input('uptime');
 		//$obj->load = $request->input('load');
 		$obj->load = implode(' ', [$cpu, $mem, $disk]);
 		$obj->log_time = time();
@@ -43,7 +43,7 @@ class BaseController {
 	}
 
 	// 返回数据
-	public function returnData($message, $status = 'fail', $code = 400, $data = '', $addition = false): JsonResponse {
+	public function returnData($message, $status = 'fail', $code = 400, $data = '', $addition = []): JsonResponse {
 		$data = ['status' => $status, 'code' => $code, 'data' => $data, 'message' => $message];
 
 		if($addition){
@@ -95,9 +95,7 @@ class BaseController {
 
 	// 上报用户流量日志
 	public function setUserTraffic(Request $request, $id): JsonResponse {
-		$inputArray = $request->all();
-
-		foreach($inputArray as $input){
+		foreach($request->all() as $input){
 			if(!array_key_exists('uid', $input)){
 				return $this->returnData('上报用户流量日志失败，请检查字段');
 			}
@@ -105,9 +103,9 @@ class BaseController {
 			$rate = SsNode::find($id)->traffic_rate;
 
 			$obj = new UserTrafficLog();
-			$obj->user_id = intval($input['uid']);
-			$obj->u = intval($input['upload']) * $rate;
-			$obj->d = intval($input['download']) * $rate;
+			$obj->user_id = (int) $input['uid'];
+			$obj->u = (int) $input['upload'] * $rate;
+			$obj->d = (int) $input['download'] * $rate;
 			$obj->node_id = $id;
 			$obj->rate = $rate;
 			$obj->traffic = flowAutoShow($obj->u + $obj->d);
@@ -130,8 +128,7 @@ class BaseController {
 		if($nodeRule){
 			$ruleGroup = RuleGroup::query()->whereId($nodeRule->rule_group_id)->first();
 			if($ruleGroup){
-				$rules = explode(',', $ruleGroup->rules);
-				foreach($rules as $ruleId){
+				foreach(explode(',', $ruleGroup->rules) as $ruleId){
 					$rule = Rule::query()->whereId($ruleId)->first();
 					if($rule){
 						$new = [

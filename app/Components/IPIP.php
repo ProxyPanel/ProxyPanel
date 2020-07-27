@@ -14,8 +14,6 @@ class IPIP {
 	 */
 	public static function ip($ip): ?array {
 		$filePath = database_path('ipip.ipdb');
-		$loc = new City($filePath);
-
-		return $loc->findMap($ip, 'CN');
+		return (new City($filePath))->findMap($ip, 'CN');
 	}
 }

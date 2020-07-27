@@ -15,8 +15,7 @@ class AutoStatisticsNodeDailyTraffic extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		$nodeList = SsNode::query()->whereStatus(1)->orderBy('id')->get();
-		foreach($nodeList as $node){
+		foreach(SsNode::query()->whereStatus(1)->orderBy('id')->get() as $node){
 			$this->statisticsByNode($node->id);
 		}
 

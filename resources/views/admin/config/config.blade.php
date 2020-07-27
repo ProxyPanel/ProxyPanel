@@ -44,7 +44,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								@foreach($method_list as $method)
+								@foreach($methodList as $method)
 									<tr>
 										<td> {{$method->name}}</td>
 										<td>
@@ -76,7 +76,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								@foreach($protocol_list as $protocol)
+								@foreach($protocolList as $protocol)
 									<tr>
 										<td> {{$protocol->name}}</td>
 										<td>
@@ -109,7 +109,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								@foreach($obfs_list as $obfs)
+								@foreach($obfsList as $obfs)
 									<tr>
 										<td> {{$obfs->name}}</td>
 										<td>
@@ -140,7 +140,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								@foreach($level_list as $level)
+								@foreach($levelList as $level)
 									<tr>
 										<td>
 											<input type="text" class="form-control" name="level" id="level_{{$level->id}}" value="{{$level->level}}"/>
@@ -175,7 +175,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								@foreach($country_list as $country)
+								@foreach($countryList as $country)
 									<tr>
 										<td>
 											<svg class="w-40 h-40 text-center" aria-hidden="true">

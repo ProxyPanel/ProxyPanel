@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int                     $id
  * @property int                     $user_id  用户ID
+ * @property int                     $node_id  节点ID
  * @property int                     $u        上传流量
  * @property int                     $d        下载流量
- * @property int                     $node_id  节点ID
  * @property float                   $rate     倍率
  * @property string                  $traffic  产生流量
  * @property int                     $log_time 记录时间

@@ -12,7 +12,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Str;
 
 abstract class AbstractPayment {
 	protected static $systemConfig;
@@ -39,7 +38,7 @@ abstract class AbstractPayment {
 		$user = User::find($order->user_id);
 
 		//余额充值
-		if($order->goods_id == 0 || $order->goods_id == null){
+		if($order->goods_id == 0){
 			Order::query()->whereOid($order->oid)->update(['status' => 2]);
 			User::query()->whereId($order->user_id)->increment('credit', $order->amount * 100);
 			// 余额变动记录日志

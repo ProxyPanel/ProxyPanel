@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int                         $status   支付状态：-1-支付失败、0-等待支付、1-支付成功
  * @property \Illuminate\Support\Carbon  $created_at
  * @property \Illuminate\Support\Carbon  $updated_at
- * @property-read mixed                  $status_label
+ * @property-read string                 $status_label
  * @property-read \App\Models\Order|null $order
  * @property-read \App\Models\User       $user
  * @method static Builder|Payment newModelQuery()

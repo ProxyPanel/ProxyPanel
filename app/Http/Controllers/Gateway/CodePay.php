@@ -60,7 +60,7 @@ class CodePay extends AbstractPayment {
 			}
 			$sign .= "$key=$val";
 		}
-		if(!$_POST['pay_no'] || md5($sign.parent::$systemConfig['codepay_key']) != $_POST['sign']){
+		if(!$_POST['pay_no'] || hash_equals($sign.parent::$systemConfig['codepay_key'], $_POST['sign'])){
 			exit('fail');
 		}
 		$payment = Payment::whereTradeNo($_POST['pay_id'])->first();

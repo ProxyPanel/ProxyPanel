@@ -12,7 +12,7 @@
 					<div class="col-md-4 form-group">
 						<label for="method">加密方式</label>
 						<select class="form-control" name="method" id="method">
-							@foreach ($method_list as $method)
+							@foreach ($methodList as $method)
 								<option value="{{$method->name}}"
 										@if($method->is_default) selected @endif>{{$method->name}}</option>
 							@endforeach
@@ -29,7 +29,7 @@
 					<div class="col-md-4 form-group">
 						<label for="protocol">协议</label>
 						<select class="form-control" name="protocol" id="protocol">
-							@foreach ($protocol_list as $protocol)
+							@foreach ($protocolList as $protocol)
 								<option value="{{$protocol->name}}"
 										@if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
 							@endforeach
@@ -44,7 +44,7 @@
 					<div class="col-md-4 form-group">
 						<label for="obfs">混淆</label>
 						<select class="form-control" name="obfs" id="obfs">
-							@foreach ($obfs_list as $obfs)
+							@foreach ($obfsList as $obfs)
 								<option value="{{$obfs->name}}"
 										@if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
 							@endforeach

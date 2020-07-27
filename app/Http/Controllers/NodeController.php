@@ -18,6 +18,7 @@ use App\Models\SsNodeOnlineLog;
 use App\Models\SsNodePing;
 use App\Models\SsNodeTrafficDaily;
 use App\Models\SsNodeTrafficHourly;
+use App\Models\UserGroup;
 use App\Models\UserTrafficDaily;
 use App\Models\UserTrafficHourly;
 use App\Models\UserTrafficLog;
@@ -112,7 +113,7 @@ class NodeController extends Controller {
 				$node->relay_server = $request->input('relay_server');
 				$node->relay_port = $request->input('relay_port');
 				$node->level = $request->input('level');
-				$node->speed_limit = intval($request->input('speed_limit')) * Mbps;
+				$node->speed_limit = (int) $request->input('speed_limit') * Mbps;
 				$node->client_limit = $request->input('client_limit');
 				$node->description = $request->input('description');
 				$node->method = $request->input('method');
@@ -121,18 +122,18 @@ class NodeController extends Controller {
 				$node->obfs = $request->input('obfs');
 				$node->obfs_param = $request->input('obfs_param');
 				$node->traffic_rate = $request->input('traffic_rate');
-				$node->is_subscribe = intval($request->input('is_subscribe'));
-				$node->is_ddns = intval($request->input('is_ddns'));
-				$node->is_relay = intval($request->input('is_relay'));
-				$node->is_udp = intval($request->input('is_udp'));
+				$node->is_subscribe = (int) $request->input('is_subscribe');
+				$node->is_ddns = (int) $request->input('is_ddns');
+				$node->is_relay = (int) $request->input('is_relay');
+				$node->is_udp = (int) $request->input('is_udp');
 				$node->push_port = $request->input('push_port');
 				$node->detection_type = $request->input('detection_type');
-				$node->compatible = intval($request->input('compatible'));
-				$node->single = intval($request->input('single'));
+				$node->compatible = (int) $request->input('compatible');
+				$node->single = (int) $request->input('single');
 				$node->port = $request->input('port');
 				$node->passwd = $request->input('passwd');
 				$node->sort = $request->input('sort');
-				$node->status = intval($request->input('status'));
+				$node->status = (int) $request->input('status');
 				$node->v2_alter_id = $request->input('v2_alter_id');
 				$node->v2_port = $request->input('v2_port');
 				$node->v2_method = $request->input('v2_method');
@@ -140,13 +141,14 @@ class NodeController extends Controller {
 				$node->v2_type = $request->input('v2_type');
 				$node->v2_host = $request->input('v2_host')?: '';
 				$node->v2_path = $request->input('v2_path');
-				$node->v2_tls = intval($request->input('v2_tls'));
+				$node->v2_tls = (int) $request->input('v2_tls');
 				$node->tls_provider = $request->input('tls_provider');
 				$node->save();
 
 				DB::commit();
 				// 生成节点标签
 				$this->makeLabels($node->id, $request->input('labels'));
+				$this->getNodeGeo($node->id);
 
 				return Response::json(['status' => 'success', 'message' => '添加成功']);
 			}catch(Exception $e){
@@ -156,13 +158,13 @@ class NodeController extends Controller {
 				return Response::json(['status' => 'fail', 'message' => '添加失败：'.$e->getMessage()]);
 			}
 		}else{
-			$view['method_list'] = Helpers::methodList();
-			$view['protocol_list'] = Helpers::protocolList();
-			$view['obfs_list'] = Helpers::obfsList();
-			$view['country_list'] = Country::query()->orderBy('code')->get();
-			$view['level_list'] = Level::query()->orderBy('level')->get();
-			$view['label_list'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
-			$view['dv_list'] = NodeCertificate::query()->orderBy('id')->get();
+			$view['methodList'] = Helpers::methodList();
+			$view['protocolList'] = Helpers::protocolList();
+			$view['obfsList'] = Helpers::obfsList();
+			$view['countryList'] = Country::query()->orderBy('code')->get();
+			$view['levelList'] = Level::query()->orderBy('level')->get();
+			$view['labelList'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
+			$view['dvList'] = NodeCertificate::query()->orderBy('id')->get();
 
 			return Response::view('admin.node.nodeInfo', $view);
 		}
@@ -238,6 +240,36 @@ class NodeController extends Controller {
 		}
 	}
 
+	// 获取节点地理位置
+	private function getNodeGeo($id): bool {
+		$nodes = SsNode::query()->whereStatus(1);
+		if($id){
+			$nodes = $nodes->whereId($id)->get();
+		}else{
+			$nodes = $nodes->get();
+		}
+		$result = 0;
+		foreach($nodes as $node){
+			$data = getIPInfo($node->is_ddns == 1? gethostbyname($node->server) : $node->ip);
+			if($data){
+				$ret = SsNode::query()->whereId($node->id)->update(['geo' => $data['latitude'].','.$data['longitude']]);
+				if($ret){
+					$result++;
+				}
+			}
+		}
+		return $result;
+	}
+
+	// 刷新节点地理位置
+	public function refreshGeo(Request $request): JsonResponse {
+		if($this->getNodeGeo($request->input('id', 0))){
+			return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
+		}
+		return Response::json(['status' => 'fail', 'message' => '获取地理位置更新失败！']);
+	}
+
+
 	// 编辑节点
 	public function editNode(Request $request) {
 		$id = $request->input('id');
@@ -261,7 +293,7 @@ class NodeController extends Controller {
 					'relay_server'   => $request->input('relay_server'),
 					'relay_port'     => $request->input('relay_port'),
 					'level'          => $request->input('level'),
-					'speed_limit'    => intval($request->input('speed_limit')) * Mbps,
+					'speed_limit'    => (int) $request->input('speed_limit') * Mbps,
 					'client_limit'   => $request->input('client_limit'),
 					'description'    => $request->input('description'),
 					'method'         => $request->input('method'),
@@ -270,18 +302,18 @@ class NodeController extends Controller {
 					'obfs'           => $request->input('obfs'),
 					'obfs_param'     => $request->input('obfs_param'),
 					'traffic_rate'   => $request->input('traffic_rate'),
-					'is_subscribe'   => intval($request->input('is_subscribe')),
-					'is_ddns'        => intval($request->input('is_ddns')),
-					'is_relay'       => intval($request->input('is_relay')),
-					'is_udp'         => intval($request->input('is_udp')),
+					'is_subscribe'   => (int) $request->input('is_subscribe'),
+					'is_ddns'        => (int) $request->input('is_ddns'),
+					'is_relay'       => (int) $request->input('is_relay'),
+					'is_udp'         => (int) $request->input('is_udp'),
 					'push_port'      => $request->input('push_port'),
 					'detection_type' => $request->input('detection_type'),
-					'compatible'     => intval($request->input('compatible')),
-					'single'         => intval($request->input('single')),
+					'compatible'     => (int) $request->input('compatible'),
+					'single'         => (int) $request->input('single'),
 					'port'           => $request->input('port'),
 					'passwd'         => $request->input('passwd'),
 					'sort'           => $request->input('sort'),
-					'status'         => intval($request->input('status')),
+					'status'         => (int) $request->input('status'),
 					'v2_alter_id'    => $request->input('v2_alter_id'),
 					'v2_port'        => $request->input('v2_port'),
 					'v2_method'      => $request->input('v2_method'),
@@ -289,7 +321,7 @@ class NodeController extends Controller {
 					'v2_type'        => $request->input('v2_type'),
 					'v2_host'        => $request->input('v2_host')?: '',
 					'v2_path'        => $request->input('v2_path'),
-					'v2_tls'         => intval($request->input('v2_tls')),
+					'v2_tls'         => (int) $request->input('v2_tls'),
 					'tls_provider'   => $request->input('tls_provider')
 				];
 
@@ -300,6 +332,7 @@ class NodeController extends Controller {
 				// TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
 
 				DB::commit();
+				$this->getNodeGeo($id);
 
 				return Response::json(['status' => 'success', 'message' => '编辑成功']);
 			}catch(Exception $e){
@@ -315,13 +348,13 @@ class NodeController extends Controller {
 			}
 
 			$view['node'] = $node;
-			$view['method_list'] = Helpers::methodList();
-			$view['protocol_list'] = Helpers::protocolList();
-			$view['obfs_list'] = Helpers::obfsList();
-			$view['country_list'] = Country::query()->orderBy('code')->get();
-			$view['level_list'] = Level::query()->orderBy('level')->get();
-			$view['label_list'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
-			$view['dv_list'] = NodeCertificate::query()->orderBy('id')->get();
+			$view['methodList'] = Helpers::methodList();
+			$view['protocolList'] = Helpers::protocolList();
+			$view['obfsList'] = Helpers::obfsList();
+			$view['countryList'] = Country::query()->orderBy('code')->get();
+			$view['levelList'] = Level::query()->orderBy('level')->get();
+			$view['labelList'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
+			$view['dvList'] = NodeCertificate::query()->orderBy('id')->get();
 
 			return view('admin.node.nodeInfo', $view)->with(compact('node'));
 		}
@@ -351,12 +384,18 @@ class NodeController extends Controller {
 			UserTrafficLog::query()->whereNodeId($id)->delete();
 			NodeAuth::query()->whereNodeId($id)->delete();
 			NodeRule::query()->whereNodeId($id)->delete();
-			$RuleGroupList = RuleGroup::query()->get();
-			foreach($RuleGroupList as $RuleGroup){
+			foreach(RuleGroup::all() as $RuleGroup){
 				$nodes = explode(',', $RuleGroup->nodes);
 				if(in_array($id, $nodes, true)){
 					$nodes = implode(',', array_diff($nodes, [$id]));
 					RuleGroup::query()->whereId($RuleGroup->id)->update(['nodes' => $nodes]);
+				}
+			}
+			foreach(UserGroup::all() as $UserGroup){
+				$nodes = explode(',', $UserGroup->nodes);
+				if(in_array($id, $nodes, true)){
+					$nodes = implode(',', array_diff($nodes, [$id]));
+					UserGroup::query()->whereId($UserGroup->id)->update(['nodes' => $nodes]);
 				}
 			}
 

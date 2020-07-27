@@ -32,8 +32,7 @@ class Namesilo {
 
 		$content = '请求操作：['.$operation.'] --- 请求数据：['.http_build_query($query).']';
 
-		$client = new Client(['timeout' => 10]);
-		$request = $client->get(self::$host.$operation.'?'.http_build_query($query));
+		$request = (new Client(['timeout' => 10]))->get(self::$host.$operation.'?'.http_build_query($query));
 		$result = XML2Array::createArray(json_decode($request->getBody(), true));
 
 		if($request->getStatusCode() != 200){

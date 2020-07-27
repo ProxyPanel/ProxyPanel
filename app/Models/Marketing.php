@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                        $status   状态：-1-失败、0-待发送、1-成功
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
- * @property-read mixed                 $status_label
+ * @property-read string                $status_label
  * @method static Builder|Marketing newModelQuery()
  * @method static Builder|Marketing newQuery()
  * @method static Builder|Marketing query()

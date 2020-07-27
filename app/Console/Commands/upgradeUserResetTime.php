@@ -13,8 +13,7 @@ class upgradeUserResetTime extends Command {
 	public function handle(): void {
 		Log::info('----------------------------【升级用户重置日期】开始----------------------------');
 
-		$userList = User::query()->get();
-		foreach($userList as $user){
+		foreach(User::all() as $user){
 			$reset_time = null;
 			if($user->traffic_reset_day){
 				$today = date('d');// 今天 日期

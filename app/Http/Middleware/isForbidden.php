@@ -29,7 +29,7 @@ class isForbidden {
 
 		// 拒绝通过订阅链接域名访问网站，防止网站被探测
 		if(true === strpos(Helpers::systemConfig()['subscribe_domain'], $request->getHost())
-		   && false === strpos(Helpers::systemConfig()['subscribe_domain'], Helpers::systemConfig()['website_url'])){
+		   && !str_contains(Helpers::systemConfig()['subscribe_domain'], Helpers::systemConfig()['website_url'])){
 			Log::info("识别到通过订阅链接访问，强制跳转至百度(".getClientIp().")");
 
 			return redirect('https://www.baidu.com');
@@ -39,7 +39,7 @@ class isForbidden {
 		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){
 			Log::info('识别到IPv6，尝试解析：'.$ip);
 			$isIPv6 = true;
-			$ipInfo = getIPv6($ip);
+			$ipInfo = getIPInfo($ip);
 		}else{
 			$isIPv6 = false;
 			$ipInfo = QQWry::ip($ip); // 通过纯真IP库解析IPv4信息

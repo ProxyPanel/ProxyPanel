@@ -32,12 +32,13 @@ CREATE TABLE `ss_node`
     `server`         VARCHAR(255)         NULL     DEFAULT NULL COMMENT '服务器域名地址',
     `ip`             CHAR(15)             NULL     DEFAULT NULL COMMENT '服务器IPV4地址',
     `ipv6`           VARCHAR(45)          NULL     DEFAULT NULL COMMENT '服务器IPV6地址',
-    `relay_server`   VARCHAR(255)         NULL     DEFAULT NULL COMMENT '中转地址',
-    `relay_port`     SMALLINT(5) UNSIGNED NULL     DEFAULT 0 COMMENT '中转端口',
     `level`          TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '等级：0-无等级，全部可见',
     `speed_limit`    BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '节点限速，为0表示不限速，单位Byte',
     `client_limit`   SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT '设备数限制',
+    `relay_server`   VARCHAR(255)         NULL     DEFAULT NULL COMMENT '中转地址',
+    `relay_port`     SMALLINT(5) UNSIGNED NULL     DEFAULT 0 COMMENT '中转端口',
     `description`    VARCHAR(255)         NULL     DEFAULT NULL COMMENT '节点简单描述',
+    `geo`            VARCHAR(255)         NULL     DEFAULT NULL COMMENT '节点地理位置',
     `method`         VARCHAR(32)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
     `protocol`       VARCHAR(64)          NOT NULL DEFAULT 'origin' COMMENT '协议',
     `protocol_param` VARCHAR(128)         NULL     DEFAULT NULL COMMENT '协议参数',
@@ -146,7 +147,7 @@ CREATE TABLE `user`
     `u`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
     `d`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
     `t`               INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '最后使用时间',
-    `ip`              CHAR(15)                     DEFAULT NULL COMMENT '最后连接IP',
+    `ip`              CHAR(15)                      DEFAULT NULL COMMENT '最后连接IP',
     `enable`          TINYINT(1)           NOT NULL DEFAULT 1 COMMENT '代理状态',
     `method`          VARCHAR(30)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
     `protocol`        VARCHAR(30)          NOT NULL DEFAULT 'origin' COMMENT '协议',
@@ -161,6 +162,7 @@ CREATE TABLE `user`
     `ban_time`        INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '封禁到期时间',
     `remark`          TEXT COMMENT '备注',
     `level`           TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '等级，默认0级',
+    `group_id`        INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '所属分组',
     `is_admin`        BIT                  NOT NULL DEFAULT 0 COMMENT '是否管理员：0-否、1-是',
     `reg_ip`          CHAR(15)             NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
     `last_login`      INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '最后登录时间',
@@ -183,6 +185,17 @@ VALUES (1, '管理员', 'test@test.com', '$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8F
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+-- ----------------------------
+-- Records of `user_group`
+-- ----------------------------
+CREATE TABLE `user_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT '分组名称',
+  `nodes` text COMMENT '关联的节点ID，多个用,号分隔',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户分组控制表';
 
 
 -- ----------------------------

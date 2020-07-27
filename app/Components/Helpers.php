@@ -102,12 +102,9 @@ class Helpers {
 
 	// 获取系统配置
 	public static function systemConfig(): array {
-		$config = Config::query()->get();
-		$data = [];
-		foreach($config as $vo){
+		foreach(Config::all() as $vo){
 			$data[$vo->name] = $vo->value;
 		}
-
 		$data['is_onlinePay'] = ($data['is_AliPay'] || $data['is_QQPay'] || $data['is_WeChatPay'] || $data['is_otherPay'])?: 0;
 
 		return $data;
@@ -115,11 +112,10 @@ class Helpers {
 
 	// 获取一个随机端口
 	public static function getRandPort() {
-		$config = self::systemConfig();
-		$port = random_int($config['min_port'], $config['max_port']);
+		$port = random_int(self::systemConfig()['min_port'], self::systemConfig()['max_port']);
 
 		$exists_port = User::query()->pluck('port')->toArray();
-		if(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts)){
+		if(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
 			$port = self::getRandPort();
 		}
 
@@ -128,8 +124,7 @@ class Helpers {
 
 	// 获取一个随机端口
 	public static function getOnlyPort() {
-		$config = self::systemConfig();
-		$port = $config['min_port'];
+		$port = (int) self::systemConfig()['min_port'];
 
 		$exists_port = User::query()->where('port', '>=', $port)->pluck('port')->toArray();
 		while(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){

@@ -42,8 +42,7 @@ class F2Fpay extends AbstractPayment {
 		];
 
 		try{
-			$client = new Client(Client::ALIPAY, self::$aliConfig);
-			$result = $client->pay(Client::ALI_CHANNEL_QR, $data);
+			$result = (new Client(Client::ALIPAY, self::$aliConfig))->pay(Client::ALI_CHANNEL_QR, $data);
 		}catch(InvalidArgumentException $e){
 			Log::error("【支付宝当面付】输入信息错误: ".$e->getMessage());
 			exit;
@@ -67,8 +66,7 @@ class F2Fpay extends AbstractPayment {
 		];
 
 		try{
-			$client = new Client(Client::ALIPAY, self::$aliConfig);
-			$result = $client->tradeQuery($data);
+			$result = (new Client(Client::ALIPAY, self::$aliConfig))->tradeQuery($data);
 			Log::info("【支付宝当面付】回调验证查询：".var_export($result, true));
 		}catch(InvalidArgumentException $e){
 			Log::error("【支付宝当面付】回调信息错误: ".$e->getMessage());

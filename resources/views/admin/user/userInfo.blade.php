@@ -41,8 +41,19 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="level">级别</label>
 								<div class="col-xl-4 col-sm-8">
 									<select class="form-control" name="level" id="level" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-										@foreach($level_list as $level)
+										@foreach($levelList as $level)
 											<option value="{{$level->level}}">{{$level->name}}</option>
+										@endforeach
+									</select>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-2 col-sm-3 col-form-label" for="group">分组</label>
+								<div class="col-xl-4 col-sm-8">
+									<select class="form-control" name="group" id="group" data-plugin="selectpicker" data-style="btn-outline btn-primary">
+										<option value="0">无分组</option>
+										@foreach($groupList as $group)
+											<option value="{{$group->id}}">{{$group->name}}</option>
 										@endforeach
 									</select>
 								</div>
@@ -65,7 +76,7 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label" for="invite_num">可用邀请码</label>
 								<div class="col-xl-6 col-sm-8">
-									<input type="number" class="form-control" name="invite_num" id="invite_num" required/>
+									<input type="number" class="form-control" name="invite_num" id="invite_num" value="0" required/>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -219,7 +230,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="method">加密方式</label>
 								<div class="col-xl-5 col-sm-8">
 									<select class="form-control" name="method" id="method" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-										@foreach ($method_list as $method)
+										@foreach ($methodList as $method)
 											<option value="{{$method->name}}">{{$method->name}}</option>
 										@endforeach
 									</select>
@@ -259,7 +270,7 @@
 								<div class="col-xl-5 col-sm-8">
 									<select class="form-control" name="protocol" id="protocol"
 											data-plugin="selectpicker" data-style="btn-outline btn-primary">
-										@foreach ($protocol_list as $protocol)
+										@foreach ($protocolList as $protocol)
 											<option value="{{$protocol->name}}"
 													@if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
 										@endforeach
@@ -270,7 +281,7 @@
 								<label class="col-md-2 col-sm-3 col-form-label" for="obfs">混淆</label>
 								<div class="col-xl-5 col-sm-8">
 									<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="obfs" id="obfs">
-										@foreach ($obfs_list as $obfs)
+										@foreach ($obfsList as $obfs)
 											<option value="{{$obfs->name}}"
 													@if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
 										@endforeach
@@ -336,6 +347,7 @@
 			$('#username').val('{{$user->username}}')
 			$('#email').val('{{$user->email}}')
 			$('#level').selectpicker('val', '{{$user->level}}')
+			$('#group').selectpicker('val', '{{$user->group_id}}')
 			$('#invite_num').val('{{$user->invite_num}}')
 			$('#reset_time').val('{{$user->reset_time}}')
 			$('#enable_time').val('{{$user->enable_time}}')
@@ -462,6 +474,7 @@
 					expire_time: $('#expire_time').val(),
 					remark: $('#remark').val(),
 					level: $("#level").val(),
+					group_id: $("#group").val(),
 					is_admin: $("input:radio[name='is_admin']:checked").val(),
 					reset_time: $('#reset_time').val(),
 					invite_num: $('#invite_num').val(),

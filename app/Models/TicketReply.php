@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property int                             $id
  * @property int                             $ticket_id  工单ID
- * @property int                             $user_id    回复用户的ID
- * @property int|null                        $admin_id   管理员ID
+ * @property int                             $user_id    回复用户ID
+ * @property int                             $admin_id   管理员ID
  * @property string                          $content    回复内容
  * @property \Illuminate\Support\Carbon|null $created_at 创建时间
  * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间

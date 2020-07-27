@@ -70,8 +70,7 @@ class AffiliateController extends Controller {
 
 		// 取出本次申请关联返利日志ID
 		$link_logs = '';
-		$referralLog = ReferralLog::uid()->whereStatus(0)->get();
-		foreach($referralLog as $log){
+		foreach(ReferralLog::uid()->whereStatus(0)->get() as $log){
 			$link_logs .= $log->id.',';
 		}
 		$link_logs = rtrim($link_logs, ',');

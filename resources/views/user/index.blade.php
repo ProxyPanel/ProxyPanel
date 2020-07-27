@@ -22,8 +22,8 @@
 						</button>
 						<span class="font-weight-400">{{trans('home.account_status')}}</span>
 						@if(\App\Components\Helpers::systemConfig()['is_checkin'])
-							<a class="btn btn-md btn-round btn-info float-right" href="javascript:checkIn();"><i
-										class="wb-star yellow-400 mr-5"></i>
+							<a class="btn btn-md btn-round btn-info float-right" href="javascript:checkIn();">
+								<i class="wb-star yellow-400 mr-5"></i>
 								{{trans('home.sign_in')}}
 							</a>
 						@endif

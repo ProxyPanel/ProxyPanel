@@ -113,7 +113,7 @@
 					<span class="site-menu-title">管理中心</span>
 				</a>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'admin/userCreditLogList', 'subscribe']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'group', 'group/add', 'group/edit', 'admin/userCreditLogList', 'subscribe']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-user" aria-hidden="true"></i>
 					<span class="site-menu-title">用户系统</span>
@@ -122,6 +122,11 @@
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
 						<a href="/admin/userList">
 							<span class="site-menu-title">用户管理</span>
+						</a>
+					</li>
+					<li class="site-menu-item {{in_array(Request::path(), ['group', 'group/add', 'group/edit']) ? 'active open' : ''}}">
+						<a href="/group">
+							<span class="site-menu-title">用戶分组</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/userCreditLogList']) ? 'active open' : ''}}">

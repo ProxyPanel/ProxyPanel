@@ -8,6 +8,7 @@ use App\Models\SsNode;
 use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
+use Arr;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -71,7 +72,11 @@ class SubscribeController extends Controller {
 		$this->subscribeLog($subscribe->id, getClientIp(), $request->headers);
 
 		// 获取这个账号可用节点
-		$query = SsNode::query()->whereStatus(1)->whereIsSubscribe(1)->where('level', '<=', $user->level);
+		$query = SsNode::query()
+		               ->whereStatus(1)
+		               ->whereIsSubscribe(1)
+		               ->groupNodePermit($user->group_id)
+		               ->where('level', '<=', $user->level);
 
 		if($this->subType === 1){
 			$query = $query->whereIn('type', [1, 4]);
@@ -86,7 +91,7 @@ class SubscribeController extends Controller {
 
 		// 打乱数组
 		if(self::$systemConfig['rand_subscribe']){
-			shuffle($nodeList);
+			$nodeList = Arr::shuffle($nodeList);
 		}
 
 		$scheme = null;

@@ -169,6 +169,7 @@ class UserController extends Controller {
 
 	// 节点列表
 	public function nodeList(Request $request) {
+		$user = Auth::getUser();
 		if($request->isMethod('POST')){
 			$node_id = $request->input('id');
 			$infoType = $request->input('type');
@@ -180,7 +181,7 @@ class UserController extends Controller {
 			}else{
 				$proxyType = 'V2Ray';
 			}
-			$data = $this->getUserNodeInfo(Auth::id(), $node->id, $infoType !== 'text'? 0 : 1);
+			$data = $this->getUserNodeInfo($user->id, $node->id, $infoType !== 'text'? 0 : 1);
 
 			return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
 		}
@@ -188,11 +189,13 @@ class UserController extends Controller {
 		// 获取当前用户可用节点
 		$nodeList = SsNode::query()
 		                  ->whereStatus(1)
-		                  ->where('level', '<=', Auth::getUser()->level)
+		                  ->groupNodePermit($user->group_id)
+		                  ->where('level', '<=', $user->level)
 		                  ->orderByDesc('sort')
 		                  ->orderBy('id')
 		                  ->get();
 
+		$nodesGeo = $nodeList->pluck('name', 'geo')->toArray();
 		foreach($nodeList as $node){
 			$node->ct = number_format(SsNodePing::query()->whereNodeId($node->id)->where('ct', '>', '0')->avg('ct'), 1,
 				'.', '');
@@ -213,7 +216,7 @@ class UserController extends Controller {
 			$node->labels = SsNodeLabel::query()->whereNodeId($node->id)->get();
 		}
 		$view['nodeList'] = $nodeList?: [];
-
+		$view['nodesGeo'] = $nodesGeo;
 
 		return Response::view('user.nodeList', $view);
 	}
@@ -247,7 +250,7 @@ class UserController extends Controller {
 				}
 
 				// 演示环境禁止改管理员密码
-				if($user->id == 1 && env('APP_DEMO')){
+				if($user->id === 1 && config('app.demo')){
 					return Redirect::to('profile#tab_1')->withErrors('演示环境禁止修改管理员密码');
 				}
 
@@ -381,6 +384,7 @@ class UserController extends Controller {
 
 	// 添加工单
 	public function createTicket(Request $request): ?JsonResponse {
+		$user = Auth::getUser();
 		$title = $request->input('title');
 		$content = clean($request->input('content'));
 		$content = str_replace(["atob", "eval"], "", $content);
@@ -390,7 +394,7 @@ class UserController extends Controller {
 		}
 
 		$obj = new Ticket();
-		$obj->user_id = Auth::id();
+		$obj->user_id = $user->id;
 		$obj->title = $title;
 		$obj->content = $content;
 		$obj->status = 0;
@@ -398,7 +402,7 @@ class UserController extends Controller {
 
 		if($obj->id){
 			$emailTitle = "新工单提醒";
-			$content = "标题：【".$title."】<br>用户：".Auth::getUser()->email."<br>内容：".$content;
+			$content = "标题：【".$title."】<br>用户：".$user->email."<br>内容：".$content;
 
 			// 发邮件通知管理员
 			if(self::$systemConfig['webmaster_email']){
@@ -498,12 +502,13 @@ class UserController extends Controller {
 
 	// 生成邀请码
 	public function makeInvite(): JsonResponse {
-		if(Auth::getUser()->invite_num <= 0){
+		$user = Auth::getUser();
+		if($user->invite_num <= 0){
 			return Response::json(['status' => 'fail', 'message' => '生成失败：已无邀请码生成名额']);
 		}
 
 		$obj = new Invite();
-		$obj->uid = Auth::id();
+		$obj->uid = $user->id;
 		$obj->fuid = 0;
 		$obj->code = strtoupper(mb_substr(md5(microtime().makeRandStr()), 8, 12));
 		$obj->status = 0;
@@ -564,12 +569,13 @@ class UserController extends Controller {
 
 	// 购买服务
 	public function buy($goods_id) {
+		$user = Auth::getUser();
 		$goods = Goods::query()->whereId($goods_id)->whereStatus(1)->first();
 		if(empty($goods)){
 			return Redirect::to('services');
 		}
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
-		$dataPlusDays = Auth::getUser()->reset_time?: Auth::getUser()->expire_time;
+		$dataPlusDays = $user->reset_time?: $user->expire_time;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
 		$view['activePlan'] = Order::uid()
 		                           ->with(['goods'])
@@ -588,7 +594,7 @@ class UserController extends Controller {
 	public function help(): \Illuminate\Http\Response {
 		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->orderByDesc('id')->limit(10)->paginate(5);
 		$data = [];
-		if(SsNode::query()->whereIn('type',[1,4])->whereStatus(1)->exists()){
+		if(SsNode::query()->whereIn('type', [1, 4])->whereStatus(1)->exists()){
 			$data[] = 'ss';
 			//array_push
 		}

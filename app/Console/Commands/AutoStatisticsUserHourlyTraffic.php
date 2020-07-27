@@ -16,14 +16,12 @@ class AutoStatisticsUserHourlyTraffic extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
-		foreach($userList as $user){
+		foreach(User::query()->activeUser()->get() as $user){
 			// 统计一次所有节点的总和
 			$this->statisticsByNode($user->id);
 
 			// 统计每个节点产生的流量
-			$nodeList = SsNode::query()->whereStatus(1)->orderBy('id')->get();
-			foreach($nodeList as $node){
+			foreach(SsNode::query()->whereStatus(1)->orderBy('id')->get() as $node){
 				$this->statisticsByNode($user->id, $node->id);
 			}
 		}

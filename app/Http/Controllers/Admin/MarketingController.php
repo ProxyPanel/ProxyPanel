@@ -69,8 +69,7 @@ class MarketingController extends Controller {
 
 		DB::beginTransaction();
 		try{
-			$client = new Client();
-			$response = $client->request('GET', 'https://pushbear.ftqq.com/sub', [
+			$response = (new Client())->get('https://pushbear.ftqq.com/sub', [
 				'query' => [
 					'sendkey' => self::$systemConfig['push_bear_send_key'],
 					'text'    => $title,

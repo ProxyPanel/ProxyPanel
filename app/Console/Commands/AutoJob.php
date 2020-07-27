@@ -177,8 +177,7 @@ class AutoJob extends Command {
 	// 封禁访问异常的订阅链接
 	private function blockSubscribe(): void {
 		if(self::$systemConfig['is_subscribe_ban']){
-			$userList = User::query()->where('status', '>=', 0)->whereEnable(1)->get();
-			foreach($userList as $user){
+			foreach(User::query()->activeUser()->get() as $user){
 				$subscribe = UserSubscribe::query()->whereUserId($user->id)->first();
 				if($subscribe){
 					// 24小时内不同IP的请求次数
@@ -318,8 +317,7 @@ class AutoJob extends Command {
 	// 检测节点是否离线
 	private function checkNodeStatus(): void {
 		if(self::$systemConfig['is_node_offline']){
-			$nodeList = SsNode::whereIsRelay(0)->whereStatus(1)->get();
-			foreach($nodeList as $node){
+			foreach(SsNode::whereIsRelay(0)->whereStatus(1)->get() as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
 				$nodeTTL = SsNodeInfo::query()
 				                     ->whereNodeId($node->id)
