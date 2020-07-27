@@ -38,6 +38,7 @@ use Illuminate\Notifications\Notifiable;
  * @property int                                                                                                            $ban_time        封禁到期时间
  * @property string|null                                                                                                    $remark          备注
  * @property int                                                                                                            $level           等级，默认0级
+ * @property int                                                                                                            $group_id        所属分组
  * @property int                                                                                                            $is_admin        是否管理员：0-否、1-是
  * @property string                                                                                                         $reg_ip          注册IP
  * @property int                                                                                                            $last_login      最后登录时间
@@ -48,12 +49,15 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null                                                                                                    $remember_token
  * @property \Illuminate\Support\Carbon|null                                                                                $created_at
  * @property \Illuminate\Support\Carbon|null                                                                                $updated_at
+ * @property-read \App\Models\UserGroup|null                                                                                $group
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null                                                                                                  $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Payment[]                                            $payment
  * @property-read int|null                                                                                                  $payment_count
  * @property-read \App\Models\User|null                                                                                     $referral
  * @property-read \App\Models\UserSubscribe|null                                                                            $subscribe
+ * @method static Builder|User activeUser()
+ * @method static Builder|User groupUserPermit($node_id = 0)
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
  * @method static Builder|User query()
@@ -66,6 +70,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static Builder|User whereEnable($value)
  * @method static Builder|User whereEnableTime($value)
  * @method static Builder|User whereExpireTime($value)
+ * @method static Builder|User whereGroupId($value)
  * @method static Builder|User whereId($value)
  * @method static Builder|User whereInviteNum($value)
  * @method static Builder|User whereIp($value)
@@ -109,6 +114,14 @@ class User extends Authenticatable {
 		return $this->hasMany(Payment::class, 'user_id', 'id');
 	}
 
+	public function getLevel(): HasOne {
+		return $this->hasOne(Level::class, 'level', 'level');
+	}
+
+	public function group(): HasOne {
+		return $this->hasOne(UserGroup::class, 'id', 'group_id');
+	}
+
 	public function subscribe(): HasOne {
 		return $this->hasOne(UserSubscribe::class, 'user_id', 'id');
 	}
@@ -123,5 +136,23 @@ class User extends Authenticatable {
 
 	public function setCreditAttribute($value) {
 		return $this->attributes['credit'] = $value * 100;
+	}
+
+	// User查询，查那些用户有传入Node的权限
+	public function scopeGroupUserPermit($query, $node_id = 0) {
+		$groups = [0];
+		if($node_id){
+			foreach(UserGroup::all() as $userGroup){
+				$nodes = explode(',', $userGroup->nodes);
+				if(in_array($node_id, $nodes, true)){
+					$groups[] = $userGroup->id;
+				}
+			}
+		}
+		return $query->whereIn('group_id', $groups);
+	}
+
+	public function scopeActiveUser($query) {
+		return $query->where('status', '>=', 0)->whereEnable(1);
 	}
 }

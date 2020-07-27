@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller as BaseController;
+use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 use Str;
 
@@ -23,7 +24,7 @@ class Controller extends BaseController {
 	}
 
 	// 生成UUID
-	public function makeUUID() {
+	public function makeUUID(): UuidInterface {
 		return Str::uuid();
 	}
 

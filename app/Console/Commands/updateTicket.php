@@ -14,13 +14,10 @@ class updateTicket extends Command {
 	public function handle(): void {
 		Log::info('----------------------------【更新工单】开始----------------------------');
 		// 获取管理员
-		$adminList = User::query()->whereIsAdmin(1)->get();
-		foreach($adminList as $admin){
+		foreach(User::query()->whereIsAdmin(1)->get() as $admin){
 			Log::info('----------------------------【更新管理员'.$admin->id.'回复工单】开始----------------------------');
-			// 获取该管理回复过的工单
-			$replyList = TicketReply::query()->whereUserId($admin->id)->get();
-			// 更新工单
-			foreach($replyList as $reply){
+			// 获取该管理回复过的工单, 更新工单
+			foreach(TicketReply::query()->whereUserId($admin->id)->get() as $reply){
 				$ret = TicketReply::query()->whereId($reply->id)->update(['user_id' => 0, 'admin_id' => $admin->id]);
 				if($ret){
 					Log::info('--- 管理员：'.$admin->email.'回复子单ID：'.$reply->id.' ---');

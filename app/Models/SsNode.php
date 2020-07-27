@@ -11,18 +11,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * SS节点信息
  *
  * @property int                                                                     $id
- * @property int                                                                     $type           服务类型：1-ShadowsocksR、2-V2ray
+ * @property int                                                                     $type           服务类型：1-Shadowsocks(R)、2-V2ray、3-Trojan、4-VNet
  * @property string                                                                  $name           名称
- * @property string|null                                                             $country_code   国家代码
+ * @property string                                                                  $country_code   国家代码
  * @property string|null                                                             $server         服务器域名地址
  * @property string|null                                                             $ip             服务器IPV4地址
  * @property string|null                                                             $ipv6           服务器IPV6地址
- * @property string|null                                                             $relay_server   中转地址
- * @property int|null                                                                $relay_port     中转端口
  * @property int                                                                     $level          等级：0-无等级，全部可见
  * @property int                                                                     $speed_limit    节点限速，为0表示不限速，单位Byte
  * @property int                                                                     $client_limit   设备数限制
+ * @property string|null                                                             $relay_server   中转地址
+ * @property int|null                                                                $relay_port     中转端口
  * @property string|null                                                             $description    节点简单描述
+ * @property string|null                                                             $geo            节点地理位置
  * @property string                                                                  $method         加密方式
  * @property string                                                                  $protocol       协议
  * @property string|null                                                             $protocol_param 协议参数
@@ -56,6 +57,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read string                                                             $type_label
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SsNodeLabel[] $label
  * @property-read int|null                                                           $label_count
+ * @method static Builder|SsNode groupNodePermit($group_id = 0)
  * @method static Builder|SsNode newModelQuery()
  * @method static Builder|SsNode newQuery()
  * @method static Builder|SsNode query()
@@ -65,6 +67,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|SsNode whereCreatedAt($value)
  * @method static Builder|SsNode whereDescription($value)
  * @method static Builder|SsNode whereDetectionType($value)
+ * @method static Builder|SsNode whereGeo($value)
  * @method static Builder|SsNode whereId($value)
  * @method static Builder|SsNode whereIp($value)
  * @method static Builder|SsNode whereIpv6($value)
@@ -116,6 +119,18 @@ class SsNode extends Model {
 
 	public function getLevel(): HasOne {
 		return $this->hasOne(Level::class, 'level', 'level');
+	}
+
+	// Node查询，查用户所在分组Node权限
+	public function scopeGroupNodePermit($query, $group_id = 0) {
+		$userGroup = UserGroup::find($group_id);
+		if($userGroup){
+			$nodes = explode(',', $userGroup->nodes);
+			if($nodes){
+				return $query->whereIn('id', $nodes);
+			}
+		}
+		return $query;
 	}
 
 	public function getTypeLabelAttribute(): string {

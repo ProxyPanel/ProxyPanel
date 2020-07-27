@@ -7,6 +7,7 @@ use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Log;
+use Psr\Http\Message\StreamInterface;
 use Response;
 
 class BitpayX extends AbstractPayment {
@@ -52,12 +53,12 @@ class BitpayX extends AbstractPayment {
 			'secret'            => parent::$systemConfig['bitpay_secret'],
 			'type'              => 'FIAT'
 		];
-		ksort($data_sign);
+		ksort($data_sign, SORT_STRING);
 
 		return http_build_query($data_sign);
 	}
 
-	private function mprequest($data, $type = 'pay') {
+	private function mprequest($data, $type = 'pay'): StreamInterface {
 		$client = new Client(['base_uri' => 'https://api.mugglepay.com/v1/', 'timeout' => 10]);
 
 		if($type === 'query'){
@@ -91,9 +92,9 @@ class BitpayX extends AbstractPayment {
 		}
 		// 准备待签名数据
 		$str_to_sign = $this->prepareSignId($inputJSON['merchant_order_id']);
-		$isPaid = $data != null && $data['status'] != null && $data['status'] === 'PAID';
+		$isPaid = $data != null && $data['status'] && $data['status'] === 'PAID';
 
-		if($this->sign($str_to_sign) === $inputJSON['token'] && $isPaid){
+		if($isPaid && $this->sign($str_to_sign) === $inputJSON['token']){
 			$this->postPayment($inputJSON['merchant_order_id'], 'BitPayX');
 			echo json_encode(['status' => 200]);
 		}else{

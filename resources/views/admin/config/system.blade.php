@@ -414,6 +414,21 @@
 											<span class="text-help offset-md-3"> 用户自行生成邀请的有效期 </span>
 										</div>
 									</div>
+									<div class="form-group col-lg-6">
+										<div class="row">
+											<label class="col-md-3 col-form-label" for="admin_invite_days">管理员-邀请码有效期</label>
+											<div class="col-md-7">
+												<div class="input-group">
+													<input type="number" class="form-control" id="admin_invite_days" value="{{$admin_invite_days}}"/>
+													<div class="input-group-append">
+														<span class="input-group-text">天</span>
+													</div>
+													<button class="btn btn-primary" type="button" onclick="updateFromInput('admin_invite_days','1',false)">修改</button>
+												</div>
+											</div>
+											<span class="text-help offset-md-3"> 管理员生成邀请码的有效期 </span>
+										</div>
+									</div>
 								</div>
 							</form>
 						</div>
@@ -549,21 +564,6 @@
 											</div>
 											<span class="text-help offset-md-3"> 域名必须是<a href="https://www.namesilo.com/?rid=326ec20pa" target="_blank">www.namesilo.com</a>上购买的
 											</span>
-										</div>
-									</div>
-									<div class="form-group col-lg-6">
-										<div class="row">
-											<label class="col-md-3 col-form-label" for="admin_invite_days">管理员-邀请码有效期</label>
-											<div class="col-md-7">
-												<div class="input-group">
-													<input type="number" class="form-control" id="admin_invite_days" value="{{$admin_invite_days}}"/>
-													<div class="input-group-append">
-														<span class="input-group-text">天</span>
-													</div>
-													<button class="btn btn-primary" type="button" onchange="updateFromInput('admin_invite_days','1',false)">修改</button>
-												</div>
-											</div>
-											<span class="text-help offset-md-3"> 管理员生成邀请码的有效期 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -760,7 +760,7 @@
 													<input type="number" class="form-control" id="referral_percent" value="{{$referral_percent * 100}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">%</span>
-														<button class="btn btn-primary" type="button" onchange="updateFromInput('referral_percent','0','100')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_percent','0','100')">修改</button>
 													</div>
 												</div>
 											</div>

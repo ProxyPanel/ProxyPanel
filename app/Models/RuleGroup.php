@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null                     $nodes 关联的节点ID，多个用,号分隔
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed                      $type_label
+ * @property-read string                     $type_label
  * @method static Builder|RuleGroup newModelQuery()
  * @method static Builder|RuleGroup newQuery()
  * @method static Builder|RuleGroup query()

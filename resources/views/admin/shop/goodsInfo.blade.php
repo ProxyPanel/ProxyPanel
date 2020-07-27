@@ -59,7 +59,7 @@
 										<label for="data_package">流量包</label>
 									</div>
 									<div class="radio-custom radio-primary radio-inline">
-										<input type="radio" name="type" id="data_plan" value="2"/>
+										<input type="radio" name="type" id="data_plan" value="2" checked/>
 										<label for="data_plan">套餐</label>
 									</div>
 								</div>
@@ -82,7 +82,7 @@
 								<label for="level" class="col-md-2 col-form-label">等级</label>
 								<div class="col-md-4">
 									<select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="level" id="level">
-										@foreach ($level_list as $level)
+										@foreach ($levelList as $level)
 											<option value="{{$level->level}}">{{$level->name}}</option>
 										@endforeach
 									</select>
@@ -98,7 +98,7 @@
 							<div class="form-group row package-renew">
 								<label class="col-md-2 col-form-label" for="period">重置周期</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="period" id="period" value="0"/>
+									<input type="number" class="form-control" name="period" id="period" value="30"/>
 									<span class="input-group-text">天</span>
 								</div>
 								<span class="text-help"> 套餐流量会每N天重置 </span>
@@ -106,21 +106,21 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="traffic">流量额度</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="traffic" id="traffic"/>
+									<input type="number" class="form-control" name="traffic" id="traffic" value="100"/>
 									<span class="input-group-text">MB</span>
 								</div>
 							</div>
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="invite_num">赠送邀请码数量</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="invite_num" id="invite_num" required/>
+									<input type="number" class="form-control" name="invite_num" id="invite_num" value="0" required/>
 									<span class="input-group-text">枚</span>
 								</div>
 							</div>
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="limit_num">限购数量</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="limit_num" id="limit_num" required/>
+									<input type="number" class="form-control" name="limit_num" id="limit_num" value="0" required/>
 									<span class="input-group-text">次</span>
 								</div>
 								<span class="text-help"> 每个用户可以购买该商品次数，为 0 时代表不限购 </span>
@@ -128,7 +128,7 @@
 							<div class="form-group row package-renew">
 								<label class="col-md-2 col-form-label" for="days">有效期</label>
 								<div class="col-md-4 input-group">
-									<input type="number" class="form-control" name="days" id="days" value="0"/>
+									<input type="number" class="form-control" name="days" id="days" value="30"/>
 									<span class="input-group-text">天</span>
 								</div>
 								<span class="text-help"> 到期后会自动从总流量扣减对应的流量 </span>
@@ -150,14 +150,14 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="sort">排序</label>
 								<div class="col-md-4">
-									<input type="number" class="form-control" name="sort" id="sort"/>
+									<input type="number" class="form-control" name="sort" id="sort" value="0"/>
 								</div>
 								<span class="text-help"> 排序值越大排越前 </span>
 							</div>
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="color">颜色</label>
 								<div class="col-md-4">
-									<input type="text" class="form-control" name="color" id="color" data-plugin="asColorPicker" data-mode="simple"/>
+									<input type="text" class="form-control" name="color" id="color" data-plugin="asColorPicker" data-mode="simple" value="#A57AFA"/>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -257,6 +257,8 @@
 			$("#description").val('{{old('description')}}')
 			$("#info").val('{{old('info')}}')
 		})
+		@else
+		$("#status").click()
 
 		@endisset
 

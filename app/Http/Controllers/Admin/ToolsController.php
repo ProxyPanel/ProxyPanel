@@ -31,9 +31,9 @@ class ToolsController extends Controller {
 			foreach($content as $item){
 				// 判断是SS还是SSR链接
 				$str = '';
-				if(false !== strpos($item, 'ssr://')){
+				if(str_contains($item, 'ssr://')){
 					$str = mb_substr($item, 6);
-				}elseif(false !== strpos($item, 'ss://')){
+				}elseif(str_contains($item, 'ss://')){
 					$str = mb_substr($item, 5);
 				}
 
@@ -101,9 +101,9 @@ class ToolsController extends Controller {
 		}
 
 		// 加密方式、协议、混淆
-		$view['method_list'] = Helpers::methodList();
-		$view['protocol_list'] = Helpers::protocolList();
-		$view['obfs_list'] = Helpers::obfsList();
+		$view['methodList'] = Helpers::methodList();
+		$view['protocolList'] = Helpers::protocolList();
+		$view['obfsList'] = Helpers::obfsList();
 
 		return Response::view('admin.tools.convert', $view);
 	}
@@ -219,7 +219,7 @@ class ToolsController extends Controller {
 		}else{
 			$url = [];
 			foreach($logs as $log){
-				if(strpos($log, 'TCP connecting')){
+				if(str_contains($log, 'TCP connecting')){
 					continue;
 				}
 

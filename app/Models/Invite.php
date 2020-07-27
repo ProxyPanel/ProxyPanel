@@ -21,7 +21,7 @@ use Illuminate\Database\Query\Builder;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at 删除时间
  * @property-read \App\Models\User|null      $generator
- * @property-read mixed                      $status_label
+ * @property-read string                     $status_label
  * @property-read \App\Models\User|null      $user
  * @method static \Illuminate\Database\Eloquent\Builder|Invite newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Invite newQuery()

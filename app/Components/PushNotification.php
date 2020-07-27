@@ -30,8 +30,7 @@ class PushNotification {
 	 */
 	private static function ServerChan($title, $content) {
 		// TODO：一天仅可发送不超过500条
-		$client = new Client(['timeout' => 5]);
-		$request = $client->get('https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content));
+		$request = (new Client(['timeout' => 5]))->get('https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content));
 		$message = json_decode($request->getBody(), true);
 		Log::debug($message);
 		// 发送成功
@@ -58,8 +57,7 @@ class PushNotification {
 	 * @return mixed
 	 */
 	private static function Bark($title, $content) {
-		$client = new Client(['timeout' => 5]);
-		$request = $client->get('https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content);
+		$request = (new Client(['timeout' => 5]))->get('https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content);
 		$message = json_decode($request->getBody(), true);
 
 		if($request->getStatusCode() == 200){

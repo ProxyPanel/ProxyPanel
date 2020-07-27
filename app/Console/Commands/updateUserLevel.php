@@ -15,8 +15,7 @@ class updateUserLevel extends Command {
 	public function handle(): void {
 		Log::info('----------------------------【用户等级升级】开始----------------------------');
 		// 预设level 0
-		$users = User::query()->where('level', '<>', 0)->get();
-		foreach($users as $user){
+		foreach(User::query()->where('level', '<>', 0)->get() as $user){
 			User::query()->whereId($user->id)->update(['level' => 0]);
 		}
 		// 获取商品列表，取新等级

@@ -77,8 +77,13 @@ class LoginController extends Controller {
 			$url = self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url'];
 
 			// 节点列表
-			$nodeList = SsNode::query()->whereStatus(1)->where('level', '<=', $user->level)->get();
-
+			$nodeList = SsNode::query()
+			                  ->whereStatus(1)
+			                  ->GroupNodePermit($user->group_id)
+			                  ->where('level', '<=', $user->level)
+			                  ->orderByDesc('sort')
+			                  ->orderBy('id')
+			                  ->get();
 
 			$c_nodes = collect();
 			foreach($nodeList as $node){

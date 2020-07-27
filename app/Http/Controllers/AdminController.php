@@ -24,6 +24,7 @@ use App\Models\SsNodeTrafficDaily;
 use App\Models\User;
 use App\Models\UserBanLog;
 use App\Models\UserCreditLog;
+use App\Models\UserGroup;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
 use App\Models\UserTrafficDaily;
@@ -253,13 +254,14 @@ class AdminController extends Controller {
 			$user->method = $request->input('method');
 			$user->protocol = $request->input('protocol');
 			$user->obfs = $request->input('obfs');
-			$user->speed_limit = $request->input('speed_limit');
+			$user->speed_limit = $request->input('speed_limit') * Mbps;
 			$user->wechat = $request->input('wechat');
 			$user->qq = $request->input('qq');
 			$user->enable_time = $request->input('enable_time')?: date('Y-m-d');
 			$user->expire_time = $request->input('expire_time')?: date('Y-m-d', strtotime("+365 days"));
 			$user->remark = str_replace(["atob", "eval"], "", $request->input('remark'));
 			$user->level = $request->input('level')?: 0;
+			$user->group_id = $request->input('group_id')?: 0;
 			$user->reg_ip = getClientIp();
 			$user->reset_time = $request->input('reset_time') > date('Y-m-d')? $request->input('reset_time') : null;
 			$user->invite_num = $request->input('invite_num')?: 0;
@@ -285,10 +287,11 @@ class AdminController extends Controller {
 		}
 
 		// 生成一个可用端口
-		$view['method_list'] = Helpers::methodList();
-		$view['protocol_list'] = Helpers::protocolList();
-		$view['obfs_list'] = Helpers::obfsList();
-		$view['level_list'] = Level::query()->orderBy('level')->get();
+		$view['methodList'] = Helpers::methodList();
+		$view['protocolList'] = Helpers::protocolList();
+		$view['obfsList'] = Helpers::obfsList();
+		$view['levelList'] = Level::query()->orderBy('level')->get();
+		$view['groupList'] = UserGroup::query()->orderBy('id')->get();
 
 		return Response::view('admin.user.userInfo', $view);
 	}
@@ -374,24 +377,25 @@ class AdminController extends Controller {
 					'method'          => $request->input('method'),
 					'protocol'        => $request->input('protocol'),
 					'obfs'            => $request->input('obfs'),
-					'speed_limit'     => $request->input('speed_limit'),
+					'speed_limit'     => $request->input('speed_limit') * Mbps,
 					'wechat'          => $request->input('wechat'),
 					'qq'              => $request->input('qq'),
 					'enable_time'     => $request->input('enable_time')?: date('Y-m-d'),
 					'expire_time'     => $request->input('expire_time')?: date('Y-m-d', strtotime("+365 days")),
 					'remark'          => str_replace("eval", "", str_replace("atob", "", $request->input('remark'))),
 					'level'           => $request->input('level'),
+					'group_id'        => $request->input('group_id'),
 					'reset_time'      => $request->input('reset_time'),
 					'status'          => $status
 				];
 
 				// 只有admin才有权限操作管理员属性
 				if(Auth::getUser()->is_admin == 1){
-					$data['is_admin'] = intval($is_admin);
+					$data['is_admin'] = (int) $is_admin;
 				}
 
 				// 非演示环境才可以修改管理员密码
-				if(!empty($password) && !(env('APP_DEMO') && $id == 1)){
+				if(!empty($password) && !(config('app.demo') && $id == 1)){
 					$data['password'] = Hash::make($password);
 				}
 
@@ -419,10 +423,11 @@ class AdminController extends Controller {
 			}
 
 			$view['user'] = $user;
-			$view['method_list'] = Helpers::methodList();
-			$view['protocol_list'] = Helpers::protocolList();
-			$view['obfs_list'] = Helpers::obfsList();
-			$view['level_list'] = Level::query()->orderBy('level')->get();
+			$view['methodList'] = Helpers::methodList();
+			$view['protocolList'] = Helpers::protocolList();
+			$view['obfsList'] = Helpers::obfsList();
+			$view['levelList'] = Level::query()->orderBy('level')->get();
+			$view['groupList'] = UserGroup::query()->orderBy('id')->get();
 
 			return view('admin.user.userInfo', $view)->with(compact('user'));
 		}
@@ -695,7 +700,7 @@ class AdminController extends Controller {
 		$filePath = public_path('downloads/'.$fileName);
 		file_put_contents($filePath, $json);
 
-		if(!file_exists($filePath)){
+		if(!is_file($filePath)){
 			exit('文件生成失败，请检查目录权限');
 		}
 
@@ -824,16 +829,16 @@ class AdminController extends Controller {
 			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
 		}
 
-		$labelList = Label::query()->get();
+		$labelList = Label::all();
 		foreach($labelList as $label){
 			$label->nodeCount = SsNodeLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
 		}
 
-		$view['method_list'] = SsConfig::type(1)->get();
-		$view['protocol_list'] = SsConfig::type(2)->get();
-		$view['obfs_list'] = SsConfig::type(3)->get();
-		$view['country_list'] = Country::query()->get();
-		$view['level_list'] = Level::query()->get();
+		$view['methodList'] = SsConfig::type(1)->get();
+		$view['protocolList'] = SsConfig::type(2)->get();
+		$view['obfsList'] = SsConfig::type(3)->get();
+		$view['countryList'] = Country::all();
+		$view['levelList'] = Level::all();
 		$view['labelList'] = $labelList;
 
 		return Response::view('admin.config.config', $view);
@@ -1105,14 +1110,14 @@ class AdminController extends Controller {
 	// 系统设置
 	public function system(): \Illuminate\Http\Response {
 		$view = self::$systemConfig;
-		$view['label_list'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
+		$view['labelList'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
 
 		return Response::view('admin.config.system', $view);
 	}
 
 	// 设置某个配置项
 	public function setConfig(Request $request): JsonResponse {
-		$name = $request->input('name');
+		$name = (string) $request->input('name');
 		$value = $request->input('value');
 
 		if(!$name){
@@ -1125,21 +1130,21 @@ class AdminController extends Controller {
 		}
 
 		// 如果开启用户邮件重置密码，则先设置网站名称和网址
-		if($value != '0'
-		   && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'])){
-			$config = Config::query()->whereName('website_name')->first();
-			if($config->value == ''){
+		if($value !== '0'
+		   && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'], true)){
+			$config = Config::query()->whereName('website_name')->firstOrFail();
+			if(!$config->value){
 				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
 			}
 
-			$config = Config::query()->whereName('website_url')->first();
-			if($config->value == ''){
+			$config = Config::query()->whereName('website_url')->firstOrFail();
+			if(!$config->value){
 				return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
 			}
 		}
 
 		// 支付设置判断
-		if($value != '' && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])){
+		if($value !== '' && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true)){
 			switch($value){
 				case 'f2fpay':
 					if(!self::$systemConfig['f2fpay_app_id'] || !self::$systemConfig['f2fpay_private_key']
@@ -1181,7 +1186,7 @@ class AdminController extends Controller {
 		}
 
 		// 演示环境禁止修改特定配置项
-		if(env('APP_DEMO')){
+		if(config('app.demo')){
 			$denyConfig = [
 				'website_url',
 				'min_rand_traffic',
@@ -1199,7 +1204,7 @@ class AdminController extends Controller {
 
 		// 如果是返利比例，则需要除100
 		if($name === 'referral_percent'){
-			$value = intval($value) / 100;
+			$value = (int) $value / 100;
 		}
 
 		// 更新配置
@@ -1469,7 +1474,7 @@ class AdminController extends Controller {
 		$wechat = $request->input('wechat');
 		$qq = $request->input('qq');
 
-		$query = User::query()->where('status', '>=', 0)->whereEnable(1);
+		$query = User::query()->activeUser();
 
 		if(isset($email)){
 			$query->where('email', 'like', '%'.$email.'%');

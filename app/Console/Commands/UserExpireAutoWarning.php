@@ -36,8 +36,7 @@ class UserExpireAutoWarning extends Command {
 
 	private function userExpireWarning(): void {
 		// 只取SSR没被禁用的用户，其他不用管
-		$userList = User::query()->whereEnable(1)->get();
-		foreach($userList as $user){
+		foreach(User::query()->whereEnable(1)->get() as $user){
 			// 用户名不是邮箱的跳过
 			if(false === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
 				continue;

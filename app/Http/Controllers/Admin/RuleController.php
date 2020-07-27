@@ -81,8 +81,7 @@ class RuleController extends Controller {
 		try{
 			Rule::query()->whereId($id)->delete();
 
-			$RuleGroupList = RuleGroup::query()->get();
-			foreach($RuleGroupList as $RuleGroup){
+			foreach(RuleGroup::all() as $RuleGroup){
 				$rules = explode(',', $RuleGroup->rules);
 				if(in_array($id, $rules, true)){
 					$rules = implode(',', array_diff($rules, [$id]));
@@ -116,7 +115,7 @@ class RuleController extends Controller {
 
 			$obj = new RuleGroup();
 			$obj->name = $request->input('name');
-			$obj->type = intval($request->input('type'));
+			$obj->type = (int) $request->input('type');
 			$obj->rules = implode(',', $request->input('rules'));
 			$obj->save();
 
@@ -125,7 +124,7 @@ class RuleController extends Controller {
 			}
 			return Redirect::back()->withInput()->withErrors('操作失败');
 		}
-		$view['ruleList'] = Rule::query()->get();
+		$view['ruleList'] = Rule::all();
 		return Response::view('admin.rule.ruleGroupInfo', $view);
 	}
 
@@ -143,7 +142,7 @@ class RuleController extends Controller {
 				return Redirect::back()->withInput()->withErrors($validator->errors());
 			}
 			$name = $request->input('name');
-			$type = intval($request->input('type'));
+			$type = (int) $request->input('type');
 			$rules = $request->input('rules');
 			$ruleGroup = RuleGroup::query()->find($id);
 			if(!$ruleGroup){
@@ -161,7 +160,7 @@ class RuleController extends Controller {
 				$ruleStr = implode(',', $rules);
 				if($ruleGroup->rules != $ruleStr){
 					$data['rules'] = $ruleStr;
-				}else{
+				}elseif($data == []){
 					return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
 				}
 			}elseif(isset($ruleGroup->rules)){
@@ -178,7 +177,7 @@ class RuleController extends Controller {
 		if(!$ruleGroup){
 			return Redirect::back();
 		}
-		$view['ruleList'] = Rule::query()->get();
+		$view['ruleList'] = Rule::all();
 
 		return view('admin.rule.ruleGroupInfo', $view)->with(compact('ruleGroup'));
 	}
@@ -247,7 +246,7 @@ class RuleController extends Controller {
 		}
 
 		$view['ruleGroup'] = RuleGroup::query()->find($id);
-		$view['nodeList'] = SsNode::query()->get();
+		$view['nodeList'] = SsNode::all();
 
 		return Response::view('admin.rule.assignNode', $view);
 	}
@@ -275,8 +274,8 @@ class RuleController extends Controller {
 			$query->whereRuleId($ruleId);
 		}
 
-		$view['nodeList'] = SsNode::query()->get();
-		$view['ruleList'] = Rule::query()->get();
+		$view['nodeList'] = SsNode::all();
+		$view['ruleList'] = Rule::all();
 		$view['ruleLogs'] = $query->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.rule.ruleLogList', $view);
 	}

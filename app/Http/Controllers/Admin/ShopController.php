@@ -101,7 +101,7 @@ class ShopController extends Controller {
 				return Redirect::back()->withInput()->withErrors('添加失败');
 			}
 		}else{
-			$view['level_list'] = Level::query()->orderBy('level')->get();
+			$view['levelList'] = Level::query()->orderBy('level')->get();
 
 			return Response::view('admin.shop.goodsInfo', $view);
 		}
@@ -176,7 +176,7 @@ class ShopController extends Controller {
 		}
 
 		$goods = Goods::query()->whereId($id)->first();
-		$view['level_list'] = Level::query()->orderBy('level')->get();
+		$view['levelList'] = Level::query()->orderBy('level')->get();
 
 		return view('admin.shop.goodsInfo', $view)->with(compact('goods'));
 	}

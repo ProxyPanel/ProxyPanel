@@ -3,14 +3,63 @@
 	<script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
 	<link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/webui-popover/webui-popover.min.css" type="text/css" rel="stylesheet">
+	<link href="/assets/global/vendor/jvectormap/jquery-jvectormap.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
 	<!-- BEGIN CONTENT BODY -->
 	<div class="page-content container-fluid">
 		<div class="row">
+			<div class="col-md-9">
+				<div class="card card-inverse card-shadow bg-white map">
+					<div class="card-block h-450">
+						<div class="h-p100" id="world-map"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row map">
+					<div class="col-md-12">
+						<div class="card card-block p-20  bg-indigo-500">
+							<div class="counter counter-lg counter-inverse">
+								<div class="counter-label text-uppercase font-size-16">账号等级</div>
+								<div class="counter-number-group">
+									<span class="counter-icon"><i class="icon wb-user-circle" aria-hidden="true"></i></span>
+									<span class="counter-number ml-10">{{Auth::getUser()->level}}</span>
+								</div>
+								<div class="counter-label text-uppercase font-size-16">{{Auth::getUser()->getLevel->name}}</div>
+							</div>
+						</div>
+					</div>
+					@if(Auth::getUser()->group_id)
+						<div class="col-md-12">
+							<div class="card card-block p-20 bg-indigo-500">
+								<div class="counter counter-lg counter-inverse">
+									<div class="counter-label text-uppercase font-size-16">所属分组</div>
+									<div class="counter-number-group">
+										<span class="counter-icon"><i class="icon wb-globe" aria-hidden="true"></i></span>
+										<span class="counter-number ml-10">{{Auth::getUser()->group->name}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					@endif
+					<div class="col-md-12">
+						<div class="card card-block p-20 bg-indigo-500">
+							<div class="counter counter-lg counter-inverse">
+								<div class="counter-label text-uppercase font-size-16">限速</div>
+								<div class="counter-number-group">
+									<span class="counter-icon"><i class="icon wb-signal" aria-hidden="true"></i></span>
+									<span class="counter-number ml-10">{{Auth::getUser()->speed_limit?:'无限制'}}</span>
+								</div>
+								<div class="counter-label font-size-16">Mbps</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			@foreach($nodeList as $node)
 				<div class="col-xxl-3 col-xl-4 col-sm-6">
-					<div class="card card-inverse card-shadow bg-white">
+					<div class="card card-inverse card-shadow bg-white node">
 						<div class="card-block p-30 row">
 							<div class="col-4">
 								<svg class="w-p100 text-center" aria-hidden="true">
@@ -21,7 +70,7 @@
 								<p class="font-size-20 blue-600">
 									<span class="badge badge-pill up m-0 badge-default">{{$node->getLevel->name}}</span>
 									@if($node->offline)
-										<i class="red-600 icon wb-warning" data-content="线路不稳定/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
+										<i class="red-600 icon wb-warning" data-content="线路波动/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
 									@endif
 									@if($node->traffic_rate != 1)
 										<i class="green-600 icon wb-info-circle" data-content="{{$node->traffic_rate}} 倍流量消耗" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
@@ -60,15 +109,62 @@
 			@endforeach
 		</div>
 	</div>
-@endsection @section('script')
+@endsection
+@section('script')
 	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
 	<script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
+	<script src="/assets/global/vendor/jvectormap/jquery-jvectormap.min.js"></script>
+	<script src="/assets/custom/maps/jquery-jvectormap-world-mill-cn.js"></script>
+
 
 	<script type="text/javascript">
 		$(function () {
-			$('.card').matchHeight();
+			$('#world-map').vectorMap({
+				map: 'world_mill',
+				scaleColors: ['#C8EEFF', '#0071A4'],
+				normalizeFunction: 'polynomial',
+				zoomAnimate: true,
+				hoverOpacity: 0.7,
+				hoverColor: false,
+				regionStyle: {
+					initial: {
+						fill: '#3E8EF7'
+					},
+					hover: {
+						fill: '#589FFC'
+					},
+					selected: {
+						fill: '#0B69E3'
+					},
+					selectedHover: {
+						fill: '#589FFC'
+					}
+				},
+				markerStyle: {
+					initial: {
+						r: 3,
+						fill: '#FF4C52',
+						'stroke-width': 0
+					},
+					hover: {
+						r: 6,
+						stroke: '#FF4C52',
+						'stroke-width': 0
+					}
+				},
+				backgroundColor: '#fff',
+				markers: [
+						@foreach($nodesGeo as $key => $geo)
+					{
+						latLng: [{{$key}}], name: '{{$geo}}'
+					},
+					@endforeach
+				]
+			});
+			$('.node').matchHeight();
+			$('.map').matchHeight();
 		});
 
 		function getInfo(id, type) {

@@ -166,7 +166,7 @@ class AuthController extends Controller {
 	private function addUserLoginLog($userId, $ip): void {
 		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){
 			Log::info('识别到IPv6，尝试解析：'.$ip);
-			$ipInfo = getIPv6($ip);
+			$ipInfo = getIPInfo($ip);
 		}else{
 			$ipInfo = QQWry::ip($ip); // 通过纯真IP库解析IPv4信息
 			if(isset($ipInfo['error'])){
@@ -242,10 +242,10 @@ class AuthController extends Controller {
 			$register_token = $request->input('register_token');
 			$code = $request->input('code');
 			$verify_code = $request->input('verify_code');
-			$aff = intval($request->input('aff'));
+			$aff = (int) $request->input('aff');
 
 			// 防止重复提交
-			if($register_token != Session::get('register_token')){
+			if($register_token !== Session::get('register_token')){
 				return Redirect::back()->withInput()->withErrors(trans('auth.repeat_request'));
 			}
 
@@ -258,8 +258,8 @@ class AuthController extends Controller {
 
 			// 校验域名邮箱黑白名单
 			if(self::$systemConfig['is_email_filtering']){
-				$result = $this->emailChecker($email);
-				if($result != false){
+				$result = $this->emailChecker($email, 1);
+				if($result !== false){
 					return $result;
 				}
 			}
@@ -406,23 +406,32 @@ class AuthController extends Controller {
 	}
 
 	//邮箱检查
-	private function emailChecker($email) {
+	private function emailChecker($email, $returnType = 0) {
 		$sensitiveWords = $this->sensitiveWords(self::$systemConfig['is_email_filtering']);
 		$emailSuffix = explode('@', $email); // 提取邮箱后缀
 		switch(self::$systemConfig['is_email_filtering']){
 			// 黑名单
 			case 1:
 				if(in_array(strtolower($emailSuffix[1]), $sensitiveWords, true)){
+					if($returnType){
+						return Redirect::back()->withErrors(trans('auth.email_banned'));
+					}
 					return Response::json(['status' => 'fail', 'message' => trans('auth.email_banned')]);
 				}
 				break;
 			//白名单
 			case 2:
 				if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords, true)){
+					if($returnType){
+						return Redirect::back()->withErrors(trans('auth.email_invalid'));
+					}
 					return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
 				}
 				break;
 			default:
+				if($returnType){
+					return Redirect::back()->withErrors(trans('auth.email_invalid'));
+				}
 				return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
 		}
 
@@ -743,7 +752,7 @@ class AuthController extends Controller {
 		// 校验域名邮箱黑白名单
 		if(self::$systemConfig['is_email_filtering']){
 			$result = $this->emailChecker($email);
-			if($result != false){
+			if($result !== false){
 				return $result;
 			}
 		}

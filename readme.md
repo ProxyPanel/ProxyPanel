@@ -7,8 +7,8 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
     - Account: test@test.com
     - Password: 123456
 - [Issues](https://github.com/ZBrettonYe/ProxyPanel/issues)
-- [WIKI](https://github.com/ZBrettonYe/ProxyPanel/wiki)
-- [Update Log](https://github.com/ZBrettonYe/ProxyPanel/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
+- [WIKI](https://proxypanel.gitbook.io/wiki/)
+- [UpdateLog](https://proxypanel.gitbook.io/wiki/updatelog)
 - [Upcoming](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
 - [Telegram](https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA)
 

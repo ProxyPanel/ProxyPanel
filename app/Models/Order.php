@@ -78,7 +78,7 @@ class Order extends Model {
 	}
 
 	// 订单状态
-	public function getStatusLabelAttribute() {
+	public function getStatusLabelAttribute(): string {
 		switch($this->attributes['status']){
 			case -1:
 				$status_label = trans('home.invoice_status_closed');
