@@ -276,7 +276,7 @@ class RuleController extends Controller {
 
 		$view['nodeList'] = SsNode::all();
 		$view['ruleList'] = Rule::all();
-		$view['ruleLogs'] = $query->paginate(15)->appends($request->except('page'));
+		$view['ruleLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.rule.ruleLogList', $view);
 	}
 

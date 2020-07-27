@@ -26,10 +26,13 @@ abstract class AbstractPayment {
 
 	protected function postPayment($data, $method): int {
 		// 获取需要的信息
-		$payment = Payment::whereTradeNo($data)->latest()->first();
+		$payment = Payment::query()->whereTradeNo($data)->latest()->first();
 		// 是否为余额购买套餐
 		if($payment){
-			Payment::whereTradeNo($data)->update(['status' => 1]);
+			if($payment->status === 1){// 已处理
+				return 0;
+			}
+			Payment::query()->whereTradeNo($data)->update(['status' => 1]);
 			$order = Order::find($payment->oid);
 		}else{
 			$order = Order::find($data);
@@ -181,5 +184,28 @@ abstract class AbstractPayment {
 		$log->amount = $amount;
 
 		return $log->save();
+	}
+
+	// MD5验签
+	protected function verify($data, $key, $signature): bool {
+		return hash_equals($this->aliStyleSign($data, $key), $signature);
+	}
+
+	/**
+	 *  Alipay式数据MD5签名
+	 * @param  array   $data  需要加密的数组
+	 * @param  string  $key   尾部的密钥
+	 * @return string md5加密后的数据
+	 */
+	protected function aliStyleSign($data, $key): string {
+		// 剃离sign，sign_type，空值
+		unset($data['sign'], $data['sign_type']);
+		array_filter($data);
+
+		// 排序
+		ksort($data, SORT_STRING);
+		reset($data);
+
+		return md5(urldecode(http_build_query($data)).$key);
 	}
 }
