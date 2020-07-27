@@ -7,7 +7,6 @@ use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Log;
-use Psr\Http\Message\StreamInterface;
 use Response;
 
 class BitpayX extends AbstractPayment {
@@ -18,12 +17,12 @@ class BitpayX extends AbstractPayment {
 			'merchant_order_id' => $payment->trade_no,
 			'price_amount'      => (float) $request->input('amount'),
 			'price_currency'    => 'CNY',
-			'pay_currency'      => $request->input('type') == 1? 'ALIPAY' : 'WECHAT',
+			'pay_currency'      => $request->input('type') === '1'? 'ALIPAY' : 'WECHAT',
 			'title'             => '支付单号：'.$payment->trade_no,
-			'description'       => parent::$systemConfig['subject_name']?: parent::$systemConfig['website_name'],
-			'callback_url'      => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=bitpayx',
-			'success_url'       => parent::$systemConfig['website_url'].'/invoices',
-			'cancel_url'        => parent::$systemConfig['website_url'],
+			'description'       => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
+			'callback_url'      => (self::$systemConfig['website_callback_url']?: self::$systemConfig['website_url']).'/callback/notify?method=bitpayx',
+			'success_url'       => self::$systemConfig['website_url'].'/invoices',
+			'cancel_url'        => self::$systemConfig['website_url'],
 			'token'             => $this->sign($this->prepareSignId($payment->trade_no)),
 		];
 
@@ -44,13 +43,13 @@ class BitpayX extends AbstractPayment {
 	}
 
 	private function sign($data) {
-		return strtolower(md5(md5($data).parent::$systemConfig['bitpay_secret']));
+		return strtolower(md5(md5($data).self::$systemConfig['bitpay_secret']));
 	}
 
 	private function prepareSignId($tradeno) {
 		$data_sign = [
 			'merchant_order_id' => $tradeno,
-			'secret'            => parent::$systemConfig['bitpay_secret'],
+			'secret'            => self::$systemConfig['bitpay_secret'],
 			'type'              => 'FIAT'
 		];
 		ksort($data_sign, SORT_STRING);
@@ -58,15 +57,15 @@ class BitpayX extends AbstractPayment {
 		return http_build_query($data_sign);
 	}
 
-	private function mprequest($data, $type = 'pay'): StreamInterface {
+	private function mprequest($data, $type = 'pay') {
 		$client = new Client(['base_uri' => 'https://api.mugglepay.com/v1/', 'timeout' => 10]);
 
 		if($type === 'query'){
 			$request = $client->get('orders/merchant_order_id/status?id='.$data['merchant_order_id'],
-				['json' => ['token' => parent::$systemConfig['bitpay_secret']]]);
+				['json' => ['token' => self::$systemConfig['bitpay_secret']]]);
 		}else{// pay
 			$request = $client->post('orders',
-				['json' => ['token' => parent::$systemConfig['bitpay_secret']], 'body' => json_encode($data)]);
+				['json' => ['token' => self::$systemConfig['bitpay_secret']], 'body' => json_encode($data)]);
 		}
 		if($request->getStatusCode() != 200){
 			Log::debug('BitPayX请求支付错误：'.var_export($request, true));

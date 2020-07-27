@@ -12,63 +12,28 @@ class CodePay extends AbstractPayment {
 		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$data = [
-			'id'         => parent::$systemConfig['codepay_id'],
+			'id'         => self::$systemConfig['codepay_id'],
 			'pay_id'     => $payment->trade_no,
 			'type'       => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
 			'price'      => $payment->amount,
 			'page'       => 1,
 			'outTime'    => 900,
-			'param'      => '',
-			'notify_url' => (parent::$systemConfig['website_callback_url']?: parent::$systemConfig['website_url']).'/callback/notify?method=codepay',
-			'return_url' => parent::$systemConfig['website_url'].'/invoices',
+			'notify_url' => (self::$systemConfig['website_callback_url']?: self::$systemConfig['website_url']).'/callback/notify?method=codepay',
+			'return_url' => self::$systemConfig['website_url'].'/invoices',
 		];
+		$data['sign'] = $this->aliStyleSign($data, self::$systemConfig['codepay_key']);
 
-		ksort($data);
-		reset($data);
-
-		$sign = '';
-		$urls = '';
-
-		foreach($data as $key => $val){
-			if($val == '' || $key === 'sign'){
-				continue;
-			}
-			if($sign != ''){
-				$sign .= '&';
-				$urls .= '&';
-			}
-			$sign .= "$key=$val"; //拼接为url参数形式
-			$urls .= "$key=".urlencode($val); //拼接为url参数形式并URL编码参数值
-		}
-		$query = $urls.'&sign='.md5($sign.parent::$systemConfig['codepay_key']); //创建订单所需的参数
-		$url = parent::$systemConfig['codepay_url'].$query; //支付页面
+		$url = self::$systemConfig['codepay_url'].http_build_query($data);
 		Payment::whereId($payment->id)->update(['url' => $url]);
 
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
 	}
 
 	public function notify($request): void {
-		ksort($_POST);
-		reset($_POST);
-		$sign = '';
-		foreach($_POST as $key => $val){
-			if($val == '' || $key === 'sign'){
-				continue;
-			}
-			if($sign){
-				$sign .= '&';
-			}
-			$sign .= "$key=$val";
-		}
-		if(!$_POST['pay_no'] || hash_equals($sign.parent::$systemConfig['codepay_key'], $_POST['sign'])){
-			exit('fail');
-		}
-		$payment = Payment::whereTradeNo($_POST['pay_id'])->first();
-
-		if($payment){
-			if($payment->status == 0){
-				$this->postPayment($_POST['pay_id'], '码支付');
-			}
+		$trade_no = $request->input('pay_id');
+		if($trade_no && $request->input('pay_no')
+		   && $this->verify($request->except('method'), self::$systemConfig['codepay_key'], $request->input('sign'))){
+			$this->postPayment($trade_no, '码支付');
 			exit('success');
 		}
 		exit('fail');

@@ -1242,7 +1242,7 @@
 											<label class="col-md-3 col-form-label" for="codepay_url">请求URL</label>
 											<div class="col-md-7">
 												<div class="input-group">
-													<input type="text" class="form-control" id="codepay_url" value="{{$codepay_url}}"/>
+													<input type="text" class="form-control" id="codepay_url" value="{{$codepay_url}}" placeholder="https://codepay.fateqq.com/creat_order/?"/>
 													<span class="input-group-append">
 														<button class="btn btn-primary" type="button" onclick="update('codepay_url')">修改</button>
 													</span>
@@ -1265,7 +1265,7 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="codepay_key">码支付通信密钥</label>
+											<label class="col-md-3 col-form-label" for="codepay_key">通信密钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="codepay_key" value="{{$codepay_key}}"/>
@@ -1283,7 +1283,6 @@
 											<label class="col-md-3 col-form-label">易支付</label>
 											<div class="col-md-7">
 												<button class="btn btn-primary" type="button" onclick="epayInfo()">咨询查询</button>
-												{{--												请到 <a href="https://codepay.fateqq.com/i/377289" target="_blank">码支付</a>申请账号，然后下载登录其挂机软件--}}
 											</div>
 										</div>
 									</div>
