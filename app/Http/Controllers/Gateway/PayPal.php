@@ -40,7 +40,7 @@ class PayPal extends AbstractPayment {
 		];
 		$this->provider->setApiCredentials($config);
 		$this->exChange = 7;
-		$client = new Client(['timeout' => 5]);
+		$client = new Client(['timeout' => 15]);
 		$exChangeRate = json_decode($client->get('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4')
 		                                   ->getBody(), true);
 

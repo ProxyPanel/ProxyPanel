@@ -164,7 +164,7 @@ if(!function_exists('getClientIP')){
 // 获取IPv6信息
 if(!function_exists('getIPInfo')){
 	function getIPInfo($ip) {
-		$request = (new Client(['timeout' => 5]))->get('https://api.ip.sb/geoip/'.$ip);
+		$request = (new Client(['timeout' => 15]))->get('https://api.ip.sb/geoip/'.$ip);
 		$message = json_decode($request->getBody(), true);
 
 		if($request->getStatusCode() == 200){

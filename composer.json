@@ -13,7 +13,6 @@
 	"ext-dom": "*",
 	"ext-json": "*",
 	"ext-openssl": "*",
-	"barryvdh/laravel-debugbar": "^3",
 	"barryvdh/laravel-ide-helper": "^2.7",
 	"fideloper/proxy": "^4.3",
 	"guzzlehttp/guzzle": "^6",
@@ -39,6 +38,8 @@
 	"xhat/payjs": "^1.4"
   },
   "require-dev": {
+	"roave/security-advisories": "dev-master",
+	"barryvdh/laravel-debugbar": "^3",
 	"beyondcode/laravel-dump-server": "^1.0",
 	"filp/whoops": "^2.7",
 	"fzaninotto/faker": "^1.9",

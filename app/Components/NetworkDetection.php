@@ -18,7 +18,7 @@ class NetworkDetection {
 	public static function networkCheck($ip, $type, $port = null) {
 		$url = 'https://api.50network.com/china-firewall/check/ip/'.($type? 'icmp/' : ($port? 'tcp_port/' : 'tcp_ack/')).$ip.($port? '/'.$port : '');
 		$checkName = $type? 'ICMP' : 'TCP';
-		$request = (new Client(['timeout' => 10]))->get($url);
+		$request = (new Client(['timeout' => 15]))->get($url);
 		$result = json_decode($request->getBody(), true);
 
 		if($request->getStatusCode() == 200){
@@ -65,7 +65,7 @@ class NetworkDetection {
 	 */
 	public static function ping($ip) {
 		$url = 'https://api.oioweb.cn/api/hostping.php?host='.$ip;//https://api.iiwl.cc/api/ping.php?host=
-		$request = (new Client(['timeout' => 20]))->get($url);
+		$request = (new Client(['timeout' => 15]))->get($url);
 		$message = json_decode($request->getBody(), true);
 
 		// 发送成功
