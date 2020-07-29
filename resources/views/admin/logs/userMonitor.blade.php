@@ -6,11 +6,11 @@
 				<h2 class="panel-title">用户流量</h2>
 			</div>
 			<div class="alert alert-info alert-dismissible">
-				<button class="close" data-dismiss="alert" aria-label="Close"><span
-							aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
+				<button class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
 				</button>
 				<h4 class="block">{{$email}}</h4>
-				<strong>提示：</strong> 月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日和每日0时因为没有统计流量，不显示流量)
+				<strong>提示：</strong> 如果无统计数据，请检查定时任务是否正常。
 			</div>
 			<div class="panel-body">
 				<div class="row">

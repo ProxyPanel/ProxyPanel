@@ -40,9 +40,6 @@ class PayJs extends AbstractPayment {
 		$data = (new Pay($this::$config))->notify();
 
 		if($data['return_code'] == 1){
-			//			PaymentCallback::query()
-			//			               ->whereTradeNo($data['out_trade_no'])
-			//			               ->update(['out_trade_no' => $data['payjs_order_id'], 'status' => 1]);
 			$this->postPayment($data['out_trade_no'], 'PayJs');
 			exit("success");
 		}

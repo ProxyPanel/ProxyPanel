@@ -413,71 +413,16 @@ class NodeController extends Controller {
 	// 节点流量监控
 	public function nodeMonitor(Request $request) {
 		$node_id = $request->input('id');
-		$node = SsNode::query()->whereId($node_id)->orderByDesc('sort')->first();
+		$node = SsNode::find($node_id);
 		if(!$node){
 			Session::flash('errorMsg', '节点不存在，请重试');
 
 			return Redirect::back();
 		}
 
-		// 查看流量
-		$dailyData = [];
-		$hourlyData = [];
-
-		// 节点一个月内的流量
-		$nodeTrafficDaily = SsNodeTrafficDaily::query()
-		                                      ->with(['info'])
-		                                      ->whereNodeId($node->id)
-		                                      ->where('created_at', '>=', date('Y-m'))
-		                                      ->orderBy('created_at')
-		                                      ->pluck('total')
-		                                      ->toArray();
-		$dailyTotal = date('d') - 1;//今天不算，减一
-		$dailyCount = count($nodeTrafficDaily);
-		for($x = 0; $x < ($dailyTotal - $dailyCount); $x++){
-			$dailyData[$x] = 0;
-		}
-		for($x = ($dailyTotal - $dailyCount); $x < $dailyTotal; $x++){
-			$dailyData[$x] = round($nodeTrafficDaily[$x - ($dailyTotal - $dailyCount)] / GB, 3);
-		}
-
-		// 节点一天内的流量
-		$nodeTrafficHourly = SsNodeTrafficHourly::query()
-		                                        ->with(['info'])
-		                                        ->whereNodeId($node->id)
-		                                        ->where('created_at', '>=', date('Y-m-d'))
-		                                        ->orderBy('created_at')
-		                                        ->pluck('total')
-		                                        ->toArray();
-		$hourlyTotal = date('H');
-		$hourlyCount = count($nodeTrafficHourly);
-		for($x = 0; $x < ($hourlyTotal - $hourlyCount); $x++){
-			$hourlyData[$x] = 0;
-		}
-		for($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++){
-			$hourlyData[$x] = round($nodeTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / GB, 3);
-		}
-
-		$view['trafficDaily'] = ['nodeName' => $node->name, 'dailyData' => json_encode($dailyData)];
-
-		$view['trafficHourly'] = ['nodeName' => $node->name, 'hourlyData' => json_encode($hourlyData)];
-
-
-		// 本月天数数据
-		$monthDays = [];
-		for($i = 1; $i <= date("d"); $i++){
-			$monthDays[] = $i;
-		}
-		// 本日小时数据
-		$dayHours = [];
-		for($i = 1; $i <= date("H"); $i++){
-			$dayHours[] = $i;
-		}
-
 		$view['nodeName'] = $node->name;
 		$view['nodeServer'] = $node->server;
-		$view['monthDays'] = json_encode($monthDays);
-		$view['dayHours'] = json_encode($dayHours);
+		$view = array_merge($view, $this->DataFlowChart($node->id, 1));
 
 		return Response::view('admin.node.nodeMonitor', $view);
 	}
@@ -522,7 +467,7 @@ class NodeController extends Controller {
 
 	// 节点授权列表
 	public function authList(Request $request): \Illuminate\Http\Response {
-		$view['list'] = NodeAuth::query()->orderBy('id')->paginate(15)->appends($request->except('page'));
+		$view['list'] = NodeAuth::query()->orderBy('node_id')->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.node.authList', $view);
 	}
 

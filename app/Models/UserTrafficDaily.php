@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|UserTrafficDaily newModelQuery()
  * @method static Builder|UserTrafficDaily newQuery()
  * @method static Builder|UserTrafficDaily query()
+ * @method static Builder|UserTrafficDaily userDaily($uid)
  * @method static Builder|UserTrafficDaily whereCreatedAt($value)
  * @method static Builder|UserTrafficDaily whereD($value)
  * @method static Builder|UserTrafficDaily whereId($value)
@@ -38,5 +39,10 @@ class UserTrafficDaily extends Model {
 
 	public function node(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
+	}
+
+	// 用户每天使用总流量
+	public function scopeUserDaily($query, $uid) {
+		return $query->whereUserId($uid)->whereNodeId(0);
 	}
 }

@@ -230,8 +230,7 @@ class AutoJob extends Command {
 
 				// 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
 				$totalTraffic = UserTrafficHourly::query()
-				                                 ->whereUserId($user->id)
-				                                 ->whereNodeId(0)
+				                                 ->userHourly($user->id)
 				                                 ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 				                                 ->sum('total');
 				if($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)){
