@@ -6,13 +6,13 @@
 				<h2 class="panel-title">节点流量</h2>
 			</div>
 			<div class="alert alert-info alert-dismissible">
-				<button class="close" data-dismiss="alert" aria-label="Close"><span
-							aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
+				<button class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
 				</button>
 				<h4 class="block">{{$nodeName}}
 					<small class="pl-10">{{$nodeServer}}</small>
 				</h4>
-				<strong>提示：</strong> 月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。
+				<strong>提示：</strong> 如果无统计数据，请检查定时任务是否正常。
 			</div>
 			<div class="panel-body">
 				<div class="row">
@@ -45,7 +45,7 @@
 					pointBackgroundColor: Config.colors("primary", 600),
 					pointHoverBackgroundColor: "#fff",
 					pointHoverBorderColor: Config.colors("primary", 600),
-					data: {{$trafficHourly['hourlyData']}},
+					data: {{$trafficHourly}},
 				}]
 			},
 			options: {
@@ -89,7 +89,7 @@
 					pointBackgroundColor: Config.colors("primary", 600),
 					pointHoverBackgroundColor: "#fff",
 					pointHoverBorderColor: Config.colors("primary", 600),
-					data: {{$trafficDaily['dailyData']}},
+					data: {{$trafficDaily}},
 				}]
 			},
 			options: {

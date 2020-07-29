@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|UserTrafficHourly newModelQuery()
  * @method static Builder|UserTrafficHourly newQuery()
  * @method static Builder|UserTrafficHourly query()
+ * @method static Builder|UserTrafficHourly userHourly($uid)
  * @method static Builder|UserTrafficHourly whereCreatedAt($value)
  * @method static Builder|UserTrafficHourly whereD($value)
  * @method static Builder|UserTrafficHourly whereId($value)
@@ -38,5 +39,10 @@ class UserTrafficHourly extends Model {
 
 	public function node(): HasOne {
 		return $this->hasOne(SsNode::class, 'id', 'node_id');
+	}
+
+	// 用户每时使用总流量
+	public function scopeUserHourly($query, $uid) {
+		return $query->whereUserId($uid)->whereNodeId(0);
 	}
 }

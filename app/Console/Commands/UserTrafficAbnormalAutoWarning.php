@@ -50,8 +50,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 				// 推送通知管理员
 				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
 					$traffic = UserTrafficHourly::query()
-					                            ->whereNodeId(0)
-					                            ->whereUserId($vo->user_id)
+					                            ->userHourly($vo->user_id)
 					                            ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 					                            ->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")
 					                            ->first();

@@ -200,7 +200,7 @@ abstract class AbstractPayment {
 	protected function aliStyleSign($data, $key): string {
 		// 剃离sign，sign_type，空值
 		unset($data['sign'], $data['sign_type']);
-		array_filter($data);
+		$data = array_filter($data);
 
 		// 排序
 		ksort($data, SORT_STRING);

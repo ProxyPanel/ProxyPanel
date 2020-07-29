@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\SensitiveWords;
 use App\Models\SsNode;
+use App\Models\SsNodeTrafficDaily;
+use App\Models\SsNodeTrafficHourly;
 use App\Models\User;
+use App\Models\UserTrafficDaily;
+use App\Models\UserTrafficHourly;
+use App\Models\UserTrafficLog;
+use DB;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller as BaseController;
-use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 use Str;
 
@@ -24,7 +29,7 @@ class Controller extends BaseController {
 	}
 
 	// 生成UUID
-	public function makeUUID(): UuidInterface {
+	public function makeUUID() {
 		return Str::uuid();
 	}
 
@@ -230,5 +235,42 @@ class Controller extends BaseController {
 		$host, $port, $protocol, $method, $obfs, $passwd, $obfs_param, $protocol_param, $name, $group, $is_udp
 	): string {
 		return 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($name).'&group='.base64url_encode($group).'&udpport='.$is_udp.'&uot=0');
+	}
+
+	// 流量使用图表
+	public function dataFlowChart($id, $is_node = 0): array {
+		if($is_node){
+			$currentFlow = UserTrafficLog::query()->whereNodeId($id);
+			$hourlyFlow = SsNodeTrafficHourly::query()->whereNodeId($id);
+			$dailyFlow = SsNodeTrafficDaily::query()->whereNodeId($id);
+		}else{
+			$currentFlow = UserTrafficLog::query()->whereUserId($id);
+			$hourlyFlow = UserTrafficHourly::query()->userHourly($id);
+			$dailyFlow = UserTrafficDaily::query()->userDaily($id);
+		}
+		$currentFlow = $currentFlow->where('log_time', '>=', strtotime(date('Y-m-d H:00')))->sum(DB::raw('u + d'));
+		$hourlyFlow = $hourlyFlow->whereDate('created_at', date('Y-m-d'))->pluck('total', 'created_at')->toArray();
+		$dailyFlow = $dailyFlow->whereMonth('created_at', date('n'))->pluck('total', 'created_at')->toArray();
+
+		// 节点一天内的流量
+		$hourlyData = array_fill(0, date('G') + 1, 0);
+		foreach($hourlyFlow as $date => $dataFlow){
+			$hourlyData[date('G', strtotime($date))] = round($dataFlow / GB, 3);
+		}
+		$hourlyData[date('G') + 1] = round($currentFlow / GB, 3);
+
+		// 节点一个月内的流量
+		$dailyData = array_fill(0, date('j'), 0);
+		foreach($dailyFlow as $date => $dataFlow){
+			$dailyData[date('j', strtotime($date)) - 1] = round($dataFlow / GB, 3);
+		}
+		$dailyData[date('j', strtotime(now())) - 1] = round((array_sum($hourlyFlow) + $currentFlow) / GB, 3);
+
+		return [
+			'trafficDaily'  => json_encode($dailyData),
+			'trafficHourly' => json_encode($hourlyData),
+			'monthDays'     => json_encode(range(1, date("j"), 1)),// 本月天数
+			'dayHours'      => json_encode(range(0, date("G"), 1))// 本日小时
+		];
 	}
 }

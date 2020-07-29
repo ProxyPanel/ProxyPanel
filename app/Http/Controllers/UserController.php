@@ -20,7 +20,6 @@ use App\Models\TicketReply;
 use App\Models\User;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
-use App\Models\UserTrafficDaily;
 use App\Models\UserTrafficHourly;
 use Auth;
 use Cache;
@@ -66,8 +65,7 @@ class UserController extends Controller {
 		$view['noticeList'] = Article::type(2)->orderByDesc('id')->Paginate(1); // 公告
 		//流量异常判断
 		$hourlyTraffic = UserTrafficHourly::query()
-		                                  ->whereUserId($user->id)
-		                                  ->whereNodeId(0)
+		                                  ->userHourly($user->id)
 		                                  ->where('created_at', '>=', date('Y-m-d H:i:s', time() - Minute * 65))
 		                                  ->sum('total');
 		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)?: 0;
@@ -78,60 +76,7 @@ class UserController extends Controller {
 		                                ->where('origin_amount', '>', 0)
 		                                ->doesntExist();
 		$view['userLoginLog'] = UserLoginLog::query()->whereUserId($user->id)->orderByDesc('id')->first(); // 近期登录日志
-
-		$dailyData = [];
-		$hourlyData = [];
-
-		// 节点一个月内的流量
-		// TODO:有bug
-		$userTrafficDaily = UserTrafficDaily::query()
-		                                    ->whereUserId($user->id)
-		                                    ->whereNodeId(0)
-		                                    ->where('created_at', '<=', date('Y-m-d'))
-		                                    ->orderBy('created_at')
-		                                    ->pluck('total')
-		                                    ->toArray();
-		$dailyTotal = date('d') - 1; // 今天不算，减一
-		$dailyCount = count($userTrafficDaily);
-		for($x = 0; $x < $dailyTotal - $dailyCount; $x++){
-			$dailyData[$x] = 0;
-		}
-		for($x = $dailyTotal - $dailyCount; $x < $dailyTotal; $x++){
-			$dailyData[$x] = round($userTrafficDaily[$x - ($dailyTotal - $dailyCount)] / GB, 3);
-		}
-
-		// 节点一天内的流量
-		$userTrafficHourly = UserTrafficHourly::query()
-		                                      ->whereUserId($user->id)
-		                                      ->whereNodeId(0)
-		                                      ->where('created_at', '>=', date('Y-m-d'))
-		                                      ->orderBy('created_at')
-		                                      ->pluck('total')
-		                                      ->toArray();
-		$hourlyTotal = date('H');
-		$hourlyCount = count($userTrafficHourly);
-		for($x = 0; $x < $hourlyTotal - $hourlyCount; $x++){
-			$hourlyData[$x] = 0;
-		}
-		for($x = ($hourlyTotal - $hourlyCount); $x < $hourlyTotal; $x++){
-			$hourlyData[$x] = round($userTrafficHourly[$x - ($hourlyTotal - $hourlyCount)] / GB, 3);
-		}
-
-		// 本月天数数据
-		$monthDays = [];
-		for($i = 1; $i <= date("d"); $i++){
-			$monthDays[] = $i;
-		}
-		// 本日小时数据
-		$dayHours = [];
-		for($i = 1; $i <= date("H"); $i++){
-			$dayHours[] = $i;
-		}
-
-		$view['trafficDaily'] = json_encode($dailyData);
-		$view['trafficHourly'] = json_encode($hourlyData);
-		$view['monthDays'] = json_encode($monthDays);
-		$view['dayHours'] = json_encode($dayHours);
+		$view = array_merge($view, $this->dataFlowChart($user->id));
 
 		return Response::view('user.index', $view);
 	}
