@@ -71,7 +71,7 @@ class AutoClearLog extends Command {
 			                  ->delete();
 
 			// 清除用户封禁日志
-			UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-1 month")))->delete();
+			UserBanLog::query()->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-3 month")))->delete();
 
 			// 清除用户连接IP
 			SsNodeIp::query()->where('created_at', '<=', strtotime("-1 month"))->delete();

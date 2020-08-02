@@ -9,9 +9,9 @@ class NetworkDetection {
 	/**
 	 * 用api.50network.com进行节点阻断检测
 	 *
-	 * @param  string   $ip    被检测的IP
-	 * @param  boolean  $type  TRUE 为ICMP,FALSE 为tcp
-	 * @param  int      $port  检测端口，默认为空
+	 * @param  string    $ip    被检测的IP
+	 * @param  boolean   $type  TRUE 为ICMP,FALSE 为tcp
+	 * @param  int|null  $port  检测端口，默认为空
 	 *
 	 * @return bool|string
 	 */

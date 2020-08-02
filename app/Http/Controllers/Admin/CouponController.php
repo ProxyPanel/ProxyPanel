@@ -43,7 +43,7 @@ class CouponController extends Controller {
 			$query->whereStatus($status);
 		}
 
-		$view['couponList'] = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
+		$view['couponList'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.coupon.couponList', $view);
 	}
@@ -111,10 +111,8 @@ class CouponController extends Controller {
 					$obj->amount = $type == 2? 0 : $request->input('amount');
 					$obj->discount = $type != 2? 0 : $request->input('discount');
 					$obj->rule = $request->input('rule');
-					$obj->available_start = strtotime(date('Y-m-d 00:00:00',
-						strtotime($request->input('available_start'))));
-					$obj->available_end = strtotime(date('Y-m-d 23:59:59',
-						strtotime($request->input('available_end'))));
+					$obj->available_start = strtotime($request->input('available_start'));
+					$obj->available_end = strtotime($request->input('available_end'));
 					$obj->status = 0;
 					$obj->save();
 				}
@@ -138,7 +136,7 @@ class CouponController extends Controller {
 	public function delCoupon(Request $request): JsonResponse {
 		Coupon::query()->whereId($request->input('id'))->delete();
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+		return Response::json(['status' => 'success', 'message' => '删除成功']);
 	}
 
 	// 导出卡券

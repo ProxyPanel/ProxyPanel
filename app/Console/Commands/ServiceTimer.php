@@ -37,7 +37,7 @@ class ServiceTimer extends Command {
 		                  ->whereHas('goods', static function($q) {
 			                  $q->whereType(2);
 		                  })
-		                  ->where('expire_at', '<=', date('Y-m-d H:i:s'))
+		                  ->where('expired_at', '<=', date('Y-m-d H:i:s'))
 		                  ->get();
 		if($orderList->isNotEmpty()){
 			try{
@@ -73,11 +73,7 @@ class ServiceTimer extends Command {
 						'[定时任务]用户所购商品到期，扣减商品对应的流量');
 
 					// 检查该订单对应用户是否有预支付套餐
-					$prepaidOrder = Order::query()
-					                     ->whereUserId($order->user_id)
-					                     ->whereStatus(3)
-					                     ->orderBy('oid')
-					                     ->first();
+					$prepaidOrder = Order::query()->whereUserId($order->user_id)->whereStatus(3)->oldest()->first();
 
 					if($prepaidOrder){
 						(new ServiceController)->activePrepaidOrder($prepaidOrder->oid);

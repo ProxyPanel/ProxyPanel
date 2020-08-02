@@ -10,18 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 返利日志
  *
- * @property int                             $id
- * @property int                             $user_id     用户ID
- * @property int                             $ref_user_id 推广人ID
- * @property int                             $order_id    关联订单ID
- * @property int                             $amount      消费金额，单位分
- * @property int                             $ref_amount  返利金额
- * @property int                             $status      状态：0-未提现、1-审核中、2-已提现
- * @property \Illuminate\Support\Carbon|null $created_at  创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at  最后更新时间
- * @property-read \App\Models\Order|null     $order
- * @property-read \App\Models\User|null      $ref_user
- * @property-read \App\Models\User|null      $user
+ * @property int                         $id
+ * @property int                         $user_id     用户ID
+ * @property int                         $ref_user_id 推广人ID
+ * @property int                         $order_id    关联订单ID
+ * @property int                         $amount      消费金额，单位分
+ * @property int                         $ref_amount  返利金额
+ * @property int                         $status      状态：0-未提现、1-审核中、2-已提现
+ * @property \Illuminate\Support\Carbon  $created_at  创建时间
+ * @property \Illuminate\Support\Carbon  $updated_at  最后更新时间
+ * @property-read \App\Models\Order|null $order
+ * @property-read \App\Models\User|null  $ref_user
+ * @property-read \App\Models\User|null  $user
  * @method static Builder|ReferralLog newModelQuery()
  * @method static Builder|ReferralLog newQuery()
  * @method static Builder|ReferralLog query()

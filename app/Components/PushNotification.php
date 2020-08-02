@@ -11,10 +11,8 @@ class PushNotification {
 		switch(Helpers::systemConfig()['is_notification']){
 			case 'serverChan':
 				return self::ServerChan($title, $content);
-				break;
 			case 'bark':
 				return self::Bark($title, $content);
-				break;
 			default:
 				return false;
 		}

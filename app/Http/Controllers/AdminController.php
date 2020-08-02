@@ -44,7 +44,6 @@ use Redirect;
 use Response;
 use Session;
 use Str;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Validator;
 
 /**
@@ -62,26 +61,21 @@ class AdminController extends Controller {
 	}
 
 	public function index(): \Illuminate\Http\Response {
-		$past = strtotime(date('Y-m-d', strtotime("-".self::$systemConfig['expire_days']." days")));
+		$past = strtotime("-".self::$systemConfig['expire_days']." days");
 
 		$view['expireDays'] = self::$systemConfig['expire_days'];
 		$view['totalUserCount'] = User::query()->count(); // 总用户数
 		$view['enableUserCount'] = User::query()->whereEnable(1)->count(); // 有效用户数
 		$view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
-		$view['unActiveUserCount'] = User::query()
-		                                 ->where('t', '<=', $past)
-		                                 ->whereEnable(1)
-		                                 ->where('t', '>', 0)
-		                                 ->count(); // 不活跃用户数
-		$view['onlineUserCount'] = User::query()->where('t', '>=', time() - Minute * 10)->count(); // 10分钟内在线用户数
-		$view['expireWarningUserCount'] = User::query()
-		                                      ->where('expire_time', '>=', date('Y-m-d'))
-		                                      ->where('expire_time', '<=', date('Y-m-d',
-			                                      strtotime("+".self::$systemConfig['expire_days']." days")))
-		                                      ->count(); // 临近过期用户数
+		$view['unActiveUserCount'] = User::query()->whereBetween('t', [1, $past])->whereEnable(1)->count(); // 不活跃用户数
+		$view['onlineUserCount'] = User::query()->where('t', '>=', strtotime("-10 minutes"))->count(); // 10分钟内在线用户数
+		$view['expireWarningUserCount'] = User::query()->whereBetween('expire_time', [
+			date('Y-m-d'),
+			strtotime("+".self::$systemConfig['expire_days']." days")
+		])->count(); // 临近过期用户数
 		$view['largeTrafficUserCount'] = User::query()
 		                                     ->whereRaw('(u + d) >= 107374182400')
-		                                     ->whereIn('status', [0, 1])
+		                                     ->where('status', '<>', -1)
 		                                     ->count(); // 流量超过100G的用户
 
 		$view['flowAbnormalUserCount'] = count($this->trafficAbnormal());// 1小时内流量异常用户
@@ -89,20 +83,16 @@ class AdminController extends Controller {
 		$view['unnormalNodeCount'] = SsNode::query()->whereStatus(0)->count();
 		$view['flowCount'] = flowAutoShow(SsNodeTrafficDaily::query()
 		                                                    ->where('created_at', '>=',
-			                                                    date('Y-m-d 00:00:00', strtotime("-30 days")))
+			                                                    date('Y-m-d', strtotime("-30 days")))
 		                                                    ->sum('total'));
 		$view['totalFlowCount'] = flowAutoShow(SsNodeTrafficDaily::query()->sum('total'));
-		$view['totalCredit'] = User::query()->sum('credit') / 100;
+		$view['totalCredit'] = User::query()->where('credit', '<>', 0)->sum('credit') / 100;
 		$view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
 		$view['totalRefAmount'] = ReferralApply::query()->whereStatus(2)->sum('amount') / 100;
 		$view['totalOrder'] = Order::query()->count();
 		$view['totalOnlinePayOrder'] = Order::query()->wherePayWay(2)->count();
 		$view['totalSuccessOrder'] = Order::query()->whereStatus(2)->count();
-		$view['todaySuccessOrder'] = Order::query()
-		                                  ->whereStatus(2)
-		                                  ->where('created_at', '>=', date('Y-m-d 00:00:00'))
-		                                  ->where('created_at', '<=', date('Y-m-d 23:59:59'))
-		                                  ->count();
+		$view['todaySuccessOrder'] = Order::query()->whereStatus(2)->whereDate('created_at', date('Y-m-d'))->count();
 		// 今日
 		$view['todayRegister'] = User::query()->whereDate('created_at', date('Y-m-d'))->count();
 
@@ -114,13 +104,13 @@ class AdminController extends Controller {
 		$result = [];
 		$userTotalTrafficList = UserTrafficHourly::query()
 		                                         ->whereNodeId(0)
-		                                         ->where('total', '>', 50 * MB)
+		                                         ->where('total', '>', MB * 50)
 		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 		                                         ->groupBy('user_id')
 		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
 		                                         ->get(); // 只统计50M以上的记录，加快速度
 		foreach($userTotalTrafficList as $user){
-			if($user->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
+			if($user->totalTraffic > self::$systemConfig['traffic_ban_value'] * GB){
 				$result[] = $user->user_id;
 			}
 		}
@@ -137,7 +127,6 @@ class AdminController extends Controller {
 		$status = $request->input('status');
 		$enable = $request->input('enable');
 		$online = $request->input('online');
-		$unActive = $request->input('unActive');
 		$flowAbnormal = $request->input('flowAbnormal');
 		$expireWarning = $request->input('expireWarning');
 		$largeTraffic = $request->input('largeTraffic');
@@ -178,22 +167,18 @@ class AdminController extends Controller {
 
 		// 临近过期提醒
 		if($expireWarning){
-			$query->where('expire_time', '>=', date('Y-m-d'))
-			      ->where('expire_time', '<=',
-				      date('Y-m-d', strtotime("+".self::$systemConfig['expire_days']." days")));
+			$query->whereBetween('expire_time',
+				[date('Y-m-d'), date('Y-m-d', strtotime("+".self::$systemConfig['expire_days']." days"))]);
 		}
 
 		// 当前在线
 		if($online){
-			$query->where('t', '>=', time() - Minute * 10);
+			$query->where('t', '>=', strtotime("-10 minutes"));
 		}
 
 		// 不活跃用户
-		if($unActive){
-			$query->where('t', '>', 0)
-			      ->where('t', '<=',
-				      strtotime(date('Y-m-d', strtotime("-".self::$systemConfig['expire_days']." days"))))
-			      ->whereEnable(1);
+		if($request->input('unActive')){
+			$query->whereBetween('t', [1, strtotime("-".self::$systemConfig['expire_days']." days")])->whereEnable(1);
 		}
 
 		// 1小时内流量异常用户
@@ -201,7 +186,7 @@ class AdminController extends Controller {
 			$query->whereIn('id', $this->trafficAbnormal());
 		}
 
-		$userList = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
+		$userList = $query->latest()->paginate(15)->appends($request->except('page'));
 		foreach($userList as $user){
 			$user->transfer_enable = flowAutoShow($user->transfer_enable);
 			$user->used_flow = flowAutoShow($user->u + $user->d);
@@ -238,7 +223,7 @@ class AdminController extends Controller {
 			// 校验email是否已存在
 			$exists = User::query()->whereEmail($request->input('email'))->first();
 			if($exists){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
+				return Response::json(['status' => 'fail', 'message' => '用户名已存在，请重新输入']);
 			}
 
 			$user = new User();
@@ -279,10 +264,10 @@ class AdminController extends Controller {
 				Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->input('transfer_enable', 0)),
 					'后台手动添加用户');
 
-				return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+				return Response::json(['status' => 'success', 'message' => '添加成功']);
 			}
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
+			return Response::json(['status' => 'fail', 'message' => '添加失败']);
 		}
 
 		// 生成一个可用端口
@@ -303,8 +288,9 @@ class AdminController extends Controller {
 	// 批量生成账号
 	public function batchAddUsers(Request $request): ?JsonResponse {
 		$amount = $request->input('amount');
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
+
 			for($i = 0; $i < $amount; $i++){
 				$uid = Helpers::addUser('批量生成-'.makeRandStr(), Hash::make(makeRandStr()), toGB(1024), 365);
 				// 生成一个可用端口
@@ -324,11 +310,11 @@ class AdminController extends Controller {
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '批量生成账号成功']);
+			return Response::json(['status' => 'success', 'message' => '批量生成账号成功']);
 		}catch(Exception $e){
 			DB::rollBack();
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '批量生成账号失败：'.$e->getMessage()]);
+			return Response::json(['status' => 'fail', 'message' => '批量生成账号失败：'.$e->getMessage()]);
 		}
 	}
 
@@ -345,22 +331,22 @@ class AdminController extends Controller {
 			// 校验email是否已存在
 			$exists = User::query()->where('id', '<>', $id)->whereEmail($email)->first();
 			if($exists){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '用户名已存在，请重新输入']);
+				return Response::json(['status' => 'fail', 'message' => '用户名已存在，请重新输入']);
 			}
 
 			// 校验端口是否已存在
 			$exists = User::query()->where('id', '<>', $id)->where('port', '>', 0)->wherePort($port)->first();
 			if($exists){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '端口已存在，请重新输入']);
+				return Response::json(['status' => 'fail', 'message' => '端口已存在，请重新输入']);
 			}
 
 			// 禁止取消默认管理员
 			if($id == 1 && $is_admin == 0){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统默认管理员不可取消']);
+				return Response::json(['status' => 'fail', 'message' => '系统默认管理员不可取消']);
 			}
 
 			// 用户编辑前的信息
-			$user = User::query()->whereId($id)->first();
+			$user = User::find($id);
 
 			try{
 				DB::beginTransaction();
@@ -408,12 +394,12 @@ class AdminController extends Controller {
 
 				DB::commit();
 
-				return Response::json(['status' => 'success', 'data' => '', 'message' => '编辑成功']);
+				return Response::json(['status' => 'success', 'message' => '编辑成功']);
 			}catch(Exception $e){
 				DB::rollBack();
 				Log::error('编辑用户信息异常：'.$e->getMessage());
 
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败']);
+				return Response::json(['status' => 'fail', 'message' => '编辑失败']);
 			}
 		}else{
 			$user = User::query()->with(['referral'])->whereId($id)->first();
@@ -437,7 +423,7 @@ class AdminController extends Controller {
 		$id = $request->input('id');
 
 		if($id <= 1){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '系统管理员不可删除']);
+			return Response::json(['status' => 'fail', 'message' => '系统管理员不可删除']);
 		}
 
 		try{
@@ -452,12 +438,12 @@ class AdminController extends Controller {
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}catch(Exception $e){
 			Log::error($e);
 			DB::rollBack();
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+			return Response::json(['status' => 'fail', 'message' => '删除失败']);
 		}
 	}
 
@@ -557,7 +543,7 @@ class AdminController extends Controller {
 			return Redirect::to('admin/editArticle?id='.$id);
 		}
 
-		$view['article'] = Article::query()->whereId($id)->first();
+		$view['article'] = Article::find($id);
 
 		return Response::view('admin.article.editArticle', $view);
 	}
@@ -568,10 +554,10 @@ class AdminController extends Controller {
 
 		$ret = Article::query()->whereId($id)->delete();
 		if($ret){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+		return Response::json(['status' => 'fail', 'message' => '删除失败']);
 	}
 
 	// 流量日志
@@ -616,7 +602,7 @@ class AdminController extends Controller {
 		// 已使用流量
 		$view['totalTraffic'] = flowAutoShow($query->sum('u') + $query->sum('d'));
 
-		$list = $query->orderByDesc('id')->paginate(20)->appends($request->except('page'));
+		$list = $query->latest('log_time')->paginate(20)->appends($request->except('page'));
 		foreach($list as $vo){
 			$vo->u = flowAutoShow($vo->u);
 			$vo->d = flowAutoShow($vo->d);
@@ -624,7 +610,7 @@ class AdminController extends Controller {
 		}
 
 		$view['list'] = $list;
-		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->orderByDesc('id')->get();
+		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->latest()->get();
 
 		return Response::view('admin.logs.trafficLog', $view);
 	}
@@ -635,16 +621,15 @@ class AdminController extends Controller {
 			return Redirect::to('admin/userList');
 		}
 
-		$user = User::query()->whereId($id)->first();
+		$user = User::find($id);
 		if(empty($user)){
 			return Redirect::to('admin/userList');
 		}
 
 		if($request->isMethod('POST')){
-			$node_id = $request->input('id');
 			$infoType = $request->input('type');
 
-			$node = SsNode::query()->whereId($node_id)->first();
+			$node = SsNode::find($request->input('id'));
 			if($node->type == 1){
 				if($node->compatible){
 					$proxyType = 'SS';
@@ -673,7 +658,7 @@ class AdminController extends Controller {
 	}
 
 	// 导出原版SS用户配置信息
-	public function exportSSJson(): BinaryFileResponse {
+	public function exportSSJson() {
 		$userList = User::query()->where('port', '>', 0)->get();
 
 		$json = '';
@@ -737,7 +722,7 @@ class AdminController extends Controller {
 			return Redirect::to('admin/userList');
 		}
 
-		$user = User::query()->whereId($id)->first();
+		$user = User::find($id);
 		if(empty($user)){
 			return Redirect::to('admin/userList');
 		}
@@ -757,13 +742,13 @@ class AdminController extends Controller {
 			$sort = $request->input('sort', 0);
 
 			if(empty($name)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置名称不能为空']);
+				return Response::json(['status' => 'fail', 'message' => '配置名称不能为空']);
 			}
 
 			// 校验是否已存在
 			$config = SsConfig::type($type)->whereName($name)->first();
 			if($config){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置已经存在，请勿重复添加']);
+				return Response::json(['status' => 'fail', 'message' => '配置已经存在，请勿重复添加']);
 			}
 
 			$ssConfig = new SsConfig();
@@ -773,7 +758,7 @@ class AdminController extends Controller {
 			$ssConfig->sort = $sort;
 			$ssConfig->save();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+			return Response::json(['status' => 'success', 'message' => '添加成功']);
 		}
 
 		$labelList = Label::all();
@@ -797,10 +782,10 @@ class AdminController extends Controller {
 
 		$ret = SsConfig::query()->whereId($id)->delete();
 		if($ret){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+		return Response::json(['status' => 'fail', 'message' => '删除失败']);
 	}
 
 	// 设置默认配置
@@ -808,12 +793,12 @@ class AdminController extends Controller {
 		$id = $request->input('id');
 
 		if(empty($id)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '非法请求']);
+			return Response::json(['status' => 'fail', 'message' => '非法请求']);
 		}
 
-		$config = SsConfig::query()->whereId($id)->first();
+		$config = SsConfig::find($id);
 		if(!$config){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '配置不存在']);
+			return Response::json(['status' => 'fail', 'message' => '配置不存在']);
 		}
 
 		// 去除该配置所属类型的默认值
@@ -822,7 +807,7 @@ class AdminController extends Controller {
 		// 将该ID对应记录值置为默认值
 		SsConfig::query()->whereId($id)->update(['is_default' => 1]);
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
 
 	// 设置系统扩展信息，例如客服、统计代码
@@ -887,10 +872,10 @@ class AdminController extends Controller {
 		$obj->save();
 
 		if($obj->id){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+			return Response::json(['status' => 'success', 'message' => '提交成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 编辑等级
@@ -936,12 +921,12 @@ class AdminController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
 		}
 
-		$level = Level::query()->whereId($id)->first();
+		$level = Level::find($id);
 
 		// 校验该等级下是否存在关联账号
 		$userCount = User::query()->whereLevel($level->level)->count();
 		if($userCount){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该等级下存在关联账号，请先取消关联']);
+			return Response::json(['status' => 'fail', 'message' => '该等级下存在关联账号，请先取消关联']);
 		}
 		$ret = false;
 		try{
@@ -950,10 +935,10 @@ class AdminController extends Controller {
 			Log::error('删除等级时报错：'.$e);
 		}
 		if($ret){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+			return Response::json(['status' => 'success', 'message' => '操作成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 添加国家/地区
@@ -962,16 +947,16 @@ class AdminController extends Controller {
 		$code = $request->input('country_code');
 
 		if(empty($name)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区名称不能为空']);
+			return Response::json(['status' => 'fail', 'message' => '国家/地区名称不能为空']);
 		}
 
 		if(empty($code)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
+			return Response::json(['status' => 'fail', 'message' => '国家/地区代码不能为空']);
 		}
 
 		$exists = Country::query()->whereName($name)->first();
 		if($exists){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区名称已存在，请勿重复添加']);
+			return Response::json(['status' => 'fail', 'message' => '该国家/地区名称已存在，请勿重复添加']);
 		}
 
 		$obj = new Country();
@@ -980,10 +965,10 @@ class AdminController extends Controller {
 		$obj->save();
 
 		if($obj->id){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+			return Response::json(['status' => 'success', 'message' => '提交成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 编辑国家/地区
@@ -993,34 +978,34 @@ class AdminController extends Controller {
 		$code = $request->input('country_code');
 
 		if(empty($id)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+			return Response::json(['status' => 'fail', 'message' => 'ID不能为空']);
 		}
 
 		if(empty($name)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区名称不能为空']);
+			return Response::json(['status' => 'fail', 'message' => '国家/地区名称不能为空']);
 		}
 
 		if(empty($code)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区代码不能为空']);
+			return Response::json(['status' => 'fail', 'message' => '国家/地区代码不能为空']);
 		}
 
-		$country = Country::query()->whereId($id)->first();
+		$country = Country::find($id);
 		if($country){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
+			return Response::json(['status' => 'fail', 'message' => '国家/地区不存在']);
 		}
 
 		// 校验该国家/地区下是否存在关联节点
 		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
 		if(!$existNode){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
+			return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
 
 		$ret = Country::query()->whereId($id)->update(['name' => $name, 'code' => $code]);
 		if($ret){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+			return Response::json(['status' => 'success', 'message' => '操作成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 删除国家/地区
@@ -1028,18 +1013,18 @@ class AdminController extends Controller {
 		$id = $request->input('id');
 
 		if(empty($id)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => 'ID不能为空']);
+			return Response::json(['status' => 'fail', 'message' => 'ID不能为空']);
 		}
 
-		$country = Country::query()->whereId($id)->first();
+		$country = Country::find($id);
 		if(!$country){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '国家/地区不存在']);
+			return Response::json(['status' => 'fail', 'message' => '国家/地区不存在']);
 		}
 
 		// 校验该国家/地区下是否存在关联节点
 		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
 		if(!$existNode){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
+			return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
 		$ret = false;
 		try{
@@ -1048,10 +1033,10 @@ class AdminController extends Controller {
 			Log::error('删除国家/地区时报错：'.$e);
 		}
 		if($ret){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+			return Response::json(['status' => 'success', 'message' => '操作成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 系统设置
@@ -1128,7 +1113,6 @@ class AdminController extends Controller {
 					break;
 				default:
 					return Response::json(['status' => 'fail', 'message' => '未知支付渠道']);
-					break;
 			}
 		}
 
@@ -1157,7 +1141,7 @@ class AdminController extends Controller {
 		// 更新配置
 		Config::query()->whereName($name)->update(['value' => $value]);
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
 
 	// 推送通知测试
@@ -1174,14 +1158,12 @@ class AdminController extends Controller {
 					}
 
 					return Response::json(['status' => 'fail', 'message' => $result? $result['errmsg'] : '未知']);
-					break;
 				case 'bark':
 					if($result['code'] == 200){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
 					}
 
 					return Response::json(['status' => 'fail', 'message' => $result['message']]);
-					break;
 				default:
 			}
 		}
@@ -1194,7 +1176,7 @@ class AdminController extends Controller {
 		$view['inviteList'] = Invite::query()
 		                            ->with(['generator', 'user'])
 		                            ->orderBy('status')
-		                            ->orderByDesc('id')
+		                            ->latest()
 		                            ->paginate(15)
 		                            ->appends($request->except('page'));
 
@@ -1213,7 +1195,7 @@ class AdminController extends Controller {
 			$obj->save();
 		}
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '生成成功']);
+		return Response::json(['status' => 'success', 'message' => '生成成功']);
 	}
 
 	// 导出邀请码
@@ -1322,7 +1304,7 @@ class AdminController extends Controller {
 
 		User::query()->whereId($id)->update(['u' => 0, 'd' => 0]);
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
 
 	// 操作用户余额
@@ -1332,42 +1314,35 @@ class AdminController extends Controller {
 			$amount = $request->input('amount');
 
 			if(empty($userId) || empty($amount)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值异常']);
+				return Response::json(['status' => 'fail', 'message' => '充值异常']);
+			}
+			$user = User::find($userId);
+
+			// 写入余额变动日志
+			Helpers::addUserCreditLog($userId, 0, $user->credit, $user->credit + $amount, $amount, '后台手动充值');
+
+			// 加减余额
+			if($amount < 0){
+				$ret = User::whereId($user->id)->decrement('credit', abs($amount) * 100);
+			}else{
+				$ret = User::whereId($user->id)->increment('credit', $amount * 100);
 			}
 
-			try{
-				DB::beginTransaction();
-
-				$user = User::query()->whereId($userId)->first();
-
-				// 写入余额变动日志
-				Helpers::addUserCreditLog($userId, 0, $user->credit, $user->credit + $amount, $amount, '后台手动充值');
-
-				// 加减余额
-				if($amount < 0){
-					$user->decrement('credit', abs($amount) * 100);
-				}else{
-					$user->increment('credit', abs($amount) * 100);
-				}
-
-				DB::commit();
-
-				return Response::json(['status' => 'success', 'data' => '', 'message' => '充值成功']);
-			}catch(Exception $e){
-				DB::rollBack();
-
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '充值失败：'.$e->getMessage()]);
+			if($ret){
+				return Response::json(['status' => 'success', 'message' => '充值成功']);
 			}
-		}else{
-			return Response::view('admin.handleUserCredit');
+
+			return Response::json(['status' => 'fail', 'message' => '充值失败']);
 		}
+
+		return Response::view('admin.handleUserCredit');
 	}
 
 	// 用户余额变动记录
 	public function userCreditLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
-		$query = UserCreditLog::query()->with(['user'])->orderByDesc('id');
+		$query = UserCreditLog::query()->with(['user'])->latest();
 
 		if(isset($email)){
 			$query->whereHas('user', static function($q) use ($email) {
@@ -1384,7 +1359,7 @@ class AdminController extends Controller {
 	public function userBanLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
-		$query = UserBanLog::query()->with(['user'])->orderByDesc('id');
+		$query = UserBanLog::query()->with(['user'])->latest();
 
 		if(isset($email)){
 			$query->whereHas('user', static function($q) use ($email) {
@@ -1409,7 +1384,7 @@ class AdminController extends Controller {
 			});
 		}
 
-		$view['list'] = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
+		$view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.logs.userTrafficLogList', $view);
 	}
@@ -1448,7 +1423,7 @@ class AdminController extends Controller {
 				                              ->whereType('tcp')
 				                              ->wherePort($user->port)
 				                              ->where('created_at', '>=', strtotime("-10 minutes"))
-				                              ->orderByDesc('id')
+				                              ->latest()
 				                              ->limit(5)
 				                              ->get();
 			}
@@ -1463,16 +1438,16 @@ class AdminController extends Controller {
 	public function switchToUser(Request $request): JsonResponse {
 		$id = $request->input('user_id');
 
-		$user = User::query()->find($id);
+		$user = User::find($id);
 		if(!$user){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => "用户不存在"]);
+			return Response::json(['status' => 'fail', 'message' => "用户不存在"]);
 		}
 
 		// 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
 		Session::put('admin', Auth::id());
 		Auth::login($user);
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => "身份切换成功"]);
+		return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
 	}
 
 	// 添加标签
@@ -1486,7 +1461,7 @@ class AdminController extends Controller {
 			$label->sort = $sort;
 			$label->save();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+			return Response::json(['status' => 'success', 'message' => '添加成功']);
 		}
 
 		return Response::view('admin.label.addLabel');
@@ -1501,11 +1476,11 @@ class AdminController extends Controller {
 
 			Label::query()->whereId($id)->update(['name' => $name, 'sort' => $sort]);
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+			return Response::json(['status' => 'success', 'message' => '添加成功']);
 		}
 
 		$id = $request->input('id');
-		$view['label'] = Label::query()->whereId($id)->first();
+		$view['label'] = Label::find($id);
 
 		return Response::view('admin.label.editLabel', $view);
 	}
@@ -1514,18 +1489,19 @@ class AdminController extends Controller {
 	public function delLabel(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
+
 			Label::query()->whereId($id)->delete();
 			SsNodeLabel::query()->whereLabelId($id)->delete(); // 删除节点关联
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}catch(Exception $e){
 			DB::rollBack();
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：'.$e->getMessage()]);
+			return Response::json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
 		}
 	}
 
@@ -1544,7 +1520,7 @@ class AdminController extends Controller {
 			$query->whereType($type);
 		}
 
-		$view['list'] = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
+		$view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.logs.notificationLog', $view);
 	}
@@ -1587,7 +1563,7 @@ class AdminController extends Controller {
 			});
 		}
 
-		$list = $query->groupBy('user_id', 'node_id')->orderByDesc('id');
+		$list = $query->groupBy('user_id', 'node_id')->latest();
 		foreach($list as $vo){
 			// 跳过上报多IP的
 			if($vo->ip == null || strpos($vo->ip, ',') === true){
@@ -1608,7 +1584,7 @@ class AdminController extends Controller {
 		}
 
 		$view['list'] = $list->paginate(20)->appends($request->except('page'));
-		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->orderByDesc('id')->get();
+		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->latest()->get();
 
 		return Response::view('admin.logs.onlineIPMonitor', $view);
 	}

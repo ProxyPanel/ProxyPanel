@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 支付回调日志
  *
- * @property int                             $id
- * @property string|null                     $trade_no     本地订单号
- * @property string|null                     $out_trade_no 外部订单号（支付平台）
- * @property int|null                        $amount       交易金额，单位分
- * @property int|null                        $status       交易状态：0-失败、1-成功
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read string                     $status_label
+ * @property int                        $id
+ * @property string                     $trade_no     本地订单号
+ * @property string                     $out_trade_no 外部订单号（支付平台）
+ * @property int                        $amount       交易金额，单位分
+ * @property int                        $status       交易状态：0-失败、1-成功
+ * @property \Illuminate\Support\Carbon $created_at   创建时间
+ * @property \Illuminate\Support\Carbon $updated_at   最后更新时间
+ * @property-read string                $status_label
  * @method static Builder|PaymentCallback newModelQuery()
  * @method static Builder|PaymentCallback newQuery()
  * @method static Builder|PaymentCallback query()
@@ -30,7 +30,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PaymentCallback extends Model {
 	protected $table = 'payment_callback';
-	protected $appends = ['status_label'];
 
 	public function getStatusLabelAttribute(): string {
 		$status_label = '';

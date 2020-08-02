@@ -17,13 +17,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int                             $coupon_id     优惠券ID
  * @property int                             $origin_amount 订单原始总价，单位分
  * @property int                             $amount        订单总价，单位分
- * @property string|null                     $expire_at     过期时间
+ * @property \Illuminate\Support\Carbon|null $expired_at    过期时间
  * @property int                             $is_expire     是否已过期：0-未过期、1-已过期
- * @property int|null                        $pay_type      支付渠道：0-余额、1-支付宝、2-QQ、3-微信、4-虚拟货币、5-paypal
+ * @property int                             $pay_type      支付渠道：0-余额、1-支付宝、2-QQ、3-微信、4-虚拟货币、5-paypal
  * @property string                          $pay_way       支付方式：balance、f2fpay、codepay、payjs、bitpayx等
  * @property int                             $status        订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成
- * @property \Illuminate\Support\Carbon|null $created_at    创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at    最后一次更新时间
+ * @property \Illuminate\Support\Carbon      $created_at    创建时间
+ * @property \Illuminate\Support\Carbon      $updated_at    最后更新时间
  * @property-read \App\Models\Coupon|null    $coupon
  * @property-read string                     $pay_type_icon
  * @property-read string                     $pay_type_label
@@ -39,7 +39,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|Order whereAmount($value)
  * @method static Builder|Order whereCouponId($value)
  * @method static Builder|Order whereCreatedAt($value)
- * @method static Builder|Order whereExpireAt($value)
+ * @method static Builder|Order whereExpiredAt($value)
  * @method static Builder|Order whereGoodsId($value)
  * @method static Builder|Order whereIsExpire($value)
  * @method static Builder|Order whereOid($value)
@@ -55,7 +55,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model {
 	protected $table = 'order';
 	protected $primaryKey = 'oid';
-	protected $appends = ['status_label'];
+	protected $dates = ['expired_at'];
 
 	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());

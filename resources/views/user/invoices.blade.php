@@ -18,7 +18,7 @@
 						<th> {{trans('home.invoice_table_pay_way')}} </th>
 						<th> {{trans('home.invoice_table_price')}} </th>
 						<th> {{trans('home.invoice_table_create_date')}} </th>
-						<th> {{trans('home.invoice_table_expire_at')}} </th>
+						<th> {{trans('home.invoice_table_expired_at')}} </th>
 						<th> {{trans('home.invoice_table_status')}} </th>
 						<th> {{trans('home.invoice_table_actions')}} </th>
 					</tr>
@@ -32,7 +32,7 @@
 							<td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
 							<td>￥{{$order->amount}}</td>
 							<td>{{$order->created_at}}</td>
-							<td>{{empty($order->goods) ? '' : $order->goods_id == 0 || $order->status == 3 ? '' : $order->expire_at}}</td>
+							<td>{{empty($order->goods) ? '' : $order->goods_id == 0 || $order->status == 3 ? '' : $order->expired_at}}</td>
 							<td>
 								@switch($order->status)
 									@case(-1)

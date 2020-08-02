@@ -9,16 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 用户流量每小时统计
  *
- * @property int                             $id
- * @property int                             $user_id    用户ID
- * @property int                             $node_id    节点ID，0表示统计全部节点
- * @property int                             $u          上传流量
- * @property int                             $d          下载流量
- * @property int                             $total      总流量
- * @property string|null                     $traffic    总流量（带单位）
- * @property \Illuminate\Support\Carbon|null $created_at 创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
- * @property-read \App\Models\SsNode|null    $node
+ * @property int                          $id
+ * @property int                          $user_id    用户ID
+ * @property int                          $node_id    节点ID，0表示统计全部节点
+ * @property int                          $u          上传流量
+ * @property int                          $d          下载流量
+ * @property int                          $total      总流量
+ * @property string|null                  $traffic    总流量（带单位）
+ * @property \Illuminate\Support\Carbon   $created_at 创建时间
+ * @property-read \App\Models\SsNode|null $node
  * @method static Builder|UserTrafficHourly newModelQuery()
  * @method static Builder|UserTrafficHourly newQuery()
  * @method static Builder|UserTrafficHourly query()
@@ -30,11 +29,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|UserTrafficHourly whereTotal($value)
  * @method static Builder|UserTrafficHourly whereTraffic($value)
  * @method static Builder|UserTrafficHourly whereU($value)
- * @method static Builder|UserTrafficHourly whereUpdatedAt($value)
  * @method static Builder|UserTrafficHourly whereUserId($value)
  * @mixin \Eloquent
  */
 class UserTrafficHourly extends Model {
+	const UPDATED_AT = null;
 	protected $table = 'user_traffic_hourly';
 
 	public function node(): HasOne {

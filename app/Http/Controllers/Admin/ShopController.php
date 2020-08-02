@@ -46,7 +46,7 @@ class ShopController extends Controller {
 	// 添加商品
 	public function addGoods(Request $request) {
 		if($request->isMethod('POST')){
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'name'    => 'required',
 				'traffic' => 'required|integer|min:1024|max:10240000|nullable',
 				'price'   => 'required|numeric|min:0',
@@ -57,6 +57,10 @@ class ShopController extends Controller {
 				'traffic.min' => '内含流量不能低于1MB',
 				'traffic.max' => '内含流量不能超过10TB',
 			]);
+
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
 
 			// 商品LOGO
 			$logo = null;
@@ -111,7 +115,7 @@ class ShopController extends Controller {
 	public function editGoods(Request $request) {
 		$id = $request->input('id');
 		if($request->isMethod('POST')){
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'name'    => 'required',
 				'traffic' => 'required|integer|min:1024|max:10240000|nullable',
 				'price'   => 'required|numeric|min:0',
@@ -123,7 +127,11 @@ class ShopController extends Controller {
 				'traffic.max' => '内含流量不能超过10TB',
 			]);
 
-			$goods = Goods::query()->whereId($id)->first();
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
+
+			$goods = Goods::find($id);
 			if(!$goods){
 				Session::flash('errorMsg', '商品不存在');
 
@@ -175,7 +183,7 @@ class ShopController extends Controller {
 			return Redirect::to('shop/edit?id='.$id);
 		}
 
-		$goods = Goods::query()->whereId($id)->first();
+		$goods = Goods::find($id);
 		$view['levelList'] = Level::query()->orderBy('level')->get();
 
 		return view('admin.shop.goodsInfo', $view)->with(compact('goods'));
@@ -189,6 +197,6 @@ class ShopController extends Controller {
 			Session::flash('errorMsg', '编辑失败'.$e);
 		}
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+		return Response::json(['status' => 'success', 'message' => '删除成功']);
 	}
 }

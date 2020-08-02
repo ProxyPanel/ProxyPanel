@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 审计规则分组节点关联
  *
- * @property int                             $id
- * @property int|null                        $rule_group_id 规则分组ID
- * @property int|null                        $node_id       节点ID
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int                        $id
+ * @property int                        $rule_group_id 规则分组ID
+ * @property int                        $node_id       节点ID
+ * @property \Illuminate\Support\Carbon $created_at    创建时间
+ * @property \Illuminate\Support\Carbon $updated_at    最后更新时间
  * @method static Builder|RuleGroupNode newModelQuery()
  * @method static Builder|RuleGroupNode newQuery()
  * @method static Builder|RuleGroupNode query()

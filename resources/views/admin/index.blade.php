@@ -141,7 +141,7 @@
 						<button type="button" class="btn btn-floating btn-sm btn-primary">
 							<i class="icon md-time-countdown"></i>
 						</button>
-						<span class="ml-15 font-weight-400">总消耗流量</span>
+						<span class="ml-15 font-weight-400">记录的消耗流量</span>
 						<div class="content-text text-center mb-0">
 							<span class="font-size-40 font-weight-100">{{$totalFlowCount}}</span>
 						</div>
@@ -201,7 +201,7 @@
 				</a>
 			</div>
 			<div class="col-xl-3 col-md-6 info-panel">
-				<a href="/admin/orderList?status=2&range_time={{date('Y-m-d 00:00:00') . ',' . date('Y-m-d 23:59:59')}}"
+				<a href="/admin/orderList?status=2&range_time={{date('Y-m-d') . ',' . date('Y-m-d 23:59:59')}}"
 						class="card card-shadow">
 					<div class="card-block bg-white">
 						<button type="button" class="btn btn-floating btn-sm btn-success">

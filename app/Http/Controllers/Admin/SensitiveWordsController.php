@@ -34,11 +34,7 @@ class SensitiveWordsController extends Controller {
 		]);
 
 		if($validator->fails()){
-			return Response::json([
-				'status'  => 'fail',
-				'data'    => '',
-				'message' => $validator->getMessageBag()->first()
-			]);
+			return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
 		}
 
 		$obj = new SensitiveWords();
@@ -46,19 +42,19 @@ class SensitiveWordsController extends Controller {
 		$obj->words = strtolower($request->input('words'));
 		$obj->save();
 		if($obj->id){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '添加成功']);
+			return Response::json(['status' => 'success', 'message' => '添加成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
+		return Response::json(['status' => 'fail', 'message' => '添加失败']);
 	}
 
 	// 删除敏感词
 	public function delSensitiveWords(Request $request): ?JsonResponse {
 		$result = SensitiveWords::query()->whereId($request->input('id'))->delete();
 		if($result){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}
 
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败']);
+		return Response::json(['status' => 'fail', 'message' => '删除失败']);
 	}
 }

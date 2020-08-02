@@ -49,7 +49,7 @@ if(!function_exists('base64url_decode')){
 
 // 根据流量值自动转换单位输出
 if(!function_exists('flowAutoShow')){
-	function flowAutoShow($value = 0) {
+	function flowAutoShow($value) {
 		$value = abs($value);
 		if($value >= PB){
 			return round($value / PB, 2)."PB";

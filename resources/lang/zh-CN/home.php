@@ -146,7 +146,7 @@ return [
 	'invoice_table_pay_way'           => '支付方式',
 	'invoice_table_price'             => '金额',
 	'invoice_table_create_date'       => '购买日期',
-	'invoice_table_expire_at'         => '到期时间',
+	'invoice_table_expired_at'        => '到期时间',
 	'invoice_table_status'            => '状态',
 	'invoice_table_actions'           => '操作',
 	'invoice_table_none'              => '暂无数据',

@@ -59,12 +59,12 @@ class PaymentController extends Controller {
 			default:
 				Log::error("未知支付：".self::$method);
 
-				return null;
+				return false;
 		}
 	}
 
 	public static function getStatus(Request $request): JsonResponse {
-		$payment = Payment::whereTradeNo($request->input('trade_no'))->first();
+		$payment = Payment::query()->whereTradeNo($request->input('trade_no'))->first();
 		if($payment){
 			if($payment->status == 1){
 				return Response::json(['status' => 'success', 'message' => '支付成功']);
@@ -176,7 +176,7 @@ class PaymentController extends Controller {
 		$order->coupon_id = !empty($coupon)? $coupon->id : 0;
 		$order->origin_amount = $credit?: $goods->price;
 		$order->amount = $amount;
-		$order->expire_at = $credit? null : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
+		$order->expired_at = $credit? null : date("Y-m-d H:i:s", strtotime("+".$goods->days." days"));
 		$order->is_expire = 0;
 		$order->pay_type = $pay_type;
 		$order->pay_way = self::$method;
@@ -200,7 +200,7 @@ class PaymentController extends Controller {
 
 	public function close(Request $request): JsonResponse {
 		$oid = $request->input('oid');
-		$order = Order::query()->whereOid($oid)->first();
+		$order = Order::find($oid);
 		$payment = Payment::query()->whereOid($oid)->first();
 		if($order){
 			$ret = Order::query()->whereOid($oid)->update(['status' => -1]);
@@ -221,7 +221,7 @@ class PaymentController extends Controller {
 
 	// 支付单详情
 	public function detail($trade_no): \Illuminate\Http\Response {
-		$payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->first();
+		$payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->firstOrFail();
 		$view['payment'] = $payment;
 		$goods = $payment->order->goods;
 		$view['name'] = $goods? $goods->name : '余额充值';
@@ -242,7 +242,7 @@ class PaymentController extends Controller {
 			$query->whereStatus($status);
 		}
 
-		$view['list'] = $query->orderByDesc('id')->paginate(10)->appends($request->except('page'));
+		$view['list'] = $query->latest()->paginate(10)->appends($request->except('page'));
 
 		return Response::view('admin.logs.callbackList', $view);
 	}

@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 审计规则分组
  *
- * @property int                             $id
- * @property int|null                        $type  模式：1-阻断、0-放行
- * @property string|null                     $name  分组名称
- * @property string|null                     $rules 关联的规则ID，多个用,号分隔
- * @property string|null                     $nodes 关联的节点ID，多个用,号分隔
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read string                     $type_label
+ * @property int                        $id
+ * @property int                        $type       模式：1-阻断、0-放行
+ * @property string                     $name       分组名称
+ * @property string|null                $rules      关联的规则ID，多个用,号分隔
+ * @property string|null                $nodes      关联的节点ID，多个用,号分隔
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
+ * @property-read string                $type_label
  * @method static Builder|RuleGroup newModelQuery()
  * @method static Builder|RuleGroup newQuery()
  * @method static Builder|RuleGroup query()

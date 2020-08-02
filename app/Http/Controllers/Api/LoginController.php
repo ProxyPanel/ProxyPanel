@@ -39,13 +39,13 @@ class LoginController extends Controller {
 		if(!$email || !$password){
 			Cache::increment($cacheKey);
 
-			return Response::json(['status' => 'fail', 'data' => [], 'message' => '请输入用户名和密码']);
+			return Response::json(['status' => 'fail', 'message' => '请输入用户名和密码']);
 		}
 
 		// 连续请求失败15次，则封IP一小时
 		if(Cache::has($cacheKey)){
 			if(Cache::get($cacheKey) >= 15){
-				return Response::json(['status' => 'fail', 'data' => [], 'message' => '请求失败超限，禁止访问1小时']);
+				return Response::json(['status' => 'fail', 'message' => '请求失败超限，禁止访问1小时']);
 			}
 		}else{
 			Cache::put($cacheKey, 1, Hour);
@@ -55,17 +55,17 @@ class LoginController extends Controller {
 		if(!$user){
 			Cache::increment($cacheKey);
 
-			return Response::json(['status' => 'fail', 'data' => [], 'message' => '账号不存在或已被禁用']);
+			return Response::json(['status' => 'fail', 'message' => '账号不存在或已被禁用']);
 		}
 
 		if(!Hash::check($password, $user->password)){
-			return Response::json(['status' => 'fail', 'data' => [], 'message' => '用户名或密码错误']);
+			return Response::json(['status' => 'fail', 'message' => '用户名或密码错误']);
 		}
 
 		try{
 			DB::beginTransaction();
 			// 如果未生成过订阅链接则生成一个
-			$subscribe = UserSubscribe::query()->whereUserId($user->id)->first();
+			$subscribe = UserSubscribe::query()->whereUserId($user->id)->firstOrFail();
 
 			// 更新订阅链接访问次数
 			$subscribe->increment('times', 1);
@@ -127,7 +127,7 @@ class LoginController extends Controller {
 		}catch(Exception $e){
 			DB::rollBack();
 
-			return Response::json(['status' => 'success', 'data' => [], 'message' => '登录失败']);
+			return Response::json(['status' => 'success', 'message' => '登录失败']);
 		}
 	}
 

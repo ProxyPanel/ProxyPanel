@@ -18,13 +18,12 @@ class AutoReportNode extends Command {
 
 		if(Helpers::systemConfig()['node_daily_report']){
 			$nodeList = SsNode::query()->whereStatus(1)->get();
-			if(!$nodeList->isEmpty()){
+			if($nodeList->isNotEmpty()){
 				$msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
 				foreach($nodeList as $node){
 					$log = SsNodeTrafficDaily::query()
 					                         ->whereNodeId($node->id)
-					                         ->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime("-1 day")))
-					                         ->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime("-1 day")))
+					                         ->whereDate('created_at', date("Y-m-d", strtotime('-1 days')))
 					                         ->first();
 
 					if($log){
@@ -34,7 +33,7 @@ class AutoReportNode extends Command {
 					}
 				}
 
-				PushNotification::send('节点日报', $msg);
+				PushNotification::send('节点昨日使用情况', $msg);
 			}
 		}
 

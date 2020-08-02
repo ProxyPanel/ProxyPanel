@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int                        $after       发生后金额，单位分
  * @property int                        $amount      发生金额，单位分
  * @property string|null                $description 操作描述
- * @property string|null                $created_at  创建时间
+ * @property \Illuminate\Support\Carbon $created_at  创建时间
  * @property-read \App\Models\User|null $user
  * @method static Builder|UserCreditLog newModelQuery()
  * @method static Builder|UserCreditLog newQuery()
@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @mixin \Eloquent
  */
 class UserCreditLog extends Model {
-	public $timestamps = false;
+	const UPDATED_AT = null;
 	protected $table = 'user_credit_log';
 
 	public function user(): HasOne {

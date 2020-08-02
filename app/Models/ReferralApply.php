@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 返利申请
  *
- * @property int                             $id
- * @property int                             $user_id    用户ID
- * @property int                             $before     操作前可提现金额，单位分
- * @property int                             $after      操作后可提现金额，单位分
- * @property int                             $amount     本次提现金额，单位分
- * @property string                          $link_logs  关联返利日志ID，例如：1,3,4
- * @property int                             $status     状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款
- * @property \Illuminate\Support\Carbon|null $created_at 创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
- * @property-read \App\Models\User|null      $User
+ * @property int                        $id
+ * @property int                        $user_id    用户ID
+ * @property int                        $before     操作前可提现金额，单位分
+ * @property int                        $after      操作后可提现金额，单位分
+ * @property int                        $amount     本次提现金额，单位分
+ * @property string                     $link_logs  关联返利日志ID，例如：1,3,4
+ * @property int                        $status     状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
+ * @property-read \App\Models\User|null $User
  * @method static Builder|ReferralApply newModelQuery()
  * @method static Builder|ReferralApply newQuery()
  * @method static Builder|ReferralApply query()

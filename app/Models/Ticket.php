@@ -10,17 +10,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 工单
  *
- * @property int                             $id
- * @property int                             $user_id    用户ID
- * @property int|null                        $admin_id   管理员ID
- * @property string                          $title      标题
- * @property string                          $content    内容
- * @property int                             $status     状态：0-待处理、1-已处理未关闭、2-已关闭
- * @property \Illuminate\Support\Carbon|null $created_at 创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
- * @property-read \App\Models\User|null      $admin
- * @property-read string                     $status_label
- * @property-read \App\Models\User|null      $user
+ * @property int                        $id
+ * @property int                        $user_id    用户ID
+ * @property int                        $admin_id   管理员ID
+ * @property string                     $title      标题
+ * @property string                     $content    内容
+ * @property int                        $status     状态：0-待处理、1-已处理未关闭、2-已关闭
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
+ * @property-read \App\Models\User|null $admin
+ * @property-read string                $status_label
+ * @property-read \App\Models\User|null $user
  * @method static Builder|Ticket newModelQuery()
  * @method static Builder|Ticket newQuery()
  * @method static Builder|Ticket query()
@@ -67,5 +67,4 @@ class Ticket extends Model {
 
 		return $status_label;
 	}
-
 }

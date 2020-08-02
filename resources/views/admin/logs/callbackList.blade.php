@@ -27,6 +27,8 @@
 							<option value="codepay">码支付</option>
 							<option value="payjs">PayJs</option>
 							<option value="bitpayx">麻瓜宝</option>
+							<option value="paypal">PayPal</option>
+							<option value="epay">易支付</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">

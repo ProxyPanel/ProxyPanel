@@ -150,7 +150,7 @@ class Controller extends BaseController {
 		$node = SsNode::whereId($nodeId)->firstOrFail();
 		$scheme = null;
 		// 获取分组名称
-		$group = $node->getLevel->name;
+		$group = $node->level_name;
 		$host = $node->server?: $node->ip;
 		$data = null;
 		switch($node->type){

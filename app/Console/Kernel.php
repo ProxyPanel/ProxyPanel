@@ -11,8 +11,12 @@ use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
 use App\Console\Commands\AutoStatisticsUserDailyTraffic;
 use App\Console\Commands\AutoStatisticsUserHourlyTraffic;
 use App\Console\Commands\DailyJob;
+use App\Console\Commands\fixDailyTrafficLogError;
 use App\Console\Commands\NodeBlockedDetection;
 use App\Console\Commands\ServiceTimer;
+use App\Console\Commands\updateTicket;
+use App\Console\Commands\updateUserLevel;
+use App\Console\Commands\updateUserName;
 use App\Console\Commands\upgradeUserResetTime;
 use App\Console\Commands\UserExpireAutoWarning;
 use App\Console\Commands\UserTrafficAbnormalAutoWarning;
@@ -36,8 +40,12 @@ class Kernel extends ConsoleKernel {
 		AutoStatisticsUserDailyTraffic::class,
 		AutoStatisticsUserHourlyTraffic::class,
 		DailyJob::class,
+		fixDailyTrafficLogError::class,
 		NodeBlockedDetection::class,
 		ServiceTimer::class,
+		updateTicket::class,
+		updateUserLevel::class,
+		updateUserName::class,
 		upgradeUserResetTime::class,
 		UserExpireAutoWarning::class,
 		UserTrafficAbnormalAutoWarning::class,
@@ -64,8 +72,8 @@ class Kernel extends ConsoleKernel {
 		$schedule->command('autoReportNode')->dailyAt('09:00');
 		$schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
 		$schedule->command('userExpireAutoWarning')->dailyAt('20:00');
-		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
-		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
+		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:55');
+		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:57');
 	}
 
 	/**

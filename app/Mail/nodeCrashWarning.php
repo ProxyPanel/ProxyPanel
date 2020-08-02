@@ -21,7 +21,7 @@ class nodeCrashWarning extends Mailable implements ShouldQueue {
 	public function build(): nodeCrashWarning {
 
 		return $this->view('emails.nodeCrashWarning')->subject('节点阻断警告')->with([
-			'content' => NotificationLog::query()->whereId($this->id)->first()->content
+			'content' => NotificationLog::find($this->id)->content
 		]);
 	}
 

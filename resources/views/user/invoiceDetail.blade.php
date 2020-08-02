@@ -23,7 +23,7 @@
 						<p>{{trans('home.invoice_table_pay_way')}}
 							：{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</p>
 						<p>{{trans('home.invoice_table_create_date')}}: {{$order->created_at}}</p>
-						<p>{{trans('home.invoice_table_expire_at')}}: {{$order->expire_at}}</p>
+						<p>{{trans('home.invoice_table_expired_at')}}: {{$order->expired_at}}</p>
 						<p>
 						@if(!$order->is_expire)
 							@if($order->status == -1)

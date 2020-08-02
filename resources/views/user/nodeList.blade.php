@@ -26,7 +26,7 @@
 									<span class="counter-icon"><i class="icon wb-user-circle" aria-hidden="true"></i></span>
 									<span class="counter-number ml-10">{{Auth::getUser()->level}}</span>
 								</div>
-								<div class="counter-label text-uppercase font-size-16">{{Auth::getUser()->getLevel->name}}</div>
+								<div class="counter-label text-uppercase font-size-16">{{Auth::getUser()->level_name}}</div>
 							</div>
 						</div>
 					</div>
@@ -68,7 +68,7 @@
 							</div>
 							<div class="col-8 text-break text-right">
 								<p class="font-size-20 blue-600">
-									<span class="badge badge-pill up m-0 badge-default">{{$node->getLevel->name}}</span>
+									<span class="badge badge-pill up m-0 badge-default">{{$node->level_name}}</span>
 									@if($node->offline)
 										<i class="red-600 icon wb-warning" data-content="线路波动/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
 									@endif

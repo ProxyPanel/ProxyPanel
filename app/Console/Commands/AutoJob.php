@@ -168,7 +168,7 @@ class AutoJob extends Command {
 		Coupon::query()->whereStatus(0)->where('available_end', '<=', time())->update(['status' => 2]);
 
 		// 用尽的优惠劵
-		Coupon::query()->whereStatus(0)->whereIn('type', [1, 2])->where('usage_count', '=', 0)->update(['status' => 2]);
+		Coupon::query()->whereStatus(0)->whereIn('type', [1, 2])->whereUsageCount(0)->update(['status' => 2]);
 
 		// 邀请码到期自动置无效
 		Invite::query()->whereStatus(0)->where('dateline', '<=', date('Y-m-d H:i:s'))->update(['status' => 2]);
@@ -184,8 +184,8 @@ class AutoJob extends Command {
 					$request_times = UserSubscribeLog::query()
 					                                 ->whereSid($subscribe->id)
 					                                 ->where('request_time', '>=',
-						                                 date("Y-m-d H:i:s", strtotime("-24 hours")))
-					                                 ->distinct('request_ip')
+						                                 date("Y-m-d H:i:s", strtotime("-1 days")))
+					                                 ->distinct()
 					                                 ->count('request_ip');
 					if($request_times >= self::$systemConfig['subscribe_ban_times']){
 						UserSubscribe::query()->whereId($subscribe->id)->update([
@@ -233,11 +233,10 @@ class AutoJob extends Command {
 				                                 ->userHourly($user->id)
 				                                 ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 				                                 ->sum('total');
-				if($totalTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)){
+				if($totalTraffic >= self::$systemConfig['traffic_ban_value'] * GB){
 					User::query()->whereId($user->id)->update([
 						'enable'   => 0,
-						'ban_time' => strtotime(date('Y-m-d H:i:s',
-							strtotime("+".self::$systemConfig['traffic_ban_time']." minutes")))
+						'ban_time' => strtotime("+".self::$systemConfig['traffic_ban_time']." minutes")
 					]);
 
 					// 写入日志
@@ -316,12 +315,12 @@ class AutoJob extends Command {
 	// 检测节点是否离线
 	private function checkNodeStatus(): void {
 		if(self::$systemConfig['is_node_offline']){
-			foreach(SsNode::whereIsRelay(0)->whereStatus(1)->get() as $node){
+			foreach(SsNode::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
 				$nodeTTL = SsNodeInfo::query()
 				                     ->whereNodeId($node->id)
 				                     ->where('log_time', '>=', strtotime("-10 minutes"))
-				                     ->orderByDesc('id')
+				                     ->latest('log_time')
 				                     ->doesntExist();
 				if($nodeTTL && self::$systemConfig['offline_check_times']){
 					// 已通知次数

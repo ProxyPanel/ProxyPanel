@@ -39,7 +39,7 @@ class SubscribeController extends Controller {
 		}
 
 		// 检查用户是否有效
-		$user = User::query()->whereId($subscribe->user_id)->first();
+		$user = User::find($subscribe->user_id);
 		if(!$user){
 			exit($this->infoGenerator('错误订阅链接，账号不存在！请前往官网重新获取订阅链接'));
 		}

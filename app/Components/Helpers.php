@@ -102,9 +102,7 @@ class Helpers {
 
 	// 获取系统配置
 	public static function systemConfig(): array {
-		foreach(Config::all() as $vo){
-			$data[$vo->name] = $vo->value;
-		}
+		$data = Config::all()->pluck('value', 'name')->toArray();
 		$data['is_onlinePay'] = ($data['is_AliPay'] || $data['is_QQPay'] || $data['is_WeChatPay'] || $data['is_otherPay'])?: 0;
 
 		return $data;

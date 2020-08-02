@@ -98,7 +98,7 @@ class PayPal extends AbstractPayment {
 		$response = $this->provider->getExpressCheckoutDetails($token);
 
 		if(in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])){
-			$payment = Payment::whereTradeNo($response['INVNUM'])->first();
+			$payment = Payment::query()->whereTradeNo($response['INVNUM'])->firstOrFail();
 			$data = $this->getCheckoutData($payment->trade_no, $payment->amount);
 			// Perform transaction on PayPal
 			$payment_status = $this->provider->doExpressCheckoutPayment($data, $token, $PayerID);
@@ -127,7 +127,7 @@ class PayPal extends AbstractPayment {
 		$response = (string) $this->provider->verifyIPN($post);
 
 		if($response === 'VERIFIED' && $request['invoice']){
-			if(Payment::whereTradeNo($request['invoice'])->first()->status == 0){
+			if(Payment::query()->whereTradeNo($request['invoice'])->first()->status == 0){
 				$this->postPayment($request['invoice'], 'PayPal');
 			}
 			exit("success");

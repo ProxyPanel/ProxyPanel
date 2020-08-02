@@ -46,7 +46,7 @@ class SubscribeController extends Controller {
 			$query->whereStatus($status);
 		}
 
-		$view['subscribeList'] = $query->orderByDesc('id')->paginate(20)->appends($request->except('page'));
+		$view['subscribeList'] = $query->latest()->paginate(20)->appends($request->except('page'));
 
 		return Response::view('admin.subscribe.subscribeList', $view);
 	}
@@ -60,7 +60,7 @@ class SubscribeController extends Controller {
 			$query->whereSid($id);
 		}
 
-		$view['subscribeLog'] = $query->orderByDesc('id')->paginate(20)->appends($request->except('page'));
+		$view['subscribeLog'] = $query->latest()->paginate(20)->appends($request->except('page'));
 
 		return Response::view('admin.subscribe.subscribeLog', $view);
 	}
@@ -71,7 +71,7 @@ class SubscribeController extends Controller {
 		$status = $request->input('status', 0);
 
 		if(empty($id)){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作异常']);
+			return Response::json(['status' => 'fail', 'message' => '操作异常']);
 		}
 
 		if($status){
@@ -80,6 +80,6 @@ class SubscribeController extends Controller {
 			UserSubscribe::query()->whereId($id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
 		}
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
 }

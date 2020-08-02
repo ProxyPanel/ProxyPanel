@@ -117,7 +117,7 @@
 												</tr>
 												<tr>
 													<td>过期时间</td>
-													<td>{{$content['expire_at']}}</td>
+													<td>{{$content['expired_at']}}</td>
 												</tr>
 												@if($content['serverList'])
 													<tr>

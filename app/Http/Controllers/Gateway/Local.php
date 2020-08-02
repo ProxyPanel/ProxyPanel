@@ -14,7 +14,7 @@ use Response;
 class Local extends AbstractPayment {
 	public function purchase($request): JsonResponse {
 		$amount = $request->input('amount');
-		$order = Order::whereOid($request->input('oid'))->first();
+		$order = Order::find($request->input('oid'));
 		$goods = Goods::query()->whereStatus(1)->whereId($request->input('goods_id'))->first();
 		$user = Auth::getUser();
 

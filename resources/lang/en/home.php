@@ -144,7 +144,7 @@ return [
 	'invoice_table_pay_way'           => 'Pay Method',
 	'invoice_table_price'             => 'Amount',
 	'invoice_table_create_date'       => 'Created On',
-	'invoice_table_expire_at'         => 'Expire Time',
+	'invoice_table_expired_at'        => 'Expire Time',
 	'invoice_table_status'            => 'Status',
 	'invoice_table_none'              => 'None Data',
 	'invoice_table_closed'            => 'Closed',

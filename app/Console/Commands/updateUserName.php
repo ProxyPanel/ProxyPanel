@@ -37,7 +37,7 @@ class updateUserName extends Command {
 }
 
 function process($id) {
-	$user = User::query()->whereId($id)->first();
+	$user = User::find($id);
 	// 先设个默认值
 	$name = $user->email;
 	// 用户是否设置了QQ号

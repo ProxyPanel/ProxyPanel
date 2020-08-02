@@ -43,7 +43,7 @@ class BaseController {
 	}
 
 	// 返回数据
-	public function returnData($message, $status = 'fail', $code = 400, $data = '', $addition = []): JsonResponse {
+	public function returnData($message, $status = 'fail', $code = 400, $data = [], $addition = []): JsonResponse {
 		$data = ['status' => $status, 'code' => $code, 'data' => $data, 'message' => $message];
 
 		if($addition){
@@ -122,14 +122,14 @@ class BaseController {
 
 	// 获取节点的审计规则
 	public function getNodeRule($id): JsonResponse {
-		$nodeRule = RuleGroupNode::whereNodeId($id)->first();
+		$nodeRule = RuleGroupNode::query()->whereNodeId($id)->first();
 		$data = [];
 		//节点未设置任何审计规则
 		if($nodeRule){
-			$ruleGroup = RuleGroup::query()->whereId($nodeRule->rule_group_id)->first();
+			$ruleGroup = RuleGroup::find($nodeRule->rule_group_id);
 			if($ruleGroup){
 				foreach(explode(',', $ruleGroup->rules) as $ruleId){
-					$rule = Rule::query()->whereId($ruleId)->first();
+					$rule = Rule::find($ruleId);
 					if($rule){
 						$new = [
 							'id'      => $rule->id,

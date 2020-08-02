@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * App\Models\NodeAuth
+ * 节点授权密钥
  *
- * @property int                             $id
- * @property int                             $node_id    授权节点ID
- * @property string|null                     $key        认证KEY
- * @property string|null                     $secret     通信密钥
- * @property \Illuminate\Support\Carbon|null $created_at 创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
- * @property-read \App\Models\SsNode|null    $node
+ * @property int                          $id
+ * @property int                          $node_id    授权节点ID
+ * @property string                       $key        认证KEY
+ * @property string                       $secret     通信密钥
+ * @property \Illuminate\Support\Carbon   $created_at 创建时间
+ * @property \Illuminate\Support\Carbon   $updated_at 最后更新时间
+ * @property-read \App\Models\SsNode|null $node
  * @method static Builder|NodeAuth newModelQuery()
  * @method static Builder|NodeAuth newQuery()
  * @method static Builder|NodeAuth query()
