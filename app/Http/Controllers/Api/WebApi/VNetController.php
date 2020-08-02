@@ -34,8 +34,7 @@ class VNetController extends BaseController {
 	public function getUserList($id): JsonResponse {
 		$node = SsNode::find($id);
 		$users = User::query()
-		             ->where('status', '<>', -1)
-		             ->whereEnable(1)
+		             ->activeUser()
 		             ->groupUserPermit($node->id)
 		             ->where('level', '>=', $node->level)
 		             ->get();

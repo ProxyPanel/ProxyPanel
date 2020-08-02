@@ -991,7 +991,7 @@ CREATE TABLE `user_subscribe`
 -- ----------------------------
 -- Records of user_subscribe
 -- ----------------------------
-INSERT INTO `user_subscribe`(`id`, `user_id`, `code`) VALUES ('1', '1', 'SsXa1');
+INSERT INTO `user_subscribe`(`id`, `user_id`, `code`,`created_at`,`updated_at`) VALUES ('1', '1', 'SsXa1', Now(), Now());
 
 
 -- ----------------------------
@@ -1330,7 +1330,7 @@ CREATE TABLE `rule_group`
 -- Records of rule_group
 -- ----------------------------
 INSERT INTO `rule_group`(`id`, `type`, `name`, `rules`, `nodes`, `created_at`, `updated_at`)
-VALUES (1, 1, '默认', '1,2,3,4,5,6,7,8,9,10,11,12,13,14', NULL, '2019-10-26 15:29:48', '2019-10-26 15:29:48');
+VALUES (1, 1, '默认', '1,2,3,4,5,6,7,8,9,10,11,12,13,14', NULL, Now(), Now());
 
 
 -- ----------------------------

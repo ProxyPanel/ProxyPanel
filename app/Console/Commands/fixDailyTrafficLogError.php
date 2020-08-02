@@ -25,7 +25,7 @@ class fixDailyTrafficLogError extends Command {
 			]);
 		}
 
-		foreach(SsNode::query()->whereStatus(1)->orderBy('id')->get() as $node){
+		foreach(SsNode::all() as $node){
 			$query = UserTrafficLog::query()
 			                       ->whereNodeId($node->id)
 			                       ->whereBetween('log_time',
@@ -54,8 +54,8 @@ class fixDailyTrafficLogError extends Command {
 				'created_at' => date('Y-m-d H:i:s', strtotime("-1 days", strtotime($log->created_at)))
 			]);
 		}
-
-		foreach(User::query()->activeUser()->get() as $user){
+		Log::info('----------------------------【用户个人流量日志修正】开始----------------------------');
+		foreach(User::query()->whereIn('id',UserTrafficLog::query()->distinct()->pluck('user_id')->toArray())->get() as $user){
 			// 统计一次所有节点的总和
 			$this->statisticsByUser($user->id);
 
@@ -64,7 +64,7 @@ class fixDailyTrafficLogError extends Command {
 				$this->statisticsByUser($user->id, $node->id);
 			}
 		}
-
+		Log::info('----------------------------【用户个人流量日志修正】结束----------------------------');
 		Log::info('----------------------------【用户流量日志修正】结束----------------------------');
 		Log::info('----------------------------【修复原版本的每日流量计算错误】结束----------------------------');
 	}

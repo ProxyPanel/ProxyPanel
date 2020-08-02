@@ -161,6 +161,6 @@ class User extends Authenticatable {
 	}
 
 	public function scopeActiveUser($query) {
-		return $query->where('status', '>=', 0)->whereEnable(1);
+		return $query->where('status', '<>', -1)->whereEnable(1);
 	}
 }

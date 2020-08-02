@@ -44,11 +44,7 @@ class DailyJob extends Command {
 
 	private function expireUser(): void {
 		// 过期用户处理
-		$userList = User::query()
-		                ->where('status', '>=', 0)
-		                ->whereEnable(1)
-		                ->where('expire_time', '<', date('Y-m-d'))
-		                ->get();
+		$userList = User::query()->activeUser()->where('expire_time', '<', date('Y-m-d'))->get();
 		foreach($userList as $user){
 			if(self::$systemConfig['is_ban_status']){
 				User::query()->whereId($user->id)->update([
