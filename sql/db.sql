@@ -11,13 +11,13 @@
 # ************************************************************
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET @old_character_set_client = @@character_set_client */;
+/*!40101 SET @old_character_set_results = @@character_set_results */;
+/*!40101 SET @old_collation_connection = @@collation_connection */;
 /*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40014 SET @old_foreign_key_checks = @@foreign_key_checks, FOREIGN_KEY_CHECKS = 0 */;
+/*!40101 SET @old_sql_mode = @@sql_mode, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @old_sql_notes = @@sql_notes, SQL_NOTES = 0 */;
 
 
 -- ----------------------------
@@ -66,8 +66,8 @@ CREATE TABLE `ss_node`
     `v2_path`        VARCHAR(255)         NOT NULL DEFAULT '' COMMENT 'V2Ray的WS/H2路径',
     `v2_tls`         BIT                  NOT NULL DEFAULT 0 COMMENT 'V2Ray连接TLS：0-未开启、1-开启',
     `tls_provider`   TEXT                 NULL     DEFAULT NULL COMMENT 'V2Ray节点的TLS提供商授权信息',
-    `created_at`     DATETIME             NOT NULL,
-    `updated_at`     DATETIME             NOT NULL,
+    `created_at`     DATETIME             NOT NULL COMMENT '创建时间',
+    `updated_at`     DATETIME             NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`),
     INDEX `idx_sub` (`is_subscribe`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点信息表';
@@ -101,6 +101,7 @@ CREATE TABLE `ss_node_online_log`
     INDEX `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点在线信息';
 
+
 -- ----------------------------
 -- Table structure for ss_node_ping
 -- ----------------------------
@@ -112,11 +113,11 @@ CREATE TABLE `ss_node_ping`
     `cu`         INT(10)          NOT NULL DEFAULT '0' COMMENT '联通',
     `cm`         INT(10)          NOT NULL DEFAULT '0' COMMENT '移动',
     `hk`         INT(10)          NOT NULL DEFAULT '0' COMMENT '香港',
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`),
     INDEX `idx_node_id` (`node_id`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点ping信息表';
+
 
 -- ----------------------------
 -- Table structure for ss_node_label
@@ -146,7 +147,7 @@ CREATE TABLE `user`
     `transfer_enable` BIGINT(20) UNSIGNED  NOT NULL DEFAULT '1099511627776' COMMENT '可用流量，单位字节，默认1TiB',
     `u`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已上传流量，单位字节',
     `d`               BIGINT(20) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '已下载流量，单位字节',
-    `t`               INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '最后使用时间',
+    `t`               INT(10) UNSIGNED              DEFAULT NULL COMMENT '最后使用时间',
     `ip`              CHAR(15)                      DEFAULT NULL COMMENT '最后连接IP',
     `enable`          TINYINT(1)           NOT NULL DEFAULT 1 COMMENT '代理状态',
     `method`          VARCHAR(30)          NOT NULL DEFAULT 'aes-256-cfb' COMMENT '加密方式',
@@ -159,7 +160,7 @@ CREATE TABLE `user`
     `credit`          INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '余额，单位分',
     `enable_time`     DATE                          DEFAULT NULL COMMENT '开通日期',
     `expire_time`     DATE                 NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
-    `ban_time`        INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '封禁到期时间',
+    `ban_time`        INT(10) UNSIGNED              DEFAULT NULL COMMENT '封禁到期时间',
     `remark`          TEXT COMMENT '备注',
     `level`           TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0' COMMENT '等级，默认0级',
     `group_id`        INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '所属分组',
@@ -167,35 +168,38 @@ CREATE TABLE `user`
     `reg_ip`          CHAR(15)             NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
     `last_login`      INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '最后登录时间',
     `referral_uid`    INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '邀请人',
-    `reset_time`      DATE                 NULL COMMENT '流量重置日期，NULL表示不重置',
+    `reset_time`      DATE                 NULL COMMENT '流量重置日期',
     `invite_num`      INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '可生成邀请码数',
     `status`          TINYINT(1)           NOT NULL DEFAULT '0' COMMENT '状态：-1-禁用、0-未激活、1-正常',
     `remember_token`  VARCHAR(255)                  DEFAULT '',
-    `created_at`      DATETIME                      DEFAULT NULL,
-    `updated_at`      DATETIME                      DEFAULT NULL,
+    `created_at`      DATETIME             NOT NULL COMMENT '创建时间',
+    `updated_at`      DATETIME             NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `unq_email` (`email`),
     INDEX `idx_search` (`enable`, `status`, `port`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户表';
 
 LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user`
+    DISABLE KEYS */;
 INSERT INTO `user`(`id`, `username`, `email`, `password`, `port`, `passwd`, `vmess_id`, `transfer_enable`, `u`, `d`, `t`, `enable`, `method`, `protocol`, `obfs`, `wechat`, `qq`, `credit`, `enable_time`, `expire_time`, `remark`, `is_admin`, `reg_ip`, `status`, `created_at`, `updated_at`)
 VALUES (1, '管理员', 'test@test.com', '$2y$10$ryMdx5ejvCSdjvZVZAPpOuxHrsAUY8FEINUATy6RCck6j9EeHhPfq', 10000, '@123', 'c6effafd-6046-7a84-376e-b0429751c304', 1099511627776, 0, 0, 0, 1, 'aes-256-cfb', 'origin', 'plain', '', '', 0.00, '2017-01-01', '2099-01-01', NULL, 1, '127.0.0.1', 1, Now(), Now());
 
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 -- ----------------------------
 -- Records of `user_group`
 -- ----------------------------
-CREATE TABLE `user_group` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL COMMENT '分组名称',
-  `nodes` text COMMENT '关联的节点ID，多个用,号分隔',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户分组控制表';
+CREATE TABLE `user_group`
+(
+    `id`    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`  VARCHAR(255)     NOT NULL COMMENT '分组名称',
+    `nodes` TEXT COMMENT '关联的节点ID，多个用,号分隔',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户分组控制表';
 
 
 -- ----------------------------
@@ -254,6 +258,7 @@ CREATE TABLE `ss_config`
     `sort`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序：值越大排越前',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='通用配置';
+
 
 -- ----------------------------
 -- Records of ss_config
@@ -434,6 +439,7 @@ VALUES ('1', 'is_rand_port', 0),
        ('114', 'epay_mch_id', ''),
        ('115', 'epay_key', '');
 
+
 -- ----------------------------
 -- Table structure for article
 -- ----------------------------
@@ -447,9 +453,9 @@ CREATE TABLE `article`
     `logo`       VARCHAR(255)                 DEFAULT '' COMMENT 'LOGO',
     `content`    TEXT COMMENT '内容',
     `sort`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-    `created_at` DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
-    `deleted_at` DATETIME            NULL     DEFAULT NULL COMMENT '删除时间',
+    `created_at` DATETIME            NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME            NOT NULL COMMENT '最后更新时间',
+    `deleted_at` DATETIME                     DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='文章';
 
@@ -464,9 +470,9 @@ CREATE TABLE `invite`
     `fuid`       INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '受邀人ID',
     `code`       CHAR(32)         NOT NULL COMMENT '邀请码',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '邀请码状态：0-未使用、1-已使用、2-已过期',
-    `dateline`   DATETIME                  DEFAULT NULL COMMENT '有效期至',
-    `created_at` DATETIME                  DEFAULT NULL,
-    `updated_at` DATETIME                  DEFAULT NULL,
+    `dateline`   DATETIME         NOT NULL COMMENT '有效期至',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     `deleted_at` DATETIME                  DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='邀请码表';
@@ -558,8 +564,8 @@ CREATE TABLE `verify`
     `user_id`    INT(10) UNSIGNED NOT NULL COMMENT '用户ID',
     `token`      VARCHAR(32)      NOT NULL COMMENT '校验token',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='账号激活邮件地址';
 
@@ -573,10 +579,11 @@ CREATE TABLE `verify_code`
     `address`    VARCHAR(128)     NOT NULL COMMENT '用户邮箱',
     `code`       CHAR(6)          NOT NULL COMMENT '验证码',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='注册激活验证码';
+
 
 -- ----------------------------
 -- Table structure for goods
@@ -601,8 +608,8 @@ CREATE TABLE `goods`
     `sort`        TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
     `is_hot`      BIT                 NOT NULL DEFAULT 0 COMMENT '是否热销：0-否、1-是',
     `status`      BIT                 NOT NULL DEFAULT 1 COMMENT '状态：0-下架、1-上架',
-    `created_at`  DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at`  DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
+    `created_at`  DATETIME            NOT NULL COMMENT '创建时间',
+    `updated_at`  DATETIME            NOT NULL COMMENT '最后更新时间',
     `deleted_at`  DATETIME                     DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='商品';
@@ -625,9 +632,9 @@ CREATE TABLE `coupon`
     `available_start` INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '有效期开始',
     `available_end`   INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '有效期结束',
     `status`          TINYINT(1)          NOT NULL DEFAULT '1' COMMENT '状态：0-未使用、1-已使用、2-已失效',
-    `created_at`      DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at`      DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
-    `deleted_at`      DATETIME            NULL     DEFAULT NULL COMMENT '删除时间',
+    `created_at`      DATETIME            NOT NULL COMMENT '创建时间',
+    `updated_at`      DATETIME            NOT NULL COMMENT '最后更新时间',
+    `deleted_at`      DATETIME                     DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `unq_sn` (`sn`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='优惠券';
@@ -643,10 +650,10 @@ CREATE TABLE `coupon_log`
     `goods_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '商品ID',
     `order_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单ID',
     `description` VARCHAR(50)      NOT NULL DEFAULT '' COMMENT '备注',
-    `created_at`  DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at`  DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at`  DATETIME         NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='优惠券使用日志';
+
 
 -- ----------------------------
 -- Table structure for products_pool
@@ -654,37 +661,39 @@ CREATE TABLE `coupon_log`
 CREATE TABLE `products_pool`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name`       VARCHAR(255)              DEFAULT NULL COMMENT '名称',
-    `min_amount` INT(10) UNSIGNED          DEFAULT 0 COMMENT '适用最小金额，单位分',
-    `max_amount` INT(10) UNSIGNED          DEFAULT 0 COMMENT '适用最大金额，单位分',
+    `name`       VARCHAR(255)     NOT NULL COMMENT '名称',
+    `min_amount` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '适用最小金额，单位分',
+    `max_amount` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '适用最大金额，单位分',
     `status`     BIT              NOT NULL DEFAULT 1 COMMENT '状态：0-未启用、1-已启用',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='产品名称池';
+
 
 -- ----------------------------
 -- Table structure for order
 -- ----------------------------
 CREATE TABLE `order`
 (
-    `oid`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `order_sn`      VARCHAR(20)      NOT NULL DEFAULT '' COMMENT '订单编号',
-    `user_id`       INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作人',
-    `goods_id`      INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '商品ID',
-    `coupon_id`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '优惠券ID',
-    `origin_amount` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单原始总价，单位分',
-    `amount`        INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
-    `expire_at`     DATETIME                  DEFAULT NULL COMMENT '过期时间',
-    `is_expire`     BIT              NOT NULL DEFAULT 0 COMMENT '是否已过期：0-未过期、1-已过期',
-    `pay_type`      TINYINT(1) UNSIGNED       DEFAULT '0' COMMENT '支付渠道：0-余额、1-支付宝、2-QQ、3-微信、4-虚拟货币、5-paypal',
-    `pay_way`       VARCHAR(10)      NOT NULL DEFAULT '' COMMENT '支付方式：balance、f2fpay、codepay、payjs、bitpayx等',
-    `status`        TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
-    `created_at`    DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at`    DATETIME                  DEFAULT NULL COMMENT '最后一次更新时间',
+    `oid`           INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+    `order_sn`      VARCHAR(20)         NOT NULL DEFAULT '' COMMENT '订单编号',
+    `user_id`       INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '操作人',
+    `goods_id`      INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '商品ID',
+    `coupon_id`     INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '优惠券ID',
+    `origin_amount` INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '订单原始总价，单位分',
+    `amount`        INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '订单总价，单位分',
+    `expired_at`    DATETIME                     DEFAULT NULL COMMENT '过期时间',
+    `is_expire`     BIT                 NOT NULL DEFAULT 0 COMMENT '是否已过期：0-未过期、1-已过期',
+    `pay_type`      TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '支付渠道：0-余额、1-支付宝、2-QQ、3-微信、4-虚拟货币、5-paypal',
+    `pay_way`       VARCHAR(10)         NOT NULL DEFAULT '' COMMENT '支付方式：balance、f2fpay、codepay、payjs、bitpayx等',
+    `status`        TINYINT(1)          NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
+    `created_at`    DATETIME            NOT NULL COMMENT '创建时间',
+    `updated_at`    DATETIME            NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`oid`),
     INDEX `idx_order_search` (`user_id`, `goods_id`, `is_expire`, `status`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='订单';
+
 
 -- ----------------------------
 -- Table structure for ticket
@@ -693,12 +702,12 @@ CREATE TABLE `ticket`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
-    `admin_id`   INT(10) UNSIGNED          DEFAULT '0' COMMENT '管理员ID',
+    `admin_id`   INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '管理员ID',
     `title`      VARCHAR(255)     NOT NULL DEFAULT '' COMMENT '标题',
     `content`    TEXT             NOT NULL COMMENT '内容',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：0-待处理、1-已处理未关闭、2-已关闭',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='工单';
 
@@ -713,8 +722,8 @@ CREATE TABLE `ticket_reply`
     `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '回复用户ID',
     `admin_id`   INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '管理员ID',
     `content`    TEXT             NOT NULL COMMENT '回复内容',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='工单回复';
 
@@ -731,7 +740,7 @@ CREATE TABLE `user_credit_log`
     `after`       INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发生后金额，单位分',
     `amount`      INT(10)          NOT NULL DEFAULT '0' COMMENT '发生金额，单位分',
     `description` VARCHAR(255)              DEFAULT '' COMMENT '操作描述',
-    `created_at`  DATETIME                  DEFAULT NULL COMMENT '创建时间',
+    `created_at`  DATETIME         NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户余额变动日志';
 
@@ -747,8 +756,7 @@ CREATE TABLE `user_traffic_modify_log`
     `before`      BIGINT(20)       NOT NULL DEFAULT '0' COMMENT '操作前流量',
     `after`       BIGINT(20)       NOT NULL DEFAULT '0' COMMENT '操作后流量',
     `description` VARCHAR(255)     NOT NULL DEFAULT '' COMMENT '描述',
-    `created_at`  DATETIME         NOT NULL,
-    `updated_at`  DATETIME         NOT NULL,
+    `created_at`  DATETIME         NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户流量变动日志';
 
@@ -765,8 +773,8 @@ CREATE TABLE `referral_apply`
     `amount`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '本次提现金额，单位分',
     `link_logs`  TEXT             NOT NULL COMMENT '关联返利日志ID，例如：1,3,4',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='提现申请';
 
@@ -783,8 +791,8 @@ CREATE TABLE `referral_log`
     `amount`      INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '消费金额，单位分',
     `ref_amount`  INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '返利金额',
     `status`      TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：0-未提现、1-审核中、2-已提现',
-    `created_at`  DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at`  DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at`  DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at`  DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='消费返利日志';
 
@@ -801,8 +809,8 @@ CREATE TABLE `notification_log`
     `content`    TEXT             NOT NULL COMMENT '内容',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：-1发送失败、0-等待发送、1-发送成功',
     `error`      TEXT COMMENT '发送失败抛出的异常信息',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='通知投递记录';
 
@@ -967,13 +975,13 @@ CREATE TABLE `user_subscribe`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
-    `code`       CHAR(8)                   DEFAULT '' COMMENT '订阅地址唯一识别码',
+    `code`       CHAR(8)          NOT NULL DEFAULT '' COMMENT '订阅地址唯一识别码',
     `times`      INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '地址请求次数',
     `status`     BIT              NOT NULL DEFAULT 1 COMMENT '状态：0-禁用、1-启用',
-    `ban_time`   INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '封禁时间',
+    `ban_time`   INT(10) UNSIGNED          DEFAULT NULL COMMENT '封禁时间',
     `ban_desc`   VARCHAR(50)      NOT NULL DEFAULT '' COMMENT '封禁理由',
-    `created_at` DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`),
     INDEX `user_id` (`user_id`, `status`),
     INDEX `code` (`code`)
@@ -992,9 +1000,9 @@ INSERT INTO `user_subscribe`(`id`, `user_id`, `code`) VALUES ('1', '1', 'SsXa1')
 CREATE TABLE `user_subscribe_log`
 (
     `id`             INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `sid`            INT(10) UNSIGNED DEFAULT NULL COMMENT '对应user_subscribe的id',
-    `request_ip`     CHAR(45)        DEFAULT NULL COMMENT '请求IP',
-    `request_time`   DATETIME         DEFAULT NULL COMMENT '请求时间',
+    `sid`            INT(10) UNSIGNED NOT NULL COMMENT '对应user_subscribe的id',
+    `request_ip`     CHAR(45) DEFAULT NULL COMMENT '请求IP',
+    `request_time`   DATETIME         NOT NULL COMMENT '请求时间',
     `request_header` TEXT COMMENT '请求头部信息',
     PRIMARY KEY (`id`),
     INDEX `sid` (`sid`)
@@ -1013,8 +1021,7 @@ CREATE TABLE `user_traffic_daily`
     `d`          BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '下载流量',
     `total`      BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总流量',
     `traffic`    VARCHAR(255)                 DEFAULT '' COMMENT '总流量（带单位）',
-    `created_at` DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME            NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`),
     INDEX `idx_user_node` (`user_id`, `node_id`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户每日流量统计';
@@ -1032,8 +1039,7 @@ CREATE TABLE `user_traffic_hourly`
     `d`          BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '下载流量',
     `total`      BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总流量',
     `traffic`    VARCHAR(255)                 DEFAULT '' COMMENT '总流量（带单位）',
-    `created_at` DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME            NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`),
     INDEX `idx_user_node` (`user_id`, `node_id`) USING BTREE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户每小时流量统计';
@@ -1050,8 +1056,7 @@ CREATE TABLE `ss_node_traffic_daily`
     `d`          BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '下载流量',
     `total`      BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总流量',
     `traffic`    VARCHAR(255)                 DEFAULT '' COMMENT '总流量（带单位）',
-    `created_at` DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME            NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`),
     INDEX `idx_node_id` (`node_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点每日流量统计';
@@ -1068,8 +1073,7 @@ CREATE TABLE `ss_node_traffic_hourly`
     `d`          BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '下载流量',
     `total`      BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总流量',
     `traffic`    VARCHAR(255)                 DEFAULT '' COMMENT '总流量（带单位）',
-    `created_at` DATETIME                     DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME                     DEFAULT NULL COMMENT '最后更新时间',
+    `created_at` DATETIME            NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`),
     INDEX `idx_node_id` (`node_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点每小时流量统计';
@@ -1085,8 +1089,8 @@ CREATE TABLE `user_ban_log`
     `minutes`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '封禁账号时长，单位分钟',
     `description` VARCHAR(255)     NOT NULL DEFAULT '' COMMENT '操作描述',
     `status`      BIT              NOT NULL DEFAULT 0 COMMENT '状态：0-未处理、1-已处理',
-    `created_at`  DATETIME                  DEFAULT NULL COMMENT '创建时间',
-    `updated_at`  DATETIME                  DEFAULT NULL COMMENT '最后更新时间',
+    `created_at`  DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at`  DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户封禁日志';
 
@@ -1173,15 +1177,15 @@ VALUES ('1', '澳大利亚', 'au'),
 CREATE TABLE `payment`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `trade_no`   VARCHAR(64)               DEFAULT NULL COMMENT '支付单号（本地订单号）',
+    `trade_no`   VARCHAR(64)      NOT NULL COMMENT '支付单号（本地订单号）',
     `user_id`    INT(10) UNSIGNED NOT NULL COMMENT '用户ID',
-    `oid`        INT(10) UNSIGNED          DEFAULT NULL COMMENT '本地订单ID',
+    `oid`        INT(10) UNSIGNED NOT NULL COMMENT '本地订单ID',
     `amount`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '金额，单位分',
     `qr_code`    TEXT COMMENT '支付二维码',
     `url`        TEXT COMMENT '支付链接',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '支付状态：-1-支付失败、0-等待支付、1-支付成功',
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='支付单';
 
@@ -1192,12 +1196,12 @@ CREATE TABLE `payment`
 CREATE TABLE `payment_callback`
 (
     `id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `trade_no`     VARCHAR(64)      DEFAULT NULL COMMENT '本地订单号',
-    `out_trade_no` VARCHAR(64)      DEFAULT NULL COMMENT '外部订单号（支付平台）',
-    `amount`       INT(10) UNSIGNED DEFAULT NULL COMMENT '交易金额，单位分',
-    `status`       BIT              DEFAULT NULL COMMENT '交易状态：0-失败、1-成功',
-    `created_at`   DATETIME         DEFAULT NULL,
-    `updated_at`   DATETIME         DEFAULT NULL,
+    `trade_no`     VARCHAR(64)      NOT NULL COMMENT '本地订单号',
+    `out_trade_no` VARCHAR(64)      NOT NULL COMMENT '外部订单号（支付平台）',
+    `amount`       INT(10) UNSIGNED NOT NULL COMMENT '交易金额，单位分',
+    `status`       BIT              NOT NULL COMMENT '交易状态：0-失败、1-成功',
+    `created_at`   DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at`   DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='支付回调日志';
 
@@ -1214,8 +1218,8 @@ CREATE TABLE `marketing`
     `content`    TEXT             NOT NULL COMMENT '内容',
     `error`      VARCHAR(255)     NULL COMMENT '错误信息',
     `status`     TINYINT(1)       NOT NULL COMMENT '状态：-1-失败、0-待发送、1-成功',
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='营销';
 
@@ -1226,16 +1230,15 @@ CREATE TABLE `marketing`
 CREATE TABLE `user_login_log`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
-    `ip`         VARCHAR(45)     NOT NULL,
-    `country`    VARCHAR(128)     NOT NULL,
-    `province`   VARCHAR(128)     NOT NULL,
-    `city`       VARCHAR(128)     NOT NULL,
-    `county`     VARCHAR(128)     NOT NULL,
-    `isp`        VARCHAR(128)     NOT NULL,
-    `area`       VARCHAR(255)     NOT NULL,
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `user_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+    `ip`         VARCHAR(45)      NOT NULL COMMENT 'IP地址',
+    `country`    VARCHAR(128)     NOT NULL COMMENT '国家',
+    `province`   VARCHAR(128)     NOT NULL COMMENT '省份',
+    `city`       VARCHAR(128)     NOT NULL COMMENT '城市',
+    `county`     VARCHAR(128)     NOT NULL COMMENT '郡县',
+    `isp`        VARCHAR(128)     NOT NULL COMMENT '运营商',
+    `area`       VARCHAR(255)     NOT NULL COMMENT '地区',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户登录日志';
 
@@ -1264,10 +1267,10 @@ CREATE TABLE `ss_node_ip`
 -- ----------------------------
 CREATE TABLE `rule`
 (
-    `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `type`       TINYINT(1)       NOT NULL DEFAULT '1' COMMENT '类型：1-正则表达式、2-域名、3-IP、4-协议',
-    `name`       VARCHAR(100)     NOT NULL COMMENT '规则描述',
-    `pattern`    TEXT             NOT NULL COMMENT '规则值',
+    `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `type`    TINYINT(1)       NOT NULL DEFAULT '1' COMMENT '类型：1-正则表达式、2-域名、3-IP、4-协议',
+    `name`    VARCHAR(100)     NOT NULL COMMENT '规则描述',
+    `pattern` TEXT             NOT NULL COMMENT '规则值',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='审计规则';
 
@@ -1306,18 +1309,19 @@ VALUES (1, '1', '360',
        (17, '1', '测速类', '(.*\.||)(fast|speedtest)\.(org|com|net|cn)'),
        (18, '1', '外汇交易类', '(.*\.||)(metatrader4|metatrader5|mql5)\.(org|com|net)');
 
+
 -- ----------------------------
 -- Table structure for rule_group
 -- ----------------------------
 CREATE TABLE `rule_group`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `type`       BIT          DEFAULT 1 COMMENT '模式：1-阻断、0-放行',
-    `name`       VARCHAR(255) DEFAULT NULL COMMENT '分组名称',
-    `rules`      TEXT COMMENT '关联的规则ID，多个用,号分隔',
-    `nodes`      TEXT COMMENT '关联的节点ID，多个用,号分隔',
-    `created_at` DATETIME     DEFAULT NULL,
-    `updated_at` DATETIME     DEFAULT NULL,
+    `type`       BIT              NOT NULL DEFAULT 1 COMMENT '模式：1-阻断、0-放行',
+    `name`       VARCHAR(255)     NOT NULL COMMENT '分组名称',
+    `rules`      TEXT                      DEFAULT NULL COMMENT '关联的规则ID，多个用,号分隔',
+    `nodes`      TEXT                      DEFAULT NULL COMMENT '关联的节点ID，多个用,号分隔',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='审计规则分组';
 
@@ -1335,10 +1339,10 @@ VALUES (1, 1, '默认', '1,2,3,4,5,6,7,8,9,10,11,12,13,14', NULL, '2019-10-26 15
 CREATE TABLE `rule_group_node`
 (
     `id`            INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `rule_group_id` INT(10) UNSIGNED DEFAULT '0' COMMENT '规则分组ID',
-    `node_id`       INT(10) UNSIGNED DEFAULT '0' COMMENT '节点ID',
-    `created_at`    DATETIME         DEFAULT NULL,
-    `updated_at`    DATETIME         DEFAULT NULL,
+    `rule_group_id` INT(10) UNSIGNED NOT NULL COMMENT '规则分组ID',
+    `node_id`       INT(10) UNSIGNED NOT NULL COMMENT '节点ID',
+    `created_at`    DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at`    DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='审计规则分组节点关联表';
 
@@ -1353,8 +1357,7 @@ CREATE TABLE `rule_log`
     `node_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '节点ID',
     `rule_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '规则ID，0表示白名单模式下访问访问了非规则允许的网址',
     `reason`     VARCHAR(255)     NOT NULL DEFAULT '' COMMENT '触发原因',
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`),
     INDEX `idx` (`user_id`, `node_id`, `rule_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='触发审计规则日志表';
@@ -1366,11 +1369,11 @@ CREATE TABLE `rule_log`
 CREATE TABLE `node_rule`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `node_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '节点ID',
-    `rule_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '审计规则ID',
+    `node_id`    INT(10) UNSIGNED NULL COMMENT '节点ID',
+    `rule_id`    INT(10) UNSIGNED NULL COMMENT '审计规则ID',
     `is_black`   BIT              NOT NULL DEFAULT 1 COMMENT '是否黑名单模式：0-不是、1-是',
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点审计规则关联';
 
@@ -1381,11 +1384,11 @@ CREATE TABLE `node_rule`
 CREATE TABLE `node_auth`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `node_id`    INT(10) UNSIGNED NOT NULL                          DEFAULT '0' COMMENT '授权节点ID',
-    `key`        CHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '认证KEY',
-    `secret`     CHAR(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin  DEFAULT '' COMMENT '通信密钥',
-    `created_at` DATETIME         NULL                              DEFAULT NULL COMMENT '创建时间',
-    `updated_at` DATETIME         NULL                              DEFAULT NULL COMMENT '最后更新时间',
+    `node_id`    INT(10) UNSIGNED NOT NULL COMMENT '授权节点ID',
+    `key`        CHAR(16)         NOT NULL COMMENT '认证KEY',
+    `secret`     CHAR(8)          NOT NULL COMMENT '通信密钥',
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`),
     INDEX `id` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='节点授权密钥表';
@@ -1400,8 +1403,8 @@ CREATE TABLE `node_certificate`
     `domain`     VARCHAR(255)     NOT NULL COMMENT '域名',
     `key`        TEXT             NULL COMMENT '域名证书KEY',
     `pem`        TEXT             NULL COMMENT '域名证书PEM',
-    `created_at` DATETIME         NOT NULL,
-    `updated_at` DATETIME         NOT NULL,
+    `created_at` DATETIME         NOT NULL COMMENT '创建时间',
+    `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB COLLATE = 'utf8mb4_unicode_ci' COMMENT ='域名证书';
 
@@ -1450,9 +1453,9 @@ CREATE TABLE `migrations`
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='迁移';
 
 
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES = @old_sql_notes */;
+/*!40101 SET SQL_MODE = @old_sql_mode */;
+/*!40014 SET FOREIGN_KEY_CHECKS = @old_foreign_key_checks */;
+/*!40101 SET CHARACTER_SET_CLIENT = @old_character_set_client */;
+/*!40101 SET CHARACTER_SET_RESULTS = @old_character_set_results */;
+/*!40101 SET COLLATION_CONNECTION = @old_collation_connection */;

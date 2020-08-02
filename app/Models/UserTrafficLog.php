@@ -45,5 +45,4 @@ class UserTrafficLog extends Model {
 	public function node(): BelongsTo {
 		return $this->belongsTo(SsNode::class, 'node_id', 'id');
 	}
-
 }

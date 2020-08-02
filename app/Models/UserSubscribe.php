@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 用户订阅地址
  *
- * @property int                             $id
- * @property int                             $user_id    用户ID
- * @property string|null                     $code       订阅地址唯一识别码
- * @property int                             $times      地址请求次数
- * @property int                             $status     状态：0-禁用、1-启用
- * @property int                             $ban_time   封禁时间
- * @property string                          $ban_desc   封禁理由
- * @property \Illuminate\Support\Carbon|null $created_at 创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at 最后更新时间
- * @property-read \App\Models\User|null      $user
+ * @property int                        $id
+ * @property int                        $user_id    用户ID
+ * @property string                     $code       订阅地址唯一识别码
+ * @property int                        $times      地址请求次数
+ * @property int                        $status     状态：0-禁用、1-启用
+ * @property int                        $ban_time   封禁时间
+ * @property string                     $ban_desc   封禁理由
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
+ * @property-read \App\Models\User|null $user
  * @method static Builder|UserSubscribe newModelQuery()
  * @method static Builder|UserSubscribe newQuery()
  * @method static Builder|UserSubscribe query()

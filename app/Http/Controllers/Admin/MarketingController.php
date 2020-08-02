@@ -64,11 +64,12 @@ class MarketingController extends Controller {
 		$content = $request->input('content');
 
 		if(!self::$systemConfig['is_push_bear']){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '推送失败：请先启用并配置PushBear']);
+			return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
 		}
 
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
+
 			$response = (new Client())->get('https://pushbear.ftqq.com/sub', [
 				'query' => [
 					'sendkey' => self::$systemConfig['push_bear_send_key'],
@@ -88,13 +89,13 @@ class MarketingController extends Controller {
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '推送成功']);
+			return Response::json(['status' => 'success', 'message' => '推送成功']);
 		}catch(Exception $e){
 			Log::info('PushBear消息推送失败：'.$e->getMessage());
 
 			DB::rollBack();
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '推送失败：'.$e->getMessage()]);
+			return Response::json(['status' => 'fail', 'message' => '推送失败：'.$e->getMessage()]);
 		}
 	}
 

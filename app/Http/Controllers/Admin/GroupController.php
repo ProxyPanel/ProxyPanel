@@ -15,7 +15,7 @@ use Validator;
 
 class GroupController extends Controller {
 	public function userGroupList(Request $request): \Illuminate\Http\Response {
-		$view['list'] = UserGroup::query()->orderByDesc('id')->paginate(15)->appends($request->except('page'));
+		$view['list'] = UserGroup::query()->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.group.groupList', $view);
 	}
 
@@ -59,7 +59,7 @@ class GroupController extends Controller {
 			}
 			$name = $request->input('name');
 			$nodes = $request->input('nodes');
-			$userGroup = UserGroup::query()->find($id);
+			$userGroup = UserGroup::find($id);
 			if(!$userGroup){
 				return Redirect::back()->withInput()->withErrors('未找到需要编辑的用户分组！');
 			}
@@ -86,7 +86,7 @@ class GroupController extends Controller {
 			return Redirect::back()->withInput()->withErrors('操作失败');
 		}
 
-		$userGroup = UserGroup::query()->find($id);
+		$userGroup = UserGroup::find($id);
 		if(!$userGroup){
 			return Redirect::back();
 		}
@@ -104,7 +104,7 @@ class GroupController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']);
 		}
 
-		$userGroup = UserGroup::query()->whereId($id)->first();
+		$userGroup = UserGroup::find($id);
 		if(!$userGroup){
 			return Response::json(['status' => 'fail', 'message' => '删除失败，未找到用户分组']);
 		}

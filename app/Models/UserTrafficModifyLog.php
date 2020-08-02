@@ -15,8 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int                         $before      操作前流量
  * @property int                         $after       操作后流量
  * @property string                      $description 描述
- * @property \Illuminate\Support\Carbon  $created_at
- * @property \Illuminate\Support\Carbon  $updated_at
+ * @property \Illuminate\Support\Carbon  $created_at  创建时间
  * @property-read \App\Models\Order|null $order
  * @property-read \App\Models\User|null  $user
  * @method static Builder|UserTrafficModifyLog newModelQuery()
@@ -28,11 +27,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|UserTrafficModifyLog whereDescription($value)
  * @method static Builder|UserTrafficModifyLog whereId($value)
  * @method static Builder|UserTrafficModifyLog whereOrderId($value)
- * @method static Builder|UserTrafficModifyLog whereUpdatedAt($value)
  * @method static Builder|UserTrafficModifyLog whereUserId($value)
  * @mixin \Eloquent
  */
 class UserTrafficModifyLog extends Model {
+	const UPDATED_AT = null;
 	protected $table = 'user_traffic_modify_log';
 
 	// 关联账号
@@ -52,5 +51,4 @@ class UserTrafficModifyLog extends Model {
 	public function getAfterAttribute($value) {
 		return $this->attributes['after'] = flowAutoShow($value);
 	}
-
 }

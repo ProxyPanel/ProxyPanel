@@ -49,7 +49,7 @@ class NodeController extends Controller {
 			$online_log = SsNodeOnlineLog::query()
 			                             ->whereNodeId($node->id)
 			                             ->where('log_time', '>=', strtotime("-5 minutes"))
-			                             ->orderByDesc('id')
+			                             ->latest('log_time')
 			                             ->first();
 			$node->online_users = empty($online_log)? 0 : $online_log->online_user;
 
@@ -61,7 +61,7 @@ class NodeController extends Controller {
 			$node_info = SsNodeInfo::query()
 			                       ->whereNodeId($node->id)
 			                       ->where('log_time', '>=', strtotime("-10 minutes"))
-			                       ->orderByDesc('id')
+			                       ->latest('log_time')
 			                       ->first();
 			$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
 			$node->load = $node->isOnline? $node_info->load : '离线';
@@ -75,7 +75,7 @@ class NodeController extends Controller {
 
 	public function checkNode(Request $request): JsonResponse {
 		$id = $request->input('id');
-		$node = SsNode::query()->whereId($id)->first();
+		$node = SsNode::find($id);
 		// 使用DDNS的node先获取ipv4地址
 		if($node->is_ddns){
 			$ip = gethostbyname($node->server);
@@ -364,9 +364,9 @@ class NodeController extends Controller {
 	public function delNode(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
-		$node = SsNode::query()->whereId($id)->first();
+		$node = SsNode::find($id);
 		if(!$node){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '节点不存在，请重试']);
+			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
 		}
 
 		try{
@@ -401,12 +401,12 @@ class NodeController extends Controller {
 
 			DB::commit();
 
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '删除成功']);
+			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}catch(Exception $e){
 			DB::rollBack();
 			Log::error('删除节点信息异常：'.$e->getMessage());
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '删除失败：'.$e->getMessage()]);
+			return Response::json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
 		}
 	}
 
@@ -429,7 +429,7 @@ class NodeController extends Controller {
 
 	// Ping节点延迟
 	public function pingNode(Request $request): ?JsonResponse {
-		$node = SsNode::query()->whereId($request->input('id'))->first();
+		$node = SsNode::find($request->input('id'));
 		if(!$node){
 			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
 		}
@@ -460,7 +460,7 @@ class NodeController extends Controller {
 		}
 
 		$view['nodeList'] = SsNode::query()->orderBy('id')->get();
-		$view['pingLogs'] = $query->orderBy('id')->paginate(15)->appends($request->except('page'));
+		$view['pingLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.logs.nodePingLog', $view);
 	}
@@ -550,7 +550,7 @@ class NodeController extends Controller {
 
 	// 编辑域名证书
 	public function editCertificate(Request $request) {
-		$Dv = NodeCertificate::query()->find($request->input('id'));
+		$Dv = NodeCertificate::find($request->input('id'));
 		if($request->isMethod('POST')){
 			if($Dv){
 				$ret = NodeCertificate::query()->update([

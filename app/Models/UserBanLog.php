@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 用户封禁日志
  *
- * @property int                             $id
- * @property int                             $user_id     用户ID
- * @property int                             $minutes     封禁账号时长，单位分钟
- * @property string                          $description 操作描述
- * @property int                             $status      状态：0-未处理、1-已处理
- * @property \Illuminate\Support\Carbon|null $created_at  创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at  最后更新时间
- * @property-read \App\Models\User|null      $user
+ * @property int                        $id
+ * @property int                        $user_id     用户ID
+ * @property int                        $minutes     封禁账号时长，单位分钟
+ * @property string                     $description 操作描述
+ * @property int                        $status      状态：0-未处理、1-已处理
+ * @property \Illuminate\Support\Carbon $created_at  创建时间
+ * @property \Illuminate\Support\Carbon $updated_at  最后更新时间
+ * @property-read \App\Models\User|null $user
  * @method static Builder|UserBanLog newModelQuery()
  * @method static Builder|UserBanLog newQuery()
  * @method static Builder|UserBanLog query()

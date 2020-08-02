@@ -26,15 +26,13 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 	}
 
 	private function statisticsByNode($node_id): void {
-		$start_time = strtotime(date('Y-m-d H:i:s', strtotime("-1 hour")));
-		$end_time = time();
-
-		$query = UserTrafficLog::query()->whereNodeId($node_id)->whereBetween('log_time', [$start_time, $end_time]);
+		$query = UserTrafficLog::query()
+		                       ->whereNodeId($node_id)
+		                       ->whereBetween('log_time', [strtotime("-1 hour"), time()]);
 
 		$u = $query->sum('u');
 		$d = $query->sum('d');
 		$total = $u + $d;
-		$traffic = flowAutoShow($total);
 
 		if($total){ // 有数据才记录
 			$obj = new SsNodeTrafficHourly();
@@ -42,7 +40,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 			$obj->u = $u;
 			$obj->d = $d;
 			$obj->total = $total;
-			$obj->traffic = $traffic;
+			$obj->traffic = flowAutoShow($total);
 			$obj->save();
 		}
 	}

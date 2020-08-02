@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder;
 
 /**
  * 邀请码
@@ -16,27 +16,27 @@ use Illuminate\Database\Query\Builder;
  * @property int                             $fuid       受邀人ID
  * @property string                          $code       邀请码
  * @property int                             $status     邀请码状态：0-未使用、1-已使用、2-已过期
- * @property string|null                     $dateline   有效期至
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon      $dateline   有效期至
+ * @property \Illuminate\Support\Carbon      $created_at 创建时间
+ * @property \Illuminate\Support\Carbon      $updated_at 最后更新时间
  * @property \Illuminate\Support\Carbon|null $deleted_at 删除时间
  * @property-read \App\Models\User|null      $generator
  * @property-read string                     $status_label
  * @property-read \App\Models\User|null      $user
- * @method static \Illuminate\Database\Eloquent\Builder|Invite newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Invite newQuery()
+ * @method static Builder|Invite newModelQuery()
+ * @method static Builder|Invite newQuery()
  * @method static Builder|Invite onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Invite query()
- * @method static \Illuminate\Database\Eloquent\Builder|Invite uid()
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereDateline($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereFuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereUid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invite whereUpdatedAt($value)
+ * @method static Builder|Invite query()
+ * @method static Builder|Invite uid()
+ * @method static Builder|Invite whereCode($value)
+ * @method static Builder|Invite whereCreatedAt($value)
+ * @method static Builder|Invite whereDateline($value)
+ * @method static Builder|Invite whereDeletedAt($value)
+ * @method static Builder|Invite whereFuid($value)
+ * @method static Builder|Invite whereId($value)
+ * @method static Builder|Invite whereStatus($value)
+ * @method static Builder|Invite whereUid($value)
+ * @method static Builder|Invite whereUpdatedAt($value)
  * @method static Builder|Invite withTrashed()
  * @method static Builder|Invite withoutTrashed()
  * @mixin \Eloquent
@@ -45,7 +45,7 @@ class Invite extends Model {
 	use SoftDeletes;
 
 	protected $table = 'invite';
-	protected $dates = ['deleted_at'];
+	protected $dates = ['dateline', 'deleted_at'];
 
 	public function scopeUid($query) {
 		return $query->whereUid(Auth::id());
@@ -76,5 +76,4 @@ class Invite extends Model {
 
 		return $status_label;
 	}
-
 }

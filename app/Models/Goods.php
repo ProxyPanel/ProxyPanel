@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder;
 
 /**
  * 商品
@@ -27,36 +27,36 @@ use Illuminate\Database\Query\Builder;
  * @property int                             $sort        排序
  * @property int                             $is_hot      是否热销：0-否、1-是
  * @property int                             $status      状态：0-下架、1-上架
- * @property \Illuminate\Support\Carbon|null $created_at  创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at  最后更新时间
+ * @property \Illuminate\Support\Carbon      $created_at  创建时间
+ * @property \Illuminate\Support\Carbon      $updated_at  最后更新时间
  * @property \Illuminate\Support\Carbon|null $deleted_at  删除时间
  * @property-read mixed                      $traffic_label
- * @method static \Illuminate\Database\Eloquent\Builder|Goods newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Goods newQuery()
+ * @method static Builder|Goods newModelQuery()
+ * @method static Builder|Goods newQuery()
  * @method static Builder|Goods onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Goods query()
- * @method static \Illuminate\Database\Eloquent\Builder|Goods type($type)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereColor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDays($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereInfo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereInviteNum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereIsHot($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereLimitNum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereLogo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods wherePeriod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereRenew($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereSort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereTraffic($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Goods whereUpdatedAt($value)
+ * @method static Builder|Goods query()
+ * @method static Builder|Goods type($type)
+ * @method static Builder|Goods whereColor($value)
+ * @method static Builder|Goods whereCreatedAt($value)
+ * @method static Builder|Goods whereDays($value)
+ * @method static Builder|Goods whereDeletedAt($value)
+ * @method static Builder|Goods whereDescription($value)
+ * @method static Builder|Goods whereId($value)
+ * @method static Builder|Goods whereInfo($value)
+ * @method static Builder|Goods whereInviteNum($value)
+ * @method static Builder|Goods whereIsHot($value)
+ * @method static Builder|Goods whereLevel($value)
+ * @method static Builder|Goods whereLimitNum($value)
+ * @method static Builder|Goods whereLogo($value)
+ * @method static Builder|Goods whereName($value)
+ * @method static Builder|Goods wherePeriod($value)
+ * @method static Builder|Goods wherePrice($value)
+ * @method static Builder|Goods whereRenew($value)
+ * @method static Builder|Goods whereSort($value)
+ * @method static Builder|Goods whereStatus($value)
+ * @method static Builder|Goods whereTraffic($value)
+ * @method static Builder|Goods whereType($value)
+ * @method static Builder|Goods whereUpdatedAt($value)
  * @method static Builder|Goods withTrashed()
  * @method static Builder|Goods withoutTrashed()
  * @mixin \Eloquent

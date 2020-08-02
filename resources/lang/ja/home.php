@@ -141,7 +141,7 @@ return [
 	'invoice_table_pay_way'           => '支払い方式',
 	'invoice_table_price'             => '金額',
 	'invoice_table_create_date'       => '購入日',
-	'invoice_table_expire_at'         => '有効期限',
+	'invoice_table_expired_at'        => '有効期限',
 	'invoice_table_status'            => '状態',
 	'invoice_table_none'              => 'データなし',
 	'invoice_table_closed'            => '閉鎖された',

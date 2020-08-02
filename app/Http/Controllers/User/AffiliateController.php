@@ -31,15 +31,12 @@ class AffiliateController extends Controller {
 		$view['totalAmount'] = ReferralLog::uid()->sum('ref_amount') / 100;
 		$view['canAmount'] = ReferralLog::uid()->whereStatus(0)->sum('ref_amount') / 100;
 		$view['link'] = self::$systemConfig['website_url'].'/register?aff='.Auth::id();
-		$view['referralLogList'] = ReferralLog::uid()->with('user')->orderByDesc('id')->paginate(10, ['*'], 'log_page');
-		$view['referralApplyList'] = ReferralApply::uid()
-		                                          ->with('user')
-		                                          ->orderByDesc('id')
-		                                          ->paginate(10, ['*'], 'apply_page');
+		$view['referralLogList'] = ReferralLog::uid()->with('user')->latest()->paginate(10, ['*'], 'log_page');
+		$view['referralApplyList'] = ReferralApply::uid()->with('user')->latest()->paginate(10, ['*'], 'apply_page');
 		$view['referralUserList'] = User::query()
 		                                ->select(['email', 'created_at'])
 		                                ->whereReferralUid(Auth::id())
-		                                ->orderByDesc('id')
+		                                ->latest()
 		                                ->paginate(10, ['*'], 'user_page');
 
 		return Response::view('user.referral', $view);
@@ -68,22 +65,18 @@ class AffiliateController extends Controller {
 			]);
 		}
 
-		// 取出本次申请关联返利日志ID
-		$link_logs = '';
-		foreach(ReferralLog::uid()->whereStatus(0)->get() as $log){
-			$link_logs .= $log->id.',';
+		$ret = ReferralApply::query()->insert([
+			'user_id'   => Auth::id(),
+			'before'    => $ref_amount,
+			'after'     => 0,
+			'amount'    => $ref_amount,
+			'link_logs' => implode(',', ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray()),// 取出本次申请关联返利日志ID
+			'status'    => 0
+		]);
+		if($ret){
+			return Response::json(['status' => 'success', 'message' => '申请成功，请等待管理员审核']);
 		}
-		$link_logs = rtrim($link_logs, ',');
 
-		$obj = new ReferralApply();
-		$obj->user_id = Auth::id();
-		$obj->before = $ref_amount;
-		$obj->after = 0;
-		$obj->amount = $ref_amount;
-		$obj->link_logs = $link_logs;
-		$obj->status = 0;
-		$obj->save();
-
-		return Response::json(['status' => 'success', 'message' => '申请成功，请等待管理员审核']);
+		return Response::json(['status' => 'fail', 'message' => '申请失败，返利单建立失败，请稍后尝试或通知管理员']);
 	}
 }

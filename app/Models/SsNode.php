@@ -51,9 +51,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string                                                                  $v2_path        V2Ray的WS/H2路径
  * @property int                                                                     $v2_tls         V2Ray连接TLS：0-未开启、1-开启
  * @property string|null                                                             $tls_provider   V2Ray节点的TLS提供商授权信息
- * @property \Illuminate\Support\Carbon                                              $created_at
- * @property \Illuminate\Support\Carbon                                              $updated_at
+ * @property \Illuminate\Support\Carbon                                              $created_at     创建时间
+ * @property \Illuminate\Support\Carbon                                              $updated_at     最后更新时间
  * @property-read \App\Models\NodeAuth|null                                          $auth
+ * @property-read string                                                             $level_name
  * @property-read string                                                             $type_label
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SsNodeLabel[] $label
  * @property-read int|null                                                           $label_count
@@ -117,8 +118,8 @@ class SsNode extends Model {
 		return $this->hasOne(NodeAuth::class, 'node_id', 'id');
 	}
 
-	public function getLevel(): HasOne {
-		return $this->hasOne(Level::class, 'level', 'level');
+	public function getLevelNameAttribute(): string {
+		return Level::whereLevel($this->attributes['level'])->first()->name;
 	}
 
 	// Node查询，查用户所在分组Node权限

@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 class TrojanController extends BaseController {
 	// 获取节点信息
 	public function getNodeInfo($id): JsonResponse {
-		$node = SsNode::query()->find($id);
+		$node = SsNode::find($id);
 
 		return $this->returnData('获取节点信息成功', 'success', 200, [
 			'id'           => $node->id,
@@ -27,7 +27,7 @@ class TrojanController extends BaseController {
 
 	// 获取节点可用的用户列表
 	public function getUserList($id): JsonResponse {
-		$node = SsNode::query()->find($id);
+		$node = SsNode::find($id);
 		$users = User::query()
 		             ->where('status', '<>', -1)
 		             ->whereEnable(1)

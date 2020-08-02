@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Redirect;
 use Response;
 use Session;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ToolsController extends Controller {
 	// SS(R)链接反解析
@@ -21,7 +20,7 @@ class ToolsController extends Controller {
 			$content = $request->input('content');
 
 			if(empty($content)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '请在左侧填入要反解析的SS(R)链接']);
+				return Response::json(['status' => 'fail', 'message' => '请在左侧填入要反解析的SS(R)链接']);
 			}
 
 			// 反解析处理
@@ -60,17 +59,13 @@ class ToolsController extends Controller {
 			$content = $request->input('content');
 
 			if(empty($content)){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => '请在左侧填入要转换的内容']);
+				return Response::json(['status' => 'fail', 'message' => '请在左侧填入要转换的内容']);
 			}
 
 			// 校验格式
 			$content = json_decode($content, true);
 			if(empty($content->port_password)){
-				return Response::json([
-					'status'  => 'fail',
-					'data'    => '',
-					'message' => '转换失败：配置信息里缺少【port_password】字段，或者该字段为空'
-				]);
+				return Response::json(['status' => 'fail', 'message' => '转换失败：配置信息里缺少【port_password】字段，或者该字段为空']);
 			}
 
 			// 转换成SSR格式JSON
@@ -109,7 +104,7 @@ class ToolsController extends Controller {
 	}
 
 	// 下载转换好的JSON文件
-	public function download(Request $request): BinaryFileResponse {
+	public function download(Request $request) {
 		$type = $request->input('type');
 		if(empty($type)){
 			exit('参数异常');

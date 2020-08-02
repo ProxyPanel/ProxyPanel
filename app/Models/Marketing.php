@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Model;
  * 营销
  *
  * @property int                        $id
- * @property int                        $type     类型：1-邮件群发
- * @property string                     $receiver 接收者
- * @property string                     $title    标题
- * @property string                     $content  内容
- * @property string|null                $error    错误信息
- * @property int                        $status   状态：-1-失败、0-待发送、1-成功
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property int                        $type       类型：1-邮件群发
+ * @property string                     $receiver   接收者
+ * @property string                     $title      标题
+ * @property string                     $content    内容
+ * @property string|null                $error      错误信息
+ * @property int                        $status     状态：-1-失败、0-待发送、1-成功
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
  * @property-read string                $status_label
  * @method static Builder|Marketing newModelQuery()
  * @method static Builder|Marketing newQuery()
@@ -34,7 +34,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Marketing extends Model {
 	protected $table = 'marketing';
-	protected $appends = ['status_label'];
 
 	public function getStatusLabelAttribute(): string {
 		$status_label = '';

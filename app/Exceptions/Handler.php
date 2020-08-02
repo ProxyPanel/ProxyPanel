@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler {
 			Log::info("异常请求：".$request->fullUrl()."，IP：".getClientIp());
 
 			if($request->ajax()){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('error.MissingPage')]);
+				return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')]);
 			}
 
 			return Response::view('auth.error', ['message' => trans('error.MissingPage')]);
@@ -79,7 +79,7 @@ class Handler extends ExceptionHandler {
 		// 捕获身份校验异常
 		if($exception instanceof AuthenticationException){
 			if($request->ajax()){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('error.Unauthorized')]);
+				return Response::json(['status' => 'fail', 'message' => trans('error.Unauthorized')]);
 			}
 
 			return Response::view('auth.error', ['message' => trans('error.Unauthorized')]);
@@ -90,7 +90,6 @@ class Handler extends ExceptionHandler {
 			if($request->ajax()){
 				return Response::json([
 					'status'  => 'fail',
-					'data'    => '',
 					'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
 				]);
 			}
@@ -103,7 +102,7 @@ class Handler extends ExceptionHandler {
 		// 捕获反射异常
 		if($exception instanceof ReflectionException){
 			if($request->ajax()){
-				return Response::json(['status' => 'fail', 'data' => '', 'message' => trans('error.SystemError')]);
+				return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
 			}
 
 			return Response::view('auth.error', ['message' => trans('error.SystemError')]);
@@ -114,7 +113,6 @@ class Handler extends ExceptionHandler {
 			if($request->ajax()){
 				return Response::json([
 					'status'  => 'fail',
-					'data'    => '',
 					'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
 				]);
 			}

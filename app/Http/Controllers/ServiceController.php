@@ -17,16 +17,16 @@ class ServiceController extends Controller {
 		     ->whereUserId($prepaidOrder->user_id)
 		     ->whereStatus(2)
 		     ->whereIsExpire(0)
-		     ->update(['expire_at' => date('Y-m-d H:i:s'), 'is_expire' => 1]);
+		     ->update(['expired_at' => date('Y-m-d H:i:s'), 'is_expire' => 1]);
 		//取出对应套餐信息
-		$prepaidGood = Goods::query()->whereId($prepaidOrder->goods_id)->first();
+		$prepaidGood = Goods::find($prepaidOrder->goods_id);
 		//激活预支付套餐
 		Order::query()->whereOid($prepaidOrder->oid)->update([
-			'expire_at' => date("Y-m-d H:i:s", strtotime("+".$prepaidGood->days." days")),
+			'expired_at' => date("Y-m-d H:i:s", strtotime("+".$prepaidGood->days." days")),
 			'status'    => 2
 		]);
 		//取出用户信息
-		$user = User::query()->whereId($prepaidOrder->user_id)->first();
+		$user = User::find($prepaidOrder->user_id);
 
 		$userTraffic = $prepaidGood->traffic * MB;
 		//拿出可能存在的其余套餐, 推算 最新的到期时间
@@ -34,7 +34,7 @@ class ServiceController extends Controller {
 		$prepaidOrders = Order::query()->whereUserId($prepaidOrder->user_id)->whereStatus(3)->get();
 		foreach($prepaidOrders as $paidOrder){
 			//取出对应套餐信息
-			$goods = Goods::query()->whereId($paidOrder->goods_id)->first();
+			$goods = Goods::find($paidOrder->goods_id);
 			$expire_time = date('Y-m-d', strtotime("+".$goods->days." days", strtotime($expire_time)));
 		}
 		//计算账号下一个重置时间

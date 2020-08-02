@@ -56,13 +56,13 @@ class UserController extends Controller {
 		$usedTransfer = $user->u + $user->d;
 		$unusedTransfer = $totalTransfer - $usedTransfer > 0? $totalTransfer - $usedTransfer : 0;
 		$expireTime = $user->expire_time;
-		$view['remainDays'] = $expireTime < date('Y-m-d')? -1 : (strtotime($expireTime) - strtotime(date('Y-m-d'))) / Day;
-		$view['resetDays'] = $user->reset_time? round((strtotime($user->reset_time) - strtotime(date('Y-m-d'))) / Day) : 0;
+		$view['remainDays'] = $expireTime < date('Y-m-d')? -1 : ceil((strtotime($expireTime) - time()) / Day);
+		$view['resetDays'] = $user->reset_time? ceil((strtotime($user->reset_time) - time()) / Day) : 0;
 		$view['unusedTransfer'] = $unusedTransfer;
 		$view['expireTime'] = $expireTime;
 		$view['banedTime'] = $user->ban_time? date('Y-m-d H:i:s', $user->ban_time) : 0;
 		$view['unusedPercent'] = $totalTransfer > 0? round($unusedTransfer / $totalTransfer, 2) : 0;
-		$view['noticeList'] = Article::type(2)->orderByDesc('id')->Paginate(1); // 公告
+		$view['noticeList'] = Article::type(2)->latest()->Paginate(1); // 公告
 		//流量异常判断
 		$hourlyTraffic = UserTrafficHourly::query()
 		                                  ->userHourly($user->id)
@@ -75,7 +75,7 @@ class UserController extends Controller {
 		                                ->whereIsExpire(0)
 		                                ->where('origin_amount', '>', 0)
 		                                ->doesntExist();
-		$view['userLoginLog'] = UserLoginLog::query()->whereUserId($user->id)->orderByDesc('id')->first(); // 近期登录日志
+		$view['userLoginLog'] = UserLoginLog::query()->whereUserId($user->id)->latest()->first(); // 近期登录日志
 		$view = array_merge($view, $this->dataFlowChart($user->id));
 
 		return Response::view('user.index', $view);
@@ -116,10 +116,9 @@ class UserController extends Controller {
 	public function nodeList(Request $request) {
 		$user = Auth::getUser();
 		if($request->isMethod('POST')){
-			$node_id = $request->input('id');
 			$infoType = $request->input('type');
 
-			$node = SsNode::query()->whereId($node_id)->first();
+			$node = SsNode::find($request->input('id'));
 			// 生成节点信息
 			if($node->type == 1){
 				$proxyType = $node->compatible? 'SS' : 'SSR';
@@ -155,7 +154,7 @@ class UserController extends Controller {
 			$node->offline = SsNodeInfo::query()
 			                           ->whereNodeId($node->id)
 			                           ->where('log_time', '>=', strtotime("-10 minutes"))
-			                           ->orderByDesc('id')
+			                           ->latest('log_time')
 			                           ->doesntExist();
 			// 节点标签
 			$node->labels = SsNodeLabel::query()->whereNodeId($node->id)->get();
@@ -254,11 +253,11 @@ class UserController extends Controller {
 			                   $q->whereType(2);
 		                   })
 		                   ->first();
-		$renewPrice = $renewOrder? Goods::query()->whereId($renewOrder->goods_id)->first() : 0;
+		$renewPrice = $renewOrder? Goods::find($renewOrder->goods_id) : 0;
 		$view['renewTraffic'] = $renewPrice? $renewPrice->renew : 0;
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = $user->reset_time?: $user->expire_time;
-		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
+		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? ceil((strtotime($dataPlusDays) - time()) / Day) : 0;
 
 		return Response::view('user.services', $view);
 	}
@@ -266,10 +265,15 @@ class UserController extends Controller {
 	//重置流量
 	public function resetUserTraffic(): ?JsonResponse {
 		$user = Auth::getUser();
-		$temp = Order::uid()->whereStatus(2)->whereIsExpire(0)->with(['goods'])->whereHas('goods', static function($q) {
-			$q->whereType(2);
-		})->first();
-		$renewCost = Goods::query()->whereId($temp->goods_id)->first()->renew;
+		$order = Order::uid()
+		              ->whereStatus(2)
+		              ->whereIsExpire(0)
+		              ->with(['goods'])
+		              ->whereHas('goods', static function($q) {
+			              $q->whereType(2);
+		              })
+		              ->first();
+		$renewCost = Goods::find($order->goods_id)->renew;
 		if($user->credit < $renewCost){
 			return Response::json(['status' => 'fail', 'message' => '余额不足，请充值余额']);
 		}
@@ -288,7 +292,7 @@ class UserController extends Controller {
 
 	// 工单
 	public function ticketList(Request $request): \Illuminate\Http\Response {
-		$view['ticketList'] = Ticket::uid()->orderByDesc('id')->paginate(10)->appends($request->except('page'));
+		$view['ticketList'] = Ticket::uid()->latest()->paginate(10)->appends($request->except('page'));
 
 		return Response::view('user.ticketList', $view);
 	}
@@ -306,7 +310,7 @@ class UserController extends Controller {
 
 	public function activeOrder(Request $request): JsonResponse {
 		$oid = $request->input('oid');
-		$prepaidOrder = Order::query()->whereOid($oid)->first();
+		$prepaidOrder = Order::find($oid);
 		if(!$prepaidOrder){
 			return Response::json(['status' => 'fail', 'message' => '查无此单！']);
 		}
@@ -411,7 +415,7 @@ class UserController extends Controller {
 		}
 
 		$view['ticket'] = $ticket;
-		$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->orderBy('id')->get();
+		$view['replyList'] = TicketReply::query()->whereTicketId($id)->with('user')->oldest()->get();
 
 		return Response::view('user.replyTicket', $view);
 	}
@@ -521,7 +525,7 @@ class UserController extends Controller {
 		}
 		// 有重置日时按照重置日为标准，否者就以过期日为标准
 		$dataPlusDays = $user->reset_time?: $user->expire_time;
-		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? round((strtotime($dataPlusDays) - strtotime(date('Y-m-d'))) / Day) : 0;
+		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? ceil((strtotime($dataPlusDays) - time()) / Day) : 0;
 		$view['activePlan'] = Order::uid()
 		                           ->with(['goods'])
 		                           ->whereIsExpire(0)
@@ -537,7 +541,7 @@ class UserController extends Controller {
 
 	// 帮助中心
 	public function help(): \Illuminate\Http\Response {
-		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->orderByDesc('id')->limit(10)->paginate(5);
+		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->latest()->limit(10)->paginate(5);
 		$data = [];
 		if(SsNode::query()->whereIn('type', [1, 4])->whereStatus(1)->exists()){
 			$data[] = 'ss';
@@ -562,7 +566,7 @@ class UserController extends Controller {
 		$view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/Shadowrocket.plist';
 		$view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/Quantumult.plist';
 		// 订阅连接
-		$subscribe = UserSubscribe::query()->whereUserId(Auth::id())->first();
+		$subscribe = UserSubscribe::query()->whereUserId(Auth::id())->firstOrFail();
 		$view['subscribe_status'] = $subscribe->status;
 		$subscribe_link = (self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url']).'/s/'.$subscribe->code;
 		$view['link'] = $subscribe_link;
@@ -577,8 +581,9 @@ class UserController extends Controller {
 
 	// 更换订阅地址
 	public function exchangeSubscribe(): ?JsonResponse {
-		DB::beginTransaction();
 		try{
+			DB::beginTransaction();
+
 			// 更换订阅码
 			UserSubscribe::uid()->update(['code' => Helpers::makeSubscribeCode()]);
 
@@ -604,10 +609,12 @@ class UserController extends Controller {
 		}
 
 		// 管理员信息重新写入user
-		Auth::loginUsingId(Session::get('admin'));
+		$user = Auth::loginUsingId(Session::get('admin'));
 		Session::forget('admin');
-
-		return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
+		if($user){
+			return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
+		}
+		return Response::json(['status' => 'fail', 'message' => '身份切换失败']);
 	}
 
 	// 卡券余额充值
@@ -625,7 +632,7 @@ class UserController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
 		}
 
-		$coupon = Coupon::query()->whereSn($request->input('coupon_sn'))->first();
+		$coupon = Coupon::query()->whereSn($request->input('coupon_sn'))->firstOrFail();
 
 		try{
 			DB::beginTransaction();

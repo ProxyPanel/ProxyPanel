@@ -18,11 +18,11 @@ class AutoStatisticsUserDailyTraffic extends Command {
 
 		foreach(User::query()->activeUser()->get() as $user){
 			// 统计一次所有节点的总和
-			$this->statisticsByNode($user->id);
+			$this->statisticsByUser($user->id);
 
 			// 统计每个节点产生的流量
 			foreach(SsNode::query()->whereStatus(1)->orderBy('id')->get() as $node){
-				$this->statisticsByNode($user->id, $node->id);
+				$this->statisticsByUser($user->id, $node->id);
 			}
 		}
 
@@ -32,11 +32,10 @@ class AutoStatisticsUserDailyTraffic extends Command {
 		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
 	}
 
-	private function statisticsByNode($user_id, $node_id = 0): void {
-		$start_time = strtotime(date('Y-m-d 00:00:00', strtotime("-1 day")));
-		$end_time = strtotime(date('Y-m-d 23:59:59', strtotime("-1 day")));
-
-		$query = UserTrafficLog::query()->whereUserId($user_id)->whereBetween('log_time', [$start_time, $end_time]);
+	private function statisticsByUser($user_id, $node_id = 0): void {
+		$query = UserTrafficLog::query()
+		                       ->whereUserId($user_id)
+		                       ->whereBetween('log_time', [strtotime(date('Y-m-d')), time()]);
 
 		if($node_id){
 			$query->whereNodeId($node_id);
@@ -45,7 +44,6 @@ class AutoStatisticsUserDailyTraffic extends Command {
 		$u = $query->sum('u');
 		$d = $query->sum('d');
 		$total = $u + $d;
-		$traffic = flowAutoShow($total);
 
 		if($total){ // 有数据才记录
 			$obj = new UserTrafficDaily();
@@ -54,7 +52,7 @@ class AutoStatisticsUserDailyTraffic extends Command {
 			$obj->u = $u;
 			$obj->d = $d;
 			$obj->total = $total;
-			$obj->traffic = $traffic;
+			$obj->traffic = flowAutoShow($total);
 			$obj->save();
 		}
 	}

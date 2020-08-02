@@ -22,7 +22,7 @@ use Illuminate\Notifications\Notifiable;
  * @property int                                                                                                            $transfer_enable 可用流量，单位字节，默认1TiB
  * @property int                                                                                                            $u               已上传流量，单位字节
  * @property int                                                                                                            $d               已下载流量，单位字节
- * @property int                                                                                                            $t               最后使用时间
+ * @property int|null                                                                                                       $t               最后使用时间
  * @property string|null                                                                                                    $ip              最后连接IP
  * @property int                                                                                                            $enable          代理状态
  * @property string                                                                                                         $method          加密方式
@@ -33,9 +33,9 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null                                                                                                    $wechat          微信
  * @property string|null                                                                                                    $qq              QQ
  * @property int                                                                                                            $credit          余额，单位分
- * @property string|null                                                                                                    $enable_time     开通日期
- * @property string                                                                                                         $expire_time     过期时间
- * @property int                                                                                                            $ban_time        封禁到期时间
+ * @property mixed|null                                                                                                     $enable_time     开通日期
+ * @property mixed                                                                                                          $expire_time     过期时间
+ * @property int|null                                                                                                       $ban_time        封禁到期时间
  * @property string|null                                                                                                    $remark          备注
  * @property int                                                                                                            $level           等级，默认0级
  * @property int                                                                                                            $group_id        所属分组
@@ -43,12 +43,13 @@ use Illuminate\Notifications\Notifiable;
  * @property string                                                                                                         $reg_ip          注册IP
  * @property int                                                                                                            $last_login      最后登录时间
  * @property int                                                                                                            $referral_uid    邀请人
- * @property string|null                                                                                                    $reset_time      流量重置日期，NULL表示不重置
+ * @property mixed|null                                                                                                     $reset_time      流量重置日期
  * @property int                                                                                                            $invite_num      可生成邀请码数
  * @property int                                                                                                            $status          状态：-1-禁用、0-未激活、1-正常
  * @property string|null                                                                                                    $remember_token
- * @property \Illuminate\Support\Carbon|null                                                                                $created_at
- * @property \Illuminate\Support\Carbon|null                                                                                $updated_at
+ * @property \Illuminate\Support\Carbon                                                                                     $created_at      创建时间
+ * @property \Illuminate\Support\Carbon                                                                                     $updated_at      最后更新时间
+ * @property-read string                                                                                                    $level_name
  * @property-read \App\Models\UserGroup|null                                                                                $group
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null                                                                                                  $notifications_count
@@ -106,6 +107,13 @@ class User extends Authenticatable {
 
 	protected $table = 'user';
 
+	protected $dates = ['enable_time', 'expire_time', 'reset_time'];
+	protected $casts = [
+		'enable_time' => 'date:Y-m-d',
+		'expire_time' => 'date:Y-m-d',
+		'reset_time'  => 'date:Y-m-d',
+	];
+
 	public function scopeUid($query) {
 		return $query->whereId(Auth::id());
 	}
@@ -114,8 +122,8 @@ class User extends Authenticatable {
 		return $this->hasMany(Payment::class, 'user_id', 'id');
 	}
 
-	public function getLevel(): HasOne {
-		return $this->hasOne(Level::class, 'level', 'level');
+	public function getLevelNameAttribute(): string {
+		return Level::whereLevel($this->attributes['level'])->first()->name;
 	}
 
 	public function group(): HasOne {

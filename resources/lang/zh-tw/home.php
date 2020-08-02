@@ -142,7 +142,7 @@ return [
 	'invoice_table_pay_way'           => '支付方式',
 	'invoice_table_price'             => '金額',
 	'invoice_table_create_date'       => '購買日期',
-	'invoice_table_expire_at'         => '到期時間',
+	'invoice_table_expired_at'        => '到期時間',
 	'invoice_table_status'            => '狀態',
 	'invoice_table_none'              => '暫無數據',
 	'invoice_table_closed'            => '關閉',

@@ -10,19 +10,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 支付单
  *
- * @property int                         $id
- * @property string|null                 $trade_no 支付单号（本地订单号）
- * @property int                         $user_id  用户ID
- * @property int|null                    $oid      本地订单ID
- * @property int                         $amount   金额，单位分
- * @property string|null                 $qr_code  支付二维码
- * @property string|null                 $url      支付链接
- * @property int                         $status   支付状态：-1-支付失败、0-等待支付、1-支付成功
- * @property \Illuminate\Support\Carbon  $created_at
- * @property \Illuminate\Support\Carbon  $updated_at
- * @property-read string                 $status_label
- * @property-read \App\Models\Order|null $order
- * @property-read \App\Models\User       $user
+ * @property int                        $id
+ * @property string                     $trade_no   支付单号（本地订单号）
+ * @property int                        $user_id    用户ID
+ * @property int                        $oid        本地订单ID
+ * @property int                        $amount     金额，单位分
+ * @property string|null                $qr_code    支付二维码
+ * @property string|null                $url        支付链接
+ * @property int                        $status     支付状态：-1-支付失败、0-等待支付、1-支付成功
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
+ * @property-read string                $status_label
+ * @property-read \App\Models\Order     $order
+ * @property-read \App\Models\User      $user
  * @method static Builder|Payment newModelQuery()
  * @method static Builder|Payment newQuery()
  * @method static Builder|Payment query()
@@ -41,7 +41,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Payment extends Model {
 	protected $table = 'payment';
-	protected $appends = ['status_label'];
 
 	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());

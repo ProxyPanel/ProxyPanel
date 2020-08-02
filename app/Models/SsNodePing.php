@@ -10,13 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * 节点定时Ping测速
  *
  * @property int                          $id
- * @property int                          $node_id 对应节点id
- * @property int                          $ct      电信
- * @property int                          $cu      联通
- * @property int                          $cm      移动
- * @property int                          $hk      香港
- * @property \Illuminate\Support\Carbon   $created_at
- * @property \Illuminate\Support\Carbon   $updated_at
+ * @property int                          $node_id    对应节点id
+ * @property int                          $ct         电信
+ * @property int                          $cu         联通
+ * @property int                          $cm         移动
+ * @property int                          $hk         香港
+ * @property \Illuminate\Support\Carbon   $created_at 创建时间
  * @property-read \App\Models\SsNode|null $node
  * @method static Builder|SsNodePing newModelQuery()
  * @method static Builder|SsNodePing newQuery()
@@ -28,10 +27,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static Builder|SsNodePing whereHk($value)
  * @method static Builder|SsNodePing whereId($value)
  * @method static Builder|SsNodePing whereNodeId($value)
- * @method static Builder|SsNodePing whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SsNodePing extends Model {
+	const UPDATED_AT = null;
 	protected $table = 'ss_node_ping';
 
 	public function node(): HasOne {

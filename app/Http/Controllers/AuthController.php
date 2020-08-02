@@ -46,13 +46,17 @@ class AuthController extends Controller {
 	// 登录
 	public function login(Request $request) {
 		if($request->isMethod('POST')){
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'email'    => 'required|email',
 				'password' => 'required'
 			], [
 				'email.required'    => trans('auth.email_null'),
 				'password.required' => trans('auth.password_null')
 			]);
+
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
 
 			$email = $request->input('email');
 			$password = $request->input('password');
@@ -69,6 +73,10 @@ class AuthController extends Controller {
 				return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
 			}
 			$user = Auth::getUser();
+
+			if(!$user){
+				return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
+			}
 
 			// 校验普通用户账号状态
 			if(!$user->is_admin){
@@ -218,7 +226,7 @@ class AuthController extends Controller {
 		$cacheKey = 'register_times_'.md5(getClientIp()); // 注册限制缓存key
 
 		if($request->isMethod('POST')){
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'username'        => 'required',
 				'email'           => 'required|email|unique:user',
 				'password'        => 'required|min:6',
@@ -235,6 +243,10 @@ class AuthController extends Controller {
 				'confirmPassword.same'     => trans('auth.password_same'),
 				'term.accepted'            => trans('auth.unaccepted')
 			]);
+
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
 
 			$username = $request->input('username');
 			$email = $request->input('email');
@@ -379,7 +391,7 @@ class AuthController extends Controller {
 			}else{
 				// 则直接给推荐人加流量
 				if($referral_uid){
-					$referralUser = User::query()->whereId($referral_uid)->first();
+					$referralUser = User::find($referral_uid);
 					if($referralUser && $referralUser->expire_time >= date('Y-m-d')){
 						User::query()
 						    ->whereId($referral_uid)
@@ -441,8 +453,8 @@ class AuthController extends Controller {
 	/**
 	 * 获取AFF
 	 *
-	 * @param  string  $code  邀请码
-	 * @param  int     $aff   URL中的aff参数
+	 * @param  string    $code  邀请码
+	 * @param  int|null  $aff   URL中的aff参数
 	 *
 	 * @return array
 	 */
@@ -498,12 +510,16 @@ class AuthController extends Controller {
 	public function resetPassword(Request $request) {
 		if($request->isMethod('POST')){
 			// 校验请求
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'email' => 'required|email'
 			], [
 				'email.required' => trans('auth.email_null'),
 				'email.email'    => trans('auth.email_legitimate')
 			]);
+
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
 
 			$email = $request->input('email');
 
@@ -553,7 +569,7 @@ class AuthController extends Controller {
 		}
 
 		if($request->isMethod('POST')){
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'password'        => 'required|min:6',
 				'confirmPassword' => 'required|same:password'
 			], [
@@ -563,6 +579,11 @@ class AuthController extends Controller {
 				'confirmPassword.min'      => trans('auth.password_limit'),
 				'confirmPassword.same'     => trans('auth.password_same'),
 			]);
+
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
+
 			$password = $request->input('password');
 			// 校验账号
 			$verify = Verify::type(1)->with('user')->whereToken($token)->first();
@@ -615,13 +636,18 @@ class AuthController extends Controller {
 	// 激活账号页
 	public function activeUser(Request $request) {
 		if($request->isMethod('POST')){
-			Validator::make($request->all(), [
+			$validator = Validator::make($request->all(), [
 				'email' => 'required|email|exists:user,email'
 			], [
 				'email.required' => trans('auth.email_null'),
 				'email.email'    => trans('auth.email_legitimate'),
 				'email.exists'   => trans('auth.email_notExist')
 			]);
+
+			if($validator->fails()){
+				return Redirect::back()->withInput()->withErrors($validator->errors());
+			}
+
 			$email = $request->input('email');
 
 			// 是否开启账号激活
@@ -631,7 +657,7 @@ class AuthController extends Controller {
 			}
 
 			// 查找账号
-			$user = User::query()->whereEmail($email)->first();
+			$user = User::query()->whereEmail($email)->firstOrFail();
 			if($user->status < 0){
 				return Redirect::back()->withErrors(trans('auth.login_ban',
 					['email' => self::$systemConfig['webmaster_email']]));

@@ -36,7 +36,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 		// 1小时内流量异常用户(多往前取5分钟，防止数据统计任务执行时间过长导致没有数据)
 		$userTotalTrafficList = UserTrafficHourly::query()
 		                                         ->whereNodeId(0)
-		                                         ->where('total', '>', MB * 100)
+		                                         ->where('total', '>', MB * 50)
 		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 		                                         ->groupBy('user_id')
 		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
@@ -45,15 +45,15 @@ class UserTrafficAbnormalAutoWarning extends Command {
 			$title = "流量异常用户提醒";
 
 			foreach($userTotalTrafficList as $vo){
-				$user = User::query()->whereId($vo->user_id)->first();
+				$user = User::find($vo->user_id);
 
 				// 推送通知管理员
-				if($vo->totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)){
+				if($vo->totalTraffic > self::$systemConfig['traffic_ban_value'] * GB){
 					$traffic = UserTrafficHourly::query()
 					                            ->userHourly($vo->user_id)
 					                            ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 					                            ->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")
-					                            ->first();
+					                            ->firstOrFail();
 
 					$content = "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU)."，下行流量：".flowAutoShow($traffic->totalD)."，共计：".flowAutoShow($traffic->totalTraffic)."**。";
 

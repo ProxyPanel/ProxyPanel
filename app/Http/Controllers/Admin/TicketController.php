@@ -42,7 +42,7 @@ class TicketController extends Controller {
 			});
 		}
 
-		$view['ticketList'] = $query->orderByDesc('id')->paginate(10)->appends($request->except('page'));
+		$view['ticketList'] = $query->latest()->paginate(10)->appends($request->except('page'));
 
 		return Response::view('admin.ticket.ticketList', $view);
 	}
@@ -54,7 +54,7 @@ class TicketController extends Controller {
 		$title = $request->input('title');
 		$content = $request->input('content');
 
-		$user = User::query()->find($id)?: User::query()->whereEmail($email)->first();
+		$user = User::find($id)?: User::query()->whereEmail($email)->first();
 
 		if(!$user){
 			return Response::json(['status' => 'fail', 'message' => '用户不存在']);
@@ -100,7 +100,7 @@ class TicketController extends Controller {
 
 			if($obj->id){
 				// 将工单置为已回复
-				$ticket = Ticket::query()->with(['user'])->whereId($id)->first();
+				$ticket = Ticket::query()->with(['user'])->whereId($id)->firstOrFail();
 				Ticket::query()->whereId($id)->update(['status' => 1]);
 
 				$title = "工单回复提醒";
@@ -121,14 +121,14 @@ class TicketController extends Controller {
 					Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
 				}
 
-				return Response::json(['status' => 'success', 'data' => '', 'message' => '回复成功']);
+				return Response::json(['status' => 'success', 'message' => '回复成功']);
 			}
 
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '回复失败']);
+			return Response::json(['status' => 'fail', 'message' => '回复失败']);
 		}
 
-		$view['ticket'] = Ticket::query()->whereId($id)->first();
-		$view['replyList'] = TicketReply::query()->whereTicketId($id)->orderBy('id')->get();
+		$view['ticket'] = Ticket::find($id);
+		$view['replyList'] = TicketReply::query()->whereTicketId($id)->oldest()->get();
 
 		return Response::view('admin.ticket.replyTicket', $view);
 	}
@@ -139,12 +139,12 @@ class TicketController extends Controller {
 
 		$ticket = Ticket::query()->with(['user'])->whereId($id)->first();
 		if(!$ticket){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
+			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 		}
 
 		$ret = Ticket::query()->whereId($id)->update(['status' => 2]);
 		if(!$ret){
-			return Response::json(['status' => 'fail', 'data' => '', 'message' => '关闭失败']);
+			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 		}
 
 		$title = "工单关闭提醒";
@@ -154,6 +154,6 @@ class TicketController extends Controller {
 		$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
 		Mail::to($ticket->user->email)->send(new closeTicket($logId, $title, $content));
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '关闭成功']);
+		return Response::json(['status' => 'success', 'message' => '关闭成功']);
 	}
 }

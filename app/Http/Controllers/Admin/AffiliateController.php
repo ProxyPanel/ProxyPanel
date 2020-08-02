@@ -40,7 +40,7 @@ class AffiliateController extends Controller {
 			$query->whereStatus($status);
 		}
 
-		$view['applyList'] = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
+		$view['applyList'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.affiliate.affiliateList', $view);
 	}
@@ -74,7 +74,7 @@ class AffiliateController extends Controller {
 		$ret = ReferralApply::query()->whereId($id)->update(['status' => $status]);
 		if($ret){
 			// 审核申请的时候将关联的
-			$referralApply = ReferralApply::query()->whereId($id)->first();
+			$referralApply = ReferralApply::find($id);
 			$log_ids = explode(',', $referralApply->link_logs);
 			if($referralApply && $status == 1){
 				ReferralLog::query()->whereIn('id', $log_ids)->update(['status' => 1]);
@@ -83,7 +83,7 @@ class AffiliateController extends Controller {
 			}
 		}
 
-		return Response::json(['status' => 'success', 'data' => '', 'message' => '操作成功']);
+		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
 
 	// 用户返利流水记录
@@ -92,7 +92,7 @@ class AffiliateController extends Controller {
 		$ref_email = $request->input('ref_email');
 		$status = $request->input('status');
 
-		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status')->orderByDesc('id');
+		$query = ReferralLog::query()->with(['user', 'order'])->orderBy('status')->latest();
 
 		if(isset($email)){
 			$query->whereHas('user', static function($q) use ($email) {

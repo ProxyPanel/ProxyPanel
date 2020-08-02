@@ -48,9 +48,9 @@ class RuleController extends Controller {
 		$obj->save();
 
 		if($obj->id){
-			return Response::json(['status' => 'success', 'data' => '', 'message' => '提交成功']);
+			return Response::json(['status' => 'success', 'message' => '提交成功']);
 		}
-		return Response::json(['status' => 'fail', 'data' => '', 'message' => '操作失败']);
+		return Response::json(['status' => 'fail', 'message' => '操作失败']);
 	}
 
 	// 编辑审计规则
@@ -144,7 +144,7 @@ class RuleController extends Controller {
 			$name = $request->input('name');
 			$type = (int) $request->input('type');
 			$rules = $request->input('rules');
-			$ruleGroup = RuleGroup::query()->find($id);
+			$ruleGroup = RuleGroup::find($id);
 			if(!$ruleGroup){
 				return Redirect::back()->withInput()->withErrors('未找到需要编辑的审计规则分组！');
 			}
@@ -173,7 +173,7 @@ class RuleController extends Controller {
 			return Redirect::back()->withInput()->withErrors('操作失败');
 		}
 
-		$ruleGroup = RuleGroup::query()->find($id);
+		$ruleGroup = RuleGroup::find($id);
 		if(!$ruleGroup){
 			return Redirect::back();
 		}
@@ -213,7 +213,7 @@ class RuleController extends Controller {
 				return Redirect::back()->withInput()->withErrors($validator->errors());
 			}
 
-			$ruleGroup = RuleGroup::query()->find($id);
+			$ruleGroup = RuleGroup::find($id);
 			if(!$ruleGroup){
 				return Redirect::back()->withInput()->withErrors('未找到审计规则分组！');
 			}
@@ -245,7 +245,7 @@ class RuleController extends Controller {
 			return Redirect::back()->with('successMsg', '操作成功');
 		}
 
-		$view['ruleGroup'] = RuleGroup::query()->find($id);
+		$view['ruleGroup'] = RuleGroup::find($id);
 		$view['nodeList'] = SsNode::all();
 
 		return Response::view('admin.rule.assignNode', $view);

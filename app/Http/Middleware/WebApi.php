@@ -30,7 +30,7 @@ class WebApi {
 			return $this->returnData('Your Node Id is null!');
 		}
 
-		$node = SsNode::query()->whereId($id)->first();
+		$node = SsNode::find($id);
 		if(!$node){// node不存在
 			return $this->returnData('Unknown Node!');
 		}
@@ -49,6 +49,6 @@ class WebApi {
 
 	// 返回数据
 	public function returnData($message): JsonResponse {
-		return Response::json(['status' => 'fail', 'code' => 404, 'data' => '', 'message' => $message]);
+		return Response::json(['status' => 'fail', 'code' => 404, 'message' => $message]);
 	}
 }

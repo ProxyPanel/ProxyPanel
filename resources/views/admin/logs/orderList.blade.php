@@ -54,10 +54,12 @@
 							<option value="" hidden>支付方式</option>
 							<option value="credit">余额</option>
 							<option value="youzan">有赞云</option>
-							<option value="f2fpay">支付宝当面付</option>
+							<option value="f2fpay">当面付</option>
 							<option value="codepay">码支付</option>
 							<option value="payjs">PayJs</option>
 							<option value="bitpayx">麻瓜宝</option>
+							<option value="paypal">PayPal</option>
+							<option value="epay">易支付</option>
 						</select>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
@@ -117,7 +119,7 @@
 							</td>
 							<td> {{$order->order_sn}}</td>
 							<td> {{empty($order->goods) ? ($order->goods_id == 0 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}} </td>
-							<td> {{$order->is_expire ? '已过期' : $order->expire_at}} </td>
+							<td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
 							<td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
 							<td> ￥{{$order->origin_amount}} </td>
 							<td> ￥{{$order->amount}} </td>

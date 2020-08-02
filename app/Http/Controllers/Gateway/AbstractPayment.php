@@ -85,7 +85,7 @@ abstract class AbstractPayment {
 					Order::query()->whereUserId($user->id)->with(['goods'])->whereHas('goods', static function($q) {
 						$q->where('type', '<=', 2);
 					})->whereIsExpire(0)->whereStatus(2)->where('oid', '<>', $order->oid)->update([
-						'expire_at' => date('Y-m-d H:i:s'),
+						'expired_at' => date('Y-m-d H:i:s'),
 						'is_expire' => 1
 					]);
 
