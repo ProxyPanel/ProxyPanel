@@ -221,7 +221,7 @@ class AutoJob extends Command {
 	private function blockUsers(): void {
 		// 封禁1小时内流量异常账号
 		if(self::$systemConfig['is_traffic_ban']){
-			$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->whereBanTime(0)->get();
+			$userList = User::query()->activeUser()->whereBanTime(0)->get();
 			foreach($userList as $user){
 				// 对管理员豁免
 				if($user->is_admin){
@@ -246,12 +246,7 @@ class AutoJob extends Command {
 		}
 
 		// 禁用流量超限用户
-		$userList = User::query()
-		                ->whereEnable(1)
-		                ->where('status', '>=', 0)
-		                ->whereBanTime(0)
-		                ->whereRaw("u + d >= transfer_enable")
-		                ->get();
+		$userList = User::query()->activeUser()->whereBanTime(0)->whereRaw("u + d >= transfer_enable")->get();
 		foreach($userList as $user){
 			User::query()->whereId($user->id)->update(['enable' => 0]);
 
@@ -293,8 +288,7 @@ class AutoJob extends Command {
 	private function dispatchPort(): void {
 		if(self::$systemConfig['auto_release_port']){
 			## 自动分配端口
-			$userList = User::query()->whereEnable(1)->where('status', '>=', 0)->wherePort(0)->get();
-			foreach($userList as $user){
+			foreach(User::query()->activeUser()->wherePort(0)->get() as $user){
 				$port = self::$systemConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
 
 				User::query()->whereId($user->id)->update(['port' => $port]);
