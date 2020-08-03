@@ -51,7 +51,7 @@ class ShopController extends Controller {
 				'traffic' => 'required|integer|min:1024|max:10240000|nullable',
 				'price'   => 'required|numeric|min:0',
 				'type'    => 'required',
-				'renew'   => 'require_unless:type,2|min:0',
+				'renew'   => 'required_unless:type,2|min:0',
 				'days'    => 'required|integer',
 			], [
 				'traffic.min' => '内含流量不能低于1MB',
@@ -120,7 +120,7 @@ class ShopController extends Controller {
 				'traffic' => 'required|integer|min:1024|max:10240000|nullable',
 				'price'   => 'required|numeric|min:0',
 				'type'    => 'required',
-				'renew'   => 'require_unless:type,2|min:0',
+				'renew'   => 'required_unless:type,2|min:0',
 				'days'    => 'required|integer',
 			], [
 				'traffic.min' => '内含流量不能低于1MB',
