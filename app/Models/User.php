@@ -146,6 +146,18 @@ class User extends Authenticatable {
 		return $this->attributes['credit'] = $value * 100;
 	}
 
+	public function getEnableTimeAttribute() {
+		return $this->attributes['enable_time'];
+	}
+
+	public function getExpireTimeAttribute() {
+		return $this->attributes['expire_time'];
+	}
+
+	public function getResetTimeAttribute() {
+		return $this->attributes['reset_time'];
+	}
+
 	// User查询，查那些用户有传入Node的权限
 	public function scopeGroupUserPermit($query, $node_id = 0) {
 		$groups = [0];
