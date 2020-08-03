@@ -90,7 +90,7 @@
 										</div>
 										<input type="text" class="form-control" name="reset_time" id="reset_time"/>
 									</div>
-									<span class="text-help"> 账号流量重置日期 </span>
+									<span class="text-help"> 账号流量下一个重置日期 </span>
 								</div>
 							</div>
 							<div class="form-group row">

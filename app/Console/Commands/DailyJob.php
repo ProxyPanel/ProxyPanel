@@ -114,7 +114,7 @@ class DailyJob extends Command {
 	// 重置用户流量
 	private function resetUserTraffic(): void {
 		$userList = User::query()
-		                ->where('status', '>=', 0)
+		                ->where('status', '<>', -1)
 		                ->where('expire_time', '>', date('Y-m-d'))
 		                ->where('reset_time', '<=', date('Y-m-d'))
 		                ->get();
