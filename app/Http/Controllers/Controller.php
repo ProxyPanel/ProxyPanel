@@ -151,7 +151,8 @@ class Controller extends BaseController {
 		$scheme = null;
 		// 获取分组名称
 		$group = $node->level_name;
-		$host = $node->server?: $node->ip;
+        //开启中转使用中转的地址
+		$host = $node->is_relay ? $node->relay_server : ($node->server ? $node->server : $node->ip);
 		$data = null;
 		switch($node->type){
 			case 2:
@@ -177,7 +178,8 @@ class Controller extends BaseController {
 				$method = $node->method;
 				$obfs = $node->obfs;
 				if($node->single){
-					$port = $node->port;
+                    //单端口使用中转的端口
+					$port = $node->relay_port ? : $node->port;
 					$passwd = $node->passwd;
 					$protocol_param = $user->port.':'.$user->passwd;
 				}else{
