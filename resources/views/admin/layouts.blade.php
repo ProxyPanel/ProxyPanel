@@ -230,14 +230,14 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['shop', 'shop/add', 'shop/edit', 'coupon', 'coupon/add', 'admin/orderList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{Str::contains(Request::path(), ['goods', 'coupon', 'admin/orderList']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
 					<span class="site-menu-title">商品系统</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['shop', 'shop/add', 'shop/edit']) ? 'active open' : ''}}">
-						<a href="/shop">
+					<li class="site-menu-item {{Str::contains(Request::path(),'goods') ? 'active open' : ''}}">
+						<a href="{{route('goods.index')}}">
 							<span class="site-menu-title">商品管理</span>
 						</a>
 					</li>
@@ -362,15 +362,15 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['sensitiveWords', 'admin/config', 'admin/system']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['filter', 'admin/config', 'admin/system']) ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-settings" aria-hidden="true"></i>
 					<span class="site-menu-title">设置</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['sensitiveWords']) ? 'active open' : ''}}">
-						<a href="/sensitiveWords">
-							<span class="site-menu-title">敏感词管理</span>
+					<li class="site-menu-item {{in_array(Request::path(), ['filter']) ? 'active open' : ''}}">
+						<a href="/filter">
+							<span class="site-menu-title">邮箱后缀管理</span>
 						</a>
 					</li>
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/config']) ? 'active open' : ''}}">
@@ -391,8 +391,8 @@
 <div class="page">
 	<!--[if lt IE 8]>
 	<p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-		<a href="http://browsehappy.com/">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong> browser. Please
-		<a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
+	<a href="http://browsehappy.com/">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong> browser. Please
+	<a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
 	</p>
 	<![endif]-->
 	@yield('content')

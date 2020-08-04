@@ -5,9 +5,9 @@
 	<link href="/assets/global/vendor/ascolorpicker/asColorPicker.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
 	<style type="text/css">
-		.text-help {
-			padding-left: 1.0715rem;
-		}
+        .text-help {
+            padding-left: 1.0715rem;
+        }
 	</style>
 @endsection
 @section('content')
@@ -19,7 +19,7 @@
 					@isset($goods) 编辑商品 @else 添加商品 @endisset
 				</h1>
 				<div class="panel-actions">
-					<a href="{{url('/shop')}}" class="btn btn-danger">返 回</a>
+					<a href="{{route('goods.index')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
@@ -47,8 +47,9 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<form action=@isset($goods){{url('/shop/edit?id='.$goods->id)}} @else {{url('/shop/add')}} @endisset"" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+				<form action=@isset($goods){{route('goods.update',$goods->id)}} @else {{route('goods.store')}} @endisset method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
 					{{csrf_field()}}
+					@isset($goods) @method('PUT') @endisset
 					<div class="form-row">
 						<div class="col-lg-6 col-md-12">
 							<div class="form-group row">

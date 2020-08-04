@@ -8,6 +8,7 @@ use App\Models\Level;
 use DB;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
 use Redirect;
@@ -24,7 +25,7 @@ use Validator;
  */
 class ShopController extends Controller {
 	// 商品列表
-	public function goodsList(Request $request): \Illuminate\Http\Response {
+	public function index(Request $request): \Illuminate\Http\Response {
 		$type = $request->input('type');
 		$status = $request->input('status');
 
@@ -40,159 +41,146 @@ class ShopController extends Controller {
 
 		$view['goodsList'] = $query->orderByDesc('status')->paginate(10)->appends($request->except('page'));
 
-		return Response::view('admin.shop.goodsList', $view);
+		return Response::view('admin.shop.index', $view);
+	}
+
+	// 添加商品页面
+	public function create(): \Illuminate\Http\Response {
+		$view['goods'] = null;
+		$view['levelList'] = Level::query()->orderBy('level')->get();
+
+		return Response::view('admin.shop.info', $view);
 	}
 
 	// 添加商品
-	public function addGoods(Request $request) {
-		if($request->isMethod('POST')){
-			$validator = Validator::make($request->all(), [
-				'name'    => 'required',
-				'traffic' => 'required|integer|min:1024|max:10240000|nullable',
-				'price'   => 'required|numeric|min:0',
-				'type'    => 'required',
-				'renew'   => 'required_unless:type,2|min:0',
-				'days'    => 'required|integer',
-			], [
-				'traffic.min' => '内含流量不能低于1MB',
-				'traffic.max' => '内含流量不能超过10TB',
-			]);
+	public function store(Request $request): RedirectResponse {
+		$validator = Validator::make($request->all(), [
+			'name'    => 'required',
+			'traffic' => 'required|integer|min:1|max:10240000|nullable',
+			'price'   => 'required|numeric|min:0',
+			'type'    => 'required',
+			'renew'   => 'required_unless:type,2|min:0',
+			'days'    => 'required|integer',
+		], [
+			'traffic.min' => '内含流量不能低于1MB',
+			'traffic.max' => '内含流量不能超过10TB',
+		]);
 
-			if($validator->fails()){
-				return Redirect::back()->withInput()->withErrors($validator->errors());
-			}
-
-			// 商品LOGO
-			$logo = null;
-			if($request->hasFile('logo')){
-				$logo = $this->uploadFile($request->file('logo'));
-
-				if(!$logo){
-					return Redirect::back()->withInput()->withErrors('LOGO不合法');
-				}
-			}
-
-			try{
-				DB::beginTransaction();
-
-				$goods = new Goods();
-				$goods->name = $request->input('name');
-				$goods->logo = $logo?: null;
-				$goods->traffic = $request->input('traffic');
-				$goods->type = $request->input('type');
-				$goods->price = round($request->input('price'), 2);
-				$goods->level = $request->input('level');
-				$goods->renew = round($request->input('renew'), 2);
-				$goods->period = $request->input('period');
-				$goods->info = $request->input('info');
-				$goods->description = $request->input('description');
-				$goods->days = $request->input('days');
-				$goods->invite_num = $request->input('invite_num');
-				$goods->limit_num = $request->input('limit_num');
-				$goods->color = $request->input('color');
-				$goods->sort = $request->input('sort');
-				$goods->is_hot = $request->input('is_hot', 0);
-				$goods->status = $request->input('status', 0);
-				$goods->save();
-
-				DB::commit();
-
-				return Redirect::back()->with('successMsg', '添加成功');
-			}catch(Exception $e){
-				DB::rollBack();
-				Log::info($e);
-
-				return Redirect::back()->withInput()->withErrors('添加失败');
-			}
-		}else{
-			$view['levelList'] = Level::query()->orderBy('level')->get();
-
-			return Response::view('admin.shop.goodsInfo', $view);
+		if($validator->fails()){
+			return Redirect::back()->withInput()->withErrors($validator->errors());
 		}
+
+		// 商品LOGO
+		$logo = null;
+		if($request->hasFile('logo')){
+			$logo = $this->uploadFile($request->file('logo'));
+
+			if(!$logo){
+				return Redirect::back()->withInput()->withErrors('LOGO不合法');
+			}
+		}
+
+		try{
+			DB::beginTransaction();
+
+			$obj = new Goods();
+			$obj->name = $request->input('name');
+			$obj->logo = $logo?: null;
+			$obj->traffic = $request->input('traffic');
+			$obj->type = $request->input('type');
+			$obj->price = round($request->input('price'), 2);
+			$obj->level = $request->input('level');
+			$obj->renew = round($request->input('renew'), 2);
+			$obj->period = $request->input('period');
+			$obj->info = $request->input('info');
+			$obj->description = $request->input('description');
+			$obj->days = $request->input('days');
+			$obj->invite_num = $request->input('invite_num');
+			$obj->limit_num = $request->input('limit_num');
+			$obj->color = $request->input('color');
+			$obj->sort = $request->input('sort');
+			$obj->is_hot = $request->input('is_hot', 0);
+			$obj->status = $request->input('status', 0);
+			$obj->save();
+
+			DB::commit();
+
+			return Redirect::back()->with('successMsg', '添加成功');
+		}catch(Exception $e){
+			DB::rollBack();
+			Log::info($e);
+
+			return Redirect::back()->withInput()->withErrors('添加失败');
+		}
+	}
+
+	// 编辑商品页面
+	public function edit($id): \Illuminate\Http\Response {
+		$view['goods'] = Goods::find($id);
+		$view['levelList'] = Level::query()->orderBy('level')->get();
+
+		return Response::view('admin.shop.info', $view);
 	}
 
 	// 编辑商品
-	public function editGoods(Request $request) {
-		$id = $request->input('id');
-		if($request->isMethod('POST')){
-			$validator = Validator::make($request->all(), [
-				'name'    => 'required',
-				'traffic' => 'required|integer|min:1024|max:10240000|nullable',
-				'price'   => 'required|numeric|min:0',
-				'type'    => 'required',
-				'renew'   => 'required_unless:type,2|min:0',
-				'days'    => 'required|integer',
-			], [
-				'traffic.min' => '内含流量不能低于1MB',
-				'traffic.max' => '内含流量不能超过10TB',
-			]);
+	public function update(Request $request, $id) {
+		$goods = Goods::find($id);
+		if(!$goods){
+			Session::flash('errorMsg', '商品不存在');
 
-			if($validator->fails()){
-				return Redirect::back()->withInput()->withErrors($validator->errors());
-			}
-
-			$goods = Goods::find($id);
-			if(!$goods){
-				Session::flash('errorMsg', '商品不存在');
-
-				return Redirect::back();
-			}
-
-			// 商品LOGO
-			if($request->hasFile('logo')){
-				$logo = $this->uploadFile($request->file('logo'));
-
-				if(!$logo){
-					Session::flash('errorMsg', 'LOGO不合法');
-
-					return Redirect::back()->withInput();
-				}
-				Goods::query()->whereId($id)->update(['logo' => $logo]);
-			}
-
-			try{
-				DB::beginTransaction();
-
-				$data = [
-					'name'        => $request->input('name'),
-					'price'       => round($request->input('price'), 2) * 100,
-					'level'       => $request->input('level'),
-					'renew'       => round($request->input('renew'), 2) * 100,
-					'period'      => $request->input('period'),
-					'info'        => $request->input('info'),
-					'description' => $request->input('description'),
-					'invite_num'  => $request->input('invite_num'),
-					'limit_num'   => $request->input('limit_num'),
-					'color'       => $request->input('color'),
-					'sort'        => $request->input('sort'),
-					'is_hot'      => $request->input('is_hot', 0),
-					'status'      => $request->input('status', 0)
-				];
-
-				Goods::query()->whereId($id)->update($data);
-
-				Session::flash('successMsg', '编辑成功');
-
-				DB::commit();
-			}catch(Exception $e){
-				Session::flash('errorMsg', '编辑失败');
-
-				DB::rollBack();
-			}
-
-			return Redirect::to('shop/edit?id='.$id);
+			return Redirect::back();
 		}
 
-		$goods = Goods::find($id);
-		$view['levelList'] = Level::query()->orderBy('level')->get();
+		// 商品LOGO
+		if($request->hasFile('logo')){
+			$logo = $this->uploadFile($request->file('logo'));
 
-		return view('admin.shop.goodsInfo', $view)->with(compact('goods'));
+			if(!$logo){
+				Session::flash('errorMsg', 'LOGO不合法');
+
+				return Redirect::back()->withInput();
+			}
+			Goods::query()->whereId($id)->update(['logo' => $logo]);
+		}
+
+		try{
+			DB::beginTransaction();
+
+			$data = [
+				'name'        => $request->input('name'),
+				'price'       => round($request->input('price'), 2) * 100,
+				'level'       => $request->input('level'),
+				'renew'       => round($request->input('renew'), 2) * 100,
+				'period'      => $request->input('period'),
+				'info'        => $request->input('info'),
+				'description' => $request->input('description'),
+				'invite_num'  => $request->input('invite_num'),
+				'limit_num'   => $request->input('limit_num'),
+				'color'       => $request->input('color'),
+				'sort'        => $request->input('sort'),
+				'is_hot'      => $request->input('is_hot', 0),
+				'status'      => $request->input('status', 0)
+			];
+
+			Goods::query()->whereId($id)->update($data);
+
+			Session::flash('successMsg', '编辑成功');
+
+			DB::commit();
+		}catch(Exception $e){
+			Session::flash('errorMsg', '编辑失败');
+
+			DB::rollBack();
+		}
+
+		return Redirect::back();
 	}
 
 	// 删除商品
-	public function delGoods(Request $request): JsonResponse {
+	public function destroy($id): JsonResponse {
 		try{
-			Goods::query()->whereId($request->input('id'))->delete();
+			$goods = Goods::query()->findOrFail($id)->delete();
+
 		}catch(Exception $e){
 			Session::flash('errorMsg', '编辑失败'.$e);
 		}

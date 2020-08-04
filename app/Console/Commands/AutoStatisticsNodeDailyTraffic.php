@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Models\SsNode;
-use App\Models\SsNodeTrafficDaily;
-use App\Models\UserTrafficLog;
+use App\Models\Node;
+use App\Models\NodeDailyDataFlow;
+use App\Models\UserDataFlowLog;
 use Illuminate\Console\Command;
 use Log;
 
@@ -15,7 +15,7 @@ class AutoStatisticsNodeDailyTraffic extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		foreach(SsNode::query()->whereStatus(1)->orderBy('id')->get() as $node){
+		foreach(Node::query()->whereStatus(1)->orderBy('id')->get() as $node){
 			$this->statisticsByNode($node->id);
 		}
 
@@ -26,16 +26,16 @@ class AutoStatisticsNodeDailyTraffic extends Command {
 	}
 
 	private function statisticsByNode($node_id): void {
-		$query = UserTrafficLog::query()
-		                       ->whereNodeId($node_id)
-		                       ->whereBetween('log_time', [strtotime(date('Y-m-d')), time()]);
+		$query = UserDataFlowLog::query()
+		                        ->whereNodeId($node_id)
+		                        ->whereBetween('log_time', [strtotime(date('Y-m-d')), time()]);
 
 		$u = $query->sum('u');
 		$d = $query->sum('d');
 		$total = $u + $d;
 
 		if($total){ // 有数据才记录
-			$obj = new SsNodeTrafficDaily();
+			$obj = new NodeDailyDataFlow();
 			$obj->node_id = $node_id;
 			$obj->u = $u;
 			$obj->d = $d;

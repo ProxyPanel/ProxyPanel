@@ -23,7 +23,7 @@ class ServiceController extends Controller {
 		//激活预支付套餐
 		Order::query()->whereOid($prepaidOrder->oid)->update([
 			'expired_at' => date("Y-m-d H:i:s", strtotime("+".$prepaidGood->days." days")),
-			'status'    => 2
+			'status'     => 2
 		]);
 		//取出用户信息
 		$user = User::find($prepaidOrder->user_id);

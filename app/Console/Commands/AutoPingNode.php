@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Components\NetworkDetection;
-use App\Models\SsNode;
-use App\Models\SsNodePing;
+use App\Models\Node;
+use App\Models\NodePing;
 use Illuminate\Console\Command;
 use Log;
 
@@ -15,7 +15,7 @@ class AutoPingNode extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		foreach(SsNode::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
+		foreach(Node::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
 			$this->pingNode($node->id, $node->is_ddns? $node->server : $node->ip);
 		}
 
@@ -30,7 +30,7 @@ class AutoPingNode extends Command {
 		$result = NetworkDetection::ping($ip);
 
 		if($result){
-			$obj = new SsNodePing();
+			$obj = new NodePing();
 			$obj->node_id = $nodeId;
 			$obj->ct = (int) $result['telecom']['time'];//电信
 			$obj->cu = (int) $result['Unicom']['time'];// 联通

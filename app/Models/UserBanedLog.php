@@ -17,20 +17,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \Illuminate\Support\Carbon $created_at  创建时间
  * @property \Illuminate\Support\Carbon $updated_at  最后更新时间
  * @property-read \App\Models\User|null $user
- * @method static Builder|UserBanLog newModelQuery()
- * @method static Builder|UserBanLog newQuery()
- * @method static Builder|UserBanLog query()
- * @method static Builder|UserBanLog whereCreatedAt($value)
- * @method static Builder|UserBanLog whereDescription($value)
- * @method static Builder|UserBanLog whereId($value)
- * @method static Builder|UserBanLog whereMinutes($value)
- * @method static Builder|UserBanLog whereStatus($value)
- * @method static Builder|UserBanLog whereUpdatedAt($value)
- * @method static Builder|UserBanLog whereUserId($value)
+ * @method static Builder|UserBanedLog newModelQuery()
+ * @method static Builder|UserBanedLog newQuery()
+ * @method static Builder|UserBanedLog query()
+ * @method static Builder|UserBanedLog whereCreatedAt($value)
+ * @method static Builder|UserBanedLog whereDescription($value)
+ * @method static Builder|UserBanedLog whereId($value)
+ * @method static Builder|UserBanedLog whereMinutes($value)
+ * @method static Builder|UserBanedLog whereStatus($value)
+ * @method static Builder|UserBanedLog whereUpdatedAt($value)
+ * @method static Builder|UserBanedLog whereUserId($value)
  * @mixin \Eloquent
  */
-class UserBanLog extends Model {
-	protected $table = 'user_ban_log';
+class UserBanedLog extends Model {
+	protected $table = 'user_baned_log';
 
 	public function user(): HasOne {
 		return $this->hasOne(User::class, 'id', 'user_id');

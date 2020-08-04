@@ -1,0 +1,9 @@
+RENAME TABLE `sensitive_words` TO `email_filter`;
+RENAME TABLE `ss_node_traffic_daily` TO `node_daily_data_flow`;
+RENAME TABLE `ss_node_traffic_hourly` TO `node_hourly_data_flow`;
+RENAME TABLE `ss_node_label` TO `node_label`;
+RENAME TABLE `ss_node_ping` TO `node_ping`;
+RENAME TABLE `user_ban_log` TO `user_baned_log`;
+RENAME TABLE `user_traffic_daily` TO `user_daily_data_flow`;
+RENAME TABLE `user_traffic_modify_log` TO `user_data_modify_log`;
+RENAME TABLE `user_traffic_hourly` TO `user_hourly_data_flow`;

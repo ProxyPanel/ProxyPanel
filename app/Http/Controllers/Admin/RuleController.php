@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Node;
 use App\Models\Rule;
 use App\Models\RuleGroup;
 use App\Models\RuleGroupNode;
 use App\Models\RuleLog;
-use App\Models\SsNode;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -246,7 +246,7 @@ class RuleController extends Controller {
 		}
 
 		$view['ruleGroup'] = RuleGroup::find($id);
-		$view['nodeList'] = SsNode::all();
+		$view['nodeList'] = Node::all();
 
 		return Response::view('admin.rule.assignNode', $view);
 	}
@@ -274,7 +274,7 @@ class RuleController extends Controller {
 			$query->whereRuleId($ruleId);
 		}
 
-		$view['nodeList'] = SsNode::all();
+		$view['nodeList'] = Node::all();
 		$view['ruleList'] = Rule::all();
 		$view['ruleLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.rule.ruleLogList', $view);

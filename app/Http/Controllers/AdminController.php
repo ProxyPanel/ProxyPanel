@@ -12,24 +12,24 @@ use App\Models\Country;
 use App\Models\Invite;
 use App\Models\Label;
 use App\Models\Level;
+use App\Models\Node;
+use App\Models\NodeLabel;
+use App\Models\NodeOnlineUserIp;
+use App\Models\NodeDailyDataFlow;
 use App\Models\NotificationLog;
 use App\Models\Order;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
 use App\Models\SsConfig;
-use App\Models\SsNode;
-use App\Models\SsNodeIp;
-use App\Models\SsNodeLabel;
-use App\Models\SsNodeTrafficDaily;
 use App\Models\User;
-use App\Models\UserBanLog;
+use App\Models\UserBanedLog;
 use App\Models\UserCreditLog;
+use App\Models\UserDataFlowLog;
+use App\Models\UserDataModifyLog;
 use App\Models\UserGroup;
+use App\Models\UserHourlyDataFlow;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
-use App\Models\UserTrafficHourly;
-use App\Models\UserTrafficLog;
-use App\Models\UserTrafficModifyLog;
 use Auth;
 use DB;
 use Exception;
@@ -79,13 +79,13 @@ class AdminController extends Controller {
 		                                     ->count(); // 流量超过100G的用户
 
 		$view['flowAbnormalUserCount'] = count($this->trafficAbnormal());// 1小时内流量异常用户
-		$view['nodeCount'] = SsNode::query()->count();
-		$view['unnormalNodeCount'] = SsNode::query()->whereStatus(0)->count();
-		$view['flowCount'] = flowAutoShow(SsNodeTrafficDaily::query()
-		                                                    ->where('created_at', '>=',
-			                                                    date('Y-m-d', strtotime("-30 days")))
-		                                                    ->sum('total'));
-		$view['totalFlowCount'] = flowAutoShow(SsNodeTrafficDaily::query()->sum('total'));
+		$view['nodeCount'] = Node::query()->count();
+		$view['unnormalNodeCount'] = Node::query()->whereStatus(0)->count();
+		$view['flowCount'] = flowAutoShow(NodeDailyDataFlow::query()
+		                                                   ->where('created_at', '>=',
+			                                                  date('Y-m-d', strtotime("-30 days")))
+		                                                   ->sum('total'));
+		$view['totalFlowCount'] = flowAutoShow(NodeDailyDataFlow::query()->sum('total'));
 		$view['totalCredit'] = User::query()->where('credit', '<>', 0)->sum('credit') / 100;
 		$view['totalWaitRefAmount'] = ReferralLog::query()->whereIn('status', [0, 1])->sum('ref_amount') / 100;
 		$view['totalRefAmount'] = ReferralApply::query()->whereStatus(2)->sum('amount') / 100;
@@ -102,13 +102,13 @@ class AdminController extends Controller {
 	// 1小时内流量异常用户
 	private function trafficAbnormal(): array {
 		$result = [];
-		$userTotalTrafficList = UserTrafficHourly::query()
-		                                         ->whereNodeId(0)
-		                                         ->where('total', '>', MB * 50)
-		                                         ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
-		                                         ->groupBy('user_id')
-		                                         ->selectRaw("user_id, sum(total) as totalTraffic")
-		                                         ->get(); // 只统计50M以上的记录，加快速度
+		$userTotalTrafficList = UserHourlyDataFlow::query()
+		                                          ->whereNodeId(0)
+		                                          ->where('total', '>', MB * 50)
+		                                          ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
+		                                          ->groupBy('user_id')
+		                                          ->selectRaw("user_id, sum(total) as totalTraffic")
+		                                          ->get(); // 只统计50M以上的记录，加快速度
 		foreach($userTotalTrafficList as $user){
 			if($user->totalTraffic > self::$systemConfig['traffic_ban_value'] * GB){
 				$result[] = $user->user_id;
@@ -202,10 +202,10 @@ class AdminController extends Controller {
 
 			// 流量异常警告
 			$time = date('Y-m-d H:i:s', time() - 3900);
-			$totalTraffic = UserTrafficHourly::query()
-			                                 ->userHourly($user->id)
-			                                 ->where('created_at', '>=', $time)
-			                                 ->sum('total');
+			$totalTraffic = UserHourlyDataFlow::query()
+			                                  ->userHourly($user->id)
+			                                  ->where('created_at', '>=', $time)
+			                                  ->sum('total');
 			$user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)? 1 : 0;
 
 			// 订阅地址
@@ -431,9 +431,9 @@ class AdminController extends Controller {
 
 			User::query()->whereId($id)->delete();
 			UserSubscribe::query()->whereUserId($id)->delete();
-			UserBanLog::query()->whereUserId($id)->delete();
+			UserBanedLog::query()->whereUserId($id)->delete();
 			UserCreditLog::query()->whereUserId($id)->delete();
-			UserTrafficModifyLog::query()->whereUserId($id)->delete();
+			UserDataModifyLog::query()->whereUserId($id)->delete();
 			UserLoginLog::query()->whereUserId($id)->delete();
 
 			DB::commit();
@@ -569,7 +569,7 @@ class AdminController extends Controller {
 		$startTime = $request->input('startTime');
 		$endTime = $request->input('endTime');
 
-		$query = UserTrafficLog::query()->with(['user', 'node']);
+		$query = UserDataFlowLog::query()->with(['user', 'node']);
 
 		if(isset($port)){
 			$query->whereHas('user', static function($q) use ($port) {
@@ -610,7 +610,7 @@ class AdminController extends Controller {
 		}
 
 		$view['list'] = $list;
-		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->latest()->get();
+		$view['nodeList'] = Node::query()->whereStatus(1)->orderByDesc('sort')->latest()->get();
 
 		return Response::view('admin.logs.trafficLog', $view);
 	}
@@ -629,7 +629,7 @@ class AdminController extends Controller {
 		if($request->isMethod('POST')){
 			$infoType = $request->input('type');
 
-			$node = SsNode::find($request->input('id'));
+			$node = Node::find($request->input('id'));
 			if($node->type == 1){
 				if($node->compatible){
 					$proxyType = 'SS';
@@ -646,12 +646,12 @@ class AdminController extends Controller {
 
 		}
 
-		$view['nodeList'] = SsNode::query()
-		                          ->whereStatus(1)
-		                          ->orderByDesc('sort')
-		                          ->orderBy('id')
-		                          ->paginate(15)
-		                          ->appends($request->except('page'));
+		$view['nodeList'] = Node::query()
+		                        ->whereStatus(1)
+		                        ->orderByDesc('sort')
+		                        ->orderBy('id')
+		                        ->paginate(15)
+		                        ->appends($request->except('page'));
 		$view['user'] = $user;
 
 		return Response::view('admin.user.export', $view);
@@ -763,7 +763,7 @@ class AdminController extends Controller {
 
 		$labelList = Label::all();
 		foreach($labelList as $label){
-			$label->nodeCount = SsNodeLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
+			$label->nodeCount = NodeLabel::query()->whereLabelId($label->id)->groupBy('label_id')->count();
 		}
 
 		$view['methodList'] = SsConfig::type(1)->get();
@@ -995,7 +995,7 @@ class AdminController extends Controller {
 		}
 
 		// 校验该国家/地区下是否存在关联节点
-		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
+		$existNode = Node::query()->whereCountryCode($country->code)->get();
 		if(!$existNode){
 			return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
@@ -1022,7 +1022,7 @@ class AdminController extends Controller {
 		}
 
 		// 校验该国家/地区下是否存在关联节点
-		$existNode = SsNode::query()->whereCountryCode($country->code)->get();
+		$existNode = Node::query()->whereCountryCode($country->code)->get();
 		if(!$existNode){
 			return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
 		}
@@ -1359,7 +1359,7 @@ class AdminController extends Controller {
 	public function userBanLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
-		$query = UserBanLog::query()->with(['user'])->latest();
+		$query = UserBanedLog::query()->with(['user'])->latest();
 
 		if(isset($email)){
 			$query->whereHas('user', static function($q) use ($email) {
@@ -1376,7 +1376,7 @@ class AdminController extends Controller {
 	public function userTrafficLogList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
-		$query = UserTrafficModifyLog::query()->with(['user', 'order', 'order.goods']);
+		$query = UserDataModifyLog::query()->with(['user', 'order', 'order.goods']);
 
 		if(isset($email)){
 			$query->whereHas('user', static function($q) use ($email) {
@@ -1418,14 +1418,14 @@ class AdminController extends Controller {
 		if(!$userList->isEmpty()){
 			foreach($userList as $user){
 				// 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-				$user->onlineIPList = SsNodeIp::query()
-				                              ->with(['node'])
-				                              ->whereType('tcp')
-				                              ->wherePort($user->port)
-				                              ->where('created_at', '>=', strtotime("-10 minutes"))
-				                              ->latest()
-				                              ->limit(5)
-				                              ->get();
+				$user->onlineIPList = NodeOnlineUserIp::query()
+				                                      ->with(['node'])
+				                                      ->whereType('tcp')
+				                                      ->wherePort($user->port)
+				                                      ->where('created_at', '>=', strtotime("-10 minutes"))
+				                                      ->latest()
+				                                      ->limit(5)
+				                                      ->get();
 			}
 		}
 
@@ -1493,7 +1493,7 @@ class AdminController extends Controller {
 			DB::beginTransaction();
 
 			Label::query()->whereId($id)->delete();
-			SsNodeLabel::query()->whereLabelId($id)->delete(); // 删除节点关联
+			NodeLabel::query()->whereLabelId($id)->delete(); // 删除节点关联
 
 			DB::commit();
 
@@ -1533,7 +1533,9 @@ class AdminController extends Controller {
 		$nodeId = $request->input('nodeId');
 		$userId = $request->input('id');
 
-		$query = SsNodeIp::query()->with(['node', 'user'])->where('created_at', '>=', strtotime("-120 seconds"));
+		$query = NodeOnlineUserIp::query()
+		                         ->with(['node', 'user'])
+		                         ->where('created_at', '>=', strtotime("-120 seconds"));
 
 		if(isset($ip)){
 			$query->whereIp($ip);
@@ -1584,7 +1586,7 @@ class AdminController extends Controller {
 		}
 
 		$view['list'] = $list->paginate(20)->appends($request->except('page'));
-		$view['nodeList'] = SsNode::query()->whereStatus(1)->orderByDesc('sort')->latest()->get();
+		$view['nodeList'] = Node::query()->whereStatus(1)->orderByDesc('sort')->latest()->get();
 
 		return Response::view('admin.logs.onlineIPMonitor', $view);
 	}

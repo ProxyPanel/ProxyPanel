@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>商品列表</h1>
 				<div class="panel-actions">
-					<a href="/shop/add" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
+					<a href="{{route('goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
 				</div>
 			</div>
 			<div class="panel-body">
@@ -29,7 +29,7 @@
 					</div>
 					<div class="form-group col-lg-2 col-sm-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/shop" class="btn btn-danger">重 置</a>
+						<a href="{{route('goods.index')}}" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -64,8 +64,9 @@
 							</td>
 							<td>
 								@if($goods->logo)
-									<a href="{{$goods->logo}}" target="_blank"><img src="{{$goods->logo}}" alt="logo"
-												class="h-50"/></a>
+									<a href="{{$goods->logo}}" target="_blank">
+										<img src="{{$goods->logo}}" alt="logo" class="h-50"/>
+									</a>
 								@endif
 							</td>
 							<td> {{$goods->traffic_label}} </td>
@@ -90,11 +91,12 @@
 							</td>
 							<td>
 								<div class="btn-group">
-									<a href="/shop/edit?id={{$goods->id}}" class="btn btn-primary"><i
-												class="icon wb-edit"></i></a>
-									<button class="btn btn-danger"
-											onclick="delGoods('{{$goods->id}}','{{$goods->name}}')"><i
-												class="icon wb-trash"></i></button>
+									<a href="{{route('goods.edit',$goods->id)}}" class="btn btn-primary">
+										<i class="icon wb-edit"></i>
+									</a>
+									<button onclick="delGoods('{{route('goods.destroy',$goods->id)}}','{{$goods->name}}')" class="btn btn-danger">
+										<i class="icon wb-trash"></i>
+									</button>
 								</div>
 							</td>
 						</tr>
@@ -129,11 +131,11 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/shop?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
+			window.location.href = '{{route('goods.index')}}?type=' + $("#type option:selected").val() + '&status=' + $("#status option:selected").val();
 		}
 
 		// 删除商品
-		function delGoods(id, name) {
+		function delGoods(url, name) {
 			swal.fire({
 				title: '警告',
 				text: '确定删除商品 【' + name + '】 ?',
@@ -143,11 +145,18 @@
 				confirmButtonText: '确定',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/shop/delete", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
-						swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false,})
-							.then(() => {
-								window.location.reload();
-							})
+					$.ajax({
+						url: url,
+						type: 'DELETE',
+						dataType: 'json',
+						data: {_token: '{{csrf_token()}}'},
+						success: function (ret) {
+							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false,})
+								.then(() => {
+									window.location.reload();
+								})
+						},
+
 					});
 				}
 			});

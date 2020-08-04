@@ -8,7 +8,7 @@ use App\Models\Invite;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Models\UserBanLog;
+use App\Models\UserBanedLog;
 use Illuminate\Console\Command;
 use Log;
 
@@ -90,7 +90,7 @@ class DailyJob extends Command {
 	 * @param  string  $description  封禁理由
 	 */
 	private function addUserBanLog($userId, $minutes, $description): void {
-		$log = new UserBanLog();
+		$log = new UserBanedLog();
 		$log->user_id = $userId;
 		$log->minutes = $minutes;
 		$log->description = $description;

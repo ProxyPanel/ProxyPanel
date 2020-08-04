@@ -13,17 +13,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int                         $node_id  节点ID
  * @property int                         $label_id 标签ID
  * @property-read \App\Models\Label|null $labelInfo
- * @method static Builder|SsNodeLabel newModelQuery()
- * @method static Builder|SsNodeLabel newQuery()
- * @method static Builder|SsNodeLabel query()
- * @method static Builder|SsNodeLabel whereId($value)
- * @method static Builder|SsNodeLabel whereLabelId($value)
- * @method static Builder|SsNodeLabel whereNodeId($value)
+ * @method static Builder|NodeLabel newModelQuery()
+ * @method static Builder|NodeLabel newQuery()
+ * @method static Builder|NodeLabel query()
+ * @method static Builder|NodeLabel whereId($value)
+ * @method static Builder|NodeLabel whereLabelId($value)
+ * @method static Builder|NodeLabel whereNodeId($value)
  * @mixin \Eloquent
  */
-class SsNodeLabel extends Model {
+class NodeLabel extends Model {
 	public $timestamps = false;
-	protected $table = 'ss_node_label';
+	protected $table = 'node_label';
 
 	public function labelInfo(): HasOne {
 		return $this->hasOne(Label::class, 'id', 'label_id');

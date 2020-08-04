@@ -7,21 +7,21 @@ use App\Components\NetworkDetection;
 use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
+use App\Models\Node;
 use App\Models\NodeAuth;
 use App\Models\NodeCertificate;
+use App\Models\NodeInfo;
+use App\Models\NodeLabel;
+use App\Models\NodeOnlineLog;
+use App\Models\NodePing;
 use App\Models\NodeRule;
+use App\Models\NodeDailyDataFlow;
+use App\Models\NodeHourlyDataFlow;
 use App\Models\RuleGroup;
-use App\Models\SsNode;
-use App\Models\SsNodeInfo;
-use App\Models\SsNodeLabel;
-use App\Models\SsNodeOnlineLog;
-use App\Models\SsNodePing;
-use App\Models\SsNodeTrafficDaily;
-use App\Models\SsNodeTrafficHourly;
+use App\Models\UserDailyDataFlow;
+use App\Models\UserDataFlowLog;
 use App\Models\UserGroup;
-use App\Models\UserTrafficDaily;
-use App\Models\UserTrafficHourly;
-use App\Models\UserTrafficLog;
+use App\Models\UserHourlyDataFlow;
 use DB;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +37,7 @@ class NodeController extends Controller {
 	public function nodeList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
-		$query = SsNode::query();
+		$query = Node::query();
 
 		if(isset($status)){
 			$query->whereStatus($status);
@@ -46,23 +46,23 @@ class NodeController extends Controller {
 		$nodeList = $query->orderByDesc('status')->orderBy('id')->paginate(15)->appends($request->except('page'));
 		foreach($nodeList as $node){
 			// 在线人数
-			$online_log = SsNodeOnlineLog::query()
-			                             ->whereNodeId($node->id)
-			                             ->where('log_time', '>=', strtotime("-5 minutes"))
-			                             ->latest('log_time')
-			                             ->first();
+			$online_log = NodeOnlineLog::query()
+			                           ->whereNodeId($node->id)
+			                           ->where('log_time', '>=', strtotime("-5 minutes"))
+			                           ->latest('log_time')
+			                           ->first();
 			$node->online_users = empty($online_log)? 0 : $online_log->online_user;
 
 			// 已产生流量
-			$totalTraffic = SsNodeTrafficDaily::query()->whereNodeId($node->id)->sum('total');
+			$totalTraffic = NodeDailyDataFlow::query()->whereNodeId($node->id)->sum('total');
 			$node->transfer = flowAutoShow($totalTraffic);
 
 			// 负载（10分钟以内）
-			$node_info = SsNodeInfo::query()
-			                       ->whereNodeId($node->id)
-			                       ->where('log_time', '>=', strtotime("-10 minutes"))
-			                       ->latest('log_time')
-			                       ->first();
+			$node_info = NodeInfo::query()
+			                     ->whereNodeId($node->id)
+			                     ->where('log_time', '>=', strtotime("-10 minutes"))
+			                     ->latest('log_time')
+			                     ->first();
 			$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
 			$node->load = $node->isOnline? $node_info->load : '离线';
 			$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
@@ -75,7 +75,7 @@ class NodeController extends Controller {
 
 	public function checkNode(Request $request): JsonResponse {
 		$id = $request->input('id');
-		$node = SsNode::find($id);
+		$node = Node::find($id);
 		// 使用DDNS的node先获取ipv4地址
 		if($node->is_ddns){
 			$ip = gethostbyname($node->server);
@@ -103,7 +103,7 @@ class NodeController extends Controller {
 			try{
 				DB::beginTransaction();
 
-				$node = new SsNode();
+				$node = new Node();
 				$node->type = $request->input('type');
 				$node->name = $request->input('name');
 				$node->country_code = $request->input('country_code');
@@ -228,11 +228,11 @@ class NodeController extends Controller {
 	// 生成节点标签
 	private function makeLabels($nodeId, $labels): void {
 		// 先删除所有该节点的标签
-		SsNodeLabel::query()->whereNodeId($nodeId)->delete();
+		NodeLabel::query()->whereNodeId($nodeId)->delete();
 
 		if(!empty($labels) && is_array($labels)){
 			foreach($labels as $label){
-				$nodeLabel = new SsNodeLabel();
+				$nodeLabel = new NodeLabel();
 				$nodeLabel->node_id = $nodeId;
 				$nodeLabel->label_id = $label;
 				$nodeLabel->save();
@@ -242,7 +242,7 @@ class NodeController extends Controller {
 
 	// 获取节点地理位置
 	private function getNodeGeo($id): bool {
-		$nodes = SsNode::query()->whereStatus(1);
+		$nodes = Node::query()->whereStatus(1);
 		if($id){
 			$nodes = $nodes->whereId($id)->get();
 		}else{
@@ -252,7 +252,7 @@ class NodeController extends Controller {
 		foreach($nodes as $node){
 			$data = getIPInfo($node->is_ddns == 1? gethostbyname($node->server) : $node->ip);
 			if($data){
-				$ret = SsNode::query()->whereId($node->id)->update(['geo' => $data['latitude'].','.$data['longitude']]);
+				$ret = Node::query()->whereId($node->id)->update(['geo' => $data['latitude'].','.$data['longitude']]);
 				if($ret){
 					$result++;
 				}
@@ -328,7 +328,7 @@ class NodeController extends Controller {
 				// 生成节点标签
 				$this->makeLabels($id, $request->input('labels'));
 
-				SsNode::query()->whereId($id)->update($data);
+				Node::query()->whereId($id)->update($data);
 				// TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
 
 				DB::commit();
@@ -342,7 +342,7 @@ class NodeController extends Controller {
 				return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
 			}
 		}else{
-			$node = SsNode::query()->with(['label'])->whereId($id)->first();
+			$node = Node::query()->with(['label'])->whereId($id)->first();
 			if($node){
 				$node->labels = $node->label->pluck('label_id');
 			}
@@ -364,7 +364,7 @@ class NodeController extends Controller {
 	public function delNode(Request $request): ?JsonResponse {
 		$id = $request->input('id');
 
-		$node = SsNode::find($id);
+		$node = Node::find($id);
 		if(!$node){
 			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
 		}
@@ -372,16 +372,16 @@ class NodeController extends Controller {
 		try{
 			DB::beginTransaction();
 			// 删除分组关联、节点标签、节点相关日志
-			SsNode::query()->whereId($id)->delete();
-			SsNodeLabel::query()->whereNodeId($id)->delete();
-			SsNodeInfo::query()->whereNodeId($id)->delete();
-			SsNodeOnlineLog::query()->whereNodeId($id)->delete();
-			SsNodeTrafficDaily::query()->whereNodeId($id)->delete();
-			SsNodeTrafficHourly::query()->whereNodeId($id)->delete();
-			SsNodePing::query()->whereNodeId($id)->delete();
-			UserTrafficDaily::query()->whereNodeId($id)->delete();
-			UserTrafficHourly::query()->whereNodeId($id)->delete();
-			UserTrafficLog::query()->whereNodeId($id)->delete();
+			Node::query()->whereId($id)->delete();
+			NodeLabel::query()->whereNodeId($id)->delete();
+			NodeInfo::query()->whereNodeId($id)->delete();
+			NodeOnlineLog::query()->whereNodeId($id)->delete();
+			NodeDailyDataFlow::query()->whereNodeId($id)->delete();
+			NodeHourlyDataFlow::query()->whereNodeId($id)->delete();
+			NodePing::query()->whereNodeId($id)->delete();
+			UserDailyDataFlow::query()->whereNodeId($id)->delete();
+			UserHourlyDataFlow::query()->whereNodeId($id)->delete();
+			UserDataFlowLog::query()->whereNodeId($id)->delete();
 			NodeAuth::query()->whereNodeId($id)->delete();
 			NodeRule::query()->whereNodeId($id)->delete();
 			foreach(RuleGroup::all() as $RuleGroup){
@@ -413,7 +413,7 @@ class NodeController extends Controller {
 	// 节点流量监控
 	public function nodeMonitor(Request $request) {
 		$node_id = $request->input('id');
-		$node = SsNode::find($node_id);
+		$node = Node::find($node_id);
 		if(!$node){
 			Session::flash('errorMsg', '节点不存在，请重试');
 
@@ -429,7 +429,7 @@ class NodeController extends Controller {
 
 	// Ping节点延迟
 	public function pingNode(Request $request): ?JsonResponse {
-		$node = SsNode::find($request->input('id'));
+		$node = Node::find($request->input('id'));
 		if(!$node){
 			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
 		}
@@ -454,12 +454,12 @@ class NodeController extends Controller {
 	// Ping节点延迟日志
 	public function pingLog(Request $request): \Illuminate\Http\Response {
 		$node_id = $request->input('nodeId');
-		$query = SsNodePing::query();
+		$query = NodePing::query();
 		if(isset($node_id)){
 			$query->whereNodeId($node_id);
 		}
 
-		$view['nodeList'] = SsNode::query()->orderBy('id')->get();
+		$view['nodeList'] = Node::query()->orderBy('id')->get();
 		$view['pingLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.logs.nodePingLog', $view);
@@ -473,7 +473,7 @@ class NodeController extends Controller {
 
 	// 添加节点授权
 	public function addAuth(): JsonResponse {
-		$nodeArray = SsNode::query()->whereStatus(1)->orderBy('id')->pluck('id')->toArray();
+		$nodeArray = Node::query()->whereStatus(1)->orderBy('id')->pluck('id')->toArray();
 		$authArray = NodeAuth::query()->orderBy('id')->pluck('node_id')->toArray();
 
 		if($nodeArray == $authArray){

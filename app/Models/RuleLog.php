@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 触发审计规则日志
  *
- * @property int                          $id
- * @property int                          $user_id    用户ID
- * @property int                          $node_id    节点ID
- * @property int                          $rule_id    规则ID，0表示白名单模式下访问访问了非规则允许的网址
- * @property string                       $reason     触发原因
- * @property \Illuminate\Support\Carbon   $created_at 创建时间
- * @property-read \App\Models\SsNode|null $node
- * @property-read \App\Models\Rule|null   $rule
- * @property-read \App\Models\User|null   $user
+ * @property int                        $id
+ * @property int                        $user_id    用户ID
+ * @property int                        $node_id    节点ID
+ * @property int                        $rule_id    规则ID，0表示白名单模式下访问访问了非规则允许的网址
+ * @property string                     $reason     触发原因
+ * @property \Illuminate\Support\Carbon $created_at 创建时间
+ * @property-read \App\Models\Node|null $node
+ * @property-read \App\Models\Rule|null $rule
+ * @property-read \App\Models\User|null $user
  * @method static Builder|RuleLog newModelQuery()
  * @method static Builder|RuleLog newQuery()
  * @method static Builder|RuleLog query()
@@ -38,7 +38,7 @@ class RuleLog extends Model {
 	}
 
 	public function node(): HasOne {
-		return $this->hasOne(SsNode::class, 'id', 'node_id');
+		return $this->hasOne(Node::class, 'id', 'node_id');
 	}
 
 	public function rule(): HasOne {

@@ -119,6 +119,7 @@
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(document).ready(function () {
+			$("#sn").val({{Request::get('sn')}});
 			$('#type').val({{Request::get('type')}});
 			$('#status').val({{Request::get('status')}});
 		});

@@ -119,12 +119,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::get('export', 'CouponController@exportCoupon'); // 导出优惠券
 		});
 
-		Route::group(['prefix' => 'shop'], function() {
-			Route::any('/', 'ShopController@goodsList'); // 商品列表
-			Route::any('add', 'ShopController@addGoods'); // 添加商品
-			Route::any('edit', 'ShopController@editGoods'); // 编辑商品
-			Route::post('delete', 'ShopController@delGoods'); // 删除商品
-		});
+		Route::resource('goods', 'ShopController')->except('show');// 商品管理
 
 		Route::group(['prefix' => 'subscribe'], function() {
 			Route::get('/', 'SubscribeController@subscribeList'); // 订阅码列表
@@ -138,10 +133,10 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::post("add", "MarketingController@addPushMarketing"); // 推送消息
 		});
 
-		Route::group(['prefix' => 'sensitiveWords'], function() {
-			Route::get("/", "SensitiveWordsController@sensitiveWordslist"); // 敏感词列表
-			Route::post("add", "SensitiveWordsController@addSensitiveWords"); // 添加敏感词
-			Route::post("delete", "SensitiveWordsController@delSensitiveWords"); // 删除敏感词
+		Route::group(['prefix' => 'filter'], function() {
+			Route::get("/", "EmailFilterController@filterList"); // 邮箱过滤列表
+			Route::post("add", "EmailFilterController@addSuffix"); // 添加邮箱后缀
+			Route::post("delete", "EmailFilterController@delSuffix"); // 删除邮箱后缀
 		});
 
 		// 工具相关
@@ -171,10 +166,10 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		});
 
 		Route::group(['prefix' => 'group'], function() {
-			Route::get('/', 'GroupController@userGroupList'); // 用户分组列表（分组控制）
-			Route::match(['GET', 'POST'], 'add', 'GroupController@addUserGroup'); // 添加用户分组
-			Route::match(['GET', 'POST'], 'edit', 'GroupController@editUserGroup');// 编辑用户分组
-			Route::delete('delete', 'GroupController@delUserGroup'); // 删除用户分组
+			Route::get('/', 'UserGroupController@userGroupList'); // 用户分组列表（分组控制）
+			Route::match(['GET', 'POST'], 'add', 'UserGroupController@addUserGroup'); // 添加用户分组
+			Route::match(['GET', 'POST'], 'edit', 'UserGroupController@editUserGroup');// 编辑用户分组
+			Route::delete('delete', 'UserGroupController@delUserGroup'); // 删除用户分组
 		});
 	});
 
