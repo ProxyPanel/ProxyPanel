@@ -8,8 +8,8 @@ use App\Components\QQWry;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use App\Mail\sendVerifyCode;
+use App\Models\EmailFilter;
 use App\Models\Invite;
-use App\Models\SensitiveWords;
 use App\Models\User;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
@@ -409,9 +409,9 @@ class AuthController extends Controller {
 			return Redirect::to('login')->withInput();
 		}
 
-		$view['emailList'] = self::$systemConfig['is_email_filtering'] != 2? false : SensitiveWords::query()
-		                                                                                           ->whereType(2)
-		                                                                                           ->get();
+		$view['emailList'] = self::$systemConfig['is_email_filtering'] != 2? false : EmailFilter::query()
+		                                                                                        ->whereType(2)
+		                                                                                        ->get();
 		Session::put('register_token', makeRandStr(16));
 
 		return Response::view('auth.register', $view);
@@ -419,12 +419,12 @@ class AuthController extends Controller {
 
 	//邮箱检查
 	private function emailChecker($email, $returnType = 0) {
-		$sensitiveWords = $this->sensitiveWords(self::$systemConfig['is_email_filtering']);
+		$emailFilterList = $this->emailFilterList(self::$systemConfig['is_email_filtering']);
 		$emailSuffix = explode('@', $email); // 提取邮箱后缀
 		switch(self::$systemConfig['is_email_filtering']){
 			// 黑名单
 			case 1:
-				if(in_array(strtolower($emailSuffix[1]), $sensitiveWords, true)){
+				if(in_array(strtolower($emailSuffix[1]), $emailFilterList, true)){
 					if($returnType){
 						return Redirect::back()->withErrors(trans('auth.email_banned'));
 					}
@@ -433,7 +433,7 @@ class AuthController extends Controller {
 				break;
 			//白名单
 			case 2:
-				if(!in_array(strtolower($emailSuffix[1]), $sensitiveWords, true)){
+				if(!in_array(strtolower($emailSuffix[1]), $emailFilterList, true)){
 					if($returnType){
 						return Redirect::back()->withErrors(trans('auth.email_invalid'));
 					}

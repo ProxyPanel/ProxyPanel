@@ -18,21 +18,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \Illuminate\Support\Carbon  $created_at  创建时间
  * @property-read \App\Models\Order|null $order
  * @property-read \App\Models\User|null  $user
- * @method static Builder|UserTrafficModifyLog newModelQuery()
- * @method static Builder|UserTrafficModifyLog newQuery()
- * @method static Builder|UserTrafficModifyLog query()
- * @method static Builder|UserTrafficModifyLog whereAfter($value)
- * @method static Builder|UserTrafficModifyLog whereBefore($value)
- * @method static Builder|UserTrafficModifyLog whereCreatedAt($value)
- * @method static Builder|UserTrafficModifyLog whereDescription($value)
- * @method static Builder|UserTrafficModifyLog whereId($value)
- * @method static Builder|UserTrafficModifyLog whereOrderId($value)
- * @method static Builder|UserTrafficModifyLog whereUserId($value)
+ * @method static Builder|UserDataModifyLog newModelQuery()
+ * @method static Builder|UserDataModifyLog newQuery()
+ * @method static Builder|UserDataModifyLog query()
+ * @method static Builder|UserDataModifyLog whereAfter($value)
+ * @method static Builder|UserDataModifyLog whereBefore($value)
+ * @method static Builder|UserDataModifyLog whereCreatedAt($value)
+ * @method static Builder|UserDataModifyLog whereDescription($value)
+ * @method static Builder|UserDataModifyLog whereId($value)
+ * @method static Builder|UserDataModifyLog whereOrderId($value)
+ * @method static Builder|UserDataModifyLog whereUserId($value)
  * @mixin \Eloquent
  */
-class UserTrafficModifyLog extends Model {
+class UserDataModifyLog extends Model {
 	const UPDATED_AT = null;
-	protected $table = 'user_traffic_modify_log';
+	protected $table = 'user_data_modify_log';
 
 	// 关联账号
 	public function user(): HasOne {

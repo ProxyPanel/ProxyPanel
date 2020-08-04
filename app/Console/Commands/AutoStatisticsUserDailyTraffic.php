@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\SsNode;
+use App\Models\Node;
 use App\Models\User;
-use App\Models\UserTrafficDaily;
-use App\Models\UserTrafficLog;
+use App\Models\UserDailyDataFlow;
+use App\Models\UserDataFlowLog;
 use Illuminate\Console\Command;
 use Log;
 
@@ -21,7 +21,7 @@ class AutoStatisticsUserDailyTraffic extends Command {
 			$this->statisticsByUser($user->id);
 
 			// 统计每个节点产生的流量
-			foreach(SsNode::query()->whereStatus(1)->orderBy('id')->get() as $node){
+			foreach(Node::query()->whereStatus(1)->orderBy('id')->get() as $node){
 				$this->statisticsByUser($user->id, $node->id);
 			}
 		}
@@ -33,9 +33,9 @@ class AutoStatisticsUserDailyTraffic extends Command {
 	}
 
 	private function statisticsByUser($user_id, $node_id = 0): void {
-		$query = UserTrafficLog::query()
-		                       ->whereUserId($user_id)
-		                       ->whereBetween('log_time', [strtotime(date('Y-m-d')), time()]);
+		$query = UserDataFlowLog::query()
+		                        ->whereUserId($user_id)
+		                        ->whereBetween('log_time', [strtotime(date('Y-m-d')), time()]);
 
 		if($node_id){
 			$query->whereNodeId($node_id);
@@ -46,7 +46,7 @@ class AutoStatisticsUserDailyTraffic extends Command {
 		$total = $u + $d;
 
 		if($total){ // 有数据才记录
-			$obj = new UserTrafficDaily();
+			$obj = new UserDailyDataFlow();
 			$obj->user_id = $user_id;
 			$obj->node_id = $node_id;
 			$obj->u = $u;

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
+use App\Models\Node;
+use App\Models\NodeInfo;
+use App\Models\NodeOnlineLog;
+use App\Models\NodeOnlineUserIp;
 use App\Models\Rule;
 use App\Models\RuleGroup;
 use App\Models\RuleGroupNode;
 use App\Models\RuleLog;
-use App\Models\SsNode;
-use App\Models\SsNodeInfo;
-use App\Models\SsNodeIp;
-use App\Models\SsNodeOnlineLog;
 use App\Models\User;
-use App\Models\UserTrafficLog;
+use App\Models\UserDataFlowLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
@@ -27,7 +27,7 @@ class BaseController {
 			return $this->returnData('上报节点心跳信息失败，请检查字段');
 		}
 
-		$obj = new SsNodeInfo();
+		$obj = new NodeInfo();
 		$obj->node_id = $id;
 		$obj->uptime = (int) $request->input('uptime');
 		//$obj->load = $request->input('load');
@@ -66,7 +66,7 @@ class BaseController {
 				return $this->returnData('上报节点在线情况失败，请检查字段');
 			}
 
-			$obj = new SsNodeIp();
+			$obj = new NodeOnlineUserIp();
 			$obj->node_id = $id;
 			$obj->user_id = $input['uid'];
 			$obj->ip = $input['ip'];
@@ -80,7 +80,7 @@ class BaseController {
 			$onlineCount++;
 		}
 
-		$obj = new SsNodeOnlineLog();
+		$obj = new NodeOnlineLog();
 		$obj->node_id = $id;
 		$obj->online_user = $onlineCount;
 		$obj->log_time = time();
@@ -100,9 +100,9 @@ class BaseController {
 				return $this->returnData('上报用户流量日志失败，请检查字段');
 			}
 
-			$rate = SsNode::find($id)->traffic_rate;
+			$rate = Node::find($id)->traffic_rate;
 
-			$obj = new UserTrafficLog();
+			$obj = new UserDataFlowLog();
 			$obj->user_id = (int) $input['uid'];
 			$obj->u = (int) $input['upload'] * $rate;
 			$obj->d = (int) $input['download'] * $rate;

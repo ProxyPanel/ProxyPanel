@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Models\SsNode;
+use App\Models\Node;
 use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -72,11 +72,11 @@ class SubscribeController extends Controller {
 		$this->subscribeLog($subscribe->id, getClientIp(), $request->headers);
 
 		// 获取这个账号可用节点
-		$query = SsNode::query()
-		               ->whereStatus(1)
-		               ->whereIsSubscribe(1)
-		               ->groupNodePermit($user->group_id)
-		               ->where('level', '<=', $user->level);
+		$query = Node::query()
+		             ->whereStatus(1)
+		             ->whereIsSubscribe(1)
+		             ->groupNodePermit($user->group_id)
+		             ->where('level', '<=', $user->level);
 
 		if($this->subType === 1){
 			$query = $query->whereIn('type', [1, 4]);

@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\PushNotification;
-use App\Models\SsNode;
-use App\Models\SsNodeTrafficDaily;
+use App\Models\Node;
+use App\Models\NodeDailyDataFlow;
 use Illuminate\Console\Command;
 use Log;
 
@@ -17,14 +17,14 @@ class AutoReportNode extends Command {
 		$jobStartTime = microtime(true);
 
 		if(Helpers::systemConfig()['node_daily_report']){
-			$nodeList = SsNode::query()->whereStatus(1)->get();
+			$nodeList = Node::query()->whereStatus(1)->get();
 			if($nodeList->isNotEmpty()){
 				$msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
 				foreach($nodeList as $node){
-					$log = SsNodeTrafficDaily::query()
-					                         ->whereNodeId($node->id)
-					                         ->whereDate('created_at', date("Y-m-d", strtotime('-1 days')))
-					                         ->first();
+					$log = NodeDailyDataFlow::query()
+					                        ->whereNodeId($node->id)
+					                        ->whereDate('created_at', date("Y-m-d", strtotime('-1 days')))
+					                        ->first();
 
 					if($log){
 						$msg .= '|'.$node->name.'|'.flowAutoShow($log->u).'|'.flowAutoShow($log->d).'|'.$log->traffic."\r\n";

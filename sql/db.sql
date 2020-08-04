@@ -103,9 +103,9 @@ CREATE TABLE `ss_node_online_log`
 
 
 -- ----------------------------
--- Table structure for ss_node_ping
+-- Table structure for node_ping
 -- ----------------------------
-CREATE TABLE `ss_node_ping`
+CREATE TABLE `node_ping`
 (
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `node_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '对应节点id',
@@ -120,9 +120,9 @@ CREATE TABLE `ss_node_ping`
 
 
 -- ----------------------------
--- Table structure for ss_node_label
+-- Table structure for node_label
 -- ----------------------------
-CREATE TABLE `ss_node_label`
+CREATE TABLE `node_label`
 (
     `id`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `node_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '节点ID',
@@ -746,9 +746,9 @@ CREATE TABLE `user_credit_log`
 
 
 -- ----------------------------
--- Table structure for user_traffic_modify_log
+-- Table structure for user_data_modify_log
 -- ----------------------------
-CREATE TABLE `user_traffic_modify_log`
+CREATE TABLE `user_data_modify_log`
 (
     `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
@@ -816,9 +816,9 @@ CREATE TABLE `notification_log`
 
 
 -- ----------------------------
--- Table structure for sensitive_words
+-- Table structure for email_filter
 -- ----------------------------
-CREATE TABLE `sensitive_words`
+CREATE TABLE `email_filter`
 (
     `id`    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `type`  TINYINT(1)       NOT NULL DEFAULT '1' COMMENT '类型：1-黑名单、2-白名单',
@@ -828,9 +828,9 @@ CREATE TABLE `sensitive_words`
 
 
 -- ----------------------------
--- Records of sensitive_words
+-- Records of email_filter
 -- ----------------------------
-INSERT INTO `sensitive_words`(`type`, `words`)
+INSERT INTO `email_filter`(`type`, `words`)
 VALUES ('1', 'chacuo.com'),
        ('1', '1766258.com'),
        ('1', '3202.com'),
@@ -1010,9 +1010,9 @@ CREATE TABLE `user_subscribe_log`
 
 
 -- ----------------------------
--- Table structure for user_traffic_daily
+-- Table structure for user_daily_data_flow
 -- ----------------------------
-CREATE TABLE `user_traffic_daily`
+CREATE TABLE `user_daily_data_flow`
 (
     `id`         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `user_id`    INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '用户ID',
@@ -1028,9 +1028,9 @@ CREATE TABLE `user_traffic_daily`
 
 
 -- ----------------------------
--- Table structure for user_traffic_hourly
+-- Table structure for user_hourly_data_flow
 -- ----------------------------
-CREATE TABLE `user_traffic_hourly`
+CREATE TABLE `user_hourly_data_flow`
 (
     `id`         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `user_id`    INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '用户ID',
@@ -1046,9 +1046,9 @@ CREATE TABLE `user_traffic_hourly`
 
 
 -- ----------------------------
--- Table structure for node_traffic_daily
+-- Table structure for node_daily_data_flow
 -- ----------------------------
-CREATE TABLE `ss_node_traffic_daily`
+CREATE TABLE `node_daily_data_flow`
 (
     `id`         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `node_id`    INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '节点ID',
@@ -1063,9 +1063,9 @@ CREATE TABLE `ss_node_traffic_daily`
 
 
 -- ----------------------------
--- Table structure for node_traffic_hourly
+-- Table structure for node_hourly_data_flow
 -- ----------------------------
-CREATE TABLE `ss_node_traffic_hourly`
+CREATE TABLE `node_hourly_data_flow`
 (
     `id`         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `node_id`    INT(10) UNSIGNED    NOT NULL DEFAULT '0' COMMENT '节点ID',
@@ -1080,9 +1080,9 @@ CREATE TABLE `ss_node_traffic_hourly`
 
 
 -- ----------------------------
--- Table structure for user_ban_log
+-- Table structure for user_baned_log
 -- ----------------------------
-CREATE TABLE `user_ban_log`
+CREATE TABLE `user_baned_log`
 (
     `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',

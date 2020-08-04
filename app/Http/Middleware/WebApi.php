@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Node;
 use App\Models\NodeAuth;
-use App\Models\SsNode;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Response;
@@ -30,7 +30,7 @@ class WebApi {
 			return $this->returnData('Your Node Id is null!');
 		}
 
-		$node = SsNode::find($id);
+		$node = Node::find($id);
 		if(!$node){// node不存在
 			return $this->returnData('Unknown Node!');
 		}

@@ -3,41 +3,41 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SensitiveWords;
+use App\Models\EmailFilter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 use Validator;
 
 /**
- * 敏感词管理控制器
+ * 邮箱后缀管理控制器
  *
- * Class SensitiveWordsController
+ * Class EmailFilterController
  *
  * @package App\Http\Controllers\Controller
  */
-class SensitiveWordsController extends Controller {
-	// 敏感词列表
-	public function sensitiveWordsList(): \Illuminate\Http\Response {
-		$view['list'] = SensitiveWords::query()->orderByDesc('id')->paginate(15);
+class EmailFilterController extends Controller {
+	// 邮箱过滤列表
+	public function filterList(): \Illuminate\Http\Response {
+		$view['list'] = EmailFilter::query()->orderByDesc('id')->paginate(15);
 
-		return Response::view('admin.config.sensitiveWordsList', $view);
+		return Response::view('admin.config.emailFilter', $view);
 	}
 
-	// 添加敏感词
-	public function addSensitiveWords(Request $request): ?JsonResponse {
+	// 添加邮箱后缀
+	public function addSuffix(Request $request): ?JsonResponse {
 		$validator = Validator::make($request->all(), [
 			'words' => 'required|unique:sensitive_words'
 		], [
-			'words.required' => '添加失败：请填写敏感词',
-			'words.unique'   => '添加失败：敏感词已存在'
+			'words.required' => '添加失败：请填写邮箱后缀',
+			'words.unique'   => '添加失败：邮箱后缀已存在'
 		]);
 
 		if($validator->fails()){
 			return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
 		}
 
-		$obj = new SensitiveWords();
+		$obj = new EmailFilter();
 		$obj->type = $request->input('type');
 		$obj->words = strtolower($request->input('words'));
 		$obj->save();
@@ -48,9 +48,9 @@ class SensitiveWordsController extends Controller {
 		return Response::json(['status' => 'fail', 'message' => '添加失败']);
 	}
 
-	// 删除敏感词
-	public function delSensitiveWords(Request $request): ?JsonResponse {
-		$result = SensitiveWords::query()->whereId($request->input('id'))->delete();
+	// 删除邮箱后缀
+	public function delSuffix(Request $request): ?JsonResponse {
+		$result = EmailFilter::query()->whereId($request->input('id'))->delete();
 		if($result){
 			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}

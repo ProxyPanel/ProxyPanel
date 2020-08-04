@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\WebApi;
 
 use App\Components\Helpers;
+use App\Models\Node;
 use App\Models\NodeCertificate;
-use App\Models\SsNode;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class V2RayController extends BaseController {
 	// 获取节点信息
 	public function getNodeInfo($id): JsonResponse {
-		$node = SsNode::find($id);
+		$node = Node::find($id);
 		$nodeDv = NodeCertificate::query()->whereDomain($node->v2_host)->first();
 
 		return $this->returnData('获取节点信息成功', 'success', 200, [
@@ -40,12 +40,8 @@ class V2RayController extends BaseController {
 
 	// 获取节点可用的用户列表
 	public function getUserList($id): JsonResponse {
-		$node = SsNode::find($id);
-		$users = User::query()
-		             ->activeUser()
-		             ->groupUserPermit($node->id)
-		             ->where('level', '>=', $node->level)
-		             ->get();
+		$node = Node::find($id);
+		$users = User::query()->activeUser()->groupUserPermit($node->id)->where('level', '>=', $node->level)->get();
 		$data = [];
 
 		foreach($users as $user){
@@ -66,7 +62,7 @@ class V2RayController extends BaseController {
 		$pem = $request->input('pem');
 
 		if($request->has(['key', 'pem'])){
-			$node = SsNode::find($id);
+			$node = Node::find($id);
 			$Dv = NodeCertificate::query()->whereDomain($node->v2_host)->first();
 			if($Dv){
 				$ret = NodeCertificate::query()->whereId($Dv->id)->update(['key' => $key, 'pem' => $pem]);

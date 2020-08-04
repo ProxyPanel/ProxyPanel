@@ -10,17 +10,17 @@ use App\Models\Article;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Invite;
+use App\Models\Node;
+use App\Models\NodeInfo;
+use App\Models\NodeLabel;
+use App\Models\NodePing;
 use App\Models\Order;
-use App\Models\SsNode;
-use App\Models\SsNodeInfo;
-use App\Models\SsNodeLabel;
-use App\Models\SsNodePing;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
+use App\Models\UserHourlyDataFlow;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
-use App\Models\UserTrafficHourly;
 use Auth;
 use Cache;
 use DB;
@@ -64,10 +64,10 @@ class UserController extends Controller {
 		$view['unusedPercent'] = $totalTransfer > 0? round($unusedTransfer / $totalTransfer, 2) : 0;
 		$view['noticeList'] = Article::type(2)->latest()->Paginate(1); // 公告
 		//流量异常判断
-		$hourlyTraffic = UserTrafficHourly::query()
-		                                  ->userHourly($user->id)
-		                                  ->where('created_at', '>=', date('Y-m-d H:i:s', time() - Minute * 65))
-		                                  ->sum('total');
+		$hourlyTraffic = UserHourlyDataFlow::query()
+		                                   ->userHourly($user->id)
+		                                   ->where('created_at', '>=', date('Y-m-d H:i:s', time() - Minute * 65))
+		                                   ->sum('total');
 		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)?: 0;
 		//付费用户判断
 		$view['not_paying_user'] = Order::uid()
@@ -118,7 +118,7 @@ class UserController extends Controller {
 		if($request->isMethod('POST')){
 			$infoType = $request->input('type');
 
-			$node = SsNode::find($request->input('id'));
+			$node = Node::find($request->input('id'));
 			// 生成节点信息
 			if($node->type == 1){
 				$proxyType = $node->compatible? 'SS' : 'SSR';
@@ -131,33 +131,33 @@ class UserController extends Controller {
 		}
 
 		// 获取当前用户可用节点
-		$nodeList = SsNode::query()
-		                  ->whereStatus(1)
-		                  ->groupNodePermit($user->group_id)
-		                  ->where('level', '<=', $user->level)
-		                  ->orderByDesc('sort')
-		                  ->orderBy('id')
-		                  ->get();
+		$nodeList = Node::query()
+		                ->whereStatus(1)
+		                ->groupNodePermit($user->group_id)
+		                ->where('level', '<=', $user->level)
+		                ->orderByDesc('sort')
+		                ->orderBy('id')
+		                ->get();
 
 		$nodesGeo = $nodeList->pluck('name', 'geo')->toArray();
 		foreach($nodeList as $node){
-			$node->ct = number_format(SsNodePing::query()->whereNodeId($node->id)->where('ct', '>', '0')->avg('ct'), 1,
+			$node->ct = number_format(NodePing::query()->whereNodeId($node->id)->where('ct', '>', '0')->avg('ct'), 1,
 				'.', '');
-			$node->cu = number_format(SsNodePing::query()->whereNodeId($node->id)->where('cu', '>', '0')->avg('cu'), 1,
+			$node->cu = number_format(NodePing::query()->whereNodeId($node->id)->where('cu', '>', '0')->avg('cu'), 1,
 				'.', '');
-			$node->cm = number_format(SsNodePing::query()->whereNodeId($node->id)->where('cm', '>', '0')->avg('cm'), 1,
+			$node->cm = number_format(NodePing::query()->whereNodeId($node->id)->where('cm', '>', '0')->avg('cm'), 1,
 				'.', '');
-			$node->hk = number_format(SsNodePing::query()->whereNodeId($node->id)->where('hk', '>', '0')->avg('hk'), 1,
+			$node->hk = number_format(NodePing::query()->whereNodeId($node->id)->where('hk', '>', '0')->avg('hk'), 1,
 				'.', '');
 
 			// 节点在线状态
-			$node->offline = SsNodeInfo::query()
-			                           ->whereNodeId($node->id)
-			                           ->where('log_time', '>=', strtotime("-10 minutes"))
-			                           ->latest('log_time')
-			                           ->doesntExist();
+			$node->offline = NodeInfo::query()
+			                         ->whereNodeId($node->id)
+			                         ->where('log_time', '>=', strtotime("-10 minutes"))
+			                         ->latest('log_time')
+			                         ->doesntExist();
 			// 节点标签
-			$node->labels = SsNodeLabel::query()->whereNodeId($node->id)->get();
+			$node->labels = NodeLabel::query()->whereNodeId($node->id)->get();
 		}
 		$view['nodeList'] = $nodeList?: [];
 		$view['nodesGeo'] = $nodesGeo;
@@ -543,14 +543,14 @@ class UserController extends Controller {
 	public function help(): \Illuminate\Http\Response {
 		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->latest()->limit(10)->paginate(5);
 		$data = [];
-		if(SsNode::query()->whereIn('type', [1, 4])->whereStatus(1)->exists()){
+		if(Node::query()->whereIn('type', [1, 4])->whereStatus(1)->exists()){
 			$data[] = 'ss';
 			//array_push
 		}
-		if(SsNode::query()->whereType(2)->whereStatus(1)->exists()){
+		if(Node::query()->whereType(2)->whereStatus(1)->exists()){
 			$data[] = 'v2';
 		}
-		if(SsNode::query()->whereType(3)->whereStatus(1)->exists()){
+		if(Node::query()->whereType(3)->whereStatus(1)->exists()){
 			$data[] = 'trojan';
 		}
 

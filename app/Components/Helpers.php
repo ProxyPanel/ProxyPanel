@@ -8,8 +8,8 @@ use App\Models\NotificationLog;
 use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserCreditLog;
+use App\Models\UserDataModifyLog;
 use App\Models\UserSubscribe;
-use App\Models\UserTrafficModifyLog;
 use Str;
 
 class Helpers {
@@ -236,7 +236,7 @@ class Helpers {
 	 * @return int
 	 */
 	public static function addUserTrafficModifyLog($userId, $oid, $before, $after, $description = ''): int {
-		$log = new UserTrafficModifyLog();
+		$log = new UserDataModifyLog();
 		$log->user_id = $userId;
 		$log->order_id = $oid;
 		$log->before = $before;

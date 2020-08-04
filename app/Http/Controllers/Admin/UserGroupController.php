@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SsNode;
+use App\Models\Node;
 use App\Models\User;
 use App\Models\UserGroup;
 use Exception;
@@ -13,7 +13,7 @@ use Redirect;
 use Response;
 use Validator;
 
-class GroupController extends Controller {
+class UserGroupController extends Controller {
 	public function userGroupList(Request $request): \Illuminate\Http\Response {
 		$view['list'] = UserGroup::query()->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.group.groupList', $view);
@@ -41,7 +41,7 @@ class GroupController extends Controller {
 			}
 			return Redirect::back()->withInput()->withErrors('操作失败');
 		}
-		$view['nodeList'] = SsNode::query()->whereStatus(1)->get();
+		$view['nodeList'] = Node::query()->whereStatus(1)->get();
 		return Response::view('admin.group.groupInfo', $view);
 	}
 
@@ -90,7 +90,7 @@ class GroupController extends Controller {
 		if(!$userGroup){
 			return Redirect::back();
 		}
-		$view['nodeList'] = SsNode::query()->whereStatus(1)->get();
+		$view['nodeList'] = Node::query()->whereStatus(1)->get();
 
 		return view('admin.group.groupInfo', $view)->with(compact('userGroup'));
 	}

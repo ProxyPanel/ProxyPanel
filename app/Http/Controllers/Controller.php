@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SensitiveWords;
-use App\Models\SsNode;
-use App\Models\SsNodeTrafficDaily;
-use App\Models\SsNodeTrafficHourly;
+use App\Models\EmailFilter;
+use App\Models\Node;
+use App\Models\NodeDailyDataFlow;
+use App\Models\NodeHourlyDataFlow;
 use App\Models\User;
-use App\Models\UserTrafficDaily;
-use App\Models\UserTrafficHourly;
-use App\Models\UserTrafficLog;
+use App\Models\UserDailyDataFlow;
+use App\Models\UserDataFlowLog;
+use App\Models\UserHourlyDataFlow;
 use DB;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -89,9 +89,9 @@ class Controller extends BaseController {
 		return $i;
 	}
 
-	// 获取敏感词
-	public function sensitiveWords($type): array {
-		return SensitiveWords::query()->whereType($type)->get()->pluck('words')->toArray();
+	// 获取邮箱后缀
+	public function emailFilterList($type): array {
+		return EmailFilter::query()->whereType($type)->pluck('words')->toArray();
 	}
 
 	// 将Base64图片转换为本地图片并保存
@@ -147,7 +147,7 @@ class Controller extends BaseController {
 	 */
 	public function getUserNodeInfo($uid, $nodeId, $infoType): string {
 		$user = User::whereId($uid)->firstOrFail();
-		$node = SsNode::whereId($nodeId)->firstOrFail();
+		$node = Node::whereId($nodeId)->firstOrFail();
 		$scheme = null;
 		// 获取分组名称
 		$group = $node->level_name;
@@ -240,13 +240,13 @@ class Controller extends BaseController {
 	// 流量使用图表
 	public function dataFlowChart($id, $is_node = 0): array {
 		if($is_node){
-			$currentFlow = UserTrafficLog::query()->whereNodeId($id);
-			$hourlyFlow = SsNodeTrafficHourly::query()->whereNodeId($id);
-			$dailyFlow = SsNodeTrafficDaily::query()->whereNodeId($id);
+			$currentFlow = UserDataFlowLog::query()->whereNodeId($id);
+			$hourlyFlow = NodeHourlyDataFlow::query()->whereNodeId($id);
+			$dailyFlow = NodeDailyDataFlow::query()->whereNodeId($id);
 		}else{
-			$currentFlow = UserTrafficLog::query()->whereUserId($id);
-			$hourlyFlow = UserTrafficHourly::query()->userHourly($id);
-			$dailyFlow = UserTrafficDaily::query()->userDaily($id);
+			$currentFlow = UserDataFlowLog::query()->whereUserId($id);
+			$hourlyFlow = UserHourlyDataFlow::query()->userHourly($id);
+			$dailyFlow = UserDailyDataFlow::query()->userDaily($id);
 		}
 		$currentFlow = $currentFlow->where('log_time', '>=', strtotime(date('Y-m-d H:00')))->sum(DB::raw('u + d'));
 		$hourlyFlow = $hourlyFlow->whereDate('created_at', date('Y-m-d'))->pluck('total', 'created_at')->toArray();

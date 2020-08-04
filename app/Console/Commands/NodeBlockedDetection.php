@@ -6,7 +6,7 @@ use App\Components\Helpers;
 use App\Components\NetworkDetection;
 use App\Components\PushNotification;
 use App\Mail\nodeCrashWarning;
-use App\Models\SsNode;
+use App\Models\Node;
 use Cache;
 use Illuminate\Console\Command;
 use Log;
@@ -42,7 +42,7 @@ class NodeBlockedDetection extends Command {
 
 	// 监测节点状态
 	private function checkNodes(): void {
-		$nodeList = SsNode::query()->whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get();
+		$nodeList = Node::query()->whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get();
 		$sendText = false;
 		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
 		$additionalMessage = '';
@@ -94,7 +94,7 @@ class NodeBlockedDetection extends Command {
 					Cache::increment($cacheKey);
 				}else{
 					Cache::forget($cacheKey);
-					SsNode::query()->whereId($node->id)->update(['status' => 0]);
+					Node::query()->whereId($node->id)->update(['status' => 0]);
 					$additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
 				}
 			}

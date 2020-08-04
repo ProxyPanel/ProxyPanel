@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Models\SsNode;
+use App\Models\Node;
 use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -77,13 +77,13 @@ class LoginController extends Controller {
 			$url = self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url'];
 
 			// 节点列表
-			$nodeList = SsNode::query()
-			                  ->whereStatus(1)
-			                  ->GroupNodePermit($user->group_id)
-			                  ->where('level', '<=', $user->level)
-			                  ->orderByDesc('sort')
-			                  ->orderBy('id')
-			                  ->get();
+			$nodeList = Node::query()
+			                ->whereStatus(1)
+			                ->GroupNodePermit($user->group_id)
+			                ->where('level', '<=', $user->level)
+			                ->orderByDesc('sort')
+			                ->orderBy('id')
+			                ->get();
 
 			$c_nodes = collect();
 			foreach($nodeList as $node){

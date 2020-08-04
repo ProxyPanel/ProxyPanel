@@ -7,15 +7,15 @@ use App\Components\PushNotification;
 use App\Models\Config;
 use App\Models\Coupon;
 use App\Models\Invite;
+use App\Models\Node;
+use App\Models\NodeInfo;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Models\SsNode;
-use App\Models\SsNodeInfo;
 use App\Models\User;
-use App\Models\UserBanLog;
+use App\Models\UserBanedLog;
+use App\Models\UserHourlyDataFlow;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
-use App\Models\UserTrafficHourly;
 use App\Models\VerifyCode;
 use Cache;
 use DB;
@@ -210,7 +210,7 @@ class AutoJob extends Command {
 	 * @param  string  $description  封禁理由
 	 */
 	private function addUserBanLog($userId, $minutes, $description): void {
-		$log = new UserBanLog();
+		$log = new UserBanedLog();
 		$log->user_id = $userId;
 		$log->minutes = $minutes;
 		$log->description = $description;
@@ -229,10 +229,10 @@ class AutoJob extends Command {
 				}
 
 				// 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
-				$totalTraffic = UserTrafficHourly::query()
-				                                 ->userHourly($user->id)
-				                                 ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
-				                                 ->sum('total');
+				$totalTraffic = UserHourlyDataFlow::query()
+				                                  ->userHourly($user->id)
+				                                  ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
+				                                  ->sum('total');
 				if($totalTraffic >= self::$systemConfig['traffic_ban_value'] * GB){
 					User::query()->whereId($user->id)->update([
 						'enable'   => 0,
@@ -309,13 +309,13 @@ class AutoJob extends Command {
 	// 检测节点是否离线
 	private function checkNodeStatus(): void {
 		if(self::$systemConfig['is_node_offline']){
-			foreach(SsNode::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
+			foreach(Node::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
-				$nodeTTL = SsNodeInfo::query()
-				                     ->whereNodeId($node->id)
-				                     ->where('log_time', '>=', strtotime("-10 minutes"))
-				                     ->latest('log_time')
-				                     ->doesntExist();
+				$nodeTTL = NodeInfo::query()
+				                   ->whereNodeId($node->id)
+				                   ->where('log_time', '>=', strtotime("-10 minutes"))
+				                   ->latest('log_time')
+				                   ->doesntExist();
 				if($nodeTTL && self::$systemConfig['offline_check_times']){
 					// 已通知次数
 					$cacheKey = 'offline_check_times'.$node->id;
