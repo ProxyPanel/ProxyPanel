@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class NodePing extends Model {
 	const UPDATED_AT = null;
-	protected $table = 'ss_node_ping';
+	protected $table = 'node_ping';
 
 	public function node(): HasOne {
 		return $this->hasOne(Node::class, 'id', 'node_id');
