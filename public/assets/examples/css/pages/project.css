@@ -1,0 +1,127 @@
+.page-project .card-block {
+  padding: 25px;
+  border-top: 1px solid #e4eaec; }
+  .page-project .card-block:first-child {
+    border-top: none; }
+
+.page-project .card .card-block + .card-block {
+  padding: 25px; }
+
+.page-project .btn-pure.btn-trash:hover, .page-project .btn-pure.btn-trash:focus {
+  color: #ff4c52; }
+
+.page-project .btn-pure.btn-edit:hover, .page-project .btn-pure.btn-edit:focus {
+  color: #11c26d; }
+
+.page-project .ui-helper-hidden-accessible {
+  display: none; }
+
+.project-title .btn-edit {
+  display: none;
+  padding: 0;
+  margin-left: 5px; }
+
+.project-title:hover .btn-edit {
+  display: inline-block; }
+
+.project-option-title {
+  margin-top: 0px;
+  margin-bottom: 20px; }
+
+.project-team-items {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 0; }
+  .project-team-items .team-item {
+    float: left; }
+  .project-team-items .item-divider {
+    width: 30px;
+    text-align: center;
+    line-height: 42px; }
+
+.project-controls .dropdown {
+  display: inline-block; }
+
+.project-controls .btn {
+  margin: 0 10px 10px 0; }
+
+.project-checklist .progress {
+  position: relative;
+  margin-right: 40px;
+  max-width: 350px;
+  overflow: visible; }
+
+.project-checklist .progress-percent {
+  position: absolute;
+  right: -35px;
+  top: -8px; }
+
+.project-checklist .project-checklist-add {
+  display: none; }
+
+.project-checklist.checklist-editable .project-checklist-add {
+  display: block; }
+
+.project-checklist-title .btn-trash:first-child {
+  float: right;
+  margin-right: 0;
+  padding: 0;
+  line-height: 21px; }
+
+.project-checklist-add {
+  position: relative;
+  margin: 25px -25px -25px;
+  padding: 25px 130px 25px 25px; }
+  .project-checklist-add .operations {
+    position: absolute;
+    right: 25px;
+    top: 25px; }
+
+.upload-instructions {
+  margin: 30px 20px; }
+
+.project-comments .comment-content {
+  position: relative;
+  padding-right: 50px; }
+  .project-comments .comment-content .btn-edit, .project-comments .comment-content .btn-trash {
+    position: absolute; }
+  .project-comments .comment-content .btn-trash {
+    top: 2px;
+    right: 0; }
+  .project-comments .comment-content .btn-edit {
+    top: 2px;
+    right: 25px; }
+
+.project-comments .pos-number {
+  color: #11c26d; }
+
+.project-comments .neg-number {
+  color: #ff4c52; }
+
+.project-comments .comments-add .comment-visibility {
+  display: inline-block; }
+  .project-comments .comments-add .comment-visibility i {
+    margin-right: -5px; }
+
+.project-comments .comments-add .comment-attach {
+  display: inline-block;
+  float: right; }
+
+.project-participators .media > div:first-child {
+  min-width: 90px; }
+
+.project-dates span {
+  display: inline-block;
+  min-width: 80px; }
+
+.project-agility-view {
+  display: block;
+  margin-top: 10px; }
+
+.project-fast-operation a {
+  display: block;
+  margin-bottom: 10px;
+  color: #a3afb7; }
+  .project-fast-operation a:hover, .project-fast-operation a:focus {
+    text-decoration: none;
+    color: #3e8ef7; }

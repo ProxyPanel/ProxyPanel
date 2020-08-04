@@ -1,0 +1,49 @@
+.app-projects .projects-sort-label {
+  margin-right: 3px;
+  cursor: default; }
+
+.app-projects .dropdown-toggle {
+  cursor: pointer; }
+
+.app-projects .projects-wrap {
+  padding-top: 30px; }
+
+.app-projects .panel {
+  padding: 10px;
+  margin-bottom: 0; }
+
+.app-projects .blocks > li {
+  margin-bottom: 30px; }
+
+.app-projects .overlay {
+  margin-bottom: 12px;
+  border-radius: 0.286rem;
+  overflow: visible; }
+  .app-projects .overlay .btn-group {
+    position: absolute;
+    top: 5px;
+    right: 5px; }
+  .app-projects .overlay .btn-icon {
+    color: #bdbdbd; }
+    .app-projects .overlay .btn-icon:hover {
+      color: white; }
+  .app-projects .overlay .project-button {
+    color: #fff; }
+    .app-projects .overlay .project-button:hover {
+      background-color: white;
+      color: #526069; }
+  .app-projects .overlay .dropdown .dropdown-menu > li > a {
+    padding: 6px 8px; }
+  .app-projects .overlay .dropdown:hover .dropdown-toggle {
+    color: #fff; }
+  .app-projects .overlay .dropdown:hover .dropdown-menu {
+    display: block; }
+  .app-projects .overlay .dropdown-menu {
+    color: #76838f;
+    margin-top: 0;
+    min-width: 110px; }
+    .app-projects .overlay .dropdown-menu a {
+      text-decoration: none; }
+
+.app-projects .overlay-panel {
+  background: rgba(38, 50, 56, 0.8); }

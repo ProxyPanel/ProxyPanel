@@ -1,0 +1,4 @@
+.card-block {
+  padding: 9px 0; }
+  .card-block .card-link + .card-link {
+    margin-left: 0; }

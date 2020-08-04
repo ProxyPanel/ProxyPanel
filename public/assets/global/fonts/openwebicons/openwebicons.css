@@ -1,0 +1,306 @@
+@charset "UTF-8";
+/**
+ * OpenWeb Icons, 1.4.3
+ * Created by Matthias Pfefferle
+ * http://pfefferle.github.io/openwebicons/
+ * OFL-1.1 License
+ */
+@font-face {
+  font-family: "OpenWeb Icons";
+  src: url("./openwebicons.eot?v=1.4.3");
+  src: url("./openwebicons.eot?#iefix&v=1.4.3") format("embedded-opentype"), url("./openwebicons.woff2?v=1.4.3") format("woff2"), url("./openwebicons.woff?v=1.4.3") format("woff"), url("./openwebicons.ttf?v=1.4.3") format("truetype"), url("./openwebicons.svg?v=1.4.3#openwebicons") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+[class^="owi-"],
+[class*=" owi-"] {
+  font-family: "OpenWeb Icons";
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-transform: translate(0, 0);
+          transform: translate(0, 0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  speak: none;
+  text-rendering: auto; }
+
+.owi-apml:before {
+  content: ""; }
+
+.owi-open-share:before {
+  content: ""; }
+
+.owi-share:before {
+  content: ""; }
+
+.owi-feed:before {
+  content: ""; }
+
+.owi-ostatus:before {
+  content: ""; }
+
+.owi-opml:before {
+  content: ""; }
+
+.owi-activity:before {
+  content: ""; }
+
+.owi-geo:before {
+  content: ""; }
+
+.owi-opensearch:before {
+  content: ""; }
+
+.owi-oauth:before {
+  content: ""; }
+
+.owi-openid:before {
+  content: ""; }
+
+.owi-rdf:before {
+  content: ""; }
+
+.owi-json-ld:before {
+  content: ""; }
+
+.owi-semantic-web:before {
+  content: ""; }
+
+.owi-dataportability:before {
+  content: ""; }
+
+.owi-federated:before {
+  content: ""; }
+
+.owi-open-web:before {
+  content: ""; }
+
+.owi-web-intents:before {
+  content: ""; }
+
+.owi-xmpp:before {
+  content: ""; }
+
+.owi-qr:before {
+  content: ""; }
+
+.owi-epub:before {
+  content: ""; }
+
+.owi-opengraph:before {
+  content: ""; }
+
+.owi-foaf:before {
+  content: ""; }
+
+.owi-info-card:before {
+  content: ""; }
+
+.owi-browserid:before {
+  content: ""; }
+
+.owi-persona:before {
+  content: ""; }
+
+.owi-remote-storage:before {
+  content: ""; }
+
+.owi-odata:before {
+  content: ""; }
+
+.owi-markdown:before {
+  content: ""; }
+
+.owi-tosdr:before {
+  content: ""; }
+
+.owi-indieweb:before {
+  content: ""; }
+
+.owi-indiewebcamp:before {
+  content: ""; }
+
+.owi-git:before {
+  content: ""; }
+
+.owi-webhooks:before {
+  content: ""; }
+
+.owi-osi:before {
+  content: ""; }
+
+.owi-webfinger:before {
+  content: ""; }
+
+.owi-bitcoin:before {
+  content: ""; }
+
+.owi-pubsubhubbub:before {
+  content: ""; }
+
+.owi-svg:before {
+  content: ""; }
+
+.owi-tent:before {
+  content: ""; }
+
+.owi-copyleft:before {
+  content: ""; }
+
+.owi-gnu:before {
+  content: ""; }
+
+.owi-webmention:before {
+  content: ""; }
+
+.owi-javascript:before {
+  content: ""; }
+
+.owi-wtfpl:before {
+  content: ""; }
+
+.owi-wordpress:before {
+  content: ""; }
+
+.owi-owncloud:before {
+  content: ""; }
+
+.owi-known:before {
+  content: ""; }
+
+.owi-barcamp:before {
+  content: ""; }
+
+.owi-indiehosters:before {
+  content: ""; }
+
+.owi-cccs:before {
+  content: ""; }
+
+.owi-mozilla:before {
+  content: ""; }
+
+.owi-unhosted:before {
+  content: ""; }
+
+.owi-indie:before {
+  content: ""; }
+
+.owi-ghost:before {
+  content: ""; }
+
+.owi-diaspora:before {
+  content: ""; }
+
+.owi-webplattform:before {
+  content: ""; }
+
+.owi-opensourcedesign:before {
+  content: ""; }
+
+.owi-opendesign:before {
+  content: ""; }
+
+.owi-gnusocial:before {
+  content: ""; }
+
+.owi-mastodon:before {
+  content: ""; }
+
+.owi-mastodon-simple:before {
+  content: ""; }
+
+.owi-html5:before {
+  content: ""; }
+
+.owi-css3:before {
+  content: ""; }
+
+.owi-connectivity:before {
+  content: ""; }
+
+.owi-semantics:before {
+  content: ""; }
+
+.owi-device-access:before {
+  content: ""; }
+
+.owi-offline-storage:before {
+  content: ""; }
+
+.owi-multimedia:before {
+  content: ""; }
+
+.owi-3deffects:before {
+  content: ""; }
+
+.owi-perfintegration:before {
+  content: ""; }
+
+.owi-cc:before {
+  content: ""; }
+
+.owi-cc-by:before {
+  content: ""; }
+
+.owi-cc-nc:before {
+  content: ""; }
+
+.owi-cc-nc-eu:before {
+  content: ""; }
+
+.owi-cc-nc-jp:before {
+  content: ""; }
+
+.owi-cc-sa:before {
+  content: ""; }
+
+.owi-cc-nd:before {
+  content: ""; }
+
+.owi-cc-public:before {
+  content: ""; }
+
+.owi-cc-zero:before {
+  content: ""; }
+
+.owi-cc-share:before {
+  content: ""; }
+
+.owi-cc-remix:before {
+  content: ""; }
+
+.owi-microformats:before {
+  content: ""; }
+
+.owi-hcard-download:before {
+  content: ""; }
+
+.owi-hcard-add:before {
+  content: ""; }
+
+.owi-hresume:before {
+  content: ""; }
+
+.owi-hatom:before {
+  content: ""; }
+
+.owi-ofl:before {
+  content: ""; }
+
+.owi-ofl-attribution:before {
+  content: ""; }
+
+.owi-ofl-share:before {
+  content: ""; }
+
+.owi-ofl-embedding:before {
+  content: ""; }
+
+.owi-ofl-renaming:before {
+  content: ""; }
+
+.owi-ofl-selling:before {
+  content: ""; }

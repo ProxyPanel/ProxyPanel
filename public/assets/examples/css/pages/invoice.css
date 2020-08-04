@@ -1,0 +1,22 @@
+.page-invoice-table {
+  margin-top: 40px;
+  margin-bottom: 20px; }
+  .page-invoice-table tbody {
+    border-bottom: 1px solid #e4eaec; }
+  .page-invoice-table .table > thead > tr > th,
+  .page-invoice-table .table > tbody > tr > th,
+  .page-invoice-table .table > tfoot > tr > th,
+  .page-invoice-table .table > thead > tr > td,
+  .page-invoice-table .table > tbody > tr > td,
+  .page-invoice-table .table > tfoot > tr > td {
+    padding: 15px 8px; }
+
+.page-invoice-amount {
+  margin-bottom: 40px;
+  padding-top: 10px;
+  font-size: 20px;
+  border-top: 1px solid #e4eaec; }
+
+@media (max-width: 767.98px) {
+  .page-invoice .page-content .btn-animate {
+    margin-bottom: 10px; } }

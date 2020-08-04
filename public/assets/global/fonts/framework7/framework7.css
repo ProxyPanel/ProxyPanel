@@ -1,0 +1,794 @@
+/**
+ * Framework7 Icons, 0.8.9
+ * Created by [object Object]
+ * http://framework7.io/icons/
+ * MIT License
+ */
+@font-face {
+  font-family: "Framework7 Icons";
+  src: url("./framework7.eot?v=0.8.9");
+  src: url("./framework7.eot?#iefix&v=0.8.9") format("embedded-opentype"), url("./framework7.woff2?v=0.8.9") format("woff2"), url("./framework7.woff?v=0.8.9") format("woff"), url("./framework7.ttf?v=0.8.9") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+[class^="f7-"],
+[class*=" f7-"] {
+  font-family: "Framework7 Icons";
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-transform: translate(0, 0);
+          transform: translate(0, 0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  speak: none;
+  text-rendering: auto; }
+
+.f7-add:before {
+  content: "add"; }
+
+.f7-add_round:before {
+  content: "add_round"; }
+
+.f7-add_round_fill:before {
+  content: "add_round_fill"; }
+
+.f7-alarm:before {
+  content: "alarm"; }
+
+.f7-alarm_fill:before {
+  content: "alarm_fill"; }
+
+.f7-albums:before {
+  content: "albums"; }
+
+.f7-albums_fill:before {
+  content: "albums_fill"; }
+
+.f7-arrow_down:before {
+  content: "arrow_down"; }
+
+.f7-arrow_down_fill:before {
+  content: "arrow_down_fill"; }
+
+.f7-arrow_left:before {
+  content: "arrow_left"; }
+
+.f7-arrow_left_fill:before {
+  content: "arrow_left_fill"; }
+
+.f7-arrow_right:before {
+  content: "arrow_right"; }
+
+.f7-arrow_right_fill:before {
+  content: "arrow_right_fill"; }
+
+.f7-arrow_up:before {
+  content: "arrow_up"; }
+
+.f7-arrow_up_fill:before {
+  content: "arrow_up_fill"; }
+
+.f7-at:before {
+  content: "at"; }
+
+.f7-at_fill:before {
+  content: "at_fill"; }
+
+.f7-bag:before {
+  content: "bag"; }
+
+.f7-bag_fill:before {
+  content: "bag_fill"; }
+
+.f7-bars:before {
+  content: "bars"; }
+
+.f7-bell:before {
+  content: "bell"; }
+
+.f7-bell_fill:before {
+  content: "bell_fill"; }
+
+.f7-bolt:before {
+  content: "bolt"; }
+
+.f7-bolt_fill:before {
+  content: "bolt_fill"; }
+
+.f7-bolt_round:before {
+  content: "bolt_round"; }
+
+.f7-bolt_round_fill:before {
+  content: "bolt_round_fill"; }
+
+.f7-book:before {
+  content: "book"; }
+
+.f7-book_fill:before {
+  content: "book_fill"; }
+
+.f7-bookmark:before {
+  content: "bookmark"; }
+
+.f7-bookmark_fill:before {
+  content: "bookmark_fill"; }
+
+.f7-box:before {
+  content: "box"; }
+
+.f7-box_fill:before {
+  content: "box_fill"; }
+
+.f7-briefcase:before {
+  content: "briefcase"; }
+
+.f7-briefcase_fill:before {
+  content: "briefcase_fill"; }
+
+.f7-calendar:before {
+  content: "calendar"; }
+
+.f7-calendar_fill:before {
+  content: "calendar_fill"; }
+
+.f7-camera:before {
+  content: "camera"; }
+
+.f7-camera_fill:before {
+  content: "camera_fill"; }
+
+.f7-card:before {
+  content: "card"; }
+
+.f7-card_fill:before {
+  content: "card_fill"; }
+
+.f7-chat:before {
+  content: "chat"; }
+
+.f7-chat_fill:before {
+  content: "chat_fill"; }
+
+.f7-chats:before {
+  content: "chats"; }
+
+.f7-chats_fill:before {
+  content: "chats_fill"; }
+
+.f7-check:before {
+  content: "check"; }
+
+.f7-check_round:before {
+  content: "check_round"; }
+
+.f7-check_round_fill:before {
+  content: "check_round_fill"; }
+
+.f7-chevron_down:before {
+  content: "chevron_down"; }
+
+.f7-chevron_left:before {
+  content: "chevron_left"; }
+
+.f7-chevron_right:before {
+  content: "chevron_right"; }
+
+.f7-chevron_up:before {
+  content: "chevron_up"; }
+
+.f7-circle:before {
+  content: "circle"; }
+
+.f7-circle_fill:before {
+  content: "circle_fill"; }
+
+.f7-circle_half:before {
+  content: "circle_half"; }
+
+.f7-close:before {
+  content: "close"; }
+
+.f7-close_round:before {
+  content: "close_round"; }
+
+.f7-close_round_fill:before {
+  content: "close_round_fill"; }
+
+.f7-cloud:before {
+  content: "cloud"; }
+
+.f7-cloud_download:before {
+  content: "cloud_download"; }
+
+.f7-cloud_download_fill:before {
+  content: "cloud_download_fill"; }
+
+.f7-cloud_fill:before {
+  content: "cloud_fill"; }
+
+.f7-cloud_upload:before {
+  content: "cloud_upload"; }
+
+.f7-cloud_upload_fill:before {
+  content: "cloud_upload_fill"; }
+
+.f7-collection:before {
+  content: "collection"; }
+
+.f7-collection_fill:before {
+  content: "collection_fill"; }
+
+.f7-compass:before {
+  content: "compass"; }
+
+.f7-compass_fill:before {
+  content: "compass_fill"; }
+
+.f7-compose:before {
+  content: "compose"; }
+
+.f7-compose_fill:before {
+  content: "compose_fill"; }
+
+.f7-data:before {
+  content: "data"; }
+
+.f7-data_fill:before {
+  content: "data_fill"; }
+
+.f7-delete:before {
+  content: "delete"; }
+
+.f7-delete_round:before {
+  content: "delete_round"; }
+
+.f7-delete_round_fill:before {
+  content: "delete_round_fill"; }
+
+.f7-document:before {
+  content: "document"; }
+
+.f7-document_fill:before {
+  content: "document_fill"; }
+
+.f7-document_text:before {
+  content: "document_text"; }
+
+.f7-document_text_fill:before {
+  content: "document_text_fill"; }
+
+.f7-down:before {
+  content: "down"; }
+
+.f7-download:before {
+  content: "download"; }
+
+.f7-download_fill:before {
+  content: "download_fill"; }
+
+.f7-download_round:before {
+  content: "download_round"; }
+
+.f7-download_round_fill:before {
+  content: "download_round_fill"; }
+
+.f7-drawer:before {
+  content: "drawer"; }
+
+.f7-drawer_fill:before {
+  content: "drawer_fill"; }
+
+.f7-drawers:before {
+  content: "drawers"; }
+
+.f7-drawers_fill:before {
+  content: "drawers_fill"; }
+
+.f7-email:before {
+  content: "email"; }
+
+.f7-email_fill:before {
+  content: "email_fill"; }
+
+.f7-eye:before {
+  content: "eye"; }
+
+.f7-eye_fill:before {
+  content: "eye_fill"; }
+
+.f7-fastforward:before {
+  content: "fastforward"; }
+
+.f7-fastforward_fill:before {
+  content: "fastforward_fill"; }
+
+.f7-fastforward_round:before {
+  content: "fastforward_round"; }
+
+.f7-fastforward_round_fill:before {
+  content: "fastforward_round_fill"; }
+
+.f7-favorites:before {
+  content: "favorites"; }
+
+.f7-favorites_fill:before {
+  content: "favorites_fill"; }
+
+.f7-film:before {
+  content: "film"; }
+
+.f7-film_fill:before {
+  content: "film_fill"; }
+
+.f7-filter:before {
+  content: "filter"; }
+
+.f7-filter-fill:before {
+  content: "filter-fill"; }
+
+.f7-flag:before {
+  content: "flag"; }
+
+.f7-flag_fill:before {
+  content: "flag_fill"; }
+
+.f7-folder:before {
+  content: "folder"; }
+
+.f7-folder_fill:before {
+  content: "folder_fill"; }
+
+.f7-forward:before {
+  content: "forward"; }
+
+.f7-forward_fill:before {
+  content: "forward_fill"; }
+
+.f7-gear:before {
+  content: "gear"; }
+
+.f7-gear_fill:before {
+  content: "gear_fill"; }
+
+.f7-graph_round:before {
+  content: "graph_round"; }
+
+.f7-graph_round_fill:before {
+  content: "graph_round_fill"; }
+
+.f7-graph_square:before {
+  content: "graph_square"; }
+
+.f7-graph_square_fill:before {
+  content: "graph_square_fill"; }
+
+.f7-heart:before {
+  content: "heart"; }
+
+.f7-heart_fill:before {
+  content: "heart_fill"; }
+
+.f7-help:before {
+  content: "help"; }
+
+.f7-help_fill:before {
+  content: "help_fill"; }
+
+.f7-home:before {
+  content: "home"; }
+
+.f7-home_fill:before {
+  content: "home_fill"; }
+
+.f7-images:before {
+  content: "images"; }
+
+.f7-images_fill:before {
+  content: "images_fill"; }
+
+.f7-info:before {
+  content: "info"; }
+
+.f7-info_fill:before {
+  content: "info_fill"; }
+
+.f7-keyboard:before {
+  content: "keyboard"; }
+
+.f7-keyboard_fill:before {
+  content: "keyboard_fill"; }
+
+.f7-layers:before {
+  content: "layers"; }
+
+.f7-layers_fill:before {
+  content: "layers_fill"; }
+
+.f7-left:before {
+  content: "left"; }
+
+.f7-list:before {
+  content: "list"; }
+
+.f7-list_fill:before {
+  content: "list_fill"; }
+
+.f7-lock:before {
+  content: "lock"; }
+
+.f7-lock_fill:before {
+  content: "lock_fill"; }
+
+.f7-login:before {
+  content: "login"; }
+
+.f7-login_fill:before {
+  content: "login_fill"; }
+
+.f7-logout:before {
+  content: "logout"; }
+
+.f7-logout_fill:before {
+  content: "logout_fill"; }
+
+.f7-menu:before {
+  content: "menu"; }
+
+.f7-mic:before {
+  content: "mic"; }
+
+.f7-mic_fill:before {
+  content: "mic_fill"; }
+
+.f7-money_dollar:before {
+  content: "money_dollar"; }
+
+.f7-money_dollar_fill:before {
+  content: "money_dollar_fill"; }
+
+.f7-money_euro:before {
+  content: "money_euro"; }
+
+.f7-money_euro_fill:before {
+  content: "money_euro_fill"; }
+
+.f7-money_pound:before {
+  content: "money_pound"; }
+
+.f7-money_pound_fill:before {
+  content: "money_pound_fill"; }
+
+.f7-money_rubl:before {
+  content: "money_rubl"; }
+
+.f7-money_rubl_fill:before {
+  content: "money_rubl_fill"; }
+
+.f7-money_yen:before {
+  content: "money_yen"; }
+
+.f7-money_yen_fill:before {
+  content: "money_yen_fill"; }
+
+.f7-more:before {
+  content: "more"; }
+
+.f7-more_round:before {
+  content: "more_round"; }
+
+.f7-more_round_fill:before {
+  content: "more_round_fill"; }
+
+.f7-more_vertical:before {
+  content: "more_vertical"; }
+
+.f7-more_vertical_round:before {
+  content: "more_vertical_round"; }
+
+.f7-more_vertical_round_fill:before {
+  content: "more_vertical_round_fill"; }
+
+.f7-navigation:before {
+  content: "navigation"; }
+
+.f7-navigation_fill:before {
+  content: "navigation_fill"; }
+
+.f7-paper_plane:before {
+  content: "paper_plane"; }
+
+.f7-paper_plane_fill:before {
+  content: "paper_plane_fill"; }
+
+.f7-pause:before {
+  content: "pause"; }
+
+.f7-pause_fill:before {
+  content: "pause_fill"; }
+
+.f7-pause_round:before {
+  content: "pause_round"; }
+
+.f7-pause_round_fill:before {
+  content: "pause_round_fill"; }
+
+.f7-person:before {
+  content: "person"; }
+
+.f7-person_fill:before {
+  content: "person_fill"; }
+
+.f7-persons:before {
+  content: "persons"; }
+
+.f7-persons_fill:before {
+  content: "persons_fill"; }
+
+.f7-phone:before {
+  content: "phone"; }
+
+.f7-phone_fill:before {
+  content: "phone_fill"; }
+
+.f7-phone_round:before {
+  content: "phone_round"; }
+
+.f7-phone_round_fill:before {
+  content: "phone_round_fill"; }
+
+.f7-photos:before {
+  content: "photos"; }
+
+.f7-photos_fill:before {
+  content: "photos_fill"; }
+
+.f7-pie:before {
+  content: "pie"; }
+
+.f7-pie_fill:before {
+  content: "pie_fill"; }
+
+.f7-play:before {
+  content: "play"; }
+
+.f7-play_fill:before {
+  content: "play_fill"; }
+
+.f7-play_round:before {
+  content: "play_round"; }
+
+.f7-play_round_fill:before {
+  content: "play_round_fill"; }
+
+.f7-radio:before {
+  content: "radio"; }
+
+.f7-redo:before {
+  content: "redo"; }
+
+.f7-refresh:before {
+  content: "refresh"; }
+
+.f7-refresh_round:before {
+  content: "refresh_round"; }
+
+.f7-refresh_round_fill:before {
+  content: "refresh_round_fill"; }
+
+.f7-reload:before {
+  content: "reload"; }
+
+.f7-reload_round:before {
+  content: "reload_round"; }
+
+.f7-reload_round_fill:before {
+  content: "reload_round_fill"; }
+
+.f7-reply:before {
+  content: "reply"; }
+
+.f7-reply_fill:before {
+  content: "reply_fill"; }
+
+.f7-rewind:before {
+  content: "rewind"; }
+
+.f7-rewind_fill:before {
+  content: "rewind_fill"; }
+
+.f7-rewind_round:before {
+  content: "rewind_round"; }
+
+.f7-rewind_round_fill:before {
+  content: "rewind_round_fill"; }
+
+.f7-right:before {
+  content: "right"; }
+
+.f7-search:before {
+  content: "search"; }
+
+.f7-search_strong:before {
+  content: "search_strong"; }
+
+.f7-settings:before {
+  content: "settings"; }
+
+.f7-settings_fill:before {
+  content: "settings_fill"; }
+
+.f7-share:before {
+  content: "share"; }
+
+.f7-share_fill:before {
+  content: "share_fill"; }
+
+.f7-social_facebook:before {
+  content: "social_facebook"; }
+
+.f7-social_facebook_fill:before {
+  content: "social_facebook_fill"; }
+
+.f7-social_github:before {
+  content: "social_github"; }
+
+.f7-social_github_fill:before {
+  content: "social_github_fill"; }
+
+.f7-social_googleplus:before {
+  content: "social_googleplus"; }
+
+.f7-social_instagram:before {
+  content: "social_instagram"; }
+
+.f7-social_instagram_fill:before {
+  content: "social_instagram_fill"; }
+
+.f7-social_linkedin:before {
+  content: "social_linkedin"; }
+
+.f7-social_linkedin_fill:before {
+  content: "social_linkedin_fill"; }
+
+.f7-social_rss:before {
+  content: "social_rss"; }
+
+.f7-social_rss_fill:before {
+  content: "social_rss_fill"; }
+
+.f7-social_twitter:before {
+  content: "social_twitter"; }
+
+.f7-social_twitter_fill:before {
+  content: "social_twitter_fill"; }
+
+.f7-sort:before {
+  content: "sort"; }
+
+.f7-sort_fill:before {
+  content: "sort_fill"; }
+
+.f7-star:before {
+  content: "star"; }
+
+.f7-star_fill:before {
+  content: "star_fill"; }
+
+.f7-star_half:before {
+  content: "star_half"; }
+
+.f7-stopwatch:before {
+  content: "stopwatch"; }
+
+.f7-stopwatch_fill:before {
+  content: "stopwatch_fill"; }
+
+.f7-tabs:before {
+  content: "tabs"; }
+
+.f7-tabs_fill:before {
+  content: "tabs_fill"; }
+
+.f7-tags:before {
+  content: "tags"; }
+
+.f7-tags_fill:before {
+  content: "tags_fill"; }
+
+.f7-tape:before {
+  content: "tape"; }
+
+.f7-tape_fill:before {
+  content: "tape_fill"; }
+
+.f7-ticket:before {
+  content: "ticket"; }
+
+.f7-ticket_fill:before {
+  content: "ticket_fill"; }
+
+.f7-time:before {
+  content: "time"; }
+
+.f7-time_fill:before {
+  content: "time_fill"; }
+
+.f7-timer:before {
+  content: "timer"; }
+
+.f7-timer_fill:before {
+  content: "timer_fill"; }
+
+.f7-today:before {
+  content: "today"; }
+
+.f7-today_fill:before {
+  content: "today_fill"; }
+
+.f7-trash:before {
+  content: "trash"; }
+
+.f7-trash_fill:before {
+  content: "trash_fill"; }
+
+.f7-tune:before {
+  content: "tune"; }
+
+.f7-tune_fill:before {
+  content: "tune_fill"; }
+
+.f7-undo:before {
+  content: "undo"; }
+
+.f7-unlock:before {
+  content: "unlock"; }
+
+.f7-unlock_fill:before {
+  content: "unlock_fill"; }
+
+.f7-up:before {
+  content: "up"; }
+
+.f7-videocam:before {
+  content: "videocam"; }
+
+.f7-videocam_fill:before {
+  content: "videocam_fill"; }
+
+.f7-videocam_round:before {
+  content: "videocam_round"; }
+
+.f7-videocam_round_fill:before {
+  content: "videocam_round_fill"; }
+
+.f7-volume:before {
+  content: "volume"; }
+
+.f7-volume_fill:before {
+  content: "volume_fill"; }
+
+.f7-volume_low:before {
+  content: "volume_low"; }
+
+.f7-volume_low_fill:before {
+  content: "volume_low_fill"; }
+
+.f7-volume_mute:before {
+  content: "volume_mute"; }
+
+.f7-volume_mute_fill:before {
+  content: "volume_mute_fill"; }
+
+.f7-world:before {
+  content: "world"; }
+
+.f7-world_fill:before {
+  content: "world_fill"; }
+
+.f7-zoom_in:before {
+  content: "zoom_in"; }
+
+.f7-zoom_out:before {
+  content: "zoom_out"; }

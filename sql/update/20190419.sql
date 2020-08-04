@@ -1,0 +1,1 @@
+INSERT INTO `config` VALUES ('98', 'admin_email', '');

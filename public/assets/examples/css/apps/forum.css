@@ -1,0 +1,89 @@
+.app-forum .page-content .table {
+  table-layout: fixed; }
+  .app-forum .page-content .table .content {
+    position: relative; }
+    .app-forum .page-content .table .content > * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; }
+  .app-forum .page-content .table .flags {
+    display: inline-block; }
+  .app-forum .page-content .table a {
+    text-decoration: none; }
+  .app-forum .page-content .table .title {
+    line-height: 25px; }
+    .app-forum .page-content .table .title > * {
+      margin-right: 10px; }
+    .app-forum .page-content .table .title .locked {
+      color: #a3afb7; }
+  .app-forum .page-content .table .sticky-top {
+    font-size: 90%; }
+    .app-forum .page-content .table .sticky-top .icon {
+      margin-right: 4px; }
+  .app-forum .page-content .table .metas {
+    color: #a3afb7; }
+    .app-forum .page-content .table .metas > span {
+      position: relative;
+      margin-right: 10px; }
+      .app-forum .page-content .table .metas > span + span:before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        top: 50%;
+        left: -8px;
+        background-color: #a7b0b8; }
+  .app-forum .page-content .table .forum-posts {
+    text-align: right; }
+
+.app-forum .slidePanel-header {
+  background-color: #6da611; }
+  .app-forum .slidePanel-header::after {
+    display: block;
+    clear: both;
+    content: ""; }
+
+.app-forum .slidePanel .actions-top {
+  position: absolute;
+  top: 30px;
+  right: 20px; }
+
+.app-forum .slidePanel .actions-bottom {
+  position: absolute;
+  bottom: 30px;
+  right: 20px; }
+
+.app-forum .slidePanel .avatar, .app-forum .slidePanel .name {
+  margin-right: 6px; }
+
+.app-forum .slidePanel .time {
+  color: #a3afb7; }
+
+.app-forum .slidePanel .forum-header, .app-forum .slidePanel .forum-content, .app-forum .slidePanel .forum-metas {
+  margin-bottom: 20px; }
+  .app-forum .slidePanel .forum-header::after, .app-forum .slidePanel .forum-content::after, .app-forum .slidePanel .forum-metas::after {
+    display: block;
+    clear: both;
+    content: ""; }
+
+.app-forum .slidePanel .forum-content:last-child {
+  margin-bottom: 0; }
+
+.app-forum .slidePanel .tags {
+  margin-bottom: 15px; }
+
+@media (max-width: 1199.98px) {
+  .app-forum .page-content .table .content {
+    padding-right: 100px; }
+  .app-forum .page-content .table .flags {
+    position: absolute;
+    top: 0;
+    right: 0; } }
+
+@media (max-width: 479.98px) {
+  .app-forum .nav-tabs-line > li > a {
+    padding: 10px; }
+  .app-forum .responsive-hide {
+    display: none !important; }
+  .app-forum .page-content .table .content {
+    padding-right: 0; } }

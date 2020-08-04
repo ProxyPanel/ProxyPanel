@@ -1,0 +1,72 @@
+.page-fb-wall .imgs-gallery {
+  margin: -2px; }
+  .page-fb-wall .imgs-gallery .gallery-item {
+    display: block;
+    border: 2px solid transparent; }
+
+.wall-attrs {
+  list-style: none; }
+  .wall-attrs .success {
+    color: #11c26d; }
+  .wall-attrs .attrs-meta {
+    line-height: 30px; }
+  .wall-attrs i {
+    margin-right: 2px; }
+  .wall-attrs .avatar {
+    margin-left: 2px; }
+
+.wall-comment {
+  position: relative;
+  margin-bottom: 15px; }
+  .wall-comment .comment-operation {
+    position: absolute;
+    right: 0;
+    top: -10px;
+    display: none; }
+  .wall-comment:hover .comment-operation,
+  .wall-comment:focus .comment-operation {
+    display: block; }
+
+.wall-comment-reply .reply-operation {
+  display: none; }
+  .wall-comment-reply .reply-operation.active {
+    display: block;
+    margin-top: 15px; }
+
+.wall-person-info {
+  position: relative;
+  padding-left: 190px;
+  padding-bottom: 45px; }
+  .wall-person-info .person-avatar {
+    position: absolute;
+    top: -75px;
+    left: 30px;
+    width: 140px;
+    height: 140px; }
+  .wall-person-info .person-name {
+    position: absolute;
+    top: -55px;
+    left: 190px;
+    margin: 0; }
+    .wall-person-info .person-name a {
+      color: #fff; }
+      .wall-person-info .person-name a:hover, .wall-person-info .person-name a:focus {
+        text-decoration: none; }
+
+.wall-posting .form-control {
+  border: none;
+  border-bottom: 1px solid #e4eaec;
+  border-radius: 0; }
+
+.wall-recent-comments .comments-view {
+  border-top: 1px solid #e4eaec;
+  padding: 10px 0;
+  text-align: center; }
+
+@media (min-width: 1200px) {
+  .page-fb-wall .card-img-top {
+    height: 350px; } }
+
+@media (max-width: 479.98px) {
+  .wall-person-info .person-name {
+    font-size: 24px; } }

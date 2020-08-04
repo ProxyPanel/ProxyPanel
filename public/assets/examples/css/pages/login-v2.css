@@ -1,0 +1,86 @@
+.page-login-v2 {
+  height: 100%;
+  overflow-x: hidden; }
+  .page-login-v2:before {
+    background-image: url("../../images/login.jpg"); }
+  .page-login-v2.page-dark.layout-full:after {
+    background-color: rgba(38, 50, 56, 0.6); }
+  .page-login-v2 .page-brand-info {
+    margin: 220px 100px 0 90px; }
+    .page-login-v2 .page-brand-info .brand-img {
+      vertical-align: middle; }
+    .page-login-v2 .page-brand-info .brand-text {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 11px 0 11px 20px; }
+    .page-login-v2 .page-brand-info p {
+      opacity: 0.6;
+      max-width: 650px; }
+  .page-login-v2 .page-login-main {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: auto;
+    min-height: 100%;
+    padding: 150px 60px 180px;
+    color: #76838f;
+    background: #fff; }
+    .page-login-v2 .page-login-main .brand {
+      margin-bottom: 60px; }
+    .page-login-v2 .page-login-main .brand-img {
+      vertical-align: middle; }
+    .page-login-v2 .page-login-main .brand-text {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 11px 0 11px 20px;
+      color: #3e8ef7; }
+  .page-login-v2 form {
+    width: 350px;
+    margin: 45px 0 20px; }
+    .page-login-v2 form > button {
+      margin-top: 38px; }
+    .page-login-v2 form a {
+      margin-left: 20px; }
+  .page-login-v2 footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 50px 60px;
+    text-align: center; }
+  .page-login-v2 .social .icon, .page-login-v2 .social .icon:hover, .page-login-v2 .social .icon:active {
+    color: #fff; }
+
+@media (min-width: 992px) {
+  .page-login-v2 .page-content {
+    padding-right: 500px; } }
+
+@media (max-width: 991.98px) {
+  .page-login-v2 .page-login-main {
+    padding-top: 60px; } }
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .page-login-v2 .page-login-main {
+    padding-top: 80px; }
+  .page-login-v2 .page-brand-info {
+    margin: 160px 0 0 35px; }
+    .page-login-v2 .page-brand-info > p {
+      opacity: 0;
+      color: transparent; } }
+
+@media (max-width: 767.98px) {
+  .page-login-v2 .page-login-main {
+    padding-top: 60px;
+    width: 100%; }
+  .page-login-v2 form {
+    width: auto; } }
+
+@media (max-width: 479.98px) {
+  .page-login-v2 .page-brand-info {
+    margin: 220px 0 0; }
+  .page-login-v2 .page-login-main {
+    padding: 50px 30px 180px; }
+  .page-login-v2 form {
+    width: auto; }
+  .page-login-v2 footer {
+    margin: 50px 30px; } }

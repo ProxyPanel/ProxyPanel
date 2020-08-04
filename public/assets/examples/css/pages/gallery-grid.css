@@ -1,0 +1,7 @@
+.page-gallery-grid .card {
+  margin-bottom: 0;
+  border: none; }
+
+.page-gallery-grid .card, .page-gallery-grid .cover, .page-gallery-grid .cover-image {
+  height: 100%;
+  border-radius: 0; }
