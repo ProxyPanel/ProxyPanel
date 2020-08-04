@@ -179,7 +179,7 @@ class Controller extends BaseController {
 				$obfs = $node->obfs;
 				if($node->single){
                     //单端口使用中转的端口
-					$port = $node->relay_port ? : $node->port;
+					$port = $node->relay_port ? $node->relay_port : $node->port;
 					$passwd = $node->passwd;
 					$protocol_param = $user->port.':'.$user->passwd;
 				}else{
