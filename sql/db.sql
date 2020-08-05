@@ -1254,7 +1254,7 @@ CREATE TABLE `ss_node_ip`
     `user_id`    INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '用户ID',
     `port`       SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '端口',
     `type`       CHAR(3)              NOT NULL DEFAULT 'tcp' COMMENT '类型：all、tcp、udp',
-    `ip`         TEXT COMMENT '连接IP：每个IP用,号隔开',
+    `ip`         JSON COMMENT '用户连接IP',
     `created_at` INT(10) UNSIGNED     NOT NULL DEFAULT '0' COMMENT '上报时间',
     PRIMARY KEY (`id`),
     KEY `idx_port` (`port`),

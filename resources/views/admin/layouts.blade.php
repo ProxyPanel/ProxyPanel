@@ -113,7 +113,7 @@
 					<span class="site-menu-title">管理中心</span>
 				</a>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'group', 'group/add', 'group/edit', 'admin/userCreditLogList', 'subscribe']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'admin/userCreditLogList', 'subscribe']) || request()->routeIs('group*') ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-user" aria-hidden="true"></i>
 					<span class="site-menu-title">用户系统</span>
@@ -124,8 +124,8 @@
 							<span class="site-menu-title">用户管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{Str::in_array(Request::path(), ['group']) ? 'active open' : ''}}">
-						<a href="/group">
+					<li class="site-menu-item {{request()->routeIs('group*') ? 'active open' : ''}}">
+						<a href="{{route('group.index')}}">
 							<span class="site-menu-title">用戶分组</span>
 						</a>
 					</li>
@@ -207,36 +207,36 @@
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{in_array(Request::path(), ['rule', 'rule/group', 'rule/group/add', 'rule/group/edit', 'rule/group/assign', 'rule/log']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{request()->routeIs('rule*') ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-eye" aria-hidden="true"></i>
 					<span class="site-menu-title">审计规则</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{in_array(Request::path(), ['rule']) ? 'active open' : ''}}">
-						<a href="/rule">
+					<li class="site-menu-item {{request()->routeIs(['rule.index']) ? 'active open' : ''}}">
+						<a href="{{route('rule.index')}}">
 							<span class="site-menu-title">规则列表</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['rule/group', 'rule/group/add', 'rule/group/edit', 'rule/group/assign']) ? 'active open' : ''}}">
-						<a href="/rule/group">
+					<li class="site-menu-item {{request()->routeIs('rule.group*') ? 'active open' : ''}}">
+						<a href="{{route('rule.group.index')}}">
 							<span class="site-menu-title">规则分组</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['rule/log']) ? 'active open' : ''}}">
-						<a href="/rule/log">
+					<li class="site-menu-item {{request()->routeIs('rule.log') ? 'active open' : ''}}">
+						<a href="{{route('rule.log')}}">
 							<span class="site-menu-title">触发记录</span>
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="site-menu-item has-sub {{Str::contains(Request::path(), ['goods', 'coupon', 'admin/orderList']) ? 'active open' : ''}}">
+			<li class="site-menu-item has-sub {{in_array(Request::path(), ['coupon', 'coupon/add', 'admin/orderList']) || request()->routeIs('goods*') ? 'active open' : ''}}">
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
 					<span class="site-menu-title">商品系统</span>
 				</a>
 				<ul class="site-menu-sub">
-					<li class="site-menu-item {{Str::contains(Request::path(),'goods') ? 'active open' : ''}}">
+					<li class="site-menu-item {{request()->routeIs('goods*') ? 'active open' : ''}}">
 						<a href="{{route('goods.index')}}">
 							<span class="site-menu-title">商品管理</span>
 						</a>

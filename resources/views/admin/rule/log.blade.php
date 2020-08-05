@@ -40,7 +40,7 @@
 					</div>
 					<div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
 						<button class="btn btn-primary" onclick="Search()">搜 索</button>
-						<a href="/rule/log" class="btn btn-danger">重 置</a>
+						<a href="{{route('rule.log')}}" class="btn btn-danger">重 置</a>
 					</div>
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -91,7 +91,7 @@
 	<script type="text/javascript">
 		// 搜索
 		function Search() {
-			window.location.href = '/rule/log?uid=' + $("#uid").val() + '&username=' + $("#username").val() + '&node_id=' + $("#node_id option:selected").val() + '&rule_id=' + $("#rule_id option:selected").val();
+			window.location.href = '{{route('rule.log')}}?uid=' + $("#uid").val() + '&username=' + $("#username").val() + '&node_id=' + $("#node_id option:selected").val() + '&rule_id=' + $("#rule_id option:selected").val();
 		}
 
 		// 清除所有记录
@@ -105,7 +105,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/rule/clear", {_token: '{{csrf_token()}}'}, function (ret) {
+					$.post("{{route('rule.clear')}}", {_token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.reload())

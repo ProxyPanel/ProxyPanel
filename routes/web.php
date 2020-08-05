@@ -153,16 +153,16 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::group(['prefix' => 'rule'], function() {
 			Route::group(['prefix' => 'group'], function() {
 				Route::get('/', 'RuleGroupController@index')->name('rule.group.index'); // 审计规则分组列表
-				Route::get('/create', 'RuleGroupController@create')->name('rule.group.create'); // 添加审计规则分组页面
+				Route::get('create', 'RuleGroupController@create')->name('rule.group.create'); // 添加审计规则分组页面
 				Route::post('/', 'RuleGroupController@store')->name('rule.group.store'); // 添加审计规则分组
-				Route::get('/{id}/edit', 'RuleGroupController@edit')->name('rule.group.edit'); // 编辑审计规则分组页面
-				Route::put('/{id}', 'RuleGroupController@update')->name('rule.group.update'); // 编辑审计规则分组
-				Route::delete('/{id}', 'RuleGroupController@destroy')->name('rule.group.destroy'); // 删除审计规则分组
-				Route::get('/{id}/assign', 'RuleGroupController@assignNode')->name('rule.group.editNode');
-				Route::put('/{id}/assign', 'RuleGroupController@assign')->name('rule.group.assign'); // 规则分组关联节点
+				Route::get('{id}/edit', 'RuleGroupController@edit')->name('rule.group.edit'); // 编辑审计规则分组页面
+				Route::put('{id}', 'RuleGroupController@update')->name('rule.group.update'); // 编辑审计规则分组
+				Route::delete('{id}', 'RuleGroupController@destroy')->name('rule.group.destroy'); // 删除审计规则分组
+				Route::get('{id}/assign', 'RuleGroupController@assignNode')->name('rule.group.editNode');
+				Route::put('{id}/assign', 'RuleGroupController@assign')->name('rule.group.assign'); // 规则分组关联节点
 			});
-			Route::get('log', 'RuleController@ruleLogList'); // 用户触发审计规则日志
-			Route::post('clear', 'RuleController@clearLog'); // 清除所有审计触发日志
+			Route::get('log', 'RuleController@ruleLogList')->name('rule.log'); // 用户触发审计规则日志
+			Route::post('clear', 'RuleController@clearLog')->name('rule.clear'); // 清除所有审计触发日志
 		});
 		Route::resource('group', 'UserGroupController')->except('show');// 用户分组管理
 	});

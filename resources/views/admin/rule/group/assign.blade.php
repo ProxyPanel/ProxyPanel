@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h2 class="panel-title">分配节点</h2>
 				<div class="panel-actions">
-					<a href="/rule/group" class="btn btn-danger">返 回</a>
+					<a href="{{route('rule.group.index')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
