@@ -102,18 +102,25 @@ class BaseController {
 
 			$rate = Node::find($id)->traffic_rate;
 
-			$obj = new UserDataFlowLog();
-			$obj->user_id = (int) $input['uid'];
-			$obj->u = (int) $input['upload'] * $rate;
-			$obj->d = (int) $input['download'] * $rate;
-			$obj->node_id = $id;
-			$obj->rate = $rate;
-			$obj->traffic = flowAutoShow($obj->u + $obj->d);
-			$obj->log_time = time();
-			$obj->save();
+			$log = new UserDataFlowLog();
+			$log->user_id = (int) $input['uid'];
+			$log->u = (int) $input['upload'] * $rate;
+			$log->d = (int) $input['download'] * $rate;
+			$log->node_id = $id;
+			$log->rate = $rate;
+			$log->traffic = flowAutoShow($log->u + $log->d);
+			$log->log_time = time();
+			$log->save();
 
-			if(!$obj->id){
+			if(!$log->id){
 				return $this->returnData('上报用户流量日志失败，请检查字段');
+			}
+			$user = User::find($log->user_id);
+			if($user){
+				$user->u += $log->u;
+				$user->d += $log->d;
+				$user->t = time();
+				$user->save();
 			}
 		}
 

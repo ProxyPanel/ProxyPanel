@@ -151,7 +151,7 @@ class Controller extends BaseController {
 		$scheme = null;
 		// 获取分组名称
 		$group = $node->level_name;
-		$host = $node->server?: $node->ip;
+		$host = $node->is_relay? $node->relay_server : ($node->server?: $node->ip);
 		$data = null;
 		switch($node->type){
 			case 2:
@@ -177,7 +177,8 @@ class Controller extends BaseController {
 				$method = $node->method;
 				$obfs = $node->obfs;
 				if($node->single){
-					$port = $node->port;
+					//单端口使用中转的端口
+					$port = $node->is_relay? $node->relay_port : $node->port;
 					$passwd = $node->passwd;
 					$protocol_param = $user->port.':'.$user->passwd;
 				}else{
@@ -270,7 +271,7 @@ class Controller extends BaseController {
 			'trafficDaily'  => json_encode($dailyData),
 			'trafficHourly' => json_encode($hourlyData),
 			'monthDays'     => json_encode(range(1, date("j"), 1)),// 本月天数
-			'dayHours'      => json_encode(range(0, date("G"), 1))// 本日小时
+			'dayHours'      => json_encode(range(0, date("G") + 1, 1))// 本日小时
 		];
 	}
 }

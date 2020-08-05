@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  */
 class Rule extends Model {
+	public $timestamps = false;
 	protected $table = 'rule';
 
 	public function getTypeLabelAttribute(): string {
