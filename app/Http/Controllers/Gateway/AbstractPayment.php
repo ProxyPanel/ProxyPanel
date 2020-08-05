@@ -187,20 +187,23 @@ abstract class AbstractPayment {
 	}
 
 	// MD5验签
-	protected function verify($data, $key, $signature): bool {
-		return hash_equals($this->aliStyleSign($data, $key), $signature);
+	protected function verify($data, $key, $signature, $filter = true): bool {
+		return hash_equals($this->aliStyleSign($data, $key, $filter), $signature);
 	}
 
 	/**
 	 *  Alipay式数据MD5签名
-	 * @param  array   $data  需要加密的数组
-	 * @param  string  $key   尾部的密钥
+	 * @param  array    $data    需要加密的数组
+	 * @param  string   $key     尾部的密钥
+	 * @param  boolean  $filter  是否清理空值
 	 * @return string md5加密后的数据
 	 */
-	protected function aliStyleSign($data, $key): string {
+	protected function aliStyleSign($data, $key, $filter = true): string {
 		// 剃离sign，sign_type，空值
 		unset($data['sign'], $data['sign_type']);
-		$data = array_filter($data);
+		if($filter){
+			$data = array_filter($data);
+		}
 
 		// 排序
 		ksort($data, SORT_STRING);

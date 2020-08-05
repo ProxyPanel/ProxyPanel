@@ -32,7 +32,8 @@ class CodePay extends AbstractPayment {
 	public function notify($request): void {
 		$trade_no = $request->input('pay_id');
 		if($trade_no && $request->input('pay_no')
-		   && $this->verify($request->except('method'), self::$systemConfig['codepay_key'], $request->input('sign'))){
+		   && $this->verify($request->except('method'), self::$systemConfig['codepay_key'], $request->input('sign'),
+				false)){
 			$this->postPayment($trade_no, '码支付');
 			exit('success');
 		}
