@@ -27,7 +27,7 @@
 			</div>
 			<div class="form-group form-material floating" data-plugin="formMaterial">
 				<input class="form-control" type="password" autocomplete="off" name="confirmPassword" required/>
-				<label class="floating-label" for="confirmPassword">{{trans('auth.confirm_Password')}}</label>
+				<label class="floating-label" for="confirmPassword">{{trans('auth.confirm_password')}}</label>
 			</div>
 		@endif
 		<a href="/login"

@@ -3,9 +3,9 @@
 	<link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/switchery/switchery.min.css" type="text/css" rel="stylesheet">
 	<style type="text/css">
-		.hidden {
-			display: none
-		}
+        .hidden {
+            display: none
+        }
 	</style>
 @endsection
 @section('content')
@@ -478,6 +478,20 @@
 
 		// ajax同步提交
 		function Submit() {
+			const type = $("input[name='type']:checked").val();
+			let port;
+			switch (type) {
+				case '2':
+					port = $("#v2ray_port").val();
+					break;
+				case '3':
+					port = $("#trojan_port").val();
+					break;
+				case '1':
+				case '4':
+				default:
+					port = $("#single_port").val();
+			}
 			$.ajax({
 				type: "POST",
 				url: @isset($node) "/node/edit" @else "/node/add" @endisset,
@@ -501,7 +515,7 @@
 					sort: $('#sort').val(),
 					is_udp: document.getElementById("is_udp").checked ? 1 : 0,
 					status: document.getElementById("status").checked ? 1 : 0,
-					type: $("input[name='type']:checked").val(),
+					type: type,
 					method: $('#method').val(),
 					protocol: $('#protocol').val(),
 					protocol_param: $('#protocol_param').val(),
@@ -511,7 +525,7 @@
 					is_subscribe: document.getElementById("is_subscribe").checked ? 1 : 0,
 					detection_type: $("input[name='detection_type']:checked").val(),
 					single: document.getElementById("single").checked ? 1 : 0,
-					port: $("input[name='port']").val(),
+					port: port,
 					passwd: $('#passwd').val(),
 					v2_alter_id: $('#v2_alter_id').val(),
 					v2_port: $('#v2_port').val(),

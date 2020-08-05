@@ -214,7 +214,6 @@ class AuthController extends Controller {
 
 
 	// 退出
-
 	public function logout(): RedirectResponse {
 		Auth::logout();
 
@@ -613,7 +612,7 @@ class AuthController extends Controller {
 			$verify->status = 1;
 			$verify->save();
 
-			return Redirect::back()->with('successMsg', trans('auth.reset_password_new'));
+			return Redirect::to('login')->with('successMsg', trans('auth.reset_password_new'));
 		}
 
 		$verify = Verify::type(1)->whereToken($token)->first();
