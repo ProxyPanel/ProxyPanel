@@ -14,6 +14,7 @@ use App\Console\Commands\DailyJob;
 use App\Console\Commands\fixDailyTrafficLogError;
 use App\Console\Commands\NodeBlockedDetection;
 use App\Console\Commands\ServiceTimer;
+use App\Console\Commands\updateTextToJson;
 use App\Console\Commands\updateTicket;
 use App\Console\Commands\updateUserLevel;
 use App\Console\Commands\updateUserName;
@@ -43,6 +44,7 @@ class Kernel extends ConsoleKernel {
 		fixDailyTrafficLogError::class,
 		NodeBlockedDetection::class,
 		ServiceTimer::class,
+		updateTextToJson::class,
 		updateTicket::class,
 		updateUserLevel::class,
 		updateUserName::class,

@@ -52,10 +52,9 @@ class AffiliateController extends Controller {
 		$list = null;
 		$apply = ReferralApply::query()->with(['user'])->whereId($id)->first();
 		if($apply && $apply->link_logs){
-			$link_logs = explode(',', $apply->link_logs);
 			$list = ReferralLog::query()
 			                   ->with(['user', 'order.goods'])
-			                   ->whereIn('id', $link_logs)
+			                   ->whereIn('id', $apply->link_logs)
 			                   ->paginate(15)
 			                   ->appends($request->except('page'));
 		}
@@ -74,12 +73,11 @@ class AffiliateController extends Controller {
 		$ret = ReferralApply::query()->whereId($id)->update(['status' => $status]);
 		if($ret){
 			// 审核申请的时候将关联的
-			$referralApply = ReferralApply::find($id);
-			$log_ids = explode(',', $referralApply->link_logs);
+			$referralApply = ReferralApply::findOrFail($id);
 			if($referralApply && $status == 1){
-				ReferralLog::query()->whereIn('id', $log_ids)->update(['status' => 1]);
+				ReferralLog::query()->whereIn('id', $referralApply->link_logs)->update(['status' => 1]);
 			}elseif($referralApply && $status == 2){
-				ReferralLog::query()->whereIn('id', $log_ids)->update(['status' => 2]);
+				ReferralLog::query()->whereIn('id', $referralApply->link_logs)->update(['status' => 2]);
 			}
 		}
 

@@ -163,8 +163,8 @@ class User extends Authenticatable {
 		$groups = [0];
 		if($node_id){
 			foreach(UserGroup::all() as $userGroup){
-				$nodes = explode(',', $userGroup->nodes);
-				if(in_array($node_id, $nodes, true)){
+				$nodes = $userGroup->nodes;
+				if($nodes && in_array($node_id, $nodes, true)){
 					$groups[] = $userGroup->id;
 				}
 			}

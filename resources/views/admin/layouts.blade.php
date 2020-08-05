@@ -124,7 +124,7 @@
 							<span class="site-menu-title">用户管理</span>
 						</a>
 					</li>
-					<li class="site-menu-item {{in_array(Request::path(), ['group', 'group/add', 'group/edit']) ? 'active open' : ''}}">
+					<li class="site-menu-item {{Str::in_array(Request::path(), ['group']) ? 'active open' : ''}}">
 						<a href="/group">
 							<span class="site-menu-title">用戶分组</span>
 						</a>

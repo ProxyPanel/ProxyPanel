@@ -135,7 +135,7 @@ class BaseController {
 		if($nodeRule){
 			$ruleGroup = RuleGroup::find($nodeRule->rule_group_id);
 			if($ruleGroup){
-				foreach(explode(',', $ruleGroup->rules) as $ruleId){
+				foreach($ruleGroup->rules as $ruleId){
 					$rule = Rule::find($ruleId);
 					if($rule){
 						$new = [

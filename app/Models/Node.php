@@ -126,10 +126,7 @@ class Node extends Model {
 	public function scopeGroupNodePermit($query, $group_id = 0) {
 		$userGroup = UserGroup::find($group_id);
 		if($userGroup){
-			$nodes = explode(',', $userGroup->nodes);
-			if($nodes){
-				return $query->whereIn('id', $nodes);
-			}
+			return $query->whereIn('id', $userGroup->nodes);
 		}
 		return $query;
 	}

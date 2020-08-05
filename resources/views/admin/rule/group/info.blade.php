@@ -8,7 +8,7 @@
 			<div class="panel-heading">
 				<h2 class="panel-title">@isset($ruleGroup)编辑@else添加@endisset规则分组</h2>
 				<div class="panel-actions">
-					<a href="/rule/group" class="btn btn-danger">返 回</a>
+					<a href="{{route('rule.group.index')}}" class="btn btn-danger">返 回</a>
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
@@ -30,8 +30,8 @@
 				</div>
 			@endif
 			<div class="panel-body">
-				<form action=@isset($ruleGroup){{url('/rule/group/edit')}}@else{{url('/rule/group/add')}}@endisset method="post" enctype="multipart/form-data" class="form-horizontal">
-					@isset($ruleGroup)<input name="id" value="{{$ruleGroup->id}}" hidden/>@endisset
+				<form action=@isset($ruleGroup){{route('rule.group.update',$ruleGroup->id)}}@else{{route('rule.group.store')}}@endisset method="post" enctype="multipart/form-data" class="form-horizontal">
+					@isset($ruleGroup)@method('PUT')@endisset
 					@csrf
 					<div class="form-group row">
 						<label class="col-md-2 col-sm-3 col-form-label" for="name">分组名称</label>
@@ -89,7 +89,7 @@
 		$(document).ready(function () {
 			$('#name').val('{{$ruleGroup->name}}');
 			$("input[name='type'][value='{{$ruleGroup->type}}']").click();
-			$('#rules').multiSelect('select',{!! json_encode(explode(',', $ruleGroup->rules)) !!});
+			$('#rules').multiSelect('select',@json($ruleGroup->rules));
 		})
 		@endisset
 		// 权限列表

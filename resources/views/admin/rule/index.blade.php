@@ -51,9 +51,9 @@
 								<input type="text" class="form-control" name="rule_pattern" id="rule_pattern_{{$rule->id}}" value="{{$rule->pattern}}"/>
 							</td>
 							<td>
-								<button class="btn btn-sm btn-outline-primary" onclick="editRule('{{$rule->id}}')">
-									<i class="icon wb-edit" aria-hidden="true"></i></button>
-								<button class="btn btn-sm btn-outline-danger" onclick="delRule('{{$rule->id}}','{{$rule->name}}')">
+								<button class="btn btn-sm btn-outline-primary" onclick="editRule('{{$rule->id}}', '{{route('rule.update',$rule->id)}}')">
+									<i class="icon wb-edit"></i></button>
+								<button class="btn btn-sm btn-outline-danger" onclick="delRule('{{route('rule.destroy',$rule->id)}}','{{$rule->name}}')">
 									<i class="icon wb-trash"></i></button>
 							</td>
 						</tr>
@@ -131,42 +131,52 @@
 	<script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
 	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#type').selectpicker('val', {{Request::get('type')}});
+		});
+
 		// 添加规则
 		function addRule() {
-			$.post("/rule/add", {
+			$.post("{{route('rule.store')}}", {
 				_token: '{{csrf_token()}}',
 				type: $("#add_type").val(),
 				name: $("#name").val(),
 				pattern: $("#pattern").val()
 			}, function (ret) {
+				$('#add').modal('hide');
 				if (ret.status === 'success') {
 					swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-						.then(() => window.location.reload())
+						.then(() => window.location.reload());
 				} else {
-					swal.fire({title: ret.message, type: "error"});
+					swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload());
 				}
 			});
 		}
 
 		// 编辑规则
-		function editRule(id) {
-			$.post("/rule/edit", {
-				_token: '{{csrf_token()}}',
-				id: id,
-				rule_name: $('#rule_name_' + id).val(),
-				rule_pattern: $('#rule_pattern_' + id).val()
-			}, function (ret) {
-				if (ret.status === 'success') {
-					swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-						.then(() => window.location.reload())
-				} else {
-					swal.fire({title: ret.message, type: "error"});
+		function editRule(id, url) {
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				data: {
+					_token: '{{csrf_token()}}',
+					rule_name: $('#rule_name_' + id).val(),
+					rule_pattern: $('#rule_pattern_' + id).val()
+				},
+				dataType: 'json',
+				success: function (ret) {
+					if (ret.status === 'success') {
+						swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+							.then(() => window.location.reload());
+					} else {
+						swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload());
+					}
 				}
 			});
 		}
 
 		// 删除规则
-		function delRule(id, name) {
+		function delRule(url, name) {
 			swal.fire({
 				title: '警告',
 				text: '确定删除规则 【' + name + '】 ？',
@@ -176,12 +186,18 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/rule/delete", {_token: '{{csrf_token()}}', id: id}, function (ret) {
-						if (ret.status === 'success') {
-							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-								.then(() => window.location.reload())
-						} else {
-							swal.fire({title: ret.message, type: "error"});
+					$.ajax({
+						type: 'DELETE',
+						url: url,
+						data: {_token: '{{csrf_token()}}'},
+						dataType: 'json',
+						success: function (ret) {
+							if (ret.status === 'success') {
+								swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
+									.then(() => window.location.reload())
+							} else {
+								swal.fire({title: ret.message, type: "error"}).then(() => window.location.reload())
+							}
 						}
 					});
 				}

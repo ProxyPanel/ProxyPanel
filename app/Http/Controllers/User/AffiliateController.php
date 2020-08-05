@@ -65,15 +65,14 @@ class AffiliateController extends Controller {
 			]);
 		}
 
-		$ret = ReferralApply::query()->insert([
-			'user_id'   => Auth::id(),
-			'before'    => $ref_amount,
-			'after'     => 0,
-			'amount'    => $ref_amount,
-			'link_logs' => implode(',', ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray()),// 取出本次申请关联返利日志ID
-			'status'    => 0
-		]);
-		if($ret){
+		$ref = new ReferralApply();
+		$ref->user_id = Auth::id();
+		$ref->before = $ref_amount;
+		$ref->after = 0;
+		$ref->amount = $ref_amount;
+		$ref->link_logs = ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray();
+		$ref->status = 0;
+		if($ref->save()){
 			return Response::json(['status' => 'success', 'message' => '申请成功，请等待管理员审核']);
 		}
 

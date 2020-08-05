@@ -197,7 +197,7 @@ CREATE TABLE `user_group`
 (
     `id`    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name`  VARCHAR(255)     NOT NULL COMMENT '分组名称',
-    `nodes` TEXT COMMENT '关联的节点ID，多个用,号分隔',
+    `nodes` JSON DEFAULT NULL COMMENT '关联的节点ID，多个用,号分隔',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户分组控制表';
 
@@ -771,7 +771,7 @@ CREATE TABLE `referral_apply`
     `before`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作前可提现金额，单位分',
     `after`      INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作后可提现金额，单位分',
     `amount`     INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '本次提现金额，单位分',
-    `link_logs`  TEXT             NOT NULL COMMENT '关联返利日志ID，例如：1,3,4',
+    `link_logs`  JSON             NOT NULL COMMENT '关联返利日志ID，例如：1,3,4',
     `status`     TINYINT(1)       NOT NULL DEFAULT '0' COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
     `created_at` DATETIME         NOT NULL COMMENT '创建时间',
     `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
@@ -991,7 +991,8 @@ CREATE TABLE `user_subscribe`
 -- ----------------------------
 -- Records of user_subscribe
 -- ----------------------------
-INSERT INTO `user_subscribe`(`id`, `user_id`, `code`,`created_at`,`updated_at`) VALUES ('1', '1', 'SsXa1', Now(), Now());
+INSERT INTO `user_subscribe`(`id`, `user_id`, `code`, `created_at`, `updated_at`)
+VALUES ('1', '1', 'SsXa1', Now(), Now());
 
 
 -- ----------------------------
@@ -1318,19 +1319,12 @@ CREATE TABLE `rule_group`
     `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `type`       BIT              NOT NULL DEFAULT 1 COMMENT '模式：1-阻断、0-放行',
     `name`       VARCHAR(255)     NOT NULL COMMENT '分组名称',
-    `rules`      TEXT                      DEFAULT NULL COMMENT '关联的规则ID，多个用,号分隔',
-    `nodes`      TEXT                      DEFAULT NULL COMMENT '关联的节点ID，多个用,号分隔',
+    `rules`      JSON                      DEFAULT NULL COMMENT '关联的规则ID，多个用,号分隔',
+    `nodes`      JSON                      DEFAULT NULL COMMENT '关联的节点ID，多个用,号分隔',
     `created_at` DATETIME         NOT NULL COMMENT '创建时间',
     `updated_at` DATETIME         NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='审计规则分组';
-
-
--- ----------------------------
--- Records of rule_group
--- ----------------------------
-INSERT INTO `rule_group`(`id`, `type`, `name`, `rules`, `nodes`, `created_at`, `updated_at`)
-VALUES (1, 1, '默认', '1,2,3,4,5,6,7,8,9,10,11,12,13,14', NULL, Now(), Now());
 
 
 -- ----------------------------

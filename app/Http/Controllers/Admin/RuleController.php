@@ -6,18 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Node;
 use App\Models\Rule;
 use App\Models\RuleGroup;
-use App\Models\RuleGroupNode;
 use App\Models\RuleLog;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Redirect;
 use Response;
 use Validator;
 
 class RuleController extends Controller {
 	// 审计规则列表
-	public function ruleList(Request $request): \Illuminate\Http\Response {
+	public function index(Request $request): \Illuminate\Http\Response {
 		$type = $request->input('type');
 		$query = Rule::query();
 
@@ -26,11 +24,11 @@ class RuleController extends Controller {
 		}
 
 		$view['rules'] = $query->paginate(15)->appends($request->except('page'));
-		return Response::view('admin.rule.ruleList', $view);
+		return Response::view('admin.rule.index', $view);
 	}
 
 	// 添加审计规则
-	public function addRule(Request $request): ?JsonResponse {
+	public function store(Request $request): JsonResponse {
 		$validator = Validator::make($request->all(), [
 			'type'    => 'required|between:1,4',
 			'name'    => 'required',
@@ -54,18 +52,8 @@ class RuleController extends Controller {
 	}
 
 	// 编辑审计规则
-	public function editRule(Request $request): ?JsonResponse {
-		$validator = Validator::make($request->all(), [
-			'id'           => 'required|exists:rule,id',
-			'rule_name'    => 'required',
-			'rule_pattern' => 'required',
-		]);
-
-		if($validator->fails()){
-			return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
-		}
-
-		$ret = Rule::query()->whereId($request->input('id'))->update([
+	public function update(Request $request, $id): JsonResponse {
+		$ret = Rule::query()->whereId($id)->update([
 			'name'    => $request->input('rule_name'),
 			'pattern' => $request->input('rule_pattern')
 		]);
@@ -76,179 +64,21 @@ class RuleController extends Controller {
 	}
 
 	// 删除审计规则
-	public function delRule(Request $request): JsonResponse {
-		$id = $request->input('id');
+	public function destroy($id): JsonResponse {
 		try{
-			Rule::query()->whereId($id)->delete();
+			Rule::whereId($id)->delete();
 
-			foreach(RuleGroup::all() as $RuleGroup){
-				$rules = explode(',', $RuleGroup->rules);
-				if(in_array($id, $rules, true)){
-					$rules = implode(',', array_diff($rules, [$id]));
-					RuleGroup::query()->whereId($RuleGroup->id)->update(['rules' => $rules]);
+			foreach(RuleGroup::all() as $ruleGroup){
+				$rules = $ruleGroup->rules;
+				if($rules && in_array($id, $rules, true)){
+					$ruleGroup->rules = array_merge(array_diff($rules, [$id]));
+					$ruleGroup->save();
 				}
 			}
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '操作失败, '.$e->getMessage()]);
 		}
 		return Response::json(['status' => 'success', 'message' => '操作成功']);
-	}
-
-	// 审计规则分组列表
-	public function ruleGroupList(Request $request): \Illuminate\Http\Response {
-		$view['ruleGroupList'] = RuleGroup::query()->paginate(15)->appends($request->except('page'));
-		return Response::view('admin.rule.ruleGroupList', $view);
-	}
-
-	// 添加审计规则分组
-	public function addRuleGroup(Request $request) {
-		if($request->isMethod('POST')){
-			$validator = Validator::make($request->all(), [
-				'name'  => 'required',
-				'type'  => 'required|boolean',
-				'rules' => 'required',
-			]);
-
-			if($validator->fails()){
-				return Redirect::back()->withInput()->withErrors($validator->errors());
-			}
-
-			$obj = new RuleGroup();
-			$obj->name = $request->input('name');
-			$obj->type = (int) $request->input('type');
-			$obj->rules = implode(',', $request->input('rules'));
-			$obj->save();
-
-			if($obj->id){
-				return Redirect::back()->with('successMsg', '操作成功');
-			}
-			return Redirect::back()->withInput()->withErrors('操作失败');
-		}
-		$view['ruleList'] = Rule::all();
-		return Response::view('admin.rule.ruleGroupInfo', $view);
-	}
-
-	// 编辑审计规则分组
-	public function editRuleGroup(Request $request) {
-		$id = $request->input('id');
-		if($request->isMethod('POST')){
-			$validator = Validator::make($request->all(), [
-				'id'   => 'required',
-				'name' => 'required',
-				'type' => 'required|boolean'
-			]);
-
-			if($validator->fails()){
-				return Redirect::back()->withInput()->withErrors($validator->errors());
-			}
-			$name = $request->input('name');
-			$type = (int) $request->input('type');
-			$rules = $request->input('rules');
-			$ruleGroup = RuleGroup::find($id);
-			if(!$ruleGroup){
-				return Redirect::back()->withInput()->withErrors('未找到需要编辑的审计规则分组！');
-			}
-
-			$data = [];
-			if($ruleGroup->name != $name){
-				$data['name'] = $name;
-			}
-			if($ruleGroup->type != $type){
-				$data['type'] = $type;
-			}
-			if($rules){
-				$ruleStr = implode(',', $rules);
-				if($ruleGroup->rules != $ruleStr){
-					$data['rules'] = $ruleStr;
-				}elseif($data == []){
-					return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
-				}
-			}elseif(isset($ruleGroup->rules)){
-				$data['rules'] = $rules;
-			}
-			$ret = RuleGroup::query()->whereId($id)->update($data);
-			if($ret){
-				return Redirect::back()->with('successMsg', '操作成功');
-			}
-			return Redirect::back()->withInput()->withErrors('操作失败');
-		}
-
-		$ruleGroup = RuleGroup::find($id);
-		if(!$ruleGroup){
-			return Redirect::back();
-		}
-		$view['ruleList'] = Rule::all();
-
-		return view('admin.rule.ruleGroupInfo', $view)->with(compact('ruleGroup'));
-	}
-
-	// 删除审计规则分组
-	public function delRuleGroup(Request $request): JsonResponse {
-		$id = $request->input('id');
-		$ruleGroup = RuleGroup::query()->whereId($id)->get();
-		if(!$ruleGroup){
-			return Response::json(['status' => 'fail', 'message' => '删除失败，未找到审计规则分组']);
-		}
-		try{
-			RuleGroup::query()->whereId($id)->delete();
-			RuleGroupNode::query()->whereRuleGroupId($id)->delete();
-
-		}catch(Exception $e){
-			return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
-		}
-
-		return Response::json(['status' => 'success', 'message' => '清理成功']);
-	}
-
-	// 规则分组关联节点
-	public function assignNode(Request $request) {
-		$id = $request->input('id');
-		if($request->isMethod('POST')){
-			$nodes = $request->input('nodes');
-			$validator = Validator::make($request->all(), [
-				'id' => 'required',
-			]);
-
-			if($validator->fails()){
-				return Redirect::back()->withInput()->withErrors($validator->errors());
-			}
-
-			$ruleGroup = RuleGroup::find($id);
-			if(!$ruleGroup){
-				return Redirect::back()->withInput()->withErrors('未找到审计规则分组！');
-			}
-
-			try{
-				if($nodes){
-					$nodeStr = implode(',', $nodes);
-					// 无变动 不改动
-					if($ruleGroup->nodes == $nodeStr){
-						return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
-					}
-					RuleGroup::query()->whereId($id)->update(['nodes' => $nodeStr]);
-					RuleGroupNode::query()->whereRuleGroupId($id)->delete();
-
-					foreach($nodes as $nodeId){
-						$obj = new RuleGroupNode();
-						$obj->rule_group_id = $id;
-						$obj->node_id = $nodeId;
-						$obj->save();
-					}
-				}else{
-					RuleGroup::query()->whereId($id)->update(['nodes' => $nodes]);
-					RuleGroupNode::query()->whereRuleGroupId($id)->delete();
-				}
-			}catch(Exception $e){
-				return Redirect::back()->withInput()->withErrors($e->getMessage());
-			}
-
-			return Redirect::back()->with('successMsg', '操作成功');
-		}
-
-		$view['ruleGroup'] = RuleGroup::find($id);
-		$view['nodeList'] = Node::all();
-
-		return Response::view('admin.rule.assignNode', $view);
 	}
 
 	// 用户触发审计规则日志
@@ -277,11 +107,11 @@ class RuleController extends Controller {
 		$view['nodeList'] = Node::all();
 		$view['ruleList'] = Rule::all();
 		$view['ruleLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
-		return Response::view('admin.rule.ruleLogList', $view);
+		return Response::view('admin.rule.log', $view);
 	}
 
 	// 清除所有审计触发日志
-	public function clearLog(): ?JsonResponse {
+	public function clearLog(): JsonResponse {
 		try{
 			$ret = RuleLog::query()->delete();
 		}catch(Exception $e){

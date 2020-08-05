@@ -148,29 +148,23 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 			Route::get('analysis', 'ToolsController@analysis'); // 日志分析
 		});
 
-		// 节点审计规则相关
+
+		Route::resource('rule', 'RuleController')->except(['create', 'edit', 'show']);// 节点审计规则管理
 		Route::group(['prefix' => 'rule'], function() {
-			Route::get('/', 'RuleController@ruleList'); // 审计规则列表
-			Route::post('add', 'RuleController@addRule'); // 添加审计规则
-			Route::post('edit', 'RuleController@editRule'); // 删除审计规则
-			Route::post('delete', 'RuleController@delRule'); // 删除审计规则
 			Route::group(['prefix' => 'group'], function() {
-				Route::get('/', 'RuleController@ruleGroupList'); // 审计规则分组列表
-				Route::any('add', 'RuleController@addRuleGroup'); // 添加审计规则分组
-				Route::any('edit', 'RuleController@editRuleGroup'); // 编辑审计规则分组
-				Route::post('delete', 'RuleController@delRuleGroup'); // 删除审计规则分组
-				Route::any('assign', 'RuleController@assignNode'); // 规则分组关联节点
+				Route::get('/', 'RuleGroupController@index')->name('rule.group.index'); // 审计规则分组列表
+				Route::get('/create', 'RuleGroupController@create')->name('rule.group.create'); // 添加审计规则分组页面
+				Route::post('/', 'RuleGroupController@store')->name('rule.group.store'); // 添加审计规则分组
+				Route::get('/{id}/edit', 'RuleGroupController@edit')->name('rule.group.edit'); // 编辑审计规则分组页面
+				Route::put('/{id}', 'RuleGroupController@update')->name('rule.group.update'); // 编辑审计规则分组
+				Route::delete('/{id}', 'RuleGroupController@destroy')->name('rule.group.destroy'); // 删除审计规则分组
+				Route::get('/{id}/assign', 'RuleGroupController@assignNode')->name('rule.group.editNode');
+				Route::put('/{id}/assign', 'RuleGroupController@assign')->name('rule.group.assign'); // 规则分组关联节点
 			});
 			Route::get('log', 'RuleController@ruleLogList'); // 用户触发审计规则日志
 			Route::post('clear', 'RuleController@clearLog'); // 清除所有审计触发日志
 		});
-
-		Route::group(['prefix' => 'group'], function() {
-			Route::get('/', 'UserGroupController@userGroupList'); // 用户分组列表（分组控制）
-			Route::match(['GET', 'POST'], 'add', 'UserGroupController@addUserGroup'); // 添加用户分组
-			Route::match(['GET', 'POST'], 'edit', 'UserGroupController@editUserGroup');// 编辑用户分组
-			Route::delete('delete', 'UserGroupController@delUserGroup'); // 删除用户分组
-		});
+		Route::resource('group', 'UserGroupController')->except('show');// 用户分组管理
 	});
 
 	Route::get("payment/callbackList", "PaymentController@callbackList"); // 支付回调日志

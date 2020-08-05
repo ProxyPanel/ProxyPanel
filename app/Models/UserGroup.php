@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 用户分组控制
  *
- * @property int         $id
- * @property string      $name  分组名称
- * @property string|null $nodes 关联的节点ID，多个用,号分隔
+ * @property int        $id
+ * @property string     $name  分组名称
+ * @property array|null $nodes 关联的节点ID，多个用,号分隔
  * @method static Builder|UserGroup newModelQuery()
  * @method static Builder|UserGroup newQuery()
  * @method static Builder|UserGroup query()
@@ -22,4 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserGroup extends Model {
 	public $timestamps = false;
 	protected $table = 'user_group';
+	protected $casts = [
+		'nodes' => 'array'
+	];
 }

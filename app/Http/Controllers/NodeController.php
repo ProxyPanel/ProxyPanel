@@ -10,13 +10,13 @@ use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeAuth;
 use App\Models\NodeCertificate;
+use App\Models\NodeDailyDataFlow;
+use App\Models\NodeHourlyDataFlow;
 use App\Models\NodeInfo;
 use App\Models\NodeLabel;
 use App\Models\NodeOnlineLog;
 use App\Models\NodePing;
 use App\Models\NodeRule;
-use App\Models\NodeDailyDataFlow;
-use App\Models\NodeHourlyDataFlow;
 use App\Models\RuleGroup;
 use App\Models\UserDailyDataFlow;
 use App\Models\UserDataFlowLog;
@@ -384,18 +384,19 @@ class NodeController extends Controller {
 			UserDataFlowLog::query()->whereNodeId($id)->delete();
 			NodeAuth::query()->whereNodeId($id)->delete();
 			NodeRule::query()->whereNodeId($id)->delete();
-			foreach(RuleGroup::all() as $RuleGroup){
-				$nodes = explode(',', $RuleGroup->nodes);
-				if(in_array($id, $nodes, true)){
-					$nodes = implode(',', array_diff($nodes, [$id]));
-					RuleGroup::query()->whereId($RuleGroup->id)->update(['nodes' => $nodes]);
+			foreach(RuleGroup::all() as $ruleGroup){
+				$nodes = $ruleGroup->nodes;
+				if($nodes && in_array($id, $nodes, true)){
+					$ruleGroup->nodes = array_merge(array_diff($nodes, [$id]));
+					$ruleGroup->save();
 				}
 			}
-			foreach(UserGroup::all() as $UserGroup){
-				$nodes = explode(',', $UserGroup->nodes);
-				if(in_array($id, $nodes, true)){
-					$nodes = implode(',', array_diff($nodes, [$id]));
-					UserGroup::query()->whereId($UserGroup->id)->update(['nodes' => $nodes]);
+
+			foreach(UserGroup::all() as $userGroup){
+				$nodes = $userGroup->nodes;
+				if($nodes && in_array($id, $nodes, true)){
+					$userGroup->nodes = array_merge(array_diff($nodes, [$id]));
+					$userGroup->save();
 				}
 			}
 
