@@ -13,6 +13,3 @@ ALTER TABLE `user_group`
 ALTER TABLE `rule_group`
     CHANGE `rules` `rules` JSON DEFAULT NULL COMMENT '关联的规则ID，多个用,号分隔',
     CHANGE `nodes` `nodes` JSON DEFAULT NULL COMMENT '关联的节点ID，多个用,号分隔';
-
-ALTER TABLE `ss_node_ip`
-    CHANGE `ip` `ip` JSON COMMENT '用户连接IP';

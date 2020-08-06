@@ -89,7 +89,7 @@
 							<div class="alert alert-info  text-break">
 								<div class="text-center red-700 mb-5">VNET-V2Ray</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-								&& curl -L -s https://bit.ly/2xoemF2 \<br>
+								&& curl -L -s http://mrw.so/5XKg2o \<br>
 								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
@@ -99,7 +99,7 @@
 								<div class="text-center red-700 mb-5">操作命令</div>
 								更新：同上
 								<br>
-								卸载：curl -L -s https://bit.ly/2xoemF2 | bash -s -- --remove
+								卸载：curl -L -s http://mrw.so/5XKg2o | bash -s -- --remove
 								<br>
 								启动：systemctl start vnet-v2ray
 								<br>
@@ -114,7 +114,7 @@
 							<div class="alert alert-info text-break">
 								<div class="text-center red-700 mb-5">V2Ray-Poseidon</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-								&& curl -L -s https://bit.ly/2VhvcPz \<br>
+								&& curl -L -s http://mrw.so/5Qe2UX \<br>
 								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
@@ -122,9 +122,9 @@
 								<br>
 								<br>
 								<div class="text-center red-700 mb-5">操作命令</div>
-								更新：curl -L -s https://bit.ly/2VhvcPz | bash
+								更新：curl -L -s http://mrw.so/5Qe2UX | bash
 								<br>
-								卸载：curl -L -s https://bit.ly/2SGFMMY | bash
+								卸载：curl -L -s http://mrw.so/5IHPR4 | bash
 								<br>
 								启动：systemctl start v2ray
 								<br>
@@ -143,7 +143,7 @@
 								<div class="alert alert-info text-break">
 									<div class="text-center red-700 mb-5">Trojan-Poseidon</div>
 									(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-									&& curl -L -s https://bit.ly/33UdELu \<br>
+									&& curl -L -s http://mrw.so/6cMfGy \<br>
 									| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 									NODE_ID={{$vl->node->id}} \<br>
 									NODE_KEY={{$vl->key}} \<br>
@@ -152,9 +152,9 @@
 									<br>
 									<br>
 									<div class="text-center red-700 mb-5">操作命令</div>
-									更新：curl -L -s https://bit.ly/3esZ7ec | bash
+									更新：curl -L -s http://mrw.so/6cMfGy | bash
 									<br>
-									卸载：curl -L -s https://bit.ly/2Jl9bs7 | bash
+									卸载：curl -L -s http://mrw.so/5ulpvu | bash
 									<br>
 									启动：systemctl start trojanp
 									<br>
@@ -171,7 +171,7 @@
 							<div class="alert alert-info text-break">
 								<div class="text-center red-700 mb-5">VNET</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-								&& curl -L -s https://bit.ly/2RNkPk7 \<br>
+								&& curl -L -s http://mrw.so/6kit3t \<br>
 								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
@@ -181,7 +181,7 @@
 								<div class="text-center red-700 mb-5">操作命令</div>
 								更新：同上
 								<br>
-								卸载：curl -L -s https://bit.ly/2RNkPk7 | bash -s -- --remove
+								卸载：curl -L -s http://mrw.so/6kit3t | bash -s -- --remove
 								<br>
 								启动：systemctl start vnet
 								<br>
