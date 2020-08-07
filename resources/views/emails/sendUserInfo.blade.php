@@ -26,7 +26,7 @@
 														<a href="#"
 																style="Margin:0;color:#40253b;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"
 																target="_blank">
-															{{\App\Components\Helpers::systemConfig()['website_name']}}
+															{{sysConfig('website_name')}}
 														</a>
 													</h3>
 												</th>

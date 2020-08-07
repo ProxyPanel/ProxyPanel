@@ -1,5 +1,6 @@
 <?php
 
+use App\Components\Helpers;
 use GuzzleHttp\Client;
 
 define('KB', 1024);
@@ -184,5 +185,12 @@ if(!function_exists('filterEmoji')){
 		}, $str);
 
 		return $str;
+	}
+}
+
+// 获取系统设置
+if(!function_exists('sysConfig')){
+	function sysConfig($name){
+		return Helpers::sysConfig()[$name];
 	}
 }

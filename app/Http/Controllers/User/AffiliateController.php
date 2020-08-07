@@ -13,10 +13,10 @@ use Illuminate\Http\JsonResponse;
 use Response;
 
 class AffiliateController extends Controller {
-	protected static $systemConfig;
+	protected static $sysConfig;
 
 	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
+		self::$sysConfig = Helpers::sysConfig();
 	}
 
 	// 推广返利
@@ -25,12 +25,12 @@ class AffiliateController extends Controller {
 			return Response::view('auth.error',
 				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
 		}
-		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * MB);
-		$view['referral_percent'] = self::$systemConfig['referral_percent'];
-		$view['referral_money'] = self::$systemConfig['referral_money'];
+		$view['referral_traffic'] = flowAutoShow(self::$sysConfig['referral_traffic'] * MB);
+		$view['referral_percent'] = self::$sysConfig['referral_percent'];
+		$view['referral_money'] = self::$sysConfig['referral_money'];
 		$view['totalAmount'] = ReferralLog::uid()->sum('ref_amount') / 100;
 		$view['canAmount'] = ReferralLog::uid()->whereStatus(0)->sum('ref_amount') / 100;
-		$view['link'] = self::$systemConfig['website_url'].'/register?aff='.Auth::id();
+		$view['link'] = self::$sysConfig['website_url'].'/register?aff='.Auth::id();
 		$view['referralLogList'] = ReferralLog::uid()->with('user')->latest()->paginate(10, ['*'], 'log_page');
 		$view['referralApplyList'] = ReferralApply::uid()->with('user')->latest()->paginate(10, ['*'], 'apply_page');
 		$view['referralUserList'] = User::query()
@@ -58,10 +58,10 @@ class AffiliateController extends Controller {
 		// 校验可以提现金额是否超过系统设置的阀值
 		$ref_amount = ReferralLog::uid()->whereStatus(0)->sum('ref_amount');
 		$ref_amount /= 100;
-		if($ref_amount < self::$systemConfig['referral_money']){
+		if($ref_amount < self::$sysConfig['referral_money']){
 			return Response::json([
 				'status'  => 'fail',
-				'message' => '申请失败：满'.self::$systemConfig['referral_money'].'元才可以提现，继续努力吧'
+				'message' => '申请失败：满'.self::$sysConfig['referral_money'].'元才可以提现，继续努力吧'
 			]);
 		}
 

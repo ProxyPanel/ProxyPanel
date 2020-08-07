@@ -14,10 +14,10 @@ use Illuminate\Http\Request;
 use Log;
 
 abstract class AbstractPayment {
-	protected static $systemConfig;
+	protected static $sysConfig;
 
 	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
+		self::$sysConfig = Helpers::sysConfig();
 	}
 
 	abstract public function purchase(Request $request): JsonResponse;
@@ -114,18 +114,18 @@ abstract class AbstractPayment {
 				}
 
 				// 是否返利
-				if(self::$systemConfig['referral_type'] && $order->user->referral_uid){
+				if($order->user->referral_uid && self::$sysConfig['referral_type']){
 					//获取历史返利记录
 					$referral = ReferralLog::whereUserId($order->user_id)->get();
 					// 无记录 / 首次返利
-					if(!$referral && self::$systemConfig['is_invite_register']){
+					if(!$referral && self::$sysConfig['is_invite_register']){
 						// 邀请注册功能开启时，返还邀请者邀请名额
 						User::query()->whereId($order->user->referral_uid)->increment('invite_num', 1);
 					}
 					//按照返利模式进行返利判断
-					if(self::$systemConfig['referral_type'] == 2 || (self::$systemConfig['referral_type'] == 1 && !$referral)){
+					if(self::$sysConfig['referral_type'] == 2 || (self::$sysConfig['referral_type'] == 1 && !$referral)){
 						$this->addReferralLog($order->user_id, $order->user->referral_uid, $order->oid, $order->amount,
-							$order->amount * self::$systemConfig['referral_percent']);
+							$order->amount * self::$sysConfig['referral_percent']);
 					}
 				}
 

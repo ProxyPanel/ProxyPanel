@@ -10,9 +10,9 @@
 					<div class="col-lg-3">
 						<h3>
 							<img
-									src="{{\App\Components\Helpers::systemConfig()['website_logo']? :'/assets/images/logo64.png'}}"
+									src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}"
 									class="navbar-brand-logo" alt="logo">
-							{{\App\Components\Helpers::systemConfig()['website_name']}}
+							{{sysConfig('website_name')}}
 						</h3>
 					</div>
 					<div class="col-lg-3 offset-lg-6 text-right">

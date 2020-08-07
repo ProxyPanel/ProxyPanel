@@ -27,18 +27,18 @@ class EPay extends AbstractPayment {
 		}
 
 		$data = [
-			'pid'          => self::$systemConfig['epay_mch_id'],
+			'pid'          => self::$sysConfig['epay_mch_id'],
 			'type'         => $type,
-			'notify_url'   => (self::$systemConfig['website_callback_url']?: self::$systemConfig['website_url']).'/callback/notify?method=epay',
-			'return_url'   => self::$systemConfig['website_url'].'/invoices',
+			'notify_url'   => (self::$sysConfig['website_callback_url']?: self::$sysConfig['website_url']).'/callback/notify?method=epay',
+			'return_url'   => self::$sysConfig['website_url'].'/invoices',
 			'out_trade_no' => $payment->trade_no,
-			'name'         => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
+			'name'         => self::$sysConfig['subject_name']?: self::$sysConfig['website_name'],
 			'money'        => $payment->amount,
 			'sign_type'    => 'MD5'
 		];
-		$data['sign'] = $this->aliStyleSign($data, self::$systemConfig['epay_key']);
+		$data['sign'] = $this->aliStyleSign($data, self::$sysConfig['epay_key']);
 
-		$url = self::$systemConfig['epay_url'].'submit.php?'.http_build_query($data);
+		$url = self::$sysConfig['epay_url'].'submit.php?'.http_build_query($data);
 		Payment::whereId($payment->id)->update(['url' => $url]);
 
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
@@ -46,7 +46,7 @@ class EPay extends AbstractPayment {
 
 	public function notify(Request $request): void {
 		if($request->input('trade_status') === 'TRADE_SUCCESS'
-		   && $this->verify($request->except('method'), self::$systemConfig['epay_key'], $request->input('sign'))){
+		   && $this->verify($request->except('method'), self::$sysConfig['epay_key'], $request->input('sign'))){
 			$this->postPayment($request->input('out_trade_no'), 'EPay');
 			exit('SUCCESS');
 		}
@@ -54,11 +54,11 @@ class EPay extends AbstractPayment {
 	}
 
 	public function queryInfo(): JsonResponse {
-		$request = (new Client())->get(self::$systemConfig['epay_url'].'api.php', [
+		$request = (new Client())->get(self::$sysConfig['epay_url'].'api.php', [
 			'query' => [
 				'act' => 'query',
-				'pid' => self::$systemConfig['epay_mch_id'],
-				'key' => self::$systemConfig['epay_key']
+				'pid' => self::$sysConfig['epay_mch_id'],
+				'key' => self::$sysConfig['epay_key']
 			]
 		]);
 		if($request->getStatusCode() == 200){

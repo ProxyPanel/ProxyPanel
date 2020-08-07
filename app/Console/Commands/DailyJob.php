@@ -13,14 +13,8 @@ use Illuminate\Console\Command;
 use Log;
 
 class DailyJob extends Command {
-	protected static $systemConfig;
 	protected $signature = 'dailyJob';
 	protected $description = '每日任务';
-
-	public function __construct() {
-		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
-	}
 
 	public function handle(): void {
 		$jobStartTime = microtime(true);
@@ -32,7 +26,7 @@ class DailyJob extends Command {
 		$this->closeTickets();
 
 		// 重置用户流量
-		if(self::$systemConfig['reset_traffic']){
+		if(sysConfig('reset_traffic')){
 			$this->resetUserTraffic();
 		}
 
@@ -46,7 +40,7 @@ class DailyJob extends Command {
 		// 过期用户处理
 		$userList = User::query()->activeUser()->where('expire_time', '<', date('Y-m-d'))->get();
 		foreach($userList as $user){
-			if(self::$systemConfig['is_ban_status']){
+			if(sysConfig('is_ban_status')){
 				User::query()->whereId($user->id)->update([
 					'u'               => 0,
 					'd'               => 0,

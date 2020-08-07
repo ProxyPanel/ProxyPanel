@@ -8,7 +8,7 @@
 <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
-	<title>{{\App\Components\Helpers::systemConfig()['website_name']}}</title>
+	<title>{{sysConfig('website_name')}}</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
@@ -60,10 +60,10 @@
 			<i class="icon wb-more-horizontal" aria-hidden="true"></i>
 		</button>
 		<div class="navbar-brand navbar-brand-center">
-			<img src="{{\App\Components\Helpers::systemConfig()['website_logo']? :'/assets/images/logo64.png'}}"
+			<img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}"
 					class="navbar-brand-logo" alt="logo"/>
 			<span
-					class="navbar-brand-text hidden-xs-down"> {{\App\Components\Helpers::systemConfig()['website_name']}}</span>
+					class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
 		</div>
 	</div>
 	<div class="navbar-container container-fluid">
@@ -178,7 +178,7 @@
 				</a>
 			</li>
 			@if(\App\Models\Order::uid()->whereStatus(2)->exists() || \App\Models\ReferralLog::uid()->exists())
-				@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
+				@if(sysConfig('is_invite_register'))
 					<li class="site-menu-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}">
 						<a href="/invite">
 							<i class="site-menu-icon wb-extension" aria-hidden="true"></i>
@@ -186,7 +186,7 @@
 						</a>
 					</li>
 				@endif
-				@if((\App\Components\Helpers::systemConfig()['referral_status']))
+				@if((sysConfig('referral_status')))
 					<li class="site-menu-item {{in_array(Request::path(), ['referral']) ? 'active open' : ''}}">
 						<a href="/referral">
 							<i class="site-menu-icon wb-star-outline" aria-hidden="true"></i>
@@ -209,11 +209,11 @@
 </div>
 <footer class="site-footer">
 	<div class="site-footer-legal"> Copyright &copy; 2017 - 2020
-		<a href="{{\App\Components\Helpers::systemConfig()['website_url']}}" target="_blank">{{\App\Components\Helpers::systemConfig()['website_name']}}</a> | 基于<a href="https://github.com/ZBrettonYe/ProxyPane">{{config('version.name')}}</a> 版本: {{config('version.number')}}  开发
+		<a href="{{sysConfig('website_url')}}" target="_blank">{{sysConfig('website_name')}}</a> | 基于<a href="https://github.com/ZBrettonYe/ProxyPane">{{config('version.name')}}</a> 版本: {{config('version.number')}}  开发
 	</div>
 	<div class="site-footer-right">
 		由 <i class="red-600 wb-heart"></i>
-		<a href="https://github.com/ZBrettonYe">兔姬菌</a> 制作
+		<a href="https://github.com/ZBrettonYe">兔姬菌</a> 开发
 	</div>
 </footer>
 @if(Session::get("admin"))
@@ -306,8 +306,8 @@
 	</script>
 @endif
 <!-- 统计 -->
-{!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
+{!! sysConfig('website_analytics') !!}
 <!-- 客服 -->
-{!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
+{!! sysConfig('website_customer_service') !!}
 </body>
 </html>

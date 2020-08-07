@@ -7,15 +7,9 @@ use Log;
 use LSS\XML2Array;
 
 class Namesilo {
-	protected static $host;
-	protected static $systemConfig;
+	private static $host = 'https://www.namesilo.com/api/';
 
 	// Todo Debug测试
-	public function __construct() {
-		self::$host = 'https://www.namesilo.com/api/';
-		self::$systemConfig = Helpers::systemConfig();
-	}
-
 	// 列出账号下所有域名
 	public function listDomains() {
 		return $this->send('listDomains');
@@ -26,7 +20,7 @@ class Namesilo {
 		$params = [
 			'version' => 1,
 			'type'    => 'xml',
-			'key'     => self::$systemConfig['namesilo_key']
+			'key'     => sysConfig('namesilo_key')
 		];
 		$query = array_merge($params, $data);
 
@@ -37,19 +31,19 @@ class Namesilo {
 
 		if($request->getStatusCode() != 200){
 			Log::error('请求失败：'.var_export($request, true));
-			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-				self::$systemConfig['webmaster_email'], 0, var_export($request, true));
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, sysConfig('webmaster_email'),
+				0, var_export($request, true));
 
 			return false;
 		}
 
 		// 出错
 		if(empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] !== 'success'){
-			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-				self::$systemConfig['webmaster_email'], 0, $result['namesilo']['reply']['detail']);
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, sysConfig('webmaster_email'),
+				0, $result['namesilo']['reply']['detail']);
 		}else{
-			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
-				self::$systemConfig['webmaster_email'], 1, $result['namesilo']['reply']['detail']);
+			Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, sysConfig('webmaster_email'),
+				1, $result['namesilo']['reply']['detail']);
 		}
 
 		return $result['namesilo']['reply'];

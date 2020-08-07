@@ -13,18 +13,12 @@ use Log;
 use Mail;
 
 class NodeBlockedDetection extends Command {
-	protected static $systemConfig;
 	protected $signature = 'nodeBlockedDetection';
 	protected $description = '节点阻断检测';
 
-	public function __construct() {
-		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
-	}
-
 	public function handle(): void {
 		$jobStartTime = microtime(true);
-		if(self::$systemConfig['nodes_detection']){
+		if(sysConfig('nodes_detection')){
 			if(!Cache::has('LastCheckTime')){
 				$this->checkNodes();
 			}elseif(Cache::get('LastCheckTime') <= time()){
@@ -79,7 +73,7 @@ class NodeBlockedDetection extends Command {
 			}
 
 			// 节点检测次数
-			if($info && self::$systemConfig['detection_check_times']){
+			if($info && sysConfig('detection_check_times')){
 				// 已通知次数
 				$cacheKey = 'detection_check_times'.$node->id;
 				if(Cache::has($cacheKey)){
@@ -90,7 +84,7 @@ class NodeBlockedDetection extends Command {
 					$times = 1;
 				}
 
-				if($times < self::$systemConfig['detection_check_times']){
+				if($times < self::sysConfig('detection_check_times')){
 					Cache::increment($cacheKey);
 				}else{
 					Cache::forget($cacheKey);
@@ -119,9 +113,9 @@ class NodeBlockedDetection extends Command {
 	 */
 	private function notifyMaster($title, $content): void {
 		$result = PushNotification::send($title, $content);
-		if(!$result && self::$systemConfig['webmaster_email']){
-			$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
-			Mail::to(self::$systemConfig['webmaster_email'])->send(new nodeCrashWarning($logId));
+		if(!$result && sysConfig('webmaster_email')){
+			$logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
+			Mail::to(sysConfig('webmaster_email'))->send(new nodeCrashWarning($logId));
 		}
 	}
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
@@ -18,11 +17,6 @@ use Response;
  * @package App\Http\Controllers\Controller
  */
 class AffiliateController extends Controller {
-	protected static $systemConfig;
-
-	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
-	}
 
 	// 提现申请列表
 	public function affiliateList(Request $request): \Illuminate\Http\Response {

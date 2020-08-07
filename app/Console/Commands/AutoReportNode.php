@@ -16,7 +16,7 @@ class AutoReportNode extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		if(Helpers::systemConfig()['node_daily_report']){
+		if(sysConfig('node_daily_report')){
 			$nodeList = Node::query()->whereStatus(1)->get();
 			if($nodeList->isNotEmpty()){
 				$msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";

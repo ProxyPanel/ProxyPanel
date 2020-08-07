@@ -73,9 +73,9 @@
 					<div class="panel-title">
 						<div class="brand">
 							<img
-									src="{{\App\Components\Helpers::systemConfig()['website_home_logo']? :'/assets/images/logo64.png'}}"
+									src="{{sysConfig('website_home_logo')? :'/assets/images/logo64.png'}}"
 									class="brand-img" alt="logo"/>
-							<h3 class="brand-text">{{\App\Components\Helpers::systemConfig()['website_name']}}</h3>
+							<h3 class="brand-text">{{sysConfig('website_name')}}</h3>
 						</div>
 					</div>
 					<div class="ribbon ribbon-reverse ribbon-info ribbon-clip">
@@ -146,9 +146,9 @@
 <script src="/assets/global/js/Plugin/jquery-placeholder.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/material.js" type="text/javascript"></script>
 <!-- 统计 -->
-{!! \App\Components\Helpers::systemConfig()['website_analytics'] !!}
+{!! sysConfig('website_analytics') !!}
 <!-- 客服 -->
-{!! \App\Components\Helpers::systemConfig()['website_customer_service'] !!}
+{!! sysConfig('website_customer_service') !!}
 <script type="text/javascript">
 	(function (document, window, $) {
 		'use strict';

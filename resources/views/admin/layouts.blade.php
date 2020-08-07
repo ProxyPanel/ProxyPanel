@@ -8,7 +8,7 @@
 <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
-	<title>{{\App\Components\Helpers::systemConfig()['website_name']}}</title>
+	<title>{{sysConfig('website_name')}}</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
@@ -55,8 +55,8 @@
 			<i class="icon wb-more-horizontal" aria-hidden="true"></i>
 		</button>
 		<div class="navbar-brand navbar-brand-center">
-			<img src="{{\App\Components\Helpers::systemConfig()['website_logo']? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
-			<span class="navbar-brand-text hidden-xs-down"> {{\App\Components\Helpers::systemConfig()['website_name']}}</span>
+			<img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
+			<span class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
 		</div>
 	</div>
 	<div class="navbar-container container-fluid">

@@ -255,9 +255,9 @@
 													</li>
 													<li>
 														近期流量使用异常；在<code>1小时</code>内使用流量超过
-														<code>{{\App\Components\Helpers::systemConfig()['traffic_ban_value']}}
+														<code>{{sysConfig('traffic_ban_value')}}
 															GB</code>
-														，即会触发本站的流量异常保护；保护时长为<code>{{\App\Components\Helpers::systemConfig()['traffic_ban_time']}}
+														，即会触发本站的流量异常保护；保护时长为<code>{{sysConfig('traffic_ban_time')}}
 															分钟</code>
 													</li>
 												</ol>
@@ -280,7 +280,7 @@
 											<div class="panel-body">
 												订阅地址对于账号来说非常重要。所以本站对此设置了严格的限制措施，以防止用户无意间泄露给他人后，无法挽回。
 												<p>限制为：
-													<code>24小时</code>内，订阅地址只允许请求<code>{{\App\Components\Helpers::systemConfig()['subscribe_ban_times']}}
+													<code>24小时</code>内，订阅地址只允许请求<code>{{sysConfig('subscribe_ban_times')}}
 														次</code>
 												</p>
 												<p>解封，请在过一段时间并确定无误后，创建<a href="/tickets">【{{trans('home.tickets')}}】</a>，联系售后人员

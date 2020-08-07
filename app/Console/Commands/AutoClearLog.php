@@ -26,7 +26,7 @@ class AutoClearLog extends Command {
 		$jobStartTime = microtime(true);
 
 		// 清除日志
-		if(Helpers::systemConfig()['is_clear_log']){
+		if(sysConfig('is_clear_log')){
 			$this->clearLog();
 		}
 

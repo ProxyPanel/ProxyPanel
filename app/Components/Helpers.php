@@ -81,7 +81,7 @@ class Helpers {
 		$user->email = $email;
 		$user->password = $password;
 		// 生成一个可用端口
-		$user->port = self::systemConfig()['is_rand_port']? self::getRandPort() : self::getOnlyPort();
+		$user->port = self::sysConfig()['is_rand_port']? self::getRandPort() : self::getOnlyPort();
 		$user->passwd = makeRandStr();
 		$user->vmess_id = Str::uuid();
 		$user->enable = 1;
@@ -101,7 +101,7 @@ class Helpers {
 	}
 
 	// 获取系统配置
-	public static function systemConfig(): array {
+	public static function sysConfig(): array {
 		$data = Config::all()->pluck('value', 'name')->toArray();
 		$data['is_onlinePay'] = ($data['is_AliPay'] || $data['is_QQPay'] || $data['is_WeChatPay'] || $data['is_otherPay'])?: 0;
 
@@ -110,7 +110,7 @@ class Helpers {
 
 	// 获取一个随机端口
 	public static function getRandPort() {
-		$port = random_int(self::systemConfig()['min_port'], self::systemConfig()['max_port']);
+		$port = random_int(self::sysConfig()['min_port'], self::sysConfig()['max_port']);
 
 		$exists_port = User::query()->pluck('port')->toArray();
 		if(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
@@ -122,7 +122,7 @@ class Helpers {
 
 	// 获取一个随机端口
 	public static function getOnlyPort() {
-		$port = (int) self::systemConfig()['min_port'];
+		$port = (int) self::sysConfig()['min_port'];
 
 		$exists_port = User::query()->where('port', '>=', $port)->pluck('port')->toArray();
 		while(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){

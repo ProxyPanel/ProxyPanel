@@ -14,8 +14,8 @@ class PayJs extends AbstractPayment {
 	public function __construct() {
 		parent::__construct();
 		self::$config = [
-			'mchid' => self::$systemConfig['payjs_mch_id'],   // 配置商户号
-			'key'   => self::$systemConfig['payjs_key'],   // 配置通信密钥
+			'mchid' => self::$sysConfig['payjs_mch_id'],   // 配置商户号
+			'key'   => self::$sysConfig['payjs_key'],   // 配置通信密钥
 		];
 	}
 
@@ -23,10 +23,10 @@ class PayJs extends AbstractPayment {
 		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
 
 		$result = (new Pay($this::$config))->cashier([
-			'body'         => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
+			'body'         => self::$sysConfig['subject_name']?: self::$sysConfig['website_name'],
 			'total_fee'    => $payment->amount * 100,
 			'out_trade_no' => $payment->trade_no,
-			'notify_url'   => (self::$systemConfig['website_callback_url']?: self::$systemConfig['website_url']).'/callback/notify?method=payjs',
+			'notify_url'   => (self::$sysConfig['website_callback_url']?: self::$sysConfig['website_url']).'/callback/notify?method=payjs',
 		]);
 
 		// 获取收款二维码内容

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -18,12 +17,6 @@ use Response;
  * @package App\Http\Controllers\Controller
  */
 class SubscribeController extends Controller {
-	protected static $systemConfig;
-
-	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
-	}
-
 	// 订阅码列表
 	public function subscribeList(Request $request): \Illuminate\Http\Response {
 		$user_id = $request->input('user_id');

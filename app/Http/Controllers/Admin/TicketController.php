@@ -24,12 +24,6 @@ use Response;
  * @package App\Http\Controllers\Controller
  */
 class TicketController extends Controller {
-	protected static $systemConfig;
-
-	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
-	}
-
 	// 工单列表
 	public function ticketList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
@@ -108,11 +102,9 @@ class TicketController extends Controller {
 
 				// 发通知邮件
 				if(!Auth::getUser()->is_admin){
-					if(self::$systemConfig['webmaster_email']){
-						$logId = Helpers::addNotificationLog($title, $content, 1,
-							self::$systemConfig['webmaster_email']);
-						Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title,
-							$content));
+					if(sysConfig('webmaster_email')){
+						$logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
+						Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
 					}
 					// 推送通知管理员
 					PushNotification::send($title, $content);

@@ -19,13 +19,13 @@ class F2Fpay extends AbstractPayment {
 		parent::__construct();
 		self::$aliConfig = [
 			'use_sandbox'     => false,
-			'app_id'          => self::$systemConfig['f2fpay_app_id'],
+			'app_id'          => self::$sysConfig['f2fpay_app_id'],
 			'sign_type'       => 'RSA2',
-			'ali_public_key'  => self::$systemConfig['f2fpay_public_key'],
-			'rsa_private_key' => self::$systemConfig['f2fpay_private_key'],
+			'ali_public_key'  => self::$sysConfig['f2fpay_public_key'],
+			'rsa_private_key' => self::$sysConfig['f2fpay_private_key'],
 			'limit_pay'       => [],
-			'notify_url'      => (self::$systemConfig['website_callback_url']?: self::$systemConfig['website_url']).'/callback/notify?method=f2fpay',
-			'return_url'      => self::$systemConfig['website_url'].'/invoices',
+			'notify_url'      => (self::$sysConfig['website_callback_url']?: self::$sysConfig['website_url']).'/callback/notify?method=f2fpay',
+			'return_url'      => self::$sysConfig['website_url'].'/invoices',
 			'fee_type'        => 'CNY',
 		];
 	}
@@ -35,7 +35,7 @@ class F2Fpay extends AbstractPayment {
 
 		$data = [
 			'body'        => '',
-			'subject'     => self::$systemConfig['subject_name']?: self::$systemConfig['website_name'],
+			'subject'     => self::$sysConfig['subject_name']?: self::$sysConfig['website_name'],
 			'trade_no'    => $payment->trade_no,
 			'time_expire' => time() + 900, // 必须 15分钟 内付款
 			'amount'      => $payment->amount,

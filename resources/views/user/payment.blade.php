@@ -4,7 +4,7 @@
 		<div class="panel panel-bordered">
 			<div class="panel-heading">
 				<h1 class="panel-title cyan-600">
-					<i class="icon wb-payment"></i>{{\App\Components\Helpers::systemConfig()['website_name']}}{{trans('home.online_pay')}}
+					<i class="icon wb-payment"></i>{{sysConfig('website_name')}}{{trans('home.online_pay')}}
 				</h1>
 			</div>
 			<div class="panel-body border-primary ml-auto mr-auto w-p75">

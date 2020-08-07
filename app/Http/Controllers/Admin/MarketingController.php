@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\Marketing;
 use DB;
@@ -22,12 +21,6 @@ use RuntimeException;
  * @package App\Http\Controllers\Controller
  */
 class MarketingController extends Controller {
-	protected static $systemConfig;
-
-	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
-	}
-
 	// 邮件群发消息列表
 	public function emailList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
@@ -63,7 +56,7 @@ class MarketingController extends Controller {
 		$title = $request->input('title');
 		$content = $request->input('content');
 
-		if(!self::$systemConfig['is_push_bear']){
+		if(!sysConfig('is_push_bear')){
 			return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
 		}
 
@@ -72,7 +65,7 @@ class MarketingController extends Controller {
 
 			$response = (new Client())->get('https://pushbear.ftqq.com/sub', [
 				'query' => [
-					'sendkey' => self::$systemConfig['push_bear_send_key'],
+					'sendkey' => sysConfig('push_bear_send_key'),
 					'text'    => $title,
 					'desp'    => $content
 				]

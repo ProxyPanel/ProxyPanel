@@ -90,7 +90,7 @@
 								<div class="text-center red-700 mb-5">VNET-V2Ray</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s http://mrw.so/5XKg2o \<br>
-								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+								| WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
 								bash
@@ -115,7 +115,7 @@
 								<div class="text-center red-700 mb-5">V2Ray-Poseidon</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s http://mrw.so/5Qe2UX \<br>
-								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+								| WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
 								bash
@@ -144,7 +144,7 @@
 									<div class="text-center red-700 mb-5">Trojan-Poseidon</div>
 									(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 									&& curl -L -s http://mrw.so/6cMfGy \<br>
-									| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+									| WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
 									NODE_ID={{$vl->node->id}} \<br>
 									NODE_KEY={{$vl->key}} \<br>
 									NODE_HOST={{$vl->node->server}} \<br>
@@ -172,7 +172,7 @@
 								<div class="text-center red-700 mb-5">VNET</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s http://mrw.so/6kit3t \<br>
-								| WEB_API="{{\App\Components\Helpers::systemConfig()['web_api_url'] ?: \App\Components\Helpers::systemConfig()['website_url']}}" \<br>
+								| WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
 								NODE_ID={{$vl->node->id}} \<br>
 								NODE_KEY={{$vl->key}} \<br>
 								bash

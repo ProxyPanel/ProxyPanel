@@ -13,7 +13,7 @@
 						<p class="card-text alert alert-info">
 							<i class="icon wb-warning red-700"></i> {{trans('home.invite_code_tips1')}}
 							<strong>
-								10 </strong> {{trans('home.invite_code_tips2', ['days' => \App\Components\Helpers::systemConfig()['user_invite_days']])}}
+								10 </strong> {{trans('home.invite_code_tips2', ['days' => sysConfig('user_invite_days')])}}
 						</p>
 						<button type="button" class="btn btn-primary btn-animate btn-animate-side"
 								onclick="makeInvite()"><i class="icon wb-plus"></i> {{trans('home.invite_code_button')}}

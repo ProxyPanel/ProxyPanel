@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
-use App\Components\Helpers;
 use App\Models\Node;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +25,7 @@ class VNetController extends BaseController {
 			'passwd'       => $node->passwd?: '',
 			'push_port'    => $node->push_port,
 			'secret'       => $node->auth->secret,
-			'redirect_url' => Helpers::systemConfig()['redirect_url']
+			'redirect_url' => sysConfig('redirect_url')
 		]);
 	}
 

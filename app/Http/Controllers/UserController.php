@@ -44,10 +44,10 @@ use Validator;
  * @package App\Http\Controllers
  */
 class UserController extends Controller {
-	protected static $systemConfig;
+	protected static $sysConfig;
 
 	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
+		self::$sysConfig = Helpers::sysConfig();
 	}
 
 	public function index(): \Illuminate\Http\Response {
@@ -68,7 +68,7 @@ class UserController extends Controller {
 		                                   ->userHourly($user->id)
 		                                   ->where('created_at', '>=', date('Y-m-d H:i:s', time() - Minute * 65))
 		                                   ->sum('total');
-		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$systemConfig['traffic_ban_value'] * GB)?: 0;
+		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$sysConfig['traffic_ban_value'] * GB)?: 0;
 		//付费用户判断
 		$view['not_paying_user'] = Order::uid()
 		                                ->whereStatus(2)
@@ -85,7 +85,7 @@ class UserController extends Controller {
 	public function checkIn(): JsonResponse {
 		$user = Auth::getUser();
 		// 系统开启登录加积分功能才可以签到
-		if(!self::$systemConfig['is_checkin']){
+		if(!self::$sysConfig['is_checkin']){
 			return Response::json(['status' => 'fail', 'message' => '系统未开启签到功能']);
 		}
 
@@ -94,8 +94,8 @@ class UserController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => '已经签到过了，明天再来吧']);
 		}
 
-		$traffic = random_int((int) self::$systemConfig['min_rand_traffic'],
-				(int) self::$systemConfig['max_rand_traffic']) * MB;
+		$traffic = random_int((int) self::$sysConfig['min_rand_traffic'],
+				(int) self::$sysConfig['max_rand_traffic']) * MB;
 		$ret = User::uid()->increment('transfer_enable', $traffic);
 		if(!$ret){
 			return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
@@ -106,7 +106,7 @@ class UserController extends Controller {
 			'[签到]');
 
 		// 多久后可以再签到
-		$ttl = self::$systemConfig['traffic_limit_time']? self::$systemConfig['traffic_limit_time'] * Minute : Day;
+		$ttl = self::$sysConfig['traffic_limit_time']? self::$sysConfig['traffic_limit_time'] * Minute : Day;
 		Cache::put('userCheckIn_'.$user->id, '1', $ttl);
 
 		return Response::json(['status' => 'success', 'message' => '签到成功，系统送您 '.flowAutoShow($traffic).'流量']);
@@ -354,9 +354,9 @@ class UserController extends Controller {
 			$content = "标题：【".$title."】<br>用户：".$user->email."<br>内容：".$content;
 
 			// 发邮件通知管理员
-			if(self::$systemConfig['webmaster_email']){
-				$logId = Helpers::addNotificationLog($emailTitle, $content, 1, self::$systemConfig['webmaster_email']);
-				Mail::to(self::$systemConfig['webmaster_email'])->send(new newTicket($logId, $emailTitle, $content));
+			if(self::$sysConfig['webmaster_email']){
+				$logId = Helpers::addNotificationLog($emailTitle, $content, 1, self::$sysConfig['webmaster_email']);
+				Mail::to(self::$sysConfig['webmaster_email'])->send(new newTicket($logId, $emailTitle, $content));
 			}
 
 			PushNotification::send($emailTitle, $content);
@@ -401,9 +401,9 @@ class UserController extends Controller {
 				$content = "标题：【".$ticket->title."】<br>用户回复：".$content;
 
 				// 发邮件通知管理员
-				if(self::$systemConfig['webmaster_email']){
-					$logId = Helpers::addNotificationLog($title, $content, 1, self::$systemConfig['webmaster_email']);
-					Mail::to(self::$systemConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
+				if(self::$sysConfig['webmaster_email']){
+					$logId = Helpers::addNotificationLog($title, $content, 1, self::$sysConfig['webmaster_email']);
+					Mail::to(self::$sysConfig['webmaster_email'])->send(new replyTicket($logId, $title, $content));
 				}
 
 				PushNotification::send($title, $content);
@@ -443,8 +443,8 @@ class UserController extends Controller {
 
 		$view['num'] = Auth::getUser()->invite_num; // 还可以生成的邀请码数量
 		$view['inviteList'] = Invite::uid()->with(['generator', 'user'])->paginate(10); // 邀请码列表
-		$view['referral_traffic'] = flowAutoShow(self::$systemConfig['referral_traffic'] * MB);
-		$view['referral_percent'] = self::$systemConfig['referral_percent'];
+		$view['referral_traffic'] = flowAutoShow(self::$sysConfig['referral_traffic'] * MB);
+		$view['referral_percent'] = self::$sysConfig['referral_percent'];
 
 		return Response::view('user.invite', $view);
 	}
@@ -461,7 +461,7 @@ class UserController extends Controller {
 		$obj->fuid = 0;
 		$obj->code = strtoupper(mb_substr(md5(microtime().makeRandStr()), 8, 12));
 		$obj->status = 0;
-		$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$systemConfig['user_invite_days']." days"));
+		$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$sysConfig['user_invite_days']." days"));
 		$obj->save();
 
 		User::uid()->decrement('invite_num', 1);
@@ -563,16 +563,16 @@ class UserController extends Controller {
 		                                ->where('origin_amount', '>', 0)
 		                                ->doesntExist();
 		//客户端安装
-		$view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/Shadowrocket.plist';
-		$view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.self::$systemConfig['website_url'].'/clients/Quantumult.plist';
+		$view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.self::$sysConfig['website_url'].'/clients/Shadowrocket.plist';
+		$view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.self::$sysConfig['website_url'].'/clients/Quantumult.plist';
 		// 订阅连接
 		$subscribe = UserSubscribe::query()->whereUserId(Auth::id())->firstOrFail();
 		$view['subscribe_status'] = $subscribe->status;
-		$subscribe_link = (self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url']).'/s/'.$subscribe->code;
+		$subscribe_link = (self::$sysConfig['subscribe_domain']?: self::$sysConfig['website_url']).'/s/'.$subscribe->code;
 		$view['link'] = $subscribe_link;
 		$view['subscribe_link'] = 'sub://'.base64url_encode($subscribe_link);
-		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(self::$systemConfig['website_name'].'-'.self::$systemConfig['website_url']);
-		$view['Shadowrocket_linkQrcode'] = 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(self::$systemConfig['website_name']);
+		$view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(self::$sysConfig['website_name'].'-'.self::$sysConfig['website_url']);
+		$view['Shadowrocket_linkQrcode'] = 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(self::$sysConfig['website_name']);
 		$view['Quantumult_linkOut'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');
 		$view['Quantumult_linkIn'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');
 

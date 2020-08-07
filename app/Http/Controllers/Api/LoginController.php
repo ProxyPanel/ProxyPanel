@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
 use App\Models\User;
@@ -24,12 +23,6 @@ use Response;
  * @package App\Http\Controllers
  */
 class LoginController extends Controller {
-	protected static $systemConfig;
-
-	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
-	}
-
 	// 登录返回订阅信息
 	public function login(Request $request): ?JsonResponse {
 		$email = $request->input('email');
@@ -74,7 +67,7 @@ class LoginController extends Controller {
 			$this->subscribeLog($subscribe->id, getClientIp(), 'API访问');
 
 			// 订阅链接
-			$url = self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url'];
+			$url = sysConfig('subscribe_domain')?: sysConfig('website_url');
 
 			// 节点列表
 			$nodeList = Node::query()

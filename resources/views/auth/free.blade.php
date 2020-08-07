@@ -1,11 +1,11 @@
 @extends('auth.layouts')
-@section('title',\App\Components\Helpers::systemConfig()['website_name'])
+@section('title',sysConfig('website_name'))
 @section('content')
 	<h4 class="caption-subject font-dark bold">{{trans('home.free_invite_codes_title')}}</h4>
 	<div class="table-responsive">
 		<table class="table table-hover text-center">
-			@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
-				@if(\App\Components\Helpers::systemConfig()['is_free_code'])
+			@if(sysConfig('is_invite_register'))
+				@if(sysConfig('is_free_code'))
 					<thead class="thead-default">
 					<tr>
 						<th> {{trans('home.invite_code_table_name')}} </th>
@@ -30,7 +30,7 @@
 			@endif
 		</table>
 	</div>
-	@if(\App\Components\Helpers::systemConfig()['is_invite_register'] && \App\Components\Helpers::systemConfig()['is_free_code'])
+	@if(sysConfig('is_invite_register') && sysConfig('is_free_code'))
 		<div class="mt-20">
 			<a href="/login" class="btn btn-danger btn-lg float-left">{{trans('auth.back')}}</a>
 			<nav class="Page navigation float-right">

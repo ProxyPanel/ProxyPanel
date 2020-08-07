@@ -13,9 +13,9 @@ use App\Models\Invite;
 use App\Models\Label;
 use App\Models\Level;
 use App\Models\Node;
+use App\Models\NodeDailyDataFlow;
 use App\Models\NodeLabel;
 use App\Models\NodeOnlineUserIp;
-use App\Models\NodeDailyDataFlow;
 use App\Models\NotificationLog;
 use App\Models\Order;
 use App\Models\ReferralApply;
@@ -54,16 +54,16 @@ use Validator;
  * @package App\Http\Controllers
  */
 class AdminController extends Controller {
-	protected static $systemConfig;
+	protected static $sysConfig;
 
 	public function __construct() {
-		self::$systemConfig = Helpers::systemConfig();
+		self::$sysConfig = Helpers::sysConfig();
 	}
 
 	public function index(): \Illuminate\Http\Response {
-		$past = strtotime("-".self::$systemConfig['expire_days']." days");
+		$past = strtotime("-".self::$sysConfig['expire_days']." days");
 
-		$view['expireDays'] = self::$systemConfig['expire_days'];
+		$view['expireDays'] = self::$sysConfig['expire_days'];
 		$view['totalUserCount'] = User::query()->count(); // 总用户数
 		$view['enableUserCount'] = User::query()->whereEnable(1)->count(); // 有效用户数
 		$view['activeUserCount'] = User::query()->where('t', '>=', $past)->count(); // 活跃用户数
@@ -71,7 +71,7 @@ class AdminController extends Controller {
 		$view['onlineUserCount'] = User::query()->where('t', '>=', strtotime("-10 minutes"))->count(); // 10分钟内在线用户数
 		$view['expireWarningUserCount'] = User::query()->whereBetween('expire_time', [
 			date('Y-m-d'),
-			strtotime("+".self::$systemConfig['expire_days']." days")
+			strtotime("+".self::$sysConfig['expire_days']." days")
 		])->count(); // 临近过期用户数
 		$view['largeTrafficUserCount'] = User::query()
 		                                     ->whereRaw('(u + d) >= 107374182400')
@@ -83,7 +83,7 @@ class AdminController extends Controller {
 		$view['unnormalNodeCount'] = Node::query()->whereStatus(0)->count();
 		$view['flowCount'] = flowAutoShow(NodeDailyDataFlow::query()
 		                                                   ->where('created_at', '>=',
-			                                                  date('Y-m-d', strtotime("-30 days")))
+			                                                   date('Y-m-d', strtotime("-30 days")))
 		                                                   ->sum('total'));
 		$view['totalFlowCount'] = flowAutoShow(NodeDailyDataFlow::query()->sum('total'));
 		$view['totalCredit'] = User::query()->where('credit', '<>', 0)->sum('credit') / 100;
@@ -110,7 +110,7 @@ class AdminController extends Controller {
 		                                          ->selectRaw("user_id, sum(total) as totalTraffic")
 		                                          ->get(); // 只统计50M以上的记录，加快速度
 		foreach($userTotalTrafficList as $user){
-			if($user->totalTraffic > self::$systemConfig['traffic_ban_value'] * GB){
+			if($user->totalTraffic > self::$sysConfig['traffic_ban_value'] * GB){
 				$result[] = $user->user_id;
 			}
 		}
@@ -168,7 +168,7 @@ class AdminController extends Controller {
 		// 临近过期提醒
 		if($expireWarning){
 			$query->whereBetween('expire_time',
-				[date('Y-m-d'), date('Y-m-d', strtotime("+".self::$systemConfig['expire_days']." days"))]);
+				[date('Y-m-d'), date('Y-m-d', strtotime("+".self::$sysConfig['expire_days']." days"))]);
 		}
 
 		// 当前在线
@@ -178,7 +178,7 @@ class AdminController extends Controller {
 
 		// 不活跃用户
 		if($request->input('unActive')){
-			$query->whereBetween('t', [1, strtotime("-".self::$systemConfig['expire_days']." days")])->whereEnable(1);
+			$query->whereBetween('t', [1, strtotime("-".self::$sysConfig['expire_days']." days")])->whereEnable(1);
 		}
 
 		// 1小时内流量异常用户
@@ -206,10 +206,10 @@ class AdminController extends Controller {
 			                                  ->userHourly($user->id)
 			                                  ->where('created_at', '>=', $time)
 			                                  ->sum('total');
-			$user->trafficWarning = $totalTraffic > (self::$systemConfig['traffic_ban_value'] * GB)? 1 : 0;
+			$user->trafficWarning = $totalTraffic > (self::$sysConfig['traffic_ban_value'] * GB)? 1 : 0;
 
 			// 订阅地址
-			$user->link = (self::$systemConfig['subscribe_domain']?: self::$systemConfig['website_url']).'/s/'.$user->subscribe->code;
+			$user->link = (self::$sysConfig['subscribe_domain']?: self::$sysConfig['website_url']).'/s/'.$user->subscribe->code;
 		}
 
 		$view['userList'] = $userList;
@@ -282,7 +282,7 @@ class AdminController extends Controller {
 
 	// 生成端口
 	public function makePort() {
-		return self::$systemConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
+		return self::$sysConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
 	}
 
 	// 批量生成账号
@@ -1041,7 +1041,7 @@ class AdminController extends Controller {
 
 	// 系统设置
 	public function system(): \Illuminate\Http\Response {
-		$view = self::$systemConfig;
+		$view = self::$sysConfig;
 		$view['labelList'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
 
 		return Response::view('admin.config.system', $view);
@@ -1057,7 +1057,7 @@ class AdminController extends Controller {
 		}
 
 		// 屏蔽异常配置
-		if(!array_key_exists($name, self::$systemConfig)){
+		if(!array_key_exists($name, self::$sysConfig)){
 			return Response::json(['status' => 'fail', 'message' => '设置失败：配置不存在']);
 		}
 
@@ -1079,35 +1079,35 @@ class AdminController extends Controller {
 		if($value !== '' && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true)){
 			switch($value){
 				case 'f2fpay':
-					if(!self::$systemConfig['f2fpay_app_id'] || !self::$systemConfig['f2fpay_private_key']
-					   || !self::$systemConfig['f2fpay_public_key']){
+					if(!self::$sysConfig['f2fpay_app_id'] || !self::$sysConfig['f2fpay_private_key']
+					   || !self::$sysConfig['f2fpay_public_key']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【支付宝F2F】必要参数']);
 					}
 					break;
 				case 'codepay':
-					if(!self::$systemConfig['codepay_url'] || !self::$systemConfig['codepay_id']
-					   || !self::$systemConfig['codepay_key']){
+					if(!self::$sysConfig['codepay_url'] || !self::$sysConfig['codepay_id']
+					   || !self::$sysConfig['codepay_key']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【码支付】必要参数']);
 					}
 					break;
 				case 'epay':
-					if(!self::$systemConfig['epay_url'] || !self::$systemConfig['epay_mch_id'] || !self::$systemConfig['epay_key']){
+					if(!self::$sysConfig['epay_url'] || !self::$sysConfig['epay_mch_id'] || !self::$sysConfig['epay_key']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【易支付】必要参数']);
 					}
 					break;
 				case 'payjs':
-					if(!self::$systemConfig['payjs_mch_id'] || !self::$systemConfig['payjs_key']){
+					if(!self::$sysConfig['payjs_mch_id'] || !self::$sysConfig['payjs_key']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【PayJs】必要参数']);
 					}
 					break;
 				case 'bitpayx':
-					if(!self::$systemConfig['bitpay_secret']){
+					if(!self::$sysConfig['bitpay_secret']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【麻瓜宝】必要参数']);
 					}
 					break;
 				case 'paypal':
-					if(!self::$systemConfig['paypal_username'] || !self::$systemConfig['paypal_password']
-					   || !self::$systemConfig['paypal_secret']){
+					if(!self::$sysConfig['paypal_username'] || !self::$sysConfig['paypal_password']
+					   || !self::$sysConfig['paypal_secret']){
 						return Response::json(['status' => 'fail', 'message' => '请先设置【PayPal】必要参数']);
 					}
 					break;
@@ -1146,12 +1146,12 @@ class AdminController extends Controller {
 
 	// 推送通知测试
 	public function sendTestNotification(): JsonResponse {
-		if(self::$systemConfig['is_notification']){
+		if(self::$sysConfig['is_notification']){
 			$result = PushNotification::send('这是测试的标题', 'ProxyPanel测试内容');
 			if($result === false){
 				return Response::json(['status' => 'fail', 'message' => '发送失败，请重新尝试！']);
 			}
-			switch(self::$systemConfig['is_notification']){
+			switch(self::$sysConfig['is_notification']){
 				case 'serverChan':
 					if(!$result['errno']){
 						return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
@@ -1191,7 +1191,7 @@ class AdminController extends Controller {
 			$obj->fuid = 0;
 			$obj->code = strtoupper(substr(md5(microtime().makeRandStr()), 8, 12));
 			$obj->status = 0;
-			$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$systemConfig['admin_invite_days']." days"));
+			$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$sysConfig['admin_invite_days']." days"));
 			$obj->save();
 		}
 

@@ -10,20 +10,14 @@ use Log;
 use Mail;
 
 class UserTrafficAutoWarning extends Command {
-	protected static $systemConfig;
 	protected $signature = 'userTrafficAutoWarning';
 	protected $description = '用户流量超过警告阈值自动发邮件提醒';
-
-	public function __construct() {
-		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
-	}
 
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 用户流量超过警告阈值自动发邮件提醒
-		if(self::$systemConfig['traffic_warning']){
+		if(sysConfig('traffic_warning')){
 			$this->userTrafficWarning();
 		}
 
@@ -42,7 +36,7 @@ class UserTrafficAutoWarning extends Command {
 			}
 
 			$usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
-			if($usedPercent >= self::$systemConfig['traffic_warning_percent']){
+			if($usedPercent >= sysConfig('traffic_warning_percent')){
 				$title = '流量提醒';
 				$content = '流量已使用：'.$usedPercent.'%，请保持关注。';
 

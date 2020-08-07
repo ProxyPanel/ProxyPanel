@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Components\Helpers;
 use Cache;
 use Closure;
 use Log;
@@ -20,7 +19,7 @@ class isSecurity {
 		$ip = getClientIP();
 		$code = $request->securityCode;
 		$cacheKey = 'SecurityLogin_'.ip2long($ip);
-		$websiteSecurityCode = Helpers::systemConfig()['website_security_code'];
+		$websiteSecurityCode = sysConfig('website_security_code');
 
 		if($websiteSecurityCode && !Cache::has($cacheKey)){
 			if($code != $websiteSecurityCode){

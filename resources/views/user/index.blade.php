@@ -21,11 +21,11 @@
 							<i class="wb-heart red-500"></i>
 						</button>
 						<span class="font-weight-400">{{trans('home.account_status')}}</span>
-						@if(\App\Components\Helpers::systemConfig()['is_checkin'])
-							<a class="btn btn-md btn-round btn-info float-right" href="javascript:checkIn();">
+						@if(sysConfig('is_checkin'))
+							<button class="btn btn-md btn-round btn-info float-right" onclick="checkIn()">
 								<i class="wb-star yellow-400 mr-5"></i>
 								{{trans('home.sign_in')}}
-							</a>
+							</button>
 						@endif
 						<div class="content-text text-center mb-0">
 							@if($not_paying_user)
@@ -48,7 +48,7 @@
 							@elseif($isTrafficWarning || $banedTime != 0)
 								<i class="wb-alert orange-400 font-size-40 mr-10"></i>
 								<span class="font-size-40 font-weight-100">{{trans('home.limited')}}</span>
-								<p class="font-weight-300 m-0 orange-500">{!!trans('home.reason_overused', ['data'=>\App\Components\Helpers::systemConfig()['traffic_ban_value']])!!}</p>
+								<p class="font-weight-300 m-0 orange-500">{!!trans('home.reason_overused', ['data'=>sysConfig('traffic_ban_value')])!!}</p>
 							@else
 								<i class="wb-help red-400 font-size-40 mr-10"></i>
 								<span class="font-size-40 font-weight-100">{{trans('home.disabled')}}</span>
@@ -71,7 +71,7 @@
 									<h4>账号等级：<code class="font-size-20">{{Auth::getUser()->level}}</code></h4>
 								</div>
 								<div class="text-center font-weight-300 blue-grey-500 mb-10">
-									@if(!$not_paying_user && \App\Components\Helpers::systemConfig()['reset_traffic'] && $resetDays != 0 && $remainDays>$resetDays)
+									@if(!$not_paying_user && sysConfig('reset_traffic') && $resetDays != 0 && $remainDays>$resetDays)
 										{{trans('home.account_reset_notice', ['reset_day' => $resetDays])}}
 									@endif
 								</div>
@@ -143,9 +143,9 @@
 					<div class="col-xl-4 col-lg-6 pb-30">
 						<div class="card card-shadow text-center h-full">
 							<div class="card-block">
-								@if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
+								@if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
-									<img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->style('round', 0.9)->size(175)->errorCorrection('H')->merge(url('assets/images/wechat.png'), .3, true)->generate(\App\Components\Helpers::systemConfig()['push_bear_qrcode']))!!}" alt="支付二维码">
+									<img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->style('round', 0.9)->size(175)->errorCorrection('H')->merge(url('assets/images/wechat.png'), .3, true)->generate(sysConfig('push_bear_qrcode')))!!}" alt="支付二维码">
 								@else
 									<h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
 								@endif

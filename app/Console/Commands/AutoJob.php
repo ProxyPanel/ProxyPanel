@@ -24,14 +24,8 @@ use Illuminate\Console\Command;
 use Log;
 
 class AutoJob extends Command {
-	protected static $systemConfig;
 	protected $signature = 'autoJob';
 	protected $description = '自动化任务';
-
-	public function __construct() {
-		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
-	}
 
 	/*
 	 * 警告：除非熟悉业务流程，否则不推荐更改以下执行顺序，随意变更以下顺序可能导致系统异常
@@ -64,7 +58,7 @@ class AutoJob extends Command {
 		$this->checkNodeStatus();
 
 		// 检查 维护模式
-		if(self::$systemConfig['maintenance_mode'] && strtotime(self::$systemConfig['maintenance_time']) < time()){
+		if(sysConfig('maintenance_mode') && strtotime(sysConfig('maintenance_time')) < time()){
 			Config::query()->whereName('maintenance_mode')->update(['value' => 0]);
 			Config::query()->whereName('maintenance_time')->update(['value' => '']);
 		}
@@ -176,7 +170,7 @@ class AutoJob extends Command {
 
 	// 封禁访问异常的订阅链接
 	private function blockSubscribe(): void {
-		if(self::$systemConfig['is_subscribe_ban']){
+		if(sysConfig('is_subscribe_ban')){
 			foreach(User::query()->activeUser()->get() as $user){
 				$subscribe = UserSubscribe::query()->whereUserId($user->id)->first();
 				if($subscribe){
@@ -187,7 +181,7 @@ class AutoJob extends Command {
 						                                 date("Y-m-d H:i:s", strtotime("-1 days")))
 					                                 ->distinct()
 					                                 ->count('request_ip');
-					if($request_times >= self::$systemConfig['subscribe_ban_times']){
+					if($request_times >= sysConfig('subscribe_ban_times')){
 						UserSubscribe::query()->whereId($subscribe->id)->update([
 							'status'   => 0,
 							'ban_time' => time(),
@@ -220,7 +214,7 @@ class AutoJob extends Command {
 	// 封禁账号
 	private function blockUsers(): void {
 		// 封禁1小时内流量异常账号
-		if(self::$systemConfig['is_traffic_ban']){
+		if(sysConfig('is_traffic_ban')){
 			$userList = User::query()->activeUser()->whereBanTime(0)->get();
 			foreach($userList as $user){
 				// 对管理员豁免
@@ -233,14 +227,14 @@ class AutoJob extends Command {
 				                                  ->userHourly($user->id)
 				                                  ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 				                                  ->sum('total');
-				if($totalTraffic >= self::$systemConfig['traffic_ban_value'] * GB){
+				if($totalTraffic >= sysConfig('traffic_ban_value') * GB){
 					User::query()->whereId($user->id)->update([
 						'enable'   => 0,
-						'ban_time' => strtotime("+".self::$systemConfig['traffic_ban_time']." minutes")
+						'ban_time' => strtotime("+".sysConfig('traffic_ban_time')." minutes")
 					]);
 
 					// 写入日志
-					$this->addUserBanLog($user->id, self::$systemConfig['traffic_ban_time'], '【临时封禁代理】-1小时内流量异常');
+					$this->addUserBanLog($user->id, sysConfig('traffic_ban_time'), '【临时封禁代理】-1小时内流量异常');
 				}
 			}
 		}
@@ -286,10 +280,10 @@ class AutoJob extends Command {
 
 	// 端口回收与分配
 	private function dispatchPort(): void {
-		if(self::$systemConfig['auto_release_port']){
+		if(sysConfig('auto_release_port')){
 			## 自动分配端口
 			foreach(User::query()->activeUser()->wherePort(0)->get() as $user){
-				$port = self::$systemConfig['is_rand_port']? Helpers::getRandPort() : Helpers::getOnlyPort();
+				$port = sysConfig('is_rand_port')? Helpers::getRandPort() : Helpers::getOnlyPort();
 
 				User::query()->whereId($user->id)->update(['port' => $port]);
 			}
@@ -308,7 +302,7 @@ class AutoJob extends Command {
 
 	// 检测节点是否离线
 	private function checkNodeStatus(): void {
-		if(self::$systemConfig['is_node_offline']){
+		if(sysConfig('is_node_offline')){
 			foreach(Node::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
 				$nodeTTL = NodeInfo::query()
@@ -316,7 +310,7 @@ class AutoJob extends Command {
 				                   ->where('log_time', '>=', strtotime("-10 minutes"))
 				                   ->latest('log_time')
 				                   ->doesntExist();
-				if($nodeTTL && self::$systemConfig['offline_check_times']){
+				if($nodeTTL && sysConfig('offline_check_times')){
 					// 已通知次数
 					$cacheKey = 'offline_check_times'.$node->id;
 					if(Cache::has($cacheKey)){
@@ -327,7 +321,7 @@ class AutoJob extends Command {
 						$times = 1;
 					}
 
-					if($times < self::$systemConfig['offline_check_times']){
+					if($times < sysConfig('offline_check_times')){
 						Cache::increment($cacheKey);
 						PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
 					}

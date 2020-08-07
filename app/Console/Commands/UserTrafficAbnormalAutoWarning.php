@@ -10,14 +10,8 @@ use Illuminate\Console\Command;
 use Log;
 
 class UserTrafficAbnormalAutoWarning extends Command {
-	protected static $systemConfig;
 	protected $signature = 'userTrafficAbnormalAutoWarning';
 	protected $description = '用户流量异常警告';
-
-	public function __construct() {
-		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
-	}
 
 	public function handle(): void {
 		$jobStartTime = microtime(true);
@@ -48,7 +42,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 				$user = User::find($vo->user_id);
 
 				// 推送通知管理员
-				if($vo->totalTraffic > self::$systemConfig['traffic_ban_value'] * GB){
+				if($vo->totalTraffic > sysConfig('traffic_ban_value') * GB){
 					$traffic = UserHourlyDataFlow::query()
 					                             ->userHourly($vo->user_id)
 					                             ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))

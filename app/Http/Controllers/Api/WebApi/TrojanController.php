@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
-use App\Components\Helpers;
 use App\Models\Node;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -18,10 +17,10 @@ class TrojanController extends BaseController {
 			'speed_limit'  => $node->speed_limit,
 			'client_limit' => $node->client_limit,
 			'push_port'    => $node->push_port,
-			'redirect_url' => Helpers::systemConfig()['redirect_url'],
+			'redirect_url' => sysConfig('redirect_url'),
 			'trojan_port'  => $node->port,
 			'secret'       => $node->auth->secret,
-			'license'      => Helpers::systemConfig()['trojan_license'],
+			'license'      => sysConfig('trojan_license'),
 		]);
 	}
 

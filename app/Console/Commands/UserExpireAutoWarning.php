@@ -11,20 +11,14 @@ use Log;
 use Mail;
 
 class UserExpireAutoWarning extends Command {
-	protected static $systemConfig;
 	protected $signature = 'userExpireAutoWarning';
 	protected $description = '用户临近到期自动发邮件提醒';
-
-	public function __construct() {
-		parent::__construct();
-		self::$systemConfig = Helpers::systemConfig();
-	}
 
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
 		// 用户临近到期自动发邮件提醒
-		if(self::$systemConfig['expire_warning']){
+		if(sysConfig('expire_warning')){
 			$this->userExpireWarning();
 		}
 
@@ -50,7 +44,7 @@ class UserExpireAutoWarning extends Command {
 
 				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
 				Mail::to($user->email)->send(new userExpireWarningToday($logId));
-			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= self::$systemConfig['expire_days']){
+			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= sysConfig('expire_days')){
 				$title = '账号过期提醒';
 				$content = '您的账号还剩'.$lastCanUseDays.'天即将过期。';
 

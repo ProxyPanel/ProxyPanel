@@ -6,7 +6,7 @@
 @endsection
 @section('content')
 	<form action="/register" method="post" id="register-form">
-		@if(\App\Components\Helpers::systemConfig()['is_register'])
+		@if(sysConfig('is_register'))
 			@if($errors->any())
 				<div class="alert alert-danger">
 					<span>{{$errors->first()}}</span>
@@ -43,7 +43,7 @@
 					<label class="floating-label" for="email">{{trans('auth.email')}}</label>
 				@endif
 			</div>
-			@if(\App\Components\Helpers::systemConfig()['is_activate_account'] == 1)
+			@if(sysConfig('is_activate_account') == 1)
 				<div class="form-group form-material floating" data-plugin="formMaterial">
 					<div class="input-group" data-plugin="inputGroupFile">
 						<input type="text" class="form-control" name="verify_code"
@@ -65,22 +65,22 @@
 				<input type="password" class="form-control" autocomplete="off" name="confirmPassword" required/>
 				<label class="floating-label" for="confirmPassword">{{trans('auth.confirm_password')}}</label>
 			</div>
-			@if(\App\Components\Helpers::systemConfig()['is_invite_register'])
+			@if(sysConfig('is_invite_register'))
 				<div class="form-group form-material floating" data-plugin="formMaterial">
 					<input type="password" class="form-control" name="code"
 							value="{{Request::old('code') ? : Request::get('code')}}"
-							@if(\App\Components\Helpers::systemConfig()['is_invite_register'] == 2) required @endif/>
+							@if(sysConfig('is_invite_register') == 2) required @endif/>
 					<label class="floating-label"
-							for="code">{{trans('auth.code')}}@if(\App\Components\Helpers::systemConfig()['is_invite_register'] == 1)
+							for="code">{{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)
 							({{trans('auth.optional')}}) @endif</label>
 				</div>
-				@if(\App\Components\Helpers::systemConfig()['is_free_code'])
+				@if(sysConfig('is_free_code'))
 					<p class="hint">
 						<a href="/free" target="_blank">{{trans('auth.get_free_code')}}</a>
 					</p>
 				@endif
 			@endif
-			@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
+			@switch(sysConfig('is_captcha'))
 				@case(1)<!-- Default Captcha -->
 				<div class="form-group form-material floating input-group" data-plugin="formMaterial">
 					<input type="text" class="form-control" name="captcha" required/>
@@ -128,8 +128,8 @@
 			</div>
 		@endif
 		<a href="/login"
-				class="btn btn-danger btn-lg {{\App\Components\Helpers::systemConfig()['is_register']? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
-		@if(\App\Components\Helpers::systemConfig()['is_register'])
+				class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
+		@if(sysConfig('is_register'))
 			<button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register')}}</button>
 		@endif
 	</form>
@@ -144,7 +144,7 @@
 							style="position:absolute;">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">{{\App\Components\Helpers::systemConfig()['website_name']}}
+					<h4 class="modal-title">{{sysConfig('website_name')}}
 						- {{trans('auth.tos')}} <small>2019年11月28日10:49</small></h4>
 				</div>
 				<div class="modal-body">
@@ -166,7 +166,7 @@
 							style="position:absolute;">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">{{\App\Components\Helpers::systemConfig()['website_name']}}
+					<h4 class="modal-title">{{sysConfig('website_name')}}
 						- {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>
 				</div>
 				<div class="modal-body">
@@ -259,7 +259,7 @@
 			getEmail();
 			@endif
 
-			@switch(\App\Components\Helpers::systemConfig()['is_captcha'])
+			@switch(sysConfig('is_captcha'))
 			@case(3)
 			// 先检查Google reCAPTCHA有没有进行验证
 			if ($('#g-recaptcha-response').val() === '') {

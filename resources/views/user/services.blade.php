@@ -102,20 +102,20 @@
 				<div class="modal-body">
 					<div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
 					<form action="#" method="post">
-						@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
+						@if(sysConfig('is_onlinePay'))
 							<div class="mb-15 w-p50">
 								<select class="form-control" name="charge_type" id="charge_type">
-									@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
+									@if(sysConfig('is_onlinePay'))
 										<option value="1">{{trans('home.online_pay')}}</option>
 									@endif
-									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+									@if(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
 										<option value="2">二维码</option>
 									@endif
 									<option value="3">{{trans('home.coupon_code')}}</option>
 								</select>
 							</div>
 						@endif
-						@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
+						@if(sysConfig('is_onlinePay'))
 							<div class="form-group row charge_credit">
 								<label for="amount" class="offset-md-1 col-md-2 col-form-label">充值金额</label>
 								<div class="col-md-8">
@@ -123,22 +123,22 @@
 								</div>
 							</div>
 						@endif
-						@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+						@if(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
 							<div class="text-center" id="charge_qrcode">
 								<div class="row">
 									<p class="col-md-12 mb-10">付款时，请
 										<mark>备注邮箱账号</mark>
 									                           ，充值会在<code>24</code>小时内受理!
 									</p>
-									@if(\App\Components\Helpers::systemConfig()['wechat_qrcode'])
+									@if(sysConfig('wechat_qrcode'))
 										<div class="col-md-6">
-											<img class="w-p75 mb-10" src="{{\App\Components\Helpers::systemConfig()['wechat_qrcode']}}" alt=""/>
+											<img class="w-p75 mb-10" src="{{sysConfig('wechat_qrcode')}}" alt=""/>
 											<p>微 信 | WeChat</p>
 										</div>
 									@endif
-									@if(\App\Components\Helpers::systemConfig()['alipay_qrcode'])
+									@if(sysConfig('alipay_qrcode'))
 										<div class="col-md-6">
-											<img class="w-p75 mb-10" src="{{\App\Components\Helpers::systemConfig()['alipay_qrcode']}}" alt=""/>
+											<img class="w-p75 mb-10" src="{{sysConfig('alipay_qrcode')}}" alt=""/>
 											<p>支 付 宝 | AliPay</p>
 										</div>
 									@endif
@@ -189,9 +189,9 @@
 		$(document).ready(function () {
 			itemControl(parseInt($('#charge_type').val()))
 			let which_selected;
-			@if(\App\Components\Helpers::systemConfig()['is_onlinePay'])
+			@if(sysConfig('is_onlinePay'))
 				which_selected = 1;
-			@elseif(\App\Components\Helpers::systemConfig()['alipay_qrcode'] || \App\Components\Helpers::systemConfig()['wechat_qrcode'])
+			@elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
 				which_selected = 2;
 			@else
 				which_selected = 3

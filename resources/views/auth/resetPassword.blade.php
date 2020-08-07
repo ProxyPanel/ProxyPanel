@@ -12,7 +12,7 @@
 		</div>
 	@endif
 	<form method="post" action="/resetPassword">
-		@if(\App\Components\Helpers::systemConfig()['is_reset_password'])
+		@if(sysConfig('is_reset_password'))
 			<div class="form-title">
 				{{trans('auth.resetPassword')}}
 			</div>
@@ -24,12 +24,12 @@
 			</div>
 		@else
 			<div class="alert alert-danger">
-				<span> {{trans('auth.system_maintenance_tip',['email' => \App\Components\Helpers::systemConfig()['webmaster_email']])}} </span>
+				<span> {{trans('auth.system_maintenance_tip',['email' => sysConfig('webmaster_email')])}} </span>
 			</div>
 		@endif
 		<a href="/login"
-				class="btn btn-danger btn-lg {{\App\Components\Helpers::systemConfig()['is_reset_password']? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>
-		@if(\App\Components\Helpers::systemConfig()['is_reset_password'])
+				class="btn btn-danger btn-lg {{sysConfig('is_reset_password')? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>
+		@if(sysConfig('is_reset_password'))
 			<button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.submit')}}</button>
 		@endif
 	</form>

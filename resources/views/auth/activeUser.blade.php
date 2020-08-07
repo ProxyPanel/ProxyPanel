@@ -14,7 +14,7 @@
 		</div>
 	@endif
 	<form action="/activeUser" method="post">
-		@if(\App\Components\Helpers::systemConfig()['is_activate_account'] == 2)
+		@if(sysConfig('is_activate_account') == 2)
 			<div class="form-title">
 				<span class="form-title">{{trans('auth.active_account')}}</span>
 			</div>
@@ -25,12 +25,12 @@
 			</div>
 		@else
 			<div class="alert alert-danger">
-				<span> {{trans('auth.system_maintenance_tip',['email' => \App\Components\Helpers::systemConfig()['webmaster_email']])}}</span>
+				<span> {{trans('auth.system_maintenance_tip',['email' => sysConfig('webmaster_email')])}}</span>
 			</div>
 		@endif
 		<a href="/login"
-				class="btn btn-danger btn-lg {{\App\Components\Helpers::systemConfig()['is_activate_account']==2? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>
-		@if(\App\Components\Helpers::systemConfig()['is_activate_account']==2)
+				class="btn btn-danger btn-lg {{sysConfig('is_activate_account')==2? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>
+		@if(sysConfig('is_activate_account')==2)
 			<button type="submit" class="btn btn-lg btn-primary float-right">{{trans('auth.active')}}</button>
 		@endif
 	</form>

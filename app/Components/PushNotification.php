@@ -8,7 +8,7 @@ use Log;
 
 class PushNotification {
 	public static function send($title, $content) {
-		switch(Helpers::systemConfig()['is_notification']){
+		switch(sysConfig('is_notification')){
 			case 'serverChan':
 				return self::ServerChan($title, $content);
 			case 'bark':
@@ -28,7 +28,7 @@ class PushNotification {
 	 */
 	private static function ServerChan($title, $content) {
 		// TODO：一天仅可发送不超过500条
-		$request = (new Client(['timeout' => 15]))->get('https://sc.ftqq.com/'.Helpers::systemConfig()['server_chan_key'].'.send?text='.$title.'&desp='.urlencode($content));
+		$request = (new Client(['timeout' => 15]))->get('https://sc.ftqq.com/'.sysConfig('server_chan_key').'.send?text='.$title.'&desp='.urlencode($content));
 		$message = json_decode($request->getBody(), true);
 		// 发送成功
 		if($request->getStatusCode() == 200){
@@ -54,7 +54,7 @@ class PushNotification {
 	 * @return mixed
 	 */
 	private static function Bark($title, $content) {
-		$request = (new Client(['timeout' => 15]))->get('https://api.day.app/'.Helpers::systemConfig()['bark_key'].'/'.$title.'/'.$content);
+		$request = (new Client(['timeout' => 15]))->get('https://api.day.app/'.sysConfig('bark_key').'/'.$title.'/'.$content);
 		$message = json_decode($request->getBody(), true);
 
 		if($request->getStatusCode() == 200){
