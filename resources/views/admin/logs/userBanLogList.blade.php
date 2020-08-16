@@ -38,7 +38,7 @@
 										rel="noopener"> {{$vo->id}}</a>
 							</td>
 							<td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->email}} </td>
-							<td> {{$vo->minutes}}分钟</td>
+							<td> {{$vo->time}}分钟</td>
 							<td> {{$vo->description}} </td>
 							<td> {{$vo->created_at}} </td>
 							<td> {{date("Y-m-d H:i:s", $vo->user->t)}} </td>

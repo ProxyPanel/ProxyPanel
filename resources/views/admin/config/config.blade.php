@@ -183,16 +183,16 @@
 											</svg>
 										</td>
 										<td>
-											<input type="text" class="form-control" name="country_name" id="country_name_{{$country->id}}" value="{{$country->name}}"/>
+											<input type="text" class="form-control" name="country_name" id="country_{{$country->code}}" value="{{$country->name}}"/>
 										</td>
 										<td>
-											<input type="text" class="form-control" name="country_code" id="country_code_{{$country->id}}" value="{{$country->code}}"/>
+											<input type="text" class="form-control" name="country_code" id="country_code_{{$country->code}}" value="{{$country->code}}"/>
 										</td>
 										<td>
 											<div class="btn-group">
-												<button type="button" class="btn btn-primary" onclick="updateCountry('{{$country->id}}')">
+												<button type="button" class="btn btn-primary" onclick="updateCountry('{{$country->code}}')">
 													<i class="icon wb-edit" aria-hidden="true"></i></button>
-												<button type="button" class="btn btn-danger" onclick="delCountry('{{$country->id}}','{{$country->name}}')">
+												<button type="button" class="btn btn-danger" onclick="delCountry('{{$country->code}}','{{$country->name}}')">
 													<i class="icon wb-trash"></i></button>
 											</div>
 										</td>
@@ -220,7 +220,7 @@
 										<td>
 											<input type="text" class="form-control" name="label_name" id="label_name_{{$label->id}}" value="{{$label->name}}"/>
 										</td>
-										<td> {{$label->nodeCount}} </td>
+										<td> {{$label->nodes->count()}} </td>
 										<td>
 											<input type="number" class="form-control" name="label_sort" id="label_sort_{{$label->id}}" value="{{$label->sort}}"/>
 										</td>
@@ -314,10 +314,10 @@
 					<div class="alert alert-danger" style="display: none;" id="country_msg"></div>
 					<div class="row">
 						<div class="col-md-6 form-group">
-							<input type="text" class="form-control" name="country_name" id="add_country_name" placeholder=" 国家/地区名称">
+							<input type="text" class="form-control" name="country_code" id="add_country_code" placeholder="ISO国家代码">
 						</div>
 						<div class="col-md-6 form-group">
-							<input type="text" class="form-control" name="country_code" id="add_country_code" placeholder="国家代码">
+							<input type="text" class="form-control" name="country_name" id="add_country_name" placeholder=" 国家/地区名称">
 						</div>
 					</div>
 				</form>
@@ -357,7 +357,6 @@
 	</div>
 @endsection
 @section('script')
-	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
 	<script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
 	<script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
@@ -460,22 +459,22 @@
 			const country_name = $('#add_country_name').val();
 			const country_code = $('#add_country_code').val();
 
-			if (country_name.trim() === '') {
-				$("#country_msg").show().html("国家/地区名称不能为空");
-				$("#add_country_name").focus();
-				return false;
-			}
-
 			if (country_code.trim() === '') {
 				$("#country_msg").show().html("国家/地区代码不能为空");
 				$("#add_country_code").focus();
 				return false;
 			}
 
+			if (country_name.trim() === '') {
+				$("#country_msg").show().html("国家/地区名称不能为空");
+				$("#add_country_name").focus();
+				return false;
+			}
+
 			$.ajax({
 				url: '/admin/addCountry',
 				type: "POST",
-				data: {_token: '{{csrf_token()}}', country_name: country_name, country_code: country_code},
+				data: {_token: '{{csrf_token()}}', code: country_code, name: country_name},
 				beforeSend: function () {
 					$("#country_msg").show().html("正在添加");
 				},
@@ -502,16 +501,15 @@
 		}
 
 		// 更新国家/地区
-		function updateCountry(id) {
+		function updateCountry(code) {
 			$.ajax({
 				type: "POST",
 				url: "/admin/updateCountry",
 				async: false,
 				data: {
 					_token: '{{csrf_token()}}',
-					id: id,
-					country_name: $('#country_name_' + id).val(),
-					country_code: $('#country_code_' + id).val()
+					code: $('#country_' + code).val(),
+					name: $('#country_name_' + code).val()
 				},
 				dataType: 'json',
 				success: function (ret) {
@@ -526,7 +524,7 @@
 		}
 
 		// 删除国家/地区
-		function delCountry(id, name) {
+		function delCountry(code, name) {
 			swal.fire({
 				title: '确定删除 【' + name + '】 信息？',
 				type: 'question',
@@ -536,7 +534,7 @@
 				confirmButtonText: '{{trans('home.ticket_confirm')}}',
 			}).then((result) => {
 				if (result.value) {
-					$.post("/admin/delCountry", {id: id, _token: '{{csrf_token()}}'}, function (ret) {
+					$.post("/admin/delCountry", {code: code, _token: '{{csrf_token()}}'}, function (ret) {
 						if (ret.status === 'success') {
 							swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
 								.then(() => window.location.href = '/admin/config#country')

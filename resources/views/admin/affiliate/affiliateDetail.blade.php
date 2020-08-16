@@ -8,9 +8,9 @@
 			<div class="panel-heading">
 				<h2 class="panel-title">提现申请详情</h2>
 				<div class="panel-actions">
-					@if($info->status == -1)
+					@if($basic->status == -1)
 						<span class="badge badge-lg badge-danger"> 已驳回 </span>
-					@elseif($info->status == 2)
+					@elseif($basic->status == 2)
 						<span class="badge badge-lg badge-success"> 已打款 </span>
 					@endif
 					<a href="/admin/affList" class="btn btn-danger"> 返 回</a>
@@ -21,8 +21,9 @@
 					<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
 						<thead class="thead-default">
 						<tr>
-							<th colspan="6">申请单ID：{{$info->id}} | 申请人：{{$info->user->email}} | 申请提现金额：￥{{$info->amount}}
-							                | 申请时间：{{$info->created_at}}</th>
+							<th colspan="6">
+								申请单ID：{{$basic->id}} | 申请人：{{$basic->user->email}} | 申请提现金额：￥{{$basic->amount}}| 申请时间：{{$basic->created_at}}
+							</th>
 						</tr>
 						<tr>
 							<th> #</th>
@@ -34,17 +35,19 @@
 						</tr>
 						</thead>
 						<tbody>
-						@foreach($list as $vo)
+						@foreach($commissions as $commission)
+
 							<tr>
-								<td> {{$vo->id}} </td>
-								<td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->email}} </td>
+								<td> {{$commission->id}} </td>
+								<td> {{empty($commission->invitee) ? '【账号已删除】' : $commission->invitee->email}} </td>
 								<td>
-									<a href="/admin/orderList?order_sn={{$vo->order->order_sn}}"
-											target="_blank">{{$vo->order->goods->name}}</a>
+									<a href="/admin/orderList?id={{$commission->order->id}}" target="_blank">
+										{{$commission->order->goods->name}}
+									</a>
 								</td>
-								<td> ￥{{$vo->amount}} </td>
-								<td> ￥{{$vo->ref_amount}} </td>
-								<td> {{$vo->created_at}} </td>
+								<td> ￥{{$commission->amount}} </td>
+								<td> ￥{{$commission->commission}} </td>
+								<td> {{$commission->created_at}} </td>
 							</tr>
 						@endforeach
 						</tbody>
@@ -54,11 +57,11 @@
 			<div class="panel-footer">
 				<div class="row">
 					<div class="col-sm-4">
-						本申请共涉及 <code>{{$list->total()}}</code> 单
+						本申请共涉及 <code>{{$commissions->total()}}</code> 单
 					</div>
 					<div class="col-sm-8">
 						<nav class="Page navigation float-right">
-							{{$list->links()}}
+							{{$commissions->links()}}
 						</nav>
 					</div>
 				</div>

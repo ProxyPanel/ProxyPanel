@@ -21,8 +21,8 @@
 						</h4>
 						<div class="card-text form">
 							<div class="mt-clipboard-container input-group">
-								<input type="text" id="mt-target-1" class="form-control" value="{{$link}}"/>
-								<button class="btn btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$link}}">
+								<input type="text" id="mt-target-1" class="form-control" value="{{$aff_link}}"/>
+								<button class="btn btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$aff_link}}">
 									<i class="icon wb-copy"></i> {{trans('home.referral_button')}}
 								</button>
 							</div>
@@ -69,8 +69,9 @@
 							<i class="icon wb-star-half"></i>{{trans('home.referral_title')}}
 						</h3>
 						<div class="panel-actions">
-							<button type="submit" class="btn btn-danger"
-									onclick="extractMoney()"> {{trans('home.referral_table_apply')}} </button>
+							<button type="submit" class="btn btn-danger" onclick="extractMoney()">
+								{{trans('home.referral_table_apply')}}
+							</button>
 						</div>
 					</div>
 					<div class="panel-body">
@@ -90,9 +91,9 @@
 								<tr>
 									<td> {{$loop->iteration}} </td>
 									<td> {{$referralLog->created_at}} </td>
-									<td> {{empty($referralLog->user) ? '【账号已删除】' : str_replace(mb_substr($referralLog->user->email, 3, 4), "****", $referralLog->user->email)}} </td>
+									<td> {{empty($referralLog->invitee) ? '【账号已删除】' : str_replace(mb_substr($referralLog->invitee->email, 3, 4), "****", $referralLog->invitee->email)}} </td>
 									<td> ￥{{$referralLog->amount}} </td>
-									<td> ￥{{$referralLog->ref_amount}} </td>
+									<td> ￥{{$referralLog->commission}} </td>
 									<td>
 										@if ($referralLog->status == 1)
 											<span class="badge badge-sm badge-info">申请中</span>

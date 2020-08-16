@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\WebApi;
 
 use App\Models\Node;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class TrojanController extends BaseController {
@@ -26,17 +25,15 @@ class TrojanController extends BaseController {
 
 	// 获取节点可用的用户列表
 	public function getUserList($id): JsonResponse {
-		$node = Node::find($id);
-		$users = User::query()->activeUser()->groupUserPermit($node->id)->where('level', '>=', $node->level)->get();
+		$users = Node::find($id)->node_access_users;
 		$data = [];
 
 		foreach($users as $user){
-			$new = [
+			$data[] = [
 				'uid'         => $user->id,
 				'password'    => $user->passwd,
 				'speed_limit' => $user->speed_limit
 			];
-			$data[] = $new;
 		}
 
 		return $this->returnData('获取用户列表成功', 'success', 200, $data, ['updateTime' => time()]);

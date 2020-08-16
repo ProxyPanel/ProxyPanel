@@ -174,8 +174,7 @@ class ToolsController extends Controller {
 					$obj->method = $user->method;
 					$obj->protocol = $user->protocol;
 					$obj->obfs = $user->obfs;
-					$obj->enable_time = date('Y-m-d');
-					$obj->expire_time = '2099-01-01';
+					$obj->expired_at = '2099-01-01';
 					$obj->reg_ip = getClientIp();
 					$obj->created_at = date('Y-m-d H:i:s');
 					$obj->updated_at = date('Y-m-d H:i:s');

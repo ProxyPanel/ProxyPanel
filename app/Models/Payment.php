@@ -3,55 +3,26 @@
 namespace App\Models;
 
 use Auth;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 支付单
- *
- * @property int                        $id
- * @property string                     $trade_no   支付单号（本地订单号）
- * @property int                        $user_id    用户ID
- * @property int                        $oid        本地订单ID
- * @property int                        $amount     金额，单位分
- * @property string|null                $qr_code    支付二维码
- * @property string|null                $url        支付链接
- * @property int                        $status     支付状态：-1-支付失败、0-等待支付、1-支付成功
- * @property \Illuminate\Support\Carbon $created_at 创建时间
- * @property \Illuminate\Support\Carbon $updated_at 最后更新时间
- * @property-read string                $status_label
- * @property-read \App\Models\Order     $order
- * @property-read \App\Models\User      $user
- * @method static Builder|Payment newModelQuery()
- * @method static Builder|Payment newQuery()
- * @method static Builder|Payment query()
- * @method static Builder|Payment uid()
- * @method static Builder|Payment whereAmount($value)
- * @method static Builder|Payment whereCreatedAt($value)
- * @method static Builder|Payment whereId($value)
- * @method static Builder|Payment whereOid($value)
- * @method static Builder|Payment whereQrCode($value)
- * @method static Builder|Payment whereStatus($value)
- * @method static Builder|Payment whereTradeNo($value)
- * @method static Builder|Payment whereUpdatedAt($value)
- * @method static Builder|Payment whereUrl($value)
- * @method static Builder|Payment whereUserId($value)
- * @mixin \Eloquent
  */
 class Payment extends Model {
 	protected $table = 'payment';
+	protected $fillable = ['qr_code', 'url', 'status'];
 
 	public function scopeUid($query) {
 		return $query->whereUserId(Auth::id());
 	}
 
 	public function user(): BelongsTo {
-		return $this->belongsTo(User::class, 'user_id', 'id');
+		return $this->belongsTo(User::class);
 	}
 
 	public function order(): BelongsTo {
-		return $this->belongsTo(Order::class, 'oid', 'oid');
+		return $this->belongsTo(Order::class);
 	}
 
 	public function getAmountAttribute($value) {

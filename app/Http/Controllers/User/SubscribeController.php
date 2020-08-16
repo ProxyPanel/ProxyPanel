@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Models\Node;
 use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -29,7 +28,7 @@ class SubscribeController extends Controller {
 		$this->subType = $request->input('type');
 
 		// 检查订阅码是否有效
-		$subscribe = UserSubscribe::query()->whereCode($code)->first();
+		$subscribe = UserSubscribe::whereCode($code)->first();
 		if(!$subscribe){
 			exit($this->infoGenerator('使用的订阅链接错误！请重新从官网获取！'));
 		}
@@ -58,7 +57,7 @@ class SubscribeController extends Controller {
 				exit($this->infoGenerator('账号流量耗尽！请前往官网购买或重置流量！'));
 			}
 
-			if($user->expire_time < date('Y-m-d')){
+			if($user->expired_at < date('Y-m-d')){
 				exit($this->infoGenerator('账号过期！请前往官网购买！'));
 			}
 
@@ -72,11 +71,7 @@ class SubscribeController extends Controller {
 		$this->subscribeLog($subscribe->id, getClientIp(), $request->headers);
 
 		// 获取这个账号可用节点
-		$query = Node::query()
-		             ->whereStatus(1)
-		             ->whereIsSubscribe(1)
-		             ->groupNodePermit($user->group_id)
-		             ->where('level', '<=', $user->level);
+		$query = $user->whereIsSubscribe(1)->userAccessNodes();
 
 		if($this->subType === 1){
 			$query = $query->whereIn('type', [1, 4]);
@@ -98,7 +93,7 @@ class SubscribeController extends Controller {
 
 		// 展示到期时间和剩余流量
 		if(self::$sysConfig['is_custom_subscribe']){
-			$scheme .= $this->infoGenerator('到期时间: '.($user->expire_time < date('Y-m-d')? '过期' : $user->expire_time)).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
+			$scheme .= $this->infoGenerator('到期时间: '.($user->expired_at < date('Y-m-d')? '过期' : $user->expired_at)).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
 		}
 
 		// 控制客户端最多获取节点数
@@ -119,7 +114,7 @@ class SubscribeController extends Controller {
 
 		// 适配Quantumult的自定义订阅头
 		if(self::$sysConfig['is_custom_subscribe']){
-			$headers['Subscription-Userinfo'] = 'upload='.$user->u.'; download='.$user->d.'; total='.$user->transfer_enable.'; expire='.strtotime($user->expire_time);
+			$headers['Subscription-Userinfo'] = 'upload='.$user->u.'; download='.$user->d.'; total='.$user->transfer_enable.'; expire='.strtotime($user->expired_at);
 		}
 
 		return Response::make(base64url_encode($scheme), 200, $headers);
@@ -159,7 +154,7 @@ class SubscribeController extends Controller {
 	// 写入订阅访问日志
 	private function subscribeLog($subscribeId, $ip, $headers): void {
 		$log = new UserSubscribeLog();
-		$log->sid = $subscribeId;
+		$log->subscribe_id = $subscribeId;
 		$log->request_ip = $ip;
 		$log->request_time = date('Y-m-d H:i:s');
 		$log->request_header = $headers;

@@ -53,13 +53,13 @@
 									</td>
 									<td> {{$invite->dateline}} </td>
 									<td>
-										{{$invite->uid == 0 ? '系统生成' : (empty($invite->generator) ? '【账号已删除】' : $invite->generator->email)}}
+										{{$invite->inviter_id == 0 ? '系统生成' : (empty($invite->inviter) ? '【账号已删除】' : $invite->inviter->email)}}
 									</td>
 									<td>
 										{!!$invite->status_label!!}
 									</td>
 									<td>
-										{{$invite->status == 1 ? (empty($invite->user) ? '【账号已删除】' : $invite->user->email) : ''}}
+										{{$invite->status == 1 ? (empty($invite->invitee) ? '【账号已删除】' : $invite->invitee->email) : ''}}
 									</td>
 								</tr>
 							@endforeach

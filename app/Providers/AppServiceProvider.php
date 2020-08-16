@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
+use App\Models\User;
+use App\Observers\OrderObserver;
+use App\Observers\UserObserver;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use URL;
@@ -30,6 +34,7 @@ class AppServiceProvider extends ServiceProvider {
 			URL::forceScheme('https');
 		}
 
-		//\Schema::defaultStringLength(191);
+		Order::observe(OrderObserver::class);
+		User::observe(UserObserver::class);
 	}
 }

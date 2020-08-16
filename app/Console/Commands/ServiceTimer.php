@@ -3,11 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Http\Controllers\ServiceController;
 use App\Models\Order;
-use App\Models\User;
-use DB;
-use Exception;
 use Illuminate\Console\Command;
 use Log;
 
@@ -30,62 +26,22 @@ class ServiceTimer extends Command {
 	// 扣减用户到期商品的流量
 	private function decGoodsTraffic(): void {
 		//获取失效的套餐
-		$orderList = Order::query()
-		                  ->with(['goods'])
-		                  ->whereStatus(2)
-		                  ->whereIsExpire(0)
-		                  ->whereHas('goods', static function($q) {
-			                  $q->whereType(2);
-		                  })
-		                  ->where('expired_at', '<=', date('Y-m-d H:i:s'))
-		                  ->get();
-		if($orderList->isNotEmpty()){
-			try{
-				DB::beginTransaction();
-				foreach($orderList as $order){
-					// 过期本订单
-					Order::query()->whereOid($order->oid)->update(['is_expire' => 1]);
+		$orders = Order::activePlan()->where('expired_at', '<=', date('Y-m-d H:i:s'))->get();
+		foreach($orders as $order){
+			// 清理全部流量,重置重置日期和等级 TODO 可用流量变动日志加入至UserObserver
+			$user = $order->user;
+			$user->update([
+				'u'               => 0,
+				'd'               => 0,
+				'transfer_enable' => 0,
+				'reset_time'      => null,
+				'level'           => 0
+			]);
+			Helpers::addUserTrafficModifyLog($user->id, $order->id, $user->transfer_enable, 0,
+				'[定时任务]用户所购商品到期，扣减商品对应的流量');
 
-					// 过期生效中的加油包
-					Order::query()
-					     ->with(['goods'])
-					     ->whereUserId($order->user_id)
-					     ->whereStatus(2)
-					     ->whereIsExpire(0)
-					     ->whereHas('goods', static function($q) {
-						     $q->whereType(1);
-					     })
-					     ->update(['is_expire' => 1]);
-
-					if(empty($order->user) || empty($order->goods)){
-						continue;
-					}
-
-					// 清理全部流量,重置重置日期和等级
-					User::query()->whereId($order->user_id)->update([
-						'u'               => 0,
-						'd'               => 0,
-						'transfer_enable' => 0,
-						'reset_time'      => null,
-						'level'           => 0
-					]);
-					Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $order->user->transfer_enable, 0,
-						'[定时任务]用户所购商品到期，扣减商品对应的流量');
-
-					// 检查该订单对应用户是否有预支付套餐
-					$prepaidOrder = Order::query()->whereUserId($order->user_id)->whereStatus(3)->oldest()->first();
-
-					if($prepaidOrder){
-						(new ServiceController)->activePrepaidOrder($prepaidOrder->oid);
-					}
-				}
-
-				DB::commit();
-			}catch(Exception $e){
-				Log::error($this->description.'：'.$e);
-
-				DB::rollBack();
-			}
+			// 过期本订单
+			$order->update(['is_expire' => 1]);
 		}
 	}
 }

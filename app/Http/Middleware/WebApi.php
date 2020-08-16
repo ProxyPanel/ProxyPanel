@@ -35,8 +35,8 @@ class WebApi {
 			return $this->returnData('Unknown Node!');
 		}
 
-		$nodeAuth = NodeAuth::query()->whereNodeId($id)->first();
-		if(!$nodeAuth || $key != $nodeAuth->key){// key不存在/不匹配
+		$nodeAuth = NodeAuth::whereNodeId($id)->first();
+		if(!$nodeAuth || $key !== $nodeAuth->key){// key不存在/不匹配
 			return $this->returnData('Token is invalid!');
 		}
 

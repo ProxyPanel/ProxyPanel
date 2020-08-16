@@ -91,7 +91,7 @@ class Controller extends BaseController {
 
 	// 获取邮箱后缀
 	public function emailFilterList($type): array {
-		return EmailFilter::query()->whereType($type)->pluck('words')->toArray();
+		return EmailFilter::whereType($type)->pluck('words')->toArray();
 	}
 
 	// 将Base64图片转换为本地图片并保存
@@ -146,11 +146,10 @@ class Controller extends BaseController {
 	 * @return string
 	 */
 	public function getUserNodeInfo($uid, $nodeId, $infoType): string {
-		$user = User::whereId($uid)->firstOrFail();
-		$node = Node::whereId($nodeId)->firstOrFail();
+		$user = User::find($uid);
+		$node = Node::find($nodeId);
 		$scheme = null;
-		// 获取分组名称
-		$group = $node->level_name;
+		$group = sysConfig('website_name');// 分组名称
 		$host = $node->is_relay? $node->relay_server : ($node->server?: $node->ip);
 		$data = null;
 		switch($node->type){
@@ -241,13 +240,13 @@ class Controller extends BaseController {
 	// 流量使用图表
 	public function dataFlowChart($id, $is_node = 0): array {
 		if($is_node){
-			$currentFlow = UserDataFlowLog::query()->whereNodeId($id);
-			$hourlyFlow = NodeHourlyDataFlow::query()->whereNodeId($id);
-			$dailyFlow = NodeDailyDataFlow::query()->whereNodeId($id);
+			$currentFlow = UserDataFlowLog::whereNodeId($id);
+			$hourlyFlow = NodeHourlyDataFlow::whereNodeId($id);
+			$dailyFlow = NodeDailyDataFlow::whereNodeId($id);
 		}else{
-			$currentFlow = UserDataFlowLog::query()->whereUserId($id);
-			$hourlyFlow = UserHourlyDataFlow::query()->userHourly($id);
-			$dailyFlow = UserDailyDataFlow::query()->userDaily($id);
+			$currentFlow = UserDataFlowLog::whereUserId($id);
+			$hourlyFlow = UserHourlyDataFlow::userHourly($id);
+			$dailyFlow = UserDailyDataFlow::userDaily($id);
 		}
 		$currentFlow = $currentFlow->where('log_time', '>=', strtotime(date('Y-m-d H:00')))->sum(DB::raw('u + d'));
 		$hourlyFlow = $hourlyFlow->whereDate('created_at', date('Y-m-d'))->pluck('total', 'created_at')->toArray();

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserCreditLog;
 use App\Models\UserDataModifyLog;
 use App\Models\UserSubscribe;
+use DateTime;
 use Str;
 
 class Helpers {
@@ -57,7 +58,7 @@ class Helpers {
 	// 生成用户的订阅码
 	public static function makeSubscribeCode(): string {
 		$code = makeRandStr(5);
-		if(UserSubscribe::query()->whereCode($code)->exists()){
+		if(UserSubscribe::whereCode($code)->exists()){
 			$code = self::makeSubscribeCode();
 		}
 
@@ -67,15 +68,15 @@ class Helpers {
 	/**
 	 * 添加用户
 	 *
-	 * @param  string  $email            用户邮箱
-	 * @param  string  $password         用户密码
-	 * @param  string  $transfer_enable  可用流量
-	 * @param  int     $data             可使用天数
-	 * @param  int     $referral_uid     邀请人
+	 * @param  string    $email            用户邮箱
+	 * @param  string    $password         用户密码
+	 * @param  string    $transfer_enable  可用流量
+	 * @param  int       $data             可使用天数
+	 * @param  int|null  $inviter_id       邀请人
 	 *
 	 * @return int
 	 */
-	public static function addUser($email, $password, $transfer_enable, $data, $referral_uid = 0): int {
+	public static function addUser($email, $password, $transfer_enable, $data, $inviter_id = null): int {
 		$user = new User();
 		$user->username = $email;
 		$user->email = $email;
@@ -89,10 +90,9 @@ class Helpers {
 		$user->protocol = self::getDefaultProtocol();
 		$user->obfs = self::getDefaultObfs();
 		$user->transfer_enable = $transfer_enable;
-		$user->enable_time = date('Y-m-d');
-		$user->expire_time = date('Y-m-d', strtotime("+".$data." days"));
+		$user->expired_at = date('Y-m-d', strtotime("+".$data." days"));
 		$user->reg_ip = getClientIp();
-		$user->referral_uid = $referral_uid;
+		$user->inviter_id = $inviter_id;
 		$user->reset_time = null;
 		$user->status = 0;
 		$user->save();
@@ -109,10 +109,10 @@ class Helpers {
 	}
 
 	// 获取一个随机端口
-	public static function getRandPort() {
+	public static function getRandPort(): int {
 		$port = random_int(self::sysConfig()['min_port'], self::sysConfig()['max_port']);
 
-		$exists_port = User::query()->pluck('port')->toArray();
+		$exists_port = User::pluck('port')->toArray();
 		if(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
 			$port = self::getRandPort();
 		}
@@ -121,10 +121,10 @@ class Helpers {
 	}
 
 	// 获取一个随机端口
-	public static function getOnlyPort() {
+	public static function getOnlyPort(): int {
 		$port = (int) self::sysConfig()['min_port'];
 
-		$exists_port = User::query()->where('port', '>=', $port)->pluck('port')->toArray();
+		$exists_port = User::where('port', '>=', $port)->pluck('port')->toArray();
 		while(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
 			++$port;
 		}
@@ -133,24 +133,28 @@ class Helpers {
 	}
 
 	// 获取默认加密方式
-	public static function getDefaultMethod() {
+	public static function getDefaultMethod(): string {
 		$config = SsConfig::default()->type(1)->first();
 
 		return $config? $config->name : 'aes-256-cfb';
 	}
 
 	// 获取默认协议
-	public static function getDefaultProtocol() {
+	public static function getDefaultProtocol(): string {
 		$config = SsConfig::default()->type(2)->first();
 
 		return $config? $config->name : 'origin';
 	}
 
 	// 获取默认混淆
-	public static function getDefaultObfs() {
+	public static function getDefaultObfs(): string {
 		$config = SsConfig::default()->type(3)->first();
 
 		return $config? $config->name : 'plain';
+	}
+
+	public static function daysToNow($date): int {
+		return (new DateTime())->diff(new DateTime($date))->days;
 	}
 
 	/**
@@ -182,14 +186,14 @@ class Helpers {
 	/**
 	 * 添加优惠券操作日志
 	 *
+	 * @param  string  $description  备注
 	 * @param  int     $couponId     优惠券ID
 	 * @param  int     $goodsId      商品ID
 	 * @param  int     $orderId      订单ID
-	 * @param  string  $description  备注
 	 *
-	 * @return int
+	 * @return boolean
 	 */
-	public static function addCouponLog($couponId, $goodsId, $orderId, $description = ''): int {
+	public static function addCouponLog($description, $couponId, $goodsId = 0, $orderId = 0): bool {
 		$log = new CouponLog();
 		$log->coupon_id = $couponId;
 		$log->goods_id = $goodsId;
@@ -203,18 +207,18 @@ class Helpers {
 	 * 记录余额操作日志
 	 *
 	 * @param  int     $userId       用户ID
-	 * @param  string  $oid          订单ID
+	 * @param  int     $orderId      订单ID
 	 * @param  int     $before       记录前余额
 	 * @param  int     $after        记录后余额
 	 * @param  int     $amount       发生金额
 	 * @param  string  $description  描述
 	 *
-	 * @return int
+	 * @return boolean
 	 */
-	public static function addUserCreditLog($userId, $oid, $before, $after, $amount, $description = ''): int {
+	public static function addUserCreditLog($userId, $orderId, $before, $after, $amount, $description = ''): bool {
 		$log = new UserCreditLog();
 		$log->user_id = $userId;
-		$log->order_id = $oid;
+		$log->order_id = $orderId;
 		$log->before = $before;
 		$log->after = $after;
 		$log->amount = $amount;
@@ -228,17 +232,17 @@ class Helpers {
 	 * 记录流量变动日志
 	 *
 	 * @param  int     $userId       用户ID
-	 * @param  string  $oid          订单ID
+	 * @param  int     $orderId      订单ID
 	 * @param  int     $before       记录前的值
 	 * @param  int     $after        记录后的值
 	 * @param  string  $description  描述
 	 *
-	 * @return int
+	 * @return bool
 	 */
-	public static function addUserTrafficModifyLog($userId, $oid, $before, $after, $description = ''): int {
+	public static function addUserTrafficModifyLog($userId, $orderId, $before, $after, $description = ''): bool {
 		$log = new UserDataModifyLog();
 		$log->user_id = $userId;
-		$log->order_id = $oid;
+		$log->order_id = $orderId;
 		$log->before = $before;
 		$log->after = $after;
 		$log->description = $description;

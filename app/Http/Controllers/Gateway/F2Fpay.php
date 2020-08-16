@@ -31,7 +31,7 @@ class F2Fpay extends AbstractPayment {
 	}
 
 	public function purchase($request): JsonResponse {
-		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
 		$data = [
 			'body'        => '',
@@ -54,7 +54,7 @@ class F2Fpay extends AbstractPayment {
 			exit;
 		}
 
-		Payment::whereId($payment->id)->update(['qr_code' => 1, 'url' => $result['qr_code']]);
+		$payment->update(['qr_code' => 1, 'url' => $result['qr_code']]);
 
 		return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
 	}
@@ -79,11 +79,15 @@ class F2Fpay extends AbstractPayment {
 			exit;
 		}
 
-		$ret = "fail";
 		if($result['code'] == 10000 && $result['msg'] === "Success"){
-			$ret = "success";
 			if($_POST['trade_status'] === 'TRADE_FINISHED' || $_POST['trade_status'] === 'TRADE_SUCCESS'){
-				$this->postPayment($request->input('out_trade_no'), '支付宝当面付');
+				$payment = Payment::whereTradeNo($request->input('out_trade_no'))->first();
+				if($payment){
+					$ret = $payment->order->update(['status' => 2]);
+					if($ret){
+						exit('success');
+					}
+				}
 			}else{
 				Log::info('支付宝当面付-POST:交易失败['.getClientIp().']');
 			}
@@ -92,6 +96,6 @@ class F2Fpay extends AbstractPayment {
 		}
 
 		// 返回验证结果
-		exit($ret);
+		exit('fail');
 	}
 }

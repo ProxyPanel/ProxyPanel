@@ -145,9 +145,9 @@
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
 					<span class="site-menu-title">客服系统</span>
-					@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )
+					@if(\App\Models\Ticket::whereStatus(0)->count() > 0 )
 						<div class="site-menu-badge">
-							<span class="badge badge-pill badge-success">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+							<span class="badge badge-pill badge-success">{{\App\Models\Ticket::whereStatus(0)->count()}}</span>
 						</div>
 					@endif
 				</a>
@@ -155,9 +155,9 @@
 					<li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/reply']) ? 'active open' : ''}}">
 						<a href="/ticket">
 							<span class="site-menu-title">服务工单</span>
-							@if(\App\Models\Ticket::query()->whereStatus(0)->count() > 0 )
+							@if(\App\Models\Ticket::whereStatus(0)->count() > 0 )
 								<div class="site-menu-label">
-									<span class="badge badge-danger badge-round mr-25">{{\App\Models\Ticket::query()->whereStatus(0)->count()}}</span>
+									<span class="badge badge-danger badge-round mr-25">{{\App\Models\Ticket::whereStatus(0)->count()}}</span>
 								</div>
 							@endif
 						</a>
@@ -257,9 +257,9 @@
 				<a href="javascript:void(0)">
 					<i class="site-menu-icon wb-thumb-up" aria-hidden="true"></i>
 					<span class="site-menu-title">推广系统</span>
-					@if(\App\Models\ReferralApply::query()->whereStatus(0)->count() > 0 )
+					@if(\App\Models\ReferralApply::whereStatus(0)->count() > 0 )
 						<div class="site-menu-badge">
-							<span class="badge badge-pill badge-success">{{\App\Models\ReferralApply::query()->whereStatus(0)->count()}}</span>
+							<span class="badge badge-pill badge-success">{{\App\Models\ReferralApply::whereStatus(0)->count()}}</span>
 						</div>
 					@endif
 				</a>
@@ -272,9 +272,9 @@
 					<li class="site-menu-item {{in_array(Request::path(), ['admin/affList', 'admin/affDetail']) ? 'active open' : ''}}">
 						<a href="/admin/affList">
 							<span class="site-menu-title">提现管理</span>
-							@if(\App\Models\ReferralApply::query()->whereStatus(0)->count() > 0 )
+							@if(\App\Models\ReferralApply::whereStatus(0)->count() > 0 )
 								<div class="site-menu-label">
-									<span class="badge badge-danger badge-round mr-25">{{\App\Models\ReferralApply::query()->whereStatus(0)->count()}}</span>
+									<span class="badge badge-danger badge-round mr-25">{{\App\Models\ReferralApply::whereStatus(0)->count()}}</span>
 								</div>
 							@endif
 						</a>

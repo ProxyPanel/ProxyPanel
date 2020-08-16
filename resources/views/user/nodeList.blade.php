@@ -68,7 +68,7 @@
 							</div>
 							<div class="col-8 text-break text-right">
 								<p class="font-size-20 blue-600">
-									<span class="badge badge-pill up m-0 badge-default">{{$node->level_name}}</span>
+									<span class="badge badge-pill up m-0 badge-default">{{$node->level_table->name}}</span>
 									@if($node->offline)
 										<i class="red-600 icon wb-warning" data-content="线路波动/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
 									@endif
@@ -79,7 +79,7 @@
 								</p>
 								<blockquote>
 									@foreach($node->labels as $label)
-										<span class="badge badge-pill font-size-10 up m-0 badge-info">{{$label->labelInfo->name}}</span>
+										<span class="badge badge-pill font-size-10 up m-0 badge-info">{{$label->label->name}}</span>
 									@endforeach
 									<br>
 									{{$node->description}}
@@ -156,9 +156,9 @@
 				},
 				backgroundColor: '#fff',
 				markers: [
-						@foreach($nodesGeo as $key => $geo)
+						@foreach($nodesGeo as $name => $geo)
 					{
-						latLng: [{{$key}}], name: '{{$geo}}'
+						latLng: [{{$name}}], name: '{{$geo}}'
 					},
 					@endforeach
 				]

@@ -2,9 +2,9 @@
 @section('css')
 	<link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
 	<style>
-		#swal2-content {
-			display: grid !important;
-		}
+        #swal2-content {
+            display: grid !important;
+        }
 	</style>
 @endsection
 @section('content')

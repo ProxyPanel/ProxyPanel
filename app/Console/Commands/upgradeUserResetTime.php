@@ -42,10 +42,10 @@ class upgradeUserResetTime extends Command {
 					}
 				}
 				// 用户账号有效期大于重置日期
-				if($reset_time > $user->expire_time){
+				if($reset_time > $user->expired_at){
 					$reset_time = null;
 				}
-				User::query()->whereId($user->id)->update(['reset_time' => $reset_time]);
+				$user->update(['reset_time' => $reset_time]);
 			}
 
 			Log::info('---用户[ID：'.$user->id.' - '.$user->username.' ('.$user->email.')]的新重置日期为'.($reset_time != null? '【'.$reset_time.'】' : '【无】').'---');

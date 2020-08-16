@@ -17,8 +17,8 @@ use Validator;
 
 class RuleGroupController extends Controller {
 	// 审计规则分组列表
-	public function index(): \Illuminate\Http\Response {
-		$view['ruleGroupList'] = RuleGroup::query()->paginate(15);
+	public function index(Request $request): \Illuminate\Http\Response {
+		$view['ruleGroupList'] = RuleGroup::paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.rule.group.index', $view);
 	}
@@ -90,7 +90,7 @@ class RuleGroupController extends Controller {
 	public function destroy($id): JsonResponse {
 		try{
 			RuleGroup::whereId($id)->delete();
-			RuleGroupNode::query()->whereRuleGroupId($id)->delete();
+			RuleGroupNode::whereRuleGroupId($id)->delete();
 
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
@@ -115,7 +115,7 @@ class RuleGroupController extends Controller {
 			if($ruleGroup->nodes === $nodes){
 				return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
 			}
-			RuleGroupNode::query()->whereRuleGroupId($id)->delete();
+			RuleGroupNode::whereRuleGroupId($id)->delete();
 			if($nodes){
 				$ruleGroup->nodes = $nodes;
 				if(!$ruleGroup->save()){
@@ -129,7 +129,7 @@ class RuleGroupController extends Controller {
 					$obj->save();
 				}
 			}else{
-				RuleGroup::query()->whereId($id)->update(['nodes' => null]);
+				RuleGroup::whereId($id)->update(['nodes' => null]);
 			}
 
 		}catch(Exception $e){

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\WebApi;
 
 use App\Models\Node;
-use App\Models\NodeInfo;
+use App\Models\NodeHeartBeat;
 use App\Models\NodeOnlineLog;
 use App\Models\NodeOnlineUserIp;
 use App\Models\Rule;
@@ -27,7 +27,7 @@ class BaseController {
 			return $this->returnData('上报节点心跳信息失败，请检查字段');
 		}
 
-		$obj = new NodeInfo();
+		$obj = new NodeHeartBeat();
 		$obj->node_id = $id;
 		$obj->uptime = (int) $request->input('uptime');
 		//$obj->load = $request->input('load');
@@ -129,7 +129,7 @@ class BaseController {
 
 	// 获取节点的审计规则
 	public function getNodeRule($id): JsonResponse {
-		$nodeRule = RuleGroupNode::query()->whereNodeId($id)->first();
+		$nodeRule = RuleGroupNode::whereNodeId($id)->first();
 		$data = [];
 		//节点未设置任何审计规则
 		if($nodeRule){
@@ -138,12 +138,11 @@ class BaseController {
 				foreach($ruleGroup->rules as $ruleId){
 					$rule = Rule::find($ruleId);
 					if($rule){
-						$new = [
+						$data[] = [
 							'id'      => $rule->id,
 							'type'    => $rule->type_api_label,
 							'pattern' => $rule->pattern
 						];
-						$data[] = $new;
 					}
 				}
 

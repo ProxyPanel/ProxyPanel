@@ -90,13 +90,13 @@
 
 							<td>
 								@if ($user->expireWarning == '-1')
-									<span class="badge badge-lg badge-danger"> {{$user->expire_time}} </span>
+									<span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>
 								@elseif ($user->expireWarning == '0')
-									<span class="badge badge-lg badge-warning"> {{$user->expire_time}} </span>
+									<span class="badge badge-lg badge-warning"> {{$user->expired_at}} </span>
 								@elseif ($user->expireWarning == '1')
-									<span class="badge badge-lg badge-default"> {{$user->expire_time}} </span>
+									<span class="badge badge-lg badge-default"> {{$user->expired_at}} </span>
 								@else
-									{{$user->expire_time}}
+									{{$user->expired_at}}
 								@endif
 							</td>
 							<td>

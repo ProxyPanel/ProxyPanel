@@ -19,7 +19,7 @@ use Validator;
 class EmailFilterController extends Controller {
 	// 邮箱过滤列表
 	public function filterList(): \Illuminate\Http\Response {
-		$view['list'] = EmailFilter::query()->orderByDesc('id')->paginate(15);
+		$view['list'] = EmailFilter::orderByDesc('id')->paginate(15);
 
 		return Response::view('admin.config.emailFilter', $view);
 	}
@@ -50,7 +50,7 @@ class EmailFilterController extends Controller {
 
 	// 删除邮箱后缀
 	public function delSuffix(Request $request): ?JsonResponse {
-		$result = EmailFilter::query()->whereId($request->input('id'))->delete();
+		$result = EmailFilter::whereId($request->input('id'))->delete();
 		if($result){
 			return Response::json(['status' => 'success', 'message' => '删除成功']);
 		}

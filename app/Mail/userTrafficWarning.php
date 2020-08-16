@@ -28,6 +28,6 @@ class userTrafficWarning extends Mailable implements ShouldQueue {
 
 	// 发件失败处理
 	public function failed(Exception $e): void {
-		NotificationLog::query()->whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
+		NotificationLog::whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
 	}
 }

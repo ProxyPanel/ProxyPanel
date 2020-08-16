@@ -30,14 +30,14 @@ class UserExpireAutoWarning extends Command {
 
 	private function userExpireWarning(): void {
 		// 只取SSR没被禁用的用户，其他不用管
-		foreach(User::query()->whereEnable(1)->get() as $user){
+		foreach(User::whereEnable(1)->get() as $user){
 			// 用户名不是邮箱的跳过
 			if(false === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
 				continue;
 			}
 
 			// 计算剩余可用时间
-			$lastCanUseDays = ceil(round(strtotime($user->expire_time) - time()) / Day);
+			$lastCanUseDays = Helpers::daysToNow($user->expired_at);
 			if($lastCanUseDays == 0){
 				$title = '账号过期提醒';
 				$content = '您的账号将于今天晚上【24:00】过期。';

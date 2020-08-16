@@ -4,9 +4,9 @@
 	<link href="/assets/global/vendor/switchery/switchery.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
 	<style>
-		.text-help {
-			padding-left: 15px;
-		}
+        .text-help {
+            padding-left: 15px;
+        }
 	</style>
 @endsection
 @section('content')
@@ -1471,7 +1471,6 @@
 	</div>
 @endsection
 @section('script')
-	<script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/switchery/switchery.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
@@ -1569,7 +1568,7 @@
 				if (ret.status === 'success') {
 					swal.fire({
 						title: '易支付信息(仅供参考)',
-						html: '商户状态: ' + ret.data["active"] + ' | 账号余额： ' + ret.data["money"] + ' | 结算账号：' + ret.data["account"]+'<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data["alirate"]) + '% | 微信 - ' + (100 - ret.data["wxrate"]) + '% | QQ钱包 - ' + (100 - ret.data["qqrate"]) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+						html: '商户状态: ' + ret.data["active"] + ' | 账号余额： ' + ret.data["money"] + ' | 结算账号：' + ret.data["account"] + '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data["alirate"]) + '% | 微信 - ' + (100 - ret.data["wxrate"]) + '% | QQ钱包 - ' + (100 - ret.data["qqrate"]) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
 						type: 'info'
 					});
 				} else {

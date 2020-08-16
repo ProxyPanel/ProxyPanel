@@ -15,7 +15,7 @@ class AutoPingNode extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		foreach(Node::query()->whereIsRelay(0)->whereStatus(1)->get() as $node){
+		foreach(Node::whereIsRelay(0)->whereStatus(1)->get() as $node){
 			$this->pingNode($node->id, $node->is_ddns? $node->server : $node->ip);
 		}
 

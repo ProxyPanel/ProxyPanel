@@ -9,8 +9,7 @@ use LSS\XML2Array;
 class Namesilo {
 	private static $host = 'https://www.namesilo.com/api/';
 
-	// Todo Debug测试
-	// 列出账号下所有域名
+	// 列出账号下所有域名　Todo Debug测试
 	public function listDomains() {
 		return $this->send('listDomains');
 	}

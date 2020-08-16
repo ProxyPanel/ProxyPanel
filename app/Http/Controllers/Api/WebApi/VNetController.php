@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\WebApi;
 
 use App\Models\Node;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class VNetController extends BaseController {
@@ -32,11 +31,11 @@ class VNetController extends BaseController {
 	// 获取节点可用的用户列表
 	public function getUserList($id): JsonResponse {
 		$node = Node::find($id);
-		$users = User::query()->activeUser()->groupUserPermit($node->id)->where('level', '>=', $node->level)->get();
+		$users = $node->node_access_users;
 		$data = [];
 
 		foreach($users as $user){
-			$new = [
+			$data[] = [
 				'uid'         => $user->id,
 				'port'        => $user->port,
 				'passwd'      => $user->passwd,
@@ -47,7 +46,6 @@ class VNetController extends BaseController {
 				'speed_limit' => $user->speed_limit,
 				'enable'      => $user->enable
 			];
-			$data[] = $new;
 		}
 
 		if($data){

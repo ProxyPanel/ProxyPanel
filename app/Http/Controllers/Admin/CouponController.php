@@ -48,42 +48,35 @@ class CouponController extends Controller {
 		return Response::view('admin.coupon.couponList', $view);
 	}
 
-	// 添加商品
+	// 添加优惠券
 	public function addCoupon(Request $request) {
 		if($request->isMethod('POST')){
 			Validator::make($request->all(), [
-				'name'            => 'required',
-				'sn'              => 'unique:coupon',
-				'type'            => 'required|integer|between:1,3',
-				'usage_count'     => 'required|integer',
-				'num'             => 'required|integer|min:1',
-				'amount'          => 'required_unless:type,2|numeric|min:0.01|nullable',
-				'discount'        => 'required_if:type,2|numeric|between:1,9.9|nullable',
-				'available_start' => 'required|date|before_or_equal:available_end',
-				'available_end'   => 'required|date|after_or_equal:available_start',
+				'name'         => 'required',
+				'sn'           => 'unique:coupon',
+				'type'         => 'required|integer|between:1,3',
+				'usable_times' => 'integer|nullable',
+				'num'          => 'required|integer|min:1',
+				'value'        => 'required|numeric|min:0',
+				'start_time'   => 'required|date|before_or_equal:end_time',
+				'end_time'     => 'required|date|after_or_equal:start_time',
 			], [
-				'name.required'                   => '请填入卡券名称',
-				'type.required'                   => '请选择卡券类型',
-				'type.integer'                    => '卡券类型不合法，请重选',
-				'type.between'                    => '卡券类型不合法，请重选',
-				'usage_count.required'            => '请选择卡券用途',
-				'usage_count.integer'             => '卡券用途不合法，请重选',
-				'usage_count.between'             => '卡券用途不合法，请重选',
-				'num.required'                    => '请填写卡券数量',
-				'num.integer'                     => '卡券数量不合法',
-				'num.min'                         => '卡券数量不合法，最小1',
-				'amount.required_unless'          => '请填入卡券面值',
-				'amount.numeric'                  => '卡券金额不合法',
-				'amount.min'                      => '卡券金额不合法，最小0.01',
-				'discount.required_if'            => '请填入卡券折扣',
-				'discount.numeric'                => '卡券折扣不合法',
-				'discount.between'                => '卡券折扣不合法，有效范围：1 ~ 9.9',
-				'available_start.required'        => '请填入有效期',
-				'available_start.date'            => '有效期不合法',
-				'available_start.before_or_equal' => '有效期不合法',
-				'available_end.required'          => '请填入有效期',
-				'available_end.date'              => '有效期不合法',
-				'available_end.after_or_equal'    => '有效期不合法'
+				'name.required'              => '请填入卡券名称',
+				'type.required'              => '请选择卡券类型',
+				'type.integer'               => '卡券类型不合法，请重选',
+				'type.between'               => '卡券类型不合法，请重选',
+				'num.required'               => '请填写卡券数量',
+				'num.integer'                => '卡券数量不合法',
+				'num.min'                    => '卡券数量不合法，最小1',
+				'value.required_unless'      => '请填入优惠值',
+				'value.numeric'              => '优惠值金额不合法',
+				'value.min'                  => '优惠值不合法，最小0',
+				'start_time.required'        => '请填入有效期',
+				'start_time.date'            => '有效期不合法',
+				'start_time.before_or_equal' => '有效期不合法',
+				'end_time.required'          => '请填入有效期',
+				'end_time.date'              => '有效期不合法',
+				'end_time.after_or_equal'    => '有效期不合法'
 			]);
 
 			$type = $request->input('type');
@@ -107,12 +100,11 @@ class CouponController extends Controller {
 					$obj->logo = $logo;
 					$obj->sn = $num == 1 && $request->input('sn')? $request->input('sn') : makeRandStr(8);
 					$obj->type = $type;
-					$obj->usage_count = $request->input('usage_count');
-					$obj->amount = $type == 2? 0 : $request->input('amount');
-					$obj->discount = $type != 2? 0 : $request->input('discount');
+					$obj->usable_times = $request->input('usable_times');
+					$obj->value = $request->input('value');
 					$obj->rule = $request->input('rule');
-					$obj->available_start = strtotime($request->input('available_start'));
-					$obj->available_end = strtotime($request->input('available_end'));
+					$obj->start_time = strtotime($request->input('start_time'));
+					$obj->end_time = strtotime($request->input('end_time'));
 					$obj->status = 0;
 					$obj->save();
 				}
@@ -134,7 +126,7 @@ class CouponController extends Controller {
 
 	// 删除优惠券
 	public function delCoupon(Request $request): JsonResponse {
-		Coupon::query()->whereId($request->input('id'))->delete();
+		Coupon::find($request->input('id'))->delete();
 
 		return Response::json(['status' => 'success', 'message' => '删除成功']);
 	}
@@ -162,8 +154,8 @@ class CouponController extends Controller {
 		$sheet->setTitle('抵用券');
 		$sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（元）', '使用限制（元）'], null);
 		foreach($voucherList as $k => $vo){
-			$dateRange = date('Y-m-d', $vo->available_start).' ~ '.date('Y-m-d', $vo->available_end);
-			$sheet->fromArray([$vo->name, $vo->usage_count, $dateRange, $vo->sn, $vo->amount, $vo->rule], null,
+			$dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
+			$sheet->fromArray([$vo->name, $vo->usable_times, $dateRange, $vo->sn, $vo->value, $vo->rule], null,
 				'A'.($k + 2));
 		}
 
@@ -174,8 +166,8 @@ class CouponController extends Controller {
 		$sheet->setTitle('折扣券');
 		$sheet->fromArray(['名称', '使用次数', '有效期', '券码', '折扣（折）', '使用限制（元）'], null);
 		foreach($discountCouponList as $k => $vo){
-			$dateRange = date('Y-m-d', $vo->available_start).' ~ '.date('Y-m-d', $vo->available_end);
-			$sheet->fromArray([$vo->name, $vo->usage_count, $dateRange, $vo->sn, $vo->discount, $vo->rule], null,
+			$dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
+			$sheet->fromArray([$vo->name, $vo->usable_times, $dateRange, $vo->sn, $vo->value, $vo->rule], null,
 				'A'.($k + 2));
 		}
 
@@ -186,8 +178,8 @@ class CouponController extends Controller {
 		$sheet->setTitle('充值券');
 		$sheet->fromArray(['名称', '有效期', '券码', '金额（元）'], null);
 		foreach($refillList as $k => $vo){
-			$dateRange = date('Y-m-d', $vo->available_start).' ~ '.date('Y-m-d', $vo->available_end);
-			$sheet->fromArray([$vo->name, $dateRange, $vo->sn, $vo->amount], null, 'A'.($k + 2));
+			$dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
+			$sheet->fromArray([$vo->name, $dateRange, $vo->sn, $vo->value], null, 'A'.($k + 2));
 		}
 
 		// 指针切换回第一个sheet

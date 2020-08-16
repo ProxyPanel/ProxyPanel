@@ -88,8 +88,7 @@
 												<td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
 												<td>{{$vo->type}}</td>
 												<td>
-													<a href="https://www.ipip.net/ip/{{$vo->ip}}.html"
-															target="_blank">{{$vo->ip}}</a>
+													<a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a>
 												</td>
 											</tr>
 										@endforeach

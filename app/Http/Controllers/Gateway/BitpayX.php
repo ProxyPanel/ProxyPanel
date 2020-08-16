@@ -11,7 +11,7 @@ use Response;
 
 class BitpayX extends AbstractPayment {
 	public function purchase($request): JsonResponse {
-		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
 		$data = [
 			'merchant_order_id' => $payment->trade_no,
@@ -28,7 +28,7 @@ class BitpayX extends AbstractPayment {
 
 		if($result['status'] === 200 || $result['status'] === 201){
 			$result['payment_url'] .= '&lang=zh';
-			Payment::whereId($payment->id)->update(['url' => $result['payment_url']]);
+			$payment->update(['url' => $result['payment_url']]);
 
 			return Response::json(['status' => 'success', 'url' => $result['payment_url'], 'message' => '创建订单成功!']);
 		}
@@ -73,8 +73,13 @@ class BitpayX extends AbstractPayment {
 	public function notify($request): void {
 		$tradeNo = $request->input(['merchant_order_id']);
 		if($request->input(['status']) === 'PAID' && hash_equals($this->sign($tradeNo), $request->input(['token']))){
-			$this->postPayment($tradeNo, 'BitPayX');
-			exit(json_encode(['status' => 200]));
+			$payment = Payment::whereTradeNo($tradeNo)->first();
+			if($payment){
+				$ret = $payment->order->update(['status' => 2]);
+				if($ret){
+					exit(json_encode(['status' => 200]));
+				}
+			}
 		}
 		exit(json_encode(['status' => 400]));
 	}

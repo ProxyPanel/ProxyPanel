@@ -11,7 +11,7 @@ use Response;
 
 class EPay extends AbstractPayment {
 	public function purchase(Request $request): JsonResponse {
-		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
 		switch($request->input('type')){
 			case 2:
@@ -39,7 +39,7 @@ class EPay extends AbstractPayment {
 		$data['sign'] = $this->aliStyleSign($data, self::$sysConfig['epay_key']);
 
 		$url = self::$sysConfig['epay_url'].'submit.php?'.http_build_query($data);
-		Payment::whereId($payment->id)->update(['url' => $url]);
+		$payment->update(['url' => $url]);
 
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
 	}
@@ -47,8 +47,13 @@ class EPay extends AbstractPayment {
 	public function notify(Request $request): void {
 		if($request->input('trade_status') === 'TRADE_SUCCESS'
 		   && $this->verify($request->except('method'), self::$sysConfig['epay_key'], $request->input('sign'))){
-			$this->postPayment($request->input('out_trade_no'), 'EPay');
-			exit('SUCCESS');
+			$payment = Payment::whereTradeNo($request->input('out_trade_no'))->first();
+			if($payment){
+				$ret = $payment->order->update(['status' => 2]);
+				if($ret){
+					exit('SUCCESS');
+				}
+			}
 		}
 		exit('FAIL');
 	}

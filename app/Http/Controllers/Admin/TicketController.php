@@ -28,7 +28,7 @@ class TicketController extends Controller {
 	public function ticketList(Request $request): \Illuminate\Http\Response {
 		$email = $request->input('email');
 
-		$query = Ticket::query()->whereIn('admin_id', [0, Auth::id()]);
+		$query = Ticket::whereIn('admin_id', [0, Auth::id()]);
 
 		if(isset($email)){
 			$query->whereHas('user', static function($q) use ($email) {
@@ -48,7 +48,7 @@ class TicketController extends Controller {
 		$title = $request->input('title');
 		$content = $request->input('content');
 
-		$user = User::find($id)?: User::query()->whereEmail($email)->first();
+		$user = User::find($id)?: User::whereEmail($email)->first();
 
 		if(!$user){
 			return Response::json(['status' => 'fail', 'message' => '用户不存在']);
@@ -94,8 +94,8 @@ class TicketController extends Controller {
 
 			if($obj->id){
 				// 将工单置为已回复
-				$ticket = Ticket::query()->with(['user'])->whereId($id)->firstOrFail();
-				Ticket::query()->whereId($id)->update(['status' => 1]);
+				$ticket = Ticket::with('user')->whereId($id)->firstOrFail();
+				Ticket::whereId($id)->update(['status' => 1]);
 
 				$title = "工单回复提醒";
 				$content = "标题：".$ticket->title."<br>管理员回复：".$content;
@@ -120,7 +120,7 @@ class TicketController extends Controller {
 		}
 
 		$view['ticket'] = Ticket::find($id);
-		$view['replyList'] = TicketReply::query()->whereTicketId($id)->oldest()->get();
+		$view['replyList'] = TicketReply::whereTicketId($id)->oldest()->get();
 
 		return Response::view('admin.ticket.replyTicket', $view);
 	}
@@ -129,12 +129,12 @@ class TicketController extends Controller {
 	public function closeTicket(Request $request): JsonResponse {
 		$id = $request->input('id');
 
-		$ticket = Ticket::query()->with(['user'])->whereId($id)->first();
+		$ticket = Ticket::with('user')->whereId($id)->first();
 		if(!$ticket){
 			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 		}
 
-		$ret = Ticket::query()->whereId($id)->update(['status' => 2]);
+		$ret = Ticket::whereId($id)->update(['status' => 2]);
 		if(!$ret){
 			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
 		}

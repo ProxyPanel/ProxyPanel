@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UserBanedLog;
+use App\Services\OrderService;
 use Illuminate\Console\Command;
 use Log;
 
@@ -38,10 +39,10 @@ class DailyJob extends Command {
 
 	private function expireUser(): void {
 		// 过期用户处理
-		$userList = User::query()->activeUser()->where('expire_time', '<', date('Y-m-d'))->get();
+		$userList = User::activeUser()->where('expired_at', '<', date('Y-m-d'))->get();
 		foreach($userList as $user){
 			if(sysConfig('is_ban_status')){
-				User::query()->whereId($user->id)->update([
+				$user->update([
 					'u'               => 0,
 					'd'               => 0,
 					'transfer_enable' => 0,
@@ -54,12 +55,12 @@ class DailyJob extends Command {
 				$this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
 
 				// 废除其名下邀请码
-				Invite::query()->whereUid($user->id)->whereStatus(0)->update(['status' => 2]);
+				Invite::whereInviterId($user->id)->whereStatus(0)->update(['status' => 2]);
 
 				// 写入用户流量变动记录
 				Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
 			}else{
-				User::query()->whereId($user->id)->update([
+				$user->update([
 					'u'               => 0,
 					'd'               => 0,
 					'transfer_enable' => 0,
@@ -80,25 +81,23 @@ class DailyJob extends Command {
 	 * 添加用户封禁日志
 	 *
 	 * @param  int     $userId       用户ID
-	 * @param  int     $minutes      封禁时长，单位分钟
+	 * @param  int     $time         封禁时长，单位分钟
 	 * @param  string  $description  封禁理由
+	 * @return bool
 	 */
-	private function addUserBanLog($userId, $minutes, $description): void {
+	private function addUserBanLog($userId, $time, $description): bool {
 		$log = new UserBanedLog();
 		$log->user_id = $userId;
-		$log->minutes = $minutes;
+		$log->time = $time;
 		$log->description = $description;
-		$log->save();
+		return $log->save();
 	}
 
 	// 关闭超过72小时未处理的工单
 	private function closeTickets(): void {
-		$ticketList = Ticket::query()
-		                    ->where('updated_at', '<=', date('Y-m-d', strtotime("-3 days")))
-		                    ->whereStatus(1)
-		                    ->get();
+		$ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime("-3 days")))->whereStatus(1)->get();
 		foreach($ticketList as $ticket){
-			$ret = Ticket::query()->whereId($ticket->id)->update(['status' => 2]);
+			$ret = Ticket::whereId($ticket->id)->update(['status' => 2]);
 			if($ret){
 				PushNotification::send('工单关闭提醒', '工单：ID'.$ticket->id.'超过72小时未处理，系统已自动关闭');
 			}
@@ -107,9 +106,8 @@ class DailyJob extends Command {
 
 	// 重置用户流量
 	private function resetUserTraffic(): void {
-		$userList = User::query()
-		                ->where('status', '<>', -1)
-		                ->where('expire_time', '>', date('Y-m-d'))
+		$userList = User::where('status', '<>', -1)
+		                ->where('expired_at', '>', date('Y-m-d'))
 		                ->where('reset_time', '<=', date('Y-m-d'))
 		                ->get();
 		foreach($userList as $user){
@@ -119,50 +117,27 @@ class DailyJob extends Command {
 			}
 
 			// 取出用户正在使用的套餐
-			$order = Order::query()
-			              ->with(['goods'])
-			              ->whereUserId($user->id)
-			              ->whereStatus(2)
-			              ->whereIsExpire(0)
-			              ->whereHas('goods', static function($q) {
-				              $q->whereType(2);
-			              })
-			              ->first();
+			$order = Order::userActivePlan($user->id)->first();
 
-			// 无订单的免费/特殊用户跳过
+			// 无订单用户跳过
 			if(!$order){
 				continue;
 			}
 
 			// 过期生效中的加油包
-			Order::query()
-			     ->with(['goods'])
-			     ->whereUserId($user->id)
-			     ->whereStatus(2)
-			     ->whereIsExpire(0)
-			     ->whereHas('goods', static function($q) {
-				     $q->whereType(1);
-			     })
-			     ->update(['is_expire' => 1]);
+			Order::userActivePackage($user->id)->update(['is_expire' => 1]);
 
-			//账号下一个重置时间
-			$nextResetTime = date('Y-m-d', strtotime("+".$order->goods->period." days"));
-			if($nextResetTime >= $user->expire_time){
-				$nextResetTime = null;
+			$oldData = $user->transfer_enable;
+			// 重置流量与重置日期 TODO 可用流量变动日志加入至UserObserver
+			$ret = $user->update((new OrderService($order))->resetTimeAndData($user->expired_at));
+			if($ret){
+				// 可用流量变动日志
+				Helpers::addUserTrafficModifyLog($order->user_id, $order->id, $oldData, $user->transfer_enable,
+					'【流量重置】重置可用流量');
+				Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.flowAutoShow($user->transfer_enable).'. 重置日期为 '.($user->reset_time?: '【无】'));
+			}else{
+				Log::error('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置失败');
 			}
-			// 可用流量 变动日志
-			if($user->transfer_enable != $order->goods->traffic * MB){
-				Helpers::addUserTrafficModifyLog($order->user_id, $order->oid, $user->transfer_enable,
-					$order->goods->traffic * MB, '【流量重置】重置可用流量');
-			}
-			// 重置流量
-			User::query()->whereId($user->id)->update([
-				'u'               => 0,
-				'd'               => 0,
-				'transfer_enable' => $order->goods->traffic * MB,
-				'reset_time'      => $nextResetTime
-			]);
-			Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.($order->goods->traffic * MB).'. 重置日期为 '.($nextResetTime?: '【无】'));
 		}
 	}
 }

@@ -8,62 +8,62 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
 	<style type="text/css">
-		body {
-			padding: 25px;
-		}
+        body {
+            padding: 25px;
+        }
 
-		h1 {
-			font-size: 1.5em;
-			margin-top: 0;
-		}
+        h1 {
+            font-size: 1.5em;
+            margin-top: 0;
+        }
 
-		#table-log {
-			font-size: 0.85rem;
-		}
+        #table-log {
+            font-size: 0.85rem;
+        }
 
-		.sidebar {
-			font-size: 0.85rem;
-			line-height: 1;
-		}
+        .sidebar {
+            font-size: 0.85rem;
+            line-height: 1;
+        }
 
-		.btn {
-			font-size: 0.7rem;
-		}
+        .btn {
+            font-size: 0.7rem;
+        }
 
-		.stack {
-			font-size: 0.85em;
-		}
+        .stack {
+            font-size: 0.85em;
+        }
 
-		.date {
-			min-width: 75px;
-		}
+        .date {
+            min-width: 75px;
+        }
 
-		.text {
-			word-break: break-all;
-		}
+        .text {
+            word-break: break-all;
+        }
 
-		a.llv-active {
-			z-index: 2;
-			background-color: #f5f5f5;
-			border-color: #777;
-		}
+        a.llv-active {
+            z-index: 2;
+            background-color: #f5f5f5;
+            border-color: #777;
+        }
 
-		.list-group-item {
-			word-wrap: break-word;
-		}
+        .list-group-item {
+            word-wrap: break-word;
+        }
 
-		.folder {
-			padding-top: 15px;
-		}
+        .folder {
+            padding-top: 15px;
+        }
 
-		.div-scroll {
-			height: 80vh;
-			overflow: hidden auto;
-		}
+        .div-scroll {
+            height: 80vh;
+            overflow: hidden auto;
+        }
 
-		.nowrap {
-			white-space: nowrap;
-		}
+        .nowrap {
+            white-space: nowrap;
+        }
 
 	</style>
 </head>

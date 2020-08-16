@@ -3,9 +3,9 @@
 	<link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
 	<link href="/assets/global/fonts/material-design/material-design.min.css" type="text/css" rel="stylesheet">
 	<style type="text/css">
-		ol > li {
-			margin-bottom: 8px;
-		}
+        ol > li {
+            margin-bottom: 8px;
+        }
 	</style>
 @endsection
 @section('content')

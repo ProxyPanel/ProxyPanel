@@ -411,7 +411,7 @@
 			$('#level').selectpicker('val', '{{$node->level}}');
 			$('#speed_limit').val('{{$node->speed_limit/Mbps}}');
 			$('#client_limit').val('{{$node->client_limit}}');
-			$('#labels').selectpicker('val', {{$node->labels}});
+			$('#labels').selectpicker('val', {{$node->labels->pluck('label_id')}});
 			$('#country_code').selectpicker('val', '{{$node->country_code}}');
 			$('#description').val('{{$node->description}}');
 			$('#sort').val('{{$node->sort}}');

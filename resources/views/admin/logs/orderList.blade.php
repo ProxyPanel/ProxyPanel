@@ -108,13 +108,12 @@
 					<tbody>
 					@foreach($orderList as $order)
 						<tr>
-							<td> {{$order->oid}} </td>
+							<td> {{$order->id}} </td>
 							<td>
 								@if(empty($order->user) )
 									【账号不存在】
 								@else
-									<a href="/admin/userList?id={{$order->user->id}}"
-											target="_blank">{{$order->user->email}} </a>
+									<a href="/admin/userList?id={{$order->user->id}}" target="_blank">{{$order->user->email}} </a>
 								@endif
 							</td>
 							<td> {{$order->order_sn}}</td>

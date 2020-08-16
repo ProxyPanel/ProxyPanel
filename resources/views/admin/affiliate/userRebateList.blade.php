@@ -11,12 +11,12 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-4 col-sm-6">
-						<input type="text" class="form-control" name="email" id="email"
-								value="{{Request::get('email')}}" placeholder="消费者"/>
+						<input type="text" class="form-control" name="invitee_email" id="invitee_email"
+								value="{{Request::get('invitee_email')}}" placeholder="消费者"/>
 					</div>
 					<div class="form-group col-lg-4 col-sm-6">
-						<input type="text" class="form-control" name="ref_email" id="ref_email"
-								value="{{Request::get('ref_email')}}" placeholder="邀请人"/>
+						<input type="text" class="form-control" name="inviter_email" id="inviter_email"
+								value="{{Request::get('inviter_email')}}" placeholder="邀请人"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-6">
 						<select name="status" id="status" class="form-control" onChange="Search()">
@@ -50,22 +50,22 @@
 						<tr>
 							<td> {{$vo->id}} </td>
 							<td>
-								@if(empty($vo->user))
+								@if(empty($vo->invitee))
 									【账号已删除】
 								@else
-									<a href="/admin/userRebateList?email={{$vo->user->email}}"> {{$vo->user->email}} </a>
+									<a href="/admin/userRebateList?invitee_email={{$vo->invitee->email}}"> {{$vo->invitee->email}} </a>
 								@endif
 							</td>
 							<td>
-								@if(empty($vo->ref_user))
+								@if(empty($vo->inviter))
 									【账号已删除】
 								@else
-									<a href="/admin/userRebateList?ref_email={{$vo->ref_user->email}}"> {{$vo->ref_user->email}} </a>
+									<a href="/admin/userRebateList?inviter_email={{$vo->inviter->email}}"> {{$vo->inviter->email}} </a>
 								@endif
 							</td>
 							<td> {{$vo->order_id}} </td>
 							<td> {{$vo->amount}} </td>
-							<td> {{$vo->ref_amount}} </td>
+							<td> {{$vo->commission}} </td>
 							<td> {{$vo->created_at}} </td>
 							<td> {{$vo->updated_at}} </td>
 							<td>
@@ -117,7 +117,7 @@
 
 		// 搜索
 		function Search() {
-			window.location.href = '/admin/userRebateList' + '?email=' + $("#email").val() + '&ref_email=' + $("#ref_email").val() + '&status=' + $("#status option:selected").val();
+			window.location.href = '/admin/userRebateList' + '?invitee_email=' + $("#invitee_email").val() + '&inviter_email=' + $("#inviter_email").val() + '&status=' + $("#status option:selected").val();
 		}
 	</script>
 @endsection

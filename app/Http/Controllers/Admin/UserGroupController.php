@@ -15,14 +15,14 @@ use Response;
 use Validator;
 
 class UserGroupController extends Controller {
-	public function index(): \Illuminate\Http\Response {
-		$view['list'] = UserGroup::query()->paginate(15);
+	public function index(Request $request): \Illuminate\Http\Response {
+		$view['list'] = UserGroup::paginate(15)->appends($request->except('page'));
 		return Response::view('admin.user.group.index', $view);
 	}
 
 	// 添加用户分组页面
 	public function create(): \Illuminate\Http\Response {
-		$view['nodeList'] = Node::query()->whereStatus(1)->get();
+		$view['nodeList'] = Node::whereStatus(1)->get();
 		return Response::view('admin.user.group.info', $view);
 	}
 
@@ -51,7 +51,7 @@ class UserGroupController extends Controller {
 	// 编辑用户分组页面
 	public function edit($id): \Illuminate\Http\Response {
 		$view['userGroup'] = UserGroup::findOrFail($id);
-		$view['nodeList'] = Node::query()->whereStatus(1)->get();
+		$view['nodeList'] = Node::whereStatus(1)->get();
 
 		return Response::view('admin.user.group.info', $view);
 	}
@@ -71,12 +71,12 @@ class UserGroupController extends Controller {
 	// 删除用户分组
 	public function destroy($id): JsonResponse {
 		// 校验该分组下是否存在关联账号
-		if(User::query()->whereGroupId($id)->count()){
+		if(User::whereGroupId($id)->count()){
 			return Response::json(['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']);
 		}
 
 		try{
-			UserGroup::query()->whereId($id)->delete();
+			UserGroup::whereId($id)->delete();
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
 		}

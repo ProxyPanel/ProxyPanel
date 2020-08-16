@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Models\Order;
 use App\Models\Payment;
 use Auth;
 use Exception;
@@ -50,7 +49,7 @@ class PayPal extends AbstractPayment {
 	}
 
 	public function purchase($request): JsonResponse {
-		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
 		$data = $this->getCheckoutData($payment->trade_no, $payment->amount);
 
@@ -61,7 +60,7 @@ class PayPal extends AbstractPayment {
 
 				return Response::json(['status' => 'fail', 'message' => '创建订单失败，请使用其他方式或通知管理员！']);
 			}
-			Payment::whereId($payment->id)->update(['url' => $response['paypal_link']]);
+			$payment->update(['url' => $response['paypal_link']]);
 
 			return Response::json(['status' => 'success', 'url' => $response['paypal_link'], 'message' => '创建订单成功!']);
 		}catch(Exception $e){
@@ -98,15 +97,15 @@ class PayPal extends AbstractPayment {
 		$response = $this->provider->getExpressCheckoutDetails($token);
 
 		if(in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])){
-			$payment = Payment::query()->whereTradeNo($response['INVNUM'])->firstOrFail();
+			$payment = Payment::whereTradeNo($response['INVNUM'])->firstOrFail();
 			$data = $this->getCheckoutData($payment->trade_no, $payment->amount);
 			// Perform transaction on PayPal
 			$payment_status = $this->provider->doExpressCheckoutPayment($data, $token, $PayerID);
 			$status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
 			if(!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')){
-				Log::info("Order $payment->oid has been paid successfully!");
-				Order::whereOid($payment->oid)->update(['status' => 1]);
+				Log::info("Order $payment->order_id has been paid successfully!");
+				$payment->order->update(['status' => 1]);
 			}else{
 				Log::error("Error processing PayPal payment for Order $payment->id!");
 			}
@@ -127,10 +126,13 @@ class PayPal extends AbstractPayment {
 		$response = (string) $this->provider->verifyIPN($post);
 
 		if($response === 'VERIFIED' && $request['invoice']){
-			if(Payment::query()->whereTradeNo($request['invoice'])->first()->status == 0){
-				$this->postPayment($request['invoice'], 'PayPal');
+			$payment = Payment::whereTradeNo($request['invoice'])->first();
+			if($payment && $payment->status == 0){
+				$ret = $payment->order->update(['status' => 2]);
+				if($ret){
+					exit('success');
+				}
 			}
-			exit("success");
 		}
 		exit("fail");
 	}

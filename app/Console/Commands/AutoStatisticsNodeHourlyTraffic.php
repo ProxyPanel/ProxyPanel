@@ -15,7 +15,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		foreach(Node::query()->whereStatus(1)->orderBy('id')->get() as $node){
+		foreach(Node::whereStatus(1)->orderBy('id')->get() as $node){
 			$this->statisticsByNode($node->id);
 		}
 
@@ -26,9 +26,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command {
 	}
 
 	private function statisticsByNode($node_id): void {
-		$query = UserDataFlowLog::query()
-		                        ->whereNodeId($node_id)
-		                        ->whereBetween('log_time', [strtotime("-1 hour"), time()]);
+		$query = UserDataFlowLog::whereNodeId($node_id)->whereBetween('log_time', [strtotime("-1 hour"), time()]);
 
 		$u = $query->sum('u');
 		$d = $query->sum('d');

@@ -47,7 +47,7 @@ class ShopController extends Controller {
 	// 添加商品页面
 	public function create(): \Illuminate\Http\Response {
 		$view['goods'] = null;
-		$view['levelList'] = Level::query()->orderBy('level')->get();
+		$view['levelList'] = Level::orderBy('level')->get();
 
 		return Response::view('admin.shop.info', $view);
 	}
@@ -108,7 +108,7 @@ class ShopController extends Controller {
 			return Redirect::back()->with('successMsg', '添加成功');
 		}catch(Exception $e){
 			DB::rollBack();
-			Log::info($e);
+			Log::info('添加商品信息异常：'.$e->getMessage());
 
 			return Redirect::back()->withInput()->withErrors('添加失败');
 		}
@@ -117,7 +117,7 @@ class ShopController extends Controller {
 	// 编辑商品页面
 	public function edit($id): \Illuminate\Http\Response {
 		$view['goods'] = Goods::find($id);
-		$view['levelList'] = Level::query()->orderBy('level')->get();
+		$view['levelList'] = Level::orderBy('level')->get();
 
 		return Response::view('admin.shop.info', $view);
 	}
@@ -140,7 +140,7 @@ class ShopController extends Controller {
 
 				return Redirect::back()->withInput();
 			}
-			Goods::query()->whereId($id)->update(['logo' => $logo]);
+			Goods::whereId($id)->update(['logo' => $logo]);
 		}
 
 		try{
@@ -162,7 +162,7 @@ class ShopController extends Controller {
 				'status'      => $request->input('status', 0)
 			];
 
-			Goods::query()->whereId($id)->update($data);
+			Goods::whereId($id)->update($data);
 
 			Session::flash('successMsg', '编辑成功');
 
@@ -179,7 +179,7 @@ class ShopController extends Controller {
 	// 删除商品
 	public function destroy($id): JsonResponse {
 		try{
-			$goods = Goods::query()->findOrFail($id)->delete();
+			$goods = Goods::findOrFail($id)->delete();
 
 		}catch(Exception $e){
 			Session::flash('errorMsg', '编辑失败'.$e);

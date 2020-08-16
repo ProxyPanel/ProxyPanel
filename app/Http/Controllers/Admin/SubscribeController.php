@@ -50,7 +50,7 @@ class SubscribeController extends Controller {
 		$query = UserSubscribeLog::with('user:email');
 
 		if(isset($id)){
-			$query->whereSid($id);
+			$query->whereSubscribeId($id);
 		}
 
 		$view['subscribeLog'] = $query->latest()->paginate(20)->appends($request->except('page'));
@@ -68,9 +68,9 @@ class SubscribeController extends Controller {
 		}
 
 		if($status){
-			UserSubscribe::query()->whereId($id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
+			UserSubscribe::find($id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
 		}else{
-			UserSubscribe::query()->whereId($id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
+			UserSubscribe::find($id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
 		}
 
 		return Response::json(['status' => 'success', 'message' => '操作成功']);

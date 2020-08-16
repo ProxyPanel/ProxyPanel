@@ -69,15 +69,11 @@
 									充值券
 								@endif
 							</td>
-							<td> {{$coupon->type == '3' ? '一次性' : $coupon->usage_count}} </td>
+							<td> {{$coupon->type == '3' ? '一次性' : ($coupon->usable_times !== null? $coupon->usable_times : '无限制')}} </td>
 							<td>
-								@if($coupon->type == 2)
-									{{$coupon->discount}}折
-								@else
-									{{$coupon->amount}}元
-								@endif
+								{{$coupon->value}}@if($coupon->type == 2)%@else元@endif
 							</td>
-							<td> {{date('Y-m-d', $coupon->available_start)}} ~ {{date('Y-m-d', $coupon->available_end)}} </td>
+							<td> {{date('Y-m-d', $coupon->start_time)}} ~ {{date('Y-m-d', $coupon->end_time)}} </td>
 							<td>
 								@if($coupon->status == '1')
 									<span class="badge badge-lg badge-default"> 已使用 </span>

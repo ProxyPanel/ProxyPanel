@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Components\Helpers;
 use App\Components\PushNotification;
 use App\Models\User;
 use App\Models\UserHourlyDataFlow;
@@ -28,8 +27,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 	// 用户流量异常警告
 	private function userTrafficAbnormalWarning(): void {
 		// 1小时内流量异常用户(多往前取5分钟，防止数据统计任务执行时间过长导致没有数据)
-		$userTotalTrafficList = UserHourlyDataFlow::query()
-		                                          ->whereNodeId(0)
+		$userTotalTrafficList = UserHourlyDataFlow::whereNodeId(0)
 		                                          ->where('total', '>', MB * 50)
 		                                          ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
 		                                          ->groupBy('user_id')
@@ -43,9 +41,7 @@ class UserTrafficAbnormalAutoWarning extends Command {
 
 				// 推送通知管理员
 				if($vo->totalTraffic > sysConfig('traffic_ban_value') * GB){
-					$traffic = UserHourlyDataFlow::query()
-					                             ->userHourly($vo->user_id)
-					                             ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
+					$traffic = UserHourlyDataFlow::userRecentUsed($user->id)
 					                             ->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")
 					                             ->firstOrFail();
 

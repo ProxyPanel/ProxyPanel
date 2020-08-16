@@ -7,6 +7,11 @@
 		<div class="panel">
 			<div class="panel-heading p-20">
 				<h1 class="panel-title cyan-600"><i class="icon wb-bookmark"></i>{{trans('home.invoices')}}</h1>
+				@if($prepaidPlan)
+					<div class="panel-actions">
+						<button onclick="closePlan()" class="btn btn-primary"> 激活预付单</button>
+					</div>
+				@endif
 			</div>
 			<div class="panel-body">
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -32,7 +37,7 @@
 							<td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
 							<td>￥{{$order->amount}}</td>
 							<td>{{$order->created_at}}</td>
-							<td>{{empty($order->goods) ? '' : $order->goods_id == 0 || $order->status == 3 ? '' : $order->expired_at}}</td>
+							<td>{{empty($order->goods) || $order->goods_id == 0 || $order->status == 3 ? '' : $order->expired_at}}</td>
 							<td>
 								@switch($order->status)
 									@case(-1)
@@ -67,12 +72,10 @@
 										@elseif($order->payment->url)
 											<a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
 										@endif
-										<button onclick="closeOrder('{{$order->oid}}')" class="btn btn-danger">{{trans('home.cancel')}}</button>
+										<button onclick="closeOrder('{{$order->id}}')" class="btn btn-danger">{{trans('home.cancel')}}</button>
 									@elseif ($order->status == 1)
 										<button onClick="window.location.reload();" class="btn btn-primary">
 											<i class="icon wb-refresh" aria-hidden="true"></i></button>
-									@elseif ($order->status == 3)
-										<button onclick="activeOrder('{{$order->oid}}')" class="btn btn-success">{{trans('home.invoice_table_start')}}</button>
 									@endif
 								</div>
 							</td>
@@ -97,9 +100,9 @@
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
 	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		function activeOrder(oid) {
+		function closePlan() {
 			swal.fire({
-				title: '是否提前激活本套餐？',
+				title: '是否提前激活预支付套餐？',
 				html: '套餐激活后：<br>先前套餐将直接失效！<br>过期日期将由本日重新开始计算！',
 				type: 'warning',
 				showCancelButton: true,
@@ -109,9 +112,9 @@
 				if (result.value) {
 					$.ajax({
 						type: "POST",
-						url: "/activeOrder",
+						url: "/closePlan",
 						async: false,
-						data: {_token: '{{csrf_token()}}', oid: oid},
+						data: {_token: '{{csrf_token()}}'},
 						dataType: 'json',
 						success: function (ret) {
 							if (ret.status === 'success') {
@@ -126,7 +129,7 @@
 			})
 		}
 
-		function closeOrder(oid) {
+		function closeOrder(id) {
 			swal.fire({
 				title: '关闭订单？',
 				type: 'warning',
@@ -139,7 +142,7 @@
 						type: "POST",
 						url: "payment/close",
 						async: false,
-						data: {_token: '{{csrf_token()}}', oid: oid},
+						data: {_token: '{{csrf_token()}}', id: id},
 						dataType: 'json',
 						success: function (ret) {
 							if (ret.status === 'success') {

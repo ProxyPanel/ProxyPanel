@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\WebApi;
 
 use App\Models\Node;
 use App\Models\NodeCertificate;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -12,7 +11,7 @@ class V2RayController extends BaseController {
 	// 获取节点信息
 	public function getNodeInfo($id): JsonResponse {
 		$node = Node::find($id);
-		$nodeDv = NodeCertificate::query()->whereDomain($node->v2_host)->first();
+		$nodeDv = NodeCertificate::whereDomain($node->v2_host)->first();
 
 		return $this->returnData('获取节点信息成功', 'success', 200, [
 			'id'              => $node->id,
@@ -39,17 +38,15 @@ class V2RayController extends BaseController {
 
 	// 获取节点可用的用户列表
 	public function getUserList($id): JsonResponse {
-		$node = Node::find($id);
-		$users = User::query()->activeUser()->groupUserPermit($node->id)->where('level', '>=', $node->level)->get();
+		$users = Node::find($id)->node_access_users;
 		$data = [];
 
 		foreach($users as $user){
-			$new = [
+			$data[] = [
 				'uid'         => $user->id,
 				'vmess_uid'   => $user->vmess_id,
 				'speed_limit' => $user->speed_limit
 			];
-			$data[] = $new;
 		}
 
 		return $this->returnData('获取用户列表成功', 'success', 200, $data, ['updateTime' => time()]);
@@ -62,9 +59,9 @@ class V2RayController extends BaseController {
 
 		if($request->has(['key', 'pem'])){
 			$node = Node::find($id);
-			$Dv = NodeCertificate::query()->whereDomain($node->v2_host)->first();
+			$Dv = NodeCertificate::whereDomain($node->v2_host)->first();
 			if($Dv){
-				$ret = NodeCertificate::query()->whereId($Dv->id)->update(['key' => $key, 'pem' => $pem]);
+				$ret = NodeCertificate::whereId($Dv->id)->update(['key' => $key, 'pem' => $pem]);
 			}else{
 				$ret = new NodeCertificate();
 				$ret->domain = $node->server;

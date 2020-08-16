@@ -183,7 +183,7 @@ Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], func
 	Route::any('replyTicket', 'UserController@replyTicket'); // 回复工单
 	Route::post('closeTicket', 'UserController@closeTicket'); // 关闭工单
 	Route::get('invoices', 'UserController@invoices'); // 订单列表
-	Route::post('activeOrder', 'UserController@activeOrder'); // 激活预支付套餐
+	Route::post('closePlan', 'UserController@closePlan'); // 激活预支付套餐
 	Route::get('invoice/{sn}', 'UserController@invoiceDetail'); // 订单明细
 	Route::post('resetUserTraffic', 'UserController@resetUserTraffic'); // 重置用户流量
 	Route::any('buy/{id}', 'UserController@buy'); // 购买商品

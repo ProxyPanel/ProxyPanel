@@ -9,7 +9,7 @@ use Response;
 
 class CodePay extends AbstractPayment {
 	public function purchase($request): JsonResponse {
-		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
 		$data = [
 			'id'         => self::$sysConfig['codepay_id'],
@@ -24,7 +24,7 @@ class CodePay extends AbstractPayment {
 		$data['sign'] = $this->aliStyleSign($data, self::$sysConfig['codepay_key']);
 
 		$url = self::$sysConfig['codepay_url'].http_build_query($data);
-		Payment::whereId($payment->id)->update(['url' => $url]);
+		$payment->update(['url' => $url]);
 
 		return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
 	}
@@ -34,8 +34,13 @@ class CodePay extends AbstractPayment {
 		if($trade_no && $request->input('pay_no')
 		   && $this->verify($request->except('method'), self::$sysConfig['codepay_key'], $request->input('sign'),
 				false)){
-			$this->postPayment($trade_no, '码支付');
-			exit('success');
+			$payment = Payment::whereTradeNo($trade_no)->first();
+			if($payment){
+				$ret = $payment->order->update(['status' => 2]);
+				if($ret){
+					exit('success');
+				}
+			}
 		}
 		exit('fail');
 	}

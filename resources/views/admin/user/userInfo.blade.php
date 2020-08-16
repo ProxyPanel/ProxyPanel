@@ -34,7 +34,7 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-sm-3 col-form-label" for="password">密码</label>
 								<div class="col-xl-6 col-sm-8">
-									<input type="password" class="form-control" name="password" id="password" placeholder="@isset($user)留空则自动生成随机密码 @else 不填则不变 @endisset"/>
+									<input type="password" class="form-control" name="password" id="password" autocomplete="new-password" placeholder="@isset($user)留空则自动生成随机密码 @else 不填则不变 @endisset"/>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -94,19 +94,15 @@
 								</div>
 							</div>
 							<div class="form-group row">
-								<label class="col-md-2 col-sm-3 col-form-label">有效期</label>
-								<div class="col-xl-8 col-sm-8">
+								<label class="col-md-2 col-sm-3 col-form-label" for="expired_at">过期日</label>
+								<div class="col-xl-4 col-sm-4">
 									<div class="input-group input-daterange" data-plugin="datepicker">
 										<div class="input-group-prepend">
 											<span class="input-group-text">
 												<i class="icon wb-calendar" aria-hidden="true"></i>
 											</span>
 										</div>
-										<label for="enable_time"></label><input type="text" class="form-control" name="start" id="enable_time"/>
-										<div class="input-group-prepend">
-											<span class="input-group-text">至</span>
-										</div>
-										<label for="expire_time"></label><input type="text" class="form-control" name="end" id="expire_time"/>
+										<input type="text" class="form-control" name="expired_at" id="expired_at"/>
 									</div>
 									<span class="text-help"> 留空默认为一年 </span>
 								</div>
@@ -178,9 +174,9 @@
 							</div>
 							<hr>
 							<div class="form-group row">
-								<label class="col-md-2 col-sm-3 col-form-label" for="referral_uid">邀请人</label>
+								<label class="col-md-2 col-sm-3 col-form-label" for="inviter">邀请人</label>
 								<div class="col-xl-6 col-sm-8">
-									<p class="form-control"> {{empty($user->referral) ? '无邀请人' : $user->referral->email}} </p>
+									<p class="form-control"> {{empty($user->inviter) ? '无邀请人' : $user->inviter->email}} </p>
 								</div>
 							</div>
 						</div>
@@ -350,8 +346,7 @@
 			$('#group').selectpicker('val', '{{$user->group_id}}')
 			$('#invite_num').val('{{$user->invite_num}}')
 			$('#reset_time').val('{{$user->reset_time}}')
-			$('#enable_time').val('{{$user->enable_time}}')
-			$('#expire_time').val('{{$user->expire_time}}')
+			$('#expired_at').val('{{$user->expired_at}}')
 			$("input[name='status'][value='{{$user->status}}']").click()
 			$("input[name='is_admin'][value='{{$user->is_admin}}']").click()
 			$('#wechat').val('{{$user->wechat}}')
@@ -470,8 +465,7 @@
 					speed_limit: $('#speed_limit').val(),
 					wechat: $('#wechat').val(),
 					qq: $('#qq').val(),
-					enable_time: $('#enable_time').val(),
-					expire_time: $('#expire_time').val(),
+					expired_at: $('#expired_at').val(),
 					remark: $('#remark').val(),
 					level: $("#level").val(),
 					group_id: $("#group").val(),

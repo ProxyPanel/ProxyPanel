@@ -23,7 +23,7 @@
 					@foreach($subscribeLog as $subscribe)
 						<tr>
 							<td>{{$subscribe->id}}</td>
-							<td>{{empty($subscribe->user) ? '用户已删除' : $subscribe->user[0]->email}}</td>
+							<td>{{empty($subscribe->user) ? '用户已删除' : $subscribe->user->email}}</td>
 							<td>{{$subscribe->request_ip}}</td>
 							<td>{{$subscribe->request_time}}</td>
 							<td>{{$subscribe->request_header}}</td>

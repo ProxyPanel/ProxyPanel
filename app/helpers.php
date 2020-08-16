@@ -190,7 +190,7 @@ if(!function_exists('filterEmoji')){
 
 // 获取系统设置
 if(!function_exists('sysConfig')){
-	function sysConfig($name){
+	function sysConfig($name) {
 		return Helpers::sysConfig()[$name];
 	}
 }

@@ -157,8 +157,9 @@
 					<div class="col-xxl-6 mb-35">
 						<div class="panel panel-info panel-line h-full">
 							<div class="panel-heading">
-								<h2 class="panel-title"><i
-											class="wb-volume-high mr-10"></i>{{trans('home.announcement')}}
+								<h2 class="panel-title">
+									<i class="wb-volume-high mr-10"></i>
+									{{trans('home.announcement')}}
 								</h2>
 								<div class="panel-actions">
 									<nav>
@@ -198,13 +199,10 @@
 								<div class="panel-actions">
 									<ul class="nav nav-pills" role="tablist">
 										<li class="nav-item">
-											<a class="nav-link active" data-toggle="tab" href="#daily"
-													aria-controls="daily" role="tab" aria-expanded="true"
-													aria-selected="false">天</a>
+											<a class="nav-link active" data-toggle="tab" href="#daily" aria-controls="daily" role="tab" aria-expanded="true" aria-selected="false">天</a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" data-toggle="tab" href="#monthly"
-													aria-controls="monthly" role="tab" aria-selected="true">月</a>
+											<a class="nav-link" data-toggle="tab" href="#monthly" aria-controls="monthly" role="tab" aria-selected="true">月</a>
 										</li>
 									</ul>
 								</div>

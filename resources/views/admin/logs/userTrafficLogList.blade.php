@@ -45,7 +45,7 @@
 							<td>
 								@if ($vo->order_id)
 									@if($vo->order)
-										<a href="/admin/orderList?oid={{$vo->order_id}}">{{$vo->order->goods->name}}</a>
+										<a href="/admin/orderList?id={{$vo->order_id}}">{{$vo->order->goods->name}}</a>
 									@else
 										【订单已删除】
 									@endif

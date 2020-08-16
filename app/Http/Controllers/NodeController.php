@@ -11,8 +11,8 @@ use App\Models\Node;
 use App\Models\NodeAuth;
 use App\Models\NodeCertificate;
 use App\Models\NodeDailyDataFlow;
+use App\Models\NodeHeartBeat;
 use App\Models\NodeHourlyDataFlow;
-use App\Models\NodeInfo;
 use App\Models\NodeLabel;
 use App\Models\NodeOnlineLog;
 use App\Models\NodePing;
@@ -46,23 +46,18 @@ class NodeController extends Controller {
 		$nodeList = $query->orderByDesc('status')->orderBy('id')->paginate(15)->appends($request->except('page'));
 		foreach($nodeList as $node){
 			// 在线人数
-			$online_log = NodeOnlineLog::query()
-			                           ->whereNodeId($node->id)
+			$online_log = NodeOnlineLog::whereNodeId($node->id)
 			                           ->where('log_time', '>=', strtotime("-5 minutes"))
 			                           ->latest('log_time')
 			                           ->first();
 			$node->online_users = empty($online_log)? 0 : $online_log->online_user;
 
 			// 已产生流量
-			$totalTraffic = NodeDailyDataFlow::query()->whereNodeId($node->id)->sum('total');
+			$totalTraffic = NodeDailyDataFlow::whereNodeId($node->id)->sum('total');
 			$node->transfer = flowAutoShow($totalTraffic);
 
 			// 负载（10分钟以内）
-			$node_info = NodeInfo::query()
-			                     ->whereNodeId($node->id)
-			                     ->where('log_time', '>=', strtotime("-10 minutes"))
-			                     ->latest('log_time')
-			                     ->first();
+			$node_info = $node->nodeHeartBeat()->recently()->first();
 			$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
 			$node->load = $node->isOnline? $node_info->load : '离线';
 			$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
@@ -161,10 +156,10 @@ class NodeController extends Controller {
 			$view['methodList'] = Helpers::methodList();
 			$view['protocolList'] = Helpers::protocolList();
 			$view['obfsList'] = Helpers::obfsList();
-			$view['countryList'] = Country::query()->orderBy('code')->get();
-			$view['levelList'] = Level::query()->orderBy('level')->get();
-			$view['labelList'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
-			$view['dvList'] = NodeCertificate::query()->orderBy('id')->get();
+			$view['countryList'] = Country::orderBy('code')->get();
+			$view['levelList'] = Level::orderBy('level')->get();
+			$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
+			$view['dvList'] = NodeCertificate::orderBy('id')->get();
 
 			return Response::view('admin.node.nodeInfo', $view);
 		}
@@ -228,7 +223,7 @@ class NodeController extends Controller {
 	// 生成节点标签
 	private function makeLabels($nodeId, $labels): void {
 		// 先删除所有该节点的标签
-		NodeLabel::query()->whereNodeId($nodeId)->delete();
+		NodeLabel::whereNodeId($nodeId)->delete();
 
 		if(!empty($labels) && is_array($labels)){
 			foreach($labels as $label){
@@ -242,7 +237,7 @@ class NodeController extends Controller {
 
 	// 获取节点地理位置
 	private function getNodeGeo($id): bool {
-		$nodes = Node::query()->whereStatus(1);
+		$nodes = Node::whereStatus(1);
 		if($id){
 			$nodes = $nodes->whereId($id)->get();
 		}else{
@@ -252,8 +247,7 @@ class NodeController extends Controller {
 		foreach($nodes as $node){
 			$data = getIPInfo($node->is_ddns == 1? gethostbyname($node->server) : $node->ip);
 			if($data){
-				$ret = Node::query()->whereId($node->id)->update(['geo' => $data['latitude'].','.$data['longitude']]);
-				if($ret){
+				if($node->update(['geo' => $data['latitude'].','.$data['longitude']])){
 					$result++;
 				}
 			}
@@ -328,7 +322,7 @@ class NodeController extends Controller {
 				// 生成节点标签
 				$this->makeLabels($id, $request->input('labels'));
 
-				Node::query()->whereId($id)->update($data);
+				Node::whereId($id)->update($data);
 				// TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
 
 				DB::commit();
@@ -342,21 +336,16 @@ class NodeController extends Controller {
 				return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
 			}
 		}else{
-			$node = Node::query()->with(['label'])->whereId($id)->first();
-			if($node){
-				$node->labels = $node->label->pluck('label_id');
-			}
-
-			$view['node'] = $node;
+			$view['node'] = Node::with('labels')->find($id);
 			$view['methodList'] = Helpers::methodList();
 			$view['protocolList'] = Helpers::protocolList();
 			$view['obfsList'] = Helpers::obfsList();
-			$view['countryList'] = Country::query()->orderBy('code')->get();
-			$view['levelList'] = Level::query()->orderBy('level')->get();
-			$view['labelList'] = Label::query()->orderByDesc('sort')->orderBy('id')->get();
-			$view['dvList'] = NodeCertificate::query()->orderBy('id')->get();
+			$view['countryList'] = Country::orderBy('code')->get();
+			$view['levelList'] = Level::orderBy('level')->get();
+			$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
+			$view['dvList'] = NodeCertificate::orderBy('id')->get();
 
-			return view('admin.node.nodeInfo', $view)->with(compact('node'));
+			return Response::view('admin.node.nodeInfo', $view);
 		}
 	}
 
@@ -372,18 +361,18 @@ class NodeController extends Controller {
 		try{
 			DB::beginTransaction();
 			// 删除分组关联、节点标签、节点相关日志
-			Node::query()->whereId($id)->delete();
-			NodeLabel::query()->whereNodeId($id)->delete();
-			NodeInfo::query()->whereNodeId($id)->delete();
-			NodeOnlineLog::query()->whereNodeId($id)->delete();
-			NodeDailyDataFlow::query()->whereNodeId($id)->delete();
-			NodeHourlyDataFlow::query()->whereNodeId($id)->delete();
-			NodePing::query()->whereNodeId($id)->delete();
-			UserDailyDataFlow::query()->whereNodeId($id)->delete();
-			UserHourlyDataFlow::query()->whereNodeId($id)->delete();
-			UserDataFlowLog::query()->whereNodeId($id)->delete();
-			NodeAuth::query()->whereNodeId($id)->delete();
-			NodeRule::query()->whereNodeId($id)->delete();
+			Node::whereId($id)->delete();
+			NodeLabel::whereNodeId($id)->delete();
+			NodeHeartBeat::whereNodeId($id)->delete();
+			NodeOnlineLog::whereNodeId($id)->delete();
+			NodeDailyDataFlow::whereNodeId($id)->delete();
+			NodeHourlyDataFlow::whereNodeId($id)->delete();
+			NodePing::whereNodeId($id)->delete();
+			UserDailyDataFlow::whereNodeId($id)->delete();
+			UserHourlyDataFlow::whereNodeId($id)->delete();
+			UserDataFlowLog::whereNodeId($id)->delete();
+			NodeAuth::whereNodeId($id)->delete();
+			NodeRule::whereNodeId($id)->delete();
 			foreach(RuleGroup::all() as $ruleGroup){
 				$nodes = $ruleGroup->nodes;
 				if($nodes && in_array($id, $nodes, true)){
@@ -460,7 +449,7 @@ class NodeController extends Controller {
 			$query->whereNodeId($node_id);
 		}
 
-		$view['nodeList'] = Node::query()->orderBy('id')->get();
+		$view['nodeList'] = Node::orderBy('id')->get();
 		$view['pingLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.logs.nodePingLog', $view);
@@ -468,14 +457,14 @@ class NodeController extends Controller {
 
 	// 节点授权列表
 	public function authList(Request $request): \Illuminate\Http\Response {
-		$view['list'] = NodeAuth::query()->orderBy('node_id')->paginate(15)->appends($request->except('page'));
+		$view['list'] = NodeAuth::orderBy('node_id')->paginate(15)->appends($request->except('page'));
 		return Response::view('admin.node.authList', $view);
 	}
 
 	// 添加节点授权
 	public function addAuth(): JsonResponse {
-		$nodeArray = Node::query()->whereStatus(1)->orderBy('id')->pluck('id')->toArray();
-		$authArray = NodeAuth::query()->orderBy('id')->pluck('node_id')->toArray();
+		$nodeArray = Node::whereStatus(1)->orderBy('id')->pluck('id')->toArray();
+		$authArray = NodeAuth::orderBy('id')->pluck('node_id')->toArray();
 
 		if($nodeArray == $authArray){
 			return Response::json(['status' => 'success', 'message' => '没有需要生成授权的节点']);
@@ -494,7 +483,7 @@ class NodeController extends Controller {
 	// 删除节点授权
 	public function delAuth(Request $request): JsonResponse {
 		try{
-			NodeAuth::query()->whereId($request->input('id'))->delete();
+			NodeAuth::whereId($request->input('id'))->delete();
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '错误：'.var_export($e, true)]);
 		}
@@ -503,7 +492,7 @@ class NodeController extends Controller {
 
 	// 重置节点授权
 	public function refreshAuth(Request $request): ?JsonResponse {
-		$ret = NodeAuth::query()->whereId($request->input('id'))->update([
+		$ret = NodeAuth::whereId($request->input('id'))->update([
 			'key'    => makeRandStr(16),
 			'secret' => makeRandStr(8)
 		]);
@@ -516,7 +505,7 @@ class NodeController extends Controller {
 
 	// 域名证书列表
 	public function certificateList(Request $request): \Illuminate\Http\Response {
-		$DvList = NodeCertificate::query()->orderBy('id')->paginate(15)->appends($request->except('page'));
+		$DvList = NodeCertificate::orderBy('id')->paginate(15)->appends($request->except('page'));
 		foreach($DvList as $Dv){
 			if($Dv->key && $Dv->pem){
 				$DvInfo = openssl_x509_parse($Dv->pem);
@@ -554,7 +543,7 @@ class NodeController extends Controller {
 		$Dv = NodeCertificate::find($request->input('id'));
 		if($request->isMethod('POST')){
 			if($Dv){
-				$ret = NodeCertificate::query()->update([
+				$ret = NodeCertificate::whereId($Dv->id)->update([
 					'domain' => $request->input('domain'),
 					'key'    => $request->input('key'),
 					'pem'    => $request->input('pem')
@@ -573,7 +562,7 @@ class NodeController extends Controller {
 	// 删除域名证书
 	public function delCertificate(Request $request): JsonResponse {
 		try{
-			NodeCertificate::query()->whereId($request->input('id'))->delete();
+			NodeCertificate::whereId($request->input('id'))->delete();
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '错误：'.var_export($e, true)]);
 		}

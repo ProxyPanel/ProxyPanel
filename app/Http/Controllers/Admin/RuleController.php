@@ -53,7 +53,7 @@ class RuleController extends Controller {
 
 	// 编辑审计规则
 	public function update(Request $request, $id): JsonResponse {
-		$ret = Rule::query()->whereId($id)->update([
+		$ret = Rule::whereId($id)->update([
 			'name'    => $request->input('rule_name'),
 			'pattern' => $request->input('rule_pattern')
 		]);
@@ -117,7 +117,7 @@ class RuleController extends Controller {
 		}catch(Exception $e){
 			return Response::json(['status' => 'fail', 'message' => '清理失败, '.$e->getMessage()]);
 		}
-		$result = RuleLog::query()->doesntExist();
+		$result = RuleLog::doesntExist();
 		if($ret || $result){
 			return Response::json(['status' => 'success', 'message' => '清理成功']);
 		}

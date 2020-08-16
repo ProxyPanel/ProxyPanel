@@ -43,16 +43,16 @@
 </head>
 <body class="animsition page-login-v3 layout-full" style="position: relative;">
 <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-	<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
+<a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
                                             browser. Please
-	<a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
+<a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 @if(Agent::isMobile() && Agent::is('iOS') && strpos(Agent::getUserAgent(), 'MicroMessenger') !== FALSE)
 	<style type="text/css">
-		.cover-up {
-			opacity: 0.1;
-			filter: alpha(opacity=10);
-		}
+        .cover-up {
+            opacity: 0.1;
+            filter: alpha(opacity=10);
+        }
 	</style>
 	<div class="m-0 p-0 w-full h-full text-white" style="z-index: 10; position: absolute;">
 		<div class="font-size-16 h-p33 pl-20 pt-20"

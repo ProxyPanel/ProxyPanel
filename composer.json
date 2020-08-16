@@ -9,10 +9,7 @@
   "license": "MIT",
   "require": {
 	"php": "^7.2",
-	"ext-curl": "*",
-	"ext-dom": "*",
 	"ext-json": "*",
-	"ext-openssl": "*",
 	"barryvdh/laravel-ide-helper": "^2.7",
 	"fideloper/proxy": "^4.3",
 	"guzzlehttp/guzzle": "^6",

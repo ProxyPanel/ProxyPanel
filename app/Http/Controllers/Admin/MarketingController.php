@@ -25,7 +25,7 @@ class MarketingController extends Controller {
 	public function emailList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
-		$query = Marketing::query()->whereType(1);
+		$query = Marketing::whereType(1);
 
 		if(isset($status)){
 			$query->whereStatus($status);
@@ -40,13 +40,13 @@ class MarketingController extends Controller {
 	public function pushList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
-		$query = Marketing::query()->whereType(2);
+		$query = Marketing::whereType(2);
 
 		if(isset($status)){
 			$query->whereStatus($status);
 		}
 
-		$view['list'] = $query->paginate(15);
+		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
 		return Response::view('admin.marketing.pushList', $view);
 	}

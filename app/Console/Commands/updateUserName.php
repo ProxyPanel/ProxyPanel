@@ -17,7 +17,7 @@ class updateUserName extends Command {
 		$userList = User::all();
 		foreach($userList as $user){
 			$name = process($user->id);
-			User::query()->whereId($user->id)->update(['username' => $name]);
+			$user->update(['username' => $name]);
 
 			Log::info('---用户[ID：'.$user->id.' - '.$user->email.'] :'.$user->username.'---');
 		}
@@ -26,7 +26,7 @@ class updateUserName extends Command {
 			if($user->email == $user->username){
 				$name = process($user->id);
 
-				User::query()->whereId($user->id)->update(['username' => $name]);
+				$user->update(['username' => $name]);
 
 				Log::info('---用户[ID：'.$user->id.' - '.$user->email.'] :'.$user->username.'---');
 			}

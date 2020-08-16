@@ -4,9 +4,9 @@
 	<link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css"
 			rel="stylesheet">
 	<style type="text/css">
-		.text-help {
-			padding-left: 1.0715rem;
-		}
+        .text-help {
+            padding-left: 1.0715rem;
+        }
 	</style>
 @endsection
 @section('content')
@@ -74,26 +74,20 @@
 						<span class="offset-md-2 text-help"> 抵用：抵扣商品金额，折扣：商品百分比打折，充值：充值用户账号余额 </span>
 					</div>
 					<div class="form-group row usage">
-						<label class="col-md-2 col-form-label" for="usage_count">使用次数</label>
+						<label class="col-md-2 col-form-label" for="usable_times">使用次数</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="usage_count" id="usage_count" value="{{Request::old('usage_count')}}"/>
+							<input type="number" class="form-control" name="usable_times" id="usable_times" value="{{Request::old('usable_times')}}"/>
 							<span class="input-group-text">次</span>
 						</div>
 					</div>
-					<div class="form-group row discount" style="display: none;">
-						<label class="col-md-2 col-form-label" for="discount">折扣</label>
+					<div class="form-group row">
+						<label class="col-md-2 col-form-label" for="value">优惠额度</label>
 						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="discount" id="discount" value="{{Request::old('discount')}}" step="0.1"/>
-							<span class="input-group-text">折</span>
+							<input type="number" class="form-control" name="value" id="value" value="{{Request::old('value')}}" required/>
+							<span class="input-group-text amount">元</span>
+							<span class="input-group-text discount" style="display: none;">%</span>
 						</div>
-						<span class="text-help"> 范围为 1 ~ 9.9折，即 10% ~ 99% </span>
-					</div>
-					<div class="form-group row amount">
-						<label class="col-md-2 col-form-label" for="amount">金额</label>
-						<div class="col-md-4 input-group">
-							<input type="number" class="form-control" name="amount" id="amount" value="{{Request::old('amount')}}" step="0.01" required/>
-							<span class="input-group-text">元</span>
-						</div>
+						<span class="text-help discount" style="display: none;"> 范围为 1~99折，即 1% ~ 99% </span>
 					</div>
 					<div class="form-group row usage">
 						<label class="col-md-2 col-form-label" for="rule">条件</label>
@@ -116,11 +110,11 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
 							</div>
-							<label for="available_start"></label><input type="text" class="form-control" name="available_start" id="available_start" value="{{Request::old('available_start')?Request::old('available_start'):date("Y-m-d")}}" required/>
+							<label for="start_time"></label><input type="text" class="form-control" name="start_time" id="start_time" value="{{Request::old('start_time')?Request::old('start_time'):date("Y-m-d")}}" required/>
 							<div class="input-group-prepend">
 								<span class="input-group-text">至</span>
 							</div>
-							<label for="available_end"></label><input type="text" class="form-control" name="available_end" id="available_end" value="{{Request::old('available_end')?Request::old('available_end'):date("Y-m-d",strtotime("+1 month"))}}" required/>
+							<label for="end_time"></label><input type="text" class="form-control" name="end_time" id="end_time" value="{{Request::old('end_time')?Request::old('end_time'):date("Y-m-d",strtotime("+1 month"))}}" required/>
 						</div>
 					</div>
 					<div class="form-actions col-12 text-right">
@@ -144,22 +138,16 @@
 
 		$("input[name='type']").change(function () {
 			if ($(this).val() === '2') {
-				$("#discount").attr("required", true);
-				$("#amount").attr("required", false);
 				$("#rule").attr("required", true);
 				$(".discount").show();
 				$(".usage").show();
 				$(".amount").hide();
 			} else if ($(this).val() === '3') {
-				$("#discount").attr("required", false);
-				$("#amount").attr("required", true);
 				$("#rule").attr("required", false);
 				$(".discount").hide();
 				$(".usage").hide();
 				$(".amount").show();
 			} else {
-				$("#discount").attr("required", false);
-				$("#amount").attr("required", true);
 				$("#rule").attr("required", true);
 				$(".discount").hide();
 				$(".usage").show();

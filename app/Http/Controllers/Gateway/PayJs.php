@@ -20,7 +20,7 @@ class PayJs extends AbstractPayment {
 	}
 
 	public function purchase($request): JsonResponse {
-		$payment = $this->creatNewPayment(Auth::id(), $request->input('oid'), $request->input('amount'));
+		$payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
 		$result = (new Pay($this::$config))->cashier([
 			'body'         => self::$sysConfig['subject_name']?: self::$sysConfig['website_name'],
@@ -30,7 +30,7 @@ class PayJs extends AbstractPayment {
 		]);
 
 		// 获取收款二维码内容
-		Payment::whereId($payment->id)->update(['qr_code' => 1, 'url' => $result]);
+		$payment->update(['qr_code' => 1, 'url' => $result]);
 
 		//$this->addPamentCallback($payment->trade_no, null, $payment->amount * 100);
 		return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
@@ -40,9 +40,14 @@ class PayJs extends AbstractPayment {
 		$data = (new Pay($this::$config))->notify();
 
 		if($data['return_code'] == 1){
-			$this->postPayment($data['out_trade_no'], 'PayJs');
-			exit("success");
+			$payment = Payment::whereTradeNo($data['out_trade_no'])->first();
+			if($payment){
+				$ret = $payment->order->update(['status' => 2]);
+				if($ret){
+					exit('success');
+				}
+			}
 		}
-		exit("fail");
+		exit('fail');
 	}
 }

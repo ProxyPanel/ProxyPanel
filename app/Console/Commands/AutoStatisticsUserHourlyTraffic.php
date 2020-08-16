@@ -16,12 +16,12 @@ class AutoStatisticsUserHourlyTraffic extends Command {
 	public function handle(): void {
 		$jobStartTime = microtime(true);
 
-		foreach(User::query()->activeUser()->get() as $user){
+		foreach(User::activeUser()->get() as $user){
 			// 统计一次所有节点的总和
 			$this->statisticsByNode($user->id);
 
 			// 统计每个节点产生的流量
-			foreach(Node::query()->whereStatus(1)->orderBy('id')->get() as $node){
+			foreach(Node::whereStatus(1)->orderBy('id')->get() as $node){
 				$this->statisticsByNode($user->id, $node->id);
 			}
 		}
@@ -33,9 +33,7 @@ class AutoStatisticsUserHourlyTraffic extends Command {
 	}
 
 	private function statisticsByNode($user_id, $node_id = 0): void {
-		$query = UserDataFlowLog::query()
-		                        ->whereUserId($user_id)
-		                        ->whereBetween('log_time', [strtotime("-1 hour"), time()]);
+		$query = UserDataFlowLog::whereUserId($user_id)->whereBetween('log_time', [strtotime("-1 hour"), time()]);
 
 		if($node_id){
 			$query->whereNodeId($node_id);

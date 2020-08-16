@@ -11,8 +11,7 @@
 			<div class="panel-body">
 				<div class="form-row">
 					<div class="form-group col-lg-2 col-sm-4">
-						<input type="text" class="form-control" name="email" value="{{Request::get('email')}}"
-								id="email" placeholder="申请账号"/>
+						<input type="text" class="form-control" name="email" value="{{Request::get('email')}}" id="email" placeholder="申请账号"/>
 					</div>
 					<div class="form-group col-lg-2 col-sm-4">
 						<select class="form-control" name="status" id="status" onChange="Search()">
@@ -49,8 +48,9 @@
 								@if(empty($apply->user))
 									【账号已删除】
 								@else
-									<a href="/admin/userList?id={{$apply->user_id}}"
-											target="_blank">{{$apply->user->email}}</a>
+									<a href="/admin/userList?id={{$apply->user_id}}" target="_blank">
+										{{$apply->user->email}}
+									</a>
 								@endif
 							</td>
 							<td> ￥{{$apply->amount}} </td>
@@ -69,19 +69,16 @@
 							<td>
 								<div class="btn-group">
 									@if($apply->status == 0)
-										<a href="javascript:setStatus('{{$apply->id}}','1')"
-												class="btn btn-sm btn-success"><i class="icon wb-check"
-													aria-hidden="true"></i>通过</a>
-										<a href="javascript:setStatus('{{$apply->id}}','-1')"
-												class="btn btn-sm btn-danger"><i class="icon wb-close"
-													aria-hidden="true"></i>驳回</a>
+										<a href="javascript:setStatus('{{$apply->id}}','1')" class="btn btn-sm btn-success">
+											<i class="icon wb-check" aria-hidden="true"></i>通过</a>
+										<a href="javascript:setStatus('{{$apply->id}}','-1')" class="btn btn-sm btn-danger">
+											<i class="icon wb-close" aria-hidden="true"></i>驳回</a>
 									@elseif($apply->status == 1)
-										<a href="javascript:setStatus('{{$apply->id}}','2')"
-												class="btn btn-sm btn-primary"><i class="icon wb-check-circle"
-													aria-hidden="true"></i>已打款</a>
+										<a href="javascript:setStatus('{{$apply->id}}','2')" class="btn btn-sm btn-primary">
+											<i class="icon wb-check-circle" aria-hidden="true"></i>已打款</a>
 									@endif
-									<a href="/admin/affDetail?id={{$apply->id}}" class="btn btn-sm btn-default"><i
-												class="icon wb-search"></i></a>
+									<a href="/admin/affDetail?id={{$apply->id}}" class="btn btn-sm btn-default">
+										<i class="icon wb-search"></i></a>
 								</div>
 							</td>
 						</tr>
