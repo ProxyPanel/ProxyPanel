@@ -84,10 +84,11 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 		Route::any('edit', 'NodeController@editNode'); // 编辑节点
 		Route::post('delete', 'NodeController@delNode'); // 删除节点
 		Route::get('monitor', 'NodeController@nodeMonitor'); // 节点流量监控
-		Route::post('check', 'NodeController@checkNode'); // 节点阻断检测
-		Route::post('ping', 'NodeController@pingNode'); // 节点ping测速
+		Route::post('check/{id}', 'NodeController@checkNode'); // 节点阻断检测
+		Route::post('ping/{id}', 'NodeController@pingNode'); // 节点ping测速
 		Route::get('pingLog', 'NodeController@pingLog'); //节点Ping测速日志
 		Route::get('refreshGeo', 'NodeController@refreshGeo'); //更新节点
+		Route::post('reload/{id}', 'NodeController@reload'); //更新节点
 		// 节点Api授权相关
 		Route::group(['prefix' => 'auth'], function() {
 			Route::get('/', 'NodeController@authList'); // 节点授权列表

@@ -544,7 +544,7 @@
 				success: function (ret) {
 					if (ret.status === 'success') {
 						swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false})
-							.then(() => window.location.href = '/node')
+							.then(() => window.location.reload())
 					} else {
 						swal.fire({
 							title: '[错误 | Error]',

@@ -4,24 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Components\NetworkDetection;
+use App\Jobs\VNet\reloadNode;
 use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeAuth;
 use App\Models\NodeCertificate;
-use App\Models\NodeDailyDataFlow;
-use App\Models\NodeHeartBeat;
-use App\Models\NodeHourlyDataFlow;
-use App\Models\NodeLabel;
-use App\Models\NodeOnlineLog;
 use App\Models\NodePing;
-use App\Models\NodeRule;
-use App\Models\RuleGroup;
-use App\Models\UserDailyDataFlow;
-use App\Models\UserDataFlowLog;
-use App\Models\UserGroup;
-use App\Models\UserHourlyDataFlow;
+use App\Services\NodeService;
 use DB;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -37,27 +28,26 @@ class NodeController extends Controller {
 	public function nodeList(Request $request): \Illuminate\Http\Response {
 		$status = $request->input('status');
 
-		$query = Node::query();
+		$query = Node::with(['onlineLogs', 'dailyDataFlows']);
 
 		if(isset($status)){
 			$query->whereStatus($status);
 		}
 
-		$nodeList = $query->orderByDesc('status')->orderBy('id')->paginate(15)->appends($request->except('page'));
+		$nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'));
 		foreach($nodeList as $node){
 			// 在线人数
-			$online_log = NodeOnlineLog::whereNodeId($node->id)
-			                           ->where('log_time', '>=', strtotime("-5 minutes"))
-			                           ->latest('log_time')
-			                           ->first();
+			$online_log = $node->onlineLogs()
+			                   ->where('log_time', '>=', strtotime("-5 minutes"))
+			                   ->latest('log_time')
+			                   ->first();
 			$node->online_users = empty($online_log)? 0 : $online_log->online_user;
 
 			// 已产生流量
-			$totalTraffic = NodeDailyDataFlow::whereNodeId($node->id)->sum('total');
-			$node->transfer = flowAutoShow($totalTraffic);
+			$node->transfer = flowAutoShow($node->dailyDataFlows()->sum('total'));
 
 			// 负载（10分钟以内）
-			$node_info = $node->nodeHeartBeat()->recently()->first();
+			$node_info = $node->heartBeats()->recently()->first();
 			$node->isOnline = empty($node_info) || empty($node_info->load)? 0 : 1;
 			$node->load = $node->isOnline? $node_info->load : '离线';
 			$node->uptime = empty($node_info)? 0 : seconds2time($node_info->uptime);
@@ -68,8 +58,7 @@ class NodeController extends Controller {
 		return Response::view('admin.node.nodeList', $view);
 	}
 
-	public function checkNode(Request $request): JsonResponse {
-		$id = $request->input('id');
+	public function checkNode($id): JsonResponse {
 		$node = Node::find($id);
 		// 使用DDNS的node先获取ipv4地址
 		if($node->is_ddns){
@@ -142,8 +131,7 @@ class NodeController extends Controller {
 
 				DB::commit();
 				// 生成节点标签
-				$this->makeLabels($node->id, $request->input('labels'));
-				$this->getNodeGeo($node->id);
+				(new NodeService())->makeLabels($node->id, $request->input('labels'));
 
 				return Response::json(['status' => 'success', 'message' => '添加成功']);
 			}catch(Exception $e){
@@ -220,49 +208,21 @@ class NodeController extends Controller {
 		return false;
 	}
 
-	// 生成节点标签
-	private function makeLabels($nodeId, $labels): void {
-		// 先删除所有该节点的标签
-		NodeLabel::whereNodeId($nodeId)->delete();
-
-		if(!empty($labels) && is_array($labels)){
-			foreach($labels as $label){
-				$nodeLabel = new NodeLabel();
-				$nodeLabel->node_id = $nodeId;
-				$nodeLabel->label_id = $label;
-				$nodeLabel->save();
-			}
-		}
-	}
-
-	// 获取节点地理位置
-	private function getNodeGeo($id): bool {
-		$nodes = Node::whereStatus(1);
-		if($id){
-			$nodes = $nodes->whereId($id)->get();
-		}else{
-			$nodes = $nodes->get();
-		}
-		$result = 0;
-		foreach($nodes as $node){
-			$data = getIPInfo($node->is_ddns == 1? gethostbyname($node->server) : $node->ip);
-			if($data){
-				if($node->update(['geo' => $data['latitude'].','.$data['longitude']])){
-					$result++;
-				}
-			}
-		}
-		return $result;
-	}
-
 	// 刷新节点地理位置
 	public function refreshGeo(Request $request): JsonResponse {
-		if($this->getNodeGeo($request->input('id', 0))){
+		if((new NodeService())->getNodeGeo($request->input('id', 0))){
 			return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
 		}
 		return Response::json(['status' => 'fail', 'message' => '获取地理位置更新失败！']);
 	}
 
+	// 重载节点
+	public function reload($id): JsonResponse {
+		if(reloadNode::dispatchNow(Node::whereId($id)->get())){
+			return Response::json(['status' => 'success', 'message' => '重载成功！']);
+		}
+		return Response::json(['status' => 'fail', 'message' => '重载失败！']);
+	}
 
 	// 编辑节点
 	public function editNode(Request $request) {
@@ -274,10 +234,14 @@ class NodeController extends Controller {
 				return $validator;
 			}
 
+			$node = Node::find($id);
+
 			try{
 				DB::beginTransaction();
+				// 生成节点标签
+				(new NodeService())->makeLabels($node->id, $request->input('labels'));
 
-				$data = [
+				$node->update([
 					'type'           => $request->input('type'),
 					'name'           => $request->input('name'),
 					'country_code'   => $request->input('country_code'),
@@ -317,16 +281,10 @@ class NodeController extends Controller {
 					'v2_path'        => $request->input('v2_path'),
 					'v2_tls'         => (int) $request->input('v2_tls'),
 					'tls_provider'   => $request->input('tls_provider')
-				];
-
-				// 生成节点标签
-				$this->makeLabels($id, $request->input('labels'));
-
-				Node::whereId($id)->update($data);
+				]);
 				// TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
 
 				DB::commit();
-				$this->getNodeGeo($id);
 
 				return Response::json(['status' => 'success', 'message' => '编辑成功']);
 			}catch(Exception $e){
@@ -335,18 +293,18 @@ class NodeController extends Controller {
 
 				return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
 			}
-		}else{
-			$view['node'] = Node::with('labels')->find($id);
-			$view['methodList'] = Helpers::methodList();
-			$view['protocolList'] = Helpers::protocolList();
-			$view['obfsList'] = Helpers::obfsList();
-			$view['countryList'] = Country::orderBy('code')->get();
-			$view['levelList'] = Level::orderBy('level')->get();
-			$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
-			$view['dvList'] = NodeCertificate::orderBy('id')->get();
-
-			return Response::view('admin.node.nodeInfo', $view);
 		}
+
+		$view['node'] = Node::with('labels')->find($id);
+		$view['methodList'] = Helpers::methodList();
+		$view['protocolList'] = Helpers::protocolList();
+		$view['obfsList'] = Helpers::obfsList();
+		$view['countryList'] = Country::orderBy('code')->get();
+		$view['levelList'] = Level::orderBy('level')->get();
+		$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
+		$view['dvList'] = NodeCertificate::orderBy('id')->get();
+
+		return Response::view('admin.node.nodeInfo', $view);
 	}
 
 	// 删除节点
@@ -360,35 +318,7 @@ class NodeController extends Controller {
 
 		try{
 			DB::beginTransaction();
-			// 删除分组关联、节点标签、节点相关日志
-			Node::whereId($id)->delete();
-			NodeLabel::whereNodeId($id)->delete();
-			NodeHeartBeat::whereNodeId($id)->delete();
-			NodeOnlineLog::whereNodeId($id)->delete();
-			NodeDailyDataFlow::whereNodeId($id)->delete();
-			NodeHourlyDataFlow::whereNodeId($id)->delete();
-			NodePing::whereNodeId($id)->delete();
-			UserDailyDataFlow::whereNodeId($id)->delete();
-			UserHourlyDataFlow::whereNodeId($id)->delete();
-			UserDataFlowLog::whereNodeId($id)->delete();
-			NodeAuth::whereNodeId($id)->delete();
-			NodeRule::whereNodeId($id)->delete();
-			foreach(RuleGroup::all() as $ruleGroup){
-				$nodes = $ruleGroup->nodes;
-				if($nodes && in_array($id, $nodes, true)){
-					$ruleGroup->nodes = array_merge(array_diff($nodes, [$id]));
-					$ruleGroup->save();
-				}
-			}
-
-			foreach(UserGroup::all() as $userGroup){
-				$nodes = $userGroup->nodes;
-				if($nodes && in_array($id, $nodes, true)){
-					$userGroup->nodes = array_merge(array_diff($nodes, [$id]));
-					$userGroup->save();
-				}
-			}
-
+			$node->delete();
 			DB::commit();
 
 			return Response::json(['status' => 'success', 'message' => '删除成功']);
@@ -402,8 +332,7 @@ class NodeController extends Controller {
 
 	// 节点流量监控
 	public function nodeMonitor(Request $request) {
-		$node_id = $request->input('id');
-		$node = Node::find($node_id);
+		$node = Node::find($request->input('id'));
 		if(!$node){
 			Session::flash('errorMsg', '节点不存在，请重试');
 
@@ -418,8 +347,8 @@ class NodeController extends Controller {
 	}
 
 	// Ping节点延迟
-	public function pingNode(Request $request): ?JsonResponse {
-		$node = Node::find($request->input('id'));
+	public function pingNode($id): ?JsonResponse {
+		$node = Node::find($id);
 		if(!$node){
 			return Response::json(['status' => 'fail', 'message' => '节点不存在，请重试']);
 		}
@@ -509,7 +438,6 @@ class NodeController extends Controller {
 		foreach($DvList as $Dv){
 			if($Dv->key && $Dv->pem){
 				$DvInfo = openssl_x509_parse($Dv->pem);
-				//dd($DvInfo);
 				$Dv->issuer = $DvInfo['issuer']['O'];
 				$Dv->from = $DvInfo['validFrom_time_t']? date('Y-m-d', $DvInfo['validFrom_time_t']) : null;
 				$Dv->to = $DvInfo['validTo']? date('Y-m-d', $DvInfo['validTo_time_t']) : null;

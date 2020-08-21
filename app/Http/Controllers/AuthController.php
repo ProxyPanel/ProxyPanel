@@ -285,7 +285,7 @@ class AuthController extends Controller {
 
 				// 校验邀请码合法性
 				if($code){
-					if($Invite::whereCode($code)->whereStatus(0)->doesntExist()){
+					if(Invite::whereCode($code)->whereStatus(0)->doesntExist()){
 						return Redirect::back()
 						               ->withInput($request->except(['code']))
 						               ->withErrors(trans('auth.code_error'));

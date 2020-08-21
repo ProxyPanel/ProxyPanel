@@ -108,7 +108,7 @@ class ShopController extends Controller {
 			return Redirect::back()->with('successMsg', '添加成功');
 		}catch(Exception $e){
 			DB::rollBack();
-			Log::info('添加商品信息异常：'.$e->getMessage());
+			Log::error('添加商品信息异常：'.$e->getMessage());
 
 			return Redirect::back()->withInput()->withErrors('添加失败');
 		}

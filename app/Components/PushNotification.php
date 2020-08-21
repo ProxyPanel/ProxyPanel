@@ -41,7 +41,7 @@ class PushNotification {
 			return false;
 		}
 		// 发送错误
-		Log::debug('ServerChan消息推送异常：'.var_export($request, true));
+		Log::error('ServerChan消息推送异常：'.var_export($request, true));
 		return false;
 	}
 
@@ -68,7 +68,7 @@ class PushNotification {
 			return false;
 		}
 		// 发送错误
-		Log::debug('Bark消息推送异常：'.var_export($request, true));
+		Log::error('Bark消息推送异常：'.var_export($request, true));
 		return false;
 	}
 }

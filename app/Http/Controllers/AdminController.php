@@ -1482,7 +1482,8 @@ class AdminController extends Controller {
 		$nodeId = $request->input('nodeId');
 		$userId = $request->input('id');
 
-		$query = NodeOnlineUserIp::with(['node:id,name', 'user:id,name'])->where('created_at', '>=', strtotime("-2 minutes"));
+		$query = NodeOnlineUserIp::with(['node:id,name', 'user:id,email'])
+		                         ->where('created_at', '>=', strtotime("-2 minutes"));
 
 		if(isset($ip)){
 			$query->whereIp($ip);
@@ -1512,16 +1513,19 @@ class AdminController extends Controller {
 			});
 		}
 
-		$list = $query->groupBy('user_id', 'node_id')->latest();
-		foreach($list as $vo){
+		$onlineIPLogs = $query->groupBy('user_id', 'node_id')
+		                      ->latest()
+		                      ->paginate(20)
+		                      ->appends($request->except('page'));
+		foreach($onlineIPLogs as $log){
 			// 跳过上报多IP的
-			if($vo->ip == null || strpos($vo->ip, ',') === true){
+			if($log->ip == null || strpos($log->ip, ',') !== false){
 				continue;
 			}
-			$ipInfo = QQWry::ip($vo->ip);
+			$ipInfo = QQWry::ip($log->ip);
 			if(isset($ipInfo['error'])){
 				// 用IPIP的库再试一下
-				$ipip = IPIP::ip($vo->ip);
+				$ipip = IPIP::ip($log->ip);
 				$ipInfo = [
 					'country'  => $ipip['country_name'],
 					'province' => $ipip['region_name'],
@@ -1529,10 +1533,10 @@ class AdminController extends Controller {
 				];
 			}
 
-			$vo->ipInfo = $ipInfo['country'].' '.$ipInfo['province'].' '.$ipInfo['city'];
+			$log->ipInfo = $ipInfo['country'].' '.$ipInfo['province'].' '.$ipInfo['city'];
 		}
 
-		$view['list'] = $list->paginate(20)->appends($request->except('page'));
+		$view['list'] = $onlineIPLogs;
 		$view['nodeList'] = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
 
 		return Response::view('admin.logs.onlineIPMonitor', $view);

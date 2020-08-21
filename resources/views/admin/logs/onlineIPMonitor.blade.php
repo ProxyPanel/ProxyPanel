@@ -62,7 +62,7 @@
 							<td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
 							<td>{{$vo->user ? $vo->user->email : '【用户已删除】'}}</td>
 							<td>
-								@if (strpos($vo->ip, ',') === true)
+								@if (strpos($vo->ip, ',') !== false)
 									@foreach (explode(',', $vo->ip) as $ip)
 										<a href="https://www.ipip.net/ip/{{$ip}}.html" target="_blank">{{$ip}}</a>
 									@endforeach
@@ -70,7 +70,7 @@
 									<a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a>
 								@endif
 							</td>
-							<td>{{strpos($vo->ip, ',') === true? '':$vo->ipInfo}}</td>
+							<td>{{strpos($vo->ip, ',') !== false? '':$vo->ipInfo}}</td>
 							<td>{{date('Y-m-d H:i:s',$vo->created_at)}}</td>
 						</tr>
 					@endforeach
@@ -94,8 +94,7 @@
 @endsection
 @section('script')
 	<script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-			type="text/javascript"></script>
+	<script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 	<script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		//回车检测

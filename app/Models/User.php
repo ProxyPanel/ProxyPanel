@@ -38,7 +38,7 @@ class User extends Authenticatable {
 	}
 
 	public function commissionLogs(): HasMany {
-		return $this->hasMany(ReferralLog::class,'inviter_id');
+		return $this->hasMany(ReferralLog::class, 'inviter_id');
 	}
 
 	public function ruleLogs(): HasMany {

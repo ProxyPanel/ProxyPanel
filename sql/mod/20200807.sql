@@ -108,9 +108,9 @@ ALTER TABLE `order`
     ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `user_subscribe_log`
-    CHANGE `sid` `subscribe_id` INT(10) UNSIGNED NOT NULL COMMENT '对应user_subscribe的id',
+    CHANGE `sid` `user_subscribe_id` INT(10) UNSIGNED NOT NULL COMMENT '对应user_subscribe的id',
     DROP INDEX `sid`,
-    ADD INDEX `subscribe_id` (`subscribe_id`);
+    ADD INDEX `user_subscribe_id` (`user_subscribe_id`);
 
 ALTER TABLE `user_baned_log`
     CHANGE `minutes` `time` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '封禁账号时长，单位分钟';

@@ -27,7 +27,7 @@ class isForbidden {
 		}
 
 		// 拒绝通过订阅链接域名访问网站，防止网站被探测
-		if(true === strpos(sysConfig('subscribe_domain'), $request->getHost())
+		if(false !== strpos(sysConfig('subscribe_domain'), $request->getHost())
 		   && !str_contains(sysConfig('subscribe_domain'), sysConfig('website_url'))){
 			Log::info("识别到通过订阅链接访问，强制跳转至百度(".getClientIp().")");
 

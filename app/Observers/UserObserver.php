@@ -16,7 +16,7 @@ class UserObserver {
 	public function created(User $user): void {
 		$allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
 		if($allowNodes){
-			addUser::dispatch($user, $allowNodes);
+			addUser::dispatch($user->id, $allowNodes);
 		}
 	}
 
@@ -24,7 +24,9 @@ class UserObserver {
 		$changes = $user->getChanges();
 		$allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
 		if($allowNodes
-		   && Arr::exists($changes, 'port')
+		   && Arr::exists($changes, 'level')
+		   || Arr::exists($changes, 'group_id')
+		   || Arr::exists($changes, 'port')
 		   || Arr::exists($changes, 'passwd')
 		   || Arr::exists($changes, 'speed_limit')
 		   || Arr::exists($changes, 'enable')){

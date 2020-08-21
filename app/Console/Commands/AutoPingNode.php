@@ -38,7 +38,7 @@ class AutoPingNode extends Command {
 			$obj->hk = (int) $result['HongKong']['time'];// 香港
 			$obj->save();
 		}else{
-			Log::info("【".$ip."】Ping测速获取失败");
+			Log::error("【".$ip."】Ping测速获取失败");
 		}
 
 	}

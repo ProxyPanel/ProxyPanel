@@ -154,7 +154,7 @@ class SubscribeController extends Controller {
 	// 写入订阅访问日志
 	private function subscribeLog($subscribeId, $ip, $headers): void {
 		$log = new UserSubscribeLog();
-		$log->subscribe_id = $subscribeId;
+		$log->user_subscribe_id = $subscribeId;
 		$log->request_ip = $ip;
 		$log->request_time = date('Y-m-d H:i:s');
 		$log->request_header = $headers;

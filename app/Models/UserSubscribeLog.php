@@ -19,6 +19,6 @@ class UserSubscribeLog extends Model {
 	}
 
 	public function user(): HasOneThrough {
-		return $this->hasOneThrough(User::class, UserSubscribe::class, 'id', 'id', 'subscribe_id', 'user_id');
+		return $this->hasOneThrough(User::class, UserSubscribe::class, 'id', 'id', 'user_subscribe_id', 'user_id');
 	}
 }

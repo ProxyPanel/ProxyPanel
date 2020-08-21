@@ -996,13 +996,13 @@ VALUES ('1', '1', 'SsXa1', Now(), Now());
 -- ----------------------------
 CREATE TABLE `user_subscribe_log`
 (
-    `id`             INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `subscribe_id`   INT(10) UNSIGNED NOT NULL COMMENT '对应user_subscribe的id',
-    `request_ip`     CHAR(45) DEFAULT NULL COMMENT '请求IP',
-    `request_time`   DATETIME         NOT NULL COMMENT '请求时间',
-    `request_header` TEXT COMMENT '请求头部信息',
+    `id`                INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_subscribe_id` INT(10) UNSIGNED NOT NULL COMMENT '对应user_subscribe的id',
+    `request_ip`        CHAR(45) DEFAULT NULL COMMENT '请求IP',
+    `request_time`      DATETIME         NOT NULL COMMENT '请求时间',
+    `request_header`    TEXT COMMENT '请求头部信息',
     PRIMARY KEY (`id`),
-    INDEX `subscribe_id` (`subscribe_id`)
+    INDEX `user_subscribe_id` (`user_subscribe_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT ='用户订阅访问日志';
 
 

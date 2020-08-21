@@ -548,7 +548,7 @@ class UserController extends Controller {
 		}catch(Exception $e){
 			DB::rollBack();
 
-			Log::info("更换订阅地址异常：".$e->getMessage());
+			Log::error("更换订阅地址异常：".$e->getMessage());
 
 			return Response::json(['status' => 'fail', 'message' => '更换失败'.$e->getMessage()]);
 		}
@@ -606,7 +606,7 @@ class UserController extends Controller {
 
 			return Response::json(['status' => 'success', 'message' => '充值成功']);
 		}catch(Exception $e){
-			Log::error($e);
+			Log::error('卡劵充值错误：'.$e->getMessage());
 			DB::rollBack();
 
 			return Response::json(['status' => 'fail', 'message' => '充值失败']);

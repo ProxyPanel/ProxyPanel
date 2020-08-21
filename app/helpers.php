@@ -172,7 +172,7 @@ if(!function_exists('getIPInfo')){
 			return $message;
 		}
 
-		Log::debug('解析IPv6异常：'.$ip.PHP_EOL.var_export($request, true));
+		Log::error('解析IPv6异常：'.$ip.PHP_EOL.var_export($request, true));
 		return false;
 	}
 }

@@ -50,7 +50,7 @@ class OrderService {
 				$this->setCommissionExpense(self::$user);// 返利
 				break;
 			default:
-				Log::info('【处理订单】出现错误-未知套餐类型');
+				Log::error('【处理订单】出现错误-未知套餐类型');
 		}
 
 		return true;

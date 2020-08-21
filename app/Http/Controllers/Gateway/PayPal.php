@@ -56,7 +56,7 @@ class PayPal extends AbstractPayment {
 		try{
 			$response = $this->provider->setExpressCheckout($data);
 			if(!$response['paypal_link']){
-				Log::error(var_export($response, true));
+				Log::error('Paypal处理错误：'.var_export($response, true));
 
 				return Response::json(['status' => 'fail', 'message' => '创建订单失败，请使用其他方式或通知管理员！']);
 			}

@@ -2,9 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Node;
 use App\Models\Order;
+use App\Models\RuleGroup;
 use App\Models\User;
+use App\Models\UserGroup;
+use App\Observers\NodeObserver;
 use App\Observers\OrderObserver;
+use App\Observers\RuleGroupObserver;
+use App\Observers\UserGroupObserver;
 use App\Observers\UserObserver;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
@@ -34,7 +40,10 @@ class AppServiceProvider extends ServiceProvider {
 			URL::forceScheme('https');
 		}
 
+		Node::observe(NodeObserver::class);
 		Order::observe(OrderObserver::class);
+		RuleGroup::observe(RuleGroupObserver::class);
+		UserGroup::observe(UserGroupObserver::class);
 		User::observe(UserObserver::class);
 	}
 }

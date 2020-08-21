@@ -84,7 +84,7 @@ class MarketingController extends Controller {
 
 			return Response::json(['status' => 'success', 'message' => '推送成功']);
 		}catch(Exception $e){
-			Log::info('PushBear消息推送失败：'.$e->getMessage());
+			Log::error('PushBear消息推送失败：'.$e->getMessage());
 
 			DB::rollBack();
 

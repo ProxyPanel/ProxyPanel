@@ -91,8 +91,8 @@ class AutoJob extends Command {
 	private function blockSubscribe(): void {
 		if(sysConfig('is_subscribe_ban')){
 			$pastSubLogs = UserSubscribeLog::where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-1 days")))
-			                               ->groupBy('subscribe_id')
-			                               ->selectRaw('count(*) as total, subscribe_id')
+			                               ->groupBy('user_subscribe_id')
+			                               ->selectRaw('count(*) as total, user_subscribe_id')
 			                               ->get();
 			foreach($pastSubLogs as $log){
 				if($log->total >= sysConfig('subscribe_ban_times')){

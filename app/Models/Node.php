@@ -17,8 +17,32 @@ class Node extends Model {
 		return $this->hasMany(NodeLabel::class);
 	}
 
-	public function nodeHeartBeat(): HasMany {
+	public function heartBeats(): HasMany {
 		return $this->hasMany(NodeHeartBeat::class);
+	}
+
+	public function onlineLogs(): HasMany {
+		return $this->hasMany(NodeOnlineLog::class);
+	}
+
+	public function pingLogs(): HasMany {
+		return $this->hasMany(NodePing::class);
+	}
+
+	public function dailyDataFlows(): HasMany {
+		return $this->hasMany(NodeDailyDataFlow::class);
+	}
+
+	public function hourlyDataFlows(): HasMany {
+		return $this->hasMany(NodeHourlyDataFlow::class);
+	}
+
+	public function rules(): hasMany {
+		return $this->hasMany(NodeRule::class);
+	}
+
+	public function ruleGroup(): hasOne {
+		return $this->hasOne(RuleGroupNode::class);
 	}
 
 	public function auth(): HasOne {

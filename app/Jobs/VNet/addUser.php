@@ -13,46 +13,38 @@ use Illuminate\Queue\SerializesModels;
 class addUser implements ShouldQueue {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	private static $data;
-	private static $url;
+	private $data;
 	private $nodes;
 
-	public function __construct(User $users, $nodes) {
+	public function __construct($userIds, $nodes) {
 		$this->nodes = $nodes;
-		if($users->count() > 1){
-			self::$url = '/api/v2/user/add/list';
-		}else{
-			self::$url = '/api/user/add';
-		}
 		$data = [];
-		foreach($users as $user){
+		foreach(User::findMany($userIds) as $user){
 			$data[] = [
 				'uid'         => $user->id,
 				'port'        => $user->port,
 				'passwd'      => $user->passwd,
 				'speed_limit' => $user->speed_limit,
-				'enable'      => $user->enable,
+				'enable'      => $user->enable
 			];
 		}
-		self::$data = $data;
+
+		$this->data = $data;
 	}
 
 	public function handle(): void {
 		foreach($this->nodes as $node){
-			self::send(($node->server?: $node->ip).':'.$node->push_port, $node->auth->secret);
+			$this->send(($node->server?: $node->ip).':'.$node->push_port, $node->auth->secret);
 		}
 	}
 
-	private static function send($host, $secret): void {
+	private function send($host, $secret): void {
 		$client = new Client([
 			'base_uri' => $host,
 			'timeout'  => 15,
-			'headers'  => [
-				'secret'       => $secret,
-				'content-type' => 'application/json'
-			]
+			'headers'  => ['secret' => $secret]
 		]);
 
-		$client->post(self::$url, ['body' => json_encode(self::$data)]);
+		$client->post('api/v2/user/add/list', ['json' => $this->data]);
 	}
 }

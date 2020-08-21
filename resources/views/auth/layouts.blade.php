@@ -47,7 +47,7 @@
                                             browser. Please
 <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
-@if(Agent::isMobile() && Agent::is('iOS') && strpos(Agent::getUserAgent(), 'MicroMessenger') !== FALSE)
+@if(Agent::isMobile() && Agent::is('iOS') && strpos(Agent::getUserAgent(), 'MicroMessenger') !== false)
 	<style type="text/css">
         .cover-up {
             opacity: 0.1;

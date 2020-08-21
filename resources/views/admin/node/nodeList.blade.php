@@ -66,6 +66,11 @@
 							</td>
 							<td>
 								<div class="btn-group">
+									@if($node->type === 4)
+										<button type="button" onclick="reload('{{$node->id}}')" class="btn btn-primary">
+											<i id="reload{{$node->id}}" class="icon wb-reload"></i>
+										</button>
+									@endif
 									<button type="button" onclick="refreshGeo('{{$node->id}}')" class="btn btn-primary">
 										<i id="geo{{$node->id}}" class="icon wb-map"></i>
 									</button>
@@ -114,8 +119,8 @@
 		function checkNode(id) {
 			$.ajax({
 				type: "POST",
-				url: '/node/check',
-				data: {_token: '{{csrf_token()}}', id: id},
+				url: '/node/check/' + id,
+				data: {_token: '{{csrf_token()}}'},
 				beforeSend: function () {
 					$("#node" + id).removeClass("wb-signal").addClass("wb-loop icon-spin");
 				},
@@ -141,8 +146,8 @@
 		function pingNode(id) {
 			$.ajax({
 				type: "POST",
-				url: '/node/ping',
-				data: {_token: '{{csrf_token()}}', id: id},
+				url: '/node/ping/' + id,
+				data: {_token: '{{csrf_token()}}'},
 				beforeSend: function () {
 					$("#ping" + id).removeClass("wb-order").addClass("wb-loop icon-spin");
 				},
@@ -161,6 +166,38 @@
 					$("#ping" + id).removeClass("wb-loop icon-spin").addClass("wb-order");
 				}
 			});
+		}
+
+		// 发送节点重载请求
+		function reload(id) {
+			swal.fire({
+				text: '确定重载节点?',
+				type: 'question',
+				showCancelButton: true,
+				cancelButtonText: '{{trans('home.ticket_close')}}',
+				confirmButtonText: '{{trans('home.ticket_confirm')}}',
+			}).then((result) => {
+				if (result.value) {
+					$.ajax({
+						type: "post",
+						url: '/node/reload/' + id,
+						data: {_token: '{{csrf_token()}}'},
+						beforeSend: function () {
+							$("#reload" + id).removeClass("wb-reload").addClass("wb-loop icon-spin");
+						},
+						success: function (ret) {
+							if (ret.status === 'success') {
+								swal.fire({type: 'info', title: ret.message, showConfirmButton: false})
+							} else {
+								swal.fire({title: ret.message, type: "error"})
+							}
+						},
+						complete: function () {
+							$("#reload" + id).removeClass("wb-loop icon-spin").addClass("wb-reload");
+						}
+					});
+				}
+			})
 		}
 
 		// 刷新节点地理信息
