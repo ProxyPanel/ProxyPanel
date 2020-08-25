@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Label extends Model {
 	public $timestamps = false;
 	protected $table = 'label';
+	protected $guarded = ['id'];
 
 	public function nodes(): HasMany {
 		return $this->hasMany(NodeLabel::class);

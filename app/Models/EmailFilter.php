@@ -10,4 +10,5 @@ use Illuminate\Database\Eloquent\Model;
 class EmailFilter extends Model {
 	public $timestamps = false;
 	protected $table = 'email_filter';
+	protected $guarded = ['id'];
 }

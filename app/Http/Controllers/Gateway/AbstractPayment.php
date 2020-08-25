@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\PaymentCallback;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Str;
 
 abstract class AbstractPayment {
 	protected static $sysConfig;
@@ -21,7 +22,7 @@ abstract class AbstractPayment {
 
 	protected function creatNewPayment($uid, $oid, $amount): Payment {
 		$payment = new Payment();
-		$payment->trade_no = makeRandStr(8);
+		$payment->trade_no = Str::random(8);
 		$payment->user_id = $uid;
 		$payment->order_id = $oid;
 		$payment->amount = $amount;

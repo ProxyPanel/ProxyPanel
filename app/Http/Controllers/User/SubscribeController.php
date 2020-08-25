@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
 use Arr;
@@ -38,7 +37,7 @@ class SubscribeController extends Controller {
 		}
 
 		// 检查用户是否有效
-		$user = User::find($subscribe->user_id);
+		$user = $subscribe->user;
 		if(!$user){
 			exit($this->infoGenerator('错误订阅链接，账号不存在！请前往官网重新获取订阅链接'));
 		}
@@ -49,7 +48,7 @@ class SubscribeController extends Controller {
 
 		if($user->enable != 1){
 			$unusedTransfer = $user->transfer_enable - $user->u - $user->d;
-			if($user->ban_time > 0){
+			if($user->ban_time){
 				exit($this->infoGenerator('您的账号处于封禁状态，请在'.date('Y-m-d H:i:s', $user->ban_time).'之后再更新！'));
 			}
 

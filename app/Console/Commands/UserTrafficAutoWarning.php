@@ -37,10 +37,7 @@ class UserTrafficAutoWarning extends Command {
 
 			$usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
 			if($usedPercent >= sysConfig('traffic_warning_percent')){
-				$title = '流量提醒';
-				$content = '流量已使用：'.$usedPercent.'%，请保持关注。';
-
-				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
+				$logId = Helpers::addNotificationLog("流量提醒", '流量已使用：'.$usedPercent.'%，请保持关注。', 1, $user->email);
 				Mail::to($user->email)->send(new userTrafficWarning($logId, $usedPercent));
 			}
 		}

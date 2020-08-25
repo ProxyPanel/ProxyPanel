@@ -21,6 +21,7 @@ use Log;
 use Redirect;
 use Response;
 use Session;
+use Str;
 use Validator;
 
 class NodeController extends Controller {
@@ -402,8 +403,8 @@ class NodeController extends Controller {
 		foreach(array_diff($nodeArray, $authArray) as $nodeId){
 			$obj = new NodeAuth();
 			$obj->node_id = $nodeId;
-			$obj->key = makeRandStr(16);
-			$obj->secret = makeRandStr(8);
+			$obj->key = Str::random();
+			$obj->secret = Str::random(8);
 			$obj->save();
 		}
 		return Response::json(['status' => 'success', 'message' => '生成成功']);
@@ -422,8 +423,8 @@ class NodeController extends Controller {
 	// 重置节点授权
 	public function refreshAuth(Request $request): ?JsonResponse {
 		$ret = NodeAuth::whereId($request->input('id'))->update([
-			'key'    => makeRandStr(16),
-			'secret' => makeRandStr(8)
+			'key'    => Str::random(),
+			'secret' => Str::random(8)
 		]);
 		if($ret){
 			return Response::json(['status' => 'success', 'message' => '操作成功']);

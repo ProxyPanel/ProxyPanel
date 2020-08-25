@@ -12,7 +12,6 @@ use App\Models\EmailFilter;
 use App\Models\Invite;
 use App\Models\User;
 use App\Models\UserLoginLog;
-use App\Models\UserSubscribe;
 use App\Models\Verify;
 use App\Models\VerifyCode;
 use App\Services\UserService;
@@ -28,6 +27,7 @@ use Mail;
 use Redirect;
 use Response;
 use Session;
+use Str;
 use Validator;
 
 /**
@@ -351,13 +351,6 @@ class AuthController extends Controller {
 			// 更新昵称
 			User::find($uid)->update(['username' => $username]);
 
-			// 生成订阅码
-			$subscribe = new UserSubscribe();
-			$subscribe->user_id = $uid;
-			$subscribe->code = Helpers::makeSubscribeCode();
-			$subscribe->times = 0;
-			$subscribe->save();
-
 			// 注册次数+1
 			if(Cache::has($cacheKey)){
 				Cache::increment($cacheKey);
@@ -403,7 +396,7 @@ class AuthController extends Controller {
 		}
 
 		$view['emailList'] = self::$sysConfig['is_email_filtering'] != 2? false : EmailFilter::whereType(2)->get();
-		Session::put('register_token', makeRandStr(16));
+		Session::put('register_token', Str::random());
 
 		return Response::view('auth.register', $view);
 	}
@@ -773,7 +766,7 @@ class AuthController extends Controller {
 		}
 
 		// 发送邮件
-		$code = makeRandStr(6, true);
+		$code = Str::random(6);
 		$logId = Helpers::addNotificationLog('发送注册验证码', '验证码：'.$code, 1, $email);
 		Mail::to($email)->send(new sendVerifyCode($logId, $code));
 

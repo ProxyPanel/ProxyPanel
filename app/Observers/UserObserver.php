@@ -2,11 +2,13 @@
 
 namespace App\Observers;
 
+use App\Components\Helpers;
 use App\Jobs\VNet\addUser;
 use App\Jobs\VNet\delUser;
 use App\Jobs\VNet\editUser;
 use App\Models\Node;
 use App\Models\User;
+use App\Models\UserSubscribe;
 use Arr;
 use DB;
 use Exception;
@@ -14,6 +16,11 @@ use Log;
 
 class UserObserver {
 	public function created(User $user): void {
+		$subscribe = new UserSubscribe();
+		$subscribe->user_id = $user->id;
+		$subscribe->code = Helpers::makeSubscribeCode();
+		$subscribe->save();
+
 		$allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
 		if($allowNodes){
 			addUser::dispatch($user->id, $allowNodes);

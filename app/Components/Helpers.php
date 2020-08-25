@@ -57,7 +57,7 @@ class Helpers {
 
 	// 生成用户的订阅码
 	public static function makeSubscribeCode(): string {
-		$code = makeRandStr(5);
+		$code = Str::random();
 		if(UserSubscribe::whereCode($code)->exists()){
 			$code = self::makeSubscribeCode();
 		}
@@ -83,7 +83,7 @@ class Helpers {
 		$user->password = $password;
 		// 生成一个可用端口
 		$user->port = self::sysConfig()['is_rand_port']? self::getRandPort() : self::getOnlyPort();
-		$user->passwd = makeRandStr();
+		$user->passwd = Str::random();
 		$user->vmess_id = Str::uuid();
 		$user->enable = 1;
 		$user->method = self::getDefaultMethod();

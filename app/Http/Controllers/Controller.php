@@ -25,7 +25,7 @@ class Controller extends BaseController {
 
 	// 生成随机密码
 	public function makePasswd() {
-		return makeRandStr();
+		return Str::random();
 	}
 
 	// 生成UUID
@@ -35,7 +35,7 @@ class Controller extends BaseController {
 
 	// 生成网站安全码
 	public function makeSecurityCode(): string {
-		return strtolower(makeRandStr(8));
+		return strtolower(Str::random(8));
 	}
 
 	// 类似Linux中的tail命令
@@ -109,7 +109,7 @@ class Controller extends BaseController {
 				throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
 			}
 
-			$fileName = makeRandStr(18, true).".{$type}";
+			$fileName = Str::random(18).".{$type}";
 			if(file_put_contents(public_path($path.$fileName),
 				base64_decode(str_replace($result[1], '', $base64_image_content)))){
 				chmod(public_path($path.$fileName), 0744);

@@ -28,7 +28,6 @@ use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
-use App\Models\UserSubscribe;
 use App\Services\UserService;
 use Auth;
 use DB;
@@ -221,9 +220,9 @@ class AdminController extends Controller {
 			$user = new User();
 			$user->username = $request->input('username');
 			$user->email = $request->input('email');
-			$user->password = Hash::make($request->input('password')?: makeRandStr());
+			$user->password = Hash::make($request->input('password')?: Str::random());
 			$user->port = $request->input('port')?: $this->makePort();
-			$user->passwd = $request->input('passwd')?: makeRandStr();
+			$user->passwd = $request->input('passwd')?: Str::random();
 			$user->vmess_id = $request->input('uuid')?: Str::uuid();
 			$user->transfer_enable = toGB($request->input('transfer_enable')?: 0);
 			$user->enable = $request->input('enable')?: 0;
@@ -244,12 +243,6 @@ class AdminController extends Controller {
 			$user->save();
 
 			if($user->id){
-				// 生成订阅码
-				$subscribe = new UserSubscribe();
-				$subscribe->user_id = $user->id;
-				$subscribe->code = Helpers::makeSubscribeCode();
-				$subscribe->times = 0;
-				$subscribe->save();
 
 				// 写入用户流量变动记录
 				Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->input('transfer_enable', 0)),
@@ -283,17 +276,10 @@ class AdminController extends Controller {
 			DB::beginTransaction();
 
 			for($i = 0; $i < $amount; $i++){
-				$uid = Helpers::addUser('批量生成-'.makeRandStr(), Hash::make(makeRandStr()), toGB(1024), 365);
+				$uid = Helpers::addUser(Str::random(8).'@auto.generate', Hash::make(Str::random()), toGB(1024), 365);
 				// 生成一个可用端口
 
 				if($uid){
-					// 生成订阅码
-					$subscribe = new UserSubscribe();
-					$subscribe->user_id = $uid;
-					$subscribe->code = Helpers::makeSubscribeCode();
-					$subscribe->times = 0;
-					$subscribe->save();
-
 					// 写入用户流量变动记录
 					Helpers::addUserTrafficModifyLog($uid, 0, 0, toGB(1024), '后台批量生成用户');
 				}
@@ -341,7 +327,7 @@ class AdminController extends Controller {
 					'username'        => $request->input('username'),
 					'email'           => $email,
 					'port'            => $port,
-					'passwd'          => $request->input('passwd')?: makeRandStr(),
+					'passwd'          => $request->input('passwd')?: Str::random(),
 					'vmess_id'        => $request->input('uuid')?: Str::uuid(),
 					'transfer_enable' => toGB($transfer_enable?: 0),
 					'enable'          => $status < 0? 0 : $request->input('enable'),
@@ -657,7 +643,7 @@ class AdminController extends Controller {
 		}
 
 		// 生成JSON文件
-		$fileName = makeRandStr('16').'_shadowsocks.json';
+		$fileName = Str::random().'_shadowsocks.json';
 		$filePath = public_path('downloads/'.$fileName);
 		file_put_contents($filePath, $json);
 
@@ -1147,7 +1133,7 @@ class AdminController extends Controller {
 			$obj = new Invite();
 			$obj->inviter_id = 0;
 			$obj->invitee_id = 0;
-			$obj->code = strtoupper(substr(md5(microtime().makeRandStr()), 8, 12));
+			$obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
 			$obj->status = 0;
 			$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$sysConfig['admin_invite_days']." days"));
 			$obj->save();

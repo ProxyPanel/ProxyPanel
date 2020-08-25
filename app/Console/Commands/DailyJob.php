@@ -48,7 +48,7 @@ class DailyJob extends Command {
 					'transfer_enable' => 0,
 					'enable'          => 0,
 					'reset_time'      => null,
-					'ban_time'        => 0,
+					'ban_time'        => null,
 					'status'          => -1
 				]);
 
@@ -66,7 +66,7 @@ class DailyJob extends Command {
 					'transfer_enable' => 0,
 					'enable'          => 0,
 					'reset_time'      => null,
-					'ban_time'        => 0
+					'ban_time'        => null
 				]);
 
 				$this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
