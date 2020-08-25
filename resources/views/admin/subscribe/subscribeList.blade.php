@@ -61,7 +61,7 @@
 										target="_blank">{{$subscribe->times}}</a>
 							</td>
 							<td> {{$subscribe->updated_at}} </td>
-							<td> {{$subscribe->ban_time > 0 ? date('Y-m-d H:i', $subscribe->ban_time): ''}} </td>
+							<td> {{$subscribe->ban_time ? date('Y-m-d H:i', $subscribe->ban_time): ''}} </td>
 							<td> {{$subscribe->ban_desc}} </td>
 							<td>
 								@if($subscribe->status == 0)

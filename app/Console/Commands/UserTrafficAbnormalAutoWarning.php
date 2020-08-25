@@ -33,22 +33,18 @@ class UserTrafficAbnormalAutoWarning extends Command {
 		                                          ->groupBy('user_id')
 		                                          ->selectRaw("user_id, sum(total) as totalTraffic")
 		                                          ->get(); // 只统计100M以上的记录，加快查询速度
-		if(!$userTotalTrafficList->isEmpty()){
-			$title = "流量异常用户提醒";
 
-			foreach($userTotalTrafficList as $vo){
-				$user = User::find($vo->user_id);
+		foreach($userTotalTrafficList as $vo){
+			$user = User::find($vo->user_id);
 
-				// 推送通知管理员
-				if($vo->totalTraffic > sysConfig('traffic_ban_value') * GB){
-					$traffic = UserHourlyDataFlow::userRecentUsed($user->id)
-					                             ->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")
-					                             ->firstOrFail();
+			// 推送通知管理员
+			if($vo->totalTraffic > sysConfig('traffic_ban_value') * GB){
+				$traffic = UserHourlyDataFlow::userRecentUsed($user->id)
+				                             ->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")
+				                             ->first();
 
-					$content = "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU)."，下行流量：".flowAutoShow($traffic->totalD)."，共计：".flowAutoShow($traffic->totalTraffic)."**。";
-
-					PushNotification::send($title, $content);
-				}
+				PushNotification::send("流量异常用户提醒",
+					"用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU)."，下行流量：".flowAutoShow($traffic->totalD)."，共计：".flowAutoShow($traffic->totalTraffic)."**。");
 			}
 		}
 	}

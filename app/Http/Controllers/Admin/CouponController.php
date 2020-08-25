@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Redirect;
 use Response;
+use Str;
 use Validator;
 
 /**
@@ -98,7 +99,7 @@ class CouponController extends Controller {
 					$obj = new Coupon();
 					$obj->name = $request->input('name');
 					$obj->logo = $logo;
-					$obj->sn = $num == 1 && $request->input('sn')? $request->input('sn') : makeRandStr(8);
+					$obj->sn = $num == 1 && $request->input('sn')? $request->input('sn') : Str::random(8);
 					$obj->type = $type;
 					$obj->usable_times = $request->input('usable_times');
 					$obj->value = $request->input('value');

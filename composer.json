@@ -36,7 +36,6 @@
 	"xhat/payjs": "^1.4"
   },
   "require-dev": {
-	"roave/security-advisories": "dev-master",
 	"barryvdh/laravel-debugbar": "^3",
 	"beyondcode/laravel-dump-server": "^1.0",
 	"filp/whoops": "^2.7",

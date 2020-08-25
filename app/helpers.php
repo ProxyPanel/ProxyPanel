@@ -15,25 +15,6 @@ define('Day', 86400);
 
 define('Mbps', 125000);
 
-// 生成SS密码
-if(!function_exists('makeRandStr')){
-	function makeRandStr($length = 6, $isNumbers = false) {
-		// 密码字符集，可任意添加你需要的字符
-		if(!$isNumbers){
-			$chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ0123456789';
-		}else{
-			$chars = '0123456789';
-		}
-
-		$char = '';
-		for($i = 0; $i < $length; $i++){
-			$char .= $chars[random_int(0, strlen($chars) - 1)];
-		}
-
-		return $char;
-	}
-}
-
 // base64加密（处理URL）
 if(!function_exists('base64url_encode')){
 	function base64url_encode($data) {

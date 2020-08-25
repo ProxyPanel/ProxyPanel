@@ -9,6 +9,7 @@ use App\Models\RuleGroup;
 use App\Models\UserGroup;
 use App\Services\NodeService;
 use Log;
+use Str;
 
 class NodeObserver {
 	public function saved(Node $node): void {
@@ -18,8 +19,8 @@ class NodeObserver {
 	public function created(Node $node): void {
 		$auth = new NodeAuth();
 		$auth->node_id = $node->id;
-		$auth->key = makeRandStr(16);
-		$auth->secret = makeRandStr(8);
+		$auth->key = Str::random();
+		$auth->secret = Str::random(8);
 		if(!$auth->save()){
 			Log::error('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
 		}

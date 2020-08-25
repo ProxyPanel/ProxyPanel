@@ -77,11 +77,12 @@ class AutoJob extends Command {
 		// 注册验证码自动置无效
 		VerifyCode::recentUnused()->update(['status' => 2]);
 
-		// 优惠券到期自动置无效
-		Coupon::whereStatus(0)->where('end_time', '<=', time())->update(['status' => 2]);
-
-		// 用尽的优惠劵
-		Coupon::whereStatus(0)->whereIn('type', [1, 2])->whereUsableTimes(0)->update(['status' => 2]);
+		// 优惠券到期 / 用尽的 自动置无效
+		Coupon::whereStatus(0)
+		      ->where('end_time', '<=', time())
+		      ->orWhereIn('type', [1, 2])
+		      ->whereUsableTimes(0)
+		      ->update(['status' => 2]);
 
 		// 邀请码到期自动置无效
 		Invite::whereStatus(0)->where('dateline', '<=', date('Y-m-d H:i:s'))->update(['status' => 2]);
@@ -133,7 +134,7 @@ class AutoJob extends Command {
 	private function blockUsers(): void {
 		// 封禁1小时内流量异常账号
 		if(sysConfig('is_traffic_ban')){
-			$userList = User::activeUser()->whereBanTime(0)->get();
+			$userList = User::activeUser()->whereBanTime(null)->get();
 			foreach($userList as $user){
 				// 对管理员豁免
 				if($user->is_admin){
@@ -155,7 +156,7 @@ class AutoJob extends Command {
 		}
 
 		// 禁用流量超限用户
-		$userList = User::activeUser()->whereBanTime(0)->whereRaw("u + d >= transfer_enable")->get();
+		$userList = User::activeUser()->whereBanTime(null)->whereRaw("u + d >= transfer_enable")->get();
 		foreach($userList as $user){
 			$user->update(['enable' => 0]);
 
@@ -167,10 +168,10 @@ class AutoJob extends Command {
 	// 解封被临时封禁的账号
 	private function unblockUsers(): void {
 		// 解封被临时封禁的账号
-		$userList = User::whereEnable(0)->where('status', '>=', 0)->where('ban_time', '>', 0)->get();
+		$userList = User::whereEnable(0)->where('status', '>=', 0)->whereNotNull('ban_time')->get();
 		foreach($userList as $user){
 			if($user->ban_time < time()){
-				$user->update(['enable' => 1, 'ban_time' => 0]);
+				$user->update(['enable' => 1, 'ban_time' => null]);
 
 				// 写入操作日志
 				$this->addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期');
@@ -180,7 +181,7 @@ class AutoJob extends Command {
 		// 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）
 		$userList = User::whereEnable(0)
 		                ->where('status', '>=', 0)
-		                ->whereBanTime(0)
+		                ->whereBanTime(null)
 		                ->where('expired_at', '>=', date('Y-m-d'))
 		                ->whereRaw("u + d < transfer_enable")
 		                ->get();
@@ -201,13 +202,10 @@ class AutoJob extends Command {
 			$user->update(['port' => $port]);
 		}
 
-		## 被封禁的账号自动释放端口
-		User::whereEnable(0)->whereStatus(-1)->where('port', '!=', 0)->update(['port' => 0]);
-
-		## 过期一个月的账户自动释放端口
-		User::whereEnable(0)
-		    ->where('port', '!=', 0)
-		    ->where('expired_at', '<=', date("Y-m-d", strtotime("-1 months")))
+		// 被封禁 / 过期一个月 的账号自动释放端口
+		User::where('port', '<>', 0)
+		    ->whereStatus(-1)
+		    ->orWhere('expired_at', '<=', date("Y-m-d", strtotime("-1 months")))
 		    ->update(['port' => 0]);
 	}
 

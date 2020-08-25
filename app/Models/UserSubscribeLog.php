@@ -15,7 +15,7 @@ class UserSubscribeLog extends Model {
 	protected $table = 'user_subscribe_log';
 
 	public function subscribe(): BelongsTo {
-		return $this->belongsTo(UserSubscribe::class);
+		return $this->belongsTo(UserSubscribe::class, 'user_subscribe_id');
 	}
 
 	public function user(): HasOneThrough {

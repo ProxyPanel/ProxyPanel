@@ -68,7 +68,7 @@ class SubscribeController extends Controller {
 		}
 
 		if($status){
-			UserSubscribe::find($id)->update(['status' => 1, 'ban_time' => 0, 'ban_desc' => '']);
+			UserSubscribe::find($id)->update(['status' => 1, 'ban_time' => null, 'ban_desc' => '']);
 		}else{
 			UserSubscribe::find($id)->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
 		}

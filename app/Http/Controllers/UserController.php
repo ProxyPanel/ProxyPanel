@@ -34,6 +34,7 @@ use Mail;
 use Redirect;
 use Response;
 use Session;
+use Str;
 use Validator;
 
 /**
@@ -67,11 +68,7 @@ class UserController extends Controller {
 		$hourlyTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
 		$view['isTrafficWarning'] = $hourlyTraffic >= (self::$sysConfig['traffic_ban_value'] * GB)?: 0;
 		//付费用户判断
-		$view['not_paying_user'] = Order::uid()
-		                                ->whereStatus(2)
-		                                ->whereIsExpire(0)
-		                                ->where('origin_amount', '>', 0)
-		                                ->doesntExist();
+		$view['not_paying_user'] = Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist();
 		$view['userLoginLog'] = UserLoginLog::whereUserId($user->id)->latest()->first(); // 近期登录日志
 		$view = array_merge($view, $this->dataFlowChart($user->id));
 
@@ -423,7 +420,7 @@ class UserController extends Controller {
 		$obj = new Invite();
 		$obj->inviter_id = $user->id;
 		$obj->invitee_id = 0;
-		$obj->code = strtoupper(mb_substr(md5(microtime().makeRandStr()), 8, 12));
+		$obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
 		$obj->status = 0;
 		$obj->dateline = date('Y-m-d H:i:s', strtotime("+".self::$sysConfig['user_invite_days']." days"));
 		$obj->save();
@@ -540,7 +537,7 @@ class UserController extends Controller {
 			Auth::getUser()->subscribe->update(['code' => Helpers::makeSubscribeCode()]);
 
 			// 更换连接密码
-			Auth::getUser()->update(['passwd' => makeRandStr()]);
+			Auth::getUser()->update(['passwd' => Str::random()]);
 
 			DB::commit();
 
