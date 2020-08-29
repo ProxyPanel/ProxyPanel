@@ -23,7 +23,7 @@ class UserObserver {
 
 		$allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
 		if($allowNodes){
-			addUser::dispatch($user->id, $allowNodes);
+			addUser::dispatchNow($user->id, $allowNodes);
 		}
 	}
 
@@ -37,7 +37,7 @@ class UserObserver {
 		   || Arr::exists($changes, 'passwd')
 		   || Arr::exists($changes, 'speed_limit')
 		   || Arr::exists($changes, 'enable')){
-			editUser::dispatch($user, $allowNodes);
+			editUser::dispatchNow($user, $allowNodes);
 		}
 	}
 
@@ -81,7 +81,7 @@ class UserObserver {
 	public function deleted(User $user): void {
 		$allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
 		if($allowNodes){
-			delUser::dispatch($user->id, $allowNodes);
+			delUser::dispatchNow($user->id, $allowNodes);
 		}
 	}
 }

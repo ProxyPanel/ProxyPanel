@@ -13,15 +13,15 @@ class RuleGroupObserver {
 		if(Arr::exists($changes, 'type') || Arr::exists($changes, 'rules')){
 			$nodes = Node::whereType(4)->whereIn('id', $ruleGroup->nodes)->get();
 			if($nodes){
-				reloadNode::dispatch($nodes);
+				reloadNode::dispatchNow($nodes);
 			}
 		}elseif(Arr::exists($changes, 'nodes')){
 			$nodes = Node::whereType(4)
 			             ->whereIn('id',
-				             array_diff($ruleGroup->nodes, json_decode($ruleGroup->getOriginal('nodes'), true)))
+				             array_diff($ruleGroup->nodes, json_decode($ruleGroup->getOriginal('nodes'), true)?: []))
 			             ->get();
 			if($nodes){
-				reloadNode::dispatch($nodes);
+				reloadNode::dispatchNow($nodes);
 			}
 		}
 	}

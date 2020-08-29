@@ -142,6 +142,7 @@ class SubscribeController extends Controller {
 				$result = 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text);
 				break;
 			case 1:
+			case 4:
 			default:
 				$result = 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$sysConfig['website_name']).'&udpport=0&uot=0');
 				break;

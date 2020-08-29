@@ -28,7 +28,7 @@ class NodeObserver {
 
 	public function updated(Node $node): void {
 		if($node->type == 4){
-			reloadNode::dispatch(Node::whereType(4)->whereId($node->id)->get());
+			reloadNode::dispatchNow(Node::whereId($node->id)->get());
 		}
 	}
 

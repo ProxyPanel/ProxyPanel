@@ -19,7 +19,7 @@ class User extends Authenticatable {
 	protected $table = 'user';
 	protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d',];
 	protected $dates = ['expired_at', 'reset_time'];
-	protected $guarded = ['id', 'is_admin', 'created_at'];
+	protected $guarded = ['id'];
 
 	public function onlineIpLogs(): HasMany {
 		return $this->hasMany(NodeOnlineUserIp::class);

@@ -11,7 +11,7 @@ class UserGroupObserver {
 	public function created(UserGroup $userGroup): void {
 		$nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
 		if($nodes){
-			reloadNode::dispatch($nodes);
+			reloadNode::dispatchNow($nodes);
 		}
 	}
 
@@ -20,10 +20,10 @@ class UserGroupObserver {
 		if(Arr::exists($changes, 'nodes')){
 			$nodes = Node::whereType(4)
 			             ->whereIn('id',
-				             array_diff($userGroup->nodes, json_decode($userGroup->getOriginal('nodes'), true)))
+				             array_diff($userGroup->nodes, json_decode($userGroup->getOriginal('nodes'), true)?: []))
 			             ->get();
 			if($nodes){
-				reloadNode::dispatch($nodes);
+				reloadNode::dispatchNow($nodes);
 			}
 		}
 	}

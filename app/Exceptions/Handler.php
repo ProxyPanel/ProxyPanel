@@ -45,7 +45,8 @@ class Handler extends ExceptionHandler {
 
 		// 调试模式下记录错误详情
 		if(config('app.debug')){
-			Log::info($exception);
+			Log::debug('来自链接：'.url()->full());
+			Log::debug($exception);
 		}
 
 		parent::report($exception);
