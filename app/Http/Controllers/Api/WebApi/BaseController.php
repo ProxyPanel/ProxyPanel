@@ -134,7 +134,7 @@ class BaseController {
 		//节点未设置任何审计规则
 		if($nodeRule){
 			$ruleGroup = RuleGroup::find($nodeRule->rule_group_id);
-			if($ruleGroup){
+			if($ruleGroup && $ruleGroup->rules){
 				foreach($ruleGroup->rules as $ruleId){
 					$rule = Rule::find($ruleId);
 					if($rule){

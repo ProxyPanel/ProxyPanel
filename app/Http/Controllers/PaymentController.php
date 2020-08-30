@@ -101,6 +101,7 @@ class PaymentController extends Controller {
 			if(!$goods || !$goods->status){
 				return Response::json(['status' => 'fail', 'message' => '订单创建失败：商品已下架']);
 			}
+			$amount = $goods->price;
 
 			// 是否有生效的套餐
 			$activePlan = Order::userActivePlan()->doesntExist();
@@ -121,7 +122,7 @@ class PaymentController extends Controller {
 				if(Order::uid()->whereStatus(0)->exists()){
 					return Response::json(['status' => 'fail', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
 				}
-			}elseif(self::$method === 'credit' && Auth::getUser()->credit < $amount){ // 验证账号余额是否充足
+			}elseif(Auth::getUser()->credit < $amount){ // 验证账号余额是否充足
 				return Response::json(['status' => 'fail', 'message' => '您的余额不足，请先充值']);
 			}
 
@@ -146,8 +147,6 @@ class PaymentController extends Controller {
 				// 计算实际应支付总价
 				$amount = $coupon->type == 2? $goods->price * $coupon->value / 100 : $goods->price - $coupon->value;
 				$amount = $amount > 0? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
-			}else{
-				$amount = $goods->price;
 			}
 
 			// 价格异常判断

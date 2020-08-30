@@ -99,8 +99,8 @@ class ShopController extends Controller {
 			$obj->limit_num = $request->input('limit_num');
 			$obj->color = $request->input('color');
 			$obj->sort = $request->input('sort');
-			$obj->is_hot = $request->input('is_hot', 0);
-			$obj->status = $request->input('status', 0);
+			$obj->is_hot = $request->input('is_hot')? 1 : 0;
+			$obj->status = $request->input('status')? 1 : 0;
 			$obj->save();
 
 			DB::commit();
@@ -158,8 +158,8 @@ class ShopController extends Controller {
 				'limit_num'   => $request->input('limit_num'),
 				'color'       => $request->input('color'),
 				'sort'        => $request->input('sort'),
-				'is_hot'      => $request->input('is_hot', 0),
-				'status'      => $request->input('status', 0)
+				'is_hot'      => $request->input('is_hot')? 1 : 0,
+				'status'      => $request->input('status')? 1 : 0
 			];
 
 			Goods::whereId($id)->update($data);
