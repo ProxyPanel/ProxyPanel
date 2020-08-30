@@ -50,7 +50,7 @@ class SubscribeController extends Controller {
 		$query = UserSubscribeLog::with('user:email');
 
 		if(isset($id)){
-			$query->whereSubscribeId($id);
+			$query->whereUserSubscribeId($id);
 		}
 
 		$view['subscribeLog'] = $query->latest()->paginate(20)->appends($request->except('page'));

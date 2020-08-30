@@ -13,7 +13,6 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\UserBanedLog;
 use App\Models\UserHourlyDataFlow;
-use App\Models\UserSubscribeLog;
 use App\Models\VerifyCode;
 use Cache;
 use Illuminate\Console\Command;
@@ -91,25 +90,25 @@ class AutoJob extends Command {
 	// 封禁访问异常的订阅链接
 	private function blockSubscribe(): void {
 		if(sysConfig('is_subscribe_ban')){
-			$pastSubLogs = UserSubscribeLog::where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-1 days")))
-			                               ->groupBy('user_subscribe_id')
-			                               ->selectRaw('count(*) as total, user_subscribe_id')
-			                               ->get();
-			foreach($pastSubLogs as $log){
-				if($log->total >= sysConfig('subscribe_ban_times')){
-					$subscribe = $log->subscribe;
-					$ret = $subscribe->update([
+			$subscribe_ban_times = sysConfig('subscribe_ban_times');
+			foreach(User::activeUser()->with('subscribe')->get() as $user){
+				if(!$user->subscribe || $user->subscribe->status === 0){ // 无订阅链接 或 已封
+					continue;
+				}
+				// 24小时内不同IP的请求次数
+				$request_times = $user->subscribeLogs()
+				                      ->where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-1 days")))
+				                      ->distinct()
+				                      ->count('request_ip');
+				if($request_times >= $subscribe_ban_times){
+					$user->subscribe->update([
 						'status'   => 0,
-						'ban_time' => time(),
+						'ban_time' => strtotime("+".sysConfig('traffic_ban_time')." minutes"),
 						'ban_desc' => '存在异常，自动封禁'
 					]);
 
 					// 记录封禁日志
-					if($ret){
-						$this->addUserBanLog($subscribe->user_id, 0, '【完全封禁订阅】-订阅24小时内请求异常');
-					}else{
-						Log::error('【自动化任务】封禁订阅失败，尝试封禁订阅ID：'.$subscribe->id);
-					}
+					$this->addUserBanLog($user->id, 0, '【完全封禁订阅】-订阅24小时内请求异常');
 				}
 			}
 		}
