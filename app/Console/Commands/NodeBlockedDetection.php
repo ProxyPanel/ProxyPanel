@@ -36,11 +36,11 @@ class NodeBlockedDetection extends Command {
 
 	// 监测节点状态
 	private function checkNodes(): void {
-		$nodeList = Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get();
+		$detectionCheckTimes = sysConfig('detection_check_times');
 		$sendText = false;
 		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
 		$additionalMessage = '';
-		foreach($nodeList as $node){
+		foreach(Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get() as $node){
 			$info = false;
 			if($node->detection_type == 0){
 				continue;
@@ -73,7 +73,7 @@ class NodeBlockedDetection extends Command {
 			}
 
 			// 节点检测次数
-			if($info && sysConfig('detection_check_times')){
+			if($info && $detectionCheckTimes){
 				// 已通知次数
 				$cacheKey = 'detection_check_times'.$node->id;
 				if(Cache::has($cacheKey)){
@@ -84,7 +84,7 @@ class NodeBlockedDetection extends Command {
 					$times = 1;
 				}
 
-				if($times < sysConfig('detection_check_times')){
+				if($times < $detectionCheckTimes){
 					Cache::increment($cacheKey);
 				}else{
 					Cache::forget($cacheKey);

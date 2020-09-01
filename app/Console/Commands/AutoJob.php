@@ -132,9 +132,11 @@ class AutoJob extends Command {
 	// 封禁账号
 	private function blockUsers(): void {
 		// 封禁1小时内流量异常账号
+		$userList = User::activeUser()->whereBanTime(null);
 		if(sysConfig('is_traffic_ban')){
-			$userList = User::activeUser()->whereBanTime(null)->get();
-			foreach($userList as $user){
+			$trafficBanValue = sysConfig('traffic_ban_value');
+			$trafficBanTime = sysConfig('traffic_ban_time');
+			foreach($userList->get() as $user){
 				// 对管理员豁免
 				if($user->is_admin){
 					continue;
@@ -142,21 +144,20 @@ class AutoJob extends Command {
 
 				// 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
 				$totalTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
-				if($totalTraffic >= sysConfig('traffic_ban_value') * GB){
+				if($totalTraffic >= $trafficBanValue * GB){
 					$user->update([
 						'enable'   => 0,
-						'ban_time' => strtotime("+".sysConfig('traffic_ban_time')." minutes")
+						'ban_time' => strtotime("+".$trafficBanTime." minutes")
 					]);
 
 					// 写入日志
-					$this->addUserBanLog($user->id, sysConfig('traffic_ban_time'), '【临时封禁代理】-1小时内流量异常');
+					$this->addUserBanLog($user->id, $trafficBanTime, '【临时封禁代理】-1小时内流量异常');
 				}
 			}
 		}
 
 		// 禁用流量超限用户
-		$userList = User::activeUser()->whereBanTime(null)->whereRaw("u + d >= transfer_enable")->get();
-		foreach($userList as $user){
+		foreach($userList->whereRaw("u + d >= transfer_enable")->get() as $user){
 			$user->update(['enable' => 0]);
 
 			// 写入日志
@@ -195,8 +196,9 @@ class AutoJob extends Command {
 	// 端口回收与分配
 	private function dispatchPort(): void {
 		## 自动分配端口
+		$isRandPort = sysConfig('is_rand_port');
 		foreach(User::activeUser()->wherePort(0)->get() as $user){
-			$port = sysConfig('is_rand_port')? Helpers::getRandPort() : Helpers::getOnlyPort();
+			$port = $isRandPort? Helpers::getRandPort() : Helpers::getOnlyPort();
 
 			$user->update(['port' => $port]);
 		}
@@ -211,11 +213,12 @@ class AutoJob extends Command {
 	// 检测节点是否离线
 	private function checkNodeStatus(): void {
 		if(sysConfig('is_node_offline')){
+			$offlineCheckTimes = sysConfig('offline_check_times');
 			$onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
 			foreach(Node::whereIsRelay(0)->whereStatus(1)->get() as $node){
 				// 10分钟内无节点负载信息则认为是后端炸了
 				$nodeTTL = !in_array($node->id, $onlineNode);
-				if($nodeTTL && sysConfig('offline_check_times')){
+				if($nodeTTL && $offlineCheckTimes){
 					// 已通知次数
 					$cacheKey = 'offline_check_times'.$node->id;
 					if(Cache::has($cacheKey)){
@@ -226,7 +229,7 @@ class AutoJob extends Command {
 						$times = 1;
 					}
 
-					if($times < sysConfig('offline_check_times')){
+					if($times < $offlineCheckTimes){
 						Cache::increment($cacheKey);
 						PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
 					}

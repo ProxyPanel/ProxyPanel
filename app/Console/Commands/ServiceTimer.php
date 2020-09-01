@@ -26,8 +26,7 @@ class ServiceTimer extends Command {
 	// 扣减用户到期商品的流量
 	private function decGoodsTraffic(): void {
 		//获取失效的套餐
-		$orders = Order::activePlan()->where('expired_at', '<=', date('Y-m-d H:i:s'))->get();
-		foreach($orders as $order){
+		foreach(Order::activePlan()->where('expired_at', '<=', date('Y-m-d H:i:s'))->with('user')->get() as $order){
 			// 清理全部流量,重置重置日期和等级 TODO 可用流量变动日志加入至UserObserver
 			$user = $order->user;
 			$user->update([

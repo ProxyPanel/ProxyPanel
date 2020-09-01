@@ -66,7 +66,7 @@ class AdminController extends Controller {
 		$view['totalUserCount'] = User::count(); // 总用户数
 		$view['enableUserCount'] = User::whereEnable(1)->count(); // 有效用户数
 		$view['activeUserCount'] = User::where('t', '>=', $past)->count(); // 活跃用户数
-		$view['unActiveUserCount'] = User::whereBetween('t', [1, $past])->whereEnable(1)->count(); // 不活跃用户数
+		$view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past])->count(); // 不活跃用户数
 		$view['onlineUserCount'] = User::where('t', '>=', strtotime("-10 minutes"))->count(); // 10分钟内在线用户数
 		$view['expireWarningUserCount'] = User::whereBetween('expired_at', [
 			date('Y-m-d'),

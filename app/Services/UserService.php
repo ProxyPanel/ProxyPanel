@@ -18,7 +18,7 @@ class UserService {
 	}
 
 	// 添加用户余额
-	public function updateCredit(int $credit): bool {
+	public function updateCredit(float $credit): bool {
 		self::$user->credit += $credit;
 		return self::$user->credit >= 0 && self::$user->save();
 	}

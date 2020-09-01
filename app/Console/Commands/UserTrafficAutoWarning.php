@@ -29,6 +29,7 @@ class UserTrafficAutoWarning extends Command {
 
 	// 用户流量超过警告阈值自动发邮件提醒
 	private function userTrafficWarning(): void {
+		$trafficWarningPercent = sysConfig('traffic_warning_percent');
 		foreach(User::activeUser()->where('transfer_enable', '>', 0)->get() as $user){
 			// 用户名不是邮箱的跳过
 			if(false === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
@@ -36,7 +37,7 @@ class UserTrafficAutoWarning extends Command {
 			}
 
 			$usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
-			if($usedPercent >= sysConfig('traffic_warning_percent')){
+			if($usedPercent >= $trafficWarningPercent){
 				$logId = Helpers::addNotificationLog("流量提醒", '流量已使用：'.$usedPercent.'%，请保持关注。', 1, $user->email);
 				Mail::to($user->email)->send(new userTrafficWarning($logId, $usedPercent));
 			}

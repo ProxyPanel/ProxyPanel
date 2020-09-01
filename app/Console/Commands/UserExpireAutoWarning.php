@@ -29,6 +29,7 @@ class UserExpireAutoWarning extends Command {
 	}
 
 	private function userExpireWarning(): void {
+		$expireDays = sysConfig('expire_days');
 		// 只取SSR没被禁用的用户，其他不用管
 		foreach(User::whereEnable(1)->get() as $user){
 			// 用户名不是邮箱的跳过
@@ -44,7 +45,7 @@ class UserExpireAutoWarning extends Command {
 
 				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
 				Mail::to($user->email)->send(new userExpireWarningToday($logId));
-			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= sysConfig('expire_days')){
+			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= $expireDays){
 				$title = '账号过期提醒';
 				$content = '您的账号还剩'.$lastCanUseDays.'天即将过期。';
 
