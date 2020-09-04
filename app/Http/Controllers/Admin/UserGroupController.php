@@ -15,15 +15,15 @@ use Response;
 use Validator;
 
 class UserGroupController extends Controller {
-	public function index(Request $request): \Illuminate\Http\Response {
+	public function index(Request $request) {
 		$view['list'] = UserGroup::paginate(15)->appends($request->except('page'));
-		return Response::view('admin.user.group.index', $view);
+		return view('admin.user.group.index', $view);
 	}
 
 	// 添加用户分组页面
-	public function create(): \Illuminate\Http\Response {
+	public function create() {
 		$view['nodeList'] = Node::whereStatus(1)->get();
-		return Response::view('admin.user.group.info', $view);
+		return view('admin.user.group.info', $view);
 	}
 
 	// 添加用户分组
@@ -49,11 +49,11 @@ class UserGroupController extends Controller {
 	}
 
 	// 编辑用户分组页面
-	public function edit($id): \Illuminate\Http\Response {
+	public function edit($id) {
 		$view['userGroup'] = UserGroup::findOrFail($id);
 		$view['nodeList'] = Node::whereStatus(1)->get();
 
-		return Response::view('admin.user.group.info', $view);
+		return view('admin.user.group.info', $view);
 	}
 
 	// 编辑用户分组

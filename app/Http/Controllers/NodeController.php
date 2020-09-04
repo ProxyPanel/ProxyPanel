@@ -26,7 +26,7 @@ use Validator;
 
 class NodeController extends Controller {
 	// 节点列表
-	public function nodeList(Request $request): \Illuminate\Http\Response {
+	public function nodeList(Request $request) {
 		$status = $request->input('status');
 
 		$query = Node::with(['onlineLogs', 'dailyDataFlows']);
@@ -56,7 +56,7 @@ class NodeController extends Controller {
 
 		$view['nodeList'] = $nodeList;
 
-		return Response::view('admin.node.nodeList', $view);
+		return view('admin.node.nodeList', $view);
 	}
 
 	public function checkNode($id): JsonResponse {
@@ -150,7 +150,7 @@ class NodeController extends Controller {
 			$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
 			$view['dvList'] = NodeCertificate::orderBy('id')->get();
 
-			return Response::view('admin.node.nodeInfo', $view);
+			return view('admin.node.nodeInfo', $view);
 		}
 	}
 
@@ -305,7 +305,7 @@ class NodeController extends Controller {
 		$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
 		$view['dvList'] = NodeCertificate::orderBy('id')->get();
 
-		return Response::view('admin.node.nodeInfo', $view);
+		return view('admin.node.nodeInfo', $view);
 	}
 
 	// 删除节点
@@ -344,7 +344,7 @@ class NodeController extends Controller {
 		$view['nodeServer'] = $node->server;
 		$view = array_merge($view, $this->DataFlowChart($node->id, 1));
 
-		return Response::view('admin.node.nodeMonitor', $view);
+		return view('admin.node.nodeMonitor', $view);
 	}
 
 	// Ping节点延迟
@@ -372,7 +372,7 @@ class NodeController extends Controller {
 	}
 
 	// Ping节点延迟日志
-	public function pingLog(Request $request): \Illuminate\Http\Response {
+	public function pingLog(Request $request) {
 		$node_id = $request->input('nodeId');
 		$query = NodePing::query();
 		if(isset($node_id)){
@@ -382,13 +382,13 @@ class NodeController extends Controller {
 		$view['nodeList'] = Node::orderBy('id')->get();
 		$view['pingLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.logs.nodePingLog', $view);
+		return view('admin.logs.nodePingLog', $view);
 	}
 
 	// 节点授权列表
-	public function authList(Request $request): \Illuminate\Http\Response {
+	public function authList(Request $request) {
 		$view['list'] = NodeAuth::orderBy('node_id')->paginate(15)->appends($request->except('page'));
-		return Response::view('admin.node.authList', $view);
+		return view('admin.node.authList', $view);
 	}
 
 	// 添加节点授权
@@ -434,7 +434,7 @@ class NodeController extends Controller {
 	}
 
 	// 域名证书列表
-	public function certificateList(Request $request): \Illuminate\Http\Response {
+	public function certificateList(Request $request) {
 		$DvList = NodeCertificate::orderBy('id')->paginate(15)->appends($request->except('page'));
 		foreach($DvList as $Dv){
 			if($Dv->key && $Dv->pem){
@@ -445,7 +445,7 @@ class NodeController extends Controller {
 			}
 		}
 		$view['list'] = $DvList;
-		return Response::view('admin.node.certificateList', $view);
+		return view('admin.node.certificateList', $view);
 	}
 
 	// 添加域名证书
@@ -464,7 +464,7 @@ class NodeController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => '生成失败']);
 		}
 
-		return Response::view('admin.node.certificateInfo');
+		return view('admin.node.certificateInfo');
 	}
 
 	// 编辑域名证书
@@ -485,7 +485,7 @@ class NodeController extends Controller {
 		}
 
 		$view['Dv'] = $Dv;
-		return Response::view('admin.node.certificateInfo', $view);
+		return view('admin.node.certificateInfo', $view);
 	}
 
 	// 删除域名证书

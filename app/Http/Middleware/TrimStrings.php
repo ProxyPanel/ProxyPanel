@@ -10,5 +10,8 @@ class TrimStrings extends Middleware {
 	 *
 	 * @var array
 	 */
-	protected $except = [];
+	protected $except = [
+		'password',
+		'password_confirmation',
+	];
 }

@@ -173,7 +173,7 @@ Route::group(['middleware' => ['isForbidden', 'isAdminLogin', 'isAdmin']], funct
 });
 
 Route::group(['middleware' => ['isForbidden', 'isMaintenance', 'isLogin']], function() {
-	Route::any('/', 'UserController@index'); // 用户首页
+	Route::any('/', 'UserController@index')->name('home'); // 用户首页
 	Route::any('article', 'UserController@article'); // 文章详情
 	Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
 	Route::any('nodeList', 'UserController@nodeList'); // 节点列表

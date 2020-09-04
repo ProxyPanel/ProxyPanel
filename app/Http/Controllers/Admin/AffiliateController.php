@@ -19,7 +19,7 @@ use Response;
 class AffiliateController extends Controller {
 
 	// 提现申请列表
-	public function affiliateList(Request $request): \Illuminate\Http\Response {
+	public function affiliateList(Request $request) {
 		$email = $request->input('email');
 		$status = $request->input('status');
 
@@ -36,11 +36,11 @@ class AffiliateController extends Controller {
 
 		$view['applyList'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.affiliate.affiliateList', $view);
+		return view('admin.affiliate.affiliateList', $view);
 	}
 
 	// 提现申请详情
-	public function affiliateDetail(Request $request): \Illuminate\Http\Response {
+	public function affiliateDetail(Request $request) {
 		$view['basic'] = ReferralApply::with('user:id,email')->find($request->input('id'));
 		$view['commissions'] = [];
 		if($view['basic'] && $view['basic']->link_logs){
@@ -50,7 +50,7 @@ class AffiliateController extends Controller {
 			                                  ->appends($request->except('page'));
 		}
 
-		return Response::view('admin.affiliate.affiliateDetail', $view);
+		return view('admin.affiliate.affiliateDetail', $view);
 	}
 
 	// 设置提现申请状态
@@ -73,7 +73,7 @@ class AffiliateController extends Controller {
 	}
 
 	// 用户返利流水记录
-	public function userRebateList(Request $request): \Illuminate\Http\Response {
+	public function userRebateList(Request $request) {
 		$invitee_email = $request->input('invitee_email');
 		$inviter_email = $request->input('inviter_email');
 		$status = $request->input('status');
@@ -98,6 +98,6 @@ class AffiliateController extends Controller {
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.affiliate.userRebateList', $view);
+		return view('admin.affiliate.userRebateList', $view);
 	}
 }

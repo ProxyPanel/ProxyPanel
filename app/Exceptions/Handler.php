@@ -3,15 +3,14 @@
 namespace App\Exceptions;
 
 use ErrorException;
-use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Log;
 use ReflectionException;
 use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class Handler extends ExceptionHandler {
 	/**
@@ -34,12 +33,12 @@ class Handler extends ExceptionHandler {
 	/**
 	 * Report or log an exception.
 	 *
-	 * @param  Exception  $exception
+	 * @param  \Throwable  $exception
+	 * @return void
 	 *
-	 * @return mixed|void
-	 * @throws Exception
+	 * @throws \Exception
 	 */
-	public function report(Exception $exception) {
+	public function report(Throwable $exception) {
 		// 记录异常来源
 		Log::info('异常来源：'.get_class($exception));
 
@@ -55,12 +54,13 @@ class Handler extends ExceptionHandler {
 	/**
 	 * Render an exception into an HTTP response.
 	 *
-	 * @param  Request    $request
-	 * @param  Exception  $exception
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  \Throwable                $exception
+	 * @return \Symfony\Component\HttpFoundation\Response
 	 *
-	 * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+	 * @throws \Throwable
 	 */
-	public function render($request, Exception $exception) {
+	public function render($request, Throwable $exception) {
 		// 调试模式下直接返回错误信息
 		if(config('app.debug')){
 			return parent::render($request, $exception);
@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler {
 				return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')]);
 			}
 
-			return Response::view('auth.error', ['message' => trans('error.MissingPage')]);
+			return Response::view('auth.error', ['message' => trans('error.MissingPage')], 404);
 		}
 
 		// 捕获身份校验异常
@@ -83,7 +83,7 @@ class Handler extends ExceptionHandler {
 				return Response::json(['status' => 'fail', 'message' => trans('error.Unauthorized')]);
 			}
 
-			return Response::view('auth.error', ['message' => trans('error.Unauthorized')]);
+			return Response::view('auth.error', ['message' => trans('error.Unauthorized')], 401);
 		}
 
 		// 捕获CSRF异常
@@ -95,9 +95,9 @@ class Handler extends ExceptionHandler {
 				]);
 			}
 
-			return Response::view('auth.error', [
-				'message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'
-			]);
+			return Response::view('auth.error',
+				['message' => trans('error.RefreshPage').'<a href="/login" target="_blank">'.trans('error.Refresh').'</a>'],
+				419);
 		}
 
 		// 捕获反射异常
@@ -106,7 +106,7 @@ class Handler extends ExceptionHandler {
 				return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
 			}
 
-			return Response::view('auth.error', ['message' => trans('error.SystemError')]);
+			return Response::view('auth.error', ['message' => trans('error.SystemError')], 500);
 		}
 
 		// 捕获系统错误异常
@@ -118,9 +118,9 @@ class Handler extends ExceptionHandler {
 				]);
 			}
 
-			return Response::view('auth.error', [
-				'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'
-			]);
+			return Response::view('auth.error',
+				['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="/logs" target="_blank">'.trans('error.log').'</a>'],
+				500);
 		}
 
 		return parent::render($request, $exception);

@@ -25,7 +25,7 @@ use Validator;
  */
 class ShopController extends Controller {
 	// 商品列表
-	public function index(Request $request): \Illuminate\Http\Response {
+	public function index(Request $request) {
 		$type = $request->input('type');
 		$status = $request->input('status');
 
@@ -41,15 +41,15 @@ class ShopController extends Controller {
 
 		$view['goodsList'] = $query->orderByDesc('status')->paginate(10)->appends($request->except('page'));
 
-		return Response::view('admin.shop.index', $view);
+		return view('admin.shop.index', $view);
 	}
 
 	// 添加商品页面
-	public function create(): \Illuminate\Http\Response {
+	public function create() {
 		$view['goods'] = null;
 		$view['levelList'] = Level::orderBy('level')->get();
 
-		return Response::view('admin.shop.info', $view);
+		return view('admin.shop.info', $view);
 	}
 
 	// 添加商品
@@ -115,11 +115,11 @@ class ShopController extends Controller {
 	}
 
 	// 编辑商品页面
-	public function edit($id): \Illuminate\Http\Response {
+	public function edit($id) {
 		$view['goods'] = Goods::find($id);
 		$view['levelList'] = Level::orderBy('level')->get();
 
-		return Response::view('admin.shop.info', $view);
+		return view('admin.shop.info', $view);
 	}
 
 	// 编辑商品

@@ -164,17 +164,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-        * Package Service Providers...
-        */
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class, //IDE帮助
-        Barryvdh\Debugbar\ServiceProvider::class,//Debug工具
-        Jenssegers\Agent\AgentServiceProvider::class, //用户浏览器检测
-        Misechow\Geetest\GeetestServiceProvider::class,  // Geetest极验
-        Misechow\NoCaptcha\NoCaptchaServiceProvider::class, // Google reCAPTCHA
-        Overtrue\LaravelLang\TranslationServiceProvider::class, // 多国语言包功能
-        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,//日志查看
-        Scyllaly\HCaptcha\HCaptchaServiceProvider::class, //HCaptcha
-        Srmklive\PayPal\Providers\PayPalServiceProvider::class, // PayPal
+         * Package Service Providers...
+         */
 
         /*
          * Application Service Providers...
@@ -199,7 +190,7 @@ return [
     */
 
     'aliases' => [
-        'Agent' => Jenssegers\Agent\Facades\Agent::class,
+
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
@@ -208,27 +199,21 @@ return [
         'Broadcast' => Illuminate\Support\Facades\Broadcast::class,
         'Bus' => Illuminate\Support\Facades\Bus::class,
         'Cache' => Illuminate\Support\Facades\Cache::class,
-        'Captcha' => Mews\Captcha\Facades\Captcha::class,
         'Config' => Illuminate\Support\Facades\Config::class,
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'DB' => Illuminate\Support\Facades\DB::class,
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
-        'Geetest' => Misechow\Geetest\Geetest::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
-        'HCaptcha' => Scyllaly\HCaptcha\Facades\HCaptcha::class,
+        'Http' => Illuminate\Support\Facades\Http::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
-        'NoCaptcha' => Misechow\NoCaptcha\Facades\NoCaptcha::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
-        'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
-        'Purifier' => Mews\Purifier\Facades\Purifier::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
@@ -241,7 +226,8 @@ return [
         'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
-        'View' => Illuminate\Support\Facades\View::class
+        'View' => Illuminate\Support\Facades\View::class,
+
     ],
 
 ];

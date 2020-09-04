@@ -119,7 +119,7 @@ class AuthController extends Controller {
 			return Redirect::to('/');
 		}
 
-		return Response::view('auth.login');
+		return view('auth.login');
 	}
 
 	// 校验验证码
@@ -398,7 +398,7 @@ class AuthController extends Controller {
 		$view['emailList'] = self::$sysConfig['is_email_filtering'] != 2? false : EmailFilter::whereType(2)->get();
 		Session::put('register_token', Str::random());
 
-		return Response::view('auth.register', $view);
+		return view('auth.register', $view);
 	}
 
 	//邮箱检查
@@ -534,7 +534,7 @@ class AuthController extends Controller {
 			return Redirect::back()->with('successMsg', trans('auth.reset_password_success_tip'));
 		}
 
-		return Response::view('auth.resetPassword');
+		return view('auth.resetPassword');
 	}
 
 	// 重设密码
@@ -605,7 +605,7 @@ class AuthController extends Controller {
 		// 重新获取一遍verify
 		$view['verify'] = Verify::type(1)->whereToken($token)->first();
 
-		return Response::view('auth.reset', $view);
+		return view('auth.reset', $view);
 	}
 
 	// 激活账号页
@@ -666,7 +666,7 @@ class AuthController extends Controller {
 			return Redirect::back()->with('successMsg', trans('auth.register_active_tip'));
 		}
 
-		return Response::view('auth.activeUser');
+		return view('auth.activeUser');
 	}
 
 	// 激活账号
@@ -684,19 +684,19 @@ class AuthController extends Controller {
 		if(empty($user)){
 			Session::flash('errorMsg', trans('auth.overtime'));
 
-			return Response::view('auth.active');
+			return view('auth.active');
 		}
 
 		if($verify->status > 0){
 			Session::flash('errorMsg', trans('auth.overtime'));
 
-			return Response::view('auth.active');
+			return view('auth.active');
 		}
 
 		if($user->status != 0){
 			Session::flash('errorMsg', trans('auth.email_normal'));
 
-			return Response::view('auth.active');
+			return view('auth.active');
 		}
 
 		if(time() - strtotime($verify->created_at) >= 1800){
@@ -706,7 +706,7 @@ class AuthController extends Controller {
 			$verify->status = 2;
 			$verify->save();
 
-			return Response::view('auth.active');
+			return view('auth.active');
 		}
 
 		// 更新账号状态
@@ -728,7 +728,7 @@ class AuthController extends Controller {
 
 		Session::flash('successMsg', trans('auth.active_success'));
 
-		return Response::view('auth.active');
+		return view('auth.active');
 	}
 
 	// 发送注册验证码
@@ -787,10 +787,10 @@ class AuthController extends Controller {
 	}
 
 	// 公开的邀请码列表
-	public function free(): \Illuminate\Http\Response {
+	public function free() {
 		$view['inviteList'] = Invite::whereInviterId(0)->whereStatus(0)->paginate();
 
-		return Response::view('auth.free', $view);
+		return view('auth.free', $view);
 	}
 
 	// 切换语言

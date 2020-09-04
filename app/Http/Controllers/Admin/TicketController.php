@@ -25,7 +25,7 @@ use Response;
  */
 class TicketController extends Controller {
 	// 工单列表
-	public function ticketList(Request $request): \Illuminate\Http\Response {
+	public function ticketList(Request $request) {
 		$email = $request->input('email');
 
 		$query = Ticket::whereIn('admin_id', [0, Auth::id()]);
@@ -38,7 +38,7 @@ class TicketController extends Controller {
 
 		$view['ticketList'] = $query->latest()->paginate(10)->appends($request->except('page'));
 
-		return Response::view('admin.ticket.ticketList', $view);
+		return view('admin.ticket.ticketList', $view);
 	}
 
 	// 创建工单
@@ -122,7 +122,7 @@ class TicketController extends Controller {
 		$view['ticket'] = Ticket::find($id);
 		$view['replyList'] = TicketReply::whereTicketId($id)->oldest()->get();
 
-		return Response::view('admin.ticket.replyTicket', $view);
+		return view('admin.ticket.replyTicket', $view);
 	}
 
 	// 关闭工单

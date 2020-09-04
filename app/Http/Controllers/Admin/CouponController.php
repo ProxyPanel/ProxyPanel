@@ -25,7 +25,7 @@ use Validator;
  */
 class CouponController extends Controller {
 	// 优惠券列表
-	public function couponList(Request $request): \Illuminate\Http\Response {
+	public function couponList(Request $request) {
 		$sn = $request->input('sn');
 		$type = $request->input('type');
 		$status = $request->input('status');
@@ -46,7 +46,7 @@ class CouponController extends Controller {
 
 		$view['couponList'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.coupon.couponList', $view);
+		return view('admin.coupon.couponList', $view);
 	}
 
 	// 添加优惠券
@@ -121,7 +121,7 @@ class CouponController extends Controller {
 				return Redirect::back()->withInput()->withErrors('生成失败：'.$e->getMessage());
 			}
 		}else{
-			return Response::view('admin.coupon.addCoupon');
+			return view('admin.coupon.addCoupon');
 		}
 	}
 

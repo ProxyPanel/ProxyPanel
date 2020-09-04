@@ -203,7 +203,7 @@ class PaymentController extends Controller {
 	}
 
 	// 支付单详情
-	public function detail($trade_no): \Illuminate\Http\Response {
+	public function detail($trade_no) {
 		$payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->firstOrFail();
 		$view['payment'] = $payment;
 		$goods = $payment->order->goods;
@@ -212,11 +212,11 @@ class PaymentController extends Controller {
 		$view['pay_type'] = $payment->order->pay_type_label?: 0;
 		$view['pay_type_icon'] = $payment->order->pay_type_icon;
 
-		return Response::view('user.payment', $view);
+		return view('user.payment', $view);
 	}
 
 	// 回调日志
-	public function callbackList(Request $request): \Illuminate\Http\Response {
+	public function callbackList(Request $request) {
 		$status = $request->input('status', 0);
 
 		$query = PaymentCallback::query();
@@ -227,6 +227,6 @@ class PaymentController extends Controller {
 
 		$view['list'] = $query->latest()->paginate(10)->appends($request->except('page'));
 
-		return Response::view('admin.logs.callbackList', $view);
+		return view('admin.logs.callbackList', $view);
 	}
 }

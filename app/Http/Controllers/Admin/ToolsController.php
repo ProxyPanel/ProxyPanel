@@ -44,7 +44,7 @@ class ToolsController extends Controller {
 
 			return Response::json(['status' => 'success', 'data' => $txt, 'message' => '反解析成功']);
 		}
-		return Response::view('admin.tools.decompile');
+		return view('admin.tools.decompile');
 	}
 
 	// 格式转换(SS转SSR)
@@ -100,7 +100,7 @@ class ToolsController extends Controller {
 		$view['protocolList'] = Helpers::protocolList();
 		$view['obfsList'] = Helpers::obfsList();
 
-		return Response::view('admin.tools.convert', $view);
+		return view('admin.tools.convert', $view);
 	}
 
 	// 下载转换好的JSON文件
@@ -195,16 +195,16 @@ class ToolsController extends Controller {
 			return Redirect::back();
 		}
 
-		return Response::view('admin.tools.import');
+		return view('admin.tools.import');
 	}
 
 	// 日志分析
-	public function analysis(): \Illuminate\Http\Response {
+	public function analysis() {
 		$file = storage_path('app/ssserver.log');
 		if(!file_exists($file)){
 			Session::flash('analysisErrorMsg', $file.' 不存在，请先创建文件');
 
-			return Response::view('admin.tools.analysis');
+			return view('admin.tools.analysis');
 		}
 
 		$logs = $this->tail($file, 10000);
@@ -232,6 +232,6 @@ class ToolsController extends Controller {
 			$view['urlList'] = array_unique($url);
 		}
 
-		return Response::view('admin.tools.analysis', $view);
+		return view('admin.tools.analysis', $view);
 	}
 }

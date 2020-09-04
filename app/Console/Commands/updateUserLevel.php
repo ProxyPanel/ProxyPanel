@@ -20,7 +20,7 @@ class updateUserLevel extends Command {
 		// 获取商品列表，取新等级
 		$goodsLevel = Goods::type(2)->where('level', '<>', 0)->pluck('id')->toArray();
 		// 取生效的套餐
-		$orderList = Order::with('goods')->whereIn('goods_id', $goodsLevel)->active()->get();
+		$orderList = Order::active()->with('goods')->whereIn('goods_id', $goodsLevel)->get();
 		foreach($orderList as $order){
 			$ret = $order->user->update(['level' => $order->goods->level]);
 

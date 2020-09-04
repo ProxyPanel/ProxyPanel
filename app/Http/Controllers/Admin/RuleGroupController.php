@@ -17,17 +17,17 @@ use Validator;
 
 class RuleGroupController extends Controller {
 	// 审计规则分组列表
-	public function index(Request $request): \Illuminate\Http\Response {
+	public function index(Request $request) {
 		$view['ruleGroupList'] = RuleGroup::paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.rule.group.index', $view);
+		return view('admin.rule.group.index', $view);
 	}
 
 	// 添加审计规则分组页面
-	public function create(): \Illuminate\Http\Response {
+	public function create() {
 		$view['ruleList'] = Rule::all();
 
-		return Response::view('admin.rule.group.info', $view);
+		return view('admin.rule.group.info', $view);
 	}
 
 	// 添加审计规则分组
@@ -55,11 +55,11 @@ class RuleGroupController extends Controller {
 	}
 
 	// 编辑审计规则分组页面
-	public function edit($id): \Illuminate\Http\Response {
+	public function edit($id) {
 		$view['ruleGroup'] = RuleGroup::findOrFail($id);
 		$view['ruleList'] = Rule::all();
 
-		return Response::view('admin.rule.group.info', $view);
+		return view('admin.rule.group.info', $view);
 	}
 
 	// 编辑审计规则分组
@@ -100,11 +100,11 @@ class RuleGroupController extends Controller {
 	}
 
 	// 规则分组关联节点
-	public function assignNode($id): \Illuminate\Http\Response {
+	public function assignNode($id) {
 		$view['ruleGroup'] = RuleGroup::find($id);
 		$view['nodeList'] = Node::all();
 
-		return Response::view('admin.rule.group.assign', $view);
+		return view('admin.rule.group.assign', $view);
 	}
 
 	public function assign(Request $request, $id) {

@@ -19,10 +19,10 @@ class AffiliateController extends Controller {
 	}
 
 	// 推广返利
-	public function referral(): \Illuminate\Http\Response {
+	public function referral() {
 		if(ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()){
 			return Response::view('auth.error',
-				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
+				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'], 402);
 		}
 		$view['referral_traffic'] = flowAutoShow(self::$sysConfig['referral_traffic'] * MB);
 		$view['referral_percent'] = self::$sysConfig['referral_percent'];
@@ -41,7 +41,7 @@ class AffiliateController extends Controller {
 		                                ->latest()
 		                                ->paginate(10, ['*'], 'user_page');
 
-		return Response::view('user.referral', $view);
+		return view('user.referral', $view);
 	}
 
 	// 申请提现

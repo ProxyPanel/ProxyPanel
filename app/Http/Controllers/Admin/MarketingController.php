@@ -22,7 +22,7 @@ use RuntimeException;
  */
 class MarketingController extends Controller {
 	// 邮件群发消息列表
-	public function emailList(Request $request): \Illuminate\Http\Response {
+	public function emailList(Request $request) {
 		$status = $request->input('status');
 
 		$query = Marketing::whereType(1);
@@ -33,11 +33,11 @@ class MarketingController extends Controller {
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.marketing.emailList', $view);
+		return view('admin.marketing.emailList', $view);
 	}
 
 	// 消息通道群发列表
-	public function pushList(Request $request): \Illuminate\Http\Response {
+	public function pushList(Request $request) {
 		$status = $request->input('status');
 
 		$query = Marketing::whereType(2);
@@ -48,7 +48,7 @@ class MarketingController extends Controller {
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.marketing.pushList', $view);
+		return view('admin.marketing.pushList', $view);
 	}
 
 	// 添加推送消息

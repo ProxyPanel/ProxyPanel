@@ -17,6 +17,7 @@ use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\WebApi;
+use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
@@ -42,6 +43,7 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $middleware = [
+		HandleCors::class,
 		CheckForMaintenanceMode::class,
 		ValidatePostSize::class,
 		TrimStrings::class,
@@ -68,7 +70,7 @@ class Kernel extends HttpKernel {
 
 		'api' => [
 			'throttle:60,1',
-			'bindings',
+			SubstituteBindings::class,
 		],
 	];
 

@@ -1,48 +1,47 @@
 {
-  "name": "laravel/laravel",
+  "name": "proxypanel/proxypanel",
   "type": "project",
-  "description": "The Laravel Framework.",
+  "description": "Proxy panel is a proxy account management system, it supports shadowsocks, shadowsocksr, v2ray, trojan and more.",
   "keywords": [
-	"framework",
-	"laravel"
+	"laravel",
+	"proxypanel"
   ],
   "license": "MIT",
   "require": {
-	"php": "^7.2",
-	"ext-json": "*",
-	"ext-openssl": "*",
-	"barryvdh/laravel-ide-helper": "^2.7",
-	"fideloper/proxy": "^4.3",
-	"guzzlehttp/guzzle": "^6",
+	"php": "^7.2.5",
+	"fideloper/proxy": "^4.2",
+	"fruitcake/laravel-cors": "^2.0",
+	"guzzlehttp/guzzle": "^6.3",
 	"ipip/db": "^1.0",
 	"itbdw/ip-database": "^2.0",
 	"jenssegers/agent": "^2.6",
-	"laravel/framework": "5.8.*",
-	"laravel/tinker": "^1.0",
+	"laravel/framework": "^7.24",
+	"laravel/tinker": "^2.0",
 	"mews/captcha": "^3.1",
 	"mews/purifier": "^3.2",
-	"misechow/geetest": "^1.0",
-	"misechow/no-captcha": "^1.0",
 	"openlss/lib-array2xml": "^1.0",
-	"overtrue/laravel-lang": "^3.0",
-	"phpoffice/phpspreadsheet": "^1.13",
-	"predis/predis": "^1.1",
+	"overtrue/laravel-lang": "^4.0",
+	"phpoffice/phpspreadsheet": "^1.14",
 	"rap2hpoutre/laravel-log-viewer": "^1.6",
-	"riverslei/payment": "*",
-	"scyllaly/hcaptcha": "^4.1",
+	"riverslei/payment": "^5.1",
 	"simplesoftwareio/simple-qrcode": "^3.0",
-	"spatie/laravel-permission": "^3.13",
-	"srmklive/paypal": "~1.0",
-	"xhat/payjs": "^1.4"
+	"spatie/laravel-permission": "^3.16",
+	"srmklive/paypal": "^1.7",
+	"xhat/payjs": "^1.4",
+	"zbrettonye/geetest": "^1.1",
+	"zbrettonye/hcaptcha": "^1.0",
+	"zbrettonye/no-captcha": "^1.0",
+	"ext-json": "*",
+	"ext-openssl": "*"
   },
   "require-dev": {
-	"barryvdh/laravel-debugbar": "^3",
-	"beyondcode/laravel-dump-server": "^1.0",
-	"filp/whoops": "^2.7",
-	"fzaninotto/faker": "^1.9",
-	"mockery/mockery": "^1.3",
-	"nunomaduro/collision": "^3.0",
-	"phpunit/phpunit": "^8"
+	"barryvdh/laravel-debugbar": "^3.4",
+	"barryvdh/laravel-ide-helper": "^2.8",
+	"facade/ignition": "^2.0",
+	"fzaninotto/faker": "^1.9.1",
+	"mockery/mockery": "^1.3.1",
+	"nunomaduro/collision": "^4.1",
+	"phpunit/phpunit": "^8.5"
   },
   "config": {
 	"optimize-autoloader": true,
@@ -81,19 +80,8 @@
 	"post-root-package-install": [
 	  "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
 	],
-	"post-update-cmd": [
-	  "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-	  "@php artisan ide-helper:generate",
-	  "@php artisan ide-helper:meta"
-	],
 	"post-create-project-cmd": [
 	  "@php artisan key:generate --ansi"
 	]
-  },
-  "repositories": {
-	"packagist": {
-	  "type": "composer",
-	  "url": "https://mirrors.aliyun.com/composer/"
-	}
   }
 }

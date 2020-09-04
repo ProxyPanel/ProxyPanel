@@ -55,7 +55,7 @@
 <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
 	<div class="page-content vertical-align-middle">
 		<header>
-			<h1 class="animation-slide-top">(。・＿・。)ﾉI’m sorry~</h1>
+			<h3 class="animation-slide-top">(。・＿・。)ﾉI’m sorry~</h3>
 			<p>{{trans('error.title')}}</p>
 		</header>
 		<p class="error-advise">{!! $message !!}</p>

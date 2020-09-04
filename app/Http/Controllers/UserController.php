@@ -51,7 +51,7 @@ class UserController extends Controller {
 		self::$sysConfig = Helpers::sysConfig();
 	}
 
-	public function index(): \Illuminate\Http\Response {
+	public function index() {
 		$user = Auth::getUser();
 		$totalTransfer = $user->transfer_enable;
 		$usedTransfer = $user->u + $user->d;
@@ -72,7 +72,7 @@ class UserController extends Controller {
 		$view['userLoginLog'] = UserLoginLog::whereUserId($user->id)->latest()->first(); // 近期登录日志
 		$view = array_merge($view, $this->dataFlowChart($user->id));
 
-		return Response::view('user.index', $view);
+		return view('user.index', $view);
 	}
 
 	// 签到
@@ -142,14 +142,14 @@ class UserController extends Controller {
 		}
 		$view['nodeList'] = $nodeList?: [];
 
-		return Response::view('user.nodeList', $view);
+		return view('user.nodeList', $view);
 	}
 
 	// 公告详情
-	public function article(Request $request): \Illuminate\Http\Response {
+	public function article(Request $request) {
 		$view['info'] = Article::findOrFail($request->input('id'));
 
-		return Response::view('user.article', $view);
+		return view('user.article', $view);
 	}
 
 	// 修改个人资料
@@ -206,11 +206,11 @@ class UserController extends Controller {
 			return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
 		}
 
-		return Response::view('user.profile');
+		return view('user.profile');
 	}
 
 	// 商品列表
-	public function services(Request $request): \Illuminate\Http\Response {
+	public function services(Request $request) {
 		$user = Auth::getUser();
 		// 余额充值商品，只取10个
 		$view['chargeGoodsList'] = Goods::type(3)->whereStatus(1)->orderBy('price')->limit(10)->get();
@@ -227,7 +227,7 @@ class UserController extends Controller {
 		$dataPlusDays = $user->reset_time?: $user->expired_at;
 		$view['dataPlusDays'] = $dataPlusDays > date('Y-m-d')? Helpers::daysToNow($dataPlusDays) : 0;
 
-		return Response::view('user.services', $view);
+		return view('user.services', $view);
 	}
 
 	//重置流量
@@ -252,14 +252,14 @@ class UserController extends Controller {
 	}
 
 	// 工单
-	public function ticketList(Request $request): \Illuminate\Http\Response {
+	public function ticketList(Request $request) {
 		$view['ticketList'] = Ticket::uid()->latest()->paginate(10)->appends($request->except('page'));
 
-		return Response::view('user.ticketList', $view);
+		return view('user.ticketList', $view);
 	}
 
 	// 订单
-	public function invoices(Request $request): \Illuminate\Http\Response {
+	public function invoices(Request $request) {
 		$view['orderList'] = Order::uid()
 		                          ->with(['goods', 'payment'])
 		                          ->orderByDesc('id')
@@ -267,7 +267,7 @@ class UserController extends Controller {
 		                          ->appends($request->except('page'));
 		$view['prepaidPlan'] = Order::userPrepay()->exists();
 
-		return Response::view('user.invoices', $view);
+		return view('user.invoices', $view);
 	}
 
 	public function closePlan(): JsonResponse {
@@ -286,10 +286,10 @@ class UserController extends Controller {
 	}
 
 	// 订单明细
-	public function invoiceDetail($sn): \Illuminate\Http\Response {
+	public function invoiceDetail($sn) {
 		$view['order'] = Order::uid()->with(['goods', 'coupon', 'payment'])->whereOrderSn($sn)->firstOrFail();
 
-		return Response::view('user.invoiceDetail', $view);
+		return view('user.invoiceDetail', $view);
 	}
 
 	// 添加工单
@@ -378,7 +378,7 @@ class UserController extends Controller {
 		$view['ticket'] = $ticket;
 		$view['replyList'] = TicketReply::whereTicketId($id)->with('user')->oldest()->get();
 
-		return Response::view('user.replyTicket', $view);
+		return view('user.replyTicket', $view);
 	}
 
 	// 关闭工单
@@ -396,10 +396,10 @@ class UserController extends Controller {
 	}
 
 	// 邀请码
-	public function invite(): \Illuminate\Http\Response {
+	public function invite() {
 		if(Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()){
 			return Response::view('auth.error',
-				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>']);
+				['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'], 402);
 		}
 
 		$view['num'] = Auth::getUser()->invite_num; // 还可以生成的邀请码数量
@@ -407,7 +407,7 @@ class UserController extends Controller {
 		$view['referral_traffic'] = flowAutoShow(self::$sysConfig['referral_traffic'] * MB);
 		$view['referral_percent'] = self::$sysConfig['referral_percent'];
 
-		return Response::view('user.invite', $view);
+		return view('user.invite', $view);
 	}
 
 	// 生成邀请码
@@ -489,11 +489,11 @@ class UserController extends Controller {
 		$view['activePlan'] = Order::userActivePlan()->exists();
 		$view['goods'] = $goods;
 
-		return Response::view('user.buy', $view);
+		return view('user.buy', $view);
 	}
 
 	// 帮助中心
-	public function help(): \Illuminate\Http\Response {
+	public function help() {
 		//$view['articleList'] = Article::type(1)->orderByDesc('sort')->latest()->limit(10)->paginate(5);
 		$data = [];
 		if(Node::whereIn('type', [1, 4])->whereStatus(1)->exists()){
@@ -525,7 +525,7 @@ class UserController extends Controller {
 		$view['Quantumult_linkOut'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');
 		$view['Quantumult_linkIn'] = 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf');
 
-		return Response::view('user.help', $view);
+		return view('user.help', $view);
 	}
 
 	// 更换订阅地址

@@ -59,7 +59,7 @@ class AdminController extends Controller {
 		self::$sysConfig = Helpers::sysConfig();
 	}
 
-	public function index(): \Illuminate\Http\Response {
+	public function index() {
 		$past = strtotime("-".self::$sysConfig['expire_days']." days");
 
 		$view['expireDays'] = self::$sysConfig['expire_days'];
@@ -92,7 +92,7 @@ class AdminController extends Controller {
 		// 今日
 		$view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count();
 
-		return Response::view('admin.index', $view);
+		return view('admin.index', $view);
 	}
 
 	// 1小时内流量异常用户
@@ -113,7 +113,7 @@ class AdminController extends Controller {
 	}
 
 	// 用户列表
-	public function userList(Request $request): \Illuminate\Http\Response {
+	public function userList(Request $request) {
 		$id = $request->input('id');
 		$email = $request->input('email');
 		$wechat = $request->input('wechat');
@@ -205,7 +205,7 @@ class AdminController extends Controller {
 
 		$view['userList'] = $userList;
 
-		return Response::view('admin.user.userList', $view);
+		return view('admin.user.userList', $view);
 	}
 
 	// 添加账号
@@ -261,7 +261,7 @@ class AdminController extends Controller {
 		$view['levelList'] = Level::orderBy('level')->get();
 		$view['groupList'] = UserGroup::orderBy('id')->get();
 
-		return Response::view('admin.user.userInfo', $view);
+		return view('admin.user.userInfo', $view);
 	}
 
 	// 生成端口
@@ -414,10 +414,10 @@ class AdminController extends Controller {
 	}
 
 	// 文章列表
-	public function articleList(Request $request): \Illuminate\Http\Response {
+	public function articleList(Request $request) {
 		$view['list'] = Article::orderByDesc('sort')->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.article.articleList', $view);
+		return view('admin.article.articleList', $view);
 	}
 
 	// 添加文章
@@ -461,7 +461,7 @@ class AdminController extends Controller {
 			return Redirect::to('admin/articleList');
 		}
 
-		return Response::view('admin.article.addArticle');
+		return view('admin.article.addArticle');
 	}
 
 	// 编辑文章
@@ -509,7 +509,7 @@ class AdminController extends Controller {
 
 		$view['article'] = Article::find($id);
 
-		return Response::view('admin.article.editArticle', $view);
+		return view('admin.article.editArticle', $view);
 	}
 
 	// 删除文章
@@ -525,7 +525,7 @@ class AdminController extends Controller {
 	}
 
 	// 流量日志
-	public function trafficLog(Request $request): \Illuminate\Http\Response {
+	public function trafficLog(Request $request) {
 		$port = $request->input('port');
 		$user_id = $request->input('user_id');
 		$email = $request->input('email');
@@ -576,7 +576,7 @@ class AdminController extends Controller {
 		$view['list'] = $list;
 		$view['nodeList'] = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
 
-		return Response::view('admin.logs.trafficLog', $view);
+		return view('admin.logs.trafficLog', $view);
 	}
 
 	// 导出配置信息
@@ -617,7 +617,7 @@ class AdminController extends Controller {
 		                        ->appends($request->except('page'));
 		$view['user'] = $user;
 
-		return Response::view('admin.user.export', $view);
+		return view('admin.user.export', $view);
 	}
 
 	// 导出原版SS用户配置信息
@@ -675,7 +675,7 @@ class AdminController extends Controller {
 			return Redirect::back()->with('successMsg', '修改成功');
 		}
 
-		return Response::view('admin.config.profile');
+		return view('admin.config.profile');
 	}
 
 	// 用户流量监控
@@ -693,7 +693,7 @@ class AdminController extends Controller {
 		$view['email'] = $user->email;
 		$view = array_merge($view, $this->dataFlowChart($user->id));
 
-		return Response::view('admin.logs.userMonitor', $view);
+		return view('admin.logs.userMonitor', $view);
 	}
 
 	// 加密方式、混淆、协议、等级、国家地区
@@ -731,7 +731,7 @@ class AdminController extends Controller {
 		$view['levelList'] = Level::all();
 		$view['labelList'] = Label::with('nodes')->get();
 
-		return Response::view('admin.config.config', $view);
+		return view('admin.config.config', $view);
 	}
 
 	// 删除配置
@@ -985,11 +985,11 @@ class AdminController extends Controller {
 	}
 
 	// 系统设置
-	public function system(): \Illuminate\Http\Response {
+	public function system() {
 		$view = self::$sysConfig;
 		$view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
 
-		return Response::view('admin.config.system', $view);
+		return view('admin.config.system', $view);
 	}
 
 	// 设置某个配置项
@@ -1117,14 +1117,14 @@ class AdminController extends Controller {
 	}
 
 	// 邀请码列表
-	public function inviteList(Request $request): \Illuminate\Http\Response {
+	public function inviteList(Request $request) {
 		$view['inviteList'] = Invite::with(['invitee:id,email', 'inviter:id,email'])
 		                            ->orderBy('status')
 		                            ->latest()
 		                            ->paginate(15)
 		                            ->appends($request->except('page'));
 
-		return Response::view('admin.inviteList', $view);
+		return view('admin.inviteList', $view);
 	}
 
 	// 生成邀请码
@@ -1180,7 +1180,7 @@ class AdminController extends Controller {
 	}
 
 	// 订单列表
-	public function orderList(Request $request): \Illuminate\Http\Response {
+	public function orderList(Request $request) {
 		$email = $request->input('email');
 		$order_sn = $request->input('order_sn');
 		$is_coupon = $request->input('is_coupon');
@@ -1239,14 +1239,12 @@ class AdminController extends Controller {
 
 		$view['orderList'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.logs.orderList', $view);
+		return view('admin.logs.orderList', $view);
 	}
 
 	// 重置用户流量
 	public function resetUserTraffic(Request $request): JsonResponse {
-		$id = $request->input('id');
-
-		User::find($id)->update(['u' => 0, 'd' => 0]);
+		User::find($request->input('id'))->update(['u' => 0, 'd' => 0]);
 
 		return Response::json(['status' => 'success', 'message' => '操作成功']);
 	}
@@ -1273,11 +1271,11 @@ class AdminController extends Controller {
 			return Response::json(['status' => 'fail', 'message' => '充值失败']);
 		}
 
-		return Response::view('admin.handleUserCredit');
+		return view('admin.handleUserCredit');
 	}
 
 	// 用户余额变动记录
-	public function userCreditLogList(Request $request): \Illuminate\Http\Response {
+	public function userCreditLogList(Request $request) {
 		$email = $request->input('email');
 
 		$query = UserCreditLog::with('user:id,email')->latest();
@@ -1290,11 +1288,11 @@ class AdminController extends Controller {
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.logs.userCreditLogList', $view);
+		return view('admin.logs.userCreditLogList', $view);
 	}
 
 	// 用户封禁记录
-	public function userBanLogList(Request $request): \Illuminate\Http\Response {
+	public function userBanLogList(Request $request) {
 		$email = $request->input('email');
 
 		$query = UserBanedLog::with('user:id,email,t')->latest();
@@ -1307,11 +1305,11 @@ class AdminController extends Controller {
 
 		$view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.logs.userBanLogList', $view);
+		return view('admin.logs.userBanLogList', $view);
 	}
 
 	// 用户流量变动记录
-	public function userTrafficLogList(Request $request): \Illuminate\Http\Response {
+	public function userTrafficLogList(Request $request) {
 		$email = $request->input('email');
 
 		$query = UserDataModifyLog::with(['user:id,email', 'order.goods:id,name']);
@@ -1324,11 +1322,11 @@ class AdminController extends Controller {
 
 		$view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.logs.userTrafficLogList', $view);
+		return view('admin.logs.userTrafficLogList', $view);
 	}
 
 	// 用户在线IP记录
-	public function userOnlineIPList(Request $request): \Illuminate\Http\Response {
+	public function userOnlineIPList(Request $request) {
 		$email = $request->input('email');
 		$port = $request->input('port');
 		$wechat = $request->input('wechat');
@@ -1366,7 +1364,7 @@ class AdminController extends Controller {
 
 		$view['userList'] = $userList;
 
-		return Response::view('admin.logs.userOnlineIPList', $view);
+		return view('admin.logs.userOnlineIPList', $view);
 	}
 
 	// 转换成某个用户的身份
@@ -1399,13 +1397,13 @@ class AdminController extends Controller {
 			return Response::json(['status' => 'success', 'message' => '添加成功']);
 		}
 
-		return Response::view('admin.label.addLabel');
+		return view('admin.label.addLabel');
 	}
 
 	// 编辑标签
 	public function editLabel(Request $request) {
+		$id = $request->input('id');
 		if($request->isMethod('POST')){
-			$id = $request->input('id');
 			$name = $request->input('name');
 			$sort = $request->input('sort');
 
@@ -1414,10 +1412,9 @@ class AdminController extends Controller {
 			return Response::json(['status' => 'success', 'message' => '添加成功']);
 		}
 
-		$id = $request->input('id');
 		$view['label'] = Label::find($id);
 
-		return Response::view('admin.label.editLabel', $view);
+		return view('admin.label.editLabel', $view);
 	}
 
 	// 删除标签
@@ -1441,7 +1438,7 @@ class AdminController extends Controller {
 	}
 
 	// 邮件发送日志列表
-	public function notificationLog(Request $request): \Illuminate\Http\Response {
+	public function notificationLog(Request $request) {
 		$email = $request->input('email');
 		$type = $request->input('type');
 
@@ -1457,11 +1454,11 @@ class AdminController extends Controller {
 
 		$view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
-		return Response::view('admin.logs.notificationLog', $view);
+		return view('admin.logs.notificationLog', $view);
 	}
 
 	// 在线IP监控（实时）
-	public function onlineIPMonitor(Request $request): \Illuminate\Http\Response {
+	public function onlineIPMonitor(Request $request) {
 		$ip = $request->input('ip');
 		$email = $request->input('email');
 		$port = $request->input('port');
@@ -1525,6 +1522,6 @@ class AdminController extends Controller {
 		$view['list'] = $onlineIPLogs;
 		$view['nodeList'] = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
 
-		return Response::view('admin.logs.onlineIPMonitor', $view);
+		return view('admin.logs.onlineIPMonitor', $view);
 	}
 }

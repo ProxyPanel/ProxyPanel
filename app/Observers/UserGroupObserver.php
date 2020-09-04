@@ -20,7 +20,7 @@ class UserGroupObserver {
 		if(Arr::exists($changes, 'nodes')){
 			$nodes = Node::whereType(4)
 			             ->whereIn('id',
-				             array_diff($userGroup->nodes, json_decode($userGroup->getOriginal('nodes'), true)?: []))
+				             array_diff($userGroup->nodes, $userGroup->getOriginal('nodes')?: []))
 			             ->get();
 			if($nodes){
 				reloadNode::dispatchNow($nodes);

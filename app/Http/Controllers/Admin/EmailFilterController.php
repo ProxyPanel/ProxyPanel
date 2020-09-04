@@ -18,10 +18,10 @@ use Validator;
  */
 class EmailFilterController extends Controller {
 	// 邮箱过滤列表
-	public function filterList(): \Illuminate\Http\Response {
+	public function filterList() {
 		$view['list'] = EmailFilter::orderByDesc('id')->paginate(15);
 
-		return Response::view('admin.config.emailFilter', $view);
+		return view('admin.config.emailFilter', $view);
 	}
 
 	// 添加邮箱后缀

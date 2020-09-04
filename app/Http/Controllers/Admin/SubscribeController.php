@@ -18,7 +18,7 @@ use Response;
  */
 class SubscribeController extends Controller {
 	// 订阅码列表
-	public function subscribeList(Request $request): \Illuminate\Http\Response {
+	public function subscribeList(Request $request) {
 		$user_id = $request->input('user_id');
 		$email = $request->input('email');
 		$status = $request->input('status');
@@ -41,11 +41,11 @@ class SubscribeController extends Controller {
 
 		$view['subscribeList'] = $query->latest()->paginate(20)->appends($request->except('page'));
 
-		return Response::view('admin.subscribe.subscribeList', $view);
+		return view('admin.subscribe.subscribeList', $view);
 	}
 
 	//订阅记录
-	public function subscribeLog(Request $request): \Illuminate\Http\Response {
+	public function subscribeLog(Request $request) {
 		$id = $request->input('id');
 		$query = UserSubscribeLog::with('user:email');
 
@@ -55,7 +55,7 @@ class SubscribeController extends Controller {
 
 		$view['subscribeLog'] = $query->latest()->paginate(20)->appends($request->except('page'));
 
-		return Response::view('admin.subscribe.subscribeLog', $view);
+		return view('admin.subscribe.subscribeLog', $view);
 	}
 
 	// 设置用户的订阅的状态

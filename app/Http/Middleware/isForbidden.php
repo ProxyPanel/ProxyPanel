@@ -8,6 +8,7 @@ use App\Components\QQWry;
 use Closure;
 use Illuminate\Http\Request;
 use Log;
+use Response;
 
 class isForbidden {
 	/**
@@ -23,7 +24,7 @@ class isForbidden {
 		if(sysConfig('is_forbid_robot') && Agent::isRobot()){
 			Log::info("识别到机器人访问(".getClientIp().")");
 
-			return response()->view('auth.error', ['message' => trans('error.ForbiddenRobot')], 404);
+			return Response::view('auth.error', ['message' => trans('error.ForbiddenRobot')], 403);
 		}
 
 		// 拒绝通过订阅链接域名访问网站，防止网站被探测
@@ -63,7 +64,7 @@ class isForbidden {
 
 		// 拒绝无IP请求
 		if(empty($ipInfo) || empty($ipInfo['country'])){
-			return response()->view('auth.error', ['message' => trans('error.ForbiddenAccess')], 403);
+			return Response::view('auth.error', ['message' => trans('error.ForbiddenAccess')], 403);
 		}
 
 		if(!in_array($ipInfo['country'], ['本机地址', '局域网'])){
@@ -74,7 +75,7 @@ class isForbidden {
 				       && !in_array($ipInfo['province'], ['香港', '澳门', '台湾']))){
 					Log::info('识别到大陆IP，拒绝访问：'.$ip);
 
-					return response()->view('auth.error', ['message' => trans('error.ForbiddenChina')], 403);
+					return Response::view('auth.error', ['message' => trans('error.ForbiddenChina')], 403);
 				}
 			}
 
@@ -84,7 +85,7 @@ class isForbidden {
 				   || in_array($ipInfo['province'], ['香港', '澳门', '台湾'])){
 					Log::info('识别到海外IP，拒绝访问：'.$ip.' - '.$ipInfo['country']);
 
-					return response()->view('auth.error', ['message' => trans('error.ForbiddenOversea')], 403);
+					return Response::view('auth.error', ['message' => trans('error.ForbiddenOversea')], 403);
 				}
 			}
 		}

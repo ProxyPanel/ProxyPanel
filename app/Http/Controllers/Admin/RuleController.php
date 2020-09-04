@@ -15,7 +15,7 @@ use Validator;
 
 class RuleController extends Controller {
 	// 审计规则列表
-	public function index(Request $request): \Illuminate\Http\Response {
+	public function index(Request $request) {
 		$type = $request->input('type');
 		$query = Rule::query();
 
@@ -24,7 +24,7 @@ class RuleController extends Controller {
 		}
 
 		$view['rules'] = $query->paginate(15)->appends($request->except('page'));
-		return Response::view('admin.rule.index', $view);
+		return view('admin.rule.index', $view);
 	}
 
 	// 添加审计规则
@@ -82,7 +82,7 @@ class RuleController extends Controller {
 	}
 
 	// 用户触发审计规则日志
-	public function ruleLogList(Request $request): \Illuminate\Http\Response {
+	public function ruleLogList(Request $request) {
 		$uid = $request->input('uid');
 		$email = $request->input('email');
 		$nodeId = $request->input('node_id');
@@ -107,7 +107,7 @@ class RuleController extends Controller {
 		$view['nodeList'] = Node::all();
 		$view['ruleList'] = Rule::all();
 		$view['ruleLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
-		return Response::view('admin.rule.log', $view);
+		return view('admin.rule.log', $view);
 	}
 
 	// 清除所有审计触发日志
