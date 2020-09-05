@@ -75,7 +75,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="website_name" value="{{$website_name}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('website_name')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('website_name')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -89,7 +91,9 @@
 												<div class="input-group">
 													<input type="url" class="form-control" id="website_url" value="{{$website_url}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('website_url')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('website_url')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -103,7 +107,9 @@
 												<div class="input-group">
 													<input type="email" class="form-control" id="AppStore_id" value="{{$AppStore_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('AppStore_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('AppStore_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -117,7 +123,9 @@
 												<div class="input-group">
 													<input type="password" class="form-control" id="AppStore_password" value="{{$AppStore_password}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('AppStore_password')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('AppStore_password')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -131,7 +139,9 @@
 												<div class="input-group">
 													<input type="email" class="form-control" id="webmaster_email" value="{{$webmaster_email}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('webmaster_email')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('webmaster_email')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -145,12 +155,17 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="website_security_code" value="{{$website_security_code}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-info" type="button" onclick="makeWebsiteSecurityCode()">生成</button>
-														<button class="btn btn-primary" type="button" onclick="update('website_security_code')">修改</button>
+														<button class="btn btn-info" type="button" onclick="makeWebsiteSecurityCode()">
+															生成
+														</button>
+														<button class="btn btn-primary" type="button" onclick="update('website_security_code')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3">非空时必须通过<a href="/login?securityCode=" target="_blank">安全入口</a> 加上安全码才可访问</span>
+											<span class="text-help offset-md-3">非空时必须通过<a href="/login?securityCode=" target="_blank">安全入口</a>
+											                                    加上安全码才可访问</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -188,7 +203,9 @@
 												<div class="input-group">
 													<input type="datetime-local" class="form-control" id="maintenance_time" value="{{$maintenance_time}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('maintenance_time')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('maintenance_time')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -202,7 +219,9 @@
 												<div class="input-group">
 													<textarea class="form-control" rows="3" id="maintenance_content">{{$maintenance_content}}</textarea>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('maintenance_content')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('maintenance_content')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -216,7 +235,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="redirect_url" value="{{$redirect_url}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('redirect_url')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('redirect_url')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -310,7 +331,9 @@
 													<input type="number" class="form-control" id="default_days" value="{{$default_days}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">天</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('default_days','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('default_days','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -325,7 +348,9 @@
 													<input type="number" class="form-control" id="default_traffic" value="{{$default_traffic}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">MB</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('default_traffic','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('default_traffic','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -339,7 +364,9 @@
 												<div class="input-group">
 													<input type="number" class="form-control" id="invite_num" value="{{$invite_num}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('invite_num','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('invite_num','0')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -353,7 +380,9 @@
 												<div class="input-group">
 													<input type="number" class="form-control" id="reset_password_times" value="{{$reset_password_times}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('reset_password_times','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('reset_password_times','0')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -368,7 +397,8 @@
 												<option value="1">黑名单</option>
 												<option value="2">白名单</option>
 											</select>
-											<span class="text-help offset-md-3"> 黑名单: 用户可使用任意黑名单外的邮箱注册；白名单: 用户只能选择使用白名单中的邮箱后缀注册 </span>
+											<span class="text-help offset-md-3"> 黑名单: 用户可使用任意黑名单外的邮箱注册；白名单:
+											                                     用户只能选择使用白名单中的邮箱后缀注册 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -378,7 +408,9 @@
 												<div class="input-group">
 													<input type="number" class="form-control" id="active_times" value="{{$active_times}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('active_times','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('active_times','0')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -392,7 +424,9 @@
 												<div class="input-group">
 													<input type="number" class="form-control" id="register_ip_limit" value="{{$register_ip_limit}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('register_ip_limit','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('register_ip_limit','0')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -407,7 +441,9 @@
 													<input type="number" class="form-control" id="user_invite_days" value="{{$user_invite_days}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">天</span>
-														<button class="btn btn-primary" type="button" onchange="updateFromOther('user_invite_days','1',false)">修改</button>
+														<button class="btn btn-primary" type="button" onchange="updateFromOther('user_invite_days','1',false)">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -423,7 +459,9 @@
 													<div class="input-group-append">
 														<span class="input-group-text">天</span>
 													</div>
-													<button class="btn btn-primary" type="button" onclick="updateFromInput('admin_invite_days','1',false)">修改</button>
+													<button class="btn btn-primary" type="button" onclick="updateFromInput('admin_invite_days','1',false)">
+														修改
+													</button>
 												</div>
 											</div>
 											<span class="text-help offset-md-3"> 管理员生成邀请码的有效期 </span>
@@ -442,11 +480,14 @@
 												<div class="input-group">
 													<input type="url" class="form-control" id="subscribe_domain" value="{{$subscribe_domain}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('subscribe_domain')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('subscribe_domain')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> （推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https:// </span>
+											<span class="text-help offset-md-3">
+												（推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https:// </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -456,7 +497,9 @@
 												<div class="input-group">
 													<input type="number" class="form-control" id="subscribe_max" value="{{$subscribe_max}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('subscribe_max','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('subscribe_max','0')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -467,7 +510,8 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="mix_subscribe">混合订阅</label>
 											<span class="col-md-9"><input type="checkbox" id="mix_subscribe" data-plugin="switchery" @if($mix_subscribe) checked @endif onchange="updateFromOther('switch','mix_subscribe')"></span>
-											<span class="text-help offset-md-3"> 启用后，订阅信息中将包含V2Ray节点信息（仅支持Shadowrocket、Quantumult、v2rayN） </span>
+											<span class="text-help offset-md-3">
+												启用后，订阅信息中将包含V2Ray节点信息（仅支持Shadowrocket、Quantumult、v2rayN） </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -481,7 +525,8 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="is_custom_subscribe">高级订阅</label>
 											<span class="col-md-9"><input type="checkbox" id="is_custom_subscribe" data-plugin="switchery" @if($is_custom_subscribe) checked @endif onchange="updateFromOther('switch','is_custom_subscribe')"></span>
-											<span class="text-help offset-md-3"> 启用后，订阅信息顶部将显示过期时间、剩余流量（Quantumult有特殊效果） </span>
+											<span class="text-help offset-md-3">
+												启用后，订阅信息顶部将显示过期时间、剩余流量（Quantumult有特殊效果） </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -491,11 +536,14 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="web_api_url" value="{{$web_api_url}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('web_api_url')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('web_api_url')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 用于 VNet后端 授权，此域名需要解析A记录到面板，例：https://demo.proxypanel.ml</span>
+											<span class="text-help offset-md-3"> 用于 VNet后端
+											                                     授权，此域名需要解析A记录到面板，例：https://demo.proxypanel.ml</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -505,7 +553,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="v2ray_license" value="{{$v2ray_license}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('v2ray_license')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('v2ray_license')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -518,7 +568,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="trojan_license" value="{{$trojan_license}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('trojan_license')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('trojan_license')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -526,12 +578,15 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="v2ray_tls_provider">V2Ray TLS配置</label>
+											<label class="col-md-3 col-form-label" for="v2ray_tls_provider">V2Ray
+											                                                                TLS配置</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="v2ray_tls_provider" value="{{$v2ray_tls_provider}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('v2ray_tls_provider')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('v2ray_tls_provider')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -548,21 +603,27 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="is_namesilo">Namesilo</label>
 											<span class="col-md-9"><input type="checkbox" id="is_namesilo" data-plugin="switchery" @if($is_namesilo) checked @endif onchange="updateFromOther('switch','is_namesilo')"></span>
-											<span class="text-help offset-md-3"> 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php?rid=326ec20pa" target="_blank">创建API KEY</a>）</span>
+											<span class="text-help offset-md-3">
+												添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php?rid=326ec20pa" target="_blank">创建API
+												                                                                                                                KEY</a>）</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="namesilo_key">Namesilo API KEY</label>
+											<label class="col-md-3 col-form-label" for="namesilo_key">Namesilo API
+											                                                          KEY</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="namesilo_key" value="{{$namesilo_key}}" placeholder="填入Namesilo上申请的API KEY"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('namesilo_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('namesilo_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 域名必须是<a href="https://www.namesilo.com/?rid=326ec20pa" target="_blank">www.namesilo.com</a>上购买的
+											<span class="text-help offset-md-3">
+												域名必须是<a href="https://www.namesilo.com/?rid=326ec20pa" target="_blank">www.namesilo.com</a>上购买的
 											</span>
 										</div>
 									</div>
@@ -586,12 +647,15 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="geetest_id" value="{{$geetest_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('geetest_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('geetest_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
 											<span class="text-help offset-md-3"> 本功能需要
-												<a href="https://auth.geetest.com/login/" target="_blank">极验后台</a> 申请权限及应用
+												<a href="https://auth.geetest.com/login/" target="_blank">极验后台</a>
+											                                     申请权限及应用
 											</span>
 										</div>
 									</div>
@@ -602,7 +666,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="geetest_key" value="{{$geetest_key}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('geetest_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('geetest_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -615,11 +681,16 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="google_captcha_secret" value="{{$google_captcha_secret}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('google_captcha_secret')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('google_captcha_secret')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 本功能需要<a href="https://www.google.com/recaptcha/admin" target="_blank">Google reCAPTCHA后台</a> 申请权限及应用 （申请需科学上网，日常验证不用）</span>
+											<span class="text-help offset-md-3">
+												本功能需要<a href="https://www.google.com/recaptcha/admin" target="_blank">Google
+												                                                                      reCAPTCHA后台</a>
+												申请权限及应用 （申请需科学上网，日常验证不用）</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -629,7 +700,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="google_captcha_sitekey" value="{{$google_captcha_sitekey}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('google_captcha_sitekey')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('google_captcha_sitekey')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -637,26 +710,34 @@
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 control-label" for="hcaptcha_secret">hCaptcha Secret密钥</label>
+											<label class="col-md-3 control-label" for="hcaptcha_secret">hCaptcha
+											                                                            Secret密钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="hcaptcha_secret" value="{{$hcaptcha_secret}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('hcaptcha_secret')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('hcaptcha_secret')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 本功能需要<a href="https://hCaptcha.com/?r=2d46d3aa7a4e" target="_blank">hCaptcha后台</a> 申请权限及应用</span>
+											<span class="text-help offset-md-3">
+												本功能需要<a href="https://hCaptcha.com/?r=2d46d3aa7a4e" target="_blank">hCaptcha后台</a>
+												申请权限及应用</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="hcaptcha_sitekey">hCaptcha Site Key网站密钥</label>
+											<label class="col-md-3 col-form-label" for="hcaptcha_sitekey">hCaptcha Site
+											                                                              Key网站密钥</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="hcaptcha_sitekey" value="{{$hcaptcha_sitekey}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('hcaptcha_sitekey')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('hcaptcha_sitekey')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -683,7 +764,9 @@
 													<input type="number" class="form-control" id="traffic_limit_time" value="{{$traffic_limit_time}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">分钟</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_limit_time','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_limit_time','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -745,7 +828,9 @@
 													<input type="number" class="form-control" id="referral_traffic" value="{{$referral_traffic}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">MB</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_traffic','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_traffic','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -760,7 +845,9 @@
 													<input type="number" class="form-control" id="referral_percent" value="{{$referral_percent * 100}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">%</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_percent','0','100')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_percent','0','100')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -775,7 +862,9 @@
 													<input type="number" class="form-control" id="referral_money" value="{{$referral_money}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">元</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_money','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('referral_money','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -805,7 +894,9 @@
 													<input type="number" class="form-control" id="expire_days" value="{{$expire_days}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">天</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('expire_days','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('expire_days','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -828,7 +919,9 @@
 													<input type="number" class="form-control" id="traffic_warning_percent" value="{{$traffic_warning_percent}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">%</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_warning_percent','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_warning_percent','0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -851,7 +944,9 @@
 													<input type="number" class="form-control" id="offline_check_times" value="{{$offline_check_times}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">次</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('offline_check_times','0','60')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('offline_check_times','0','60')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -873,7 +968,9 @@
 													<input type="number" class="form-control" id="detection_check_times" value="{{$detection_check_times}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">次</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('detection_check_times','0','12')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('detection_check_times','0','12')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -888,7 +985,8 @@
 												<option value="serverChan">ServerChan</option>
 												<option value="bark">Bark</option>
 											</select>
-											<span class="text-help offset-md-3"> 推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="javascript:sendTestNotification();">发送测试消息</a>）</span>
+											<span class="text-help offset-md-3">
+												推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="javascript:sendTestNotification();">发送测试消息</a>）</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -898,11 +996,14 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="server_chan_key" value="{{$server_chan_key}}" placeholder="请到ServerChan申请"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('server_chan_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('server_chan_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>）
+											<span class="text-help offset-md-3">
+												启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>）
 											</span>
 										</div>
 									</div>
@@ -913,28 +1014,35 @@
 												<div class="input-group">
 													<input type="url" class="form-control" id="bark_key" value="{{$bark_key}}" placeholder="安装并打开Bark后取得"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('bark_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('bark_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值 </span>
+											<span class="text-help offset-md-3">
+												推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="is_push_bear">PushBear</label>
 											<span class="col-md-9"><input type="checkbox" id="is_push_bear" data-plugin="switchery" @if($is_push_bear) checked @endif onchange="updateFromOther('switch','is_push_bear')"></span>
-											<span class="text-help offset-md-3"> 使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）</span>
+											<span class="text-help offset-md-3">
+												使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）</span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
 										<div class="row">
-											<label class="col-md-3 col-form-label" for="push_bear_send_key">PushBear SendKey</label>
+											<label class="col-md-3 col-form-label" for="push_bear_send_key">PushBear
+											                                                                SendKey</label>
 											<div class="col-md-7">
 												<div class="input-group">
 													<input type="text" class="form-control" id="push_bear_send_key" value="{{$push_bear_send_key}}" placeholder="创建消息通道后即可获取"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('push_bear_send_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('push_bear_send_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -948,7 +1056,9 @@
 												<div class="input-group">
 													<input type="url" class="form-control" id="push_bear_qrcode" value="{{$push_bear_qrcode}}" placeholder="填入消息通道的二维码URL"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('push_bear_qrcode')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('push_bear_qrcode')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -989,7 +1099,9 @@
 												<div class="input-group">
 													<input type="number" class="form-control" id="subscribe_ban_times" value="{{$subscribe_ban_times}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('subscribe_ban_times','0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('subscribe_ban_times','0')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1012,7 +1124,9 @@
 													<input type="number" class="form-control" id="traffic_ban_value" value="{{$traffic_ban_value}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">GB</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_ban_value', '1')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_ban_value', '1')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -1027,7 +1141,9 @@
 													<input type="number" class="form-control" id="traffic_ban_time" value="{{$traffic_ban_time}}"/>
 													<div class="input-group-append">
 														<span class="input-group-text">分钟</span>
-														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_ban_time', '0')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="updateFromInput('traffic_ban_time', '0')">
+															修改
+														</button>
 													</div>
 												</div>
 											</div>
@@ -1046,7 +1162,8 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label" for="is_ban_status">过期自动封禁</label>
 											<span class="col-md-9"><input type="checkbox" id="is_ban_status" data-plugin="switchery" @if($is_ban_status) checked @endif onchange="updateFromOther('switch','is_ban_status')"></span>
-											<span class="text-help offset-md-3"> (慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录, 不开启状态下只封禁用户代理 </span>
+											<span class="text-help offset-md-3"> (慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,
+											                                     不开启状态下只封禁用户代理 </span>
 										</div>
 									</div>
 									<div class="form-group col-lg-6">
@@ -1068,7 +1185,8 @@
 											<label class="col-form-label col-md-3" for="website_home_logo">首页LOGO</label>
 											<div class="col-md-9">
 												<input type="file" id="website_home_logo" data-plugin="dropify" data-default-file={{$website_home_logo?:'/assets/images/default.png'}} />
-												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
+												<button type="submit" class="btn btn-success float-right mt-10"> 提 交
+												</button>
 											</div>
 										</div>
 									</div>
@@ -1077,7 +1195,8 @@
 											<label class="col-form-label col-md-3" for="website_logo">站内LOGO</label>
 											<div class="col-md-9">
 												<input type="file" id="website_logo" data-plugin="dropify" data-default-file={{$website_logo?:'/assets/images/default.png'}} />
-												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
+												<button type="submit" class="btn btn-success float-right mt-10"> 提 交
+												</button>
 											</div>
 										</div>
 									</div>
@@ -1086,7 +1205,8 @@
 											<label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
 											<div class="col-md-9">
 												<textarea class="form-control" rows="10" id="website_analytics">{{$website_analytics}}</textarea>
-												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
+												<button type="submit" class="btn btn-success float-right mt-10"> 提 交
+												</button>
 											</div>
 										</div>
 									</div>
@@ -1095,7 +1215,8 @@
 											<label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
 											<div class="col-md-9">
 												<textarea class="form-control" rows="10" id="website_customer_service">{{$website_customer_service}}</textarea>
-												<button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
+												<button type="submit" class="btn btn-success float-right mt-10"> 提 交
+												</button>
 											</div>
 										</div>
 									</div>
@@ -1154,7 +1275,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="subject_name" value="{{$subject_name}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('subject_name')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('subject_name')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1168,11 +1291,14 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="website_callback_url" value="{{$website_callback_url}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('website_callback_url')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('website_callback_url')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
-											<span class="text-help offset-md-3"> 防止因为网站域名被DNS投毒后导致支付无法正常回调，需带http://或https:// </span>
+											<span class="text-help offset-md-3">
+												防止因为网站域名被DNS投毒后导致支付无法正常回调，需带http://或https:// </span>
 										</div>
 									</div>
 								</div>
@@ -1181,7 +1307,8 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">支付宝F2F</label>
 											<div class="col-md-7">
-												本功能需要<a href="https://open.alipay.com/platform/home.htm" target="_blank">蚂蚁金服开放平台</a> 申请权限及应用
+												本功能需要<a href="https://open.alipay.com/platform/home.htm" target="_blank">蚂蚁金服开放平台</a>
+												申请权限及应用
 											</div>
 										</div>
 									</div>
@@ -1192,7 +1319,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="f2fpay_app_id" value="{{$f2fpay_app_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('f2fpay_app_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('f2fpay_app_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1206,7 +1335,9 @@
 												<div class="input-group">
 													<input class="form-control" type="text" id="f2fpay_private_key" value="{{$f2fpay_private_key}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('f2fpay_private_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('f2fpay_private_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1220,7 +1351,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="f2fpay_public_key" value="{{$f2fpay_public_key}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('f2fpay_public_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('f2fpay_public_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1244,7 +1377,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="codepay_url" value="{{$codepay_url}}" placeholder="https://codepay.fateqq.com/creat_order/?"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('codepay_url')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('codepay_url')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1257,7 +1392,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="codepay_id" value="{{$codepay_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('codepay_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('codepay_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1270,7 +1407,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="codepay_key" value="{{$codepay_key}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('codepay_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('codepay_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1282,7 +1421,9 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">易支付</label>
 											<div class="col-md-7">
-												<button class="btn btn-primary" type="button" onclick="epayInfo()">咨询查询</button>
+												<button class="btn btn-primary" type="button" onclick="epayInfo()">
+													咨询查询
+												</button>
 											</div>
 										</div>
 									</div>
@@ -1293,7 +1434,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="epay_url" value="{{$epay_url}}" placeholder="https://www.example.com"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('epay_url')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('epay_url')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1306,7 +1449,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="epay_mch_id" value="{{$epay_mch_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('epay_mch_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('epay_mch_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1319,7 +1464,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="epay_key" value="{{$epay_key}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('epay_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('epay_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1342,7 +1489,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="payjs_mch_id" value="{{$payjs_mch_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('payjs_mch_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('payjs_mch_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1356,7 +1505,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="payjs_key" value="{{$payjs_key}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('payjs_key')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('payjs_key')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1368,7 +1519,9 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">麻瓜宝 MugglePay</label>
 											<div class="col-md-7">
-												请到<a href="https://merchants.mugglepay.com/user/register?ref=MP904BEBB79FE0" target="_blank">麻瓜宝 MugglePay</a> 申请账号
+												请到<a href="https://merchants.mugglepay.com/user/register?ref=MP904BEBB79FE0" target="_blank">麻瓜宝
+												                                                                                             MugglePay</a>
+												申请账号
 											</div>
 										</div>
 									</div>
@@ -1379,7 +1532,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="bitpay_secret" value="{{$bitpay_secret}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('bitpay_secret')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('bitpay_secret')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1392,7 +1547,8 @@
 										<div class="row">
 											<label class="col-md-3 col-form-label">PayPal</label>
 											<div class="col-md-7">
-												使用商家账号登录<a href="https://www.paypal.com/businessprofile/mytools/apiaccess/firstparty" target="_blank">API凭证申请页</a>, 同意并获取设置信息
+												使用商家账号登录<a href="https://www.paypal.com/businessprofile/mytools/apiaccess/firstparty" target="_blank">API凭证申请页</a>,
+												同意并获取设置信息
 											</div>
 										</div>
 									</div>
@@ -1403,7 +1559,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_username" value="{{$paypal_username}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('paypal_username')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('paypal_username')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1416,7 +1574,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_password" value="{{$paypal_password}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('paypal_password')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('paypal_password')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1429,7 +1589,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_secret" value="{{$paypal_secret}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('paypal_secret')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('paypal_secret')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1442,7 +1604,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_certificate" value="{{$paypal_certificate}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('paypal_certificate')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('paypal_certificate')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>
@@ -1455,7 +1619,9 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="paypal_app_id" value="{{$paypal_app_id}}"/>
 													<span class="input-group-append">
-														<button class="btn btn-primary" type="button" onclick="update('paypal_app_id')">修改</button>
+														<button class="btn btn-primary" type="button" onclick="update('paypal_app_id')">
+															修改
+														</button>
 													</span>
 												</div>
 											</div>

@@ -31,8 +31,8 @@
 					</div>
 				</div>
 				<div class="alert alert-info alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">×</span></button>
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">×</span></button>
 					仅会推送给关注了您的消息通道的用户 <a href="/admin/system" class="alert-link" target="_blank">设置PushBear</a>.
 				</div>
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">

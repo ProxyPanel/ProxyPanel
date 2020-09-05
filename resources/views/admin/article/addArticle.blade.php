@@ -10,11 +10,7 @@
 				<h2 class="panel-title">添加文章</h2>
 			</div>
 			@if($errors->any())
-				<div class="alert alert-danger">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">×</span></button>
-					{{$errors->first()}}
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			<div class="panel-body">
 				<form action="/admin/addArticle" method="post" enctype="multipart/form-data" class="form-horizontal">

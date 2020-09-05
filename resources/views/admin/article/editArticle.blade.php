@@ -10,18 +10,10 @@
 				<h2 class="panel-title">编辑文章</h2>
 			</div>
 			@if (Session::has('successMsg'))
-				<div class="alert alert-success">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">×</span></button>
-					{{Session::get('successMsg')}}
-				</div>
+				<x-alert type="success" :message="Session::get('successMsg')"/>
 			@endif
 			@if (Session::has('errorMsg'))
-				<div class="alert alert-danger">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">×</span></button>
-					<strong>错误：</strong> {{Session::get('errorMsg')}}
-				</div>
+				<x-alert type="danger" :message="Session::get('errorMsg')"/>
 		@endif
 		<!-- BEGIN PORTLET-->
 			<div class="panel-body">

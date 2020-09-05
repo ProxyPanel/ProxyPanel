@@ -6,15 +6,17 @@
 				<div class="card">
 					<div class="card-header white bg-cyan-600 p-30 clearfix">
 						<span class="avatar avatar-100 float-left mr-20">
-							@component('components.avatar',['user' => Auth::getUser()])@endcomponent
+							<x-avatar :user="Auth::getUser()"/>
 						</span>
 						<div class="float-left">
 							<div class="font-size-20 mb-15">{{Auth::getUser()->username}}</div>
 							<p class="mb-5 text-nowrap"><i class="icon bd-webchat mr-10" aria-hidden="true"></i>
-								<span class="text-break">微信: @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else未添加 @endif</span>
+								<span class="text-break">微信: @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else
+								                         未添加 @endif</span>
 							</p>
 							<p class="mb-5 text-nowrap"><i class="icon bd-qq mr-10" aria-hidden="true"></i>
-								<span class="text-break">QQ: @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else未添加 @endif</span>
+								<span class="text-break">QQ: @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else
+								                         未添加 @endif</span>
 							</p>
 						</div>
 					</div>
@@ -23,18 +25,10 @@
 			<div class="col-lg-7">
 				<div class="panel">
 					@if (Session::has('successMsg'))
-						<div class="alert alert-success alert-dismissable">
-							<button class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							{{Session::get('successMsg')}}
-						</div>
+						<x-alert type="success" :message="Session::get('successMsg')"/>
 					@endif
 					@if($errors->any())
-						<div class="alert alert-danger alert-dismissable">
-							<button class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							<strong>{{trans('home.error')}}：</strong> {{$errors->first()}}
-						</div>
+						<x-alert type="danger" :message="$errors->first()"/>
 					@endif
 					<div class="panel-body nav-tabs-animate nav-tabs-horizontal" data-plugin="tabs">
 						<ul class="nav nav-tabs nav-tabs-line" role="tablist">

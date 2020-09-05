@@ -2,14 +2,10 @@
 @section('title', trans('auth.resetPassword'))
 @section('content')
 	@if (Session::get('successMsg'))
-		<div class="alert alert-success">
-			<span> {{Session::get('successMsg')}} </span>
-		</div>
+		<x-alert type="success" :message="Session::get('successMsg')"/>
 	@endif
 	@if($errors->any())
-		<div class="alert alert-danger">
-			<span> {{$errors->first()}} </span>
-		</div>
+		<x-alert type="danger" :message="$errors->first()"/>
 	@endif
 	<form method="post" action="/resetPassword">
 		@if(sysConfig('is_reset_password'))
@@ -23,9 +19,7 @@
 				{{csrf_field()}}
 			</div>
 		@else
-			<div class="alert alert-danger">
-				<span> {{trans('auth.system_maintenance_tip',['email' => sysConfig('webmaster_email')])}} </span>
-			</div>
+			<x-alert type="danger" :message="trans('auth.system_maintenance_tip' ,['email' => sysConfig('webmaster_email')])"/>
 		@endif
 		<a href="/login"
 				class="btn btn-danger btn-lg {{sysConfig('is_reset_password')? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>

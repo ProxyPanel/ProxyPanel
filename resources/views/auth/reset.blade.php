@@ -3,19 +3,13 @@
 @section('content')
 	<form action="{{url(Request::getRequestUri())}}" method="post" class="register-form">
 		@if(Session::get('successMsg'))
-			<div class="alert alert-success">
-				<span> {{Session::get('successMsg')}} </span>
-			</div>
+			<x-alert type="success" :message="Session::get('successMsg')"/>
 		@endif
 		@if($errors->any())
-			<div class="alert alert-danger">
-				<span> {{$errors->first()}} </span>
-			</div>
+			<x-alert type="danger" :message="$errors->first()"/>
 		@endif
 		@if ($verify->status > 0 && count($errors) <= 0 && empty(Session::get('successMsg')))
-			<div class="alert alert-danger">
-				<span> {{trans('auth.overtime')}} </span>
-			</div>
+			<x-alert type="danger" :message="trans('auth.overtime')"/>
 		@else
 			<div class="form-title">
 				{{trans('auth.resetPassword')}}

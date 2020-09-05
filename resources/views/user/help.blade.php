@@ -19,12 +19,9 @@
 				<div class="panel">
 					<div class="panel-body">
 						<div class="list-group faq-list" role="tablist">
-							<a class="list-group-item list-group-item-action active" data-toggle="tab"
-									href="#category-1" aria-controls="category-1" role="tab">使用&下载</a>
-							<a class="list-group-item" data-toggle="tab" href="#category-3" aria-controls="category-3"
-									role="tab">账号&服务</a>
-							<a class="list-group-item" data-toggle="tab" href="#category-2" aria-controls="category-2"
-									role="tab">面板相关</a>
+							<a class="list-group-item list-group-item-action active" data-toggle="tab" href="#category-1" aria-controls="category-1" role="tab">使用&下载</a>
+							<a class="list-group-item" data-toggle="tab" href="#category-3" aria-controls="category-3" role="tab">账号&服务</a>
+							<a class="list-group-item" data-toggle="tab" href="#category-2" aria-controls="category-2" role="tab">面板相关</a>
 						</div>
 					</div>
 				</div>
@@ -36,27 +33,17 @@
 					<div class="panel-body">
 						<div class="tab-content">
 							<div class="tab-pane animation-fade active" id="category-1" role="tabpanel">
-								<div class="panel-group panel-group-simple panel-group-continuous" id="accordion1"
-										aria-multiselectable="true" role="tablist">
+								<div class="panel-group panel-group-simple panel-group-continuous" id="accordion1" aria-multiselectable="true" role="tablist">
 									<div class="panel">
 										<div class="panel-heading" id="question-1" role="tab">
-											<a class="panel-title cyan-600" aria-controls="answer-1"
-													aria-expanded="true" data-toggle="collapse" href="#answer-1"
-													data-parent="#accordion1"><i class="icon wb-link"
-														aria-hidden="true"></i>{{trans('home.subscribe_link')}}
+											<a class="panel-title cyan-600" aria-controls="answer-1" aria-expanded="true" data-toggle="collapse" href="#answer-1" data-parent="#accordion1">
+												<i class="icon wb-link" aria-hidden="true"></i>{{trans('home.subscribe_link')}}
 											</a>
 										</div>
-										<div class="panel-collapse collapse show" id="answer-1"
-												aria-labelledby="question-1" role="tabpanel">
+										<div class="panel-collapse collapse show" id="answer-1" aria-labelledby="question-1" role="tabpanel">
 											<div class="panel-body">
 												@if($subscribe_status)
-													<div class="alert alert-warning" role="alert">
-														<button class="close" data-dismiss="alert" aria-label="Close">
-															<span aria-hidden="true">&times;</span><span
-																	class="sr-only">{{trans('home.close')}}</span>
-														</button>
-														{{trans('home.subscribe_warning')}}
-													</div>
+													<x-alert type="warning" :message="trans('home.subscribe_warning')"/>
 													<div class="input-group">
 														<input type="text" class="form-control" id="sub_link" value="{{$link}}"/>
 														<div class="input-group-btn btn-group" role="group">
@@ -67,7 +54,9 @@
 																	</button>
 																	<div class="dropdown-menu" aria-labelledby="sublink" role="menu">
 																		@if(in_array('ss',$sub))
-																			<button class="dropdown-item" onclick="linkManager('1')" role="menuitem">只订阅SS/SSR</button>
+																			<button class="dropdown-item" onclick="linkManager('1')" role="menuitem">
+																				只订阅SS/SSR
+																			</button>
 																		@endif
 																		@if(in_array('v2',$sub))
 																			<a class="dropdown-item" onclick="linkManager('2')" role="menuitem">只订阅V2Ray</a>
@@ -87,12 +76,7 @@
 														</div>
 													</div>
 												@else
-													<div class="alert alert-danger alert-dismissible" role="alert">
-														<button type="button" class="close" data-dismiss="alert"
-																aria-label="Close"><span aria-hidden="true">×</span>
-														</button>
-														{{trans('home.subscribe_baned')}}
-													</div>
+													<x-alert type="danger" :message="trans('home.subscribe_baned')"/>
 												@endif
 											</div>
 										</div>
@@ -162,9 +146,10 @@
 																href="/services">【{{trans('home.services')}}】</a>选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。
 													</li>
 													<li>余额支付，本支付方法支持微信，支付宝。支付后需要等待充值到账，再购买服务。
-													    ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在<a
-																href="/services">【{{trans('home.services')}}】</a>
-													    页面查看您的账号余额。 在<a href="/services">【{{trans('home.services')}}】</a>选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。
+													    ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在
+														<a href="/services">【{{trans('home.services')}}】</a>页面查看您的账号余额。
+													    在<a href="/services">【{{trans('home.services')}}】</a>
+													    选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。
 													</li>
 												</ol>
 											</div>
@@ -225,8 +210,9 @@
 																<code>命令提示符（管理员）/ Windows PowerShell(管理员)</code>
 															</li>
 															<li>
-																输入<code>Netsh winsock reset</code> 后回车，再输入 <code>netsh
-																                                                 advfirewall reset</code> 后回车；
+																输入<code>Netsh winsock reset</code> 后回车，再输入
+																<code>netsh advfirewall reset</code>
+																后回车；
 															</li>
 														</ol>
 													</li>
@@ -239,8 +225,7 @@
 									<!-- Question 6 -->
 									<div class="panel">
 										<div class="panel-heading" id="question-6" role="tab">
-											<a class="panel-title" aria-controls="answer-6" aria-expanded="false"
-													data-toggle="collapse" href="#answer-6" data-parent="#accordion">
+											<a class="panel-title" aria-controls="answer-6" aria-expanded="false" data-toggle="collapse" href="#answer-6" data-parent="#accordion">
 												为什么我的账号状态显示是<span class="red-700">禁用</span>?
 											</a>
 										</div>
@@ -250,15 +235,14 @@
 												账号在2种情况下会显示禁用；
 												<ol>
 													<li>
-														套餐过期/流量枯竭；此情况您需要重新<a
-																href="/services">【{{trans('home.services')}}】</a>；
+														套餐过期/流量枯竭；此情况您需要重新
+														<a href="/services">【{{trans('home.services')}}】</a>；
 													</li>
 													<li>
 														近期流量使用异常；在<code>1小时</code>内使用流量超过
-														<code>{{sysConfig('traffic_ban_value')}}
-															GB</code>
-														，即会触发本站的流量异常保护；保护时长为<code>{{sysConfig('traffic_ban_time')}}
-															分钟</code>
+														<code>{{sysConfig('traffic_ban_value')}}GB</code>
+														，即会触发本站的流量异常保护；保护时长为
+														<code>{{sysConfig('traffic_ban_time')}}分钟</code>
 													</li>
 												</ol>
 												如您对禁用情况有疑问，可以创建<a href="/tickets">【{{trans('home.tickets')}}】</a>，联系售后人员。
@@ -270,8 +254,7 @@
 									<!-- Question 7 -->
 									<div class="panel">
 										<div class="panel-heading" id="question-7" role="tab">
-											<a class="panel-title" aria-controls="answer-7" aria-expanded="false"
-													data-toggle="collapse" href="#answer-7" data-parent="#accordion">
+											<a class="panel-title" aria-controls="answer-7" aria-expanded="false" data-toggle="collapse" href="#answer-7" data-parent="#accordion">
 												为什么我的订阅链接被禁用了？
 											</a>
 										</div>
@@ -280,14 +263,13 @@
 											<div class="panel-body">
 												订阅地址对于账号来说非常重要。所以本站对此设置了严格的限制措施，以防止用户无意间泄露给他人后，无法挽回。
 												<p>限制为：
-													<code>24小时</code>内，订阅地址只允许请求<code>{{sysConfig('subscribe_ban_times')}}
-														次</code>
+													<code>24小时</code>内，订阅地址只允许请求
+													<code>{{sysConfig('subscribe_ban_times')}}次</code>
 												</p>
 												<p>解封，请在过一段时间并确定无误后，创建<a href="/tickets">【{{trans('home.tickets')}}】</a>，联系售后人员
 												</p>
 												<p>小知识：如果您无意间的截图忘记将订阅地址打码了，您可以
-													<button class="btn btn-sm btn-outline-info"
-															onclick="exchangeSubscribe();">
+													<button class="btn btn-sm btn-outline-info" onclick="exchangeSubscribe();">
 														<i class="icon wb-refresh" aria-hidden="true"></i>
 														点这里
 													</button>

@@ -11,12 +11,7 @@
 				</h2>
 			</div>
 			@if (Session::has('analysisErrorMsg'))
-				<div class="alert alert-danger" role="alert">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
-					</button>
-					{{Session::get('analysisErrorMsg')}}
-				</div>
+				<x-alert type="danger" :message="Session::get('analysisErrorMsg')"/>
 			@endif
 			<div class="panel-body">
 				<table class="text-md-center" data-toggle="table" data-mobile-responsive="true">

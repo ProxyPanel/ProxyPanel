@@ -52,7 +52,9 @@
 												<span class='badge badge-lg badge-default'>默认</span>
 											@else
 												<div class="btn-group">
-													<button class="btn btn-primary" onclick="setDefault('{{$method->id}}')">默认</button>
+													<button class="btn btn-primary" onclick="setDefault('{{$method->id}}')">
+														默认
+													</button>
 													<button class="btn btn-danger" onclick="delConfig('{{$method->id}}','{{$method->name}}')">
 														<i class="icon wb-trash"></i>
 													</button>
@@ -84,7 +86,8 @@
 												<span class="badge badge-lg badge-default">默认</span>
 											@else
 												<div class="btn-group">
-													<button class="btn btn-primary" onclick="setDefault('{{$protocol->id}}')">默认
+													<button class="btn btn-primary" onclick="setDefault('{{$protocol->id}}')">
+														默认
 													</button>
 													<button class="btn btn-danger" onclick="delConfig('{{$protocol->id}}','{{$protocol->name}}')">
 														<i class="icon wb-trash"></i>
@@ -116,7 +119,9 @@
 											@if($obfs->is_default)
 												<span class="badge badge-lg badge-default">默认</span>
 											@else
-												<button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">默认</button>
+												<button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">
+													默认
+												</button>
 												<button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
 													<i class="icon wb-trash"></i>
 												</button>

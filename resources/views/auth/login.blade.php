@@ -3,17 +3,10 @@
 @section('content')
 	<form action="/login" method="post" id="login-form">
 		@if($errors->any())
-			<div class="alert alert-danger">
-				<span> {!! $errors->first() !!} </span>
-			</div>
+			<x-alert type="danger" :message="$errors->first()"/>
 		@endif
 		@if (Session::get('regSuccessMsg'))
-			<div class="alert alert-success">
-				<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-					<span class="sr-only">{{trans('auth.close')}}</span>
-				</button>
-				<span>{{Session::get('regSuccessMsg')}}</span>
-			</div>
+			<x-alert type="success" :message="Session::get('regSuccessMsg')"/>
 		@endif
 		<div class="form-group form-material floating" data-plugin="formMaterial">
 			<input type="email" class="form-control" name="email" value="{{Request::old('email')}}" required/>

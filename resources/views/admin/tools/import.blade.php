@@ -15,12 +15,7 @@
 				</div>
 			@endif
 			@if($errors->any())
-				<div class="alert alert-danger" role="alert">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
-					</button>
-					<span> {{$errors->first()}} </span>
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			<div class="panel-body">
 				<form action="/tools/import" method="POST" enctype="multipart/form-data" class="upload-form">

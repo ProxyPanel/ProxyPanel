@@ -8,9 +8,7 @@
 	<form action="/register" method="post" id="register-form">
 		@if(sysConfig('is_register'))
 			@if($errors->any())
-				<div class="alert alert-danger">
-					<span>{{$errors->first()}}</span>
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			@csrf
 			<input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
@@ -121,11 +119,7 @@
 				</div>
 			</div>
 		@else
-			<div class="alert alert-danger">
-				<span>
-					{{trans('auth.system_maintenance')}}
-				</span>
-			</div>
+			<x-alert type="danger" :message="trans('auth.system_maintenance')"/>
 		@endif
 		<a href="/login"
 				class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>

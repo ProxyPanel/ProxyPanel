@@ -12,22 +12,10 @@
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
-				<div class="alert alert-success alert-dismissible">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
-					{{Session::get('successMsg')}}
-				</div>
+				<x-alert type="success" :message="Session::get('successMsg')"/>
 			@endif
 			@if($errors->any())
-				<div class="alert alert-danger alert-dismissible">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
-					<ul>
-						@foreach ($errors->all() as $error)
-							<li>{{ $error }}</li>
-						@endforeach
-					</ul>
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			<div class="panel-body">
 				<form action=@isset($ruleGroup){{route('rule.group.update',$ruleGroup->id)}}@else{{route('rule.group.store')}}@endisset method="post" enctype="multipart/form-data" class="form-horizontal">

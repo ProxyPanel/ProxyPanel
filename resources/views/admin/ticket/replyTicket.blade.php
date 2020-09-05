@@ -17,9 +17,9 @@
 			<div class="panel-body">
 				<div class="chat-box">
 					<div class="chats">
-						@component('components.chatUnit',['ticket'=>$ticket])@endcomponent
+						<x-chat-unit :user="Auth::getUser()" :ticket="$ticket"/>
 						@foreach ($replyList as $reply)
-							@component('components.chatUnit',['ticket'=>$reply])@endcomponent
+							<x-chat-unit :user="Auth::getUser()" :ticket="$reply"/>
 						@endforeach
 					</div>
 				</div>

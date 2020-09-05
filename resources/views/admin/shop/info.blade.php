@@ -23,28 +23,13 @@
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
-				<div class="alert alert-success alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span>
-					</button>
-					{{Session::get('successMsg')}}
-				</div>
+				<x-alert type="success" :message="Session::get('successMsg')"/>
 			@endif
 			@if($errors->any())
-				<div class="alert alert-danger alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span>
-					</button>
-					<strong>错误：</strong> {{$errors->first()}}
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			@if (Session::has('errorMsg'))
-				<div class="alert alert-success alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span>
-					</button>
-					{{Session::get('errorMsg')}}
-				</div>
+				<x-alert type="danger" :message="Session::get('errorMsg')"/>
 			@endif
 			<div class="panel-body">
 				<form action=@isset($goods){{route('goods.update',$goods->id)}} @else {{route('goods.store')}} @endisset method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
@@ -164,7 +149,8 @@
 							<div class="form-group row">
 								<label class="col-md-2 col-form-label" for="logo">商品图片</label>
 								<div class="col-md-6">
-									<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file=@if(isset($goods) && $goods->logo) "{{$goods->logo}}" @else "/assets/images/default.png" @endif/>
+									<input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file=@if(isset($goods) && $goods->logo) "{{$goods->logo}}" @else
+										"/assets/images/default.png" @endif/>
 								</div>
 							</div>
 							<div class="form-group row">

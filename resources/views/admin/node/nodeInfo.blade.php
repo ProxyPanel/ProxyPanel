@@ -101,7 +101,8 @@
 												class="col-md-5 form-control" name="country_code" id="country_code">
 											<option value="un" selected hidden>请选择</option>
 											@foreach($countryList as $country)
-												<option value="{{$country->code}}">{{$country->code}}- {{$country->name}}</option>
+												<option value="{{$country->code}}">{{$country->code}}
+													- {{$country->name}}</option>
 											@endforeach
 										</select>
 									</div>
@@ -222,7 +223,8 @@
 												<input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
 												<span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
 												<span class="text-help offset-md-3">
-													严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接 （<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+													严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接
+													（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
 											</div>
 											<div class="form-group row">
 												<label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
@@ -293,7 +295,9 @@
 													</select>
 												</div>
 											</div>
-											<div class="text-help offset-md-3"> 伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个</div>
+											<div class="text-help offset-md-3">
+												伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个
+											</div>
 										</div>
 										<div class="form-group row">
 											<label for="v2_path" class="col-md-3 col-form-label">路径 | 密钥</label>
@@ -309,7 +313,8 @@
 											<label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
 											<input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
 											<div class="text-help offset-md-3"> 不同后端配置不同：
-												<a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a> 、
+												<a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a>
+											                                    、
 												<a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan" target="_blank">V2Ray-Poseidon</a>
 											</div>
 										</div>

@@ -22,7 +22,8 @@
 						<thead class="thead-default">
 						<tr>
 							<th colspan="6">
-								申请单ID：{{$basic->id}} | 申请人：{{$basic->user->email}} | 申请提现金额：￥{{$basic->amount}}| 申请时间：{{$basic->created_at}}
+								申请单ID：{{$basic->id}} | 申请人：{{$basic->user->email}} | 申请提现金额：￥{{$basic->amount}}|
+								申请时间：{{$basic->created_at}}
 							</th>
 						</tr>
 						<tr>

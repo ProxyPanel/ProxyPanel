@@ -86,7 +86,7 @@
 					</div>
 					<div class="modal-body">
 						@if($vl->node->type === 2)
-							<div class="alert alert-info  text-break">
+							<div class="alert alert-info text-break">
 								<div class="text-center red-700 mb-5">VNET-V2Ray</div>
 								(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
 								&& curl -L -s http://mrw.so/5XKg2o \<br>
@@ -138,7 +138,8 @@
 							</div>
 						@elseif($vl->node->type === 3)
 							@if(!$vl->node->server)
-								<h3>请先<a href="/node/edit?id={{$vl->node->id}}" target="_blank">填写节点域名</a>并将域名解析到节点对应的IP上</h3>
+								<h3>请先<a href="/node/edit?id={{$vl->node->id}}" target="_blank">填写节点域名</a>并将域名解析到节点对应的IP上
+								</h3>
 							@else
 								<div class="alert alert-info text-break">
 									<div class="text-center red-700 mb-5">Trojan-Poseidon</div>

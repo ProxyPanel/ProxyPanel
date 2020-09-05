@@ -2,16 +2,10 @@
 @section('title', trans('auth.active_account'))
 @section('content')
 	@if (Session::get('successMsg'))
-		<div class="alert alert-success">
-			<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span
-						class="sr-only">{{trans('auth.close')}}</span></button>
-			<span> {{Session::get('successMsg')}} </span>
-		</div>
+		<x-alert type="success" :message="Session::get('successMsg')"/>
 	@endif
 	@if($errors->any())
-		<div class="alert alert-danger">
-			<span> {{$errors->first()}} </span>
-		</div>
+		<x-alert type="danger" :message="$errors->first()"/>
 	@endif
 	<form action="/activeUser" method="post">
 		@if(sysConfig('is_activate_account') == 2)
@@ -24,9 +18,7 @@
 				{{csrf_field()}}
 			</div>
 		@else
-			<div class="alert alert-danger">
-				<span> {{trans('auth.system_maintenance_tip',['email' => sysConfig('webmaster_email')])}}</span>
-			</div>
+			<x-alert type="danger" :message="trans('auth.system_maintenance_tip',['email' => sysConfig('webmaster_email')])"/>
 		@endif
 		<a href="/login"
 				class="btn btn-danger btn-lg {{sysConfig('is_activate_account')==2? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>

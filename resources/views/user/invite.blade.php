@@ -6,25 +6,17 @@
 	<div class="page-header">
 		<h1 class="page-title cyan-600"><i class="icon wb-extension"></i>{{trans('home.invite_code')}}</h1>
 		<div class="page-content container-fluid">
-			<div class="alert alert-info" role="alert">
-				<button class="close" data-dismiss="alert" aria-label="Close"><span
-							aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				{!! trans('home.promote_invite_code', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100]) !!}
-			</div>
+			<x-alert type="info" :message="trans('home.promote_invite_code', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])"/>
 			<div class="row">
 				<div class="col-xxl-3 col-lg-4">
 					<div class="card">
 						<div class="card-block">
-							<h4 class="card-title cyan-600"><i
-										class="icon wb-plus"></i> {{trans('home.invite_code_make')}}
+							<h4 class="card-title cyan-600">
+								<i class="icon wb-plus"></i> {{trans('home.invite_code_make')}}
 							</h4>
-							<p class="card-text alert alert-info">
-								<i class="icon wb-warning red-700"></i> {{trans('home.invite_code_tips1')}}
-								<strong> {{$num}} </strong> {{trans('home.invite_code_tips2', ['days' => sysConfig('user_invite_days')])}}
-							</p>
-							<button type="button" class="btn btn-primary btn-animate btn-animate-side"
-									onclick="makeInvite()" @if(!$num) disabled @endif><i
-										class="icon wb-plus"></i> {{trans('home.invite_code_button')}}
+							<x-alert type="info" :message="trans('home.invite_code_tips', ['num'=>$num, 'days' => sysConfig('user_invite_days')])"/>
+							<button type="button" class="btn btn-primary btn-animate btn-animate-side" onclick="makeInvite()" @if(!$num) disabled @endif>
+								<i class="icon wb-plus"></i> {{trans('home.invite_code_button')}}
 							</button>
 						</div>
 					</div>

@@ -124,8 +124,7 @@ return [
 	// 邀请码
 	'invite_code_make'                => 'Generate Invite Code',
 	'invite_code_button'              => 'Create',
-	'invite_code_tips1'               => 'You can generate',
-	'invite_code_tips2'               => 'invite codes, effective within :days days',
+	'invite_code_tips'                => 'You can generate<strong> :num </strong>invite codes, effective within :days days',
 	'invite_code_my_codes'            => 'My Invite Codes',
 	'invite_code_table_name'          => 'Codes',
 	'invite_code_table_date'          => 'Overdue Date',

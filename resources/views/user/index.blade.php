@@ -7,12 +7,7 @@
 	<div class="page-content container-fluid">
 		<div class="row" data-plugin="matchHeight" data-by-row="true">
 			@if (Session::has('successMsg'))
-				<div class="col-md-12 alert alert-success" role="alert">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
-					</button>
-					{{Session::get('successMsg')}}
-				</div>
+				<x-alert type="success" :message="Session::get('successMsg')" class="col-md-12"/>
 			@endif
 			<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12">
 				<div class="card card-shadow">
@@ -82,7 +77,8 @@
 										data-barcolor="#96A3FA" data-size="100" data-barsize="10"
 										data-goal="{{$unusedPercent * 100}}" aria-valuenow="{{$unusedPercent * 100}}"
 										role="progressbar">
-									<span class="pie-progress-number blue-grey-700 font-size-20">{{$unusedPercent * 100}}%</span>
+									<span class="pie-progress-number blue-grey-700 font-size-20">
+										{{$unusedPercent * 100}}%</span>
 								</div>
 							</div>
 						</div>
@@ -207,13 +203,7 @@
 									</ul>
 								</div>
 							</div>
-							<div class="alert alert-danger alert-dismissible" role="alert">
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">×</span>
-									<span class="sr-only">Close</span>
-								</button>
-								{{trans('home.traffic_log_tips')}}
-							</div>
+							<x-alert type="danger" :message="trans('home.traffic_log_tips')"/>
 							<div class="panel-body">
 								<div class="tab-content">
 									<div class="tab-pane active" id="daily" role="tabpanel">

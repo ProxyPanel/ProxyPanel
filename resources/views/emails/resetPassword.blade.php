@@ -774,8 +774,8 @@
 					<div style="border-collapse: collapse;display: table;width: 100%;">
 						<!--[if (mso)|(IE)]>
 						<table align="center" class="preheader" cellpadding="0" cellspacing="0" role="presentation">
-						<tr>
-							<td style="width: 280px" valign="top"><![endif]-->
+							<tr>
+								<td style="width: 280px" valign="top"><![endif]-->
 						<div class="snippet"
 								style="display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 140px; width: 140px;width: calc(14000% - 78120px);padding: 10px 0 5px 0;color: #bdbdbd;font-family: Ubuntu,sans-serif;">
 
@@ -799,8 +799,8 @@
 							emb-background-style>
 						<!--[if (mso)|(IE)]>
 						<table align="center" cellpadding="0" cellspacing="0" role="presentation">
-						<tr class="layout-fixed-width" emb-background-style>
-							<td style="width: 600px" class="w560"><![endif]-->
+							<tr class="layout-fixed-width" emb-background-style>
+								<td style="width: 600px" class="w560"><![endif]-->
 						<div class="column"
 								style="text-align: left;color: #787778;font-size: 16px;line-height: 24px;font-family: Ubuntu,sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
 
@@ -867,8 +867,8 @@
 						<div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;">
 							<!--[if (mso)|(IE)]>
 							<table align="center" cellpadding="0" cellspacing="0" role="presentation">
-							<tr class="layout-email-footer">
-								<td style="width: 400px;" valign="top" class="w360"><![endif]-->
+								<tr class="layout-email-footer">
+									<td style="width: 400px;" valign="top" class="w360"><![endif]-->
 							<div class="column wide"
 									style="text-align: left;font-size: 12px;line-height: 19px;color: #bdbdbd;font-family: Ubuntu,sans-serif;Float: left;max-width: 400px;min-width: 320px; width: 320px;width: calc(8000% - 47600px);">
 								<div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
@@ -905,8 +905,8 @@
 						<div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;">
 							<!--[if (mso)|(IE)]>
 							<table align="center" cellpadding="0" cellspacing="0" role="presentation">
-							<tr class="layout-email-footer">
-								<td style="width: 600px;" class="w560"><![endif]-->
+								<tr class="layout-email-footer">
+									<td style="width: 600px;" class="w560"><![endif]-->
 							<div class="column"
 									style="text-align: left;font-size: 12px;line-height: 19px;color: #bdbdbd;font-family: Ubuntu,sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
 								<div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">

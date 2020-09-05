@@ -7,11 +7,7 @@
 		<h1 class="page-title cyan-600"><i class="icon wb-star"></i>{{trans('home.referrals')}}</h1>
 	</div>
 	<div class="page-content  container-fluid">
-		<div class="alert alert-info" role="alert">
-			<button class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span><span
-						class="sr-only">Close</span></button>
-			{!! trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100]) !!}
-		</div>
+		<x-alert type="success" :message="trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])"/>
 		<div class="row">
 			<div class="col-lg-5">
 				<!-- 推广链接 -->

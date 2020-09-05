@@ -6,18 +6,10 @@
 				<h1 class="panel-title cyan-600"><i class="icon wb-user"></i>{{trans('home.profile')}}</h1>
 			</div>
 			@if (Session::has('successMsg'))
-				<div class="alert alert-success alert-dismissable">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					{{Session::get('successMsg')}}
-				</div>
+				<x-alert type="success" :message="Session::get('successMsg')"/>
 			@endif
 			@if($errors->any())
-				<div class="alert alert-danger alert-dismissable">
-					<button class="close" data-dismiss="alert" aria-label="Close"><span
-								aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<strong>{{trans('home.error')}}：</strong> {{$errors->first()}}
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			<div class="panel-body">
 				<form action="/admin/profile" method="post" enctype="multipart/form-data" class="form-bordered">

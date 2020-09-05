@@ -19,18 +19,10 @@
 				</div>
 			</div>
 			@if (Session::has('successMsg'))
-				<div class="alert alert-success alert-dismissible">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
-					{{Session::get('successMsg')}}
-				</div>
+				<x-alert type="success" :message="Session::get('successMsg')"/>
 			@endif
 			@if($errors->any())
-				<div class="alert alert-danger alert-dismissible">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">×</span></button>
-					<span> {{$errors->first()}} </span>
-				</div>
+				<x-alert type="danger" :message="$errors->first()"/>
 			@endif
 			<div class="panel-body">
 				<form action="{{url('/coupon/add')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">

@@ -65,7 +65,8 @@
 										<div class="input-group">
 											<p class="form-control"> {{$user->credit}} </p>
 											<span class="input-group-append">
-												<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#handle_user_credit">充值
+												<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#handle_user_credit">
+													充值
 												</button>
 											</span>
 										</div>
