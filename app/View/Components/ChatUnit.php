@@ -12,7 +12,7 @@ class ChatUnit extends Component {
 		$this->user = $user;
 		$this->ticket = $ticket;
 	}
-	
+
 	public function render() {
 		return view('components.chat-unit');
 	}

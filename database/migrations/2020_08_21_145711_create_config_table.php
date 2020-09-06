@@ -12,7 +12,7 @@ class CreateConfigTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('config', function(Blueprint $table) {
-			$table->string('name')->primary()->comment('配置名');
+			$table->string('name')->primary()->unique()->index()->comment('配置名');
 			$table->text('value')->nullable()->comment('配置值');
 		});
 	}

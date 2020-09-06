@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Providers\RouteServiceProvider;
-use Closure;
 use Auth;
+use Closure;
 
 class RedirectIfAuthenticated {
 	/**

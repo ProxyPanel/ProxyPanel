@@ -18,10 +18,10 @@ class BitpayX extends AbstractPayment {
 			'price_amount'      => $payment->amount,
 			'price_currency'    => 'CNY',
 			'title'             => '支付单号：'.$payment->trade_no,
-			'description'       => self::$sysConfig['subject_name']?: self::$sysConfig['website_name'],
-			'callback_url'      => (self::$sysConfig['website_callback_url']?: self::$sysConfig['website_url']).'/callback/notify?method=bitpayx',
-			'success_url'       => self::$sysConfig['website_url'].'/invoices',
-			'cancel_url'        => self::$sysConfig['website_url'].'/invoices',
+			'description'       => sysConfig('subject_name')?: sysConfig('website_name'),
+			'callback_url'      => (sysConfig('website_callback_url')?: sysConfig('website_url')).'/callback/notify?method=bitpayx',
+			'success_url'       => sysConfig('website_url').'/invoices',
+			'cancel_url'        => sysConfig('website_url').'/invoices',
 			'token'             => $this->sign($payment->trade_no),
 		];
 		$result = $this->sendRequest($data);
@@ -40,11 +40,11 @@ class BitpayX extends AbstractPayment {
 	private function sign($tradeNo): string {
 		$data = [
 			'merchant_order_id' => $tradeNo,
-			'secret'            => self::$sysConfig['bitpay_secret'],
+			'secret'            => sysConfig('bitpay_secret'),
 			'type'              => 'FIAT'
 		];
 
-		return $this->aliStyleSign($data, self::$sysConfig['bitpay_secret']);
+		return $this->aliStyleSign($data, sysConfig('bitpay_secret'));
 	}
 
 	private function sendRequest($data, $type = 'createOrder') {
@@ -52,7 +52,7 @@ class BitpayX extends AbstractPayment {
 			'base_uri' => 'https://api.mugglepay.com/v1/',
 			'timeout'  => 15,
 			'headers'  => [
-				'token'        => self::$sysConfig['bitpay_secret'],
+				'token'        => sysConfig('bitpay_secret'),
 				'content-type' => 'application/json'
 			]
 		]);

@@ -195,43 +195,50 @@ class PresetData extends Migration {
 			Config::insert(['name' => $config]);
 		}
 
-		Config::whereName('invite_num')->update(['value' => 3]);
-		Config::whereName('is_register')->update(['value' => 1]);
-		Config::whereName('is_invite_register')->update(['value' => 2]);
-		Config::whereName('website_name')->update(['value' => 'ProxyPanel']);
-		Config::whereName('is_reset_password')->update(['value' => 1]);
-		Config::whereName('reset_password_times')->update(['value' => 3]);
-		Config::whereName('website_url')->update(['value' => 'https://demo.proxypanel.ml']);
-		Config::whereName('active_times')->update(['value' => 3]);
-		Config::whereName('is_checkin')->update(['value' => 1]);
-		Config::whereName('min_rand_traffic')->update(['value' => 10]);
-		Config::whereName('max_rand_traffic')->update(['value' => 500]);
-		Config::whereName('traffic_limit_time')->update(['value' => 1440]);
-		Config::whereName('referral_traffic')->update(['value' => 1024]);
-		Config::whereName('referral_percent')->update(['value' => 0.2]);
-		Config::whereName('referral_money')->update(['value' => 100]);
-		Config::whereName('referral_status')->update(['value' => 1]);
-		Config::whereName('default_traffic')->update(['value' => 1024]);
-		Config::whereName('traffic_warning_percent')->update(['value' => 80]);
-		Config::whereName('expire_days')->update(['value' => 15]);
-		Config::whereName('reset_traffic')->update(['value' => 1]);
-		Config::whereName('default_days')->update(['value' => 7]);
-		Config::whereName('subscribe_max')->update(['value' => 3]);
-		Config::whereName('min_port')->update(['value' => 10000]);
-		Config::whereName('max_port')->update(['value' => 65535]);
-		Config::whereName('is_traffic_ban')->update(['value' => 1]);
-		Config::whereName('traffic_ban_value')->update(['value' => 10]);
-		Config::whereName('traffic_ban_time')->update(['value' => 60]);
-		Config::whereName('is_clear_log')->update(['value' => 1]);
-		Config::whereName('is_subscribe_ban')->update(['value' => 1]);
-		Config::whereName('subscribe_ban_times')->update(['value' => 20]);
-		Config::whereName('auto_release_port')->update(['value' => 1]);
-		Config::whereName('register_ip_limit')->update(['value' => 5]);
-		Config::whereName('detection_check_times')->update(['value' => 3]);
-		Config::whereName('alipay_transport')->update(['value' => 'http']);
-		Config::whereName('alipay_currency')->update(['value' => 'USD']);
-		Config::whereName('user_invite_days')->update(['value' => 7]);
-		Config::whereName('admin_invite_days')->update(['value' => 7]);
+		$presetDates = [
+			'invite_num'              => 3,
+			'is_register'             => 1,
+			'is_invite_register'      => 2,
+			'website_name'            => 'ProxyPanel',
+			'is_reset_password'       => 1,
+			'reset_password_times'    => 3,
+			'website_url'             => 'https://demo.proxypanel.ml',
+			'active_times'            => 3,
+			'is_checkin'              => 1,
+			'min_rand_traffic'        => 10,
+			'max_rand_traffic'        => 500,
+			'traffic_limit_time'      => 1440,
+			'referral_traffic'        => 1024,
+			'referral_percent'        => 0.2,
+			'referral_money'          => 100,
+			'referral_status'         => 1,
+			'default_traffic'         => 1024,
+			'traffic_warning_percent' => 80,
+			'expire_days'             => 15,
+			'reset_traffic'           => 1,
+			'default_days'            => 7,
+			'subscribe_max'           => 3,
+			'min_port'                => 10000,
+			'max_port'                => 65535,
+			'is_traffic_ban'          => 1,
+			'traffic_ban_value'       => 10,
+			'traffic_ban_time'        => 60,
+			'is_clear_log'            => 1,
+			'is_subscribe_ban'        => 1,
+			'subscribe_ban_times'     => 20,
+			'auto_release_port'       => 1,
+			'register_ip_limit'       => 5,
+			'detection_check_times'   => 3,
+			'alipay_transport'        => 'http',
+			'alipay_currency'         => 'USD',
+			'user_invite_days'        => 7,
+			'admin_invite_days'       => 7,
+		];
+
+		foreach($presetDates as $key => $value){
+			Config::find($key)->update(['value' => $value]);
+		}
+
 
 		// 节点用标签
 		$labelList = [

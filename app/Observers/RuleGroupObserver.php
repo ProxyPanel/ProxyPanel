@@ -17,8 +17,7 @@ class RuleGroupObserver {
 			}
 		}elseif(Arr::exists($changes, 'nodes')){
 			$nodes = Node::whereType(4)
-			             ->whereIn('id',
-				             array_diff($ruleGroup->nodes, $ruleGroup->getOriginal('nodes')?: []))
+			             ->whereIn('id', array_diff($ruleGroup->nodes, $ruleGroup->getOriginal('nodes')?: []))
 			             ->get();
 			if($nodes){
 				reloadNode::dispatchNow($nodes);

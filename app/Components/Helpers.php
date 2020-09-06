@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserCreditLog;
 use App\Models\UserDataModifyLog;
 use App\Models\UserSubscribe;
+use Cache;
 use DateTime;
 use Str;
 
@@ -82,7 +83,7 @@ class Helpers {
 		$user->email = $email;
 		$user->password = $password;
 		// 生成一个可用端口
-		$user->port = self::sysConfig()['is_rand_port']? self::getRandPort() : self::getOnlyPort();
+		$user->port = self::getPort();
 		$user->passwd = Str::random();
 		$user->vmess_id = Str::uuid();
 		$user->enable = 1;
@@ -100,33 +101,28 @@ class Helpers {
 		return $user->id;
 	}
 
-	// 获取系统配置
-	public static function sysConfig(): array {
-		$data = Config::all()->pluck('value', 'name')->toArray();
-		$data['is_onlinePay'] = ($data['is_AliPay'] || $data['is_QQPay'] || $data['is_WeChatPay'] || $data['is_otherPay'])?: 0;
-
-		return $data;
-	}
-
-	// 获取一个随机端口
-	public static function getRandPort(): int {
-		$port = random_int(self::sysConfig()['min_port'], self::sysConfig()['max_port']);
-
-		$exists_port = User::pluck('port')->toArray();
-		if(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
+	// 获取一个有效端口
+	public static function getPort(): int {
+		if(sysConfig('is_rand_port')){
 			$port = self::getRandPort();
-		}
+		}else{
+			$port = (int) sysConfig('min_port');
+			$exists_port = array_merge(User::where('port', '>=', $port)->pluck('port')->toArray(), self::$denyPorts);
 
+			while(in_array($port, $exists_port, true)){
+				++$port;
+			}
+		}
 		return $port;
 	}
 
 	// 获取一个随机端口
-	public static function getOnlyPort(): int {
-		$port = (int) self::sysConfig()['min_port'];
+	private static function getRandPort(): int {
+		$port = random_int(sysConfig('min_port'), sysConfig('max_port'));
+		$exists_port = array_merge(User::where('port', '<>', 0)->pluck('port')->toArray(), self::$denyPorts);
 
-		$exists_port = User::where('port', '>=', $port)->pluck('port')->toArray();
-		while(in_array($port, $exists_port, true) || in_array($port, self::$denyPorts, true)){
-			++$port;
+		while(in_array($port, $exists_port, true)){
+			$port = random_int(sysConfig('min_port'), sysConfig('max_port'));
 		}
 
 		return $port;
@@ -151,6 +147,24 @@ class Helpers {
 		$config = SsConfig::default()->type(3)->first();
 
 		return $config? $config->name : 'plain';
+	}
+
+	// 获取系统配置
+	public static function cacheSysConfig($name) {
+		if($name === 'is_onlinePay'){
+			$value = !empty(array_filter(Cache::many([
+				'is_AliPay',
+				'is_QQPay',
+				'is_WeChatPay',
+				'is_otherPay'
+			])));
+			Cache::tags('sysConfig')->add('is_onlinePay', $value);
+		}else{
+			$value = Config::find($name)->value;
+			Cache::tags('sysConfig')->add($name, $value?: false);
+		}
+
+		return $value;
 	}
 
 	public static function daysToNow($date): int {

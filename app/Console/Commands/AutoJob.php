@@ -196,11 +196,8 @@ class AutoJob extends Command {
 	// 端口回收与分配
 	private function dispatchPort(): void {
 		## 自动分配端口
-		$isRandPort = sysConfig('is_rand_port');
 		foreach(User::activeUser()->wherePort(0)->get() as $user){
-			$port = $isRandPort? Helpers::getRandPort() : Helpers::getOnlyPort();
-
-			$user->update(['port' => $port]);
+			$user->update(['port' => Helpers::getPort()]);
 		}
 
 		// 被封禁 / 过期一个月 的账号自动释放端口

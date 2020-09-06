@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -12,12 +11,7 @@ use Redirect;
 use Response;
 
 class SubscribeController extends Controller {
-	protected static $sysConfig;
 	private $subType;
-
-	public function __construct() {
-		self::$sysConfig = Helpers::sysConfig();
-	}
 
 	// 通过订阅码获取订阅信息
 	public function getSubscribeByCode(Request $request, $code) {
@@ -84,21 +78,21 @@ class SubscribeController extends Controller {
 		}
 
 		// 打乱数组
-		if(self::$sysConfig['rand_subscribe']){
+		if(sysConfig('rand_subscribe')){
 			$nodeList = Arr::shuffle($nodeList);
 		}
 
 		$scheme = null;
 
 		// 展示到期时间和剩余流量
-		if(self::$sysConfig['is_custom_subscribe']){
+		if(sysConfig('is_custom_subscribe')){
 			$scheme .= $this->infoGenerator('到期时间: '.($user->expired_at < date('Y-m-d')? '过期' : $user->expired_at)).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
 		}
 
 		// 控制客户端最多获取节点数
 		foreach($nodeList as $key => $node){
 			// 控制显示的节点数
-			if(self::$sysConfig['subscribe_max'] && $key >= self::$sysConfig['subscribe_max']){
+			if(sysConfig('subscribe_max') && $key >= sysConfig('subscribe_max')){
 				break;
 			}
 
@@ -112,7 +106,7 @@ class SubscribeController extends Controller {
 		];
 
 		// 适配Quantumult的自定义订阅头
-		if(self::$sysConfig['is_custom_subscribe']){
+		if(sysConfig('is_custom_subscribe')){
 			$headers['Subscription-Userinfo'] = 'upload='.$user->u.'; download='.$user->d.'; total='.$user->transfer_enable.'; expire='.strtotime($user->expired_at);
 		}
 
@@ -144,7 +138,7 @@ class SubscribeController extends Controller {
 			case 1:
 			case 4:
 			default:
-				$result = 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(self::$sysConfig['website_name']).'&udpport=0&uot=0');
+				$result = 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(sysConfig('website_name')).'&udpport=0&uot=0');
 				break;
 
 		}

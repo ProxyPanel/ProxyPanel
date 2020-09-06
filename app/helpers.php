@@ -172,6 +172,10 @@ if(!function_exists('filterEmoji')){
 // 获取系统设置
 if(!function_exists('sysConfig')){
 	function sysConfig($name) {
-		return Helpers::sysConfig()[$name];
+		$ret = Cache::tags('sysConfig')->get($name);
+		if(is_null($ret)){
+			return Helpers::cacheSysConfig($name);
+		}
+		return $ret;
 	}
 }

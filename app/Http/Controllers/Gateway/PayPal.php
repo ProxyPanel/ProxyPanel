@@ -18,22 +18,21 @@ class PayPal extends AbstractPayment {
 	protected $exChange;
 
 	public function __construct() {
-		parent::__construct();
 		$this->provider = new ExpressCheckout();
 		$config = [
 			'mode' => 'live',
 			'live' => [
-				'username'    => self::$sysConfig['paypal_username'],
-				'password'    => self::$sysConfig['paypal_password'],
-				'secret'      => self::$sysConfig['paypal_secret'],
-				'certificate' => self::$sysConfig['paypal_certificate'],
-				'app_id'      => self::$sysConfig['paypal_app_id'],
+				'username'    => sysConfig('paypal_username'),
+				'password'    => sysConfig('paypal_password'),
+				'secret'      => sysConfig('paypal_secret'),
+				'certificate' => sysConfig('paypal_certificate'),
+				'app_id'      => sysConfig('paypal_app_id'),
 			],
 
 			'payment_action' => 'Sale',
 			'currency'       => 'USD',
 			'billing_type'   => 'MerchantInitiatedBilling',
-			'notify_url'     => (self::$sysConfig['website_callback_url']?: self::$sysConfig['website_url']).'/callback/notify?method=paypal',
+			'notify_url'     => (sysConfig('website_callback_url')?: sysConfig('website_url')).'/callback/notify?method=paypal',
 			'locale'         => 'zh_CN',
 			'validate_ssl'   => true,
 		];
@@ -76,15 +75,15 @@ class PayPal extends AbstractPayment {
 			'invoice_id'          => $trade_no,
 			'items'               => [
 				[
-					'name'  => self::$sysConfig['subject_name']?: self::$sysConfig['website_name'],
+					'name'  => sysConfig('subject_name')?: sysConfig('website_name'),
 					'price' => $amount,
-					'desc'  => 'Description for'.(self::$sysConfig['subject_name']?: self::$sysConfig['website_name']),
+					'desc'  => 'Description for'.(sysConfig('subject_name')?: sysConfig('website_name')),
 					'qty'   => 1
 				]
 			],
 			'invoice_description' => $trade_no,
-			'return_url'          => self::$sysConfig['website_url'].'/callback/checkout',
-			'cancel_url'          => self::$sysConfig['website_url'].'/invoices',
+			'return_url'          => sysConfig('website_url').'/callback/checkout',
+			'cancel_url'          => sysConfig('website_url').'/invoices',
 			'total'               => $amount,
 		];
 	}
