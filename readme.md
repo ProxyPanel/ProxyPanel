@@ -12,13 +12,28 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
 - [Upcoming](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
 - [Telegram](https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA)
 
+
 ## Requirements
-- PHP 7.3 +
-- Mysql 5.5 +
 - Memory 1G +
 - Disk 10G +
-- PHP Extensions: ZIP、XML、CURL、GD2、FileInfo、Imagick、OpenSSL、Mbstring、PDO、Tokenizer、Ctype、JSON、BCMath
-- Laravel 5.8
+
+### Laravel 7
+- PHP >= 7.2.5
+- BCMath PHP Extension
+- Ctype PHP Extension
+- Fileinfo PHP extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PDO PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
+- Redis PHP Extension
+- Imagick PHP Extension
+
+### Database
+- Mysql 5.5 + （recommend 5.7+）
+- Redis
 
 ## Thanks
 - [@shadowsocks](https://github.com/shadowsocks)

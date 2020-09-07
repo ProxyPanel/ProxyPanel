@@ -158,10 +158,10 @@ class Helpers {
 				'is_WeChatPay',
 				'is_otherPay'
 			])));
-			Cache::tags('sysConfig')->add('is_onlinePay', $value);
+			Cache::tags('sysConfig')->put('is_onlinePay', $value);
 		}else{
 			$value = Config::find($name)->value;
-			Cache::tags('sysConfig')->add($name, $value?: false);
+			Cache::tags('sysConfig')->put($name, $value?: false);
 		}
 
 		return $value;
