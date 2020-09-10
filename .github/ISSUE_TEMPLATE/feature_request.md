@@ -1,14 +1,12 @@
 ---
 name: Feature request
-about: 功能添加请求
+about: 新功能请求 Feature request
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
 
-功能描述<--- 越详细越好
+**功能描述 | Feature request description**
 
-最好等带点相关资料或者想法
-
-要是能写好，建立pull request 那就最好了 嘻嘻
+**相关资料/想法 | Related documents**
