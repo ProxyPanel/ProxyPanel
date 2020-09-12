@@ -10,48 +10,69 @@ use Illuminate\Console\Command;
 use Log;
 use Mail;
 
-class UserExpireAutoWarning extends Command {
-	protected $signature = 'userExpireAutoWarning';
-	protected $description = '用户临近到期自动发邮件提醒';
+class UserExpireAutoWarning extends Command
+{
 
-	public function handle(): void {
-		$jobStartTime = microtime(true);
+    protected $signature = 'userExpireAutoWarning';
+    protected $description = '用户临近到期自动发邮件提醒';
 
-		// 用户临近到期自动发邮件提醒
-		if(sysConfig('expire_warning')){
-			$this->userExpireWarning();
-		}
+    public function handle(): void
+    {
+        $jobStartTime = microtime(true);
 
-		$jobEndTime = microtime(true);
-		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        // 用户临近到期自动发邮件提醒
+        if (sysConfig('expire_warning')) {
+            $this->userExpireWarning();
+        }
 
-		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
-	}
+        $jobEndTime  = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
-	private function userExpireWarning(): void {
-		$expireDays = sysConfig('expire_days');
-		// 只取SSR没被禁用的用户，其他不用管
-		foreach(User::whereEnable(1)->get() as $user){
-			// 用户名不是邮箱的跳过
-			if(false === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
-				continue;
-			}
+        Log::info(
+            '---【' . $this->description . '】完成---，耗时' . $jobUsedTime . '秒'
+        );
+    }
 
-			// 计算剩余可用时间
-			$lastCanUseDays = Helpers::daysToNow($user->expired_at);
-			if($lastCanUseDays == 0){
-				$title = '账号过期提醒';
-				$content = '您的账号将于今天晚上【24:00】过期。';
+    private function userExpireWarning(): void
+    {
+        $expireDays = sysConfig('expire_days');
+        // 只取SSR没被禁用的用户，其他不用管
+        foreach (User::whereEnable(1)->get() as $user) {
+            // 用户名不是邮箱的跳过
+            if (false === filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
 
-				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
-				Mail::to($user->email)->send(new userExpireWarningToday($logId));
-			}elseif($lastCanUseDays > 0 && $lastCanUseDays <= $expireDays){
-				$title = '账号过期提醒';
-				$content = '您的账号还剩'.$lastCanUseDays.'天即将过期。';
+            // 计算剩余可用时间
+            $lastCanUseDays = Helpers::daysToNow($user->expired_at);
+            if ($lastCanUseDays == 0) {
+                $title   = '账号过期提醒';
+                $content = '您的账号将于今天晚上【24:00】过期。';
 
-				$logId = Helpers::addNotificationLog($title, $content, 1, $user->email);
-				Mail::to($user->email)->send(new userExpireWarning($logId, $lastCanUseDays));
-			}
-		}
-	}
+                $logId = Helpers::addNotificationLog(
+                    $title,
+                    $content,
+                    1,
+                    $user->email
+                );
+                Mail::to($user->email)->send(
+                    new userExpireWarningToday($logId)
+                );
+            } elseif ($lastCanUseDays > 0 && $lastCanUseDays <= $expireDays) {
+                $title   = '账号过期提醒';
+                $content = '您的账号还剩' . $lastCanUseDays . '天即将过期。';
+
+                $logId = Helpers::addNotificationLog(
+                    $title,
+                    $content,
+                    1,
+                    $user->email
+                );
+                Mail::to($user->email)->send(
+                    new userExpireWarning($logId, $lastCanUseDays)
+                );
+            }
+        }
+    }
+
 }

@@ -16,88 +16,120 @@ use Response;
  *
  * @package App\Http\Controllers\Controller
  */
-class AffiliateController extends Controller {
+class AffiliateController extends Controller
+{
 
-	// 提现申请列表
-	public function affiliateList(Request $request) {
-		$email = $request->input('email');
-		$status = $request->input('status');
+    // 提现申请列表
+    public function affiliateList(Request $request)
+    {
+        $email  = $request->input('email');
+        $status = $request->input('status');
 
-		$query = ReferralApply::with('user:id,email');
-		if(isset($email)){
-			$query->whereHas('user', static function($q) use ($email) {
-				$q->where('email', 'like', '%'.$email.'%');
-			});
-		}
+        $query = ReferralApply::with('user:id,email');
+        if (isset($email)) {
+            $query->whereHas(
+                'user',
+                static function ($q) use ($email) {
+                    $q->where('email', 'like', '%' . $email . '%');
+                }
+            );
+        }
 
-		if($status){
-			$query->whereStatus($status);
-		}
+        if ($status) {
+            $query->whereStatus($status);
+        }
 
-		$view['applyList'] = $query->latest()->paginate(15)->appends($request->except('page'));
+        $view['applyList'] = $query->latest()->paginate(15)->appends(
+            $request->except('page')
+        );
 
-		return view('admin.affiliate.affiliateList', $view);
-	}
+        return view('admin.affiliate.affiliateList', $view);
+    }
 
-	// 提现申请详情
-	public function affiliateDetail(Request $request) {
-		$view['basic'] = ReferralApply::with('user:id,email')->find($request->input('id'));
-		$view['commissions'] = [];
-		if($view['basic'] && $view['basic']->link_logs){
-			$view['commissions'] = ReferralLog::with(['invitee:id,email', 'order.goods:id,name'])
-			                                  ->whereIn('id', $view['basic']->link_logs)
-			                                  ->paginate(15)
-			                                  ->appends($request->except('page'));
-		}
+    // 提现申请详情
+    public function affiliateDetail(Request $request)
+    {
+        $view['basic']       = ReferralApply::with('user:id,email')->find(
+            $request->input('id')
+        );
+        $view['commissions'] = [];
+        if ($view['basic'] && $view['basic']->link_logs) {
+            $view['commissions'] = ReferralLog::with(
+                ['invitee:id,email', 'order.goods:id,name']
+            )
+                                              ->whereIn(
+                                                  'id',
+                                                  $view['basic']->link_logs
+                                              )
+                                              ->paginate(15)
+                                              ->appends(
+                                                  $request->except('page')
+                                              );
+        }
 
-		return view('admin.affiliate.affiliateDetail', $view);
-	}
+        return view('admin.affiliate.affiliateDetail', $view);
+    }
 
-	// 设置提现申请状态
-	public function setAffiliateStatus(Request $request): JsonResponse {
-		$id = $request->input('id');
-		$status = $request->input('status');
+    // 设置提现申请状态
+    public function setAffiliateStatus(Request $request): JsonResponse
+    {
+        $id     = $request->input('id');
+        $status = $request->input('status');
 
-		$ret = ReferralApply::whereId($id)->update(['status' => $status]);
-		if($ret){
-			// 审核申请的时候将关联的
-			$referralApply = ReferralApply::findOrFail($id);
-			if($referralApply && $status == 1){
-				ReferralLog::whereIn('id', $referralApply->link_logs)->update(['status' => 1]);
-			}elseif($referralApply && $status == 2){
-				ReferralLog::whereIn('id', $referralApply->link_logs)->update(['status' => 2]);
-			}
-		}
+        $ret = ReferralApply::whereId($id)->update(['status' => $status]);
+        if ($ret) {
+            // 审核申请的时候将关联的
+            $referralApply = ReferralApply::findOrFail($id);
+            if ($referralApply && $status == 1) {
+                ReferralLog::whereIn('id', $referralApply->link_logs)->update(
+                    ['status' => 1]
+                );
+            } elseif ($referralApply && $status == 2) {
+                ReferralLog::whereIn('id', $referralApply->link_logs)->update(
+                    ['status' => 2]
+                );
+            }
+        }
 
-		return Response::json(['status' => 'success', 'message' => '操作成功']);
-	}
+        return Response::json(['status' => 'success', 'message' => '操作成功']);
+    }
 
-	// 用户返利流水记录
-	public function userRebateList(Request $request) {
-		$invitee_email = $request->input('invitee_email');
-		$inviter_email = $request->input('inviter_email');
-		$status = $request->input('status');
+    // 用户返利流水记录
+    public function userRebateList(Request $request)
+    {
+        $invitee_email = $request->input('invitee_email');
+        $inviter_email = $request->input('inviter_email');
+        $status        = $request->input('status');
 
-		$query = ReferralLog::with(['invitee:id,email', 'inviter:id,email'])->orderBy('status')->latest();
+        $query = ReferralLog::with(['invitee:id,email', 'inviter:id,email'])
+                            ->orderBy('status')
+                            ->latest();
 
-		if(isset($invitee_email)){
-			$query->whereHas('invitee', static function($q) use ($invitee_email) {
-				$q->where('email', 'like', '%'.$invitee_email.'%');
-			});
-		}
+        if (isset($invitee_email)) {
+            $query->whereHas(
+                'invitee',
+                static function ($q) use ($invitee_email) {
+                    $q->where('email', 'like', '%' . $invitee_email . '%');
+                }
+            );
+        }
 
-		if(isset($inviter_email)){
-			$query->whereHas('inviter', static function($q) use ($inviter_email) {
-				$q->where('email', 'like', '%'.$inviter_email.'%');
-			});
-		}
+        if (isset($inviter_email)) {
+            $query->whereHas(
+                'inviter',
+                static function ($q) use ($inviter_email) {
+                    $q->where('email', 'like', '%' . $inviter_email . '%');
+                }
+            );
+        }
 
-		if(isset($status)){
-			$query->whereStatus($status);
-		}
+        if (isset($status)) {
+            $query->whereStatus($status);
+        }
 
-		$view['list'] = $query->paginate(15)->appends($request->except('page'));
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-		return view('admin.affiliate.userRebateList', $view);
-	}
+        return view('admin.affiliate.userRebateList', $view);
+    }
+
 }

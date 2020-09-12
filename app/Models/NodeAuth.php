@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 节点授权密钥
  */
-class NodeAuth extends Model {
-	protected $table = 'node_auth';
+class NodeAuth extends Model
+{
 
-	public function node(): BelongsTo {
-		return $this->belongsTo(Node::class);
-	}
+    protected $table = 'node_auth';
+
+    public function node(): BelongsTo
+    {
+        return $this->belongsTo(Node::class);
+    }
+
 }

@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 用户封禁日志
  */
-class UserBanedLog extends Model {
-	protected $table = 'user_baned_log';
+class UserBanedLog extends Model
+{
 
-	public function user(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    protected $table = 'user_baned_log';
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

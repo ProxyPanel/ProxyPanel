@@ -8,15 +8,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 注册时的验证激活地址
  */
-class Verify extends Model {
-	protected $table = 'verify';
+class Verify extends Model
+{
 
-	// 筛选类型
-	public function scopeType($query, $type) {
-		return $query->whereType($type);
-	}
+    protected $table = 'verify';
 
-	public function user(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    // 筛选类型
+    public function scopeType($query, $type)
+    {
+        return $query->whereType($type);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

@@ -8,25 +8,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 用户流量变动记录
  */
-class UserDataModifyLog extends Model {
-	public const UPDATED_AT = null;
-	protected $table = 'user_data_modify_log';
+class UserDataModifyLog extends Model
+{
 
-	// 关联账号
-	public function user(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    public const UPDATED_AT = null;
 
-	// 关联订单
-	public function order(): BelongsTo {
-		return $this->belongsTo(Order::class);
-	}
+    protected $table = 'user_data_modify_log';
 
-	public function getBeforeAttribute($value) {
-		return $this->attributes['before'] = flowAutoShow($value);
-	}
+    // 关联账号
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
-	public function getAfterAttribute($value) {
-		return $this->attributes['after'] = flowAutoShow($value);
-	}
+    // 关联订单
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function getBeforeAttribute($value)
+    {
+        return $this->attributes['before'] = flowAutoShow($value);
+    }
+
+    public function getAfterAttribute($value)
+    {
+        return $this->attributes['after'] = flowAutoShow($value);
+    }
+
 }

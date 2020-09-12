@@ -9,38 +9,57 @@ use Illuminate\Console\Command;
 use Log;
 use Mail;
 
-class UserTrafficAutoWarning extends Command {
-	protected $signature = 'userTrafficAutoWarning';
-	protected $description = '用户流量超过警告阈值自动发邮件提醒';
+class UserTrafficAutoWarning extends Command
+{
 
-	public function handle(): void {
-		$jobStartTime = microtime(true);
+    protected $signature = 'userTrafficAutoWarning';
+    protected $description = '用户流量超过警告阈值自动发邮件提醒';
 
-		// 用户流量超过警告阈值自动发邮件提醒
-		if(sysConfig('traffic_warning')){
-			$this->userTrafficWarning();
-		}
+    public function handle(): void
+    {
+        $jobStartTime = microtime(true);
 
-		$jobEndTime = microtime(true);
-		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        // 用户流量超过警告阈值自动发邮件提醒
+        if (sysConfig('traffic_warning')) {
+            $this->userTrafficWarning();
+        }
 
-		Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
-	}
+        $jobEndTime  = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
-	// 用户流量超过警告阈值自动发邮件提醒
-	private function userTrafficWarning(): void {
-		$trafficWarningPercent = sysConfig('traffic_warning_percent');
-		foreach(User::activeUser()->where('transfer_enable', '>', 0)->get() as $user){
-			// 用户名不是邮箱的跳过
-			if(false === filter_var($user->email, FILTER_VALIDATE_EMAIL)){
-				continue;
-			}
+        Log::info(
+            '---【' . $this->description . '】完成---，耗时' . $jobUsedTime . '秒'
+        );
+    }
 
-			$usedPercent = round(($user->d + $user->u) / $user->transfer_enable, 2) * 100; // 已使用流量百分比
-			if($usedPercent >= $trafficWarningPercent){
-				$logId = Helpers::addNotificationLog("流量提醒", '流量已使用：'.$usedPercent.'%，请保持关注。', 1, $user->email);
-				Mail::to($user->email)->send(new userTrafficWarning($logId, $usedPercent));
-			}
-		}
-	}
+    // 用户流量超过警告阈值自动发邮件提醒
+    private function userTrafficWarning(): void
+    {
+        $trafficWarningPercent = sysConfig('traffic_warning_percent');
+        foreach (
+            User::activeUser()->where('transfer_enable', '>', 0)->get() as $user
+        ) {
+            // 用户名不是邮箱的跳过
+            if (false === filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+
+            $usedPercent = round(
+                               ($user->d + $user->u) / $user->transfer_enable,
+                               2
+                           ) * 100; // 已使用流量百分比
+            if ($usedPercent >= $trafficWarningPercent) {
+                $logId = Helpers::addNotificationLog(
+                    "流量提醒",
+                    '流量已使用：' . $usedPercent . '%，请保持关注。',
+                    1,
+                    $user->email
+                );
+                Mail::to($user->email)->send(
+                    new userTrafficWarning($logId, $usedPercent)
+                );
+            }
+        }
+    }
+
 }

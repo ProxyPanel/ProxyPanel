@@ -9,28 +9,39 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class newTicket extends Mailable implements ShouldQueue {
-	use Queueable, SerializesModels;
+class newTicket extends Mailable implements ShouldQueue
+{
 
-	protected $id; // 邮件记录ID
-	protected $title; // 工单标题
-	protected $content; // 工单内容
+    use Queueable;
+    use SerializesModels;
 
-	public function __construct($id, $title, $content) {
-		$this->id = $id;
-		$this->title = $title;
-		$this->content = $content;
-	}
+    protected $id; // 邮件记录ID
+    protected $title; // 工单标题
+    protected $content; // 工单内容
 
-	public function build(): newTicket {
-		return $this->view('emails.newTicket')->subject('新工单提醒')->with([
-			'title'   => $this->title,
-			'content' => $this->content
-		]);
-	}
+    public function __construct($id, $title, $content)
+    {
+        $this->id      = $id;
+        $this->title   = $title;
+        $this->content = $content;
+    }
 
-	// 发件失败处理
-	public function failed(Exception $e): void {
-		NotificationLog::whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
-	}
+    public function build(): newTicket
+    {
+        return $this->view('emails.newTicket')->subject('新工单提醒')->with(
+            [
+                'title'   => $this->title,
+                'content' => $this->content,
+            ]
+        );
+    }
+
+    // 发件失败处理
+    public function failed(Exception $e): void
+    {
+        NotificationLog::whereId($this->id)->update(
+            ['status' => -1, 'error' => $e->getMessage()]
+        );
+    }
+
 }

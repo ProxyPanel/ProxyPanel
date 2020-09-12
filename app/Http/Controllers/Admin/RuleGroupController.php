@@ -15,127 +15,151 @@ use Redirect;
 use Response;
 use Validator;
 
-class RuleGroupController extends Controller {
-	// 审计规则分组列表
-	public function index(Request $request) {
-		$view['ruleGroupList'] = RuleGroup::paginate(15)->appends($request->except('page'));
+class RuleGroupController extends Controller
+{
 
-		return view('admin.rule.group.index', $view);
-	}
+    // 审计规则分组列表
+    public function index(Request $request)
+    {
+        $view['ruleGroupList'] = RuleGroup::paginate(15)->appends(
+            $request->except('page')
+        );
 
-	// 添加审计规则分组页面
-	public function create() {
-		$view['ruleList'] = Rule::all();
+        return view('admin.rule.group.index', $view);
+    }
 
-		return view('admin.rule.group.info', $view);
-	}
+    // 添加审计规则分组页面
+    public function create()
+    {
+        $view['ruleList'] = Rule::all();
 
-	// 添加审计规则分组
-	public function store(Request $request): RedirectResponse {
-		$validator = Validator::make($request->all(), [
-			'name'  => 'required',
-			'type'  => 'required|boolean',
-			'rules' => 'required',
-		]);
+        return view('admin.rule.group.info', $view);
+    }
 
-		if($validator->fails()){
-			return Redirect::back()->withInput()->withErrors($validator->errors());
-		}
+    // 添加审计规则分组
+    public function store(Request $request): RedirectResponse
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'  => 'required',
+                'type'  => 'required|boolean',
+                'rules' => 'required',
+            ]
+        );
 
-		$obj = new RuleGroup();
-		$obj->name = $request->input('name');
-		$obj->type = (int) $request->input('type');
-		$obj->rules = $request->input('rules');
-		$obj->save();
+        if ($validator->fails()) {
+            return Redirect::back()->withInput()->withErrors(
+                $validator->errors()
+            );
+        }
 
-		if($obj->id){
-			return Redirect::back()->with('successMsg', '操作成功');
-		}
-		return Redirect::back()->withInput()->withErrors('操作失败');
-	}
+        $obj        = new RuleGroup();
+        $obj->name  = $request->input('name');
+        $obj->type  = (int)$request->input('type');
+        $obj->rules = $request->input('rules');
+        $obj->save();
 
-	// 编辑审计规则分组页面
-	public function edit($id) {
-		$view['ruleGroup'] = RuleGroup::findOrFail($id);
-		$view['ruleList'] = Rule::all();
+        if ($obj->id) {
+            return Redirect::back()->with('successMsg', '操作成功');
+        }
 
-		return view('admin.rule.group.info', $view);
-	}
+        return Redirect::back()->withInput()->withErrors('操作失败');
+    }
 
-	// 编辑审计规则分组
-	public function update(Request $request, $id): RedirectResponse {
-		$validator = Validator::make($request->all(), [
-			'name' => 'required',
-			'type' => 'required|boolean'
-		]);
-		if($validator->fails()){
-			return Redirect::back()->withInput()->withErrors($validator->errors());
-		}
-		$name = $request->input('name');
-		$type = (int) $request->input('type');
-		$rules = $request->input('rules');
-		$ruleGroup = RuleGroup::findOrFail($id);
+    // 编辑审计规则分组页面
+    public function edit($id)
+    {
+        $view['ruleGroup'] = RuleGroup::findOrFail($id);
+        $view['ruleList']  = Rule::all();
 
-		$ruleGroup->name = $name;
-		$ruleGroup->type = $type;
-		$ruleGroup->rules = $rules;
-		if($ruleGroup->save()){
-			return Redirect::back()->with('successMsg', '操作成功');
-		}
+        return view('admin.rule.group.info', $view);
+    }
 
-		return Redirect::back()->withInput()->withErrors('操作失败');
-	}
+    // 编辑审计规则分组
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required',
+                'type' => 'required|boolean',
+            ]
+        );
+        if ($validator->fails()) {
+            return Redirect::back()->withInput()->withErrors(
+                $validator->errors()
+            );
+        }
+        $name      = $request->input('name');
+        $type      = (int)$request->input('type');
+        $rules     = $request->input('rules');
+        $ruleGroup = RuleGroup::findOrFail($id);
 
-	// 删除审计规则分组
-	public function destroy($id): JsonResponse {
-		try{
-			RuleGroup::whereId($id)->delete();
-			RuleGroupNode::whereRuleGroupId($id)->delete();
+        $ruleGroup->name  = $name;
+        $ruleGroup->type  = $type;
+        $ruleGroup->rules = $rules;
+        if ($ruleGroup->save()) {
+            return Redirect::back()->with('successMsg', '操作成功');
+        }
 
-		}catch(Exception $e){
-			return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
-		}
+        return Redirect::back()->withInput()->withErrors('操作失败');
+    }
 
-		return Response::json(['status' => 'success', 'message' => '清理成功']);
-	}
+    // 删除审计规则分组
+    public function destroy($id): JsonResponse
+    {
+        try {
+            RuleGroup::whereId($id)->delete();
+            RuleGroupNode::whereRuleGroupId($id)->delete();
+        } catch (Exception $e) {
+            return Response::json(
+                ['status' => 'fail', 'message' => '删除失败，' . $e->getMessage()]
+            );
+        }
 
-	// 规则分组关联节点
-	public function assignNode($id) {
-		$view['ruleGroup'] = RuleGroup::find($id);
-		$view['nodeList'] = Node::all();
+        return Response::json(['status' => 'success', 'message' => '清理成功']);
+    }
 
-		return view('admin.rule.group.assign', $view);
-	}
+    // 规则分组关联节点
+    public function assignNode($id)
+    {
+        $view['ruleGroup'] = RuleGroup::find($id);
+        $view['nodeList']  = Node::all();
 
-	public function assign(Request $request, $id) {
-		$nodes = $request->input('nodes');
-		$ruleGroup = RuleGroup::findOrFail($id);
+        return view('admin.rule.group.assign', $view);
+    }
 
-		try{
-			if($ruleGroup->nodes === $nodes){
-				return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
-			}
-			RuleGroupNode::whereRuleGroupId($id)->delete();
-			if($nodes){
-				$ruleGroup->nodes = $nodes;
-				if(!$ruleGroup->save()){
-					return Redirect::back()->withErrors("更新错误！");
-				}
+    public function assign(Request $request, $id)
+    {
+        $nodes     = $request->input('nodes');
+        $ruleGroup = RuleGroup::findOrFail($id);
 
-				foreach($nodes as $nodeId){
-					$obj = new RuleGroupNode();
-					$obj->rule_group_id = $id;
-					$obj->node_id = $nodeId;
-					$obj->save();
-				}
-			}else{
-				RuleGroup::whereId($id)->update(['nodes' => null]);
-			}
+        try {
+            if ($ruleGroup->nodes === $nodes) {
+                return Redirect::back()->with('successMsg', '检测为未修改，无变动！');
+            }
+            RuleGroupNode::whereRuleGroupId($id)->delete();
+            if ($nodes) {
+                $ruleGroup->nodes = $nodes;
+                if ( ! $ruleGroup->save()) {
+                    return Redirect::back()->withErrors("更新错误！");
+                }
 
-		}catch(Exception $e){
-			return Redirect::back()->withInput()->withErrors($e->getMessage());
-		}
+                foreach ($nodes as $nodeId) {
+                    $obj                = new RuleGroupNode();
+                    $obj->rule_group_id = $id;
+                    $obj->node_id       = $nodeId;
+                    $obj->save();
+                }
+            } else {
+                RuleGroup::whereId($id)->update(['nodes' => null]);
+            }
+        } catch (Exception $e) {
+            return Redirect::back()->withInput()->withErrors($e->getMessage());
+        }
 
-		return Redirect::back()->with('successMsg', '操作成功');
-	}
+        return Redirect::back()->with('successMsg', '操作成功');
+    }
+
 }

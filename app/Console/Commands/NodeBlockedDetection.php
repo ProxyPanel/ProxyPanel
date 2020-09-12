@@ -12,110 +12,146 @@ use Illuminate\Console\Command;
 use Log;
 use Mail;
 
-class NodeBlockedDetection extends Command {
-	protected $signature = 'nodeBlockedDetection';
-	protected $description = '节点阻断检测';
+class NodeBlockedDetection extends Command
+{
 
-	public function handle(): void {
-		$jobStartTime = microtime(true);
-		if(sysConfig('nodes_detection')){
-			if(!Cache::has('LastCheckTime')){
-				$this->checkNodes();
-			}elseif(Cache::get('LastCheckTime') <= time()){
-				$this->checkNodes();
-			}else{
-				Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
-			}
-		}
+    protected $signature = 'nodeBlockedDetection';
+    protected $description = '节点阻断检测';
 
-		$jobEndTime = microtime(true);
-		$jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+    public function handle(): void
+    {
+        $jobStartTime = microtime(true);
+        if (sysConfig('nodes_detection')) {
+            if ( ! Cache::has('LastCheckTime')) {
+                $this->checkNodes();
+            } elseif (Cache::get('LastCheckTime') <= time()) {
+                $this->checkNodes();
+            } else {
+                Log::info(
+                    '下次节点阻断检测时间：' . date(
+                        'Y-m-d H:i:s',
+                        Cache::get('LastCheckTime')
+                    )
+                );
+            }
+        }
 
-		Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
-	}
+        $jobEndTime  = microtime(true);
+        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
-	// 监测节点状态
-	private function checkNodes(): void {
-		$detectionCheckTimes = sysConfig('detection_check_times');
-		$sendText = false;
-		$message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
-		$additionalMessage = '';
-		foreach(Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get() as $node){
-			$info = false;
-			if($node->detection_type == 0){
-				continue;
-			}
-			// 使用DDNS的node先通过gethostbyname获取ipv4地址
-			if($node->is_ddns){
-				$ip = gethostbyname($node->server);
-				if(strcmp($ip, $node->server) != 0){
-					$node->ip = $ip;
-				}else{
-					Log::warning("【节点阻断检测】检测".$node->server."时，IP获取失败".$ip." | ".$node->server);
-					$this->notifyMaster("{$node->name}动态IP获取失败", "节点 {$node->name} ： IP获取失败 ");
-				}
-			}
-			if($node->detection_type != 1){
-				$icmpCheck = NetworkDetection::networkCheck($node->ip, true);
-				if($icmpCheck != false && $icmpCheck !== "通讯正常"){
-					$message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
-					$sendText = true;
-					$info = true;
-				}
-			}
-			if($node->detection_type != 2){
-				$tcpCheck = NetworkDetection::networkCheck($node->ip, false, $node->single? $node->port : null);
-				if($tcpCheck != false && $tcpCheck !== "通讯正常"){
-					$message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";
-					$sendText = true;
-					$info = true;
-				}
-			}
+        Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
+    }
 
-			// 节点检测次数
-			if($info && $detectionCheckTimes){
-				// 已通知次数
-				$cacheKey = 'detection_check_times'.$node->id;
-				if(Cache::has($cacheKey)){
-					$times = Cache::get($cacheKey);
-				}else{
-					// 键将保留12小时，多10分钟防意外
-					Cache::put($cacheKey, 1, 43800);
-					$times = 1;
-				}
+    // 监测节点状态
+    private function checkNodes(): void
+    {
+        $detectionCheckTimes = sysConfig('detection_check_times');
+        $sendText            = false;
+        $message             = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
+        $additionalMessage   = '';
+        foreach (
+            Node::whereIsRelay(0)->whereStatus(1)->where(
+                'detection_type',
+                '>',
+                0
+            )->get() as $node
+        ) {
+            $info = false;
+            if ($node->detection_type == 0) {
+                continue;
+            }
+            // 使用DDNS的node先通过gethostbyname获取ipv4地址
+            if ($node->is_ddns) {
+                $ip = gethostbyname($node->server);
+                if (strcmp($ip, $node->server) != 0) {
+                    $node->ip = $ip;
+                } else {
+                    Log::warning(
+                        "【节点阻断检测】检测" . $node->server . "时，IP获取失败" . $ip . " | " . $node->server
+                    );
+                    $this->notifyMaster(
+                        "{$node->name}动态IP获取失败",
+                        "节点 {$node->name} ： IP获取失败 "
+                    );
+                }
+            }
+            if ($node->detection_type != 1) {
+                $icmpCheck = NetworkDetection::networkCheck($node->ip, true);
+                if ($icmpCheck != false && $icmpCheck !== "通讯正常") {
+                    $message  .= "| " . $node->name . " | ICMP | " . $icmpCheck . " |\r\n";
+                    $sendText = true;
+                    $info     = true;
+                }
+            }
+            if ($node->detection_type != 2) {
+                $tcpCheck = NetworkDetection::networkCheck(
+                    $node->ip,
+                    false,
+                    $node->single ? $node->port : null
+                );
+                if ($tcpCheck != false && $tcpCheck !== "通讯正常") {
+                    $message  .= "| " . $node->name . " | TCP | " . $tcpCheck . " |\r\n";
+                    $sendText = true;
+                    $info     = true;
+                }
+            }
 
-				if($times < $detectionCheckTimes){
-					Cache::increment($cacheKey);
-				}else{
-					Cache::forget($cacheKey);
-					Node::find($node->id)->update(['status' => 0]);
-					$additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
-				}
-			}
-		}
+            // 节点检测次数
+            if ($info && $detectionCheckTimes) {
+                // 已通知次数
+                $cacheKey = 'detection_check_times' . $node->id;
+                if (Cache::has($cacheKey)) {
+                    $times = Cache::get($cacheKey);
+                } else {
+                    // 键将保留12小时，多10分钟防意外
+                    Cache::put($cacheKey, 1, 43800);
+                    $times = 1;
+                }
 
-		//只有在出现阻断线路时，才会发出警报
-		if($sendText){
-			$this->notifyMaster("节点阻断警告", "阻断日志: \r\n\r\n".$message.$additionalMessage);
-			Log::info("阻断日志: \r\n".$message.$additionalMessage);
-		}
+                if ($times < $detectionCheckTimes) {
+                    Cache::increment($cacheKey);
+                } else {
+                    Cache::forget($cacheKey);
+                    Node::find($node->id)->update(['status' => 0]);
+                    $additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
+                }
+            }
+        }
 
-		// 随机生成下次检测时间
-		Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700);
-	}
+        //只有在出现阻断线路时，才会发出警报
+        if ($sendText) {
+            $this->notifyMaster(
+                "节点阻断警告",
+                "阻断日志: \r\n\r\n" . $message . $additionalMessage
+            );
+            Log::info("阻断日志: \r\n" . $message . $additionalMessage);
+        }
 
-	/**
-	 * 通知管理员
-	 *
-	 * @param  string  $title    消息标题
-	 * @param  string  $content  消息内容
-	 *
-	 */
-	private function notifyMaster($title, $content): void {
-		$result = PushNotification::send($title, $content);
-		if(!$result && sysConfig('webmaster_email')){
-			$logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
-			Mail::to(sysConfig('webmaster_email'))->send(new nodeCrashWarning($logId));
-		}
-	}
+        // 随机生成下次检测时间
+        Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700);
+    }
+
+    /**
+     * 通知管理员
+     *
+     * @param  string  $title  消息标题
+     * @param  string  $content  消息内容
+     *
+     */
+    private function notifyMaster(string $title, string $content): void
+    {
+        $result = PushNotification::send($title, $content);
+        if ( ! $result && sysConfig('webmaster_email')) {
+            $logId = Helpers::addNotificationLog(
+                $title,
+                $content,
+                1,
+                sysConfig('webmaster_email')
+            );
+            Mail::to(sysConfig('webmaster_email'))->send(
+                new nodeCrashWarning($logId)
+            );
+        }
+    }
+
 }

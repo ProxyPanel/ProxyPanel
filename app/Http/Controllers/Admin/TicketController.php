@@ -23,129 +23,172 @@ use Response;
  *
  * @package App\Http\Controllers\Controller
  */
-class TicketController extends Controller {
-	// 工单列表
-	public function ticketList(Request $request) {
-		$email = $request->input('email');
+class TicketController extends Controller
+{
 
-		$query = Ticket::whereIn('admin_id', [0, Auth::id()]);
+    // 工单列表
+    public function ticketList(Request $request)
+    {
+        $email = $request->input('email');
 
-		if(isset($email)){
-			$query->whereHas('user', static function($q) use ($email) {
-				$q->where('email', 'like', '%'.$email.'%');
-			});
-		}
+        $query = Ticket::whereIn('admin_id', [0, Auth::id()]);
 
-		$view['ticketList'] = $query->latest()->paginate(10)->appends($request->except('page'));
+        if (isset($email)) {
+            $query->whereHas(
+                'user',
+                static function ($q) use ($email) {
+                    $q->where('email', 'like', '%' . $email . '%');
+                }
+            );
+        }
 
-		return view('admin.ticket.ticketList', $view);
-	}
+        $view['ticketList'] = $query->latest()->paginate(10)->appends(
+            $request->except('page')
+        );
 
-	// 创建工单
-	public function createTicket(Request $request): ?JsonResponse {
-		$id = $request->input('id');
-		$email = $request->input('email');
-		$title = $request->input('title');
-		$content = $request->input('content');
+        return view('admin.ticket.ticketList', $view);
+    }
 
-		$user = User::find($id)?: User::whereEmail($email)->first();
+    // 创建工单
+    public function createTicket(Request $request): ?JsonResponse
+    {
+        $id      = $request->input('id');
+        $email   = $request->input('email');
+        $title   = $request->input('title');
+        $content = $request->input('content');
 
-		if(!$user){
-			return Response::json(['status' => 'fail', 'message' => '用户不存在']);
-		}
+        $user = User::find($id) ?: User::whereEmail($email)->first();
 
-		if($user == Auth::user()){
-			return Response::json(['status' => 'fail', 'message' => '不能对自己发起工单']);
-		}
+        if ( ! $user) {
+            return Response::json(['status' => 'fail', 'message' => '用户不存在']);
+        }
 
-		if(empty($title) || empty($content)){
-			return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
-		}
+        if ($user == Auth::user()) {
+            return Response::json(
+                ['status' => 'fail', 'message' => '不能对自己发起工单']
+            );
+        }
 
-		$obj = new Ticket();
-		$obj->user_id = $user->id;
-		$obj->admin_id = Auth::id();
-		$obj->title = $title;
-		$obj->content = $content;
-		$obj->status = 0;
-		$obj->save();
+        if (empty($title) || empty($content)) {
+            return Response::json(
+                ['status' => 'fail', 'message' => '请输入标题和内容']
+            );
+        }
 
-		if($obj->id){
-			return Response::json(['status' => 'success', 'message' => '工单创建成功']);
-		}
+        $obj           = new Ticket();
+        $obj->user_id  = $user->id;
+        $obj->admin_id = Auth::id();
+        $obj->title    = $title;
+        $obj->content  = $content;
+        $obj->status   = 0;
+        $obj->save();
 
-		return Response::json(['status' => 'fail', 'message' => '工单创建失败']);
-	}
+        if ($obj->id) {
+            return Response::json(
+                ['status' => 'success', 'message' => '工单创建成功']
+            );
+        }
 
-	// 回复工单
-	public function replyTicket(Request $request) {
-		$id = $request->input('id');
+        return Response::json(['status' => 'fail', 'message' => '工单创建失败']);
+    }
 
-		if($request->isMethod('POST')){
-			$content = clean($request->input('content'));
-			$content = str_replace(["atob", "eval"], "", $content);
-			$content = substr($content, 0, 300);
+    // 回复工单
+    public function replyTicket(Request $request)
+    {
+        $id = $request->input('id');
 
-			$obj = new TicketReply();
-			$obj->ticket_id = $id;
-			$obj->admin_id = Auth::id();
-			$obj->content = $content;
-			$obj->save();
+        if ($request->isMethod('POST')) {
+            $content = clean($request->input('content'));
+            $content = str_replace(["atob", "eval"], "", $content);
+            $content = substr($content, 0, 300);
 
-			if($obj->id){
-				// 将工单置为已回复
-				$ticket = Ticket::with('user')->whereId($id)->firstOrFail();
-				Ticket::whereId($id)->update(['status' => 1]);
+            $obj            = new TicketReply();
+            $obj->ticket_id = $id;
+            $obj->admin_id  = Auth::id();
+            $obj->content   = $content;
+            $obj->save();
 
-				$title = "工单回复提醒";
-				$content = "标题：".$ticket->title."<br>管理员回复：".$content;
+            if ($obj->id) {
+                // 将工单置为已回复
+                $ticket = Ticket::with('user')->whereId($id)->firstOrFail();
+                Ticket::whereId($id)->update(['status' => 1]);
 
-				// 发通知邮件
-				if(!Auth::getUser()->is_admin){
-					if(sysConfig('webmaster_email')){
-						$logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
-						Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
-					}
-					// 推送通知管理员
-					PushNotification::send($title, $content);
-				}else{
-					$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
-					Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
-				}
+                $title   = "工单回复提醒";
+                $content = "标题：" . $ticket->title . "<br>管理员回复：" . $content;
 
-				return Response::json(['status' => 'success', 'message' => '回复成功']);
-			}
+                // 发通知邮件
+                if ( ! Auth::getUser()->is_admin) {
+                    if (sysConfig('webmaster_email')) {
+                        $logId = Helpers::addNotificationLog(
+                            $title,
+                            $content,
+                            1,
+                            sysConfig(
+                                'webmaster_email'
+                            )
+                        );
+                        Mail::to(sysConfig('webmaster_email'))->send(
+                            new replyTicket($logId, $title, $content)
+                        );
+                    }
+                    // 推送通知管理员
+                    PushNotification::send($title, $content);
+                } else {
+                    $logId = Helpers::addNotificationLog(
+                        $title,
+                        $content,
+                        1,
+                        $ticket->user->email
+                    );
+                    Mail::to($ticket->user->email)->send(
+                        new replyTicket($logId, $title, $content)
+                    );
+                }
 
-			return Response::json(['status' => 'fail', 'message' => '回复失败']);
-		}
+                return Response::json(
+                    ['status' => 'success', 'message' => '回复成功']
+                );
+            }
 
-		$view['ticket'] = Ticket::find($id);
-		$view['replyList'] = TicketReply::whereTicketId($id)->oldest()->get();
+            return Response::json(['status' => 'fail', 'message' => '回复失败']);
+        }
 
-		return view('admin.ticket.replyTicket', $view);
-	}
+        $view['ticket']    = Ticket::find($id);
+        $view['replyList'] = TicketReply::whereTicketId($id)->oldest()->get();
 
-	// 关闭工单
-	public function closeTicket(Request $request): JsonResponse {
-		$id = $request->input('id');
+        return view('admin.ticket.replyTicket', $view);
+    }
 
-		$ticket = Ticket::with('user')->whereId($id)->first();
-		if(!$ticket){
-			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
-		}
+    // 关闭工单
+    public function closeTicket(Request $request): JsonResponse
+    {
+        $id = $request->input('id');
 
-		$ret = Ticket::whereId($id)->update(['status' => 2]);
-		if(!$ret){
-			return Response::json(['status' => 'fail', 'message' => '关闭失败']);
-		}
+        $ticket = Ticket::with('user')->whereId($id)->first();
+        if ( ! $ticket) {
+            return Response::json(['status' => 'fail', 'message' => '关闭失败']);
+        }
 
-		$title = "工单关闭提醒";
-		$content = "工单【".$ticket->title."】已关闭";
+        $ret = Ticket::whereId($id)->update(['status' => 2]);
+        if ( ! $ret) {
+            return Response::json(['status' => 'fail', 'message' => '关闭失败']);
+        }
 
-		// 发邮件通知用户
-		$logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
-		Mail::to($ticket->user->email)->send(new closeTicket($logId, $title, $content));
+        $title   = "工单关闭提醒";
+        $content = "工单【" . $ticket->title . "】已关闭";
 
-		return Response::json(['status' => 'success', 'message' => '关闭成功']);
-	}
+        // 发邮件通知用户
+        $logId = Helpers::addNotificationLog(
+            $title,
+            $content,
+            1,
+            $ticket->user->email
+        );
+        Mail::to($ticket->user->email)->send(
+            new closeTicket($logId, $title, $content)
+        );
+
+        return Response::json(['status' => 'success', 'message' => '关闭成功']);
+    }
+
 }

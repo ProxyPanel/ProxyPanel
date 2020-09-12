@@ -9,21 +9,30 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class userExpireWarningToday extends Mailable implements ShouldQueue {
-	use Queueable, SerializesModels;
+class userExpireWarningToday extends Mailable implements ShouldQueue
+{
 
-	protected $id; // 邮件记录ID
+    use Queueable;
+    use SerializesModels;
 
-	public function __construct($id) {
-		$this->id = $id;
-	}
+    protected $id; // 邮件记录ID
 
-	public function build(): userExpireWarningToday {
-		return $this->view('emails.userExpireWarningToday')->subject('账号过期提醒');
-	}
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
 
-	// 发件失败处理
-	public function failed(Exception $e): void {
-		NotificationLog::whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
-	}
+    public function build(): userExpireWarningToday
+    {
+        return $this->view('emails.userExpireWarningToday')->subject('账号过期提醒');
+    }
+
+    // 发件失败处理
+    public function failed(Exception $e): void
+    {
+        NotificationLog::whereId($this->id)->update(
+            ['status' => -1, 'error' => $e->getMessage()]
+        );
+    }
+
 }

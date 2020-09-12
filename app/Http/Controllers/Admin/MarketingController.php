@@ -20,88 +20,107 @@ use RuntimeException;
  *
  * @package App\Http\Controllers\Controller
  */
-class MarketingController extends Controller {
-	// 邮件群发消息列表
-	public function emailList(Request $request) {
-		$status = $request->input('status');
+class MarketingController extends Controller
+{
 
-		$query = Marketing::whereType(1);
+    // 邮件群发消息列表
+    public function emailList(Request $request)
+    {
+        $status = $request->input('status');
 
-		if(isset($status)){
-			$query->whereStatus($status);
-		}
+        $query = Marketing::whereType(1);
 
-		$view['list'] = $query->paginate(15)->appends($request->except('page'));
+        if (isset($status)) {
+            $query->whereStatus($status);
+        }
 
-		return view('admin.marketing.emailList', $view);
-	}
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-	// 消息通道群发列表
-	public function pushList(Request $request) {
-		$status = $request->input('status');
+        return view('admin.marketing.emailList', $view);
+    }
 
-		$query = Marketing::whereType(2);
+    // 消息通道群发列表
+    public function pushList(Request $request)
+    {
+        $status = $request->input('status');
 
-		if(isset($status)){
-			$query->whereStatus($status);
-		}
+        $query = Marketing::whereType(2);
 
-		$view['list'] = $query->paginate(15)->appends($request->except('page'));
+        if (isset($status)) {
+            $query->whereStatus($status);
+        }
 
-		return view('admin.marketing.pushList', $view);
-	}
+        $view['list'] = $query->paginate(15)->appends($request->except('page'));
 
-	// 添加推送消息
-	public function addPushMarketing(Request $request): ?JsonResponse {
-		$title = $request->input('title');
-		$content = $request->input('content');
+        return view('admin.marketing.pushList', $view);
+    }
 
-		if(!sysConfig('is_push_bear')){
-			return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
-		}
+    // 添加推送消息
+    public function addPushMarketing(Request $request): ?JsonResponse
+    {
+        $title   = $request->input('title');
+        $content = $request->input('content');
 
-		try{
-			DB::beginTransaction();
+        if ( ! sysConfig('is_push_bear')) {
+            return Response::json(
+                ['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']
+            );
+        }
 
-			$response = (new Client())->get('https://pushbear.ftqq.com/sub', [
-				'query' => [
-					'sendkey' => sysConfig('push_bear_send_key'),
-					'text'    => $title,
-					'desp'    => $content
-				]
-			]);
+        try {
+            DB::beginTransaction();
 
-			$result = json_decode($response->getBody(), true);
-			if($result->code){ // 失败
-				$this->addMarketing(2, $title, $content, -1, $result->message);
+            $response = (new Client())->get(
+                'https://pushbear.ftqq.com/sub',
+                [
+                    'query' => [
+                        'sendkey' => sysConfig('push_bear_send_key'),
+                        'text'    => $title,
+                        'desp'    => $content,
+                    ],
+                ]
+            );
 
-				throw new RuntimeException($result->message);
-			}
+            $result = json_decode($response->getBody(), true);
+            if ($result->code) { // 失败
+                $this->addMarketing(2, $title, $content, -1, $result->message);
 
-			$this->addMarketing(2, $title, $content, 1);
+                throw new RuntimeException($result->message);
+            }
 
-			DB::commit();
+            $this->addMarketing(2, $title, $content, 1);
 
-			return Response::json(['status' => 'success', 'message' => '推送成功']);
-		}catch(Exception $e){
-			Log::error('PushBear消息推送失败：'.$e->getMessage());
+            DB::commit();
 
-			DB::rollBack();
+            return Response::json(['status' => 'success', 'message' => '推送成功']);
+        } catch (Exception $e) {
+            Log::error('PushBear消息推送失败：' . $e->getMessage());
 
-			return Response::json(['status' => 'fail', 'message' => '推送失败：'.$e->getMessage()]);
-		}
-	}
+            DB::rollBack();
 
-	private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = ''
-	): bool {
-		$marketing = new Marketing();
-		$marketing->type = $type;
-		$marketing->receiver = $receiver;
-		$marketing->title = $title;
-		$marketing->content = $content;
-		$marketing->error = $error;
-		$marketing->status = $status;
+            return Response::json(
+                ['status' => 'fail', 'message' => '推送失败：' . $e->getMessage()]
+            );
+        }
+    }
 
-		return $marketing->save();
-	}
+    private function addMarketing(
+        $type = 1,
+        $title = '',
+        $content = '',
+        $status = 1,
+        $error = '',
+        $receiver = ''
+    ): bool {
+        $marketing           = new Marketing();
+        $marketing->type     = $type;
+        $marketing->receiver = $receiver;
+        $marketing->title    = $title;
+        $marketing->content  = $content;
+        $marketing->error    = $error;
+        $marketing->status   = $status;
+
+        return $marketing->save();
+    }
+
 }

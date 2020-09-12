@@ -8,33 +8,42 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * 商品
  */
-class Goods extends Model {
-	use SoftDeletes;
+class Goods extends Model
+{
 
-	protected $table = 'goods';
-	protected $dates = ['deleted_at'];
+    use SoftDeletes;
 
-	public function scopeType($query, $type) {
-		return $query->whereType($type)->whereStatus(1)->orderByDesc('sort');
-	}
+    protected $table = 'goods';
+    protected $dates = ['deleted_at'];
 
-	public function getPriceAttribute($value) {
-		return $value / 100;
-	}
+    public function scopeType($query, $type)
+    {
+        return $query->whereType($type)->whereStatus(1)->orderByDesc('sort');
+    }
 
-	public function setPriceAttribute($value): void {
-		$this->attributes['price'] = $value * 100;
-	}
+    public function getPriceAttribute($value)
+    {
+        return $value / 100;
+    }
 
-	public function getRenewAttribute($value) {
-		return $value / 100;
-	}
+    public function setPriceAttribute($value): void
+    {
+        $this->attributes['price'] = $value * 100;
+    }
 
-	public function setRenewAttribute($value) {
-		return $this->attributes['renew'] = $value * 100;
-	}
+    public function getRenewAttribute($value)
+    {
+        return $value / 100;
+    }
 
-	public function getTrafficLabelAttribute() {
-		return flowAutoShow($this->attributes['traffic'] * MB);
-	}
+    public function setRenewAttribute($value)
+    {
+        return $this->attributes['renew'] = $value * 100;
+    }
+
+    public function getTrafficLabelAttribute()
+    {
+        return flowAutoShow($this->attributes['traffic'] * MB);
+    }
+
 }

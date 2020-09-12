@@ -7,23 +7,34 @@ use App\Models\Node;
 use App\Models\UserGroup;
 use Arr;
 
-class UserGroupObserver {
-	public function created(UserGroup $userGroup): void {
-		$nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
-		if($nodes){
-			reloadNode::dispatchNow($nodes);
-		}
-	}
+class UserGroupObserver
+{
 
-	public function updated(UserGroup $userGroup): void {
-		$changes = $userGroup->getChanges();
-		if(Arr::exists($changes, 'nodes')){
-			$nodes = Node::whereType(4)
-			             ->whereIn('id', array_diff($userGroup->nodes, $userGroup->getOriginal('nodes')?: []))
-			             ->get();
-			if($nodes){
-				reloadNode::dispatchNow($nodes);
-			}
-		}
-	}
+    public function created(UserGroup $userGroup): void
+    {
+        $nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
+        if ($nodes) {
+            reloadNode::dispatchNow($nodes);
+        }
+    }
+
+    public function updated(UserGroup $userGroup): void
+    {
+        $changes = $userGroup->getChanges();
+        if (Arr::exists($changes, 'nodes')) {
+            $nodes = Node::whereType(4)
+                         ->whereIn(
+                             'id',
+                             array_diff(
+                                 $userGroup->nodes,
+                                 $userGroup->getOriginal('nodes') ?: []
+                             )
+                         )
+                         ->get();
+            if ($nodes) {
+                reloadNode::dispatchNow($nodes);
+            }
+        }
+    }
+
 }

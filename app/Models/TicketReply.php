@@ -8,18 +8,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 工单回复
  */
-class TicketReply extends Model {
-	protected $table = 'ticket_reply';
+class TicketReply extends Model
+{
 
-	public function ticket(): BelongsTo {
-		return $this->belongsTo(Ticket::class);
-	}
+    protected $table = 'ticket_reply';
 
-	public function user(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    public function ticket(): BelongsTo
+    {
+        return $this->belongsTo(Ticket::class);
+    }
 
-	public function admin(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

@@ -14,73 +14,96 @@ use Redirect;
 use Response;
 use Validator;
 
-class UserGroupController extends Controller {
-	public function index(Request $request) {
-		$view['list'] = UserGroup::paginate(15)->appends($request->except('page'));
-		return view('admin.user.group.index', $view);
-	}
+class UserGroupController extends Controller
+{
 
-	// 添加用户分组页面
-	public function create() {
-		$view['nodeList'] = Node::whereStatus(1)->get();
-		return view('admin.user.group.info', $view);
-	}
+    public function index(Request $request)
+    {
+        $view['list'] = UserGroup::paginate(15)->appends(
+            $request->except('page')
+        );
 
-	// 添加用户分组
-	public function store(Request $request): RedirectResponse {
-		$validator = Validator::make($request->all(), [
-			'name'  => 'required',
-			'nodes' => 'required',
-		]);
+        return view('admin.user.group.index', $view);
+    }
 
-		if($validator->fails()){
-			return Redirect::back()->withInput()->withErrors($validator->errors());
-		}
+    // 添加用户分组页面
+    public function create()
+    {
+        $view['nodeList'] = Node::whereStatus(1)->get();
 
-		$obj = new UserGroup();
-		$obj->name = $request->input('name');
-		$obj->nodes = $request->input('nodes');
-		$obj->save();
+        return view('admin.user.group.info', $view);
+    }
 
-		if($obj->id){
-			return Redirect::back()->with('successMsg', '操作成功');
-		}
-		return Redirect::back()->withInput()->withErrors('操作失败');
-	}
+    // 添加用户分组
+    public function store(Request $request): RedirectResponse
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'  => 'required',
+                'nodes' => 'required',
+            ]
+        );
 
-	// 编辑用户分组页面
-	public function edit($id) {
-		$view['userGroup'] = UserGroup::findOrFail($id);
-		$view['nodeList'] = Node::whereStatus(1)->get();
+        if ($validator->fails()) {
+            return Redirect::back()->withInput()->withErrors(
+                $validator->errors()
+            );
+        }
 
-		return view('admin.user.group.info', $view);
-	}
+        $obj        = new UserGroup();
+        $obj->name  = $request->input('name');
+        $obj->nodes = $request->input('nodes');
+        $obj->save();
 
-	// 编辑用户分组
-	public function update(Request $request, $id) {
-		$userGroup = UserGroup::findOrFail($id);
-		$userGroup->name = $request->input('name');
-		$userGroup->nodes = $request->input('nodes');
-		if($userGroup->save()){
-			return Redirect::back()->with('successMsg', '操作成功');
-		}
+        if ($obj->id) {
+            return Redirect::back()->with('successMsg', '操作成功');
+        }
 
-		return Redirect::back()->withInput()->withErrors('操作失败');
-	}
+        return Redirect::back()->withInput()->withErrors('操作失败');
+    }
 
-	// 删除用户分组
-	public function destroy($id): JsonResponse {
-		// 校验该分组下是否存在关联账号
-		if(User::whereGroupId($id)->count()){
-			return Response::json(['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']);
-		}
+    // 编辑用户分组页面
+    public function edit($id)
+    {
+        $view['userGroup'] = UserGroup::findOrFail($id);
+        $view['nodeList']  = Node::whereStatus(1)->get();
 
-		try{
-			UserGroup::whereId($id)->delete();
-		}catch(Exception $e){
-			return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
-		}
+        return view('admin.user.group.info', $view);
+    }
 
-		return Response::json(['status' => 'success', 'message' => '清理成功']);
-	}
+    // 编辑用户分组
+    public function update(Request $request, $id)
+    {
+        $userGroup        = UserGroup::findOrFail($id);
+        $userGroup->name  = $request->input('name');
+        $userGroup->nodes = $request->input('nodes');
+        if ($userGroup->save()) {
+            return Redirect::back()->with('successMsg', '操作成功');
+        }
+
+        return Redirect::back()->withInput()->withErrors('操作失败');
+    }
+
+    // 删除用户分组
+    public function destroy($id): JsonResponse
+    {
+        // 校验该分组下是否存在关联账号
+        if (User::whereGroupId($id)->count()) {
+            return Response::json(
+                ['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']
+            );
+        }
+
+        try {
+            UserGroup::whereId($id)->delete();
+        } catch (Exception $e) {
+            return Response::json(
+                ['status' => 'fail', 'message' => '删除失败，' . $e->getMessage()]
+            );
+        }
+
+        return Response::json(['status' => 'success', 'message' => '清理成功']);
+    }
+
 }

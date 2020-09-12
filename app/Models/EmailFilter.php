@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 邮箱后缀过滤
  */
-class EmailFilter extends Model {
-	public $timestamps = false;
-	protected $table = 'email_filter';
-	protected $guarded = ['id'];
+class EmailFilter extends Model
+{
+
+    public $timestamps = false;
+    protected $table = 'email_filter';
+    protected $guarded = ['id'];
+
 }

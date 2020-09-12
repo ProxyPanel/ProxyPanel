@@ -25,67 +25,72 @@ use App\Console\Commands\UserTrafficAutoWarning;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
-class Kernel extends ConsoleKernel {
-	/**
-	 * The Artisan commands provided by your application.
-	 *
-	 * @var array
-	 */
-	protected $commands = [
-		AutoClearLog::class,
-		AutoJob::class,
-		AutoPingNode::class,
-		AutoReportNode::class,
-		AutoStatisticsNodeDailyTraffic::class,
-		AutoStatisticsNodeHourlyTraffic::class,
-		AutoStatisticsUserDailyTraffic::class,
-		AutoStatisticsUserHourlyTraffic::class,
-		DailyJob::class,
-		fixDailyTrafficLogError::class,
-		NodeBlockedDetection::class,
-		ServiceTimer::class,
-		updateTextToJson::class,
-		updateTicket::class,
-		updateUserLevel::class,
-		updateUserName::class,
-		upgradeUserResetTime::class,
-		UserExpireAutoWarning::class,
-		UserTrafficAbnormalAutoWarning::class,
-		UserTrafficAutoWarning::class,
-	];
+class Kernel extends ConsoleKernel
+{
 
-	/**
-	 * Define the application's command schedule.
-	 *
-	 * @param  Schedule  $schedule
-	 *
-	 * @return void
-	 */
-	protected function schedule(Schedule $schedule) {
-		$schedule->command('autoJob')->everyMinute();
-		$schedule->command('serviceTimer')->everyTenMinutes();
-		$schedule->command('autoClearLog')->everyThirtyMinutes();
-		$schedule->command('nodeBlockedDetection')->everyTenMinutes();
-		$schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
-		$schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
-		$schedule->command('userTrafficAbnormalAutoWarning')->hourly();
-		$schedule->command('autoPingNode')->twiceDaily();
-		$schedule->command('dailyJob')->daily();
-		$schedule->command('autoReportNode')->dailyAt('09:00');
-		$schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
-		$schedule->command('userExpireAutoWarning')->dailyAt('20:00');
-		$schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:55');
-		$schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:57');
-	}
+    /**
+     * The Artisan commands provided by your application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        AutoClearLog::class,
+        AutoJob::class,
+        AutoPingNode::class,
+        AutoReportNode::class,
+        AutoStatisticsNodeDailyTraffic::class,
+        AutoStatisticsNodeHourlyTraffic::class,
+        AutoStatisticsUserDailyTraffic::class,
+        AutoStatisticsUserHourlyTraffic::class,
+        DailyJob::class,
+        fixDailyTrafficLogError::class,
+        NodeBlockedDetection::class,
+        ServiceTimer::class,
+        updateTextToJson::class,
+        updateTicket::class,
+        updateUserLevel::class,
+        updateUserName::class,
+        upgradeUserResetTime::class,
+        UserExpireAutoWarning::class,
+        UserTrafficAbnormalAutoWarning::class,
+        UserTrafficAutoWarning::class,
+    ];
 
-	/**
-	 * Register the commands for the application.
-	 *
-	 * @return void
-	 */
-	protected function commands() {
-		$this->load(__DIR__.'/Commands');
+    /**
+     * Define the application's command schedule.
+     *
+     * @param  Schedule  $schedule
+     *
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('autoJob')->everyMinute();
+        $schedule->command('serviceTimer')->everyTenMinutes();
+        $schedule->command('autoClearLog')->everyThirtyMinutes();
+        $schedule->command('nodeBlockedDetection')->everyTenMinutes();
+        $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
+        $schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
+        $schedule->command('userTrafficAbnormalAutoWarning')->hourly();
+        $schedule->command('autoPingNode')->twiceDaily();
+        $schedule->command('dailyJob')->daily();
+        $schedule->command('autoReportNode')->dailyAt('09:00');
+        $schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
+        $schedule->command('userExpireAutoWarning')->dailyAt('20:00');
+        $schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:55');
+        $schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:57');
+    }
 
-		require base_path('routes/console.php');
-	}
+    /**
+     * Register the commands for the application.
+     *
+     * @return void
+     */
+    protected function commands()
+    {
+        $this->load(__DIR__ . '/Commands');
+
+        require base_path('routes/console.php');
+    }
+
 }

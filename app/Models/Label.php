@@ -8,12 +8,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * 标签
  */
-class Label extends Model {
-	public $timestamps = false;
-	protected $table = 'label';
-	protected $guarded = ['id'];
+class Label extends Model
+{
 
-	public function nodes(): HasMany {
-		return $this->hasMany(NodeLabel::class);
-	}
+    public $timestamps = false;
+    protected $table = 'label';
+    protected $guarded = ['id'];
+
+    public function nodes(): HasMany
+    {
+        return $this->hasMany(NodeLabel::class);
+    }
+
 }

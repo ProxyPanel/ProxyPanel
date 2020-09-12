@@ -8,60 +8,79 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Str;
 
-abstract class AbstractPayment {
-	abstract public function purchase(Request $request): JsonResponse;
+abstract class AbstractPayment
+{
 
-	abstract public function notify(Request $request): void;
+    abstract public function purchase(Request $request): JsonResponse;
 
-	protected function creatNewPayment($uid, $oid, $amount): Payment {
-		$payment = new Payment();
-		$payment->trade_no = Str::random(8);
-		$payment->user_id = $uid;
-		$payment->order_id = $oid;
-		$payment->amount = $amount;
-		$payment->save();
+    abstract public function notify(Request $request): void;
 
-		return $payment;
-	}
+    protected function creatNewPayment($uid, $oid, $amount): Payment
+    {
+        $payment           = new Payment();
+        $payment->trade_no = Str::random(8);
+        $payment->user_id  = $uid;
+        $payment->order_id = $oid;
+        $payment->amount   = $amount;
+        $payment->save();
 
-	/**
-	 * @param  string  $trade_no      本地订单号
-	 * @param  string  $out_trade_no  外部订单号
-	 * @param  int     $amount        交易金额
-	 * @return int
-	 */
-	protected function addPamentCallback($trade_no, $out_trade_no, $amount): int {
-		$log = new PaymentCallback();
-		$log->trade_no = $trade_no;
-		$log->out_trade_no = $out_trade_no;
-		$log->amount = $amount;
+        return $payment;
+    }
 
-		return $log->save();
-	}
+    /**
+     * @param  string  $trade_no  本地订单号
+     * @param  string  $out_trade_no  外部订单号
+     * @param  int  $amount  交易金额
+     *
+     * @return int
+     */
+    protected function addPamentCallback(
+        string $trade_no,
+        string $out_trade_no,
+        int $amount
+    ): int {
+        $log               = new PaymentCallback();
+        $log->trade_no     = $trade_no;
+        $log->out_trade_no = $out_trade_no;
+        $log->amount       = $amount;
 
-	// MD5验签
-	protected function verify($data, $key, $signature, $filter = true): bool {
-		return hash_equals($this->aliStyleSign($data, $key, $filter), $signature);
-	}
+        return $log->save();
+    }
 
-	/**
-	 *  Alipay式数据MD5签名
-	 * @param  array    $data    需要加密的数组
-	 * @param  string   $key     尾部的密钥
-	 * @param  boolean  $filter  是否清理空值
-	 * @return string md5加密后的数据
-	 */
-	protected function aliStyleSign($data, $key, $filter = true): string {
-		// 剃离sign，sign_type，空值
-		unset($data['sign'], $data['sign_type']);
-		if($filter){
-			$data = array_filter($data);
-		}
+    // MD5验签
+    protected function verify($data, $key, $signature, $filter = true): bool
+    {
+        return hash_equals(
+            $this->aliStyleSign($data, $key, $filter),
+            $signature
+        );
+    }
 
-		// 排序
-		ksort($data, SORT_STRING);
-		reset($data);
+    /**
+     *  Alipay式数据MD5签名
+     *
+     * @param  array  $data  需要加密的数组
+     * @param  string  $key  尾部的密钥
+     * @param  bool  $filter  是否清理空值
+     *
+     * @return string md5加密后的数据
+     */
+    protected function aliStyleSign(
+        array $data,
+        string $key,
+        $filter = true
+    ): string {
+        // 剃离sign，sign_type，空值
+        unset($data['sign'], $data['sign_type']);
+        if ($filter) {
+            $data = array_filter($data);
+        }
 
-		return md5(urldecode(http_build_query($data)).$key);
-	}
+        // 排序
+        ksort($data, SORT_STRING);
+        reset($data);
+
+        return md5(urldecode(http_build_query($data)) . $key);
+    }
+
 }

@@ -8,15 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * 优惠券
  */
-class Coupon extends Model {
-	use SoftDeletes;
+class Coupon extends Model
+{
 
-	protected $table = 'coupon';
-	protected $dates = ['deleted_at'];
-	protected $fillable = ['usable_times', 'status'];
+    use SoftDeletes;
 
-	// 筛选类型
-	public function scopeType($query, $type) {
-		return $query->whereType($type);
-	}
+    protected $table = 'coupon';
+    protected $dates = ['deleted_at'];
+    protected $fillable = ['usable_times', 'status'];
+
+    // 筛选类型
+    public function scopeType($query, $type)
+    {
+        return $query->whereType($type);
+    }
+
 }

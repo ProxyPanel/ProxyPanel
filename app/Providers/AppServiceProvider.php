@@ -18,37 +18,43 @@ use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use URL;
 
-class AppServiceProvider extends ServiceProvider {
+class AppServiceProvider extends ServiceProvider
+{
 
-	/**
-	 * Register any application services.
-	 *
-	 * @return void
-	 */
-	public function register() {
-		if($this->app->isLocal()){
-			$this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-			$this->app->register(TelescopeServiceProvider::class);
-			$this->app->register(IdeHelperServiceProvider::class);
-		}
-	}
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        if ($this->app->isLocal()) {
+            $this->app->register(
+                \Laravel\Telescope\TelescopeServiceProvider::class
+            );
+            $this->app->register(TelescopeServiceProvider::class);
+            $this->app->register(IdeHelperServiceProvider::class);
+        }
+    }
 
-	/**
-	 * Bootstrap any application services.
-	 *
-	 * @return void
-	 */
-	public function boot() {
-		// 检测是否强制跳转https
-		if(env('REDIRECT_HTTPS', false)){
-			URL::forceScheme('https');
-		}
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        // 检测是否强制跳转https
+        if (env('REDIRECT_HTTPS', false)) {
+            URL::forceScheme('https');
+        }
 
-		Config::observe(ConfigObserver::class);
-		Node::observe(NodeObserver::class);
-		Order::observe(OrderObserver::class);
-		RuleGroup::observe(RuleGroupObserver::class);
-		UserGroup::observe(UserGroupObserver::class);
-		User::observe(UserObserver::class);
-	}
+        Config::observe(ConfigObserver::class);
+        Node::observe(NodeObserver::class);
+        Order::observe(OrderObserver::class);
+        RuleGroup::observe(RuleGroupObserver::class);
+        UserGroup::observe(UserGroupObserver::class);
+        User::observe(UserObserver::class);
+    }
+
 }

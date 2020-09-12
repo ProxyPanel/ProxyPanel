@@ -9,23 +9,35 @@ use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Response;
 
-class Local extends AbstractPayment {
-	public function purchase($request): JsonResponse {
-		$order = Order::find($request->input('id'));
-		$goods = Goods::find($request->input('goods_id'));
-		$user = $order->user;
+class Local extends AbstractPayment
+{
 
-		if($user && $goods){
-			$user->update(['credit' => $user->credit - $order->amount]);
-			// 记录余额操作日志
-			Helpers::addUserCreditLog($user->id, $order->id, $user->credit + $order->amount, $user->credit,
-				-1 * $order->amount, '购买商品'.$goods->name);
-		}
+    public function purchase($request): JsonResponse
+    {
+        $order = Order::find($request->input('id'));
+        $goods = Goods::find($request->input('goods_id'));
+        $user  = $order->user;
 
-		$order->update(['status' => 2]);
+        if ($user && $goods) {
+            $user->update(['credit' => $user->credit - $order->amount]);
+            // 记录余额操作日志
+            Helpers::addUserCreditLog(
+                $user->id,
+                $order->id,
+                $user->credit + $order->amount,
+                $user->credit,
+                -1 * $order->amount,
+                '购买商品' . $goods->name
+            );
+        }
 
-		return Response::json(['status' => 'success', 'message' => '购买完成!']);
-	}
+        $order->update(['status' => 2]);
 
-	public function notify($request): void { }
+        return Response::json(['status' => 'success', 'message' => '购买完成!']);
+    }
+
+    public function notify($request): void
+    {
+    }
+
 }

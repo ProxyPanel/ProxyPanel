@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 用户登录日志
  */
-class UserLoginLog extends Model {
-	public const UPDATED_AT = null;
-	protected $table = 'user_login_log';
+class UserLoginLog extends Model
+{
 
-	public function user(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    public const UPDATED_AT = null;
+
+    protected $table = 'user_login_log';
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
