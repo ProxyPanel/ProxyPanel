@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Components\IPIP;
-use App\Components\QQWry;
+use App\Components\IP;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
 use App\Mail\sendVerifyCode;
@@ -118,7 +117,7 @@ class AuthController extends Controller
             }
 
             // 写入登录日志
-            $this->addUserLoginLog($user->id, getClientIp());
+            $this->addUserLoginLog($user->id, IP::getClientIp());
 
             // 更新登录信息
             Auth::getUser()->update(['last_login' => time()]);
@@ -213,43 +212,21 @@ class AuthController extends Controller
      */
     private function addUserLoginLog(int $userId, string $ip): void
     {
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            Log::info('识别到IPv6，尝试解析：' . $ip);
-            $ipInfo = getIPInfo($ip);
-        } else {
-            $ipInfo = QQWry::ip($ip); // 通过纯真IP库解析IPv4信息
-            if (isset($ipInfo['error'])) {
-                Log::info('无法识别IPv4，尝试使用IPIP的IP库解析：' . $ip);
-                $ipip   = IPIP::ip($ip);
-                $ipInfo = [
-                    'country'  => $ipip['country_name'],
-                    'province' => $ipip['region_name'],
-                    'city'     => $ipip['city_name'],
-                ];
-            } else {
-                // 判断纯真IP库获取的国家信息是否与IPIP的IP库获取的信息一致，不一致则用IPIP的（因为纯真IP库的非大陆IP准确率较低）
-                $ipip = IPIP::ip($ip);
-                if ($ipInfo['country'] != $ipip['country_name']) {
-                    $ipInfo['country']  = $ipip['country_name'];
-                    $ipInfo['province'] = $ipip['region_name'];
-                    $ipInfo['city']     = $ipip['city_name'];
-                }
-            }
-        }
+        $ipLocation = IP::getIPInfo($ip);
 
-        if (empty($ipInfo) || empty($ipInfo['country'])) {
+        if (empty($ipLocation) || empty($ipLocation['country'])) {
             Log::warning("获取IP信息异常：" . $ip);
         }
 
         $log           = new UserLoginLog();
         $log->user_id  = $userId;
         $log->ip       = $ip;
-        $log->country  = $ipInfo['country'] ?? '';
-        $log->province = $ipInfo['province'] ?? '';
-        $log->city     = $ipInfo['city'] ?? '';
-        $log->county   = $ipInfo['county'] ?? '';
-        $log->isp      = $ipInfo['isp'] ?? ($ipInfo['organization'] ?? '');
-        $log->area     = $ipInfo['area'] ?? '';
+        $log->country  = $ipLocation['country'] ?? '';
+        $log->province = $ipLocation['province'] ?? '';
+        $log->city     = $ipLocation['city'] ?? '';
+        $log->county   = $ipLocation['county'] ?? '';
+        $log->isp      = $ipLocation['isp'] ?? ($ipLocation['organization'] ?? '');
+        $log->area     = $ipLocation['area'] ?? '';
         $log->save();
     }
 
@@ -265,7 +242,7 @@ class AuthController extends Controller
     // 注册
     public function register(Request $request)
     {
-        $cacheKey = 'register_times_' . md5(getClientIp()); // 注册限制缓存key
+        $cacheKey = 'register_times_' . md5(IP::getClientIp()); // 注册限制缓存key
 
         if ($request->isMethod('POST')) {
             $validator = Validator::make(
@@ -959,6 +936,7 @@ class AuthController extends Controller
                 ]
             );
         }
+        $ip = IP::getClientIP();
 
         // 校验域名邮箱黑白名单
         if (sysConfig('is_email_filtering')) {
@@ -976,7 +954,7 @@ class AuthController extends Controller
         }
 
         // 防刷机制
-        if (Cache::has('send_verify_code_' . md5(getClientIP()))) {
+        if (Cache::has('send_verify_code_' . md5($ip))) {
             return Response::json(
                 ['status' => 'fail', 'message' => trans('auth.register_anti')]
             );
@@ -994,11 +972,7 @@ class AuthController extends Controller
 
         $this->addVerifyCode($email, $code);
 
-        Cache::put(
-            'send_verify_code_' . md5(getClientIP()),
-            getClientIP(),
-            Minute
-        );
+        Cache::put('send_verify_code_' . md5($ip), $ip, Minute);
 
         return Response::json(
             ['status' => 'success', 'message' => trans('auth.captcha_send')]

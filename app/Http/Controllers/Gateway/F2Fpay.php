@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gateway;
 
+use App\Components\IP;
 use App\Models\Payment;
 use Auth;
 use Exception;
@@ -116,10 +117,10 @@ class F2Fpay extends AbstractPayment
                     }
                 }
             } else {
-                Log::info('支付宝当面付-POST:交易失败[' . getClientIp() . ']');
+                Log::info('支付宝当面付-POST:交易失败[' . IP::getClientIp() . ']');
             }
         } else {
-            Log::info('支付宝当面付-POST:验证失败[' . getClientIp() . ']');
+            Log::info('支付宝当面付-POST:验证失败[' . IP::getClientIp() . ']');
         }
 
         // 返回验证结果

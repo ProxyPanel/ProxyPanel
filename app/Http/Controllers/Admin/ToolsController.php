@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Components\Helpers;
+use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use DB;
@@ -197,7 +198,7 @@ class ToolsController extends Controller
                     $obj->protocol        = $user->protocol;
                     $obj->obfs            = $user->obfs;
                     $obj->expired_at      = '2099-01-01';
-                    $obj->reg_ip          = getClientIp();
+                    $obj->reg_ip          = IP::getClientIp();
                     $obj->created_at      = date('Y-m-d H:i:s');
                     $obj->updated_at      = date('Y-m-d H:i:s');
                     $obj->save();

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Components\IP;
 use App\Models\Node;
 use App\Models\NodeLabel;
 
@@ -18,7 +19,7 @@ class NodeService
 
         $result = 0;
         foreach ($nodes as $node) {
-            $data = getIPInfo(
+            $data = IP::IPSB(
                 $node->is_ddns ? gethostbyname($node->server) : $node->ip
             );
             if ($data) {

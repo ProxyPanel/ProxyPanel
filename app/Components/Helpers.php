@@ -107,7 +107,7 @@ class Helpers
             'Y-m-d',
             strtotime("+" . $data . " days")
         );
-        $user->reg_ip          = getClientIp();
+        $user->reg_ip          = IP::getClientIp();
         $user->inviter_id      = $inviter_id;
         $user->reset_time      = null;
         $user->status          = 0;

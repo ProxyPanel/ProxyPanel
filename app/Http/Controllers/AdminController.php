@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Components\IPIP;
+use App\Components\IP;
 use App\Components\PushNotification;
-use App\Components\QQWry;
 use App\Models\Article;
 use App\Models\Config;
 use App\Models\Country;
@@ -328,7 +327,7 @@ class AdminController extends Controller
             );
             $user->level           = $request->input('level') ?: 0;
             $user->group_id        = $request->input('group_id') ?: 0;
-            $user->reg_ip          = getClientIp();
+            $user->reg_ip          = IP::getClientIp();
             $user->reset_time      = $request->input('reset_time') > date(
                 'Y-m-d'
             ) ? $request->input('reset_time') : null;
@@ -477,13 +476,7 @@ class AdminController extends Controller
                     'remark'          => str_replace(
                         "eval",
                         "",
-                        str_replace(
-                            "atob",
-                            "",
-                            $request->input(
-                                'remark'
-                            )
-                        )
+                        str_replace("atob", "", $request->input('remark'))
                     ),
                     'level'           => $request->input('level'),
                     'group_id'        => $request->input('group_id'),
@@ -498,7 +491,7 @@ class AdminController extends Controller
                 }
 
                 // 非演示环境才可以修改管理员密码
-                if ( ! empty($password) && ! (config('app.demo') && $id == 1)) {
+                if ( ! empty($password) && ! (env('APP_DEMO') && $id == 1)) {
                     $data['password'] = Hash::make($password);
                 }
 
@@ -1943,18 +1936,9 @@ class AdminController extends Controller
             if ($log->ip == null || strpos($log->ip, ',') !== false) {
                 continue;
             }
-            $ipInfo = QQWry::ip($log->ip);
-            if (isset($ipInfo['error'])) {
-                // 用IPIP的库再试一下
-                $ipip   = IPIP::ip($log->ip);
-                $ipInfo = [
-                    'country'  => $ipip['country_name'],
-                    'province' => $ipip['region_name'],
-                    'city'     => $ipip['city_name'],
-                ];
-            }
+            $ipInfo = IP::getIPInfo($log->ip);
 
-            $log->ipInfo = $ipInfo['country'] . ' ' . $ipInfo['province'] . ' ' . $ipInfo['city'];
+            $log->ipInfo = implode(' ', $ipInfo);
         }
 
         $view['list']     = $onlineIPLogs;

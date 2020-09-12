@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -71,7 +72,11 @@ class SubscribeController extends Controller
         $subscribe->increment('times', 1);
 
         // 记录每次请求
-        $this->subscribeLog($subscribe->id, getClientIp(), $request->headers);
+        $this->subscribeLog(
+            $subscribe->id,
+            IP::getClientIp(),
+            $request->headers
+        );
 
         // 获取这个账号可用节点
         $query = $user->whereIsSubscribe(1)->userAccessNodes();

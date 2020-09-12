@@ -13,14 +13,15 @@
     "ext-openssl": "*",
     "fideloper/proxy": "^4.2",
     "fruitcake/laravel-cors": "^2.0",
+    "geoip2/geoip2": "^2.10",
     "guzzlehttp/guzzle": "^6.3",
+    "ip2location/ip2location-laravel": "^1.2",
     "ipip/db": "^1.0",
-    "itbdw/ip-database": "^2.0",
     "jenssegers/agent": "^2.6",
     "laravel/framework": "^7.24",
     "laravel/tinker": "^2.0",
     "mews/captcha": "^3.1",
-    "mews/purifier": "^3.2",
+    "mews/purifier": "^3.3",
     "openlss/lib-array2xml": "^1.0",
     "overtrue/laravel-lang": "^4.0",
     "phpoffice/phpspreadsheet": "^1.14",
@@ -32,7 +33,8 @@
     "xhat/payjs": "^1.4",
     "zbrettonye/geetest": "^1.1",
     "zbrettonye/hcaptcha": "^1.0",
-    "zbrettonye/no-captcha": "^1.0"
+    "zbrettonye/no-captcha": "^1.0",
+    "zoujingli/ip2region": "^1.0"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.4",

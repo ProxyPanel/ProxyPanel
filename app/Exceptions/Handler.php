@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Components\IP;
 use ErrorException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -74,7 +75,9 @@ class Handler extends ExceptionHandler
 
         // 捕获访问异常
         if ($exception instanceof NotFoundHttpException) {
-            Log::info("异常请求：" . $request->fullUrl() . "，IP：" . getClientIp());
+            Log::info(
+                "异常请求：" . $request->fullUrl() . "，IP：" . IP::getClientIp()
+            );
 
             if ($request->ajax()) {
                 return Response::json(
