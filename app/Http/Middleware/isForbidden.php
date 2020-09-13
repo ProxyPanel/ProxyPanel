@@ -48,7 +48,7 @@ class isForbidden
         $ipLocation = IP::getIPInfo($ip);
 
         // 拒绝无IP请求
-        if (empty($ipLocation) || empty($ipLocation['city'])) {
+        if ( ! $ipLocation || empty(array_filter($ipLocation))) {
             return Response::view(
                 'auth.error',
                 ['message' => trans('error.ForbiddenAccess')],
