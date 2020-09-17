@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
+use App\Components\Helpers;
 use App\Models\Node;
 use App\Models\NodeHeartBeat;
 use App\Models\NodeOnlineLog;
@@ -53,6 +54,8 @@ class BaseController
         $data = [],
         $addition = []
     ): JsonResponse {
+        $etag = Helpers::abortIfNotModified($data);
+
         $data = [
             'status'  => $status,
             'code'    => $code,
@@ -64,7 +67,7 @@ class BaseController
             $data = array_merge($data, $addition);
         }
 
-        return Response::json($data);
+        return Response::json($data)->header('ETAG', $etag);
     }
 
     // 上报节点在线人数
