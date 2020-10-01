@@ -13,27 +13,27 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-2 col-sm-2">
-                        <input type="number" class="form-control" name="id" id="id" value="{{Request::get('id')}}"
+                        <input type="number" class="form-control" name="id" id="id" value="{{Request::input('id')}}"
                                placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
-                        <input type="text" class="form-control" name="ip" id="ip" value="{{Request::get('ip')}}"
+                        <input type="text" class="form-control" name="ip" id="ip" value="{{Request::input('ip')}}"
                                placeholder="IP"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-3">
-                        <input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}"
+                        <input type="number" class="form-control" name="port" id="port" value="{{Request::input('port')}}"
                                placeholder="端口"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <select name="nodeId" id="nodeId" class="form-control" onChange="Search()">
-                            <option value="" @if(Request::get('nodeId') == '') selected @endif hidden>选择节点</option>
+                            <option value="" @if(Request::input('nodeId') == '') selected @endif hidden>选择节点</option>
                             @foreach($nodeList as $node)
                                 <option value="{{$node->id}}"
-                                        @if(Request::get('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
+                                        @if(Request::input('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
                             @endforeach
                         </select>
                     </div>

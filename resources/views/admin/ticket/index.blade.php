@@ -18,7 +18,7 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名" autocomplete="off"/>
+                        <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>

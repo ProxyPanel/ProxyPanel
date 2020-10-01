@@ -45,7 +45,7 @@
                             <td> {{$article->created_at}} </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::get('page')])}}" class="btn btn-outline-primary">
+                                    <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::input('page')])}}" class="btn btn-outline-primary">
                                         <i class="icon wb-edit"></i></a>
                                     <button class="btn btn-outline-danger" onclick="delArticle('{{route('admin.article.destroy',$article->id)}}')">
                                         <i class="icon wb-close"></i></button>

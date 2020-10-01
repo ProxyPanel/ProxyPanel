@@ -14,11 +14,11 @@
                 <div class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
                         <input type="number" class="form-control" name="out_trade_no" id="out_trade_no"
-                               value="{{Request::get('out_trade_no')}}" placeholder="本地订单号" autocomplete="off"/>
+                               value="{{Request::input('out_trade_no')}}" placeholder="本地订单号" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-6">
                         <input type="number" class="form-control" name="trade_no" id="trade_no"
-                               value="{{Request::get('trade_no')}}" placeholder="外部订单号" autocomplete="off"/>
+                               value="{{Request::input('trade_no')}}" placeholder="外部订单号" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="type" id="type" onChange="Search()">
@@ -92,8 +92,8 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#type').val({{Request::get('type')}});
-            $('#trade_status').val({{Request::get('trade_status')}});
+            $('#type').val({{Request::input('type')}});
+            $('#trade_status').val({{Request::input('trade_status')}});
         });
 
         //回车检测

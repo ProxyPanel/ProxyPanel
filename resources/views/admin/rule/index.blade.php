@@ -132,7 +132,7 @@
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#type').selectpicker('val', {{Request::get('type')}});
+            $('#type').selectpicker('val', {{Request::input('type')}});
         });
 
         // 添加规则

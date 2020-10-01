@@ -15,7 +15,7 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-3 col-sm-4">
-                        <input type="text" class="form-control" name="sn" id="sn" value="{{Request::get('sn')}}" placeholder="券码" autocomplete="off"/>
+                        <input type="text" class="form-control" name="sn" id="sn" value="{{Request::input('sn')}}" placeholder="券码" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4">
                         <select class="form-control" name="type" id="type" onChange="Search()">
@@ -115,9 +115,9 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#sn').val({{Request::get('sn')}});
-            $('#type').val({{Request::get('type')}});
-            $('#status').val({{Request::get('status')}});
+            $('#sn').val({{Request::input('sn')}});
+            $('#type').val({{Request::input('type')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         //回车检测

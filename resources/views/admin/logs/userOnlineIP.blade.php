@@ -13,23 +13,23 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-1 col-sm-4">
-                        <input type="number" class="form-control" id="id" name="id" value="{{Request::get('id')}}"
+                        <input type="number" class="form-control" id="id" name="id" value="{{Request::input('id')}}"
                                placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
                         <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <input type="text" class="form-control" name="wechat" id="wechat"
-                               value="{{Request::get('wechat')}}" placeholder="微信"/>
+                               value="{{Request::input('wechat')}}" placeholder="微信"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="qq" id="qq" value="{{Request::get('qq')}}"
+                        <input type="number" class="form-control" name="qq" id="qq" value="{{Request::input('qq')}}"
                                placeholder="QQ"/>
                     </div>
                     <div class="form-group col-lg-1 col-sm-6">
-                        <input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}"
+                        <input type="number" class="form-control" name="port" id="port" value="{{Request::input('port')}}"
                                placeholder="端口"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">

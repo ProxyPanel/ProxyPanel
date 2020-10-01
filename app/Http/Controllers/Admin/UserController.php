@@ -34,6 +34,8 @@ class UserController extends Controller
         $wechat = $request->input('wechat');
         $qq = $request->input('qq');
         $port = $request->input('port');
+        $group = $request->input('group');
+        $level = $request->input('level');
         $status = $request->input('status');
         $enable = $request->input('enable');
         $online = $request->input('online');
@@ -68,6 +70,14 @@ class UserController extends Controller
 
         if (isset($enable)) {
             $query->whereEnable($enable);
+        }
+
+        if (isset($group)) {
+            $query->whereGroupId($group);
+        }
+
+        if (isset($level)) {
+            $query->whereLevel($level);
         }
 
         // 流量超过100G的
@@ -116,9 +126,11 @@ class UserController extends Controller
             $user->link = (sysConfig('subscribe_domain') ?: sysConfig('website_url')).'/s/'.$user->subscribe->code;
         }
 
-        $view['userList'] = $userList;
-
-        return view('admin.user.index', $view);
+        return view('admin.user.index', [
+            'userList'   => $userList,
+            'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
+            'levels'     => Level::all()->pluck('name', 'level')->toArray(),
+        ]);
     }
 
     // 1小时内流量异常用户
@@ -142,14 +154,10 @@ class UserController extends Controller
     // 添加账号页面
     public function create()
     {
-        // 生成一个可用端口
-        $view['methodList'] = Helpers::methodList();
-        $view['protocolList'] = Helpers::protocolList();
-        $view['obfsList'] = Helpers::obfsList();
-        $view['levelList'] = Level::orderBy('level')->get();
-        $view['groupList'] = UserGroup::orderBy('id')->get();
-
-        return view('admin.user.info', $view);
+        return view('admin.user.info', [
+            'levelList' => Level::orderBy('level')->get(),
+            'groupList' => UserGroup::orderBy('id')->get(),
+        ]);
     }
 
     // 添加账号
@@ -188,14 +196,11 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        $view['user'] = $user->load('inviter:id,email');
-        $view['methodList'] = Helpers::methodList();
-        $view['protocolList'] = Helpers::protocolList();
-        $view['obfsList'] = Helpers::obfsList();
-        $view['levelList'] = Level::orderBy('level')->get();
-        $view['groupList'] = UserGroup::orderBy('id')->get();
-
-        return view('admin.user.info', $view);
+        return view('admin.user.info', [
+            'user'      => $user->load('inviter:id,email'),
+            'levelList' => Level::orderBy('level')->get(),
+            'groupList' => UserGroup::orderBy('id')->get(),
+        ]);
     }
 
     // 编辑账号

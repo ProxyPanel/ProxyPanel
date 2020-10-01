@@ -14,7 +14,7 @@ use Response;
 
 class F2Fpay extends AbstractPayment
 {
-    private static array $aliConfig;
+    private static $aliConfig;
 
     public function __construct()
     {

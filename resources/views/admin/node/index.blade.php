@@ -80,7 +80,7 @@
                                         <i class="icon wb-wrench" aria-hidden="true"></i>
                                     </button>
                                     <div class="dropdown-menu" role="menu">
-                                        <a class="dropdown-item" href="{{route('admin.node.edit', [$node->id, 'page' => Request::get('page', 1)])}}" role="menuitem">
+                                        <a class="dropdown-item" href="{{route('admin.node.edit', [$node->id, 'page' => Request::input('page', 1)])}}" role="menuitem">
                                             <i class="icon wb-edit" aria-hidden="true"></i> 编辑
                                         </a>
                                         <a class="dropdown-item" href="javascript:delNode('{{$node->id}}', '{{$node->name}}')" role="menuitem">

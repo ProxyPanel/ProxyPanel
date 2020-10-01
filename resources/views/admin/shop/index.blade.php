@@ -125,8 +125,8 @@
             type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#type').val({{Request::get('type')}});
-            $('#status').val({{Request::get('status')}});
+            $('#type').val({{Request::input('type')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         // 搜索

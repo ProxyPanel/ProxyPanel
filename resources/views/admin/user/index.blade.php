@@ -25,19 +25,35 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-xxl-1 col-lg-1 col-md-1 col-sm-4">
-                        <input type="number" class="form-control" id="id" name="id" value="{{Request::get('id')}}" placeholder="ID"/>
+                        <input type="number" class="form-control" id="id" name="id" value="{{Request::input('id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" id="email" name="email" value="{{Request::get('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" id="email" name="email" value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" id="wechat" name="wechat" value="{{Request::get('wechat')}}" placeholder="微信"/>
+                        <input type="text" class="form-control" id="wechat" name="wechat" value="{{Request::input('wechat')}}" placeholder="微信"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="number" class="form-control" id="qq" name="qq" value="{{Request::get('qq')}}" placeholder="QQ"/>
+                        <input type="number" class="form-control" id="qq" name="qq" value="{{Request::input('qq')}}" placeholder="QQ"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-2 col-md-2 col-sm-4">
-                        <input type="number" class="form-control" id="port" name="port" value="{{Request::get('port')}}" placeholder="端口"/>
+                        <input type="number" class="form-control" id="port" name="port" value="{{Request::input('port')}}" placeholder="端口"/>
+                    </div>
+                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
+                        <select class="form-control" id="group" name="group" onChange="Search()">
+                            <option value="" hidden>用户分组</option>
+                            @foreach($userGroups as $key => $group)
+                                <option value="{{$key}}">{{$group}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
+                        <select class="form-control" id="level" name="level" onChange="Search()">
+                            <option value="" hidden>用户分组</option>
+                            @foreach($levels as $key => $level)
+                                <option value="{{$key}}">{{$level}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="status" name="status" onChange="Search()">
@@ -91,11 +107,11 @@
                             <td> {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}} </td>
 
                             <td>
-                                @if ($user->expireWarning == '-1')
+                                @if ($user->expireWarning === -1)
                                     <span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>
-                                @elseif ($user->expireWarning == '0')
+                                @elseif ($user->expireWarning === 0)
                                     <span class="badge badge-lg badge-warning"> {{$user->expired_at}} </span>
-                                @elseif ($user->expireWarning == '1')
+                                @elseif ($user->expireWarning === 1)
                                     <span class="badge badge-lg badge-default"> {{$user->expired_at}} </span>
                                 @else
                                     {{$user->expired_at}}
@@ -177,9 +193,11 @@
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#pay_way').val({{Request::get('pay_way')}});
-            $('#status').val({{Request::get('status')}});
-            $('#enable').val({{Request::get('enable')}});
+            $('#group').val({{Request::input('group')}});
+            $('#level').val({{Request::input('level')}});
+            $('#pay_way').val({{Request::input('pay_way')}});
+            $('#status').val({{Request::input('status')}});
+            $('#enable').val({{Request::input('enable')}});
         });
 
         // 批量生成账号
@@ -218,10 +236,9 @@
 
         // 搜索
         function Search() {
-            window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' +
-                $('#email').val() +
-                '&wechat=' + $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&status=' +
-                $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
+            window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' + $('#email').val() + '&wechat=' +
+                $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&group=' + $('#group option:selected').val() + '&level='
+                + $('#level option:selected').val() + '&status=' + $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
         }
 
         // 删除账号

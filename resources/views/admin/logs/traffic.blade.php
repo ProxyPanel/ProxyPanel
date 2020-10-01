@@ -13,19 +13,19 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="number" class="form-control" name="user_id" id="user_id" value="{{Request::get('user_id')}}" placeholder="用户ID"/>
+                        <input type="number" class="form-control" name="user_id" id="user_id" value="{{Request::input('user_id')}}" placeholder="用户ID"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}" placeholder="用户端口"/>
+                        <input type="number" class="form-control" name="port" id="port" value="{{Request::input('port')}}" placeholder="用户端口"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
                         <select class="form-control" name="nodeId" id="nodeId" onChange="Search()">
-                            <option value="" @if(Request::get('nodeId') == '') selected @endif hidden>选择节点</option>
+                            <option value="" @if(Request::input('nodeId') == '') selected @endif hidden>选择节点</option>
                             @foreach($nodeList as $node)
-                                <option value="{{$node->id}}" @if(Request::get('nodeId') == $node->id) selected @endif>
+                                <option value="{{$node->id}}" @if(Request::input('nodeId') == $node->id) selected @endif>
                                     {{$node->name}}
                                 </option>
                             @endforeach
@@ -38,11 +38,11 @@
                                     <i class="icon wb-calendar" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" name="start" id="start" value="{{Request::get('startTime')}}" placeholder="{{date("Y-m-d")}}"/>
+                            <input type="text" class="form-control" name="start" id="start" value="{{Request::input('startTime')}}" placeholder="{{date("Y-m-d")}}"/>
                             <div class="input-group-prepend">
                                 <span class="input-group-text">至</span>
                             </div>
-                            <input type="text" class="form-control" name="end" id="end" value="{{Request::get('endTime')}}" placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
+                            <input type="text" class="form-control" name="end" id="end" value="{{Request::input('endTime')}}" placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">

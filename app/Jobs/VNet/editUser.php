@@ -17,7 +17,7 @@ class editUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private array $data;
+    private $data;
     private $nodes;
 
     public function __construct(User $user, $nodes)

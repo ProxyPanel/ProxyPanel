@@ -102,7 +102,7 @@
                     </div>
                     <div class="form-actions text-right">
                         <div class="btn-group">
-                            <a href="{{route('admin.article.index', ['page'=>Request::get('page')])}}" class="btn btn-danger">
+                            <a href="{{route('admin.article.index', ['page'=>Request::input('page')])}}" class="btn btn-danger">
                                 返 回
                             </a>
                             <button type="submit" class="btn btn-success">提 交</button>

@@ -13,7 +13,7 @@ use Response;
 
 class SubscribeController extends Controller
 {
-    private int $subType;
+    private $subType;
 
     // 通过订阅码获取订阅信息
     public function getSubscribeByCode(Request $request, $code)

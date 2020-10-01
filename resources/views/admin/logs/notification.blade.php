@@ -12,7 +12,7 @@
                 <div class="form-row">
                     <div class="form-group col-lg-3 col-sm-4">
                         <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="type" id="type" onChange="Search()">
@@ -84,7 +84,7 @@
             type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#type').val({{Request::get('type')}});
+            $('#type').val({{Request::input('type')}});
         });
 
         // 搜索

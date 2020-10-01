@@ -98,7 +98,7 @@ class ToolsController extends Controller
             return Response::json(['status' => 'success', 'data' => $json, 'message' => '转换成功']);
         }
 
-        return view('admin.tools.convert', $view);
+        return view('admin.tools.convert');
     }
 
     // 下载转换好的JSON文件

@@ -11,7 +11,7 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="text" class="form-control" name="email" value="{{Request::get('email')}}" id="email" placeholder="申请账号"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::input('email')}}" id="email" placeholder="申请账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="status" id="status" onChange="Search()">
@@ -107,7 +107,7 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#status').val({{Request::get('status')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         //回车检测

@@ -10,7 +10,7 @@ use Xhat\Payjs\Payjs as Pay;
 
 class PayJs extends AbstractPayment
 {
-    private static array $config;
+    private static $config;
 
     public function __construct()
     {

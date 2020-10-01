@@ -1,14 +1,14 @@
 <?php
 
-use App\Components\Helpers;
-
 Route::get('s/{code}', 'User\SubscribeController@getSubscribeByCode'); // 节点订阅地址
 
+// 支付回调相关
 Route::prefix('callback')->group(function () {
     Route::get('checkout', 'Gateway\PayPal@getCheckout');
     Route::get('notify', 'PaymentController@notify'); //支付回调
-}); // 支付回调相关
+});
 
+// 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {
     Route::get('lang/{locale}', 'AuthController@switchLang')->name('lang'); // 语言切换
     Route::any('login', 'AuthController@login')->middleware('isSecurity')->name('login'); // 登录
@@ -20,18 +20,12 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     Route::get('active/{token}', 'AuthController@active')->name('activeAccount'); // 激活账号
     Route::post('send', 'AuthController@sendCode')->name('sendVerificationCode'); // 发送注册验证码
     Route::get('free', 'AuthController@free')->name('freeInvitationCode'); // 免费邀请码
-    Route::get('createPasswd', function () {
-        return Str::random();
-    })->name('generateString'); // 生成随机密码
-    Route::get('createUUID', function () {
-        return Str::uuid();
-    })->name('generateUUID'); // 生成UUID
-    Route::get('createSecurityCode', function () {
-        return strtolower(Str::random(8));
-    })->name('createSecurityCode'); // 生成网站安全码
-}); // 登录相关
+    Route::get('create/string', '\Illuminate\Support\Str@random')->name('createStr'); // 生成随机密码
+    Route::get('create/uuid', '\Illuminate\Support\Str@uuid')->name('createUUID'); // 生成UUID
+});
 Route::any('admin/login', 'AuthController@login')->middleware('isForbidden', 'isSecurity'); // 管理登录
 
+// 用户相关
 Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function () {
     Route::get('/', 'UserController@index')->name('home'); // 用户首页
     Route::get('article', 'UserController@article'); // 文章详情
@@ -67,8 +61,9 @@ Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function (
         Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
         Route::get('{trade_no}', 'PaymentController@detail'); // 支付单详情
     });
-}); // 用户相关
+});
 
+// 管理相关
 Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', 'AdminController@index')->name('index'); // 后台首页
     Route::any('profile', 'AdminController@profile')->name('profile'); // 修改个人信息
@@ -76,6 +71,7 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
     Route::get('invite', 'AdminController@inviteList')->name('invite'); // 邀请码列表
     Route::post('invite', 'AdminController@makeInvite')->name('invite.create'); // 生成邀请码
     Route::get('Invite/export', 'AdminController@exportInvite')->name('invite.export'); // 导出邀请码
+    Route::get('getPort', 'AdminController@getPort')->name('getPort'); // 生成端口
 
     Route::namespace('Admin')->group(function () {
         Route::resource('user', 'UserController')->except('show');
@@ -85,7 +81,6 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
             Route::get('monitor/{id}', 'LogsController@userTrafficMonitor')->name('monitor'); // 用户流量监控
             Route::get("online/{id}", "LogsController@onlineIPMonitor")->name('online'); // 在线IP监控
             Route::post("switch", "UserController@switchToUser")->name('switch'); // 转换成某个用户的身份
-            Route::get('getPort', function () { return Helpers::getPort(); })->name('getPort'); // 生成端口
             Route::post('updateCredit', 'UserController@handleUserCredit')->name('updateCredit'); // 用户余额充值
             Route::post('reset', 'UserController@resetTraffic')->name('reset'); // 重置用户流量
             Route::get('export/{id}', 'UserController@export')->name('export'); // 导出(查看)配置信息
@@ -184,4 +179,4 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
     });
 
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('log.viewer'); // 系统运行日志
-}); // 管理相关
+});

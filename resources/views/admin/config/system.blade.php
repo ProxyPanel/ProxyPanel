@@ -1761,7 +1761,7 @@
 
         // 生成网站安全码
         function makeWebsiteSecurityCode() {
-            $.get('{{route('createSecurityCode')}}', function(ret) {
+            $.get('{{route('createStr')}}', function(ret) {
                 $('#website_security_code').val(ret);
             });
         }

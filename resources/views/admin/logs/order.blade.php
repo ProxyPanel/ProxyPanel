@@ -13,10 +13,10 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="text" class="form-control" name="email" id="email" value="{{Request::get('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="order_sn" id="order_sn" value="{{Request::get('order_sn')}}" placeholder="订单号"/>
+                        <input type="number" class="form-control" name="order_sn" id="order_sn" value="{{Request::input('order_sn')}}" placeholder="订单号"/>
                     </div>
                     <div class="form-group col-lg-6 col-sm-12">
                         <div class="input-group input-daterange" data-plugin="datepicker">
@@ -73,7 +73,7 @@
                                 <label for="type">降序</label>
                             </div>
                             <div class="radio-custom radio-primary radio-inline">
-                                <input type="radio" name="sort" value="1" @if(Request::get('sort') === '1') checked @endif/>
+                                <input type="radio" name="sort" value="1" @if(Request::input('sort') === '1') checked @endif/>
                                 <label for="type">升序</label>
                             </div>
                         </div>
@@ -159,10 +159,10 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#is_expire').val({{Request::get('is_expire')}});
-            $('#is_coupon').val({{Request::get('is_coupon')}});
-            $('#pay_way').val({{Request::get('pay_way')}});
-            $('#status').val({{Request::get('status')}});
+            $('#is_expire').val({{Request::input('is_expire')}});
+            $('#is_coupon').val({{Request::input('is_coupon')}});
+            $('#pay_way').val({{Request::input('pay_way')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         // 有效期

@@ -229,7 +229,7 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="method">加密方式</label>
                                 <div class="col-xl-5 col-sm-8">
                                     <select class="form-control" name="method" id="method" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach ($methodList as $method)
+                                        @foreach (Helpers::methodList() as $method)
                                             <option value="{{$method->name}}">{{$method->name}}</option>
                                         @endforeach
                                     </select>
@@ -268,7 +268,7 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="protocol">协议</label>
                                 <div class="col-xl-5 col-sm-8">
                                     <select class="form-control" name="protocol" id="protocol" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach ($protocolList as $protocol)
+                                        @foreach (Helpers::protocolList() as $protocol)
                                             <option value="{{$protocol->name}}"
                                                     @if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
                                         @endforeach
@@ -279,7 +279,7 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="obfs">混淆</label>
                                 <div class="col-xl-5 col-sm-8">
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="obfs" id="obfs">
-                                        @foreach ($obfsList as $obfs)
+                                        @foreach (Helpers::obfsList() as $obfs)
                                             <option value="{{$obfs->name}}"
                                                     @if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
                                         @endforeach
@@ -517,21 +517,21 @@
 
         // 生成随机端口
         function makePort() {
-            $.get('{{route('admin.user.getPort')}}', function(ret) {
+            $.get('{{route('admin.getPort')}}', function(ret) {
                 $('#port').val(ret);
             });
         }
 
         // 生成UUID
         function makeUUID() {
-            $.get('{{route('generateUUID')}}', function(ret) {
+            $.get('{{route('createUUID')}}', function(ret) {
                 $('#uuid').val(ret);
             });
         }
 
         // 生成随机密码
         function makePasswd() {
-            $.get('{{route('generateString')}}', function(ret) {
+            $.get('{{route('createStr')}}', function(ret) {
                 $('#passwd').val(ret);
             });
         }

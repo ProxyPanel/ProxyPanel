@@ -16,25 +16,25 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-xxl-1 col-lg-2 col-md-1 col-sm-4">
-                        <input type="number" class="form-control" name="uid" value="{{Request::get('uid')}}" id="uid" placeholder="用户ID"/>
+                        <input type="number" class="form-control" name="uid" value="{{Request::input('uid')}}" id="uid" placeholder="用户ID"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
                         <input type="text" class="form-control" id="email" name="email"
-                               value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="node_id" name="node_id" onChange="Search()">
-                            <option value="" @if(Request::get('node_id') == '') selected @endif>节点</option>
+                            <option value="" @if(Request::input('node_id') == '') selected @endif>节点</option>
                             @foreach($nodeList as $node)
-                                <option value="{{$node->id}}" @if(Request::get('node_id') == $node->id) selected @endif>{{$node->id . ' - ' . $node->name}}</option>
+                                <option value="{{$node->id}}" @if(Request::input('node_id') == $node->id) selected @endif>{{$node->id . ' - ' . $node->name}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="rule_id" name="rule_id" onChange="Search()">
-                            <option value="" @if(Request::get('rule_id') == '') selected @endif>规则</option>
+                            <option value="" @if(Request::input('rule_id') == '') selected @endif>规则</option>
                             @foreach($ruleList as $rule)
-                                <option value="{{$rule->id}}" @if(Request::get('rule_id') == $rule->id) selected @endif>{{$rule->name}}</option>
+                                <option value="{{$rule->id}}" @if(Request::input('rule_id') == $rule->id) selected @endif>{{$rule->name}}</option>
                             @endforeach
                         </select>
                     </div>

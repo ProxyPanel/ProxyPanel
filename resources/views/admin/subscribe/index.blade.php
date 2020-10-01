@@ -12,11 +12,11 @@
                 <div class="form-row">
                     <div class="form-group col-lg-2 col-sm-6">
                         <input type="number" class="form-control" name="user_id" id="user_id"
-                               value="{{Request::get('user_id')}}" placeholder="ID"/>
+                               value="{{Request::input('user_id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
                         <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-6">
                         <select name="status" id="status" class="form-control" onChange="Search()">
@@ -92,7 +92,7 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#status').val({{Request::get('status')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         //回车检测

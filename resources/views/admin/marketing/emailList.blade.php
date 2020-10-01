@@ -71,7 +71,7 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#status').val({{Request::get('status')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         // 发送邮件

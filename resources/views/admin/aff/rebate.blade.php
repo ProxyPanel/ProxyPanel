@@ -11,10 +11,10 @@
             <div class="panel-body">
                 <div class="form-row">
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="invitee_email" id="invitee_email" value="{{Request::get('invitee_email')}}" placeholder="消费者"/>
+                        <input type="text" class="form-control" name="invitee_email" id="invitee_email" value="{{Request::input('invitee_email')}}" placeholder="消费者"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="inviter_email" id="inviter_email" value="{{Request::get('inviter_email')}}" placeholder="邀请人"/>
+                        <input type="text" class="form-control" name="inviter_email" id="inviter_email" value="{{Request::input('inviter_email')}}" placeholder="邀请人"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <select name="status" id="status" class="form-control" onChange="Search()">
@@ -102,7 +102,7 @@
             type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#status').val({{Request::get('status')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         //回车检测

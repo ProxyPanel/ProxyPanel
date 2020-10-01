@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Helpers;
 use App\Models\Country;
 use App\Models\Invite;
 use App\Models\Label;
@@ -184,4 +185,6 @@ class AdminController extends Controller
 
         return view('admin.config.config', $view);
     }
+
+    public function getPort(): int { return Helpers::getPort(); }
 }

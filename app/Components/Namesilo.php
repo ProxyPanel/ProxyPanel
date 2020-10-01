@@ -8,7 +8,7 @@ use LSS\XML2Array;
 
 class Namesilo
 {
-    private static string $host = 'https://www.namesilo.com/api/';
+    private static $host = 'https://www.namesilo.com/api/';
 
     // 列出账号下所有域名　Todo Debug测试
     public function listDomains()

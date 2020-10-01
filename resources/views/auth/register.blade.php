@@ -11,11 +11,11 @@
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             @csrf
-            <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
-            <input type="hidden" name="aff" value="{{Session::get('register_aff')}}"/>
+            <input type="hidden" name="register_token" value="{{Session::input('register_token')}}"/>
+            <input type="hidden" name="aff" value="{{Session::input('register_aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="username"
-                       value="{{Request::old('username') ? : Request::get('username')}}" required/>
+                       value="{{Request::old('username') ? : Request::input('username')}}" required/>
                 <label class="floating-label" for="username">{{trans('auth.username')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
@@ -66,7 +66,7 @@
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <input type="password" class="form-control" name="code"
-                           value="{{Request::old('code') ? : Request::get('code')}}"
+                           value="{{Request::old('code') ? : Request::input('code')}}"
                            @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label"
                            for="code">{{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)

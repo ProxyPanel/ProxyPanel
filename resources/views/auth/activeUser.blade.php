@@ -14,7 +14,7 @@
                 <span class="form-title">{{trans('auth.active_account')}}</span>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="email" class="form-control" name="email" value="{{Request::get('email')}}" required/>
+                <input type="email" class="form-control" name="email" value="{{Request::input('email')}}" required/>
                 <label class="floating-label" for="email">{{trans('auth.email')}}</label>
             </div>
         @else

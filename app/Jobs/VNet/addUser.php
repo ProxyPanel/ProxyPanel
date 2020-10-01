@@ -17,7 +17,7 @@ class addUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private array $data;
+    private $data;
     private $nodes;
 
     public function __construct($userIds, $nodes)

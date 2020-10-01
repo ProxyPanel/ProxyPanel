@@ -30,7 +30,7 @@ use Response;
  */
 class PaymentController extends Controller
 {
-    private static string $method;
+    private static $method;
 
     public static function notify(Request $request): int
     {

@@ -15,7 +15,7 @@ use Srmklive\PayPal\Services\ExpressCheckout;
 
 class PayPal extends AbstractPayment
 {
-    protected ExpressCheckout $provider;
+    protected $provider;
     protected $exChange;
 
     public function __construct()

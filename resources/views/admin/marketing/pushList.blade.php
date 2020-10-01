@@ -123,7 +123,7 @@
     <script src="/assets/global/vendor/to-markdown/to-markdown.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#status').val({{Request::get('status')}});
+            $('#status').val({{Request::input('status')}});
         });
 
         // 发送通道消息
