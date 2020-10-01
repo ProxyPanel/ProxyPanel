@@ -100,11 +100,18 @@ class OrderService
     {
         Order::whereId(self::$order->id)->update(['expired_at' => date('Y-m-d H:i:s', strtotime("+".self::$goods->days." days"))]);
         $oldData = self::$user->transfer_enable;
-        $ret = self::$user->update(array_merge($this->resetTimeAndData(), [
+        $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
             'level'      => self::$goods->level,
             'enable'     => 1,
-        ]));
+        ];
+
+        // 无端口用户 添加端口
+        if (self::$user->port === null || self::$user->port === 0) {
+            $updateData['port'] = Helpers::getPort();
+        }
+
+        $ret = self::$user->update(array_merge($this->resetTimeAndData(), $updateData));
         if ($ret) {
             return Helpers::addUserTrafficModifyLog(self::$order->user_id, self::$order->id, $oldData, self::$user->transfer_enable,
                 '【'.self::$order->pay_way.'】加上用户购买的套餐流量');
