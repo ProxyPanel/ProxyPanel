@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Invite extends Model
 {
-
     use SoftDeletes;
 
     protected $table = 'invite';
@@ -38,19 +37,13 @@ class Invite extends Model
     {
         switch ($this->attributes['status']) {
             case 0:
-                $status_label = '<span class="badge badge-success">' . trans(
-                        'home.invite_code_table_status_un'
-                    ) . '</span>';
+                $status_label = '<span class="badge badge-success">'.trans('home.invite_code_table_status_un').'</span>';
                 break;
             case 1:
-                $status_label = '<span class="badge badge-danger">' . trans(
-                        'home.invite_code_table_status_yes'
-                    ) . '</span>';
+                $status_label = '<span class="badge badge-danger">'.trans('home.invite_code_table_status_yes').'</span>';
                 break;
             case 2:
-                $status_label = '<span class="badge badge-default">' . trans(
-                        'home.invite_code_table_status_expire'
-                    ) . '</span>';
+                $status_label = '<span class="badge badge-default">'.trans('home.invite_code_table_status_expire').'</span>';
                 break;
             default:
                 $status_label = '<span class="badge badge-default"> 未知 </span>';
@@ -58,5 +51,4 @@ class Invite extends Model
 
         return $status_label;
     }
-
 }

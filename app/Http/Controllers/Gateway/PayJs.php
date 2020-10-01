@@ -10,8 +10,7 @@ use Xhat\Payjs\Payjs as Pay;
 
 class PayJs extends AbstractPayment
 {
-
-    private static $config;
+    private static array $config;
 
     public function __construct()
     {
@@ -23,38 +22,20 @@ class PayJs extends AbstractPayment
 
     public function purchase($request): JsonResponse
     {
-        $payment = $this->creatNewPayment(
-            Auth::id(),
-            $request->input('id'),
-            $request->input('amount')
-        );
+        $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
-        $result = (new Pay($this::$config))->cashier(
-            [
-                'body'         => sysConfig('subject_name') ?: sysConfig(
-                    'website_name'
-                ),
-                'total_fee'    => $payment->amount * 100,
-                'out_trade_no' => $payment->trade_no,
-                'notify_url'   => (sysConfig(
-                        'website_callback_url'
-                    ) ?: sysConfig(
-                        'website_url'
-                    )) . '/callback/notify?method=payjs',
-            ]
-        );
+        $result = (new Pay($this::$config))->cashier([
+            'body'         => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'total_fee'    => $payment->amount * 100,
+            'out_trade_no' => $payment->trade_no,
+            'notify_url'   => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=payjs',
+        ]);
 
         // 获取收款二维码内容
         $payment->update(['qr_code' => 1, 'url' => $result]);
 
         //$this->addPamentCallback($payment->trade_no, null, $payment->amount * 100);
-        return Response::json(
-            [
-                'status'  => 'success',
-                'data'    => $payment->trade_no,
-                'message' => '创建订单成功!',
-            ]
-        );
+        return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
     }
 
     public function notify($request): void
@@ -72,5 +53,4 @@ class PayJs extends AbstractPayment
         }
         exit('fail');
     }
-
 }

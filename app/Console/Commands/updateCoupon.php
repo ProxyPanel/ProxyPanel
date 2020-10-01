@@ -8,15 +8,12 @@ use Log;
 
 class updateCoupon extends Command
 {
-
     protected $signature = 'updateCoupon';
     protected $description = '修改原版Coupon至新版';
 
     public function handle(): void
     {
-        Log::info(
-            '----------------------------【优惠券转换】开始----------------------------'
-        );
+        Log::info('----------------------------【优惠券转换】开始----------------------------');
         $coupons = Coupon::withTrashed()->get();
         foreach ($coupons as $coupon) {
             if ($coupon->amount) {
@@ -32,9 +29,6 @@ class updateCoupon extends Command
             }
             $coupon->save();
         }
-        Log::info(
-            '----------------------------【优惠券转换】结束----------------------------'
-        );
+        Log::info('----------------------------【优惠券转换】结束----------------------------');
     }
-
 }

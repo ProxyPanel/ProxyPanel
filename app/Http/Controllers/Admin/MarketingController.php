@@ -22,7 +22,6 @@ use RuntimeException;
  */
 class MarketingController extends Controller
 {
-
     // 邮件群发消息列表
     public function emailList(Request $request)
     {
@@ -58,28 +57,23 @@ class MarketingController extends Controller
     // 添加推送消息
     public function addPushMarketing(Request $request): ?JsonResponse
     {
-        $title   = $request->input('title');
+        $title = $request->input('title');
         $content = $request->input('content');
 
-        if ( ! sysConfig('is_push_bear')) {
-            return Response::json(
-                ['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']
-            );
+        if (!sysConfig('is_push_bear')) {
+            return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
         }
 
         try {
             DB::beginTransaction();
 
-            $response = (new Client())->get(
-                'https://pushbear.ftqq.com/sub',
-                [
-                    'query' => [
-                        'sendkey' => sysConfig('push_bear_send_key'),
-                        'text'    => $title,
-                        'desp'    => $content,
-                    ],
-                ]
-            );
+            $response = (new Client())->get('https://pushbear.ftqq.com/sub', [
+                'query' => [
+                    'sendkey' => sysConfig('push_bear_send_key'),
+                    'text'    => $title,
+                    'desp'    => $content,
+                ],
+            ]);
 
             $result = json_decode($response->getBody(), true);
             if ($result->code) { // 失败
@@ -94,33 +88,24 @@ class MarketingController extends Controller
 
             return Response::json(['status' => 'success', 'message' => '推送成功']);
         } catch (Exception $e) {
-            Log::error('PushBear消息推送失败：' . $e->getMessage());
+            Log::error('PushBear消息推送失败：'.$e->getMessage());
 
             DB::rollBack();
 
-            return Response::json(
-                ['status' => 'fail', 'message' => '推送失败：' . $e->getMessage()]
-            );
+            return Response::json(['status' => 'fail', 'message' => '推送失败：'.$e->getMessage()]);
         }
     }
 
-    private function addMarketing(
-        $type = 1,
-        $title = '',
-        $content = '',
-        $status = 1,
-        $error = '',
-        $receiver = ''
-    ): bool {
-        $marketing           = new Marketing();
-        $marketing->type     = $type;
+    private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = ''): bool
+    {
+        $marketing = new Marketing();
+        $marketing->type = $type;
         $marketing->receiver = $receiver;
-        $marketing->title    = $title;
-        $marketing->content  = $content;
-        $marketing->error    = $error;
-        $marketing->status   = $status;
+        $marketing->title = $title;
+        $marketing->content = $content;
+        $marketing->error = $error;
+        $marketing->status = $status;
 
         return $marketing->save();
     }
-
 }

@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class UserSubscribe extends Model
 {
-
     protected $table = 'user_subscribe';
     protected $guarded = ['id', 'user_id'];
 
@@ -30,5 +29,4 @@ class UserSubscribe extends Model
     {
         return $this->hasMany(UserSubscribeLog::class);
     }
-
 }

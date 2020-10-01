@@ -8,7 +8,6 @@ use Redirect;
 
 class isAdminLogin
 {
-
     /**
      * Handle an incoming request.
      *
@@ -25,5 +24,4 @@ class isAdminLogin
 
         return $next($request);
     }
-
 }

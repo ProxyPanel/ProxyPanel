@@ -42,13 +42,13 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      Breakpoints();
+        Breakpoints();
     </script>
 </head>
 
 <body class="animsition dashboard">
 <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600"
-        role="navigation">
+     role="navigation">
     <div class="navbar-header">
         <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided"
                 data-toggle="menubar">
@@ -61,9 +61,9 @@
         </button>
         <div class="navbar-brand navbar-brand-center">
             <img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}"
-                    class="navbar-brand-logo" alt="logo"/>
+                 class="navbar-brand-logo" alt="logo"/>
             <span
-                    class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
+                class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
         </div>
     </div>
     <div class="navbar-container container-fluid">
@@ -86,7 +86,7 @@
             <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
                 <li class="nav-item dropdown">
                     <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" data-animation="scale-up"
-                            aria-expanded="false" role="button">
+                       aria-expanded="false" role="button">
                         <span class="flag-icon wb-flag"></span>
                         <span class="flag-icon icon wb-chevron-down-mini"></span>
                     </a>
@@ -110,7 +110,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"
-                            data-toggle="dropdown" role="button">
+                       data-toggle="dropdown" role="button">
                         <span class="avatar avatar-online">
                             <x-avatar :user="Auth::getUser()"/>
                             <i></i>
@@ -118,7 +118,7 @@
                     </a>
                     <div class="dropdown-menu" role="menu">
                         @if(Auth::getUser()->is_admin)
-                            <a href="/admin" class="dropdown-item" role="menuitem">
+                            <a href="{{route('admin.index')}}" class="dropdown-item" role="menuitem">
                                 <i class="icon wb-user" aria-hidden="true"></i>
                                 {{trans('home.console')}}
                             </a>
@@ -260,7 +260,7 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-  Config.set('assets', '/assets');
+    Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js" type="text/javascript"></script>
@@ -268,43 +268,43 @@
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-  (function(document, window, $) {
-    'use strict';
+    (function(document, window, $) {
+        'use strict';
 
-    const Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
+        const Site = window.Site;
+        $(document).ready(function() {
+            Site.run();
+        });
+    })(document, window, jQuery);
 </script>
 @yield('script')
 
 @if(Session::get("admin"))
     <script type="text/javascript">
-      $('#return_to_admin').click(function() {
-        $.ajax({
-          type: 'POST',
-          url: '/switchToAdmin',
-          data: {'_token': '{{csrf_token()}}'},
-          dataType: 'json',
-          success: function(ret) {
-            swal.fire({
-              title: ret.message,
-              type: 'success',
-              timer: 1000,
-              showConfirmButton: false,
-            }).then(() => window.location.href = '/admin');
-          },
-          error: function(ret) {
-            swal.fire({
-              title: ret.message,
-              type: 'error',
-              timer: 1500,
-              showConfirmButton: false,
+        $('#return_to_admin').click(function() {
+            $.ajax({
+                method: 'POST',
+                url: '/switchToAdmin',
+                data: {'_token': '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                    swal.fire({
+                        title: ret.message,
+                        type: 'success',
+                        timer: 1000,
+                        showConfirmButton: false,
+                    }).then(() => window.location.href = '{{route('admin.index')}}');
+                },
+                error: function(ret) {
+                    swal.fire({
+                        title: ret.message,
+                        type: 'error',
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                },
             });
-          },
         });
-      });
     </script>
 @endif
 <!-- 统计 -->

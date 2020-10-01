@@ -11,30 +11,19 @@ use Response;
 
 class BitpayX extends AbstractPayment
 {
-
     public function purchase($request): JsonResponse
     {
-        $payment = $this->creatNewPayment(
-            Auth::id(),
-            $request->input('id'),
-            $request->input('amount')
-        );
+        $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
-        $data   = [
+        $data = [
             'merchant_order_id' => $payment->trade_no,
             'price_amount'      => $payment->amount,
             'price_currency'    => 'CNY',
-            'title'             => '支付单号：' . $payment->trade_no,
-            'description'       => sysConfig('subject_name') ?: sysConfig(
-                'website_name'
-            ),
-            'callback_url'      => (sysConfig(
-                    'website_callback_url'
-                ) ?: sysConfig(
-                    'website_url'
-                )) . '/callback/notify?method=bitpayx',
-            'success_url'       => sysConfig('website_url') . '/invoices',
-            'cancel_url'        => sysConfig('website_url') . '/invoices',
+            'title'             => '支付单号：'.$payment->trade_no,
+            'description'       => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'callback_url'      => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=bitpayx',
+            'success_url'       => sysConfig('website_url').'/invoices',
+            'cancel_url'        => sysConfig('website_url').'/invoices',
             'token'             => $this->sign($payment->trade_no),
         ];
         $result = $this->sendRequest($data);
@@ -43,20 +32,12 @@ class BitpayX extends AbstractPayment
             $result['payment_url'] .= '&lang=zh';
             $payment->update(['url' => $result['payment_url']]);
 
-            return Response::json(
-                [
-                    'status'  => 'success',
-                    'url'     => $result['payment_url'],
-                    'message' => '创建订单成功!',
-                ]
-            );
+            return Response::json(['status' => 'success', 'url' => $result['payment_url'], 'message' => '创建订单成功!']);
         }
 
-        Log::error('创建订单错误：' . var_export($result, true));
+        Log::error('创建订单错误：'.var_export($result, true));
 
-        return Response::json(
-            ['status' => 'fail', 'message' => '创建订单失败!' . $result['error']]
-        );
+        return Response::json(['status' => 'fail', 'message' => '创建订单失败!'.$result['error']]);
     }
 
     private function sign($tradeNo): string
@@ -72,26 +53,22 @@ class BitpayX extends AbstractPayment
 
     private function sendRequest($data, $type = 'createOrder')
     {
-        $client = new Client(
-            [
-                'base_uri' => 'https://api.mugglepay.com/v1/',
-                'timeout'  => 15,
-                'headers'  => [
-                    'token'        => sysConfig('bitpay_secret'),
-                    'content-type' => 'application/json',
-                ],
-            ]
-        );
+        $client = new Client([
+            'base_uri' => 'https://api.mugglepay.com/v1/',
+            'timeout'  => 15,
+            'headers'  => [
+                'token'        => sysConfig('bitpay_secret'),
+                'content-type' => 'application/json',
+            ],
+        ]);
 
         if ($type === 'query') {
-            $request = $client->get(
-                'orders/merchant_order_id/status?id=' . $data['merchant_order_id']
-            );
+            $request = $client->get('orders/merchant_order_id/status?id='.$data['merchant_order_id']);
         } else {// Create Order
             $request = $client->post('orders', ['body' => json_encode($data)]);
         }
         if ($request->getStatusCode() !== 200) {
-            Log::error('BitPayX请求支付错误：' . var_export($request, true));
+            Log::error('BitPayX请求支付错误：'.var_export($request, true));
         }
 
         return json_decode($request->getBody(), true);
@@ -101,10 +78,7 @@ class BitpayX extends AbstractPayment
     public function notify($request): void
     {
         $tradeNo = $request->input(['merchant_order_id']);
-        if ($request->input(['status']) === 'PAID' && hash_equals(
-                $this->sign($tradeNo),
-                $request->input(['token'])
-            )) {
+        if ($request->input(['status']) === 'PAID' && hash_equals($this->sign($tradeNo), $request->input(['token']))) {
             $payment = Payment::whereTradeNo($tradeNo)->first();
             if ($payment) {
                 $ret = $payment->order->update(['status' => 2]);
@@ -115,5 +89,4 @@ class BitpayX extends AbstractPayment
         }
         exit(json_encode(['status' => 400]));
     }
-
 }

@@ -10,7 +10,6 @@ use Log;
 
 class AutoPingNode extends Command
 {
-
     protected $signature = 'autoPingNode';
     protected $description = '节点定时Ping测速';
 
@@ -19,18 +18,13 @@ class AutoPingNode extends Command
         $jobStartTime = microtime(true);
 
         foreach (Node::whereIsRelay(0)->whereStatus(1)->get() as $node) {
-            $this->pingNode(
-                $node->id,
-                $node->is_ddns ? $node->server : $node->ip
-            );
+            $this->pingNode($node->id, $node->is_ddns ? $node->server : $node->ip);
         }
 
-        $jobEndTime  = microtime(true);
+        $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
-        Log::info(
-            '---【' . $this->description . '】完成---，耗时' . $jobUsedTime . '秒'
-        );
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
     }
 
     // 节点Ping测速
@@ -39,16 +33,15 @@ class AutoPingNode extends Command
         $result = NetworkDetection::ping($ip);
 
         if ($result) {
-            $obj          = new NodePing();
+            $obj = new NodePing();
             $obj->node_id = $nodeId;
-            $obj->ct      = (int)$result['telecom']['time'];//电信
-            $obj->cu      = (int)$result['Unicom']['time'];// 联通
-            $obj->cm      = (int)$result['move']['time'];// 移动
-            $obj->hk      = (int)$result['HongKong']['time'];// 香港
+            $obj->ct = (int) $result['telecom']['time'];//电信
+            $obj->cu = (int) $result['Unicom']['time'];// 联通
+            $obj->cm = (int) $result['move']['time'];// 移动
+            $obj->hk = (int) $result['HongKong']['time'];// 香港
             $obj->save();
         } else {
-            Log::error("【" . $ip . "】Ping测速获取失败");
+            Log::error("【".$ip."】Ping测速获取失败");
         }
     }
-
 }

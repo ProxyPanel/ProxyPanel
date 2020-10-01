@@ -9,7 +9,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RuleGroupNode extends Model
 {
-
     protected $table = 'rule_group_node';
-
 }

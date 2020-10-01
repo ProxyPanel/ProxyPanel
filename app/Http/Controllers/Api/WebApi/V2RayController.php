@@ -9,18 +9,13 @@ use Illuminate\Http\Request;
 
 class V2RayController extends BaseController
 {
-
     // 获取节点信息
     public function getNodeInfo($id): JsonResponse
     {
-        $node   = Node::find($id);
+        $node = Node::find($id);
         $nodeDv = NodeCertificate::whereDomain($node->v2_host)->first();
 
-        return $this->returnData(
-            '获取节点信息成功',
-            'success',
-            200,
-            [
+        return $this->returnData('获取节点信息成功', 'success', 200, [
                 'id'              => $node->id,
                 'is_udp'          => $node->is_udp ? true : false,
                 'speed_limit'     => $node->speed_limit,
@@ -28,8 +23,8 @@ class V2RayController extends BaseController
                 'push_port'       => $node->push_port,
                 'redirect_url'    => sysConfig('redirect_url'),
                 'secret'          => $node->auth->secret,
-                'key'             => $nodeDv ? $nodeDv->key : '',
-                'pem'             => $nodeDv ? $nodeDv->pem : '',
+                'key'             => $nodeDv->key ?? '',
+                'pem'             => $nodeDv->pem ?? '',
                 'v2_license'      => sysConfig('v2ray_license'),
                 'v2_alter_id'     => $node->v2_alter_id,
                 'v2_port'         => $node->v2_port,
@@ -39,9 +34,7 @@ class V2RayController extends BaseController
                 'v2_host'         => $node->v2_host,
                 'v2_path'         => $node->v2_path,
                 'v2_tls'          => $node->v2_tls ? true : false,
-                'v2_tls_provider' => $node->tls_provider ?: sysConfig(
-                    'v2ray_tls_provider'
-                ),
+                'v2_tls_provider' => $node->tls_provider ?: sysConfig('v2ray_tls_provider'),
             ]
         );
     }
@@ -50,7 +43,7 @@ class V2RayController extends BaseController
     public function getUserList($id): JsonResponse
     {
         $users = Node::find($id)->node_access_users;
-        $data  = [];
+        $data = [];
 
         foreach ($users as $user) {
             $data[] = [
@@ -60,13 +53,7 @@ class V2RayController extends BaseController
             ];
         }
 
-        return $this->returnData(
-            '获取用户列表成功',
-            'success',
-            200,
-            $data,
-            ['updateTime' => time()]
-        );
+        return $this->returnData('获取用户列表成功', 'success', 200, $data, ['updateTime' => time()]);
     }
 
     // 上报节点伪装域名证书信息
@@ -77,16 +64,14 @@ class V2RayController extends BaseController
 
         if ($request->has(['key', 'pem'])) {
             $node = Node::find($id);
-            $Dv   = NodeCertificate::whereDomain($node->v2_host)->first();
+            $Dv = NodeCertificate::whereDomain($node->v2_host)->first();
             if ($Dv) {
-                $ret = NodeCertificate::whereId($Dv->id)->update(
-                    ['key' => $key, 'pem' => $pem]
-                );
+                $ret = NodeCertificate::whereId($Dv->id)->update(['key' => $key, 'pem' => $pem]);
             } else {
-                $ret         = new NodeCertificate();
+                $ret = new NodeCertificate();
                 $ret->domain = $node->server;
-                $ret->key    = $request->input('key');
-                $ret->pem    = $request->input('pem');
+                $ret->key = $request->input('key');
+                $ret->pem = $request->input('pem');
                 $ret->save();
             }
 
@@ -97,5 +82,4 @@ class V2RayController extends BaseController
 
         return $this->returnData('上报节点伪装域名证书失败，请检查字段');
     }
-
 }

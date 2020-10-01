@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TicketReply extends Model
 {
-
     protected $table = 'ticket_reply';
 
     public function ticket(): BelongsTo
@@ -27,5 +26,4 @@ class TicketReply extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

@@ -12,41 +12,42 @@
                     <div class="col-md-4 form-group">
                         <label for="method">加密方式</label>
                         <select class="form-control" name="method" id="method">
-                            @foreach ($methodList as $method)
-                                <option value="{{$method->name}}"
-                                        @if($method->is_default) selected @endif>{{$method->name}}</option>
+                            @foreach (Helpers::methodList() as $method)
+                                <option value="{{$method->name}}" @if($method->is_default) selected @endif>
+                                    {{$method->name}}
+                                </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="transfer_enable">可用流量</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" name="transfer_enable" value="1000"
-                                    id="transfer_enable" placeholder="" required>
+                            <input type="number" class="form-control" name="transfer_enable" value="1000" id="transfer_enable" placeholder="" required>
                             <span class="input-group-text">GB</span>
                         </div>
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="protocol">协议</label>
                         <select class="form-control" name="protocol" id="protocol">
-                            @foreach ($protocolList as $protocol)
-                                <option value="{{$protocol->name}}"
-                                        @if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
+                            @foreach (Helpers::protocolList() as $protocol)
+                                <option value="{{$protocol->name}}" @if($protocol->is_default) selected @endif>
+                                    {{$protocol->name}}
+                                </option>
                             @endforeach
                         </select>
 
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="protocol_param">协议参数</label>
-                        <input type="text" class="form-control" name="protocol_param" id="protocol_param"
-                                placeholder="">
+                        <input type="text" class="form-control" name="protocol_param" id="protocol_param" placeholder="">
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="obfs">混淆</label>
                         <select class="form-control" name="obfs" id="obfs">
-                            @foreach ($obfsList as $obfs)
-                                <option value="{{$obfs->name}}"
-                                        @if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
+                            @foreach (Helpers::obfsList() as $obfs)
+                                <option value="{{$obfs->name}}" @if($obfs->is_default) selected @endif>
+                                    {{$obfs->name}}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -64,7 +65,7 @@
                         <button class="btn btn-block btn-primary" onclick="Convert()">转 换</button>
                     </div>
                     <div class="col-md-6">
-                        <a href="/tools/download?type=1" class="btn btn-block btn-danger">下 载</a>
+                        <a href="{{route('admin.tools.download', ['type' => 1])}}" class="btn btn-block btn-danger">下 载</a>
                     </div>
                 </div>
             </div>
@@ -74,50 +75,50 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-      // 转换
-      function Convert() {
-        const content = $('#content').val();
+        // 转换
+        function Convert() {
+            const content = $('#content').val();
 
-        if (content.trim() === '') {
-          swal.fire({title: '请填入要转换的配置信息', type: 'warning', timer: 1000, showConfirmButton: false});
-          return;
-        }
-        swal.fire({
-          title: '确定继续转换吗？',
-          type: 'question',
-          allowEnterKey: false,
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              type: 'POST',
-              url: '/tools/convert',
-              async: false,
-              data: {
-                _token: '{{csrf_token()}}',
-                method: $('#method').val(),
-                transfer_enable: $('#transfer_enable').val(),
-                protocol: $('#protocol').val(),
-                protocol_param: $('#protocol_param').val(),
-                obfs: $('#obfs').val(),
-                obfs_param: $('#obfs_param').val(),
-                content: content,
-              },
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  $('#result').val(ret.data);
+            if (content.trim() === '') {
+                swal.fire({title: '请填入要转换的配置信息', type: 'warning', timer: 1000, showConfirmButton: false});
+                return;
+            }
+            swal.fire({
+                title: '确定继续转换吗？',
+                type: 'question',
+                allowEnterKey: false,
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('admin.tools.convert')}}',
+                        async: false,
+                        data: {
+                            _token: '{{csrf_token()}}',
+                            method: $('#method').val(),
+                            transfer_enable: $('#transfer_enable').val(),
+                            protocol: $('#protocol').val(),
+                            protocol_param: $('#protocol_param').val(),
+                            obfs: $('#obfs').val(),
+                            obfs_param: $('#obfs_param').val(),
+                            content: content,
+                        },
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                $('#result').val(ret.data);
+                            }
+                            else {
+                                $('#result').val(ret.message);
+                            }
+                        },
+                    });
                 }
-                else {
-                  $('#result').val(ret.message);
-                }
-              },
             });
-          }
-        });
-        return false;
-      }
+            return false;
+        }
     </script>
 @endsection

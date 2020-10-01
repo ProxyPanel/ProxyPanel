@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Rule extends Model
 {
-
     public $timestamps = false;
     protected $table = 'rule';
     protected $guarded = ['id'];
@@ -57,5 +56,4 @@ class Rule extends Model
 
         return $type_api_label;
     }
-
 }

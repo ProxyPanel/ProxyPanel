@@ -38,13 +38,13 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      Breakpoints();
+        Breakpoints();
     </script>
 </head>
 <body class="animsition page-login-v3 layout-full" style="position: relative;">
 <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
     <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
-                                            browser. Please
+    browser. Please
     <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 @if(Agent::isMobile() && Agent::is('iOS') && strpos(Agent::getUserAgent(), 'MicroMessenger') !== false)
@@ -56,10 +56,10 @@
     </style>
     <div class="m-0 p-0 w-full h-full text-white" style="z-index: 10; position: absolute;">
         <div class="font-size-16 h-p33 pl-20 pt-20"
-                style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
+             style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
             <p>点击右上角 <i class="icon wb-more-horizontal"></i>，选择在<img
-                        src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png"
-                        class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/> Safari 中打开
+                    src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png"
+                    class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/> Safari 中打开
             </p>
             <p>您就可以正常访问本站了呦~</p>
         </div>
@@ -73,8 +73,8 @@
                     <div class="panel-title">
                         <div class="brand">
                             <img
-                                    src="{{sysConfig('website_home_logo')? :'/assets/images/logo64.png'}}"
-                                    class="brand-img" alt="logo"/>
+                                src="{{sysConfig('website_home_logo')? :'/assets/images/logo64.png'}}"
+                                class="brand-img" alt="logo"/>
                             <h3 class="brand-text">{{sysConfig('website_name')}}</h3>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-  Config.set('assets', '/assets');
+    Config.set('assets', '/assets');
 </script>
 <!-- Page -->
 @yield('script')
@@ -150,13 +150,13 @@
 <!-- 客服 -->
 {!! sysConfig('website_customer_service') !!}
 <script type="text/javascript">
-  (function(document, window, $) {
-    'use strict';
-    const Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
+    (function(document, window, $) {
+        'use strict';
+        const Site = window.Site;
+        $(document).ready(function() {
+            Site.run();
+        });
+    })(document, window, jQuery);
 </script>
 </body>
 </html>

@@ -91,7 +91,7 @@
         </div>
     </div>
     <div id="charge_modal" class="modal fade" aria-labelledby="charge_modal" role="dialog" tabindex="-1"
-            aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
                 <div class="modal-header">
@@ -128,7 +128,7 @@
                                 <div class="row">
                                     <p class="col-md-12 mb-10">付款时，请
                                         <mark>备注邮箱账号</mark>
-                                                               ，充值会在<code>24</code>小时内受理!
+                                        ，充值会在<code>24</code>小时内受理!
                                     </p>
                                     @if(sysConfig('wechat_qrcode'))
                                         <div class="col-md-6">
@@ -147,7 +147,7 @@
                         @endif
                         <div class="form-group row" id="charge_coupon_code">
                             <label for="charge_coupon"
-                                    class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
+                                   class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
                             </div>
@@ -167,141 +167,141 @@
     <script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
     <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
     <script type="text/javascript">
-      function itemControl(value) {
-        if (value === 1) {
-          $('.charge_credit').show();
-          $('#change_btn').hide();
-          $('#charge_qrcode').hide();
-          $('#charge_coupon_code').hide();
+        function itemControl(value) {
+            if (value === 1) {
+                $('.charge_credit').show();
+                $('#change_btn').hide();
+                $('#charge_qrcode').hide();
+                $('#charge_coupon_code').hide();
+            }
+            else if (value === 2) {
+                $('.charge_credit').hide();
+                $('#change_btn').hide();
+                $('#charge_qrcode').show();
+                $('#charge_coupon_code').hide();
+            }
+            else {
+                $('.charge_credit').hide();
+                $('#charge_qrcode').hide();
+                $('#charge_coupon_code').show();
+                $('#change_btn').show();
+            }
         }
-        else if (value === 2) {
-          $('.charge_credit').hide();
-          $('#change_btn').hide();
-          $('#charge_qrcode').show();
-          $('#charge_coupon_code').hide();
-        }
-        else {
-          $('.charge_credit').hide();
-          $('#charge_qrcode').hide();
-          $('#charge_coupon_code').show();
-          $('#change_btn').show();
-        }
-      }
 
-      $(document).ready(function() {
-        itemControl(parseInt($('#charge_type').val()));
-        let which_selected;
-          @if(sysConfig('is_onlinePay'))
-              which_selected = 1;
-          @elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-              which_selected = 2;
-          @else
-              which_selected = 3;
-          @endif
+        $(document).ready(function() {
+            itemControl(parseInt($('#charge_type').val()));
+            let which_selected;
+            @if(sysConfig('is_onlinePay'))
+                which_selected = 1;
+            @elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
+                which_selected = 2;
+            @else
+                which_selected = 3;
+            @endif
 
-          $('charge_type').val(which_selected);
-      });
-
-      // 切换充值方式
-      $('#charge_type').change(function() {
-        itemControl(parseInt($(this).val()));
-      });
-
-      // 重置流量
-      function resetTraffic() {
-        swal.fire({
-          title: '重置流量',
-          text: '本次重置流量将扣除余额 {{$renewTraffic}} 元？',
-          type: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('/resetUserTraffic', {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                    then(() => window.location.reload());
-              }
-              else {
-                swal.fire({
-                  title: ret.message,
-                  text: ret.data,
-                  type: 'error',
-                }).then(() => window.location.reload());
-              }
-            });
-          }
+            $('charge_type').val(which_selected);
         });
-      }
 
-      // 充值
-      function pay(method, pay_type) {
-        const paymentType = parseInt($('#charge_type').val());
-        const charge_coupon = $('#charge_coupon').val().trim();
-        const amount = parseInt($('#amount').val());
-        if (paymentType === 1) {
-          if (amount <= 0) {
-            swal.fire({title: '错误', text: '充值余额不合规', type: 'warning', timer: 1000, showConfirmButton: false});
-            return false;
-          }
+        // 切换充值方式
+        $('#charge_type').change(function() {
+            itemControl(parseInt($(this).val()));
+        });
 
-          $.ajax({
-            type: 'POST',
-            url: '/payment/purchase',
-            data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
-            dataType: 'json',
-            beforeSend: function() {
-              $('#charge_msg').show().html('创建支付单中...');
-            },
-            success: function(ret) {
-              if (ret.status === 'fail') {
-                return false;
-              }
-              else {
-                $('#charge_msg').show().html(ret.message);
-                if (ret.data) {
-                  window.location.href = '/payment/' + ret.data;
+        // 重置流量
+        function resetTraffic() {
+            swal.fire({
+                title: '重置流量',
+                text: '本次重置流量将扣除余额 {{$renewTraffic}} 元？',
+                type: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('/resetUserTraffic', {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                then(() => window.location.reload());
+                        }
+                        else {
+                            swal.fire({
+                                title: ret.message,
+                                text: ret.data,
+                                type: 'error',
+                            }).then(() => window.location.reload());
+                        }
+                    });
                 }
-                else if (ret.url) {
-                  window.location.href = ret.url;
+            });
+        }
+
+        // 充值
+        function pay(method, pay_type) {
+            const paymentType = parseInt($('#charge_type').val());
+            const charge_coupon = $('#charge_coupon').val().trim();
+            const amount = parseInt($('#amount').val());
+            if (paymentType === 1) {
+                if (amount <= 0) {
+                    swal.fire({title: '错误', text: '充值余额不合规', type: 'warning', timer: 1000, showConfirmButton: false});
+                    return false;
                 }
-              }
-            },
-            error: function() {
-              $('#charge_msg').show().html("{{trans('home.error_response')}}");
-            },
-          });
-        }
-        else if (paymentType === 3) {
-          if (charge_coupon === '') {
-            $('#charge_msg').show().html("{{trans('home.coupon_not_empty')}}");
-            $('#charge_coupon').focus();
-            return false;
-          }
 
-          $.ajax({
-            type: 'POST',
-            url: '/charge',
-            data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
-            beforeSend: function() {
-              $('#charge_msg').show().html("{{trans('home.recharging')}}");
-            },
-            success: function(ret) {
-              if (ret.status === 'fail') {
-                $('#charge_msg').show().html(ret.message);
-                return false;
-              }
+                $.ajax({
+                    method: 'POST',
+                    url: '/payment/purchase',
+                    data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#charge_msg').show().html('创建支付单中...');
+                    },
+                    success: function(ret) {
+                        if (ret.status === 'fail') {
+                            return false;
+                        }
+                        else {
+                            $('#charge_msg').show().html(ret.message);
+                            if (ret.data) {
+                                window.location.href = '/payment/' + ret.data;
+                            }
+                            else if (ret.url) {
+                                window.location.href = ret.url;
+                            }
+                        }
+                    },
+                    error: function() {
+                        $('#charge_msg').show().html("{{trans('home.error_response')}}");
+                    },
+                });
+            }
+            else if (paymentType === 3) {
+                if (charge_coupon === '') {
+                    $('#charge_msg').show().html("{{trans('home.coupon_not_empty')}}");
+                    $('#charge_coupon').focus();
+                    return false;
+                }
 
-              $('#charge_modal').modal('hide');
-              window.location.reload();
-            },
-            error: function() {
-              $('#charge_msg').show().html("{{trans('home.error_response')}}");
-            },
-          });
+                $.ajax({
+                    method: 'POST',
+                    url: '/charge',
+                    data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
+                    beforeSend: function() {
+                        $('#charge_msg').show().html("{{trans('home.recharging')}}");
+                    },
+                    success: function(ret) {
+                        if (ret.status === 'fail') {
+                            $('#charge_msg').show().html(ret.message);
+                            return false;
+                        }
+
+                        $('#charge_modal').modal('hide');
+                        window.location.reload();
+                    },
+                    error: function() {
+                        $('#charge_msg').show().html("{{trans('home.error_response')}}");
+                    },
+                });
+            }
         }
-      }
 
     </script>
 @endsection

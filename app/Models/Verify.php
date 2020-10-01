@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Verify extends Model
 {
-
     protected $table = 'verify';
 
     // 筛选类型
@@ -23,5 +22,4 @@ class Verify extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

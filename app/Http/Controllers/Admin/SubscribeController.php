@@ -18,13 +18,12 @@ use Response;
  */
 class SubscribeController extends Controller
 {
-
     // 订阅码列表
-    public function subscribeList(Request $request)
+    public function index(Request $request)
     {
         $user_id = $request->input('user_id');
-        $email   = $request->input('email');
-        $status  = $request->input('status');
+        $email = $request->input('email');
+        $status = $request->input('status');
 
         $query = UserSubscribe::with(['user:id,email']);
 
@@ -33,63 +32,48 @@ class SubscribeController extends Controller
         }
 
         if (isset($email)) {
-            $query->whereHas(
-                'user',
-                static function ($q) use ($email) {
-                    $q->where('email', 'like', '%' . $email . '%');
-                }
-            );
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
 
         if (isset($status)) {
             $query->whereStatus($status);
         }
 
-        $view['subscribeList'] = $query->latest()->paginate(20)->appends(
-            $request->except('page')
-        );
+        $view['subscribeList'] = $query->latest()->paginate(20)->appends($request->except('page'));
 
-        return view('admin.subscribe.subscribeList', $view);
+        return view('admin.subscribe.index', $view);
     }
 
     //订阅记录
-    public function subscribeLog(Request $request)
+    public function subscribeLog(Request $request, $id)
     {
-        $id    = $request->input('id');
         $query = UserSubscribeLog::with('user:email');
 
         if (isset($id)) {
             $query->whereUserSubscribeId($id);
         }
 
-        $view['subscribeLog'] = $query->latest()->paginate(20)->appends(
-            $request->except('page')
-        );
+        $view['subscribeLog'] = $query->latest()->paginate(20)->appends($request->except('page'));
 
-        return view('admin.subscribe.subscribeLog', $view);
+        return view('admin.subscribe.log', $view);
     }
 
     // 设置用户的订阅的状态
-    public function setSubscribeStatus(Request $request): JsonResponse
+    public function setSubscribeStatus(Request $request, $id): JsonResponse
     {
-        $id     = $request->input('id');
-        $status = $request->input('status', 0);
-
         if (empty($id)) {
             return Response::json(['status' => 'fail', 'message' => '操作异常']);
         }
+        $subscribe = UserSubscribe::find($id);
 
-        if ($status) {
-            UserSubscribe::find($id)->update(
-                ['status' => 1, 'ban_time' => null, 'ban_desc' => '']
-            );
+        if ($subscribe->status) {
+            $subscribe->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
         } else {
-            UserSubscribe::find($id)->update(
-                ['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']
-            );
+            $subscribe->update(['status' => 1, 'ban_time' => null, 'ban_desc' => '']);
         }
 
         return Response::json(['status' => 'success', 'message' => '操作成功']);
     }
-
 }

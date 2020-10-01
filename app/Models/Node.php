@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Node extends Model
 {
-
     protected $table = 'ss_node';
     protected $guarded = ['id', 'created_at'];
 
@@ -75,12 +74,19 @@ class Node extends Model
         return $query->whereStatus(1)->where('level', '<=', $user_level ?: 0);
     }
 
+    public function getSpeedLimitAttribute($value)
+    {
+        return $value / Mbps;
+    }
+
+    public function setSpeedLimitAttribute($value)
+    {
+        return $this->attributes['speed_limit'] = $value * Mbps;
+    }
+
     public function getNodeAccessUsersAttribute()
     {
-        return User::nodeAllowUsers(
-            $this->attributes['id'],
-            $this->attributes['level']
-        )->get();
+        return User::nodeAllowUsers($this->attributes['id'], $this->attributes['level'])->get();
     }
 
     public function getTypeLabelAttribute(): string
@@ -104,5 +110,4 @@ class Node extends Model
 
         return $type_label;
     }
-
 }

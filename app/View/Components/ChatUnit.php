@@ -6,13 +6,12 @@ use Illuminate\View\Component;
 
 class ChatUnit extends Component
 {
-
     public $user;
     public $ticket;
 
     public function __construct($user, $ticket)
     {
-        $this->user   = $user;
+        $this->user = $user;
         $this->ticket = $ticket;
     }
 
@@ -20,5 +19,4 @@ class ChatUnit extends Component
     {
         return view('components.chat-unit');
     }
-
 }

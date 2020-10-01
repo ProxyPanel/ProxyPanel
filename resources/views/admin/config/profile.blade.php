@@ -9,20 +9,18 @@
                 <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
             @if($errors->any())
-                <x-alert type="danger" :message="$errors->first()"/>
+                <x-alert type="danger" :message="$errors->all()"/>
             @endif
             <div class="panel-body">
-                <form action="/admin/profile" method="post" enctype="multipart/form-data" class="form-bordered">
-                    {{csrf_field()}}
+                <form action="{{route('admin.profile')}}" method="post" enctype="multipart/form-data" class="form-bordered">
+                    @csrf
                     <div class="form-group row">
                         <label for="old_password" class="col-md-2 col-form-label"> 旧密码 </label>
-                        <input type="password" class="form-control col-md-5 round" name="old_password" id="old_password"
-                                autofocus required/>
+                        <input type="password" class="form-control col-md-5 round" name="old_password" id="old_password" autofocus required/>
                     </div>
                     <div class="form-group row">
                         <label for="new_password" class="col-md-2 col-form-label"> 新密码 </label>
-                        <input type="password" class="form-control col-md-5 round" name="new_password" id="new_password"
-                                required/>
+                        <input type="password" class="form-control col-md-5 round" name="new_password" id="new_password" required/>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-success"> 提 交</button>

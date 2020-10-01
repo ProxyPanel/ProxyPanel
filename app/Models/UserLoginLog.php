@@ -10,14 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserLoginLog extends Model
 {
-
     public const UPDATED_AT = null;
-
     protected $table = 'user_login_log';
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
 }

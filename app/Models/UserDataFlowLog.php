@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserDataFlowLog extends Model
 {
-
     public $timestamps = false;
     protected $table = 'user_traffic_log';
 
@@ -25,5 +24,4 @@ class UserDataFlowLog extends Model
     {
         return $this->belongsTo(Node::class, 'node_id', 'id');
     }
-
 }

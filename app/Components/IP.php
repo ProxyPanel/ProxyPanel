@@ -14,19 +14,18 @@ use MaxMind\Db\Reader\InvalidDatabaseException;
 
 class IP
 {
-
     // 获取IP地址信息
     public static function getIPInfo($ip)
     {
         // IPv6 推荐使用ip.sb
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            Log::info('识别到IPv6，尝试解析：' . $ip);
-            $ipInfo = IP::IPSB($ip);
+            Log::info('识别到IPv6，尝试解析：'.$ip);
+            $ipInfo = self::IPSB($ip);
         } else {
-            $ipInfo = IP::ip2Region($ip);
-            if ( ! $ipInfo) {
-                Log::info('无法识别，尝试使用【IPIP库】库解析：' . $ip);
-                $ipInfo = IP::ip2Location($ip);
+            $ipInfo = self::ip2Region($ip);
+            if (!$ipInfo) {
+                Log::info('无法识别，尝试使用【IPIP库】库解析：'.$ip);
+                $ipInfo = self::ip2Location($ip);
             }
         }
 
@@ -36,15 +35,14 @@ class IP
     // 通过api.ip.sb查询IP地址的详细信息
     public static function IPSB($ip)
     {
-        $request = (new Client(['timeout' => 15]))
-            ->get('https://api.ip.sb/geoip/' . $ip);
+        $request = (new Client(['timeout' => 15]))->get('https://api.ip.sb/geoip/'.$ip);
         $message = json_decode($request->getBody(), true);
 
-        if ($request->getStatusCode() == 200) {
+        if ($request->getStatusCode() === 200) {
             return $message;
         }
 
-        Log::error('解析IPv6异常：' . $ip . PHP_EOL . var_export($request, true));
+        Log::error('解析IPv6异常：'.$ip.PHP_EOL.var_export($request, true));
 
         return false;
     }
@@ -56,7 +54,7 @@ class IP
         try {
             $ipInfo = (new Ip2Region())->memorySearch($ip);
         } catch (Exception $e) {
-            Log::error('【淘宝IP库】错误信息：' . $e->getMessage());
+            Log::error('【淘宝IP库】错误信息：'.$e->getMessage());
         }
 
         if ($ipInfo) {
@@ -78,14 +76,7 @@ class IP
         $filePath = database_path('IP2LOCATION-LITE-DB3.IPV6.BIN');
         try {
             $location = (new Database($filePath, Database::FILE_IO))
-                ->lookup(
-                    $ip,
-                    [
-                        Database::CITY_NAME,
-                        Database::REGION_NAME,
-                        Database::COUNTRY_NAME,
-                    ]
-                );
+                ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME,]);
 
             return [
                 'country'  => $location['countryName'],
@@ -93,7 +84,7 @@ class IP
                 'city'     => $location['cityName'],
             ];
         } catch (Exception $e) {
-            Log::error('【ip2Location】错误信息：' . $e->getMessage());
+            Log::error('【ip2Location】错误信息：'.$e->getMessage());
         }
 
         return false;
@@ -116,13 +107,10 @@ class IP
     public static function TaoBao(string $ip)
     {
         // 依据 http://ip.taobao.com/instructions 开发
-        $request = (new Client(['timeout' => 15]))
-            ->get(
-                'http://ip.taobao.com/outGetIpInfo?ip=' . $ip . '&accessKey=alibaba-inc'
-            );
+        $request = (new Client(['timeout' => 15]))->get('http://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
         $message = json_decode($request->getBody(), true);
 
-        if ($request->getStatusCode() == 200) {
+        if ($request->getStatusCode() === 200) {
             if ($message['code'] === 0) {
                 return [
                     'country'  => $message['data']['country'] === "XX" ? '' : $message['data']['country'],
@@ -131,16 +119,9 @@ class IP
                 ];
             }
 
-            Log::error(
-                '【淘宝IP库】返回错误信息：' . $ip . PHP_EOL . var_export(
-                    $message['msg'],
-                    true
-                )
-            );
+            Log::error('【淘宝IP库】返回错误信息：'.$ip.PHP_EOL.var_export($message['msg'], true));
         } else {
-            Log::error(
-                '【淘宝IP库】解析异常：' . $ip . PHP_EOL . var_export($request, true)
-            );
+            Log::error('【淘宝IP库】解析异常：'.$ip.PHP_EOL.var_export($request, true));
         }
 
         return false;
@@ -149,21 +130,16 @@ class IP
     // 通过api.map.baidu.com查询IP地址的详细信息
     public static function Baidu(string $ip)
     {
-        if ( ! env('BAIDU_APP_AK')) {
+        if (!env('BAIDU_APP_AK')) {
             Log::error('【百度IP库】AK信息缺失');
 
             return false;
         }
         // 依据 http://lbsyun.baidu.com/index.php?title=webapi/ip-api 开发
-        $request = (new Client(['timeout' => 15]))
-            ->get(
-                'https://api.map.baidu.com/location/ip?ak=' . env(
-                    'BAIDU_APP_AK'
-                ) . '&' . $ip . '&coor=bd09ll'
-            );
+        $request = (new Client(['timeout' => 15]))->get('https://api.map.baidu.com/location/ip?ak='.env('BAIDU_APP_AK').'&'.$ip.'&coor=bd09ll');
         $message = json_decode($request->getBody(), true);
 
-        if ($request->getStatusCode() == 200) {
+        if ($request->getStatusCode() === 200) {
             if ($message['status'] === 0) {
                 return [
                     'country'  => $message['content']['address_detail']['country'],
@@ -172,16 +148,9 @@ class IP
                 ];
             }
 
-            Log::error(
-                '【百度IP库】返回错误信息：' . $ip . PHP_EOL . var_export(
-                    $message['message'],
-                    true
-                )
-            );
+            Log::error('【百度IP库】返回错误信息：'.$ip.PHP_EOL.var_export($message['message'], true));
         } else {
-            Log::error(
-                '【百度IP库】解析异常：' . $ip . PHP_EOL . var_export($request, true)
-            );
+            Log::error('【百度IP库】解析异常：'.$ip.PHP_EOL.var_export($request, true));
         }
 
         return false;
@@ -200,9 +169,9 @@ class IP
                 'city'     => $location->city->name ?? '',
             ];
         } catch (AddressNotFoundException $e) {
-            Log::error('【GeoIP2】查询失败：' . $ip);
+            Log::error('【GeoIP2】查询失败：'.$ip);
         } catch (InvalidDatabaseException $e) {
-            Log::error('【GeoIP2】数据库无效：' . $ip);
+            Log::error('【GeoIP2】数据库无效：'.$ip);
         }
 
         return false;
@@ -219,7 +188,7 @@ class IP
         if (isset($_SERVER)) {
             if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
                 $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
-                $ip                     = $_SERVER['REMOTE_ADDR'];
+                $ip = $_SERVER['REMOTE_ADDR'];
             } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
             } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
@@ -243,5 +212,4 @@ class IP
 
         return $ip;
     }
-
 }

@@ -10,7 +10,6 @@ use Response;
 
 class WebApi
 {
-
     /**
      * Handle an incoming request.
      *
@@ -21,25 +20,25 @@ class WebApi
      */
     public function handle($request, Closure $next)
     {
-        $id   = $request->id;
-        $key  = $request->header('key');
+        $id = $request->id;
+        $key = $request->header('key');
         $time = $request->header('timestamp');
 
-        if ( ! isset($key)) {// 未提供 key
+        if (!isset($key)) {// 未提供 key
             return $this->returnData('Your key is null!');
         }
 
-        if ( ! isset($id)) {// 未提供 node
+        if (!isset($id)) {// 未提供 node
             return $this->returnData('Your Node Id is null!');
         }
 
         $node = Node::find($id);
-        if ( ! $node) {// node不存在
+        if (!$node) {// node不存在
             return $this->returnData('Unknown Node!');
         }
 
         $nodeAuth = NodeAuth::whereNodeId($id)->first();
-        if ( ! $nodeAuth || $key !== $nodeAuth->key) {// key不存在/不匹配
+        if (!$nodeAuth || $key !== $nodeAuth->key) {// key不存在/不匹配
             return $this->returnData('Token is invalid!');
         }
 
@@ -53,9 +52,6 @@ class WebApi
     // 返回数据
     public function returnData($message): JsonResponse
     {
-        return Response::json(
-            ['status' => 'fail', 'code' => 404, 'message' => $message]
-        );
+        return Response::json(['status' => 'fail', 'code' => 404, 'message' => $message]);
     }
-
 }

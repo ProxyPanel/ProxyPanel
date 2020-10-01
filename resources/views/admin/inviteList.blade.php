@@ -21,8 +21,8 @@
             <div class="col-md-8">
                 <div class="panel">
                     <div class="panel-heading">
-                        <h4 class="panel-title cyan-600"><i
-                                    class="icon wb-extension"></i>{{trans('home.invite_code_my_codes')}}
+                        <h4 class="panel-title cyan-600">
+                            <i class="icon wb-extension"></i>{{trans('home.invite_code_my_codes')}}
                         </h4>
                         <div class="panel-actions">
                             <button class="btn btn-primary" onclick="exportInvite()">批量导出</button>
@@ -46,17 +46,17 @@
                                     <td> {{$invite->id}} </td>
                                     <td>
                                         <a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy"
-                                                data-clipboard-text="{{url('/register?code='.$invite->code)}}">{{$invite->code}}</a>
+                                           data-clipboard-text="{{route('register',['code' => $invite->code])}}">{{$invite->code}}</a>
                                     </td>
                                     <td> {{$invite->dateline}} </td>
                                     <td>
-                                        {{$invite->inviter_id == 0 ? '系统生成' : (empty($invite->inviter) ? '【账号已删除】' : $invite->inviter->email)}}
+                                        {{$invite->inviter_id === 0 ? '系统生成' : ($invite->inviter->email ?? '【账号已删除】')}}
                                     </td>
                                     <td>
                                         {!!$invite->status_label!!}
                                     </td>
                                     <td>
-                                        {{$invite->status == 1 ? (empty($invite->invitee) ? '【账号已删除】' : $invite->invitee->email) : ''}}
+                                        {{$invite->status === 1 ? ($invite->invitee->email ?? '【账号已删除】') : ''}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -87,60 +87,59 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-      // 生成邀请码
-      function makeInvite() {
-        $.ajax({
-          type: 'POST',
-          url: '/admin/makeInvite',
-          async: false,
-          data: {_token: '{{csrf_token()}}'},
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                  then(() => window.location.reload());
-            }
-            else {
-              swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-            }
-          },
-        });
+        // 生成邀请码
+        function makeInvite() {
+            $.ajax({
+                method: 'POST',
+                url: '{{route('admin.invite.create')}}',
+                async: false,
+                data: {_token: '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    }
+                    else {
+                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    }
+                },
+            });
 
-        return false;
-      }
+            return false;
+        }
 
-      // 导出邀请码
-      function exportInvite() {
-        swal.fire({
-          title: '提示',
-          text: '确定导出所有邀请码吗',
-          type: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            window.location.href = '/admin/exportInvite';
-          }
-        });
-      }
+        // 导出邀请码
+        function exportInvite() {
+            swal.fire({
+                title: '提示',
+                text: '确定导出所有邀请码吗',
+                type: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = '{{route('admin.invite.export')}}';
+                }
+            });
+        }
 
-      const clipboard = new ClipboardJS('.mt-clipboard');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '复制成功',
-          type: 'success',
-          timer: 1300,
-          showConfirmButton: false,
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '复制成功',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '复制失败，请手动复制',
-          type: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '复制失败，请手动复制',
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection

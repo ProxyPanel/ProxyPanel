@@ -39,8 +39,8 @@ return [
     |
     */
 
-    'debug' => (bool)env('APP_DEBUG', false),
-    'demo'  => (bool)env('APP_DEMO', false),
+    'debug' => (bool) env('APP_DEBUG', false),
+    'demo'  => (bool) env('APP_DEMO', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -227,6 +227,7 @@ return [
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
+        'Helpers'      => App\Components\Helpers::class,
 
     ],
 

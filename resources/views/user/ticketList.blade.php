@@ -130,44 +130,44 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-      // 发起工单
-      function createTicket() {
-        const title = $('#title').val();
-        const content = $('#content').val();
+        // 发起工单
+        function createTicket() {
+            const title = $('#title').val();
+            const content = $('#content').val();
 
-        if (title.trim() === '') {
-          swal.fire({title: '您未填写工单标题!', type: 'warning'});
-          return false;
-        }
+            if (title.trim() === '') {
+                swal.fire({title: '您未填写工单标题!', type: 'warning'});
+                return false;
+            }
 
-        if (content.trim() === '') {
-          swal.fire({title: '您未填写工单内容!', type: 'warning'});
-          return false;
-        }
+            if (content.trim() === '') {
+                swal.fire({title: '您未填写工单内容!', type: 'warning'});
+                return false;
+            }
 
-        swal.fire({
-          title: '确定提交工单？',
-          type: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('/createTicket', {
-              _token: '{{csrf_token()}}',
-              title: title,
-              content: content,
-            }, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                    then(() => window.location.reload());
-              }
-              else {
-                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-              }
+            swal.fire({
+                title: '确定提交工单？',
+                type: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('/createTicket', {
+                        _token: '{{csrf_token()}}',
+                        title: title,
+                        content: content,
+                    }, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                then(() => window.location.reload());
+                        }
+                        else {
+                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
+        }
     </script>
 @endsection

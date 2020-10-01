@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Article extends Model
 {
-
     use SoftDeletes;
 
     protected $table = 'article';
@@ -22,5 +21,4 @@ class Article extends Model
     {
         return $query->whereType($type);
     }
-
 }

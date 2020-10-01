@@ -14,19 +14,19 @@
                 <div class="form-row">
                     <div class="form-group col-lg-2 col-sm-2">
                         <input type="number" class="form-control" name="id" id="id" value="{{Request::get('id')}}"
-                                placeholder="ID"/>
+                               placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <input type="text" class="form-control" name="email" id="email"
-                                value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::get('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <input type="text" class="form-control" name="ip" id="ip" value="{{Request::get('ip')}}"
-                                placeholder="IP"/>
+                               placeholder="IP"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-3">
                         <input type="number" class="form-control" name="port" id="port" value="{{Request::get('port')}}"
-                                placeholder="端口"/>
+                               placeholder="端口"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <select name="nodeId" id="nodeId" class="form-control" onChange="Search()">
@@ -39,7 +39,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="/admin/onlineIPMonitor" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.log.online')}}" class="btn btn-danger">重 置</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -97,18 +97,18 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
+        //回车检测
+        $(document).on('keypress', 'input', function(e) {
+            if (e.which === 13) {
+                Search();
+                return false;
+            }
+        });
 
-      // 搜索
-      function Search() {
-        window.location.href = '/admin/onlineIPMonitor?id=' + $('#id').val() + '&ip=' + $('#ip').val() + '&email=' +
-            $('#email').val() + '&port=' + $('#port').val() + '&nodeId=' + $('#nodeId option:selected').val();
-      }
+        // 搜索
+        function Search() {
+            window.location.href = '{{route('admin.log.online')}}' + $('#id').val() + '&ip=' + $('#ip').val() + '&email=' +
+                $('#email').val() + '&port=' + $('#port').val() + '&nodeId=' + $('#nodeId option:selected').val();
+        }
     </script>
 @endsection

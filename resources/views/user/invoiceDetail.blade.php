@@ -10,15 +10,15 @@
                     <div class="col-lg-3">
                         <h3>
                             <img
-                                    src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}"
-                                    class="navbar-brand-logo" alt="logo">
+                                src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}"
+                                class="navbar-brand-logo" alt="logo">
                             {{sysConfig('website_name')}}
                         </h3>
                     </div>
                     <div class="col-lg-3 offset-lg-6 text-right">
                         <h4>{{trans('home.invoice_title')}}</h4>
                         <p>{{trans('home.invoice_table_id')}}：<a class="font-size-20"
-                                    href="javascript:void(0)">{{$order->order_sn}}</a>
+                                                                 href="javascript:void(0)">{{$order->order_sn}}</a>
                         </p>
                         <p>{{trans('home.invoice_table_pay_way')}}
                             ：{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</p>
@@ -73,7 +73,7 @@
                                         <code>{{$order->goods->days}}</code> {{trans('home.day')}}
                                     @endif
                                 @else
-                                        余额充值
+                                    余额充值
                                 @endif
                             </td>
                             <td><strong>¥</strong> {{$order->origin_amount}} </td>

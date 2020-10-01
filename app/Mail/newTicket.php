@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 
 class newTicket extends Mailable implements ShouldQueue
 {
-
     use Queueable;
     use SerializesModels;
 
@@ -21,27 +20,22 @@ class newTicket extends Mailable implements ShouldQueue
 
     public function __construct($id, $title, $content)
     {
-        $this->id      = $id;
-        $this->title   = $title;
+        $this->id = $id;
+        $this->title = $title;
         $this->content = $content;
     }
 
     public function build(): newTicket
     {
-        return $this->view('emails.newTicket')->subject('新工单提醒')->with(
-            [
-                'title'   => $this->title,
-                'content' => $this->content,
-            ]
-        );
+        return $this->view('emails.newTicket')->subject('新工单提醒')->with([
+            'title'   => $this->title,
+            'content' => $this->content,
+        ]);
     }
 
     // 发件失败处理
     public function failed(Exception $e): void
     {
-        NotificationLog::whereId($this->id)->update(
-            ['status' => -1, 'error' => $e->getMessage()]
-        );
+        NotificationLog::whereId($this->id)->update(['status' => -1, 'error' => $e->getMessage()]);
     }
-
 }

@@ -9,12 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Config extends Model
 {
-
     public $timestamps = false;
     public $incrementing = false;
     protected $table = 'config';
     protected $primaryKey = 'name';
     protected $keyType = 'string';
     protected $fillable = ['value'];
-
 }

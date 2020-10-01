@@ -37,6 +37,8 @@
     "zoujingli/ip2region": "^1.0"
   },
   "require-dev": {
+    "andrey-helldar/laravel-lang-publisher": "^6.0",
+    "arcanedev/laravel-lang": "8.0",
     "barryvdh/laravel-debugbar": "^3.4",
     "barryvdh/laravel-ide-helper": "^2.8",
     "facade/ignition": "^2.0",
@@ -54,8 +56,6 @@
   "extra": {
 	"laravel": {
 	  "dont-discover": [
-		"barryvdh/laravel-debugbar",
-		"barryvdh/laravel-ide-helper",
 		"laravel/telescope"
 	  ]
 	}

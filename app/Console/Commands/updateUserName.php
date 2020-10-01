@@ -9,43 +9,33 @@ use Log;
 
 class updateUserName extends Command
 {
-
     protected $signature = 'updateUserName';
     protected $description = '升级用户昵称';
 
     public function handle(): void
     {
-        Log::info(
-            '----------------------------【升级用户昵称】开始----------------------------'
-        );
+        Log::info('----------------------------【升级用户昵称】开始----------------------------');
 
         $userList = User::all();
         foreach ($userList as $user) {
             $name = process($user->id);
             $user->update(['username' => $name]);
 
-            Log::info(
-                '---用户[ID：' . $user->id . ' - ' . $user->email . '] :' . $user->username . '---'
-            );
+            Log::info('---用户[ID：'.$user->id.' - '.$user->email.'] :'.$user->username.'---');
         }
 
         foreach ($userList as $user) {
-            if ($user->email == $user->username) {
+            if ($user->email === $user->username) {
                 $name = process($user->id);
 
                 $user->update(['username' => $name]);
 
-                Log::info(
-                    '---用户[ID：' . $user->id . ' - ' . $user->email . '] :' . $user->username . '---'
-                );
+                Log::info('---用户[ID：'.$user->id.' - '.$user->email.'] :'.$user->username.'---');
             }
         }
 
-        Log::info(
-            '----------------------------【升级用户昵称】结束----------------------------'
-        );
+        Log::info('----------------------------【升级用户昵称】结束----------------------------');
     }
-
 }
 
 function process($id)
@@ -67,11 +57,11 @@ function process($id)
             if (is_numeric($temp[1])) {
                 $name = QQInfo::getName3($temp[1]);
             } else {
-                echo $user->email . PHP_EOL;
+                echo $user->email.PHP_EOL;
             }
         }
     }
-    if ($name == false) {
+    if ($name === false) {
         $name = $user->email;
     }
 

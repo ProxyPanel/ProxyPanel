@@ -12,19 +12,18 @@ use Illuminate\Queue\SerializesModels;
 
 class addUser implements ShouldQueue
 {
-
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    private $data;
+    private array $data;
     private $nodes;
 
     public function __construct($userIds, $nodes)
     {
         $this->nodes = $nodes;
-        $data        = [];
+        $data = [];
         foreach (User::findMany($userIds) as $user) {
             $data[] = [
                 'uid'         => $user->id,
@@ -41,24 +40,18 @@ class addUser implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            $this->send(
-                ($node->server ?: $node->ip) . ':' . $node->push_port,
-                $node->auth->secret
-            );
+            $this->send(($node->server ?: $node->ip).':'.$node->push_port, $node->auth->secret);
         }
     }
 
     private function send($host, $secret): void
     {
-        $client = new Client(
-            [
-                'base_uri' => $host,
-                'timeout'  => 15,
-                'headers'  => ['secret' => $secret],
-            ]
-        );
+        $client = new Client([
+            'base_uri' => $host,
+            'timeout'  => 15,
+            'headers'  => ['secret' => $secret],
+        ]);
 
         $client->post('api/v2/user/add/list', ['json' => $this->data]);
     }
-
 }

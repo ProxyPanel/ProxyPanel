@@ -10,12 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class NodeAuth extends Model
 {
-
     protected $table = 'node_auth';
 
     public function node(): BelongsTo
     {
         return $this->belongsTo(Node::class);
     }
-
 }

@@ -39,13 +39,13 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.js" type="text/javascript"></script>
     <script>
-      Breakpoints();
+        Breakpoints();
     </script>
 </head>
 <body class="animsition page-login-v3 layout-full" style="position: relative;">
 <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
     <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
-                                            browser. Please
+    browser. Please
     <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
@@ -87,7 +87,7 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-  Config.set('assets', '/assets');
+    Config.set('assets', '/assets');
 </script>
 <!-- Page -->
 <script src="/assets/js/Site.js"></script>
@@ -95,30 +95,30 @@
 <script src="/assets/global/js/Plugin/slidepanel.js"></script>
 
 <script>
-  (function(document, window, $) {
-    'use strict';
+    (function(document, window, $) {
+        'use strict';
 
-    var Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
+        var Site = window.Site;
+        $(document).ready(function() {
+            Site.run();
+        });
+    })(document, window, jQuery);
 
-  // 每秒更新计时器
-  const countDownDate = new Date("{{$time}}").getTime();
-  const x = setInterval(function() {
-    const distance = countDownDate - new Date().getTime();
-    const days = Math.floor(distance / 86400000);
-    const hours = Math.floor(distance % 86400000 / 3600000);
-    const minutes = Math.floor(distance % 3600000 / 60000);
-    const seconds = Math.floor(distance % 60000 / 1000);
-    document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> 天 </span>: ' + hours +
-        '    <span>时</span>: ' + minutes + ' <span>分 </span>: ' + seconds + '<span> 秒</span> </h2>';
-    if (distance <= 0) {
-      clearInterval(x);
-      document.getElementById('countdown').remove();
-    }
-  }, 1000);
+    // 每秒更新计时器
+    const countDownDate = new Date("{{$time}}").getTime();
+    const x = setInterval(function() {
+        const distance = countDownDate - new Date().getTime();
+        const days = Math.floor(distance / 86400000);
+        const hours = Math.floor(distance % 86400000 / 3600000);
+        const minutes = Math.floor(distance % 3600000 / 60000);
+        const seconds = Math.floor(distance % 60000 / 1000);
+        document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> 天 </span>: ' + hours +
+            '    <span>时</span>: ' + minutes + ' <span>分 </span>: ' + seconds + '<span> 秒</span> </h2>';
+        if (distance <= 0) {
+            clearInterval(x);
+            document.getElementById('countdown').remove();
+        }
+    }, 1000);
 </script>
 </body>
 </html>

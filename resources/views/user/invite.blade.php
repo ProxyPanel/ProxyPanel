@@ -25,7 +25,7 @@
                     <div class="card">
                         <div class="card-block">
                             <h4 class="card-title cyan-600"><i
-                                        class="icon wb-extension"></i>{{trans('home.invite_code_my_codes')}}
+                                    class="icon wb-extension"></i>{{trans('home.invite_code_my_codes')}}
                             </h4>
                             <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                                 <thead class="thead-default">
@@ -43,8 +43,8 @@
                                         <td> {{$loop->iteration}} </td>
                                         <td>
                                             <a href="javascript:void(0)" class="mt-clipboard"
-                                                    data-clipboard-action="copy"
-                                                    data-clipboard-text="{{url('/register?aff='.Auth::id().'&code='.$invite->code)}}">{{$invite->code}}</a>
+                                               data-clipboard-action="copy"
+                                               data-clipboard-text="{{url('/register?aff='.Auth::id().'&code='.$invite->code)}}">{{$invite->code}}</a>
                                         </td>
                                         <td> {{$invite->dateline}} </td>
                                         <td>
@@ -80,41 +80,41 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-      // 生成邀请码
-      function makeInvite() {
-        $.ajax({
-          type: 'POST',
-          url: '/makeInvite',
-          async: false,
-          data: {_token: '{{csrf_token()}}'},
-          dataType: 'json',
-          success: function(ret) {
-            swal.fire({title: ret.message, type: 'success', timer: 1000}).then(() => {
-              if (ret.status === 'success') {
-                window.location.reload();
-              }
+        // 生成邀请码
+        function makeInvite() {
+            $.ajax({
+                method: 'POST',
+                url: '/makeInvite',
+                async: false,
+                data: {_token: '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                    swal.fire({title: ret.message, type: 'success', timer: 1000}).then(() => {
+                        if (ret.status === 'success') {
+                            window.location.reload();
+                        }
+                    });
+                },
             });
-          },
-        });
-        return false;
-      }
+            return false;
+        }
 
-      const clipboard = new ClipboardJS('.mt-clipboard');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '复制成功',
-          type: 'success',
-          timer: 1300,
-          showConfirmButton: false,
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '复制成功',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '复制失败，请手动复制',
-          type: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '复制失败，请手动复制',
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection

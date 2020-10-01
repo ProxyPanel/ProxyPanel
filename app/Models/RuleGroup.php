@@ -9,12 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RuleGroup extends Model
 {
-
     protected $table = 'rule_group';
-    protected $casts = [
-        'rules' => 'array',
-        'nodes' => 'array',
-    ];
+    protected $casts = ['rules' => 'array', 'nodes' => 'array'];
+    protected $guarded = ['id'];
 
     public function getTypeLabelAttribute(): string
     {
@@ -26,5 +23,4 @@ class RuleGroup extends Model
 
         return $type_label;
     }
-
 }

@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Order extends Model
 {
-
     protected $table = 'order';
     protected $dates = ['expired_at'];
     protected $fillable = ['expired_at', 'is_expire', 'status'];
@@ -44,14 +43,7 @@ class Order extends Model
 
     public function scopeRecentUnPay($query)
     {
-        return $query->whereStatus(0)->where(
-            'created_at',
-            '<=',
-            date(
-                "Y-m-d H:i:s",
-                strtotime("-15 minutes")
-            )
-        );
+        return $query->whereStatus(0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")));
     }
 
     public function scopeUserPrepay($query, $uid = null)
@@ -66,22 +58,12 @@ class Order extends Model
 
     public function scopeActivePlan($query)
     {
-        return $query->active()->with('goods')->whereHas(
-            'goods',
-            static function ($list) {
-                $list->whereType(2);
-            }
-        );
+        return $query->active()->with('goods')->whereHas('goods', static function ($list) { $list->whereType(2); });
     }
 
     public function scopeActivePackage($query)
     {
-        return $query->active()->with('goods')->whereHas(
-            'goods',
-            static function ($list) {
-                $list->whereType(1);
-            }
-        );
+        return $query->active()->with('goods')->whereHas('goods', static function ($list) { $list->whereType(1); });
     }
 
     public function scopeUserActivePlan($query, $uid = null)
@@ -174,21 +156,21 @@ class Order extends Model
 
         switch ($this->attributes['pay_type']) {
             case 1:
-                $pay_type_icon = $base_path . 'alipay.png';
+                $pay_type_icon = $base_path.'alipay.png';
                 break;
             case 2:
-                $pay_type_icon = $base_path . 'qq.png';
+                $pay_type_icon = $base_path.'qq.png';
                 break;
             case 3:
-                $pay_type_icon = $base_path . 'wechat.png';
+                $pay_type_icon = $base_path.'wechat.png';
                 break;
             case 5:
-                $pay_type_icon = $base_path . 'paypal.png';
+                $pay_type_icon = $base_path.'paypal.png';
                 break;
             case 0:
             case 4:
             default:
-                $pay_type_icon = $base_path . 'coin.png';
+                $pay_type_icon = $base_path.'coin.png';
         }
 
         return $pay_type_icon;
@@ -225,5 +207,4 @@ class Order extends Model
 
         return $pay_way_label;
     }
-
 }

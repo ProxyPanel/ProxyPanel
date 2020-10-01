@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PaymentCallback extends Model
 {
-
     protected $table = 'payment_callback';
 
     public function getStatusLabelAttribute(): string
@@ -32,5 +31,4 @@ class PaymentCallback extends Model
 
         return $status_label;
     }
-
 }

@@ -8,7 +8,6 @@ use Session;
 
 class SetLocale
 {
-
     /**
      * 变更语言
      *
@@ -30,5 +29,4 @@ class SetLocale
 
         return $next($request);
     }
-
 }

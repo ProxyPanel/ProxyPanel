@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Ticket extends Model
 {
-
     protected $table = 'ticket';
 
     public function scopeUid($query)
@@ -33,19 +32,13 @@ class Ticket extends Model
     {
         switch ($this->attributes['status']) {
             case 0:
-                $status_label = '<span class="badge badge-lg badge-success">' . trans(
-                        'home.ticket_table_status_wait'
-                    ) . '</span>';
+                $status_label = '<span class="badge badge-lg badge-success">'.trans('home.ticket_table_status_wait').'</span>';
                 break;
             case 1:
-                $status_label = '<span class="badge badge-lg badge-danger">' . trans(
-                        'home.ticket_table_status_reply'
-                    ) . '</span>';
+                $status_label = '<span class="badge badge-lg badge-danger">'.trans('home.ticket_table_status_reply').'</span>';
                 break;
             case 2:
-                $status_label = '<span class="badge badge-lg badge-default">' . trans(
-                        'home.ticket_table_status_close'
-                    ) . '</span>';
+                $status_label = '<span class="badge badge-lg badge-default">'.trans('home.ticket_table_status_close').'</span>';
                 break;
             default:
                 $status_label = '<span class="badge badge-lg badge-default"> 未知 </span>';
@@ -53,5 +46,4 @@ class Ticket extends Model
 
         return $status_label;
     }
-
 }

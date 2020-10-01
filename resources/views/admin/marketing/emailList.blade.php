@@ -23,7 +23,7 @@
                     </div>
                     <div class="form-group col-lg-3 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="/marketing/email" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.marketing.email')}}" class="btn btn-danger">重 置</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -68,20 +68,19 @@
 @endsection
 @section('script')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-            type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
-        $('#status').val({{Request::get('status')}});
-      });
+        $(document).ready(function() {
+            $('#status').val({{Request::get('status')}});
+        });
 
-      // 发送邮件
-      function send() {
-        swal.fire('抱歉', '由于作者闭源，开发无限期延期', 'info');
-      }
+        // 发送邮件
+        function send() {
+            swal.fire('抱歉', '开发中！敬请期待', 'info');
+        }
 
-      function Search() {
-        window.location.href = '/marketing/email?status=' + $('#status option:selected').val();
-      }
+        function Search() {
+            window.location.href = '{{route('admin.marketing.email')}}?status=' + $('#status option:selected').val();
+        }
     </script>
 @endsection

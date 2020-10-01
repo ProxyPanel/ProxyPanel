@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ReferralLog extends Model
 {
-
     protected $table = 'referral_log';
 
     public function scopeUid($query)
@@ -53,5 +52,4 @@ class ReferralLog extends Model
     {
         $this->attributes['commission'] = $value * 100;
     }
-
 }

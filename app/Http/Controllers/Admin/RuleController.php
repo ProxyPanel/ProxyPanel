@@ -15,20 +15,17 @@ use Validator;
 
 class RuleController extends Controller
 {
-
     // 审计规则列表
     public function index(Request $request)
     {
-        $type  = $request->input('type');
+        $type = $request->input('type');
         $query = Rule::query();
 
         if ($type) {
             $query->whereType($type);
         }
 
-        $view['rules'] = $query->paginate(15)->appends(
-            $request->except('page')
-        );
+        $view['rules'] = $query->paginate(15)->appends($request->except('page'));
 
         return view('admin.rule.index', $view);
     }
@@ -36,28 +33,23 @@ class RuleController extends Controller
     // 添加审计规则
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'type'    => 'required|between:1,4',
-                'name'    => 'required',
-                'pattern' => 'required',
-            ]
-        );
+        $validator = Validator::make($request->all(), [
+            'type'    => 'required|between:1,4',
+            'name'    => 'required',
+            'pattern' => 'required',
+        ]);
 
         if ($validator->fails()) {
-            return Response::json(
-                ['status' => 'fail', 'message' => $validator->errors()->all()]
-            );
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        $obj          = new Rule();
-        $obj->type    = $request->input('type');
-        $obj->name    = $request->input('name');
-        $obj->pattern = $request->input('pattern');
-        $obj->save();
+        $rule = new Rule();
+        $rule->type = $request->input('type');
+        $rule->name = $request->input('name');
+        $rule->pattern = $request->input('pattern');
+        $rule->save();
 
-        if ($obj->id) {
+        if ($rule->id) {
             return Response::json(['status' => 'success', 'message' => '提交成功']);
         }
 
@@ -67,13 +59,7 @@ class RuleController extends Controller
     // 编辑审计规则
     public function update(Request $request, $id): JsonResponse
     {
-        $ret = Rule::whereId($id)->update(
-            [
-                'name'    => $request->input('rule_name'),
-                'pattern' => $request->input('rule_pattern'),
-            ]
-        );
-        if ($ret) {
+        if (Rule::find($id)->update(['name' => $request->input('rule_name'), 'pattern' => $request->input('rule_pattern')])) {
             return Response::json(['status' => 'success', 'message' => '操作成功']);
         }
 
@@ -94,9 +80,7 @@ class RuleController extends Controller
                 }
             }
         } catch (Exception $e) {
-            return Response::json(
-                ['status' => 'fail', 'message' => '操作失败, ' . $e->getMessage()]
-            );
+            return Response::json(['status' => 'fail', 'message' => '操作失败, '.$e->getMessage()]);
         }
 
         return Response::json(['status' => 'success', 'message' => '操作成功']);
@@ -105,22 +89,17 @@ class RuleController extends Controller
     // 用户触发审计规则日志
     public function ruleLogList(Request $request)
     {
-        $uid    = $request->input('uid');
-        $email  = $request->input('email');
+        $uid = $request->input('uid');
+        $email = $request->input('email');
         $nodeId = $request->input('node_id');
         $ruleId = $request->input('rule_id');
-        $query  = RuleLog::query();
+        $query = RuleLog::query();
 
         if ($uid) {
             $query->whereUserId($uid);
         }
         if (isset($email)) {
-            $query->whereHas(
-                'user',
-                static function ($q) use ($email) {
-                    $q->where('email', 'like', '%' . $email . '%');
-                }
-            );
+            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
         }
         if ($nodeId) {
             $query->whereNodeId($nodeId);
@@ -131,9 +110,7 @@ class RuleController extends Controller
 
         $view['nodeList'] = Node::all();
         $view['ruleList'] = Rule::all();
-        $view['ruleLogs'] = $query->latest()->paginate(15)->appends(
-            $request->except('page')
-        );
+        $view['ruleLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
 
         return view('admin.rule.log', $view);
     }
@@ -144,9 +121,7 @@ class RuleController extends Controller
         try {
             $ret = RuleLog::query()->delete();
         } catch (Exception $e) {
-            return Response::json(
-                ['status' => 'fail', 'message' => '清理失败, ' . $e->getMessage()]
-            );
+            return Response::json(['status' => 'fail', 'message' => '清理失败, '.$e->getMessage()]);
         }
         $result = RuleLog::doesntExist();
         if ($ret || $result) {
@@ -155,5 +130,4 @@ class RuleController extends Controller
 
         return Response::json(['status' => 'fail', 'message' => '清理失败']);
     }
-
 }

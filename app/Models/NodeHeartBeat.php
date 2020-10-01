@@ -9,14 +9,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class NodeHeartBeat extends Model
 {
-
     public $timestamps = false;
     protected $table = 'ss_node_info';
 
     public function scopeRecently($query)
     {
-        return $query->where('log_time', '>=', strtotime("-10 minutes"))
-                     ->latest('log_time');
+        return $query->where('log_time', '>=', strtotime("-10 minutes"))->latest('log_time');
     }
-
 }

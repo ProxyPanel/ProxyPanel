@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class NodeOnlineUserIp extends Model
 {
-
     public $timestamps = false;
     protected $table = 'ss_node_ip';
 
@@ -23,5 +22,4 @@ class NodeOnlineUserIp extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

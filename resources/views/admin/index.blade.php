@@ -6,7 +6,7 @@
     <div class="page-content container-fluid">
         <div class="row" data-by-row="true">
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList" class="card card-shadow">
+                <a href="{{route('admin.user.index')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-account"></i>
@@ -19,7 +19,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?enable=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['enable'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-info">
                             <i class="icon md-account"></i>
@@ -32,7 +32,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?active=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['active'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-account"></i>
@@ -45,7 +45,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?unActive=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['unActive'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-account"></i>
@@ -58,7 +58,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?online=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['online'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-account"></i>
@@ -71,7 +71,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?expireWarning=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['expireWarning'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-danger">
                             <i class="icon md-account"></i>
@@ -84,7 +84,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?largeTraffic=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['largeTraffic'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-account"></i>
@@ -97,7 +97,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userList?flowAbnormal=1" class="card card-shadow">
+                <a href="{{route('admin.user.index', ['flowAbnormal'=>1])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-danger">
                             <i class="icon md-account"></i>
@@ -110,7 +110,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/node" class="card card-shadow">
+                <a href="{{route('admin.node.index')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-cloud"></i>
@@ -123,7 +123,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/node?status=0" class="card card-shadow">
+                <a href="{{route('admin.node.index', ['status'=>0])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-info">
                             <i class="icon md-cloud-off"></i>
@@ -136,7 +136,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/trafficLog" class="card card-shadow">
+                <a href="{{route('admin.log.traffic')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-time-countdown"></i>
@@ -149,7 +149,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/trafficLog" class="card card-shadow">
+                <a href="{{route('admin.log.traffic')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-time-countdown"></i>
@@ -162,7 +162,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/orderList" class="card card-shadow">
+                <a href="{{route('admin.order')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-primary">
                             <i class="icon md-ticket-star"></i>
@@ -175,7 +175,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/orderList" class="card card-shadow">
+                <a href="{{route('admin.order')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-info">
                             <i class="icon md-ticket-star"></i>
@@ -188,7 +188,7 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/orderList?status=2" class="card card-shadow">
+                <a href="{{route('admin.order', ['status'=>2])}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-ticket-star"></i>
@@ -201,8 +201,8 @@
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/orderList?status=2&range_time={{date('Y-m-d') . ',' . date('Y-m-d 23:59:59')}}"
-                        class="card card-shadow">
+                <a href="{{route('admin.order', ['status'=>2, 'range_time'=>date('Y-m-d') . ',' . date('Y-m-d 23:59:59')])}}"
+                   class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-success">
                             <i class="icon md-ticket-star"></i>
@@ -228,7 +228,7 @@
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 info-panel">
-                <a href="/admin/userRebateList" class="card card-shadow">
+                <a href="{{route('admin.aff.rebate')}}" class="card card-shadow">
                     <div class="card-block bg-white">
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-money"></i>
@@ -260,8 +260,8 @@
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     <script type="text/javascript">
-      $(function() {
-        $('.card').matchHeight();
-      });
+        $(function() {
+            $('.card').matchHeight();
+        });
     </script>
 @endsection

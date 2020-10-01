@@ -8,7 +8,6 @@ use App\Models\NodeLabel;
 
 class NodeService
 {
-
     public function getNodeGeo($id = false): int
     {
         if ($id) {
@@ -19,15 +18,9 @@ class NodeService
 
         $result = 0;
         foreach ($nodes as $node) {
-            $data = IP::IPSB(
-                $node->is_ddns ? gethostbyname($node->server) : $node->ip
-            );
-            if ($data) {
-                if (Node::whereId($node->id)->update(
-                    ['geo' => $data['latitude'] . ',' . $data['longitude']]
-                )) {
-                    $result++;
-                }
+            $data = IP::IPSB($node->is_ddns ? gethostbyname($node->server) : $node->ip);
+            if ($data && Node::whereId($node->id)->update(['geo' => $data['latitude'].','.$data['longitude']])) {
+                $result++;
             }
         }
 
@@ -40,14 +33,13 @@ class NodeService
         // 先删除所有该节点的标签
         NodeLabel::whereNodeId($nodeId)->delete();
 
-        if ( ! empty($labels) && is_array($labels)) {
+        if (!empty($labels) && is_array($labels)) {
             foreach ($labels as $label) {
-                $nodeLabel           = new NodeLabel();
-                $nodeLabel->node_id  = $nodeId;
+                $nodeLabel = new NodeLabel();
+                $nodeLabel->node_id = $nodeId;
                 $nodeLabel->label_id = $label;
                 $nodeLabel->save();
             }
         }
     }
-
 }

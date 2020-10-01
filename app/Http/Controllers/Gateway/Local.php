@@ -11,24 +11,16 @@ use Response;
 
 class Local extends AbstractPayment
 {
-
     public function purchase($request): JsonResponse
     {
         $order = Order::find($request->input('id'));
         $goods = Goods::find($request->input('goods_id'));
-        $user  = $order->user;
+        $user = $order->user;
 
         if ($user && $goods) {
             $user->update(['credit' => $user->credit - $order->amount]);
             // 记录余额操作日志
-            Helpers::addUserCreditLog(
-                $user->id,
-                $order->id,
-                $user->credit + $order->amount,
-                $user->credit,
-                -1 * $order->amount,
-                '购买商品' . $goods->name
-            );
+            Helpers::addUserCreditLog($user->id, $order->id, $user->credit + $order->amount, $user->credit, -1 * $order->amount, '购买商品'.$goods->name);
         }
 
         $order->update(['status' => 2]);
@@ -36,8 +28,5 @@ class Local extends AbstractPayment
         return Response::json(['status' => 'success', 'message' => '购买完成!']);
     }
 
-    public function notify($request): void
-    {
-    }
-
+    public function notify($request): void { }
 }

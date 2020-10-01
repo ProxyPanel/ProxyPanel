@@ -19,21 +19,21 @@
                     @isset($goods) 编辑商品 @else 添加商品 @endisset
                 </h1>
                 <div class="panel-actions">
-                    <a href="{{route('goods.index')}}" class="btn btn-danger">返 回</a>
+                    <a href="{{route('admin.goods.index')}}" class="btn btn-danger">返 回</a>
                 </div>
             </div>
             @if (Session::has('successMsg'))
                 <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
             @if($errors->any())
-                <x-alert type="danger" :message="$errors->first()"/>
+                <x-alert type="danger" :message="$errors->all()"/>
             @endif
             @if (Session::has('errorMsg'))
                 <x-alert type="danger" :message="Session::get('errorMsg')"/>
             @endif
             <div class="panel-body">
-                <form action=@isset($goods){{route('goods.update',$goods->id)}} @else {{route('goods.store')}} @endisset method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
-                    {{csrf_field()}}
+                <form action=@isset($goods){{route('admin.goods.update', $goods->id)}} @else {{route('admin.goods.store')}} @endisset method="post"
+                      enctype="multipart/form-data" class="form-horizontal" role="form">@csrf
                     @isset($goods) @method('PUT') @endisset
                     <div class="form-row">
                         <div class="col-lg-6 col-md-12">
@@ -122,13 +122,15 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="is_hot">热销</label>
                                 <div class="col-md-10">
-                                    <input type="checkbox" data-toggle="switch" name="is_hot" id="is_hot" data-on-color="primary" data-off-color="default" data-on-text="是" data-off-text="否" data-size="small">
+                                    <input type="checkbox" data-toggle="switch" name="is_hot" id="is_hot" data-on-color="primary" data-off-color="default"
+                                           data-on-text="是" data-off-text="否" data-size="small">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="status">状态</label>
                                 <div class="col-md-10">
-                                    <input type="checkbox" data-toggle="switch" name="status" id="status" data-on-color="primary" data-off-color="default" data-on-text="上架" data-off-text="下架" data-size="small">
+                                    <input type="checkbox" data-toggle="switch" name="status" id="status" data-on-color="primary" data-off-color="default"
+                                           data-on-text="上架" data-off-text="下架" data-size="small">
                                 </div>
                             </div>
                         </div>
@@ -149,8 +151,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="logo">商品图片</label>
                                 <div class="col-md-6">
-                                    <input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file=@if(isset($goods) && $goods->logo) "{{$goods->logo}}" @else
-                                        "/assets/images/default.png" @endif/>
+                                    <input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="{{asset($goods->logo ?? '/assets/images/default.png')}}"/>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -188,79 +189,79 @@
     <script src="/assets/global/js/Plugin/ascolorpicker.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
     <script type="text/javascript">
-      $('[data-toggle="switch"]').bootstrapSwitch();
-      @isset($goods)
-      $(document).ready(function() {
-        const type = $('input[name=\'type\']');
-        $('#id').val('{{$goods->id}}');
-        $("input[name='type'][value='{{$goods->type}}']").click();
-        type.attr('disabled', true);
-        $('#name').val('{{$goods->name}}');
-        $('#price').val('{{$goods->price}}');
-        $('#level').selectpicker('val', '{{$goods->level}}');
-          @if ($goods->type == 2)
-          $('#renew').val('{{$goods->renew}}');
-        $('#period').val('{{$goods->period}}');
-        $('#days').val('{{$goods->days}}').attr('disabled', true);
-          @endif
-          $('#traffic').val('{{$goods->traffic}}').attr('disabled', true);
-        $('#invite_num').val('{{$goods->invite_num}}');
-        $('#limit_num').val('{{$goods->limit_num}}');
-          @if ($goods->is_hot)
-          $('#is_hot').click();
-          @endif
-          @if ($goods->status)
-          $('#status').click();
-          @endif
-          $('#sort').val('{{$goods->sort}}');
-        $('#color').asColorPicker('val', '{{$goods->color}}');
-        $('#description').val('{{$goods->description}}');
-        $('#info').val('{!! $goods->info !!}');
-      });
-      @elseif(old('type'))
-      $(document).ready(function() {
-        const type = $('input[name=\'type\']');
-        $('#id').val('{{old('id')}}');
-        $("input[name='type'][value='{{old('type')}}']").click();
-        $('#name').val('{{old('name')}}');
-        $('#price').val('{{old('price')}}');
-        $('#level').selectpicker('val', '{{old('level')}}');
-          @if (old('type') == 2)
-          $('#renew').val('{{old('renew',0)}}');
-        $('#period').val('{{old('period',0)}}');
-        $('#days').val('{{old('days',0)}}');
-          @endif
-          $('#traffic').val('{{old('traffic')}}');
-        $('#invite_num').val('{{old('invite_num')}}');
-        $('#limit_num').val('{{old('limit_num')}}');
-          @if (old('is_hot'))
-          $('#is_hot').click();
-          @endif
-          @if (old('status'))
-          $('#status').click();
-          @endif
-          $('#sort').val('{{old('sort')}}');
-        $('#color').asColorPicker('val', '{{old('color')}}');
-        $('#description').val('{{old('description')}}');
-        $('#info').val('{{old('info')}}');
-      });
-      @else
-      $('#status').click();
+        $('[data-toggle="switch"]').bootstrapSwitch();
+        @isset($goods)
+        $(document).ready(function() {
+            const type = $('input[name=\'type\']');
+            $('#id').val('{{$goods->id}}');
+            $("input[name='type'][value='{{$goods->type}}']").click();
+            type.attr('disabled', true);
+            $('#name').val('{{$goods->name}}');
+            $('#price').val('{{$goods->price}}');
+            $('#level').selectpicker('val', '{{$goods->level}}');
+            @if ($goods->type == 2)
+            $('#renew').val('{{$goods->renew}}');
+            $('#period').val('{{$goods->period}}');
+            $('#days').val('{{$goods->days}}').attr('disabled', true);
+            @endif
+            $('#traffic').val('{{$goods->traffic}}').attr('disabled', true);
+            $('#invite_num').val('{{$goods->invite_num}}');
+            $('#limit_num').val('{{$goods->limit_num}}');
+            @if ($goods->is_hot)
+            $('#is_hot').click();
+            @endif
+            @if ($goods->status)
+            $('#status').click();
+            @endif
+            $('#sort').val('{{$goods->sort}}');
+            $('#color').asColorPicker('val', '{{$goods->color}}');
+            $('#description').val('{{$goods->description}}');
+            $('#info').val('{!! $goods->info !!}');
+        });
+        @elseif(old('type'))
+        $(document).ready(function() {
+            const type = $('input[name=\'type\']');
+            $('#id').val('{{old('id')}}');
+            $("input[name='type'][value='{{old('type')}}']").click();
+            $('#name').val('{{old('name')}}');
+            $('#price').val('{{old('price')}}');
+            $('#level').selectpicker('val', '{{old('level')}}');
+            @if (old('type') == 2)
+            $('#renew').val('{{old('renew',0)}}');
+            $('#period').val('{{old('period',0)}}');
+            $('#days').val('{{old('days',0)}}');
+            @endif
+            $('#traffic').val('{{old('traffic')}}');
+            $('#invite_num').val('{{old('invite_num')}}');
+            $('#limit_num').val('{{old('limit_num')}}');
+            @if (old('is_hot'))
+            $('#is_hot').click();
+            @endif
+            @if (old('status'))
+            $('#status').click();
+            @endif
+            $('#sort').val('{{old('sort')}}');
+            $('#color').asColorPicker('val', '{{old('color')}}');
+            $('#description').val('{{old('description')}}');
+            $('#info').val('{{old('info')}}');
+        });
+        @else
+        $('#status').click();
 
-      @endisset
+        @endisset
 
-      function itemControl(value) {
-        if (value === 1) {
-          $('.package-renew').hide();
+        function itemControl(value) {
+            if (value === 1) {
+                $('.package-renew').hide();
+            }
+            else {
+                $('.package-renew').show();
+            }
         }
-        else {
-          $('.package-renew').show();
-        }
-      }
 
-      // 选择商品类型
-      $('input[name=\'type\']').change(function() {
-        itemControl(parseInt($(this).val()));
-      });
+        // 选择商品类型
+        $('input[name=\'type\']').change(function() {
+            itemControl(parseInt($(this).val()));
+        });
     </script>
 @endsection

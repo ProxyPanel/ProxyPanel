@@ -9,7 +9,6 @@ use Redirect;
 
 class isAdmin
 {
-
     /**
      * 校验是否为管理员身份
      *
@@ -20,11 +19,10 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if ( ! Auth::getUser()->is_admin) {
+        if (!Auth::getUser()->is_admin) {
             return Redirect::to('/');
         }
 
         return $next($request);
     }
-
 }

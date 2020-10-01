@@ -16,17 +16,14 @@ use Log;
 
 class UserObserver
 {
-
     public function created(User $user): void
     {
-        $subscribe          = new UserSubscribe();
+        $subscribe = new UserSubscribe();
         $subscribe->user_id = $user->id;
-        $subscribe->code    = Helpers::makeSubscribeCode();
+        $subscribe->code = Helpers::makeSubscribeCode();
         $subscribe->save();
 
-        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)
-                          ->whereType(4)
-                          ->get();
+        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
         if ($allowNodes) {
             addUser::dispatchNow($user->id, $allowNodes);
         }
@@ -34,17 +31,9 @@ class UserObserver
 
     public function updated(User $user): void
     {
-        $changes    = $user->getChanges();
-        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)
-                          ->whereType(4)
-                          ->get();
-        if ($allowNodes
-            && Arr::exists($changes, 'level')
-            || Arr::exists($changes, 'group_id')
-            || Arr::exists($changes, 'port')
-            || Arr::exists($changes, 'passwd')
-            || Arr::exists($changes, 'speed_limit')
-            || Arr::exists($changes, 'enable')) {
+        $changes = $user->getChanges();
+        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
+        if ($allowNodes && Arr::hasAny($changes, ['level', 'group_id', 'port', 'passwd', 'speed_limit', 'enable'])) {
             editUser::dispatchNow($user, $allowNodes);
         }
     }
@@ -80,19 +69,16 @@ class UserObserver
 
             DB::commit();
         } catch (Exception $e) {
-            Log::error('删除用户相关信息错误：' . $e->getMessage());
+            Log::error('删除用户相关信息错误：'.$e->getMessage());
             DB::rollBack();
         }
     }
 
     public function deleted(User $user): void
     {
-        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)
-                          ->whereType(4)
-                          ->get();
+        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
         if ($allowNodes) {
             delUser::dispatchNow($user->id, $allowNodes);
         }
     }
-
 }

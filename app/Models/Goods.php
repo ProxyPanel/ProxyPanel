@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Goods extends Model
 {
-
     use SoftDeletes;
 
     protected $table = 'goods';
     protected $dates = ['deleted_at'];
+    protected $guarded = ['id'];
 
     public function scopeType($query, $type)
     {
@@ -26,7 +26,7 @@ class Goods extends Model
         return $value / 100;
     }
 
-    public function setPriceAttribute($value): void
+    public function setPriceAttribute($value)
     {
         $this->attributes['price'] = $value * 100;
     }
@@ -38,12 +38,11 @@ class Goods extends Model
 
     public function setRenewAttribute($value)
     {
-        return $this->attributes['renew'] = $value * 100;
+        $this->attributes['renew'] = $value * 100;
     }
 
     public function getTrafficLabelAttribute()
     {
         return flowAutoShow($this->attributes['traffic'] * MB);
     }
-
 }

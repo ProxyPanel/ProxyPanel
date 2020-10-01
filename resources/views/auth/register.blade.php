@@ -8,21 +8,21 @@
     <form action="/register" method="post" id="register-form">
         @if(sysConfig('is_register'))
             @if($errors->any())
-                <x-alert type="danger" :message="$errors->first()"/>
+                <x-alert type="danger" :message="$errors->all()"/>
             @endif
             @csrf
             <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
             <input type="hidden" name="aff" value="{{Session::get('register_aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="username"
-                        value="{{Request::old('username') ? : Request::get('username')}}" required/>
+                       value="{{Request::old('username') ? : Request::get('username')}}" required/>
                 <label class="floating-label" for="username">{{trans('auth.username')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 @if($emailList)
                     <div class="input-group">
                         <input type="text" class="form-control" autocomplete="off" name="emailHead"
-                                value="{{Request::old('emailHead')}}" id="emailHead" required/>
+                               value="{{Request::old('emailHead')}}" id="emailHead" required/>
                         <label class="floating-label" for="emailHead">{{trans('auth.email')}}</label>
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-indigo-600 text-white">@</span>
@@ -37,7 +37,7 @@
                     </div>
                 @else
                     <input type="email" class="form-control" autocomplete="off" name="email"
-                            value="{{Request::old('email')}}" id="email" required/>
+                           value="{{Request::old('email')}}" id="email" required/>
                     <label class="floating-label" for="email">{{trans('auth.email')}}</label>
                 @endif
             </div>
@@ -45,7 +45,7 @@
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <div class="input-group" data-plugin="inputGroupFile">
                         <input type="text" class="form-control" name="verify_code"
-                                value="{{Request::old('verify_code')}}" required/>
+                               value="{{Request::old('verify_code')}}" required/>
                         <label class="floating-label" for="verify_code">{{trans('auth.captcha')}}</label>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="sendCode" onclick="sendVerifyCode()">
@@ -66,10 +66,10 @@
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <input type="password" class="form-control" name="code"
-                            value="{{Request::old('code') ? : Request::get('code')}}"
-                            @if(sysConfig('is_invite_register') == 2) required @endif/>
+                           value="{{Request::old('code') ? : Request::get('code')}}"
+                           @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label"
-                            for="code">{{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)
+                           for="code">{{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)
                             ({{trans('auth.optional')}}) @endif</label>
                 </div>
                 @if(sysConfig('is_free_code'))
@@ -84,7 +84,7 @@
                     <input type="text" class="form-control" name="captcha" required/>
                     <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
                     <img src="{{captcha_src()}}" class="float-right"
-                            onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
+                         onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
                 </div>
                 @break
                 @case(2)<!-- Geetest -->
@@ -122,7 +122,7 @@
             <x-alert type="danger" :message="trans('auth.system_maintenance')"/>
         @endif
         <a href="/login"
-                class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
+           class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
         @if(sysConfig('is_register'))
             <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register')}}</button>
         @endif
@@ -130,7 +130,7 @@
 @endsection
 @section('modal')
     <div class="modal fade modal-info text-left" id="tos" aria-hidden="true" aria-labelledby="tos" role="dialog"
-            tabindex="-1">
+         tabindex="-1">
         <div class="modal-dialog modal-simple modal-sidebar modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -152,7 +152,7 @@
         </div>
     </div>
     <div class="modal fade modal-info text-left" id="aup" aria-hidden="true" aria-labelledby="aup" role="dialog"
-            tabindex="-1">
+         tabindex="-1">
         <div class="modal-dialog modal-simple modal-sidebar modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -184,70 +184,70 @@
     <script type="text/javascript">
         @if($emailList)
         function getEmail() {
-          let email = $('#emailHead').val().trim();
-          const emailTail = $('#emailTail').val();
-          if (email === '') {
-            swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
-            return false;
-          }
-          email += '@' + emailTail;
-          $('#email').val(email);
-          return email;
+            let email = $('#emailHead').val().trim();
+            const emailTail = $('#emailTail').val();
+            if (email === '') {
+                swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
+                return false;
+            }
+            email += '@' + emailTail;
+            $('#email').val(email);
+            return email;
         }
         @endif
 
         // 发送注册验证码
         function sendVerifyCode() {
-          let flag = true; // 请求成功与否标记
-          let email = $('#email').val().trim();
+            let flag = true; // 请求成功与否标记
+            let email = $('#email').val().trim();
             @if($emailList)
                 email = getEmail();
             @endif
 
             if (email === '') {
-              swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
-              return false;
+                swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
+                return false;
             }
 
-          $.ajax({
-            type: 'POST',
-            url: '/sendCode',
-            async: false,
-            data: {_token: '{{csrf_token()}}', email: email},
-            dataType: 'json',
-            success: function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, type: 'success'});
-                $('#sendCode').attr('disabled', true);
-                flag = true;
-              }
-              else {
-                swal.fire({title: ret.message, type: 'error', timer: 1000, showConfirmButton: false});
-                $('#sendCode').attr('disabled', false);
-                flag = false;
-              }
-            },
-            error: function() {
-              swal.fire({title: '发送失败', type: 'error'});
-              flag = false;
-            },
-          });
+            $.ajax({
+                method: 'POST',
+                url: '/sendCode',
+                async: false,
+                data: {_token: '{{csrf_token()}}', email: email},
+                dataType: 'json',
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success'});
+                        $('#sendCode').attr('disabled', true);
+                        flag = true;
+                    }
+                    else {
+                        swal.fire({title: ret.message, type: 'error', timer: 1000, showConfirmButton: false});
+                        $('#sendCode').attr('disabled', false);
+                        flag = false;
+                    }
+                },
+                error: function() {
+                    swal.fire({title: '发送失败', type: 'error'});
+                    flag = false;
+                },
+            });
 
-          // 请求成功才开始倒计时
-          if (flag) {
-            // 60秒后才能重新申请发送
-            let left_time = 60;
-            const tt = window.setInterval(function() {
-              left_time--;
-              if (left_time <= 0) {
-                window.clearInterval(tt);
-                $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
-              }
-              else {
-                $('#sendCode').text(left_time + ' s');
-              }
-            }, 1000);
-          }
+            // 请求成功才开始倒计时
+            if (flag) {
+                // 60秒后才能重新申请发送
+                let left_time = 60;
+                const tt = window.setInterval(function() {
+                    left_time--;
+                    if (left_time <= 0) {
+                        window.clearInterval(tt);
+                        $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
+                    }
+                    else {
+                        $('#sendCode').text(left_time + ' s');
+                    }
+                }, 1000);
+            }
         }
 
         $('#register-form').submit(function(event) {
@@ -257,18 +257,18 @@
 
             @switch(sysConfig('is_captcha'))
             @case(3)
-          // 先检查Google reCAPTCHA有没有进行验证
-          if ($('#g-recaptcha-response').val() === '') {
-            swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
-            return false;
-          }
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#g-recaptcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                return false;
+            }
             @break
             @case(4)
-          // 先检查Google reCAPTCHA有没有进行验证
-          if ($('#h-captcha-response').val() === '') {
-            swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
-            return false;
-          }
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#h-captcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                return false;
+            }
             @break
             @default
             @endswitch

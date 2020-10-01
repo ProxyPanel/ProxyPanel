@@ -2,8 +2,9 @@
 @section('title', trans('auth.login'))
 @section('content')
     <form action="/login" method="post" id="login-form">
+        @csrf
         @if($errors->any())
-            <x-alert type="danger" :message="$errors->first()"/>
+            <x-alert type="danger" :message="$errors->all()"/>
         @endif
         @if (Session::get('regSuccessMsg'))
             <x-alert type="success" :message="Session::get('regSuccessMsg')"/>
@@ -14,9 +15,8 @@
         </div>
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input type="password" class="form-control" name="password" value="{{Request::old('password')}}"
-                    autocomplete required/>
+                   autocomplete required/>
             <label class="floating-label" for="password">{{trans('auth.password')}}</label>
-            {{csrf_field()}}
         </div>
         @switch(sysConfig('is_captcha'))
             @case(1)<!-- Default Captcha -->
@@ -51,37 +51,37 @@
                 <label for="inputCheckbox" for="remember">{{trans('auth.remember')}}</label>
             </div>
             <a href="/resetPassword"
-                    class="btn btn-xs bg-red-500 text-white float-right">{{trans('auth.forget_password')}}</a>
+               class="btn btn-xs bg-red-500 text-white float-right">{{trans('auth.forget_password')}}</a>
         </div>
         <button type="submit"
                 class="btn btn-lg btn-block mt-40 bg-indigo-500 text-white">{{trans('auth.login')}}</button>
     </form>
     @if(sysConfig('is_register'))
         <p>{{trans('auth.register_tip')}} <a href="/register"
-                    class="btn btn-xs bg-purple-500 text-white">{{trans('auth.register')}} <i
-                        class="icon wb-arrow-right" aria-hidden="true"></i></a></p>
+                                             class="btn btn-xs bg-purple-500 text-white">{{trans('auth.register')}} <i
+                    class="icon wb-arrow-right" aria-hidden="true"></i></a></p>
     @endif
 @endsection
 @section('script')
     <script type="text/javascript">
-      $('#login-form').submit(function(event) {
-          @switch(sysConfig('is_captcha'))
-          @case(3)
-        // 先检查Google reCAPTCHA有没有进行验证
-        if ($('#g-recaptcha-response').val() === '') {
-          swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
-          return false;
-        }
-          @break
-          @case(4)
-        // 先检查Google reCAPTCHA有没有进行验证
-        if ($('#h-captcha-response').val() === '') {
-          swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
-          return false;
-        }
-          @break
-          @default
-          @endswitch
-      });
+        $('#login-form').submit(function(event) {
+            @switch(sysConfig('is_captcha'))
+            @case(3)
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#g-recaptcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                return false;
+            }
+            @break
+            @case(4)
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#h-captcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                return false;
+            }
+            @break
+            @default
+            @endswitch
+        });
     </script>
 @endsection

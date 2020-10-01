@@ -9,12 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Country extends Model
 {
-
     public $timestamps = false;
     public $incrementing = false;
     protected $table = 'country';
     protected $primaryKey = 'code';
     protected $keyType = 'string';
     protected $fillable = ['*'];
-
 }

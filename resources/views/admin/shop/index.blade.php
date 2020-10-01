@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>商品列表</h1>
                 <div class="panel-actions">
-                    <a href="{{route('goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
+                    <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('goods.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.goods.index')}}" class="btn btn-danger">重 置</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -54,9 +54,9 @@
                             <td> {{$goods->id}} </td>
                             <td> {{$goods->name}} </td>
                             <td>
-                                @if($goods->type == 1)
+                                @if($goods->type === 1)
                                     流量包
-                                @elseif($goods->type == 2)
+                                @elseif($goods->type === 2)
                                     套餐
                                 @else
                                     充值
@@ -64,8 +64,8 @@
                             </td>
                             <td>
                                 @if($goods->logo)
-                                    <a href="{{$goods->logo}}" target="_blank">
-                                        <img src="{{$goods->logo}}" alt="logo" class="h-50"/>
+                                    <a href="{{asset($goods->logo)}}" target="_blank">
+                                        <img src="{{asset($goods->logo)}}" alt="logo" class="h-50"/>
                                     </a>
                                 @endif
                             </td>
@@ -91,10 +91,10 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{route('goods.edit',$goods->id)}}" class="btn btn-primary">
+                                    <a href="{{route('admin.goods.edit', $goods->id)}}" class="btn btn-primary">
                                         <i class="icon wb-edit"></i>
                                     </a>
-                                    <button onclick="delGoods('{{route('goods.destroy',$goods->id)}}','{{$goods->name}}')" class="btn btn-danger">
+                                    <button onclick="delGoods('{{route('admin.goods.destroy', $goods->id)}}','{{$goods->name}}')" class="btn btn-danger">
                                         <i class="icon wb-trash"></i>
                                     </button>
                                 </div>
@@ -124,42 +124,44 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
-        $('#type').val({{Request::get('type')}});
-        $('#status').val({{Request::get('status')}});
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('goods.index')}}?type=' + $('#type option:selected').val() + '&status=' +
-            $('#status option:selected').val();
-      }
-
-      // 删除商品
-      function delGoods(url, name) {
-        swal.fire({
-          title: '警告',
-          text: '确定删除商品 【' + name + '】 ?',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              url: url,
-              type: 'DELETE',
-              dataType: 'json',
-              data: {_token: '{{csrf_token()}}'},
-              success: function(ret) {
-                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-                  window.location.reload();
-                });
-              },
-
-            });
-          }
+        $(document).ready(function() {
+            $('#type').val({{Request::get('type')}});
+            $('#status').val({{Request::get('status')}});
         });
-      }
+
+        // 搜索
+        function Search() {
+            window.location.href = '{{route('admin.goods.index')}}?type=' + $('#type option:selected').val() + '&status=' +
+                $('#status option:selected').val();
+        }
+
+        // 删除商品
+        function delGoods(url, name) {
+            swal.fire({
+                title: '警告',
+                text: '确定删除商品 【' + name + '】 ?',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            }
+                            else {
+                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            }
+                        }
+                    });
+                }
+            });
+        }
     </script>
 @endsection

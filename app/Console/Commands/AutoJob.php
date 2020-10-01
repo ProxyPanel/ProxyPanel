@@ -20,7 +20,6 @@ use Log;
 
 class AutoJob extends Command
 {
-
     protected $signature = 'autoJob';
     protected $description = '自动化任务';
 
@@ -56,16 +55,13 @@ class AutoJob extends Command
 
         // 检查维护模式
         if (sysConfig('maintenance_mode')) {
-            Config::whereIn('name', ['maintenance_mode', 'maintenance_time'])
-                  ->update(['value' => null]);
+            Config::whereIn('name', ['maintenance_mode', 'maintenance_time'])->update(['value' => null]);
         }
 
-        $jobEndTime  = microtime(true);
+        $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
-        Log::info(
-            '---【' . $this->description . '】完成---，耗时' . $jobUsedTime . '秒'
-        );
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
     }
 
     // 关闭超时未支付本地订单
@@ -86,15 +82,13 @@ class AutoJob extends Command
 
         // 优惠券到期 / 用尽的 自动置无效
         Coupon::whereStatus(0)
-              ->where('end_time', '<=', time())
-              ->orWhereIn('type', [1, 2])
-              ->whereUsableTimes(0)
-              ->update(['status' => 2]);
+            ->where('end_time', '<=', time())
+            ->orWhereIn('type', [1, 2])
+            ->whereUsableTimes(0)
+            ->update(['status' => 2]);
 
         // 邀请码到期自动置无效
-        Invite::whereStatus(0)
-              ->where('dateline', '<=', date('Y-m-d H:i:s'))
-              ->update(['status' => 2]);
+        Invite::whereStatus(0)->where('dateline', '<=', date('Y-m-d H:i:s'))->update(['status' => 2]);
     }
 
     // 封禁访问异常的订阅链接
@@ -103,31 +97,20 @@ class AutoJob extends Command
         if (sysConfig('is_subscribe_ban')) {
             $subscribe_ban_times = sysConfig('subscribe_ban_times');
             foreach (User::activeUser()->with('subscribe')->get() as $user) {
-                if ( ! $user->subscribe || $user->subscribe->status === 0) { // 无订阅链接 或 已封
+                if (!$user->subscribe || $user->subscribe->status === 0) { // 无订阅链接 或 已封
                     continue;
                 }
                 // 24小时内不同IP的请求次数
                 $request_times = $user->subscribeLogs()
-                                      ->where(
-                                          'request_time',
-                                          '>=',
-                                          date(
-                                              "Y-m-d H:i:s",
-                                              strtotime("-1 days")
-                                          )
-                                      )
-                                      ->distinct()
-                                      ->count('request_ip');
+                    ->where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-1 days")))
+                    ->distinct()
+                    ->count('request_ip');
                 if ($request_times >= $subscribe_ban_times) {
-                    $user->subscribe->update(
-                        [
-                            'status'   => 0,
-                            'ban_time' => strtotime(
-                                "+" . sysConfig('traffic_ban_time') . " minutes"
-                            ),
-                            'ban_desc' => '存在异常，自动封禁',
-                        ]
-                    );
+                    $user->subscribe->update([
+                        'status'   => 0,
+                        'ban_time' => strtotime("+".sysConfig('traffic_ban_time')." minutes"),
+                        'ban_desc' => '存在异常，自动封禁',
+                    ]);
 
                     // 记录封禁日志
                     $this->addUserBanLog($user->id, 0, '【完全封禁订阅】-订阅24小时内请求异常');
@@ -143,14 +126,11 @@ class AutoJob extends Command
      * @param  int  $time  封禁时长，单位分钟
      * @param  string  $description  封禁理由
      */
-    private function addUserBanLog(
-        int $userId,
-        int $time,
-        string $description
-    ): void {
-        $log              = new UserBanedLog();
-        $log->user_id     = $userId;
-        $log->time        = $time;
+    private function addUserBanLog(int $userId, int $time, string $description): void
+    {
+        $log = new UserBanedLog();
+        $log->user_id = $userId;
+        $log->time = $time;
         $log->description = $description;
         $log->save();
     }
@@ -162,7 +142,7 @@ class AutoJob extends Command
         $userList = User::activeUser()->whereBanTime(null);
         if (sysConfig('is_traffic_ban')) {
             $trafficBanValue = sysConfig('traffic_ban_value');
-            $trafficBanTime  = sysConfig('traffic_ban_time');
+            $trafficBanTime = sysConfig('traffic_ban_time');
             foreach ($userList->get() as $user) {
                 // 对管理员豁免
                 if ($user->is_admin) {
@@ -170,32 +150,21 @@ class AutoJob extends Command
                 }
 
                 // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
-                $totalTraffic = UserHourlyDataFlow::userRecentUsed($user->id)
-                                                  ->sum('total');
+                $totalTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
                 if ($totalTraffic >= $trafficBanValue * GB) {
-                    $user->update(
-                        [
-                            'enable'   => 0,
-                            'ban_time' => strtotime(
-                                "+" . $trafficBanTime . " minutes"
-                            ),
-                        ]
-                    );
+                    $user->update([
+                        'enable'   => 0,
+                        'ban_time' => strtotime("+".$trafficBanTime." minutes"),
+                    ]);
 
                     // 写入日志
-                    $this->addUserBanLog(
-                        $user->id,
-                        $trafficBanTime,
-                        '【临时封禁代理】-1小时内流量异常'
-                    );
+                    $this->addUserBanLog($user->id, $trafficBanTime, '【临时封禁代理】-1小时内流量异常');
                 }
             }
         }
 
         // 禁用流量超限用户
-        foreach (
-            $userList->whereRaw("u + d >= transfer_enable")->get() as $user
-        ) {
+        foreach ($userList->whereRaw("u + d >= transfer_enable")->get() as $user) {
             $user->update(['enable' => 0]);
 
             // 写入日志
@@ -207,10 +176,7 @@ class AutoJob extends Command
     private function unblockUsers(): void
     {
         // 解封被临时封禁的账号
-        $userList = User::whereEnable(0)
-                        ->where('status', '>=', 0)
-                        ->whereNotNull('ban_time')
-                        ->get();
+        $userList = User::whereEnable(0)->where('status', '>=', 0)->whereNotNull('ban_time')->get();
         foreach ($userList as $user) {
             if ($user->ban_time < time()) {
                 $user->update(['enable' => 1, 'ban_time' => null]);
@@ -222,11 +188,11 @@ class AutoJob extends Command
 
         // 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）
         $userList = User::whereEnable(0)
-                        ->where('status', '>=', 0)
-                        ->whereBanTime(null)
-                        ->where('expired_at', '>=', date('Y-m-d'))
-                        ->whereRaw("u + d < transfer_enable")
-                        ->get();
+            ->where('status', '>=', 0)
+            ->whereBanTime(null)
+            ->where('expired_at', '>=', date('Y-m-d'))
+            ->whereRaw("u + d < transfer_enable")
+            ->get();
         foreach ($userList as $user) {
             $user->update(['enable' => 1]);
 
@@ -255,15 +221,13 @@ class AutoJob extends Command
     {
         if (sysConfig('is_node_offline')) {
             $offlineCheckTimes = sysConfig('offline_check_times');
-            $onlineNode        = NodeHeartBeat::recently()->distinct()->pluck(
-                'node_id'
-            )->toArray();
+            $onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
             foreach (Node::whereIsRelay(0)->whereStatus(1)->get() as $node) {
                 // 10分钟内无节点负载信息则认为是后端炸了
-                $nodeTTL = ! in_array($node->id, $onlineNode);
+                $nodeTTL = !in_array($node->id, $onlineNode, true);
                 if ($nodeTTL && $offlineCheckTimes) {
                     // 已通知次数
-                    $cacheKey = 'offline_check_times' . $node->id;
+                    $cacheKey = 'offline_check_times'.$node->id;
                     if (Cache::has($cacheKey)) {
                         $times = Cache::get($cacheKey);
                     } else {
@@ -274,14 +238,10 @@ class AutoJob extends Command
 
                     if ($times < $offlineCheckTimes) {
                         Cache::increment($cacheKey);
-                        PushNotification::send(
-                            '节点异常警告',
-                            "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**"
-                        );
+                        PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
                     }
                 }
             }
         }
     }
-
 }

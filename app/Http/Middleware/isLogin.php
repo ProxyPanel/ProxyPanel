@@ -8,7 +8,6 @@ use Redirect;
 
 class isLogin
 {
-
     /**
      * 校验是否已登录
      *
@@ -25,5 +24,4 @@ class isLogin
 
         return $next($request);
     }
-
 }

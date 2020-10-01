@@ -15,7 +15,7 @@ define('Day', 86400);
 define('Mbps', 125000);
 
 // base64加密（处理URL）
-if ( ! function_exists('base64url_encode')) {
+if (!function_exists('base64url_encode')) {
     function base64url_encode($data)
     {
         return strtr(base64_encode($data), ['+' => '-', '/' => '_', '=' => '']);
@@ -23,7 +23,7 @@ if ( ! function_exists('base64url_encode')) {
 }
 
 // base64解密（处理URL）
-if ( ! function_exists('base64url_decode')) {
+if (!function_exists('base64url_decode')) {
     function base64url_decode($data)
     {
         return base64_decode(strtr($data, '-_', '+/'));
@@ -31,106 +31,65 @@ if ( ! function_exists('base64url_decode')) {
 }
 
 // 根据流量值自动转换单位输出
-if ( ! function_exists('flowAutoShow')) {
+if (!function_exists('flowAutoShow')) {
     function flowAutoShow($value)
     {
         $value = abs($value);
         if ($value >= PB) {
-            return round($value / PB, 2) . "PB";
+            return round($value / PB, 2)."PB";
         }
 
         if ($value >= TB) {
-            return round($value / TB, 2) . "TB";
+            return round($value / TB, 2)."TB";
         }
 
         if ($value >= GB) {
-            return round($value / GB, 2) . "GB";
+            return round($value / GB, 2)."GB";
         }
 
         if ($value >= MB) {
-            return round($value / MB, 2) . "MB";
+            return round($value / MB, 2)."MB";
         }
 
         if ($value >= KB) {
-            return round($value / KB, 2) . "KB";
+            return round($value / KB, 2)."KB";
         }
 
-        return round($value, 2) . "B";
-    }
-}
-
-if ( ! function_exists('toMB')) {
-    function toMB($traffic)
-    {
-        return $traffic * MB;
-    }
-}
-
-if ( ! function_exists('toGB')) {
-    function toGB($traffic)
-    {
-        return $traffic * GB;
-    }
-}
-
-if ( ! function_exists('flowToGB')) {
-    function flowToGB($traffic)
-    {
-        return $traffic / GB;
-    }
-}
-
-// 文件大小转换
-if ( ! function_exists('formatBytes')) {
-    function formatBytes($bytes, $precision = 2)
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $bytes = max($bytes, 0);
-        $pow   = floor(($bytes ? log($bytes) : 0) / log(KB));
-        $pow   = min($pow, count($units) - 1);
-        $bytes /= KB ** $pow;
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($value, 2)."B";
     }
 }
 
 // 秒转时间
-if ( ! function_exists('seconds2time')) {
+if (!function_exists('seconds2time')) {
     function seconds2time($seconds)
     {
-        $day    = floor($seconds / Day);
-        $hour   = floor(($seconds % Day) / Hour);
+        $day = floor($seconds / Day);
+        $hour = floor(($seconds % Day) / Hour);
         $minute = floor((($seconds % Day) % Hour) / Minute);
         if ($day > 0) {
-            return $day . '天' . $hour . '小时' . $minute . '分';
+            return $day.'天'.$hour.'小时'.$minute.'分';
         }
 
         if ($hour != 0) {
-            return $hour . '小时' . $minute . '分';
+            return $hour.'小时'.$minute.'分';
         }
 
-        return $minute . '分';
+        return $minute.'分';
     }
 }
 
 // 过滤emoji表情
-if ( ! function_exists('filterEmoji')) {
+if (!function_exists('filterEmoji')) {
     function filterEmoji($str)
     {
-        $str = preg_replace_callback(
-            '/./u',
-            static function (array $match) {
-                return strlen($match[0]) >= 4 ? '' : $match[0];
-            },
-            $str
-        );
-
-        return $str;
+        return preg_replace_callback('/./u', static function (array $match) {
+            return strlen($match[0]) >= 4 ? '' : $match[0];
+        }, $str);
     }
 }
 
 // 获取系统设置
-if ( ! function_exists('sysConfig')) {
+if (!function_exists('sysConfig')) {
     function sysConfig($name)
     {
         $ret = Cache::tags('sysConfig')->get($name);

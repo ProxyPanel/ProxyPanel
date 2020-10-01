@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Label extends Model
 {
-
     public $timestamps = false;
     protected $table = 'label';
     protected $guarded = ['id'];
@@ -19,5 +18,4 @@ class Label extends Model
     {
         return $this->hasMany(NodeLabel::class);
     }
-
 }

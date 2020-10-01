@@ -100,63 +100,63 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      function closePlan() {
-        swal.fire({
-          title: '是否提前激活预支付套餐？',
-          html: '套餐激活后：<br>先前套餐将直接失效！<br>过期日期将由本日重新开始计算！',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              type: 'POST',
-              url: '/closePlan',
-              async: false,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                      then(() => window.location.reload());
+        function closePlan() {
+            swal.fire({
+                title: '是否提前激活预支付套餐？',
+                html: '套餐激活后：<br>先前套餐将直接失效！<br>过期日期将由本日重新开始计算！',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '/closePlan',
+                        async: false,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                    then(() => window.location.reload());
+                            }
+                            else {
+                                swal.fire({title: ret.message, type: 'error'});
+                            }
+                        },
+                    });
                 }
-                else {
-                  swal.fire({title: ret.message, type: 'error'});
-                }
-              },
             });
-          }
-        });
-      }
+        }
 
-      function closeOrder(id) {
-        swal.fire({
-          title: '关闭订单？',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              type: 'POST',
-              url: 'payment/close',
-              async: false,
-              data: {_token: '{{csrf_token()}}', id: id},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                      then(() => window.location.reload());
+        function closeOrder(id) {
+            swal.fire({
+                title: '关闭订单？',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: 'payment/close',
+                        async: false,
+                        data: {_token: '{{csrf_token()}}', id: id},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                    then(() => window.location.reload());
+                            }
+                            else {
+                                swal.fire({title: ret.message, type: 'error'});
+                            }
+                        },
+                    });
                 }
-                else {
-                  swal.fire({title: ret.message, type: 'error'});
-                }
-              },
             });
-          }
-        });
-      }
+        }
     </script>
 @endsection

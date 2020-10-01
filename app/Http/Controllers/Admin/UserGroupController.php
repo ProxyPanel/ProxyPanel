@@ -16,12 +16,9 @@ use Validator;
 
 class UserGroupController extends Controller
 {
-
     public function index(Request $request)
     {
-        $view['list'] = UserGroup::paginate(15)->appends(
-            $request->except('page')
-        );
+        $view['list'] = UserGroup::paginate(15)->appends($request->except('page'));
 
         return view('admin.user.group.index', $view);
     }
@@ -37,27 +34,16 @@ class UserGroupController extends Controller
     // 添加用户分组
     public function store(Request $request): RedirectResponse
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name'  => 'required',
-                'nodes' => 'required',
-            ]
-        );
+        $validator = Validator::make($request->all(), ['name' => 'required', 'nodes' => 'required',]);
 
         if ($validator->fails()) {
-            return Redirect::back()->withInput()->withErrors(
-                $validator->errors()
-            );
+            return Redirect::back()->withInput()->withErrors($validator->errors());
         }
 
-        $obj        = new UserGroup();
-        $obj->name  = $request->input('name');
-        $obj->nodes = $request->input('nodes');
-        $obj->save();
+        $userGroup = UserGroup::create(['name' => $request->input('name'), 'nodes' => $request->input('nodes')]);
 
-        if ($obj->id) {
-            return Redirect::back()->with('successMsg', '操作成功');
+        if ($userGroup) {
+            return Redirect::to(route('admin.user.group.edit', $userGroup->id))->with('successMsg', '操作成功');
         }
 
         return Redirect::back()->withInput()->withErrors('操作失败');
@@ -67,7 +53,7 @@ class UserGroupController extends Controller
     public function edit($id)
     {
         $view['userGroup'] = UserGroup::findOrFail($id);
-        $view['nodeList']  = Node::whereStatus(1)->get();
+        $view['nodeList'] = Node::whereStatus(1)->get();
 
         return view('admin.user.group.info', $view);
     }
@@ -75,8 +61,8 @@ class UserGroupController extends Controller
     // 编辑用户分组
     public function update(Request $request, $id)
     {
-        $userGroup        = UserGroup::findOrFail($id);
-        $userGroup->name  = $request->input('name');
+        $userGroup = UserGroup::findOrFail($id);
+        $userGroup->name = $request->input('name');
         $userGroup->nodes = $request->input('nodes');
         if ($userGroup->save()) {
             return Redirect::back()->with('successMsg', '操作成功');
@@ -90,20 +76,15 @@ class UserGroupController extends Controller
     {
         // 校验该分组下是否存在关联账号
         if (User::whereGroupId($id)->count()) {
-            return Response::json(
-                ['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']
-            );
+            return Response::json(['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']);
         }
 
         try {
             UserGroup::whereId($id)->delete();
         } catch (Exception $e) {
-            return Response::json(
-                ['status' => 'fail', 'message' => '删除失败，' . $e->getMessage()]
-            );
+            return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
         }
 
         return Response::json(['status' => 'success', 'message' => '清理成功']);
     }
-
 }

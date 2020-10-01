@@ -11,11 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
  */
 class UserSubscribeLog extends Model
 {
-
     public const CREATED_AT = 'request_time';
-
     public const UPDATED_AT = null;
-
     protected $table = 'user_subscribe_log';
 
     public function subscribe(): BelongsTo
@@ -25,14 +22,6 @@ class UserSubscribeLog extends Model
 
     public function user(): HasOneThrough
     {
-        return $this->hasOneThrough(
-            User::class,
-            UserSubscribe::class,
-            'id',
-            'id',
-            'user_subscribe_id',
-            'user_id'
-        );
+        return $this->hasOneThrough(User::class, UserSubscribe::class, 'id', 'id', 'user_subscribe_id', 'user_id');
     }
-
 }

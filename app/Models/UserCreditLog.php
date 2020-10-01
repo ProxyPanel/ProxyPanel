@@ -10,9 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserCreditLog extends Model
 {
-
     public const UPDATED_AT = null;
-
     protected $table = 'user_credit_log';
 
     public function user(): BelongsTo
@@ -54,5 +52,4 @@ class UserCreditLog extends Model
     {
         return $this->attributes['amount'] = $value * 100;
     }
-
 }

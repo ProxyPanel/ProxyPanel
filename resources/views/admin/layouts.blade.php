@@ -40,7 +40,7 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      Breakpoints();
+        Breakpoints();
     </script>
 </head>
 
@@ -89,12 +89,12 @@
                             <i class="icon wb-settings" aria-hidden="true"></i>
                             个人中心
                         </a>
-                        <a class="dropdown-item" href="/admin/profile" role="menuitem">
+                        <a class="dropdown-item" href="{{route('admin.profile')}}" role="menuitem">
                             <i class="icon wb-user" aria-hidden="true"></i>
                             {{trans('home.profile')}}
                         </a>
                         <div class="dropdown-divider" role="presentation"></div>
-                        <a class="dropdown-item" href="/logout" role="menuitem">
+                        <a class="dropdown-item" href="{{route('logout')}}" role="menuitem">
                             <i class="icon wb-power" aria-hidden="true"></i>
                             {{trans('home.logout')}}
                         </a>
@@ -107,41 +107,41 @@
 <div class="site-menubar site-menubar-light">
     <div class="site-menubar-body">
         <ul class="site-menu" data-plugin="menu">
-            <li class="site-menu-item {{in_array(Request::path(), ['admin']) ? 'active open' : ''}}">
-                <a href="/admin">
+            <li class="site-menu-item {{request()->routeIs('admin.index') ? 'active open' : ''}}">
+                <a href="{{route('admin.index')}}">
                     <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
                     <span class="site-menu-title">管理中心</span>
                 </a>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor', 'admin/userCreditLogList', 'subscribe']) || request()->routeIs('group*') ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.user.*', 'admin.log.credit', 'admin.subscribe.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-user" aria-hidden="true"></i>
                     <span class="site-menu-title">用户系统</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userList', 'admin/addUser', 'admin/editUser', 'admin/export', 'admin/userMonitor']) ? 'active open' : ''}}">
-                        <a href="/admin/userList">
+                    <li class="site-menu-item {{request()->routeIs('admin.user.index', 'admin.user.edit', 'admin.user.monitor', 'admin.user.online', 'admin.user.online', 'admin.user.export') ? 'active open' : ''}}">
+                        <a href="{{route('admin.user.index')}}">
                             <span class="site-menu-title">用户管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{request()->routeIs('group*') ? 'active open' : ''}}">
-                        <a href="{{route('group.index')}}">
+                    <li class="site-menu-item {{request()->routeIs('admin.user.group.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.user.group.index')}}">
                             <span class="site-menu-title">用戶分组</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userCreditLogList']) ? 'active open' : ''}}">
-                        <a href="/admin/userCreditLogList">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.credit') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.credit')}}">
                             <span class="site-menu-title">余额变动</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['subscribe']) ? 'active open' : ''}}">
-                        <a href="/subscribe">
+                    <li class="site-menu-item {{request()->routeIs('admin.subscribe.*')? 'active open' : ''}}">
+                        <a href="{{route('admin.subscribe.index')}}">
                             <span class="site-menu-title">订阅管理</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['ticket', 'ticket/reply', 'admin/articleList', 'admin/addArticle', 'admin/editArticle', 'marketing/push', 'marketing/email']) ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.ticket.*', 'admin.article.*', 'admin.marketing.*')? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
                     <span class="site-menu-title">客服系统</span>
@@ -152,8 +152,8 @@
                     @endif
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['ticket', 'ticket/reply']) ? 'active open' : ''}}">
-                        <a href="/ticket">
+                    <li class="site-menu-item {{request()->routeIs('admin.ticket.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.ticket.index')}}">
                             <span class="site-menu-title">服务工单</span>
                             @if(\App\Models\Ticket::whereStatus(0)->count() > 0 )
                                 <div class="site-menu-label">
@@ -162,98 +162,98 @@
                             @endif
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/articleList', 'admin/addArticle', 'admin/editArticle']) ? 'active open' : ''}}">
-                        <a href="/admin/articleList">
+                    <li class="site-menu-item {{request()->routeIs('admin.article.*')? 'active open' : ''}}">
+                        <a href="{{route('admin.article.index')}}">
                             <span class="site-menu-title">文章管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['marketing/push']) ? 'active open' : ''}}">
-                        <a href="/marketing/push">
+                    <li class="site-menu-item {{request()->routeIs('admin.marketing.push') ? 'active open' : ''}}">
+                        <a href="{{route('admin.marketing.push')}}">
                             <span class="site-menu-title">消息推送</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['marketing/email']) ? 'active open' : ''}}">
-                        <a href="/marketing/email">
+                    <li class="site-menu-item {{request()->routeIs('admin.marketing.email') ? 'active open' : ''}}">
+                        <a href="{{route('admin.marketing.email')}}">
                             <span class="site-menu-title">邮件群发</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['node', 'node/add', 'node/edit', 'node/monitor', 'node/auth', 'node/certificate', 'node/certificate/add', 'node/certificate/edit', 'node/pingLog',]) ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.node.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
                     <span class="site-menu-title">线路系统</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['node', 'node/add', 'node/edit', 'node/monitor']) ? 'active open' : ''}}">
-                        <a href="/node">
+                    <li class="site-menu-item {{request()->routeIs('admin.node.index', 'admin.node.create', 'admin.node.edit')? 'active open' : ''}}">
+                        <a href="{{route('admin.node.index')}}">
                             <span class="site-menu-title">线路管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['node/auth']) ? 'active open' : ''}}">
-                        <a href="/node/auth">
+                    <li class="site-menu-item {{request()->routeIs('admin.node.auth.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.node.auth.index')}}">
                             <span class="site-menu-title">线路授权</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['node/certificate', 'node/certificate/add', 'node/certificate/edit']) ? 'active open' : ''}}">
-                        <a href="/node/certificate">
+                    <li class="site-menu-item {{request()->routeIs('admin.node.cert.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.node.cert.index')}}">
                             <span class="site-menu-title">证书列表</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['node/pingLog']) ? 'active open' : ''}}">
-                        <a href="/node/pingLog">
+                    <li class="site-menu-item {{request()->routeIs('admin.node.pingLog') ? 'active open' : ''}}">
+                        <a href="{{route('admin.node.pingLog')}}">
                             <span class="site-menu-title">测速日志</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{request()->routeIs('rule*') ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.rule.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-eye" aria-hidden="true"></i>
                     <span class="site-menu-title">审计规则</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{request()->routeIs(['rule.index']) ? 'active open' : ''}}">
-                        <a href="{{route('rule.index')}}">
+                    <li class="site-menu-item {{request()->routeIs('admin.rule.index') ? 'active open' : ''}}">
+                        <a href="{{route('admin.rule.index')}}">
                             <span class="site-menu-title">规则列表</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{request()->routeIs('rule.group*') ? 'active open' : ''}}">
-                        <a href="{{route('rule.group.index')}}">
+                    <li class="site-menu-item {{request()->routeIs('admin.rule.group.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.rule.group.index')}}">
                             <span class="site-menu-title">规则分组</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{request()->routeIs('rule.log') ? 'active open' : ''}}">
-                        <a href="{{route('rule.log')}}">
+                    <li class="site-menu-item {{request()->routeIs('admin.rule.log') ? 'active open' : ''}}">
+                        <a href="{{route('admin.rule.log')}}">
                             <span class="site-menu-title">触发记录</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['coupon', 'coupon/add', 'admin/orderList']) || request()->routeIs('goods*') ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.goods.*', 'admin.coupon.*', 'admin.order') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
                     <span class="site-menu-title">商品系统</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{request()->routeIs('goods*') ? 'active open' : ''}}">
-                        <a href="{{route('goods.index')}}">
+                    <li class="site-menu-item {{request()->routeIs('admin.goods.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.goods.index')}}">
                             <span class="site-menu-title">商品管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['coupon', 'coupon/add']) ? 'active open' : ''}}">
-                        <a href="/coupon">
+                    <li class="site-menu-item {{request()->routeIs('admin.coupon.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.coupon.index')}}">
                             <span class="site-menu-title">卡券管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/orderList']) ? 'active open' : ''}}">
-                        <a href="/admin/orderList">
+                    <li class="site-menu-item {{request()->routeIs('admin.order') ? 'active open' : ''}}">
+                        <a href="{{route('admin.order')}}">
                             <span class="site-menu-title">商品订单</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/inviteList', 'admin/affList', 'admin/affDetail', 'admin/userRebateList']) ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.invite', 'admin.aff.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-thumb-up" aria-hidden="true"></i>
                     <span class="site-menu-title">推广系统</span>
@@ -264,13 +264,13 @@
                     @endif
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/inviteList']) ? 'active open' : ''}}">
-                        <a href="/admin/inviteList">
+                    <li class="site-menu-item {{request()->routeIs('admin.invite') ? 'active open' : ''}}">
+                        <a href="{{route('admin.invite')}}">
                             <span class="site-menu-title">邀请管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/affList', 'admin/affDetail']) ? 'active open' : ''}}">
-                        <a href="/admin/affList">
+                    <li class="site-menu-item {{request()->routeIs('admin.aff.index', 'admin.aff.detail') ? 'active open' : ''}}">
+                        <a href="{{route('admin.aff.index')}}">
                             <span class="site-menu-title">提现管理</span>
                             @if(\App\Models\ReferralApply::whereStatus(0)->count() > 0 )
                                 <div class="site-menu-label">
@@ -279,107 +279,107 @@
                             @endif
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userRebateList']) ? 'active open' : ''}}">
-                        <a href="/admin/userRebateList">
+                    <li class="site-menu-item {{request()->routeIs('admin.aff.rebate') ? 'active open' : ''}}">
+                        <a href="{{route('admin.aff.rebate')}}">
                             <span class="site-menu-title">返利流水</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['admin/trafficLog', 'admin/userTrafficLogList', 'admin/userBanLogList', 'admin/userOnlineIPList', 'admin/onlineIPMonitor', 'admin/notificationLog', 'payment/callbackList', 'logs']) ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.log.traffic', 'admin.log.flow', 'admin.log.ban', 'admin.log.ip', 'admin.log.online', 'admin.log.notify', 'admin.payment.callback') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-calendar" aria-hidden="true"></i>
                     <span class="site-menu-title">日志系统</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/trafficLog']) ? 'active open' : ''}}">
-                        <a href="/admin/trafficLog">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.traffic') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.traffic')}}">
                             <span class="site-menu-title">流量使用</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userTrafficLogList']) ? 'active open' : ''}}">
-                        <a href="/admin/userTrafficLogList">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.flow') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.flow')}}">
                             <span class="site-menu-title">流量变动</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userBanLogList']) ? 'active open' : ''}}">
-                        <a href="/admin/userBanLogList">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.ban') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.ban')}}">
                             <span class="site-menu-title">封禁记录</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/userOnlineIPList']) ? 'active open' : ''}}">
-                        <a href="/admin/userOnlineIPList">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.ip') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.ip')}}">
                             <span class="site-menu-title">在线记录</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/onlineIPMonitor']) ? 'active open' : ''}}">
-                        <a href="/admin/onlineIPMonitor">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.online') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.online')}}">
                             <span class="site-menu-title">在线监控</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/notificationLog']) ? 'active open' : ''}}">
-                        <a href="/admin/notificationLog">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.notify') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.notify')}}">
                             <span class="site-menu-title">通知记录</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['payment/callbackList']) ? 'active open' : ''}}">
-                        <a href="/payment/callbackList">
+                    <li class="site-menu-item {{request()->routeIs('admin.payment.callback') ? 'active open' : ''}}">
+                        <a href="{{route('admin.payment.callback')}}">
                             <span class="site-menu-title">支付回调</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['logs']) ? 'active open' : ''}}">
-                        <a href="/logs" target="_blank">
+                    <li class="site-menu-item {{request()->routeIs('admin.log.viewer') ? 'active open' : ''}}">
+                        <a href="{{route('admin.log.viewer')}}" target="_blank">
                             <span class="site-menu-title">系统运行</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['tools/decompile', 'tools/convert', 'tools/import', 'tools/analysis']) ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.tools.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-briefcase" aria-hidden="true"></i>
                     <span class="site-menu-title">工具箱</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['tools/decompile']) ? 'active open' : ''}}">
-                        <a href="/tools/decompile">
+                    <li class="site-menu-item {{request()->routeIs('admin.tools.decompile') ? 'active open' : ''}}">
+                        <a href="{{route('admin.tools.decompile')}}">
                             <span class="site-menu-title">反解析</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['tools/convert']) ? 'active open' : ''}}">
-                        <a href="/tools/convert">
+                    <li class="site-menu-item {{request()->routeIs('admin.tools.convert') ? 'active open' : ''}}">
+                        <a href="{{route('admin.tools.convert')}}">
                             <span class="site-menu-title">格式转换</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['tools/import']) ? 'active open' : ''}}">
-                        <a href="/tools/import">
+                    <li class="site-menu-item {{request()->routeIs('admin.tools.import') ? 'active open' : ''}}">
+                        <a href="{{route('admin.tools.import')}}">
                             <span class="site-menu-title">数据导入</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['tools/analysis']) ? 'active open' : ''}}">
-                        <a href="/tools/analysis">
+                    <li class="site-menu-item {{request()->routeIs('admin.tools.analysis') ? 'active open' : ''}}">
+                        <a href="{{route('admin.tools.analysis')}}">
                             <span class="site-menu-title">日志分析</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="site-menu-item has-sub {{in_array(Request::path(), ['filter', 'admin/config', 'admin/system']) ? 'active open' : ''}}">
+            <li class="site-menu-item has-sub {{request()->routeIs('admin.config.*', 'admin.system') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
                     <span class="site-menu-title">设置</span>
                 </a>
                 <ul class="site-menu-sub">
-                    <li class="site-menu-item {{in_array(Request::path(), ['filter']) ? 'active open' : ''}}">
-                        <a href="/filter">
+                    <li class="site-menu-item {{request()->routeIs('admin.config.filter.index') ? 'active open' : ''}}">
+                        <a href="{{route('admin.config.filter.index')}}">
                             <span class="site-menu-title">邮箱后缀管理</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/config']) ? 'active open' : ''}}">
-                        <a href="/admin/config">
+                    <li class="site-menu-item {{request()->routeIs('admin.config.common.*') ? 'active open' : ''}}">
+                        <a href="{{route('admin.config')}}">
                             <span class="site-menu-title">通用配置</span>
                         </a>
                     </li>
-                    <li class="site-menu-item {{in_array(Request::path(), ['admin/system']) ? 'active open' : ''}}">
-                        <a href="/admin/system">
+                    <li class="site-menu-item {{request()->routeIs('admin.system') ? 'active open' : ''}}">
+                        <a href="{{route('admin.system')}}">
                             <span class="site-menu-title">系统设置</span>
                         </a>
                     </li>
@@ -426,7 +426,7 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-  Config.set('assets', '/assets');
+    Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js" type="text/javascript"></script>
@@ -434,13 +434,13 @@
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-  (function(document, window, $) {
-    'use strict';
-    const Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
+    (function(document, window, $) {
+        'use strict';
+        const Site = window.Site;
+        $(document).ready(function() {
+            Site.run();
+        });
+    })(document, window, jQuery);
 </script>
 @yield('script')
 </body>

@@ -41,14 +41,14 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      Breakpoints();
+        Breakpoints();
     </script>
 </head>
 <body class="animsition page-error page-error-400 layout-full">
 <!--[if lt IE 8]>
 <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
     <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
-                          browser. Please
+    browser. Please
     <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
@@ -87,21 +87,21 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-  Config.set('assets', '/assets');
+    Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script type="text/javascript">
-  (function(document, window, $) {
-    'use strict';
+    (function(document, window, $) {
+        'use strict';
 
-    const Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
+        const Site = window.Site;
+        $(document).ready(function() {
+            Site.run();
+        });
+    })(document, window, jQuery);
 </script>
 </body>
 </html>

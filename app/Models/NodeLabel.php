@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class NodeLabel extends Model
 {
-
     public $timestamps = false;
     protected $table = 'node_label';
 
@@ -23,5 +22,4 @@ class NodeLabel extends Model
     {
         return $this->belongsTo(Label::class);
     }
-
 }

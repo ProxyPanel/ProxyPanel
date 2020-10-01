@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <h2 class="panel-title">规则分组</h2>
                 <div class="panel-actions">
-                    <a href="{{route('rule.group.create')}}" class="btn btn-outline-primary">
+                    <a href="{{route('admin.rule.group.create')}}" class="btn btn-outline-primary">
                         <i class="icon wb-plus" aria-hidden="true"></i>添加分组
                     </a>
                 </div>
@@ -31,13 +31,13 @@
                             <td> {!! $ruleGroup->type_label !!} </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{route('rule.group.editNode',$ruleGroup->id)}}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{route('admin.rule.group.editNode', $ruleGroup->id)}}" class="btn btn-sm btn-outline-primary">
                                         <i class="icon wb-plus" aria-hidden="true"></i>分配节点
                                     </a>
-                                    <a href="{{route('rule.group.edit',$ruleGroup->id)}}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{route('admin.rule.group.edit', $ruleGroup->id)}}" class="btn btn-sm btn-outline-primary">
                                         <i class="icon wb-edit"></i>编辑
                                     </a>
-                                    <button onclick="delRuleGroup('{{route('rule.group.destroy',$ruleGroup->id)}}', '{{$ruleGroup->name}}')" class="btn btn-sm btn-outline-danger">
+                                    <button onclick="delRuleGroup('{{route('admin.rule.group.destroy', $ruleGroup->id)}}', '{{$ruleGroup->name}}')" class="btn btn-sm btn-outline-danger">
                                         <i class="icon wb-trash"></i>删除
                                     </button>
                                 </div>
@@ -66,34 +66,34 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      // 删除规则分组
-      function delRuleGroup(url, name) {
-        swal.fire({
-          title: '警告',
-          text: '确定删除分组 【' + name + '】 ？',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              type: 'DELETE',
-              url: url,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                      then(() => window.location.reload());
+        // 删除规则分组
+        function delRuleGroup(url, name) {
+            swal.fire({
+                title: '警告',
+                text: '确定删除分组 【' + name + '】 ？',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: url,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                    then(() => window.location.reload());
+                            }
+                            else {
+                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
                 }
-                else {
-                  swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-                }
-              },
             });
-          }
-        });
-      }
+        }
     </script>
 @endsection

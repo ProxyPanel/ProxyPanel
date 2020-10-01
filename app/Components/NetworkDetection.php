@@ -7,7 +7,6 @@ use Log;
 
 class NetworkDetection
 {
-
     /**
      * 用api.50network.com进行节点阻断检测
      *
@@ -19,33 +18,27 @@ class NetworkDetection
      */
     public static function networkCheck(string $ip, bool $type, $port = null)
     {
-        $url       = 'https://api.50network.com/china-firewall/check/ip/' . ($type ? 'icmp/' : ($port ? 'tcp_port/' : 'tcp_ack/')) . $ip . ($port ? '/' . $port : '');
-        $checkName = $type ? 'ICMP' : 'TCP';
-        $request   = (new Client(['timeout' => 15]))->get($url);
-        $result    = json_decode($request->getBody(), true);
+        $url = 'https://api.50network.com/china-firewall/check/ip/'.($type ? 'icmp/' : ($port ? 'tcp_port/' : 'tcp_ack/')).$ip.($port ? '/'.$port : '');
 
-        if ($request->getStatusCode() == 200) {
-            if ( ! $result) {
-                Log::warning(
-                    "【" . $checkName . "阻断检测】检测" . $ip . "时，接口返回异常访问链接：" . $url
-                );
+        $checkName = $type ? 'ICMP' : 'TCP';
+        $request = (new Client(['timeout' => 15]))->get($url);
+        $result = json_decode($request->getBody(), true);
+
+        if ($request->getStatusCode() === 200) {
+            if (!$result) {
+                Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：".$url);
 
                 return false;
             }
 
-            if ( ! $result['success']) {
+            if (!$result['success']) {
                 if ($result['error'] === "execute timeout (3s)") {
                     sleep(10);
 
                     return self::networkCheck($ip, $type, $port);
                 }
 
-                Log::warning(
-                    "【" . $checkName . "阻断检测】检测" . $ip . ($port ?: '') . "时，返回" . var_export(
-                        $result,
-                        true
-                    )
-                );
+                Log::warning("【".$checkName."阻断检测】检测".$ip.$port."时，返回".var_export($result, true));
 
                 return false;
             }
@@ -54,11 +47,11 @@ class NetworkDetection
                 return "通讯正常"; // 正常
             }
 
-            if ($result['firewall-enable'] && ! $result['firewall-disable']) {
+            if ($result['firewall-enable'] && !$result['firewall-disable']) {
                 return "海外阻断"; // 国外访问异常
             }
 
-            if ( ! $result['firewall-enable'] && $result['firewall-disable']) {
+            if (!$result['firewall-enable'] && $result['firewall-disable']) {
                 return "国内阻断"; // 被墙
             }
 
@@ -77,26 +70,23 @@ class NetworkDetection
      */
     public static function ping(string $ip)
     {
-        $url     = 'https://api.oioweb.cn/api/hostping.php?host=' . $ip;//https://api.iiwl.cc/api/ping.php?host=
+        $url = 'https://api.oioweb.cn/api/hostping.php?host='.$ip; // https://api.iiwl.cc/api/ping.php?host=
         $request = (new Client(['timeout' => 15]))->get($url);
         $message = json_decode($request->getBody(), true);
 
         // 发送成功
-        if ($request->getStatusCode() == 200) {
+        if ($request->getStatusCode() === 200) {
             if ($message && $message['code']) {
                 return $message['data'];
             }
             // 发送失败
-            Log::warning(
-                "【PING】检测" . $ip . "时，返回" . var_export($message, true)
-            );
+            Log::warning("【PING】检测".$ip."时，返回".var_export($message, true));
 
             return false;
         }
-        Log::warning("【PING】检测" . $ip . "时，接口返回异常访问链接：" . $url);
+        Log::warning("【PING】检测".$ip."时，接口返回异常访问链接：".$url);
 
         // 发送错误
         return false;
     }
-
 }

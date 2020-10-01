@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Payment extends Model
 {
-
     protected $table = 'payment';
     protected $fillable = ['qr_code', 'url', 'status'];
 
@@ -57,5 +56,4 @@ class Payment extends Model
 
         return $status_label;
     }
-
 }

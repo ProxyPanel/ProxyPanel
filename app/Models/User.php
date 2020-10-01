@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Auth;
+use Hash;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -15,14 +15,10 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-
     use Notifiable;
 
     protected $table = 'user';
-    protected $casts = [
-        'expired_at' => 'date:Y-m-d',
-        'reset_time' => 'date:Y-m-d',
-    ];
+    protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d'];
     protected $dates = ['expired_at', 'reset_time'];
     protected $guarded = ['id'];
 
@@ -108,10 +104,7 @@ class User extends Authenticatable
 
     public function subscribeLogs(): HasManyThrough
     {
-        return $this->hasManyThrough(
-            UserSubscribeLog::class,
-            UserSubscribe::class
-        );
+        return $this->hasManyThrough(UserSubscribeLog::class, UserSubscribe::class);
     }
 
     public function verify(): HasMany
@@ -144,9 +137,19 @@ class User extends Authenticatable
         return Level::whereLevel($this->attributes['level'])->first()->name;
     }
 
-    public function getCreditAttribute($value)
+    public function getCreditAttribute()
     {
-        return $value / 100;
+        return $this->attributes['credit'] / 100;
+    }
+
+    public function getTransferEnableFormattedAttribute()
+    {
+        return flowAutoShow($this->attributes['transfer_enable']);
+    }
+
+    public function getSpeedLimitAttribute()
+    {
+        return $this->attributes['speed_limit'] / Mbps;
     }
 
     public function getExpiredAtAttribute()
@@ -159,14 +162,19 @@ class User extends Authenticatable
         return $this->attributes['reset_time'];
     }
 
+    public function setPasswordAttribute($password)
+    {
+        return $this->attributes['password'] = Hash::make($password);
+    }
+
     public function setCreditAttribute($value)
     {
         return $this->attributes['credit'] = $value * 100;
     }
 
-    public function scopeUid($query)
+    public function setSpeedLimitAttribute($value)
     {
-        return $query->whereId(Auth::id());
+        return $this->attributes['speed_limit'] = $value * Mbps;
     }
 
     public function scopeActiveUser($query)
@@ -186,19 +194,11 @@ class User extends Authenticatable
             }
         }
 
-        return $query->activeUser()->whereIn('group_id', $groups)->where(
-            'level',
-            '>=',
-            $node_level
-        );
+        return $query->activeUser()->whereIn('group_id', $groups)->where('level', '>=', $node_level);
     }
 
     public function scopeUserAccessNodes()
     {
-        return Node::userAllowNodes(
-            $this->attributes['group_id'],
-            $this->attributes['level']
-        );
+        return Node::userAllowNodes($this->attributes['group_id'], $this->attributes['level']);
     }
-
 }

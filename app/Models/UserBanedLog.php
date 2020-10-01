@@ -10,12 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserBanedLog extends Model
 {
-
     protected $table = 'user_baned_log';
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
 }

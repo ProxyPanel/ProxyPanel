@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class Affiliate
 {
-
     /**
      * 返利识别
      *
@@ -26,5 +25,4 @@ class Affiliate
 
         return $next($request);
     }
-
 }

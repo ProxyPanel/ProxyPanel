@@ -26,7 +26,7 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <a href="/rule" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.rule.index')}}" class="btn btn-danger">重 置</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -51,9 +51,9 @@
                                 <input type="text" class="form-control" name="rule_pattern" id="rule_pattern_{{$rule->id}}" value="{{$rule->pattern}}"/>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary" onclick="editRule('{{$rule->id}}', '{{route('rule.update',$rule->id)}}')">
+                                <button class="btn btn-sm btn-outline-primary" onclick="editRule('{{$rule->id}}')">
                                     <i class="icon wb-edit"></i></button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="delRule('{{route('rule.destroy',$rule->id)}}','{{$rule->name}}')">
+                                <button class="btn btn-sm btn-outline-danger" onclick="delRule('{{route('admin.rule.destroy',$rule->id)}}','{{$rule->name}}')">
                                     <i class="icon wb-trash"></i></button>
                             </td>
                         </tr>
@@ -131,93 +131,90 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
-        $('#type').selectpicker('val', {{Request::get('type')}});
-      });
-
-      // 添加规则
-      function addRule() {
-        $.post("{{route('rule.store')}}", {
-          _token: '{{csrf_token()}}',
-          type: $('#add_type').val(),
-          name: $('#name').val(),
-          pattern: $('#pattern').val(),
-        }, function(ret) {
-          $('#add').modal('hide');
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                then(() => window.location.reload());
-          }
-          else {
-            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-          }
+        $(document).ready(function() {
+            $('#type').selectpicker('val', {{Request::get('type')}});
         });
-      }
 
-      // 编辑规则
-      function editRule(id, url) {
-        $.ajax({
-          type: 'PUT',
-          url: url,
-          data: {
-            _token: '{{csrf_token()}}',
-            rule_name: $('#rule_name_' + id).val(),
-            rule_pattern: $('#rule_pattern_' + id).val(),
-          },
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                  then(() => window.location.reload());
-            }
-            else {
-              swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-            }
-          },
-        });
-      }
-
-      // 删除规则
-      function delRule(url, name) {
-        swal.fire({
-          title: '警告',
-          text: '确定删除规则 【' + name + '】 ？',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              type: 'DELETE',
-              url: url,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
+        // 添加规则
+        function addRule() {
+            $.post("{{route('admin.rule.store')}}", {
+                _token: '{{csrf_token()}}',
+                type: $('#add_type').val(),
+                name: $('#name').val(),
+                pattern: $('#pattern').val(),
+            }, function(ret) {
+                $('#add').modal('hide');
                 if (ret.status === 'success') {
-                  swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                      then(() => window.location.reload());
+                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 }
                 else {
-                  swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
                 }
-              },
             });
-          }
-        });
-      }
-
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
         }
-      });
 
-      // 搜索
-      function Search() {
-        window.location.href = '/rule?type=' + $('#type').val();
-      }
+        // 编辑规则
+        function editRule(id) {
+            $.ajax({
+                method: 'PUT',
+                url: '{{route('admin.rule.update','')}}/' + id,
+                data: {
+                    _token: '{{csrf_token()}}',
+                    rule_name: $('#rule_name_' + id).val(),
+                    rule_pattern: $('#rule_pattern_' + id).val(),
+                },
+                dataType: 'json',
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    }
+                    else {
+                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    }
+                },
+            });
+        }
+
+        // 删除规则
+        function delRule(url, name) {
+            swal.fire({
+                title: '警告',
+                text: '确定删除规则 【' + name + '】 ？',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: url,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            }
+                            else {
+                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
+            });
+        }
+
+        //回车检测
+        $(document).on('keypress', 'input', function(e) {
+            if (e.which === 13) {
+                Search();
+                return false;
+            }
+        });
+
+        // 搜索
+        function Search() {
+            window.location.href = '{{route('admin.rule.index')}}?type=' + $('#type').val();
+        }
     </script>
 @endsection

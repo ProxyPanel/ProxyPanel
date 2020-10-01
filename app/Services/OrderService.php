@@ -10,7 +10,6 @@ use Log;
 
 class OrderService
 {
-
     public static $order;
     public static $user;
     public static $goods;
@@ -19,9 +18,9 @@ class OrderService
     public function __construct(Order $order)
     {
         // 获取需要的信息
-        self::$order   = $order;
-        self::$user    = $order->user;
-        self::$goods   = $order->goods;
+        self::$order = $order;
+        self::$user = $order->user;
+        self::$goods = $order->goods;
         self::$payment = $order->payment;
     }
 
@@ -46,11 +45,7 @@ class OrderService
                 $this->activatePackage();
                 break;
             case 2:// 套餐
-                if (Order::userActivePlan(self::$user->id)->where(
-                    'id',
-                    '<>',
-                    self::$order->id
-                )->exists()) {// 判断套餐是否直接激活
+                if (Order::userActivePlan(self::$user->id)->where('id', '<>', self::$order->id)->exists()) {// 判断套餐是否直接激活
                     $this->setPrepaidPlan();
                 } else {
                     $this->activatePlan();
@@ -68,19 +63,11 @@ class OrderService
     private function chargeCredit(): bool
     {
         $credit = self::$user->credit;
-        $ret    = (new UserService(self::$user))->updateCredit(
-            self::$order->origin_amount
-        );
+        $ret = (new UserService(self::$user))->updateCredit(self::$order->origin_amount);
         // 余额变动记录日志
         if ($ret) {
-            Helpers::addUserCreditLog(
-                self::$order->user_id,
-                self::$order->id,
-                $credit,
-                self::$user->credit,
-                self::$order->amount,
-                '用户通过' . self::$order->pay_way . '充值余额'
-            );
+            Helpers::addUserCreditLog(self::$order->user_id, self::$order->id, $credit, self::$user->credit,
+                self::$order->amount, '用户通过'.self::$order->pay_way.'充值余额');
         }
 
         return $ret;
@@ -89,17 +76,11 @@ class OrderService
     // 激活流量包
     private function activatePackage(): bool
     {
-        $ret = (new UserService(self::$user))->incrementData(
-            self::$goods->traffic * MB
-        );
+        $ret = (new UserService(self::$user))->incrementData(self::$goods->traffic * MB);
         if ($ret) {
-            return Helpers::addUserTrafficModifyLog(
-                self::$order->user_id,
-                self::$order->id,
-                self::$user->transfer_enable - self::$goods->traffic * MB,
-                self::$user->transfer_enable,
-                '[' . self::$order->pay_way . ']加上用户购买的套餐流量'
-            );
+            return Helpers::addUserTrafficModifyLog(self::$order->user_id, self::$order->id,
+                self::$user->transfer_enable - self::$goods->traffic * MB, self::$user->transfer_enable,
+                '['.self::$order->pay_way.']加上用户购买的套餐流量');
         }
 
         return false;
@@ -111,50 +92,22 @@ class OrderService
         self::$order->status = 3;// 3为预支付
         // 预支付订单, 刷新账号有效时间用于流量重置判断
         return self::$order->save()
-               && self::$user->update(
-                [
-                    'expired_at' => date(
-                        'Y-m-d',
-                        strtotime(
-                            self::$user->expired_at . " +" . self::$goods->days . " days"
-                        )
-                    ),
-                ]
-            );
+            && self::$user->update(['expired_at' => date('Y-m-d', strtotime(self::$user->expired_at." +".self::$goods->days." days"))]);
     }
 
     // 激活套餐
     private function activatePlan(): bool
     {
-        Order::whereId(self::$order->id)->update(
-            [
-                'expired_at' => date(
-                    'Y-m-d H:i:s',
-                    strtotime(
-                        "+" . self::$goods->days . " days"
-                    )
-                ),
-            ]
-        );
+        Order::whereId(self::$order->id)->update(['expired_at' => date('Y-m-d H:i:s', strtotime("+".self::$goods->days." days"))]);
         $oldData = self::$user->transfer_enable;
-        $ret     = self::$user->update(
-            array_merge(
-                $this->resetTimeAndData(),
-                [
-                    'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
-                    'level'      => self::$goods->level,
-                    'enable'     => 1,
-                ]
-            )
-        );
+        $ret = self::$user->update(array_merge($this->resetTimeAndData(), [
+            'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
+            'level'      => self::$goods->level,
+            'enable'     => 1,
+        ]));
         if ($ret) {
-            return Helpers::addUserTrafficModifyLog(
-                self::$order->user_id,
-                self::$order->id,
-                $oldData,
-                self::$user->transfer_enable,
-                '【' . self::$order->pay_way . '】加上用户购买的套餐流量'
-            );
+            return Helpers::addUserTrafficModifyLog(self::$order->user_id, self::$order->id, $oldData, self::$user->transfer_enable,
+                '【'.self::$order->pay_way.'】加上用户购买的套餐流量');
         }
 
         return false;
@@ -165,41 +118,25 @@ class OrderService
     {
         $data = ['u' => 0, 'd' => 0];
         // 账号有效期
-        if ( ! $expired_at) {
-            $expired_at = date(
-                'Y-m-d',
-                strtotime("+" . self::$goods->days . " days")
-            );
-            foreach (
-                Order::userPrepay(self::$order->user_id)->get() as $paidOrder
-            ) {//拿出可能存在的其余套餐, 推算最新的到期时间
+        if (!$expired_at) {
+            $expired_at = date('Y-m-d', strtotime("+".self::$goods->days." days"));
+            foreach (Order::userPrepay(self::$order->user_id)->get() as $paidOrder) {//拿出可能存在的其余套餐, 推算最新的到期时间
                 //取出对应套餐信息
-                $expired_at = date(
-                    'Y-m-d',
-                    strtotime(
-                        "$expired_at +" . $paidOrder->goods->days . " days"
-                    )
-                );
+                $expired_at = date('Y-m-d', strtotime("$expired_at +".$paidOrder->goods->days." days"));
             }
             $data['expired_at'] = $expired_at;
         }
 
         //账号流量重置日期
-        $nextResetTime = date(
-            'Y-m-d',
-            strtotime("+" . self::$goods->period . " days")
-        );
+        $nextResetTime = date('Y-m-d', strtotime("+".self::$goods->period." days"));
         if ($nextResetTime >= $expired_at) {
             $nextResetTime = null;
         }
 
-        return array_merge(
-            $data,
-            [
-                'transfer_enable' => self::$goods->traffic * MB,
-                'reset_time'      => $nextResetTime,
-            ]
-        );
+        return array_merge($data, [
+            'transfer_enable' => self::$goods->traffic * MB,
+            'reset_time'      => $nextResetTime,
+        ]);
     }
 
     // 佣金计算
@@ -210,8 +147,7 @@ class OrderService
         if ($referralType && $user->inviter_id) {// 是否需要支付佣金
             $inviter = $user->inviter;
             // 获取历史返利记录
-            $referral = ReferralLog::whereInviteeId(self::$order->user_id)
-                                   ->doesntExist();
+            $referral = ReferralLog::whereInviteeId(self::$order->user_id)->doesntExist();
             // 无记录 / 首次返利
             if ($referral && sysConfig('is_invite_register')) {
                 // 邀请注册功能开启时，返还邀请者邀请名额
@@ -219,13 +155,8 @@ class OrderService
             }
             // 按照返利模式进行返利判断
             if ($referralType == 2 || $referral) {
-                return $this->addReferralLog(
-                    $user->id,
-                    $inviter->id,
-                    self::$order->id,
-                    self::$order->amount,
-                    self::$order->amount * sysConfig('referral_percent')
-                );
+                return $this->addReferralLog($user->id, $inviter->id, self::$order->id, self::$order->amount,
+                    self::$order->amount * sysConfig('referral_percent'));
             }
         }
 
@@ -243,20 +174,15 @@ class OrderService
      *
      * @return bool
      */
-    private function addReferralLog(
-        int $inviteeId,
-        int $inviterId,
-        int $oid,
-        int $amount,
-        int $commission
-    ): bool {
-        $log             = new ReferralLog();
+    private function addReferralLog(int $inviteeId, int $inviterId, int $oid, int $amount, int $commission): bool
+    {
+        $log = new ReferralLog();
         $log->invitee_id = $inviteeId;
         $log->inviter_id = $inviterId;
-        $log->order_id   = $oid;
-        $log->amount     = $amount;
+        $log->order_id = $oid;
+        $log->amount = $amount;
         $log->commission = $commission;
-        $log->status     = 0;
+        $log->status = 0;
 
         return $log->save();
     }
@@ -264,19 +190,11 @@ class OrderService
     // 激活预支付套餐
     public function activatePrepaidPlan(): bool
     {
-        self::$order->update(
-            [
-                'expired_at' => date(
-                    "Y-m-d H:i:s",
-                    strtotime(
-                        "+" . self::$goods->days . " days"
-                    )
-                ),
-                'status'     => 2,
-            ]
-        );
+        self::$order->update([
+            'expired_at' => date("Y-m-d H:i:s", strtotime("+".self::$goods->days." days")),
+            'status'     => 2,
+        ]);
 
         return $this->activatePlan();
     }
-
 }

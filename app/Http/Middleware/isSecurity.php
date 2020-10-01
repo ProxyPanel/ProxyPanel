@@ -10,7 +10,6 @@ use Response;
 
 class isSecurity
 {
-
     /**
      * 是否需要安全码才访问(仅用于登录页)
      *
@@ -21,23 +20,23 @@ class isSecurity
      */
     public function handle($request, Closure $next)
     {
-        $ip                  = IP::getClientIP();
-        $code                = $request->securityCode;
-        $cacheKey            = 'SecurityLogin_' . ip2long($ip);
+        $ip = IP::getClientIP();
+        $code = $request->securityCode;
+        $cacheKey = 'SecurityLogin_'.ip2long($ip);
         $websiteSecurityCode = sysConfig('website_security_code');
 
-        if ($websiteSecurityCode && ! Cache::has($cacheKey)) {
+        if ($websiteSecurityCode && !Cache::has($cacheKey)) {
             if ($code != $websiteSecurityCode) {
-                Log::info("拒绝非安全入口访问(" . $ip . ")");
+                Log::info("拒绝非安全入口访问(".$ip.")");
 
                 return Response::view(
                     'auth.error',
                     [
-                        'message' => trans('error.SecurityError') . ', 
-                        ' . trans(
+                        'message' => trans('error.SecurityError').',
+                        '.trans(
                                 'error.Visit'
-                            ) . '<a href="/login?securityCode=" target="_self">' .
-                                     trans('error.SecurityEnter') . '</a>',
+                            ).'<a href="/login?securityCode=" target="_self">'.
+                            trans('error.SecurityEnter').'</a>',
                     ],
                     403
                 );
@@ -48,5 +47,4 @@ class isSecurity
 
         return $next($request);
     }
-
 }

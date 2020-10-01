@@ -10,7 +10,6 @@ use Log;
 
 class AutoReportNode extends Command
 {
-
     protected $signature = 'autoReportNode';
     protected $description = '自动报告节点昨日使用情况';
 
@@ -24,25 +23,13 @@ class AutoReportNode extends Command
                 $msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
                 foreach ($nodeList as $node) {
                     $log = NodeDailyDataFlow::whereNodeId($node->id)
-                                            ->whereDate(
-                                                'created_at',
-                                                date(
-                                                    "Y-m-d",
-                                                    strtotime('-1 days')
-                                                )
-                                            )
-                                            ->first();
+                        ->whereDate('created_at', date("Y-m-d", strtotime('-1 days')))
+                        ->first();
 
                     if ($log) {
-                        $msg .= '|' . $node->name . '|' . flowAutoShow(
-                                $log->u
-                            ) . '|' . flowAutoShow(
-                                    $log->d
-                                ) . '|' . $log->traffic . "\r\n";
+                        $msg .= '|'.$node->name.'|'.flowAutoShow($log->u).'|'.flowAutoShow($log->d).'|'.$log->traffic."\r\n";
                     } else {
-                        $msg .= '|' . $node->name . '|' . flowAutoShow(
-                                0
-                            ) . '|' . flowAutoShow(0) . "|0B\r\n";
+                        $msg .= '|'.$node->name.'|'.flowAutoShow(0).'|'.flowAutoShow(0)."|0B\r\n";
                     }
                 }
 
@@ -50,12 +37,9 @@ class AutoReportNode extends Command
             }
         }
 
-        $jobEndTime  = microtime(true);
+        $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
-        Log::info(
-            '---【' . $this->description . '】完成---，耗时' . $jobUsedTime . '秒'
-        );
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
     }
-
 }

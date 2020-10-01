@@ -18,29 +18,8 @@ class Helpers
 {
 
     // 不生成的端口
-    private static $denyPorts = [
-        1068,
-        1109,
-        1434,
-        3127,
-        3128,
-        3129,
-        3130,
-        3332,
-        4444,
-        5554,
-        6669,
-        8080,
-        8081,
-        8082,
-        8181,
-        8282,
-        9996,
-        17185,
-        24554,
-        35601,
-        60177,
-        60179,
+    private static array $denyPorts = [
+        1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179,
     ];
 
     // 加密方式
@@ -83,34 +62,26 @@ class Helpers
      *
      * @return int
      */
-    public static function addUser(
-        string $email,
-        string $password,
-        string $transfer_enable,
-        int $data,
-        $inviter_id = null
-    ): int {
-        $user           = new User();
+    public static function addUser(string $email, string $password, string $transfer_enable, int $data, $inviter_id = null): int
+    {
+        $user = new User();
         $user->username = $email;
-        $user->email    = $email;
+        $user->email = $email;
         $user->password = $password;
         // 生成一个可用端口
-        $user->port            = self::getPort();
-        $user->passwd          = Str::random();
-        $user->vmess_id        = Str::uuid();
-        $user->enable          = 1;
-        $user->method          = self::getDefaultMethod();
-        $user->protocol        = self::getDefaultProtocol();
-        $user->obfs            = self::getDefaultObfs();
+        $user->port = self::getPort();
+        $user->passwd = Str::random();
+        $user->vmess_id = Str::uuid();
+        $user->enable = 1;
+        $user->method = self::getDefaultMethod();
+        $user->protocol = self::getDefaultProtocol();
+        $user->obfs = self::getDefaultObfs();
         $user->transfer_enable = $transfer_enable;
-        $user->expired_at      = date(
-            'Y-m-d',
-            strtotime("+" . $data . " days")
-        );
-        $user->reg_ip          = IP::getClientIp();
-        $user->inviter_id      = $inviter_id;
-        $user->reset_time      = null;
-        $user->status          = 0;
+        $user->expired_at = date('Y-m-d', strtotime("+".$data." days"));
+        $user->reg_ip = IP::getClientIp();
+        $user->inviter_id = $inviter_id;
+        $user->reset_time = null;
+        $user->status = 0;
         $user->save();
 
         return $user->id;
@@ -122,11 +93,8 @@ class Helpers
         if (sysConfig('is_rand_port')) {
             $port = self::getRandPort();
         } else {
-            $port        = (int)sysConfig('min_port');
-            $exists_port = array_merge(
-                User::where('port', '>=', $port)->pluck('port')->toArray(),
-                self::$denyPorts
-            );
+            $port = (int) sysConfig('min_port');
+            $exists_port = array_merge(User::where('port', '>=', $port)->pluck('port')->toArray(), self::$denyPorts);
 
             while (in_array($port, $exists_port, true)) {
                 ++$port;
@@ -139,7 +107,7 @@ class Helpers
     // 获取一个随机端口
     private static function getRandPort(): int
     {
-        $port        = random_int(sysConfig('min_port'), sysConfig('max_port'));
+        $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
         $exists_port = array_merge(
             User::where('port', '<>', 0)->pluck('port')->toArray(),
             self::$denyPorts
@@ -157,7 +125,7 @@ class Helpers
     {
         $config = SsConfig::default()->type(1)->first();
 
-        return $config ? $config->name : 'aes-256-cfb';
+        return $config->name ?? 'aes-256-cfb';
     }
 
     // 获取默认协议
@@ -165,7 +133,7 @@ class Helpers
     {
         $config = SsConfig::default()->type(2)->first();
 
-        return $config ? $config->name : 'origin';
+        return $config->name ?? 'origin';
     }
 
     // 获取默认混淆
@@ -173,24 +141,18 @@ class Helpers
     {
         $config = SsConfig::default()->type(3)->first();
 
-        return $config ? $config->name : 'plain';
+        return $config->name ?? 'plain';
     }
 
     // 获取系统配置
     public static function cacheSysConfig($name)
     {
         if ($name === 'is_onlinePay') {
-            $value = ! empty(
-            array_filter(
-                Cache::many(
-                    ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay']
-                )
-            )
-            );
+            $value = !empty(array_filter(Cache::many(['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])));
             Cache::tags('sysConfig')->put('is_onlinePay', $value);
         } else {
             $value = Config::find($name)->value;
-            Cache::tags('sysConfig')->put($name, $value ?: false);
+            Cache::tags('sysConfig')->put($name, $value ?? false);
         }
 
         return $value;
@@ -213,21 +175,15 @@ class Helpers
      *
      * @return int
      */
-    public static function addNotificationLog(
-        string $title,
-        string $content,
-        int $type,
-        string $address = 'admin',
-        int $status = 1,
-        string $error = ''
-    ): int {
-        $log          = new NotificationLog();
-        $log->type    = $type;
+    public static function addNotificationLog(string $title, string $content, int $type, $address = 'admin', $status = 1, $error = ''): int
+    {
+        $log = new NotificationLog();
+        $log->type = $type;
         $log->address = $address;
-        $log->title   = $title;
+        $log->title = $title;
         $log->content = $content;
-        $log->status  = $status;
-        $log->error   = $error;
+        $log->status = $status;
+        $log->error = $error;
         $log->save();
 
         return $log->id;
@@ -243,16 +199,12 @@ class Helpers
      *
      * @return bool
      */
-    public static function addCouponLog(
-        string $description,
-        int $couponId,
-        $goodsId = 0,
-        $orderId = 0
-    ): bool {
-        $log              = new CouponLog();
-        $log->coupon_id   = $couponId;
-        $log->goods_id    = $goodsId;
-        $log->order_id    = $orderId;
+    public static function addCouponLog(string $description, int $couponId, $goodsId = 0, $orderId = 0): bool
+    {
+        $log = new CouponLog();
+        $log->coupon_id = $couponId;
+        $log->goods_id = $goodsId;
+        $log->order_id = $orderId;
         $log->description = $description;
 
         return $log->save();
@@ -270,22 +222,16 @@ class Helpers
      *
      * @return bool
      */
-    public static function addUserCreditLog(
-        int $userId,
-        int $orderId,
-        int $before,
-        int $after,
-        int $amount,
-        $description = ''
-    ): bool {
-        $log              = new UserCreditLog();
-        $log->user_id     = $userId;
-        $log->order_id    = $orderId;
-        $log->before      = $before;
-        $log->after       = $after;
-        $log->amount      = $amount;
+    public static function addUserCreditLog(int $userId, int $orderId, int $before, int $after, int $amount, $description = ''): bool
+    {
+        $log = new UserCreditLog();
+        $log->user_id = $userId;
+        $log->order_id = $orderId;
+        $log->before = $before;
+        $log->after = $after;
+        $log->amount = $amount;
         $log->description = $description;
-        $log->created_at  = date('Y-m-d H:i:s');
+        $log->created_at = date('Y-m-d H:i:s');
 
         return $log->save();
     }
@@ -301,24 +247,20 @@ class Helpers
      *
      * @return bool
      */
-    public static function addUserTrafficModifyLog(
-        int $userId,
-        int $orderId,
-        int $before,
-        int $after,
-        $description = ''
-    ): bool {
-        $log              = new UserDataModifyLog();
-        $log->user_id     = $userId;
-        $log->order_id    = $orderId;
-        $log->before      = $before;
-        $log->after       = $after;
+    public static function addUserTrafficModifyLog(int $userId, int $orderId, int $before, int $after, $description = ''): bool
+    {
+        $log = new UserDataModifyLog();
+        $log->user_id = $userId;
+        $log->order_id = $orderId;
+        $log->before = $before;
+        $log->after = $after;
         $log->description = $description;
 
         return $log->save();
     }
 
-    public static function abortIfNotModified($data): string {
+    public static function abortIfNotModified($data): string
+    {
         $req = request();
         // Only for "GET" method
         if (!$req->isMethod('GET')) {
@@ -329,6 +271,7 @@ class Helpers
         if ($etag == $req->header("IF-NONE-MATCH")) {
             abort(304);
         }
+
         return $etag;
     }
 }

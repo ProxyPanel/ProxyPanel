@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
                         <input type="text" class="form-control" id="email" name="email"
-                                value="{{Request::get('email')}}" placeholder="用户名"/>
+                               value="{{Request::get('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="node_id" name="node_id" onChange="Search()">
@@ -40,7 +40,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('rule.log')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.rule.log')}}" class="btn btn-danger">重 置</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -59,10 +59,10 @@
                     @foreach($ruleLogs as $ruleLog)
                         <tr>
                             <td> {{$ruleLog->id}} </td>
-                            <td> {{empty($ruleLog->user) ? '【账号已删除】' : $ruleLog->user->id}} </td>
-                            <td> {{empty($ruleLog->user) ? '【账号已删除】' : $ruleLog->user->username}} </td>
+                            <td> {{$ruleLog->user->id ?? '【账号已删除】'}} </td>
+                            <td> {{$ruleLog->user->username ?? '【账号已删除】'}} </td>
                             <td> {{empty($ruleLog->node) ? '【节点已删除】' : '【节点ID：' . $ruleLog->node_id . '】' . $ruleLog->node->name}} </td>
-                            <td> {{$ruleLog->rule_id ? '[阻断] ' . ($ruleLog->rule ? $ruleLog->rule->name : '【规则已删除】') : '[允许] 访问非规则允许内容'}} </td>
+                            <td> {{$ruleLog->rule_id ? '⛔  ' . ($ruleLog->rule->name ?? '【规则已删除】') : '✅  访问非规则允许内容'}} </td>
                             <td> {{$ruleLog->reason}} </td>
                             <td> {{$ruleLog->created_at}} </td>
                         </tr>
@@ -89,34 +89,34 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('rule.log')}}?uid=' + $('#uid').val() + '&username=' + $('#username').val() +
-            '&node_id=' + $('#node_id option:selected').val() + '&rule_id=' + $('#rule_id option:selected').val();
-      }
+        // 搜索
+        function Search() {
+            window.location.href = '{{route('admin.rule.log')}}?uid=' + $('#uid').val() + '&email=' + $('#email').val() +
+                '&node_id=' + $('#node_id option:selected').val() + '&rule_id=' + $('#rule_id option:selected').val();
+        }
 
-      // 清除所有记录
-      function clearLog() {
-        swal.fire({
-          title: '警告',
-          text: '确定清空所有记录吗？',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post("{{route('rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                    then(() => window.location.reload());
-              }
-              else {
-                swal.fire({title: ret.message, type: 'error'});
-              }
+        // 清除所有记录
+        function clearLog() {
+            swal.fire({
+                title: '警告',
+                text: '确定清空所有记录吗？',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                then(() => window.location.reload());
+                        }
+                        else {
+                            swal.fire({title: ret.message, type: 'error'});
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
+        }
     </script>
 @endsection

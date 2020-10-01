@@ -14,7 +14,6 @@ use Mail;
 
 class NodeBlockedDetection extends Command
 {
-
     protected $signature = 'nodeBlockedDetection';
     protected $description = '节点阻断检测';
 
@@ -22,21 +21,16 @@ class NodeBlockedDetection extends Command
     {
         $jobStartTime = microtime(true);
         if (sysConfig('nodes_detection')) {
-            if ( ! Cache::has('LastCheckTime')) {
+            if (!Cache::has('LastCheckTime')) {
                 $this->checkNodes();
             } elseif (Cache::get('LastCheckTime') <= time()) {
                 $this->checkNodes();
             } else {
-                Log::info(
-                    '下次节点阻断检测时间：' . date(
-                        'Y-m-d H:i:s',
-                        Cache::get('LastCheckTime')
-                    )
-                );
+                Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
             }
         }
 
-        $jobEndTime  = microtime(true);
+        $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
         Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
@@ -46,60 +40,45 @@ class NodeBlockedDetection extends Command
     private function checkNodes(): void
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
-        $sendText            = false;
-        $message             = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
-        $additionalMessage   = '';
-        foreach (
-            Node::whereIsRelay(0)->whereStatus(1)->where(
-                'detection_type',
-                '>',
-                0
-            )->get() as $node
-        ) {
+        $sendText = false;
+        $message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
+        $additionalMessage = '';
+        foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get() as $node) {
             $info = false;
-            if ($node->detection_type == 0) {
+            if ($node->detection_type === 0) {
                 continue;
             }
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             if ($node->is_ddns) {
                 $ip = gethostbyname($node->server);
-                if (strcmp($ip, $node->server) != 0) {
+                if (strcmp($ip, $node->server) !== 0) {
                     $node->ip = $ip;
                 } else {
-                    Log::warning(
-                        "【节点阻断检测】检测" . $node->server . "时，IP获取失败" . $ip . " | " . $node->server
-                    );
-                    $this->notifyMaster(
-                        "{$node->name}动态IP获取失败",
-                        "节点 {$node->name} ： IP获取失败 "
-                    );
+                    Log::warning("【节点阻断检测】检测".$node->server."时，IP获取失败".$ip." | ".$node->server);
+                    $this->notifyMaster("{$node->name}动态IP获取失败", "节点 {$node->name} ： IP获取失败 ");
                 }
             }
-            if ($node->detection_type != 1) {
+            if ($node->detection_type !== 1) {
                 $icmpCheck = NetworkDetection::networkCheck($node->ip, true);
-                if ($icmpCheck != false && $icmpCheck !== "通讯正常") {
-                    $message  .= "| " . $node->name . " | ICMP | " . $icmpCheck . " |\r\n";
+                if ($icmpCheck !== false && $icmpCheck !== "通讯正常") {
+                    $message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
                     $sendText = true;
-                    $info     = true;
+                    $info = true;
                 }
             }
-            if ($node->detection_type != 2) {
-                $tcpCheck = NetworkDetection::networkCheck(
-                    $node->ip,
-                    false,
-                    $node->single ? $node->port : null
-                );
-                if ($tcpCheck != false && $tcpCheck !== "通讯正常") {
-                    $message  .= "| " . $node->name . " | TCP | " . $tcpCheck . " |\r\n";
+            if ($node->detection_type !== 2) {
+                $tcpCheck = NetworkDetection::networkCheck($node->ip, false, $node->single ? $node->port : null);
+                if ($tcpCheck !== false && $tcpCheck !== "通讯正常") {
+                    $message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";
                     $sendText = true;
-                    $info     = true;
+                    $info = true;
                 }
             }
 
             // 节点检测次数
             if ($info && $detectionCheckTimes) {
                 // 已通知次数
-                $cacheKey = 'detection_check_times' . $node->id;
+                $cacheKey = 'detection_check_times'.$node->id;
                 if (Cache::has($cacheKey)) {
                     $times = Cache::get($cacheKey);
                 } else {
@@ -120,11 +99,8 @@ class NodeBlockedDetection extends Command
 
         //只有在出现阻断线路时，才会发出警报
         if ($sendText) {
-            $this->notifyMaster(
-                "节点阻断警告",
-                "阻断日志: \r\n\r\n" . $message . $additionalMessage
-            );
-            Log::info("阻断日志: \r\n" . $message . $additionalMessage);
+            $this->notifyMaster("节点阻断警告", "阻断日志: \r\n\r\n".$message.$additionalMessage);
+            Log::info("阻断日志: \r\n".$message.$additionalMessage);
         }
 
         // 随机生成下次检测时间
@@ -141,17 +117,9 @@ class NodeBlockedDetection extends Command
     private function notifyMaster(string $title, string $content): void
     {
         $result = PushNotification::send($title, $content);
-        if ( ! $result && sysConfig('webmaster_email')) {
-            $logId = Helpers::addNotificationLog(
-                $title,
-                $content,
-                1,
-                sysConfig('webmaster_email')
-            );
-            Mail::to(sysConfig('webmaster_email'))->send(
-                new nodeCrashWarning($logId)
-            );
+        if (!$result && sysConfig('webmaster_email')) {
+            $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
+            Mail::to(sysConfig('webmaster_email'))->send(new nodeCrashWarning($logId));
         }
     }
-
 }

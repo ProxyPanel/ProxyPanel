@@ -171,28 +171,32 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_forbid_china">阻止大陆访问</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_forbid_china" data-plugin="switchery" @if($is_forbid_china) checked @endif onchange="updateFromOther('switch','is_forbid_china')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_forbid_china" data-plugin="switchery" @if($is_forbid_china) checked
+                                                                          @endif onchange="updateFromOther('switch','is_forbid_china')"></span>
                                             <span class="text-help offset-md-3"> 开启后大陆IP禁止访问 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_forbid_oversea">阻止海外访问</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_forbid_oversea" data-plugin="switchery" @if($is_forbid_oversea) checked @endif onchange="updateFromOther('switch','is_forbid_oversea')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_forbid_oversea" data-plugin="switchery" @if($is_forbid_oversea) checked
+                                                                          @endif onchange="updateFromOther('switch','is_forbid_oversea')"></span>
                                             <span class="text-help offset-md-3"> 开启后海外IP(含港澳台)禁止访问 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_forbid_robot">阻止机器人访问</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_forbid_robot" data-plugin="switchery" @if($is_forbid_robot) checked @endif onchange="updateFromOther('switch','is_forbid_robot')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_forbid_robot" data-plugin="switchery" @if($is_forbid_robot) checked
+                                                                          @endif onchange="updateFromOther('switch','is_forbid_robot')"></span>
                                             <span class="text-help offset-md-3"> 如果是机器人、爬虫、代理访问网站则会抛出404错误 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="maintenance_mode">维护模式</label>
-                                            <span class="col-md-9"><input type="checkbox" id="maintenance_mode" data-plugin="switchery" @if($maintenance_mode) checked @endif onchange="updateFromOther('switch','maintenance_mode')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="maintenance_mode" data-plugin="switchery" @if($maintenance_mode) checked
+                                                                          @endif onchange="updateFromOther('switch','maintenance_mode')"></span>
                                             <span class="text-help offset-md-3"> 启用后，用户访问将转移至维护界面 </span>
                                         </div>
                                     </div>
@@ -253,14 +257,16 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_register">用户注册</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_register" data-plugin="switchery" @if($is_register) checked @endif onchange="updateFromOther('switch','is_register')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_register" data-plugin="switchery" @if($is_register) checked
+                                                                          @endif onchange="updateFromOther('switch','is_register')"></span>
                                             <span class="text-help offset-md-3"> 关闭后无法注册 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_invite_register">邀请注册</label>
-                                            <select class="col-md-3" id="is_invite_register" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_invite_register')">
+                                            <select class="col-md-3" id="is_invite_register" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','is_invite_register')">
                                                 <option value="0">关闭</option>
                                                 <option value="1">可选</option>
                                                 <option value="2">必须</option>
@@ -270,7 +276,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_activate_account">激活账号</label>
-                                            <select class="col-md-4" id="is_activate_account" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_activate_account')">
+                                            <select class="col-md-4" id="is_activate_account" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','is_activate_account')">
                                                 <option value="0">关闭</option>
                                                 <option value="1">注册前激活</option>
                                                 <option value="2">注册后激活</option>
@@ -281,21 +288,24 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_reset_password">重置密码</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_reset_password" data-plugin="switchery" @if($is_reset_password) checked @endif onchange="updateFromOther('switch','is_reset_password')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_reset_password" data-plugin="switchery" @if($is_reset_password) checked
+                                                                          @endif onchange="updateFromOther('switch','is_reset_password')"></span>
                                             <span class="text-help offset-md-3"> 启用后用户可以通过邮件重置密码 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_free_code">免费邀请码</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_free_code" data-plugin="switchery" @if($is_free_code) checked @endif onchange="updateFromOther('switch','is_free_code')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_free_code" data-plugin="switchery" @if($is_free_code) checked
+                                                                          @endif onchange="updateFromOther('switch','is_free_code')"></span>
                                             <span class="text-help offset-md-3"> 关闭后免费邀请码不可见 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_rand_port">随机端口</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_rand_port" data-plugin="switchery" @if($is_rand_port) checked @endif onchange="updateFromOther('switch','is_rand_port')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_rand_port" data-plugin="switchery" @if($is_rand_port) checked
+                                                                          @endif onchange="updateFromOther('switch','is_rand_port')"></span>
                                             <span class="text-help offset-md-3"> 注册、添加用户时随机生成端口 </span>
                                         </div>
                                     </div>
@@ -319,7 +329,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_user_rand_port">自定义端口</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_user_rand_port" data-plugin="switchery" @if($is_user_rand_port) checked @endif onchange="updateFromOther('switch','is_user_rand_port')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_user_rand_port" data-plugin="switchery" @if($is_user_rand_port) checked
+                                                                          @endif onchange="updateFromOther('switch','is_user_rand_port')"></span>
                                             <span class="text-help offset-md-3"> 用户可以自定义端口 </span>
                                         </div>
                                     </div>
@@ -392,7 +403,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_email_filtering">邮箱过滤机制</label>
-                                            <select class="col-md-3" id="is_email_filtering" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_email_filtering')">
+                                            <select class="col-md-3" id="is_email_filtering" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','is_email_filtering')">
                                                 <option value="0">关闭</option>
                                                 <option value="1">黑名单</option>
                                                 <option value="2">白名单</option>
@@ -509,7 +521,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="mix_subscribe">混合订阅</label>
-                                            <span class="col-md-9"><input type="checkbox" id="mix_subscribe" data-plugin="switchery" @if($mix_subscribe) checked @endif onchange="updateFromOther('switch','mix_subscribe')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="mix_subscribe" data-plugin="switchery" @if($mix_subscribe) checked
+                                                                          @endif onchange="updateFromOther('switch','mix_subscribe')"></span>
                                             <span class="text-help offset-md-3">
                                                 启用后，订阅信息中将包含V2Ray节点信息（仅支持Shadowrocket、Quantumult、v2rayN） </span>
                                         </div>
@@ -517,14 +530,16 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="rand_subscribe">随机订阅</label>
-                                            <span class="col-md-9"><input type="checkbox" id="rand_subscribe" data-plugin="switchery" @if($rand_subscribe) checked @endif onchange="updateFromOther('switch','rand_subscribe')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="rand_subscribe" data-plugin="switchery" @if($rand_subscribe) checked
+                                                                          @endif onchange="updateFromOther('switch','rand_subscribe')"></span>
                                             <span class="text-help offset-md-3"> 启用后，订阅时将随机返回节点信息，否则按节点排序返回 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_custom_subscribe">高级订阅</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_custom_subscribe" data-plugin="switchery" @if($is_custom_subscribe) checked @endif onchange="updateFromOther('switch','is_custom_subscribe')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_custom_subscribe" data-plugin="switchery" @if($is_custom_subscribe) checked
+                                                                          @endif onchange="updateFromOther('switch','is_custom_subscribe')"></span>
                                             <span class="text-help offset-md-3">
                                                 启用后，订阅信息顶部将显示过期时间、剩余流量（Quantumult有特殊效果） </span>
                                         </div>
@@ -579,7 +594,7 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="v2ray_tls_provider">V2Ray
-                                                                                                            TLS配置</label>
+                                                TLS配置</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="v2ray_tls_provider" value="{{$v2ray_tls_provider}}"/>
@@ -602,7 +617,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_namesilo">Namesilo</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_namesilo" data-plugin="switchery" @if($is_namesilo) checked @endif onchange="updateFromOther('switch','is_namesilo')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_namesilo" data-plugin="switchery" @if($is_namesilo) checked
+                                                                          @endif onchange="updateFromOther('switch','is_namesilo')"></span>
                                             <span class="text-help offset-md-3">
                                                 添加、编辑节点的绑定域名时自动更新域名DNS记录值为节点IP（<a href="https://www.namesilo.com/account_api.php?rid=326ec20pa" target="_blank">创建API
                                                                                                                                                                 KEY</a>）</span>
@@ -611,7 +627,7 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="namesilo_key">Namesilo API
-                                                                                                      KEY</label>
+                                                KEY</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="namesilo_key" value="{{$namesilo_key}}" placeholder="填入Namesilo上申请的API KEY"/>
@@ -688,8 +704,8 @@
                                                 </div>
                                             </div>
                                             <span class="text-help offset-md-3">
-                                                本功能需要<a href="https://www.google.com/recaptcha/admin" target="_blank">Google
-                                                                                                                      reCAPTCHA后台</a>
+                                                本功能需要
+                                                <a href="https://www.google.com/recaptcha/admin" target="_blank">GooglereCAPTCHA后台</a>
                                                 申请权限及应用 （申请需科学上网，日常验证不用）</span>
                                         </div>
                                     </div>
@@ -711,7 +727,7 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 control-label" for="hcaptcha_secret">hCaptcha
-                                                                                                        Secret密钥</label>
+                                                Secret密钥</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="hcaptcha_secret" value="{{$hcaptcha_secret}}"/>
@@ -730,7 +746,7 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="hcaptcha_sitekey">hCaptcha Site
-                                                                                                          Key网站密钥</label>
+                                                Key网站密钥</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="hcaptcha_sitekey" value="{{$hcaptcha_sitekey}}"/>
@@ -752,7 +768,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_checkin">签到加流量</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_checkin" data-plugin="switchery" @if($is_checkin) checked @endif onchange="updateFromOther('switch','is_checkin')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_checkin" data-plugin="switchery" @if($is_checkin) checked
+                                                                          @endif onchange="updateFromOther('switch','is_checkin')"></span>
                                             <span class="text-help offset-md-3"> 登录时将根据流量范围随机得到流量 </span>
                                         </div>
                                     </div>
@@ -779,12 +796,14 @@
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <label for="min_rand_traffic"></label>
-                                                    <input type="number" class="form-control" id="min_rand_traffic" value="{{$min_rand_traffic}}" onchange="updateFromInput('min_rand_traffic','0','{{$max_rand_traffic}}')"/>
+                                                    <input type="number" class="form-control" id="min_rand_traffic" value="{{$min_rand_traffic}}"
+                                                           onchange="updateFromInput('min_rand_traffic','0','{{$max_rand_traffic}}')"/>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> ~ </span>
                                                     </div>
                                                     <label for="max_rand_traffic"></label>
-                                                    <input type="number" class="form-control" id="max_rand_traffic" value="{{$max_rand_traffic}}" onchange="updateFromInput('max_rand_traffic','0','{{$min_rand_traffic}}')"/>
+                                                    <input type="number" class="form-control" id="max_rand_traffic" value="{{$max_rand_traffic}}"
+                                                           onchange="updateFromInput('max_rand_traffic','0','{{$min_rand_traffic}}')"/>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> MB </span>
                                                     </div>
@@ -803,7 +822,8 @@
                                             <label class="col-md-3 col-form-label" for="referral_status">推广功能</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="checkbox" id="referral_status" data-plugin="switchery" @if($referral_status) checked @endif onchange="updateFromOther('switch','referral_status')">
+                                                    <input type="checkbox" id="referral_status" data-plugin="switchery" @if($referral_status) checked
+                                                           @endif onchange="updateFromOther('switch','referral_status')">
                                                 </div>
                                             </div>
                                             <span class="text-help offset-md-3"> 关闭后用户不可见，但是不影响其正常邀请返利 </span>
@@ -812,7 +832,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="referral_type">返利模式</label>
-                                            <select class="col-md-5" id="referral_type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','referral_type')">
+                                            <select class="col-md-5" id="referral_type" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','referral_type')">
                                                 <option value="0">关闭</option>
                                                 <option value="1">首购返利</option>
                                                 <option value="2">循环返利</option>
@@ -881,7 +902,8 @@
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="expire_warning">用户过期警告</label>
                                             <span class="col-md-9">
-                                                <input type="checkbox" id="expire_warning" data-plugin="switchery" @if($expire_warning) checked @endif onchange="updateFromOther('switch','expire_warning')">
+                                                <input type="checkbox" id="expire_warning" data-plugin="switchery" @if($expire_warning) checked
+                                                       @endif onchange="updateFromOther('switch','expire_warning')">
                                             </span>
                                             <span class="text-help offset-md-3"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
                                         </div>
@@ -906,14 +928,15 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="traffic_warning">用户流量警告</label>
-                                            <span class="col-md-9"><input type="checkbox" id="traffic_warning" data-plugin="switchery" @if($traffic_warning) checked @endif onchange="updateFromOther('switch','traffic_warning')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="traffic_warning" data-plugin="switchery" @if($traffic_warning) checked
+                                                                          @endif onchange="updateFromOther('switch','traffic_warning')"></span>
                                             <span class="text-help offset-md-3"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label for="traffic_warning_percent"
-                                                    class="col-md-3 col-form-label">流量警告阈值</label>
+                                                   class="col-md-3 col-form-label">流量警告阈值</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" id="traffic_warning_percent" value="{{$traffic_warning_percent}}"/>
@@ -931,14 +954,15 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_node_offline">节点离线提醒</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_node_offline" data-plugin="switchery" @if($is_node_offline) checked @endif onchange="updateFromOther('switch','is_node_offline')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_node_offline" data-plugin="switchery" @if($is_node_offline) checked
+                                                                          @endif onchange="updateFromOther('switch','is_node_offline')"></span>
                                             <span class="text-help offset-md-3"> 启用后如果节点离线会推送提醒 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label"
-                                                    for="offline_check_times">离线提醒次数</label>
+                                                   for="offline_check_times">离线提醒次数</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" id="offline_check_times" value="{{$offline_check_times}}"/>
@@ -956,7 +980,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="nodes_detection">节点阻断检测</label>
-                                            <span class="col-md-9"><input type="checkbox" id="nodes_detection" data-plugin="switchery" @if($nodes_detection) checked @endif onchange="updateFromOther('switch','nodes_detection')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="nodes_detection" data-plugin="switchery" @if($nodes_detection) checked
+                                                                          @endif onchange="updateFromOther('switch','nodes_detection')"></span>
                                             <span class="text-help offset-md-3"> 每小时检测节点是否被阻断并提醒 </span>
                                         </div>
                                     </div>
@@ -980,8 +1005,9 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_notification">推送通知</label>
-                                            <select class="col-md-5" id="is_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_notification')">
-                                                <option value="0">关闭</option>
+                                            <select class="col-md-5" id="is_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','is_notification')">
+                                                <option value="">关闭</option>
                                                 <option value="serverChan">ServerChan</option>
                                                 <option value="bark">Bark</option>
                                             </select>
@@ -1027,15 +1053,18 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_push_bear">PushBear</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_push_bear" data-plugin="switchery" @if($is_push_bear) checked @endif onchange="updateFromOther('switch','is_push_bear')"></span>
+                                            <span class="col-md-9">
+                                                <input type="checkbox" id="is_push_bear" data-plugin="switchery" @if($is_push_bear) checked @endif onchange="updateFromOther('switch','is_push_bear')">
+                                            </span>
                                             <span class="text-help offset-md-3">
-                                                使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）</span>
+                                                使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="push_bear_send_key">PushBear
-                                                                                                            SendKey</label>
+                                                SendKey</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="push_bear_send_key" value="{{$push_bear_send_key}}" placeholder="创建消息通道后即可获取"/>
@@ -1074,21 +1103,24 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_clear_log">自动清除日志</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_clear_log" data-plugin="switchery" @if($is_clear_log) checked @endif onchange="updateFromOther('switch','is_clear_log')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_clear_log" data-plugin="switchery" @if($is_clear_log) checked
+                                                                          @endif onchange="updateFromOther('switch','is_clear_log')"></span>
                                             <span class="text-help offset-md-3"> （推荐）启用后自动清除无用日志 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="reset_traffic">流量自动重置</label>
-                                            <span class="col-md-9"><input type="checkbox" id="reset_traffic" data-plugin="switchery" @if($reset_traffic) checked @endif onchange="updateFromOther('switch','reset_traffic')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="reset_traffic" data-plugin="switchery" @if($reset_traffic) checked
+                                                                          @endif onchange="updateFromOther('switch','reset_traffic')"></span>
                                             <span class="text-help offset-md-3"> 用户会按其购买套餐的日期自动重置可用流量 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_subscribe_ban">订阅异常自动封禁</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_subscribe_ban" data-plugin="switchery" @if($is_subscribe_ban) checked @endif onchange="updateFromOther('switch','is_subscribe_ban')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_subscribe_ban" data-plugin="switchery" @if($is_subscribe_ban) checked
+                                                                          @endif onchange="updateFromOther('switch','is_subscribe_ban')"></span>
                                             <span class="text-help offset-md-3"> 启用后用户订阅链接请求超过设定阈值则自动封禁 </span>
                                         </div>
                                     </div>
@@ -1111,14 +1143,15 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_traffic_ban">异常自动封号</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_traffic_ban" data-plugin="switchery" @if($is_traffic_ban) checked @endif onchange="updateFromOther('switch','is_traffic_ban')"/></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_traffic_ban" data-plugin="switchery" @if($is_traffic_ban) checked
+                                                                          @endif onchange="updateFromOther('switch','is_traffic_ban')"/></span>
                                             <span class="text-help offset-md-3"> 1小时内流量超过异常阈值则自动封号（仅禁用代理） </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label"
-                                                    for="traffic_ban_value">流量异常阈值</label>
+                                                   for="traffic_ban_value">流量异常阈值</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" id="traffic_ban_value" value="{{$traffic_ban_value}}"/>
@@ -1153,15 +1186,17 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label"
-                                                    for="auto_release_port">端口自动释放</label>
-                                            <span class="col-md-9"><input type="checkbox" id="auto_release_port" data-plugin="switchery" @if($auto_release_port) checked @endif onchange="updateFromOther('switch','auto_release_port')"></span>
+                                                   for="auto_release_port">端口自动释放</label>
+                                            <span class="col-md-9"><input type="checkbox" id="auto_release_port" data-plugin="switchery" @if($auto_release_port) checked
+                                                                          @endif onchange="updateFromOther('switch','auto_release_port')"></span>
                                             <span class="text-help offset-md-3"> 被封禁和过期一个月的用户端口自动释放 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_ban_status">过期自动封禁</label>
-                                            <span class="col-md-9"><input type="checkbox" id="is_ban_status" data-plugin="switchery" @if($is_ban_status) checked @endif onchange="updateFromOther('switch','is_ban_status')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="is_ban_status" data-plugin="switchery" @if($is_ban_status) checked
+                                                                          @endif onchange="updateFromOther('switch','is_ban_status')"></span>
                                             <span class="text-help offset-md-3"> (慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,
                                                                                  不开启状态下只封禁用户代理 </span>
                                         </div>
@@ -1169,7 +1204,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="node_daily_report">节点使用报告</label>
-                                            <span class="col-md-9"><input type="checkbox" id="node_daily_report" data-plugin="switchery" @if($node_daily_report) checked @endif onchange="updateFromOther('switch','node_daily_report')"></span>
+                                            <span class="col-md-9"><input type="checkbox" id="node_daily_report" data-plugin="switchery" @if($node_daily_report) checked
+                                                                          @endif onchange="updateFromOther('switch','node_daily_report')"></span>
                                             <span class="text-help offset-md-3"> 每天早上9点推送昨天节点的使用情况 </span>
                                         </div>
                                     </div>
@@ -1177,16 +1213,14 @@
                             </form>
                         </div>
                         <div class="tab-pane" id="other" role="tabpanel">
-                            <form action="/admin/setExtend" method="post" enctype="multipart/form-data" class="upload-form" role="form" id="setExtend">
-                                {{csrf_field()}}
+                            <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form" role="form" id="setExtend">@csrf
                                 <div class="form-row">
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-form-label col-md-3" for="website_home_logo">首页LOGO</label>
                                             <div class="col-md-9">
-                                                <input type="file" id="website_home_logo" data-plugin="dropify" data-default-file={{$website_home_logo?:'/assets/images/default.png'}} />
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交
-                                                </button>
+                                                <input type="file" id="website_home_logo" data-plugin="dropify" data-default-file="{{asset($website_home_logo ?? '/assets/images/default.png')}}"/>
+                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1194,9 +1228,8 @@
                                         <div class="row">
                                             <label class="col-form-label col-md-3" for="website_logo">站内LOGO</label>
                                             <div class="col-md-9">
-                                                <input type="file" id="website_logo" data-plugin="dropify" data-default-file={{$website_logo?:'/assets/images/default.png'}} />
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交
-                                                </button>
+                                                <input type="file" id="website_logo" data-plugin="dropify" data-default-file="{{asset($website_logo ?? '/assets/images/default.png')}}"/>
+                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1205,8 +1238,7 @@
                                             <label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
                                             <div class="col-md-9">
                                                 <textarea class="form-control" rows="10" id="website_analytics">{{$website_analytics}}</textarea>
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交
-                                                </button>
+                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1215,8 +1247,7 @@
                                             <label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
                                             <div class="col-md-9">
                                                 <textarea class="form-control" rows="10" id="website_customer_service">{{$website_customer_service}}</textarea>
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交
-                                                </button>
+                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1250,7 +1281,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_WeChatPay">微信支付</label>
-                                            <select class="col-md-3" id="is_WeChatPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_WeChatPay')">
+                                            <select class="col-md-3" id="is_WeChatPay" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','is_WeChatPay')">
                                                 <option value="">关闭</option>
                                                 <option value="codepay">码支付</option>
                                                 <option value="payjs">PayJS</option>
@@ -1261,7 +1293,8 @@
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_otherPay">特殊支付</label>
-                                            <select class="col-md-3" id="is_otherPay" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_otherPay')">
+                                            <select class="col-md-3" id="is_otherPay" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                    onchange="updateFromOther('select','is_otherPay')">
                                                 <option value="">关闭</option>
                                                 <option value="bitpayx">麻瓜宝</option>
                                                 <option value="paypal">PayPal</option>
@@ -1520,7 +1553,7 @@
                                             <label class="col-md-3 col-form-label">麻瓜宝 MugglePay</label>
                                             <div class="col-md-7">
                                                 请到<a href="https://merchants.mugglepay.com/user/register?ref=MP904BEBB79FE0" target="_blank">麻瓜宝
-                                                                                                                                             MugglePay</a>
+                                                    MugglePay</a>
                                                 申请账号
                                             </div>
                                         </div>
@@ -1648,106 +1681,106 @@
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-      $(document).ready(function() {
-        $('#is_invite_register').selectpicker('val', {{$is_invite_register}});
-        $('#is_activate_account').selectpicker('val', {{$is_activate_account}});
-        $('#is_captcha').selectpicker('val', {{$is_captcha}});
-        $('#referral_type').selectpicker('val', {{$referral_type}});
-        $('#is_email_filtering').selectpicker('val', {{$is_email_filtering}});
-        $('#is_notification').selectpicker('val', '{{$is_notification}}');
-        $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
-        $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
-        $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-        $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
-      });
-
-      // 系统设置更新
-      function systemUpdate(systemItem, value) {
-        $.post('/admin/setConfig', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
-          }
-          else {
-            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-          }
+        $(document).ready(function() {
+            $('#is_invite_register').selectpicker('val', {{$is_invite_register}});
+            $('#is_activate_account').selectpicker('val', {{$is_activate_account}});
+            $('#is_captcha').selectpicker('val', {{$is_captcha}});
+            $('#referral_type').selectpicker('val', {{$referral_type}});
+            $('#is_email_filtering').selectpicker('val', {{$is_email_filtering}});
+            $('#is_notification').selectpicker('val', '{{$is_notification}}');
+            $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
+            $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
+            $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
+            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
         });
-      }
 
-      // 正常input更新
-      function update(systemItem) {
-        systemUpdate(systemItem, $('#' + systemItem).val());
-      }
-
-      // 需要检查限制的更新
-      function updateFromInput(systemItem, lowerBound, upperBound) {
-        let value = parseInt($('#' + systemItem).val());
-        if (lowerBound !== false && value < lowerBound) {
-          swal.fire({title: '不能小于' + lowerBound, type: 'warning', timer: 1500, showConfirmButton: false});
-        }
-        else if (upperBound !== false && value > upperBound) {
-          swal.fire({title: '不能大于' + upperBound, type: 'warning', timer: 1500, showConfirmButton: false});
-        }
-        else {
-          systemUpdate(systemItem, value);
-        }
-      }
-
-      // 其他项更新选择
-      function updateFromOther(inputType, systemItem) {
-        let input = $('#' + systemItem);
-        switch (inputType) {
-          case 'select':
-            input.on('changed.bs.select', function() {
-              systemUpdate(systemItem, $(this).val());
+        // 系统设置更新
+        function systemUpdate(systemItem, value) {
+            $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
+                }
+                else {
+                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                }
             });
-            break;
-          case 'multiSelect':
-            input.on('changed.bs.select', function() {
-              systemUpdate(systemItem, $(this).val().join(','));
-            });
-            break;
-          case 'switch':
-            systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
-            break;
-          default:
-            break;
         }
-      }
 
-      // 发送Bark测试消息
-      function sendTestNotification() {
-        $.post('/admin/sendTestNotification', {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
-          }
-          else {
-            swal.fire({title: ret.message, type: 'error'});
-          }
-        });
-      }
+        // 正常input更新
+        function update(systemItem) {
+            systemUpdate(systemItem, $('#' + systemItem).val());
+        }
 
-      // 生成网站安全码
-      function makeWebsiteSecurityCode() {
-        $.get('/makeSecurityCode', function(ret) {
-          $('#website_security_code').val(ret);
-        });
-      }
+        // 需要检查限制的更新
+        function updateFromInput(systemItem, lowerBound, upperBound) {
+            let value = parseInt($('#' + systemItem).val());
+            if (lowerBound !== false && value < lowerBound) {
+                swal.fire({title: '不能小于' + lowerBound, type: 'warning', timer: 1500, showConfirmButton: false});
+            }
+            else if (upperBound !== false && value > upperBound) {
+                swal.fire({title: '不能大于' + upperBound, type: 'warning', timer: 1500, showConfirmButton: false});
+            }
+            else {
+                systemUpdate(systemItem, value);
+            }
+        }
 
-      function epayInfo() {
-        $.get('/admin/epayInfo', function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({
-              title: '易支付信息(仅供参考)',
-              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
-                  '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
-                  '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
-              type: 'info',
+        // 其他项更新选择
+        function updateFromOther(inputType, systemItem) {
+            let input = $('#' + systemItem);
+            switch (inputType) {
+                case 'select':
+                    input.on('changed.bs.select', function() {
+                        systemUpdate(systemItem, $(this).val());
+                    });
+                    break;
+                case 'multiSelect':
+                    input.on('changed.bs.select', function() {
+                        systemUpdate(systemItem, $(this).val().join(','));
+                    });
+                    break;
+                case 'switch':
+                    systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // 发送Bark测试消息
+        function sendTestNotification() {
+            $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
+                }
+                else {
+                    swal.fire({title: ret.message, type: 'error'});
+                }
             });
-          }
-          else {
-            swal.fire({title: ret.message, type: 'error'});
-          }
-        });
-      }
+        }
+
+        // 生成网站安全码
+        function makeWebsiteSecurityCode() {
+            $.get('{{route('createSecurityCode')}}', function(ret) {
+                $('#website_security_code').val(ret);
+            });
+        }
+
+        function epayInfo() {
+            $.get('{{route('admin.test.epay')}}', function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({
+                        title: '易支付信息(仅供参考)',
+                        html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
+                            '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
+                            '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+                        type: 'info',
+                    });
+                }
+                else {
+                    swal.fire({title: ret.message, type: 'error'});
+                }
+            });
+        }
     </script>
 @endsection

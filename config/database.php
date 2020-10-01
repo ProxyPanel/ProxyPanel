@@ -38,10 +38,7 @@ return [
         'sqlite' => [
             'driver'                  => 'sqlite',
             'url'                     => env('DATABASE_URL'),
-            'database'                => env(
-                'DB_DATABASE',
-                database_path('database.sqlite')
-            ),
+            'database'                => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix'                  => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
@@ -61,11 +58,9 @@ return [
             'prefix_indexes' => true,
             'strict'         => env('DB_STRICT', true),
             'engine'         => null,
-            'options'        => extension_loaded('pdo_mysql') ? array_filter(
-                [
-                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                ]
-            ) : [],
+            'options'        => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
         ],
 
         'pgsql' => [
@@ -128,13 +123,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix'  => env(
-                'REDIS_PREFIX',
-                Str::slug(
-                    env('APP_NAME', 'laravel'),
-                    '_'
-                ) . '_database_'
-            ),
+            'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
         'default' => [

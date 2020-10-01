@@ -11,11 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ReferralApply extends Model
 {
-
     protected $table = 'referral_apply';
-    protected $casts = [
-        'link_logs' => 'array',
-    ];
+    protected $casts = ['link_logs' => 'array'];
 
     public function scopeUid($query)
     {
@@ -56,5 +53,4 @@ class ReferralApply extends Model
     {
         $this->attributes['amount'] = $value * 100;
     }
-
 }

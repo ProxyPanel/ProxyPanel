@@ -2,5 +2,17 @@
     <button class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
     </button>
-    {!! $message !!}
+    @if(is_array($message))
+        @if(count($message) > 1)
+            <ul>
+                @foreach($message as $data)
+                    <li>{!! $data !!}</li>
+                @endforeach
+            </ul>
+        @else
+            {!! $message[0]!!}
+        @endif
+    @else
+        {!! $message !!}
+    @endif
 </div>

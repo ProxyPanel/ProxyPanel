@@ -10,9 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class RuleLog extends Model
 {
-
     public const UPDATED_AT = null;
-
     protected $table = 'rule_log';
 
     public function user(): BelongsTo
@@ -29,5 +27,4 @@ class RuleLog extends Model
     {
         return $this->belongsTo(Rule::class);
     }
-
 }

@@ -15,12 +15,12 @@
                 </div>
             @endif
             @if($errors->any())
-                <x-alert type="danger" :message="$errors->first()"/>
+                <x-alert type="danger" :message="$errors->all()"/>
             @endif
             <div class="panel-body">
-                <form action="/tools/import" method="POST" enctype="multipart/form-data" class="upload-form">
+                <form action="{{route('admin.tools.import')}}" method="POST" enctype="multipart/form-data" class="upload-form">
+                    @csrf
                     <input type="file" id="inputUpload" name="uploadFile" data-plugin="dropify" data-default-file="" required/>
-                    {{csrf_field()}}
                     <button type="submit" class="btn btn-success float-right mt-10"> 导入</button>
                 </form>
             </div>

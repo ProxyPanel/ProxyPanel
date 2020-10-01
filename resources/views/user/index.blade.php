@@ -73,10 +73,10 @@
                             </div>
                             <div class="col-lg-5 col-md-12 col-sm-5">
                                 <div class="w-only-xs-p50 w-only-sm-p75 w-only-md-p50" data-plugin="pieProgress"
-                                        data-valuemax="100"
-                                        data-barcolor="#96A3FA" data-size="100" data-barsize="10"
-                                        data-goal="{{$unusedPercent * 100}}" aria-valuenow="{{$unusedPercent * 100}}"
-                                        role="progressbar">
+                                     data-valuemax="100"
+                                     data-barcolor="#96A3FA" data-size="100" data-barsize="10"
+                                     data-goal="{{$unusedPercent * 100}}" aria-valuenow="{{$unusedPercent * 100}}"
+                                     role="progressbar">
                                     <span class="pie-progress-number blue-grey-700 font-size-20">
                                         {{$unusedPercent * 100}}%</span>
                                 </div>
@@ -168,7 +168,7 @@
                                 </div>
                             </div>
                             <div class="panel-body" data-show-on-hover="false" data-direction="vertical"
-                                    data-skin="scrollable-shadow" data-plugin="scrollable">
+                                 data-skin="scrollable-shadow" data-plugin="scrollable">
                                 <div data-role="container">
                                     <div class="pb-10" data-role="content">
                                         @if(!$noticeList -> isEmpty())
@@ -229,135 +229,135 @@
     <script src="/assets/global/js/Plugin/aspieprogress.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     <script type="text/javascript">
-      // 签到
-      function checkIn() {
-        $.post('/checkIn', {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire('长者的微笑', ret.message, 'success');
-          }
-          else {
-            swal.fire({
-              title: ret.message,
-              type: 'error',
+        // 签到
+        function checkIn() {
+            $.post('/checkIn', {_token: '{{csrf_token()}}'}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire('长者的微笑', ret.message, 'success');
+                }
+                else {
+                    swal.fire({
+                        title: ret.message,
+                        type: 'error',
+                    });
+                }
             });
-          }
-        });
-      }
-
-      const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: {{$dayHours}},
-          datasets: [
-            {
-              fill: true,
-              backgroundColor: 'rgba(98, 168, 234, .1)',
-              borderColor: Config.colors('primary', 600),
-              pointRadius: 4,
-              borderDashOffset: 2,
-              pointBorderColor: '#fff',
-              pointBackgroundColor: Config.colors('primary', 600),
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: Config.colors('primary', 600),
-              data: {{$trafficHourly}},
-            }],
-        },
-        options: {
-          legend: {
-            display: false,
-          },
-          responsive: true,
-          scales: {
-            xAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: '小时',
-                },
-              }],
-            yAxes: [
-              {
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  userCallback: function(tick) {
-                    return tick.toString() + ' GB';
-                  },
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: '{{trans('home.traffic_log_24hours')}}',
-                },
-              }],
-          },
-        },
-      });
-
-      const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: {{$monthDays}},
-          datasets: [
-            {
-              fill: true,
-              backgroundColor: 'rgba(98, 168, 234, .1)',
-              borderColor: Config.colors('primary', 600),
-              pointRadius: 4,
-              borderDashOffset: 2,
-              pointBorderColor: '#fff',
-              pointBackgroundColor: Config.colors('primary', 600),
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: Config.colors('primary', 600),
-              data: {{$trafficDaily}},
-            }],
-        },
-        options: {
-          legend: {
-            display: false,
-          },
-          responsive: true,
-          scales: {
-            xAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: '天',
-                },
-              }],
-            yAxes: [
-              {
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  userCallback: function(tick) {
-                    return tick.toString() + ' GB';
-                  },
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: '{{trans('home.traffic_log_30days')}}',
-                },
-              }],
-          },
-        },
-      });
-
-      @if($banedTime != 0)
-      // 每秒更新计时器
-      const countDownDate = new Date("{{$banedTime}}").getTime();
-      const x = setInterval(function() {
-        const distance = countDownDate - new Date().getTime();
-        const hours = Math.floor(distance % 86400000 / 3600000);
-        const minutes = Math.floor((distance % 3600000) / 60000);
-        const seconds = Math.floor((distance % 60000) / 1000);
-        document.getElementById('countdown').innerHTML = hours + '时 ' + minutes + '分 ' + seconds + '秒';
-        if (distance <= 0) {
-          clearInterval(x);
-          document.getElementById('countdown').remove();
         }
-      }, 1000);
+
+        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: {{$dayHours}},
+                datasets: [
+                    {
+                        fill: true,
+                        backgroundColor: 'rgba(98, 168, 234, .1)',
+                        borderColor: Config.colors('primary', 600),
+                        pointRadius: 4,
+                        borderDashOffset: 2,
+                        pointBorderColor: '#fff',
+                        pointBackgroundColor: Config.colors('primary', 600),
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: Config.colors('primary', 600),
+                        data: {{$trafficHourly}},
+                    }],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [
+                        {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: '小时',
+                            },
+                        }],
+                    yAxes: [
+                        {
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                userCallback: function(tick) {
+                                    return tick.toString() + ' GB';
+                                },
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{trans('home.traffic_log_24hours')}}',
+                            },
+                        }],
+                },
+            },
+        });
+
+        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: {{$monthDays}},
+                datasets: [
+                    {
+                        fill: true,
+                        backgroundColor: 'rgba(98, 168, 234, .1)',
+                        borderColor: Config.colors('primary', 600),
+                        pointRadius: 4,
+                        borderDashOffset: 2,
+                        pointBorderColor: '#fff',
+                        pointBackgroundColor: Config.colors('primary', 600),
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: Config.colors('primary', 600),
+                        data: {{$trafficDaily}},
+                    }],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [
+                        {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: '天',
+                            },
+                        }],
+                    yAxes: [
+                        {
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                userCallback: function(tick) {
+                                    return tick.toString() + ' GB';
+                                },
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{trans('home.traffic_log_30days')}}',
+                            },
+                        }],
+                },
+            },
+        });
+
+        @if($banedTime != 0)
+        // 每秒更新计时器
+        const countDownDate = new Date("{{$banedTime}}").getTime();
+        const x = setInterval(function() {
+            const distance = countDownDate - new Date().getTime();
+            const hours = Math.floor(distance % 86400000 / 3600000);
+            const minutes = Math.floor((distance % 3600000) / 60000);
+            const seconds = Math.floor((distance % 60000) / 1000);
+            document.getElementById('countdown').innerHTML = hours + '时 ' + minutes + '分 ' + seconds + '秒';
+            if (distance <= 0) {
+                clearInterval(x);
+                document.getElementById('countdown').remove();
+            }
+        }, 1000);
         @endif
     </script>
 @endsection

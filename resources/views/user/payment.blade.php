@@ -39,27 +39,27 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-      // 检查支付单状态
-      const r = window.setInterval(function() {
-        $.ajax({
-          type: 'GET',
-          url: '/payment/getStatus',
-          data: {trade_no: '{{$payment->trade_no}}'},
-          dataType: 'json',
-          success: function(ret) {
-            window.clearInterval();
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false}).then(() => {
-                window.location.href = '/invoices';
-              });
-            }
-            else if (ret.status === 'error') {
-              swal.fire({title: ret.message, type: 'error', timer: 1500, showConfirmButton: false}).then(() => {
-                window.location.href = '/invoices';
-              });
-            }
-          },
-        });
-      }, 3000);
+        // 检查支付单状态
+        const r = window.setInterval(function() {
+            $.ajax({
+                method: 'GET',
+                url: '/payment/getStatus',
+                data: {trade_no: '{{$payment->trade_no}}'},
+                dataType: 'json',
+                success: function(ret) {
+                    window.clearInterval();
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false}).then(() => {
+                            window.location.href = '/invoices';
+                        });
+                    }
+                    else if (ret.status === 'error') {
+                        swal.fire({title: ret.message, type: 'error', timer: 1500, showConfirmButton: false}).then(() => {
+                            window.location.href = '/invoices';
+                        });
+                    }
+                },
+            });
+        }, 3000);
     </script>
 @endsection

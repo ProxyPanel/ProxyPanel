@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Marketing extends Model
 {
-
     protected $table = 'marketing';
 
     public function getStatusLabelAttribute(): string
@@ -29,5 +28,4 @@ class Marketing extends Model
 
         return $status_label;
     }
-
 }

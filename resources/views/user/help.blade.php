@@ -84,12 +84,12 @@
                                     <div class="panel">
                                         <div class="panel-heading" id="question-2" role="tab">
                                             <a class="panel-title" aria-controls="answer-2" aria-expanded="true"
-                                                    data-toggle="collapse" href="#answer-2" data-parent="#accordion1"><i
-                                                        class="icon md-help-outline" aria-hidden="true"></i>客户端 下载与使用教程
+                                               data-toggle="collapse" href="#answer-2" data-parent="#accordion1"><i
+                                                    class="icon md-help-outline" aria-hidden="true"></i>客户端 下载与使用教程
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse show" id="answer-2"
-                                                aria-labelledby="question-2" role="tabpanel">
+                                             aria-labelledby="question-2" role="tabpanel">
                                             <div class="panel-body">
                                                 @include('user.components.help.tutorial')
                                             </div>
@@ -98,12 +98,12 @@
                                     <div class="panel">
                                         <div class="panel-heading" id="question-3" role="tab">
                                             <a class="panel-title" aria-controls="answer-3" aria-expanded="false"
-                                                    data-toggle="collapse" href="#answer-3" data-parent="#accordion1"><i
-                                                        class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
+                                               data-toggle="collapse" href="#answer-3" data-parent="#accordion1"><i
+                                                    class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-3" aria-labelledby="question-3"
-                                                role="tabpanel">
+                                             role="tabpanel">
                                             <div class="panel-body">
                                                 @include('user.components.help.solution')
                                             </div>
@@ -113,17 +113,17 @@
                             </div>
                             <div class="tab-pane animation-fade" id="category-2" role="tabpanel">
                                 <div class="panel-group panel-group-simple panel-group-continuous" id="accordion2"
-                                        aria-multiselectable="true" role="tablist">
+                                     aria-multiselectable="true" role="tablist">
                                     <!-- Question 1 -->
                                     <div class="panel">
                                         <div class="panel-heading" id="question-1" role="tab">
                                             <a class="panel-title" aria-controls="answer-1" aria-expanded="true"
-                                                    data-toggle="collapse" href="#answer-1" data-parent="#accordion2">
+                                               data-toggle="collapse" href="#answer-1" data-parent="#accordion2">
                                                 面板菜单介绍
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse show" id="answer-1"
-                                                aria-labelledby="question-1" role="tabpanel">
+                                             aria-labelledby="question-1" role="tabpanel">
                                             <div class="panel-body">
                                                 <button class="site-tour-trigger btn btn-outline-info">点我激活介绍功能</button>
                                             </div>
@@ -139,11 +139,11 @@
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-2" aria-labelledby="question-2"
-                                                role="tabpanel">
+                                             role="tabpanel">
                                             <div class="panel-body">
                                                 <ol>
                                                     <li>在线支付，本支付方式支持支付宝。支付后即开即用。前往<a
-                                                                href="/services">【{{trans('home.services')}}】</a>选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。
+                                                            href="/services">【{{trans('home.services')}}】</a>选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。
                                                     </li>
                                                     <li>余额支付，本支付方法支持微信，支付宝。支付后需要等待充值到账，再购买服务。
                                                         ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在
@@ -161,12 +161,12 @@
                                     <div class="panel">
                                         <div class="panel-heading" id="question-3" role="tab">
                                             <a class="panel-title" aria-controls="answer-3" aria-expanded="false"
-                                                    data-toggle="collapse" href="#answer-3" data-parent="#accordion2">
+                                               data-toggle="collapse" href="#answer-3" data-parent="#accordion2">
                                                 怎么样才能快速的联系上客服？
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-3" aria-labelledby="question-3"
-                                                role="tabpanel">
+                                             role="tabpanel">
                                             <div class="panel-body">
                                                 <blockquote class="blockquote custom-blockquote blockquote-warning">
                                                     请选择其一种方式联系客服，请勿重复发送请求!!!
@@ -182,17 +182,17 @@
                             </div>
                             <div class="tab-pane animation-fade" id="category-3" role="tabpanel">
                                 <div class="panel-group panel-group-simple panel-group-continuous" id="accordion"
-                                        aria-multiselectable="true" role="tablist">
+                                     aria-multiselectable="true" role="tablist">
                                     <!-- Question 5 -->
                                     <div class="panel">
                                         <div class="panel-heading" id="question-5" role="tab">
                                             <a class="panel-title" aria-controls="answer-5" aria-expanded="true"
-                                                    data-toggle="collapse" href="#answer-5" data-parent="#accordion">
+                                               data-toggle="collapse" href="#answer-5" data-parent="#accordion">
                                                 不运行软件，就连不上网，怎么办？
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse show" id="answer-5"
-                                                aria-labelledby="question-5" role="tabpanel">
+                                             aria-labelledby="question-5" role="tabpanel">
                                             <div class="panel-body">
                                                 <ol>
                                                     <li>
@@ -203,7 +203,7 @@
                                                             <li>
                                                                 键盘操作<code>Win</code> + <code>X</code>，或右击左下角开始菜单键
                                                                 （Win键看起来像 <i class="icon fa-windows"
-                                                                        aria-hidden="true"></i> 这样）
+                                                                             aria-hidden="true"></i> 这样）
                                                             </li>
                                                             <li>
                                                                 按下 <code>A</code>键 或者 手动选择
@@ -230,7 +230,7 @@
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-6" aria-labelledby="question-6"
-                                                role="tabpanel">
+                                             role="tabpanel">
                                             <div class="panel-body">
                                                 账号在2种情况下会显示禁用；
                                                 <ol>
@@ -259,7 +259,7 @@
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-7" aria-labelledby="question-7"
-                                                role="tabpanel">
+                                             role="tabpanel">
                                             <div class="panel-body">
                                                 订阅地址对于账号来说非常重要。所以本站对此设置了严格的限制措施，以防止用户无意间泄露给他人后，无法挽回。
                                                 <p>限制为：
@@ -273,7 +273,7 @@
                                                         <i class="icon wb-refresh" aria-hidden="true"></i>
                                                         点这里
                                                     </button>
-                                                   更换链接
+                                                    更换链接
                                                 </p>
                                             </div>
                                         </div>
@@ -296,51 +296,51 @@
     <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
     <script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
     <script type="text/javascript">
-      function linkManager($type) {
-        $('#sub_link').val('{{$link}}?type=' + $type);
-        return false;
-      }
+        function linkManager($type) {
+            $('#sub_link').val('{{$link}}?type=' + $type);
+            return false;
+        }
 
-      // 更换订阅地址
-      function exchangeSubscribe() {
-        swal.fire({
-          title: '警告',
-          text: '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
-          type: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('/exchangeSubscribe', {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                    then(() => window.location.reload());
-              }
-              else {
-                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
-              }
+        // 更换订阅地址
+        function exchangeSubscribe() {
+            swal.fire({
+                title: '警告',
+                text: '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('home.ticket_close')}}',
+                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('/exchangeSubscribe', {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                then(() => window.location.reload());
+                        }
+                        else {
+                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
+        }
 
-      const clipboard = new ClipboardJS('.mt-clipboard');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '复制成功',
-          type: 'success',
-          timer: 1300,
-          showConfirmButton: false,
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '复制成功',
+                type: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '复制失败，请手动复制',
-          type: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '复制失败，请手动复制',
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection
