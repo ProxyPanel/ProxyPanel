@@ -52,7 +52,7 @@ return [
     'reason_traffic_exhausted'        => '利用可能なデータをすべて使用しました',
     'reason_overused'                 => '1時間あたりのデータ使用量がシステムの1時間あたりの制限に達しました',
     'reason_unknown'                  => '不明、チケットを開いてカスタマーサービスに依頼してください',
-    'never_logging'                   => '从未登入',
+    'never_logging'                   => '从未登録',
     'never_loggedin'                  => 'ログインされていない',
     'announcement'                    => 'お知らせ',
     'recharge_credit'                 => 'チャージ',

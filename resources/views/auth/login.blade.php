@@ -1,7 +1,7 @@
 @extends('auth.layouts')
 @section('title', trans('auth.login'))
 @section('content')
-    <form action="/login" method="post" id="login-form">
+    <form action="{{request()->routeIs('login', 'admin.login')? Request::url() : route('login')}}" method="post" id="login-form">
         @csrf
         @if($errors->any())
             <x-alert type="danger" :message="$errors->all()"/>
@@ -23,7 +23,8 @@
             <div class="form-group form-material floating input-group" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="captcha"/>
                 <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
-                <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
+                <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()"
+                     alt="{{trans('auth.captcha')}}"/>
             </div>
             @break
             @case(2)<!-- Geetest -->

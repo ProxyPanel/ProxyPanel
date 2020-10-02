@@ -23,7 +23,7 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     Route::get('create/string', '\Illuminate\Support\Str@random')->name('createStr'); // 生成随机密码
     Route::get('create/uuid', '\Illuminate\Support\Str@uuid')->name('createUUID'); // 生成UUID
 });
-Route::any('admin/login', 'AuthController@login')->middleware('isForbidden', 'isSecurity'); // 管理登录
+Route::any('admin/login', 'AuthController@login')->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理登录
 
 // 用户相关
 Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function () {

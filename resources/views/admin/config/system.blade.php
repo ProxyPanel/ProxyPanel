@@ -197,7 +197,7 @@
                                             <label class="col-md-3 col-form-label" for="maintenance_mode">维护模式</label>
                                             <span class="col-md-9"><input type="checkbox" id="maintenance_mode" data-plugin="switchery" @if($maintenance_mode) checked
                                                                           @endif onchange="updateFromOther('switch','maintenance_mode')"></span>
-                                            <span class="text-help offset-md-3"> 启用后，用户访问将转移至维护界面 </span>
+                                            <span class="text-help offset-md-3"> 启用后，用户访问转移至维护界面 | 管理员使用 <a href="javascript:(0)">{{route('admin.login')}}</a> 登录</span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
