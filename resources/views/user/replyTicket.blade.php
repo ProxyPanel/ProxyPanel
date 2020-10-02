@@ -7,7 +7,7 @@
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title cyan-600"><i class="icon wb-help-circle"></i> {{$ticket->title}} </h1>
-                @if($ticket->status != 2)
+                @if($ticket->status !== 2)
                     <div class="panel-actions">
                         <button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
                     </div>
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            @if($ticket->status != 2)
+            @if($ticket->status !== 2)
                 <div class="panel-footer pb-30">
                     <form>
                         <div class="input-group">
@@ -61,7 +61,7 @@
                 if (result.value) {
                     $.ajax({
                         method: 'POST',
-                        url: '/closeTicket',
+                        url: '{{route('closeTicket')}}',
                         async: true,
                         data: {_token: '{{csrf_token()}}', id: '{{$ticket->id}}'},
                         dataType: 'json',
@@ -70,7 +70,7 @@
                                 title: ret.message,
                                 type: 'success',
                                 timer: 1300,
-                            }).then(() => window.location.href = '/tickets');
+                            }).then(() => window.location.href = '{{route('ticket')}}');
                         },
                         error: function() {
                             swal.fire('未知错误！请通知客服！');
@@ -97,7 +97,7 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('/replyTicket', {
+                    $.post('{{route('replyTicket')}}', {
                         _token: '{{csrf_token()}}',
                         id: '{{$ticket->id}}',
                         content: content,

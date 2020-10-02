@@ -37,9 +37,9 @@
                                         <td>{{$ticket->title}}</td>
                                         <td>{!!$ticket->status_label!!}</td>
                                         <td>
-                                            <a href="/replyTicket?id={{$ticket->id}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
+                                            <a href="{{route('replyTicket', ['id' => $ticket->id])}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
                                                 <span>
-                                                    @if($ticket->status == 2)
+                                                    @if($ticket->status === 2)
                                                         <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_table_view')}}
                                                     @else
                                                         <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_open')}}
@@ -153,14 +153,13 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('/createTicket', {
+                    $.post('{{route('openTicket')}}', {
                         _token: '{{csrf_token()}}',
                         title: title,
                         content: content,
                     }, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                         }
                         else {
                             swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());

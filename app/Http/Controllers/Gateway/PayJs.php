@@ -28,7 +28,7 @@ class PayJs extends AbstractPayment
             'body'         => sysConfig('subject_name') ?: sysConfig('website_name'),
             'total_fee'    => $payment->amount * 100,
             'out_trade_no' => $payment->trade_no,
-            'notify_url'   => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=payjs',
+            'notify_url'   => route('payment.notify', ['method' => 'payjs']),
         ]);
 
         // 获取收款二维码内容

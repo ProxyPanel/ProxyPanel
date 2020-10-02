@@ -75,7 +75,7 @@ class ShopController extends Controller
             $good = Goods::create($data);
 
             if ($good) {
-                return Redirect::to(route('admin.goods.edit', $good->id))->with('successMsg', '添加成功');
+                return Redirect::route('admin.goods.edit', $good->id)->with('successMsg', '添加成功');
             }
         } catch (Exception $e) {
             Log::error('添加商品信息异常：'.$e->getMessage());

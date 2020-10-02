@@ -34,7 +34,7 @@ class PayPal extends AbstractPayment
             'payment_action' => 'Sale',
             'currency'       => 'USD',
             'billing_type'   => 'MerchantInitiatedBilling',
-            'notify_url'     => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=paypal',
+            'notify_url'     => route('payment.notify', ['method' => 'paypal']),
             'locale'         => 'zh_CN',
             'validate_ssl'   => true,
         ];
@@ -86,8 +86,8 @@ class PayPal extends AbstractPayment
                 ],
             ],
             'invoice_description' => $trade_no,
-            'return_url'          => sysConfig('website_url').'/callback/checkout',
-            'cancel_url'          => sysConfig('website_url').'/invoices',
+            'return_url'          => route('paypal.checkout'),
+            'cancel_url'          => route('invoice'),
             'total'               => $amount,
         ];
     }
@@ -115,7 +115,7 @@ class PayPal extends AbstractPayment
             }
         }
 
-        return redirect('/invoices');
+        return redirect(route('invoice'));
     }
 
     public function notify($request): void

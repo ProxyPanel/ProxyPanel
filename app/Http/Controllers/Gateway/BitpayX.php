@@ -21,9 +21,9 @@ class BitpayX extends AbstractPayment
             'price_currency'    => 'CNY',
             'title'             => '支付单号：'.$payment->trade_no,
             'description'       => sysConfig('subject_name') ?: sysConfig('website_name'),
-            'callback_url'      => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=bitpayx',
-            'success_url'       => sysConfig('website_url').'/invoices',
-            'cancel_url'        => sysConfig('website_url').'/invoices',
+            'callback_url'      => route('payment.notify', ['method' => 'bitpayx']),
+            'success_url'       => route('invoice'),
+            'cancel_url'        => route('invoice'),
             'token'             => $this->sign($payment->trade_no),
         ];
         $result = $this->sendRequest($data);

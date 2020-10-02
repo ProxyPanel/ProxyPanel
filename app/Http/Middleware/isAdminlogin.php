@@ -19,7 +19,7 @@ class isAdminLogin
     public function handle(Request $request, Closure $next)
     {
         if (auth()->guest()) {
-            return Redirect::to('admin/login');
+            return Redirect::route('admin.login');
         }
 
         return $next($request);

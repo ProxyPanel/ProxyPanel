@@ -20,8 +20,8 @@ class CodePay extends AbstractPayment
             'price'      => $payment->amount,
             'page'       => 1,
             'outTime'    => 900,
-            'notify_url' => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=codepay',
-            'return_url' => sysConfig('website_url').'/invoices',
+            'notify_url' => route('payment.notify', ['method' => 'codepay']),
+            'return_url' => route('invoice'),
         ];
         $data['sign'] = $this->aliStyleSign($data, sysConfig('codepay_key'));
 

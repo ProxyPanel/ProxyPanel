@@ -13,7 +13,8 @@
                 <!-- 推广链接 -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title cyan-600"><i class="icon wb-link"></i> {{trans('home.referral_my_link')}}
+                        <h4 class="card-title cyan-600"><i class="icon wb-link"></i>
+                            {{trans('home.referral_my_link')}}
                         </h4>
                         <div class="card-text form">
                             <div class="mt-clipboard-container input-group">
@@ -91,9 +92,9 @@
                                     <td> ￥{{$referralLog->amount}} </td>
                                     <td> ￥{{$referralLog->commission}} </td>
                                     <td>
-                                        @if ($referralLog->status == 1)
+                                        @if ($referralLog->status === 1)
                                             <span class="badge badge-sm badge-info">申请中</span>
-                                        @elseif($referralLog->status == 2)
+                                        @elseif($referralLog->status === 2)
                                             <span>已提现</span>
                                         @else
                                             <span class="badge badge-sm badge-success">未提现</span>
@@ -138,11 +139,11 @@
                                     <td> {{$vo->created_at}} </td>
                                     <td> ￥{{$vo->amount}} </td>
                                     <td>
-                                        @if ($vo->status == 0)
+                                        @if ($vo->status === 0)
                                             <span class="badge badge-sm badge-warning">待审核</span>
-                                        @elseif($vo->status == 1)
+                                        @elseif($vo->status === 1)
                                             <span class="badge badge-sm badge-info">审核通过 - 待打款</span>
-                                        @elseif($vo->status == 2)
+                                        @elseif($vo->status === 2)
                                             <span>已打款</span>
                                         @else
                                             <span class="badge badge-sm badge-dark">驳回</span>
@@ -171,7 +172,7 @@
     <script type="text/javascript">
         // 申请提现
         function extractMoney() {
-            $.post('/extractMoney', {_token: '{{csrf_token()}}'}, function(ret) {
+            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                 if (ret.status === 'success') {
                     swal.fire({
                         title: ret.message,

@@ -19,7 +19,7 @@ class isLogin
     public function handle(Request $request, Closure $next)
     {
         if (auth()->guest()) {
-            return Redirect::to('login');
+            return Redirect::route('login');
         }
 
         return $next($request);

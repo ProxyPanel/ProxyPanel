@@ -25,8 +25,8 @@
             </div>
         @endif
         <a href="/login"
-           class="btn btn-danger btn-lg {{$verify->status== 0? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
-        @if ($verify->status == 0)
+           class="btn btn-danger btn-lg {{$verify->status=== 0? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
+        @if ($verify->status === 0)
             <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.submit')}}</button>
         @endif
     </form>

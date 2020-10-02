@@ -32,11 +32,7 @@ class isSecurity
                 return Response::view(
                     'auth.error',
                     [
-                        'message' => trans('error.SecurityError').',
-                        '.trans(
-                                'error.Visit'
-                            ).'<a href="/login?securityCode=" target="_self">'.
-                            trans('error.SecurityEnter').'</a>',
+                        'message' => trans('error.SecurityError').','.trans('error.Visit').'<a href="'.route('login').'?securityCode=" target="_self">'.trans('error.SecurityEnter').'</a>',
                     ],
                     403
                 );

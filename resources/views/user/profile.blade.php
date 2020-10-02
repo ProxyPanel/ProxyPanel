@@ -11,12 +11,14 @@
                         <div class="float-left">
                             <div class="font-size-20 mb-15">{{Auth::getUser()->username}}</div>
                             <p class="mb-5 text-nowrap"><i class="icon bd-webchat mr-10" aria-hidden="true"></i>
-                                <span class="text-break">微信: @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else
-                                        未添加 @endif</span>
+                                <span class="text-break">微信:
+                                    @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else未添加 @endif
+                                </span>
                             </p>
                             <p class="mb-5 text-nowrap"><i class="icon bd-qq mr-10" aria-hidden="true"></i>
-                                <span class="text-break">QQ: @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else
-                                        未添加 @endif</span>
+                                <span class="text-break">QQ:
+                                    @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else 未添加 @endif
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -44,7 +46,7 @@
                         </ul>
                         <div class="tab-content py-10">
                             <div class="tab-pane active animation-slide-left" id="tab_1" role="tabpanel">
-                                <form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
+                                <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
                                     @csrf
                                     <div class="form-group row">
                                         <label for="old_password" class="col-md-2 col-form-label">{{trans('home.current_password')}}</label>
@@ -60,7 +62,7 @@
                                 </form>
                             </div>
                             <div class="tab-pane animation-slide-left" id="tab_2" role="tabpanel">
-                                <form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     @csrf
                                     <div class="form-group row">
                                         <label for="username" class="col-md-2 col-form-label">{{trans('auth.username')}}</label>
@@ -80,7 +82,7 @@
                                 </form>
                             </div>
                             <div class="tab-pane animation-slide-left" id="tab_3" role="tabpanel">
-                                <form action="/profile" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     @csrf
                                     <div class="form-group row">
                                         <label for="passwd" class="col-md-2 col-form-label"> {{trans('home.connection_password')}} </label>

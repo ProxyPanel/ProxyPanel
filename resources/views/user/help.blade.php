@@ -142,13 +142,14 @@
                                              role="tabpanel">
                                             <div class="panel-body">
                                                 <ol>
-                                                    <li>在线支付，本支付方式支持支付宝。支付后即开即用。前往<a
-                                                            href="/services">【{{trans('home.services')}}】</a>选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。
+                                                    <li>在线支付，本支付方式支持支付宝。支付后即开即用。前往
+                                                        <a href="{{route('shop')}}">【{{trans('home.services')}}】</a>
+                                                        选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。
                                                     </li>
                                                     <li>余额支付，本支付方法支持微信，支付宝。支付后需要等待充值到账，再购买服务。
                                                         ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在
-                                                        <a href="/services">【{{trans('home.services')}}】</a>页面查看您的账号余额。
-                                                        在<a href="/services">【{{trans('home.services')}}】</a>
+                                                        <a href="{{route('shop')}}">【{{trans('home.services')}}】</a>页面查看您的账号余额。
+                                                        在<a href="{{route('shop')}}">【{{trans('home.services')}}】</a>
                                                         选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。
                                                     </li>
                                                 </ol>
@@ -172,7 +173,7 @@
                                                     请选择其一种方式联系客服，请勿重复发送请求!!!
                                                 </blockquote>
                                                 <ol>
-                                                    <li>在<a href="/tickets">【{{trans('home.tickets')}}】</a>界面，创建新的工单，客服人员在上线后会在第一时刻处理。
+                                                    <li>在<a href="{{route('ticket')}}">【{{trans('home.tickets')}}】</a>界面，创建新的工单，客服人员在上线后会在第一时刻处理。
                                                     </li>
                                                 </ol>
                                             </div>
@@ -202,8 +203,7 @@
                                                         <ol>
                                                             <li>
                                                                 键盘操作<code>Win</code> + <code>X</code>，或右击左下角开始菜单键
-                                                                （Win键看起来像 <i class="icon fa-windows"
-                                                                             aria-hidden="true"></i> 这样）
+                                                                （Win键看起来像 <i class="icon fa-windows" aria-hidden="true"></i> 这样）
                                                             </li>
                                                             <li>
                                                                 按下 <code>A</code>键 或者 手动选择
@@ -211,8 +211,7 @@
                                                             </li>
                                                             <li>
                                                                 输入<code>Netsh winsock reset</code> 后回车，再输入
-                                                                <code>netsh advfirewall reset</code>
-                                                                后回车；
+                                                                <code>netsh advfirewall reset</code> 后回车；
                                                             </li>
                                                         </ol>
                                                     </li>
@@ -236,7 +235,7 @@
                                                 <ol>
                                                     <li>
                                                         套餐过期/流量枯竭；此情况您需要重新
-                                                        <a href="/services">【{{trans('home.services')}}】</a>；
+                                                        <a href="{{route('shop')}}">【{{trans('home.services')}}】</a>；
                                                     </li>
                                                     <li>
                                                         近期流量使用异常；在<code>1小时</code>内使用流量超过
@@ -245,7 +244,7 @@
                                                         <code>{{sysConfig('traffic_ban_time')}}分钟</code>
                                                     </li>
                                                 </ol>
-                                                如您对禁用情况有疑问，可以创建<a href="/tickets">【{{trans('home.tickets')}}】</a>，联系售后人员。
+                                                如您对禁用情况有疑问，可以创建<a href="{{route('ticket')}}">【{{trans('home.tickets')}}】</a>，联系售后人员。
                                             </div>
                                         </div>
                                     </div>
@@ -266,7 +265,7 @@
                                                     <code>24小时</code>内，订阅地址只允许请求
                                                     <code>{{sysConfig('subscribe_ban_times')}}次</code>
                                                 </p>
-                                                <p>解封，请在过一段时间并确定无误后，创建<a href="/tickets">【{{trans('home.tickets')}}】</a>，联系售后人员
+                                                <p>解封，请在过一段时间并确定无误后，创建<a href="{{route('ticket')}}">【{{trans('home.tickets')}}】</a>，联系售后人员
                                                 </p>
                                                 <p>小知识：如果您无意间的截图忘记将订阅地址打码了，您可以
                                                     <button class="btn btn-sm btn-outline-info" onclick="exchangeSubscribe();">
@@ -312,7 +311,7 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('/exchangeSubscribe', {_token: '{{csrf_token()}}'}, function(ret) {
+                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());

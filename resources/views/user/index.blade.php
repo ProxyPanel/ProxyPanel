@@ -97,7 +97,7 @@
                             @else
                                 <span class="font-size-40 font-weight-100">{{trans('home.expired')}}</span>
                                 <br/>
-                                <a href="/services" class="btn btn-danger">{{trans('home.service_buy_button')}}</a>
+                                <a href="{{route('shop')}}" class="btn btn-danger">{{trans('home.service_buy_button')}}</a>
                             @endif
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                                 <i class="font-size-40 wb-wrench"></i>
                                 <h4 class="card-title">客户端</h4>
                                 <p class="card-text">下载 & 教程 </p>
-                                <a href="/help#answer-2" class="btn btn-primary mb-10">前往</a>
+                                <a href="{{route('help')}}#answer-2" class="btn btn-primary mb-10">前往</a>
                             </div>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                                             @foreach($noticeList as $notice)
                                                 <h3 class="text-center">{!!$notice->title!!}</h3>
                                                 {!! $notice->content !!}
-                                                @if ($notice->updated_at)
+                                                @if($notice->updated_at)
                                                     <small class="text-bottom">更新于 <code>{{$notice->updated_at}}</code></small>
                                                 @endif
                                             @endforeach
@@ -245,7 +245,7 @@
     <script type="text/javascript">
         // 签到
         function checkIn() {
-            $.post('/checkIn', {_token: '{{csrf_token()}}'}, function(ret) {
+            $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                 if (ret.status === 'success') {
                     swal.fire('长者的微笑', ret.message, 'success');
                 }

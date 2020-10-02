@@ -25,8 +25,8 @@ class F2Fpay extends AbstractPayment
             'ali_public_key'  => sysConfig('f2fpay_public_key'),
             'rsa_private_key' => sysConfig('f2fpay_private_key'),
             'limit_pay'       => [],
-            'notify_url'      => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=f2fpay',
-            'return_url'      => sysConfig('website_url').'/invoices',
+            'notify_url'      => route('payment.notify', ['method' => 'f2fpay']),
+            'return_url'      => route('invoice'),
             'fee_type'        => 'CNY',
         ];
     }

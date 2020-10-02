@@ -170,7 +170,7 @@
             const oldClass = $('#' + type + id).attr('class');
             $.ajax({
                 method: 'POST',
-                url: '/nodeList',
+                url: '{{route('node')}}',
                 data: {_token: '{{csrf_token()}}', id: id, type: type},
                 beforeSend: function() {
                     $('#' + type + id).removeAttr('class').addClass('icon wb-loop icon-spin');

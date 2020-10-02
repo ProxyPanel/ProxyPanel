@@ -19,7 +19,7 @@ class SubscribeController extends Controller
     public function getSubscribeByCode(Request $request, $code)
     {
         if (empty($code)) {
-            return Redirect::to('login');
+            return Redirect::route('login');
         }
         $this->subType = $request->input('type');
 

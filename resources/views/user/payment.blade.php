@@ -58,19 +58,19 @@
         const r = window.setInterval(function() {
             $.ajax({
                 method: 'GET',
-                url: '/payment/getStatus',
+                url: '{{route('orderStatus')}}',
                 data: {trade_no: '{{$payment->trade_no}}'},
                 dataType: 'json',
                 success: function(ret) {
                     window.clearInterval();
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false}).then(() => {
-                            window.location.href = '/invoices';
+                            window.location.href = '{{route('invoice')}}';
                         });
                     }
                     else if (ret.status === 'error') {
                         swal.fire({title: ret.message, type: 'error', timer: 1500, showConfirmButton: false}).then(() => {
-                            window.location.href = '/invoices';
+                            window.location.href = '{{route('invoice')}}';
                         });
                     }
                 },

@@ -24,7 +24,7 @@ class AffiliateController extends Controller
         $view['referral_money'] = sysConfig('referral_money');
         $view['totalAmount'] = ReferralLog::uid()->sum('commission') / 100;
         $view['canAmount'] = ReferralLog::uid()->whereStatus(0)->sum('commission') / 100;
-        $view['aff_link'] = sysConfig('website_url').'/register?aff='.Auth::id();
+        $view['aff_link'] = route('register', ['aff' => Auth::id()]);
         $view['referralLogList'] = ReferralLog::uid()->with('invitee:id,email')->latest()->paginate(10, ['*'], 'log_page');
         $view['referralApplyList'] = ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page');
         $view['referralUserList'] = Auth::getUser()->invitees()->select(['email', 'created_at'])->latest()->paginate(10, ['*'], 'user_page');

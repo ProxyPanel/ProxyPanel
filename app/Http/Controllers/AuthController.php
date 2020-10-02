@@ -85,7 +85,7 @@ class AuthController extends Controller
                 if ($user->status === 0 && sysConfig('is_activate_account')) {
                     Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="/activeUser?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
+                    return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
                 }
             }
 
@@ -97,18 +97,18 @@ class AuthController extends Controller
 
             // 根据权限跳转
             if ($user->is_admin) {
-                return Redirect::to('admin');
+                return Redirect::route('admin.index');
             }
 
-            return Redirect::to('/');
+            return Redirect::route('home');
         }
 
         if (Auth::check()) {
             if (Auth::getUser()->is_admin) {
-                return Redirect::to('admin');
+                return Redirect::route('admin.index');
             }
 
-            return Redirect::to('/');
+            return Redirect::route('home');
         }
 
         return view('auth.login');
@@ -191,7 +191,7 @@ class AuthController extends Controller
     {
         Auth::logout();
 
-        return Redirect::to('login');
+        return Redirect::route('login');
     }
 
     // 注册
@@ -332,7 +332,7 @@ class AuthController extends Controller
             if (sysConfig('is_activate_account') == 2) {
                 // 生成激活账号的地址
                 $token = $this->addVerifyUrl($uid, $email);
-                $activeUserUrl = sysConfig('website_url').'/active/'.$token;
+                $activeUserUrl = route('activeAccount', $token);
 
                 $logId = Helpers::addNotificationLog('注册激活', '请求地址：'.$activeUserUrl, 1, $email);
                 Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
@@ -354,7 +354,7 @@ class AuthController extends Controller
                 Session::flash('regSuccessMsg', trans('auth.register_success'));
             }
 
-            return Redirect::to('login')->withInput();
+            return Redirect::route('login')->withInput();
         }
 
         $view['emailList'] = sysConfig('is_email_filtering') != 2 ? false : EmailFilter::whereType(2)->get();
@@ -491,7 +491,7 @@ class AuthController extends Controller
             $token = $this->addVerifyUrl($user->id, $email);
 
             // 发送邮件
-            $resetPasswordUrl = sysConfig('website_url').'/reset/'.$token;
+            $resetPasswordUrl = route('resettingPasswd', $token);
 
             $logId = Helpers::addNotificationLog('重置密码', '请求地址：'.$resetPasswordUrl, 1, $email);
             Mail::to($email)->send(new resetPassword($logId, $resetPasswordUrl));
@@ -508,7 +508,7 @@ class AuthController extends Controller
     public function reset(Request $request, $token)
     {
         if (!$token) {
-            return Redirect::to('login');
+            return Redirect::route('login');
         }
 
         if ($request->isMethod('POST')) {
@@ -532,7 +532,7 @@ class AuthController extends Controller
             $verify = Verify::type(1)->whereToken($token)->first();
             $user = $verify->user;
             if (!$verify) {
-                return Redirect::to('login');
+                return Redirect::route('login');
             }
 
             if ($verify->status === 1) {
@@ -556,12 +556,12 @@ class AuthController extends Controller
             $verify->status = 1;
             $verify->save();
 
-            return Redirect::to('login')->with('successMsg', trans('auth.reset_password_new'));
+            return Redirect::route('login')->with('successMsg', trans('auth.reset_password_new'));
         }
 
         $verify = Verify::type(1)->whereToken($token)->first();
         if (!$verify) {
-            return Redirect::to('login');
+            return Redirect::route('login');
         }
 
         if (time() - strtotime($verify->created_at) >= 1800) {
@@ -622,7 +622,7 @@ class AuthController extends Controller
             $token = $this->addVerifyUrl($user->id, $email);
 
             // 发送邮件
-            $activeUserUrl = sysConfig('website_url').'/active/'.$token;
+            $activeUserUrl = route('activeAccount', $token);
 
             $logId = Helpers::addNotificationLog('激活账号', '请求地址：'.$activeUserUrl, 1, $email);
             Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
@@ -639,13 +639,13 @@ class AuthController extends Controller
     public function active($token)
     {
         if (!$token) {
-            return Redirect::to('login');
+            return Redirect::route('login');
         }
 
         $verify = Verify::type(1)->with('user')->whereToken($token)->first();
         $user = $verify->user;
         if (!$verify) {
-            return Redirect::to('login');
+            return Redirect::route('login');
         }
 
         if (empty($user)) {

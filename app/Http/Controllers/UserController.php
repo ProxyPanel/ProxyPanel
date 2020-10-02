@@ -163,44 +163,44 @@ class UserController extends Controller
             // 修改密码
             if ($old_password && $new_password) {
                 if (!Hash::check($old_password, $user->password)) {
-                    return Redirect::to('profile#tab_1')->withErrors('旧密码错误，请重新输入');
+                    return Redirect::back()->withErrors('旧密码错误，请重新输入');
                 }
 
                 if (Hash::check($new_password, $user->password)) {
-                    return Redirect::to('profile#tab_1')->withErrors('新密码不可与旧密码一样，请重新输入');
+                    return Redirect::back()->withErrors('新密码不可与旧密码一样，请重新输入');
                 }
 
                 // 演示环境禁止改管理员密码
                 if ($user->id === 1 && config('app.demo')) {
-                    return Redirect::to('profile#tab_1')->withErrors('演示环境禁止修改管理员密码');
+                    return Redirect::back()->withErrors('演示环境禁止修改管理员密码');
                 }
 
                 if (!$user->update(['password' => $new_password])) {
-                    return Redirect::to('profile#tab_1')->withErrors('修改失败');
+                    return Redirect::back()->withErrors('修改失败');
                 }
 
-                return Redirect::to('profile#tab_1')->with('successMsg', '修改成功');
+                return Redirect::back()->with('successMsg', '修改成功');
                 // 修改代理密码
             }
 
             if ($passwd) {
                 if (!$user->update(['passwd' => $passwd])) {
-                    return Redirect::to('profile#tab_3')->withErrors('修改失败');
+                    return Redirect::back()->withErrors('修改失败');
                 }
 
-                return Redirect::to('profile#tab_3')->with('successMsg', '修改成功');
+                return Redirect::back()->with('successMsg', '修改成功');
             }
 
             // 修改联系方式
             if (empty($username)) {
-                return Redirect::to('profile#tab_2')->withErrors('修改失败,昵称不能为空值');
+                return Redirect::back()->withErrors('修改失败,昵称不能为空值');
             }
 
             if (!$user->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq])) {
-                return Redirect::to('profile#tab_2')->withErrors('修改失败');
+                return Redirect::back()->withErrors('修改失败');
             }
 
-            return Redirect::to('profile#tab_2')->with('successMsg', '修改成功');
+            return Redirect::back()->with('successMsg', '修改成功');
         }
 
         return view('user.profile');
@@ -491,7 +491,7 @@ class UserController extends Controller
         $user = Auth::getUser();
         $goods = Goods::whereId($goods_id)->whereStatus(1)->first();
         if (empty($goods)) {
-            return Redirect::to('services');
+            return Redirect::route('shop');
         }
         // 有重置日时按照重置日为标准，否者就以过期日为标准
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
@@ -528,7 +528,7 @@ class UserController extends Controller
         // 订阅连接
         $subscribe = UserSubscribe::whereUserId(Auth::id())->firstOrFail();
         $view['subscribe_status'] = $subscribe->status;
-        $subscribe_link = (sysConfig('subscribe_domain') ?: sysConfig('website_url')).'/s/'.$subscribe->code;
+        $subscribe_link = route('sub', $subscribe->code);
         $view['link'] = $subscribe_link;
         $view['subscribe_link'] = 'sub://'.base64url_encode($subscribe_link);
         $view['Shadowrocket_link'] = 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(sysConfig('website_name').'-'.sysConfig('website_url'));

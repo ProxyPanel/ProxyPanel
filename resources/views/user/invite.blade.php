@@ -42,15 +42,14 @@
                                     <tr>
                                         <td> {{$loop->iteration}} </td>
                                         <td>
-                                            <a href="javascript:void(0)" class="mt-clipboard"
-                                               data-clipboard-action="copy"
-                                               data-clipboard-text="{{url('/register?aff='.Auth::id().'&code='.$invite->code)}}">{{$invite->code}}</a>
+                                            <a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy"
+                                               data-clipboard-text="{{route('register', ['aff' => Auth::id(), 'code' => $invite->code])}}">{{$invite->code}}</a>
                                         </td>
                                         <td> {{$invite->dateline}} </td>
                                         <td>
                                             {!!$invite->status_label!!}
                                         </td>
-                                        {{$invite->status == 1 ? (empty($invite->invitee) ? '【账号已删除】' : $invite->invitee->email) : ''}}
+                                        {{$invite->status === 1 ? ($invite->invitee->email ?? '【账号已删除】') : ''}}
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -77,14 +76,13 @@
 @section('script')
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-            type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         // 生成邀请码
         function makeInvite() {
             $.ajax({
                 method: 'POST',
-                url: '/makeInvite',
+                url: '{{route('createInvite')}}',
                 async: false,
                 data: {_token: '{{csrf_token()}}'},
                 dataType: 'json',

@@ -58,10 +58,10 @@
                                                     <span class="ribbon-inner h-auto">热<br>销</span>
                                                 </div>
                                             @endif
-                                            <div class="pricing-price text-white @if($goods->type == 1) text-center @endif">
+                                            <div class="pricing-price text-white @if($goods->type === 1) text-center @endif">
                                                 <span class="pricing-currency">¥</span>
                                                 <span class="pricing-amount">{{$goods->price}}</span>
-                                                @if($goods->type == 2)
+                                                @if($goods->type === 2)
                                                     <span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
                                                 @endif
                                             </div>
@@ -71,7 +71,8 @@
                                         </div>
                                         <ul class="pricing-features">
                                             <li>
-                                                <strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}{!!$goods->type == 1? ' <code>'.$dataPlusDays.'</code> '.trans('home.day'):'/'.trans('home.month')!!}
+                                                <strong>{{$goods->traffic_label}}</strong>{{trans('home.bandwidth')}}
+                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans('home.day'):'/'.trans('home.month')!!}
                                             </li>
                                             <li>
                                                 <strong>{{trans('home.service_unlimited')}}</strong> {{trans('home.service_device')}}
@@ -79,7 +80,7 @@
                                             {!!$goods->info!!}
                                         </ul>
                                         <div class="pricing-footer text-center bg-blue-grey-100">
-                                            <a href="/buy/{{$goods->id}}" class="btn btn-lg btn-primary"> {{trans('home.service_buy_button')}}</a>
+                                            <a href="{{route('buy', $goods->id)}}" class="btn btn-lg btn-primary"> {{trans('home.service_buy_button')}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -218,7 +219,7 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('/resetUserTraffic', {_token: '{{csrf_token()}}'}, function(ret) {
+                    $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
@@ -248,7 +249,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: '/payment/purchase',
+                    url: '{{route('purchase')}}',
                     data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
                     dataType: 'json',
                     beforeSend: function() {
@@ -261,7 +262,7 @@
                         else {
                             $('#charge_msg').show().html(ret.message);
                             if (ret.data) {
-                                window.location.href = '/payment/' + ret.data;
+                                window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
                             }
                             else if (ret.url) {
                                 window.location.href = ret.url;
@@ -282,7 +283,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: '/charge',
+                    url: '{{route('recharge')}}',
                     data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
                     beforeSend: function() {
                         $('#charge_msg').show().html("{{trans('home.recharging')}}");
@@ -302,6 +303,5 @@
                 });
             }
         }
-
     </script>
 @endsection

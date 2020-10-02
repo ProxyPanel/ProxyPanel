@@ -33,11 +33,11 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
-                            <td>{{empty($order->goods) ? ($order->goods_id == 0 ? '余额充值': trans('home.invoice_table_goods_deleted')) : $order->goods->name}}</td>
+                            <td>{{$order->goods->name ?? ($order->goods_id === 0 ? '余额充值': trans('home.invoice_table_goods_deleted'))}}</td>
                             <td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
                             <td>￥{{$order->amount}}</td>
                             <td>{{$order->created_at}}</td>
-                            <td>{{empty($order->goods) || $order->goods_id == 0 || $order->status == 3 ? '' : $order->expired_at}}</td>
+                            <td>{{empty($order->goods) || $order->goods_id === 0 || $order->status === 3 ? '' : $order->expired_at}}</td>
                             <td>
                                 @switch($order->status)
                                     @case(-1)
@@ -50,7 +50,7 @@
                                     <span class="badge badge-info">{{trans('home.invoice_status_wait_confirm')}}</span>
                                     @break
                                     @case(2)
-                                    @if ($order->goods_id == 0)
+                                    @if ($order->goods_id === 0)
                                         <span class="badge badge-default">{{trans('home.invoice_status_payment_confirm')}}</span>
                                     @else
                                         @if($order->is_expire)
@@ -66,14 +66,14 @@
                             @endswitch
                             <td>
                                 <div class="btn-group">
-                                    @if($order->status == 0 && $order->payment)
+                                    @if($order->status === 0 && $order->payment)
                                         @if($order->payment->qr_code)
-                                            <a href="/payment/{{$order->payment->trade_no}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+                                            <a href="{{route('orderDetail', $order->payment->trade_no)}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
                                         @elseif($order->payment->url)
                                             <a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
                                         @endif
                                         <button onclick="closeOrder('{{$order->id}}')" class="btn btn-danger">{{trans('home.cancel')}}</button>
-                                    @elseif ($order->status == 1)
+                                    @elseif ($order->status === 1)
                                         <button onClick="window.location.reload();" class="btn btn-primary">
                                             <i class="icon wb-refresh" aria-hidden="true"></i></button>
                                     @endif
@@ -112,7 +112,7 @@
                 if (result.value) {
                     $.ajax({
                         method: 'POST',
-                        url: '/closePlan',
+                        url: '{{route('cancelPlan')}}',
                         async: false,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
@@ -141,7 +141,7 @@
                 if (result.value) {
                     $.ajax({
                         method: 'POST',
-                        url: 'payment/close',
+                        url: '{{route('closeOrder')}}',
                         async: false,
                         data: {_token: '{{csrf_token()}}', id: id},
                         dataType: 'json',

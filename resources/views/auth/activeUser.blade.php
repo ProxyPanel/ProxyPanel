@@ -7,7 +7,7 @@
     @if($errors->any())
         <x-alert type="danger" :message="$errors->all()"/>
     @endif
-    <form action="/activeUser" method="post">
+    <form action="{{route('active')}}" method="post">
         @csrf
         @if(sysConfig('is_activate_account') == 2)
             <div class="form-title">
@@ -20,8 +20,9 @@
         @else
             <x-alert type="danger" :message="trans('auth.system_maintenance_tip',['email' => sysConfig('webmaster_email')])"/>
         @endif
-        <a href="/login"
-           class="btn btn-danger btn-lg {{sysConfig('is_activate_account')==2? 'float-left':'btn-block'}}">{{trans('auth.back')}}</a>
+        <a href="{{route('login')}}" class="btn btn-danger btn-lg {{sysConfig('is_activate_account')==2? 'float-left':'btn-block'}}">
+            {{trans('auth.back')}}
+        </a>
         @if(sysConfig('is_activate_account')==2)
             <button type="submit" class="btn btn-lg btn-primary float-right">{{trans('auth.active')}}</button>
         @endif

@@ -55,11 +55,10 @@
         }
     </style>
     <div class="m-0 p-0 w-full h-full text-white" style="z-index: 10; position: absolute;">
-        <div class="font-size-16 h-p33 pl-20 pt-20"
-             style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
-            <p>点击右上角 <i class="icon wb-more-horizontal"></i>，选择在<img
-                    src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png"
-                    class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/> Safari 中打开
+        <div class="font-size-16 h-p33 pl-20 pt-20" style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
+            <p>点击右上角 <i class="icon wb-more-horizontal"></i>，选择在
+                <img src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png" class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/>
+                Safari 中打开
             </p>
             <p>您就可以正常访问本站了呦~</p>
         </div>
@@ -72,31 +71,28 @@
                 <div class="panel-heading">
                     <div class="panel-title">
                         <div class="brand">
-                            <img
-                                src="{{sysConfig('website_home_logo')? :'/assets/images/logo64.png'}}"
-                                class="brand-img" alt="logo"/>
+                            <img src="{{sysConfig('website_home_logo')? :'/assets/images/logo64.png'}}" class="brand-img" alt="logo"/>
                             <h3 class="brand-text">{{sysConfig('website_name')}}</h3>
                         </div>
                     </div>
                     <div class="ribbon ribbon-reverse ribbon-info ribbon-clip">
-                        <button class="ribbon-inner btn dropdown-toggle pt-0" id="language" data-toggle="dropdown"
-                                aria-expanded="false">
+                        <button class="ribbon-inner btn dropdown-toggle pt-0" id="language" data-toggle="dropdown" aria-expanded="false">
                             <i class="font-size-20 wb-globe"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-bullet" aria-labelledby="language" role="menu">
-                            <a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-CN'])}}" role="menuitem">
+                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'zh-CN'])}}" role="menuitem">
                                 <span class="flag-icon flag-icon-cn"></span>
                                 简体中文</a>
-                            <a class="dropdown-item" href="{{url('lang', ['locale' => 'zh-tw'])}}" role="menuitem">
+                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'zh-tw'])}}" role="menuitem">
                                 <span class="flag-icon flag-icon-tw"></span>
                                 繁體中文</a>
-                            <a class="dropdown-item" href="{{url('lang', ['locale' => 'en'])}}" role="menuitem">
+                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'en'])}}" role="menuitem">
                                 <span class="flag-icon flag-icon-gb"></span>
                                 English</a>
-                            <a class="dropdown-item" href="{{url('lang', ['locale' => 'ja'])}}" role="menuitem">
+                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'ja'])}}" role="menuitem">
                                 <span class="flag-icon flag-icon-jp"></span>
                                 日本語</a>
-                            <a class="dropdown-item" href="{{url('lang', ['locale' => 'ko'])}}" role="menuitem">
+                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'ko'])}}" role="menuitem">
                                 <span class="flag-icon flag-icon-kr"></span>
                                 한국어</a>
                         </div>

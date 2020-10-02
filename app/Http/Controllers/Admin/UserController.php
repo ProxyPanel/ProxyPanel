@@ -123,7 +123,7 @@ class UserController extends Controller
             $user->trafficWarning = $totalTraffic > (sysConfig('traffic_ban_value') * GB) ? 1 : 0;
 
             // 订阅地址
-            $user->link = (sysConfig('subscribe_domain') ?: sysConfig('website_url')).'/s/'.$user->subscribe->code;
+            $user->link = route('sub', $user->subscribe->code);
         }
 
         return view('admin.user.index', [

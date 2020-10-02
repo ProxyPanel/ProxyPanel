@@ -31,8 +31,8 @@ class EPay extends AbstractPayment
         $data = [
             'pid'          => sysConfig('epay_mch_id'),
             'type'         => $type,
-            'notify_url'   => (sysConfig('website_callback_url') ?: sysConfig('website_url')).'/callback/notify?method=epay',
-            'return_url'   => sysConfig('website_url').'/invoices',
+            'notify_url'   => route('payment.notify', ['method' => 'epay']),
+            'return_url'   => route('invoice'),
             'out_trade_no' => $payment->trade_no,
             'name'         => sysConfig('subject_name') ?: sysConfig('website_name'),
             'money'        => $payment->amount,

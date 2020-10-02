@@ -15,7 +15,7 @@
                     <tbody>
                     @foreach($inviteList as $invite)
                         <tr>
-                            <td><a href="/register?code={{$invite->code}}" target="_blank">{{$invite->code}}</a></td>
+                            <td><a href="{{route('register', ['code' => $invite->code])}}" target="_blank">{{$invite->code}}</a></td>
                             <td> {{$invite->dateline}} </td>
                         </tr>
                     @endforeach
@@ -32,7 +32,7 @@
     </div>
     @if(sysConfig('is_invite_register') && sysConfig('is_free_code'))
         <div class="mt-20">
-            <a href="/login" class="btn btn-danger btn-lg float-left">{{trans('auth.back')}}</a>
+            <a href="{{route('login')}}" class="btn btn-danger btn-lg float-left">{{trans('auth.back')}}</a>
             <nav class="Page navigation float-right">
                 {{$inviteList->links()}}
             </nav>

@@ -43,7 +43,7 @@ class UserGroupController extends Controller
         $userGroup = UserGroup::create(['name' => $request->input('name'), 'nodes' => $request->input('nodes')]);
 
         if ($userGroup) {
-            return Redirect::to(route('admin.user.group.edit', $userGroup->id))->with('successMsg', '操作成功');
+            return Redirect::route('admin.user.group.edit', $userGroup->id)->with('successMsg', '操作成功');
         }
 
         return Redirect::back()->withInput()->withErrors('操作失败');

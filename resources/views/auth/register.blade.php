@@ -5,30 +5,27 @@
     <link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
-    <form action="/register" method="post" id="register-form">
+    <form action="{{route('register')}}" method="post" id="register-form">
         @if(sysConfig('is_register'))
             @if($errors->any())
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             @csrf
-            <input type="hidden" name="register_token" value="{{Session::input('register_token')}}"/>
-            <input type="hidden" name="aff" value="{{Session::input('register_aff')}}"/>
+            <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
+            <input type="hidden" name="aff" value="{{Session::get('register_aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="text" class="form-control" name="username"
-                       value="{{Request::old('username') ? : Request::input('username')}}" required/>
+                <input type="text" class="form-control" name="username" value="{{Request::old('username') ? : Request::input('username')}}" required/>
                 <label class="floating-label" for="username">{{trans('auth.username')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 @if($emailList)
                     <div class="input-group">
-                        <input type="text" class="form-control" autocomplete="off" name="emailHead"
-                               value="{{Request::old('emailHead')}}" id="emailHead" required/>
+                        <input type="text" class="form-control" autocomplete="off" name="emailHead" value="{{Request::old('emailHead')}}" id="emailHead" required/>
                         <label class="floating-label" for="emailHead">{{trans('auth.email')}}</label>
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-indigo-600 text-white">@</span>
                         </div>
-                        <select class="form-control" name="emailTail" id="emailTail" data-plugin="selectpicker"
-                                data-style="btn-outline-primary">
+                        <select class="form-control" name="emailTail" id="emailTail" data-plugin="selectpicker" data-style="btn-outline-primary">
                             @foreach($emailList as $email)
                                 <option value="{{$email->words}}">{{$email->words}}</option>
                             @endforeach
@@ -36,16 +33,14 @@
                         <input type="text" name="email" id="email" hidden/>
                     </div>
                 @else
-                    <input type="email" class="form-control" autocomplete="off" name="email"
-                           value="{{Request::old('email')}}" id="email" required/>
+                    <input type="email" class="form-control" autocomplete="off" name="email" value="{{Request::old('email')}}" id="email" required/>
                     <label class="floating-label" for="email">{{trans('auth.email')}}</label>
                 @endif
             </div>
             @if(sysConfig('is_activate_account') == 1)
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <div class="input-group" data-plugin="inputGroupFile">
-                        <input type="text" class="form-control" name="verify_code"
-                               value="{{Request::old('verify_code')}}" required/>
+                        <input type="text" class="form-control" name="verify_code" value="{{Request::old('verify_code')}}" required/>
                         <label class="floating-label" for="verify_code">{{trans('auth.captcha')}}</label>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="sendCode" onclick="sendVerifyCode()">
@@ -65,16 +60,14 @@
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
-                    <input type="password" class="form-control" name="code"
-                           value="{{Request::old('code') ? : Request::input('code')}}"
-                           @if(sysConfig('is_invite_register') == 2) required @endif/>
-                    <label class="floating-label"
-                           for="code">{{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)
-                            ({{trans('auth.optional')}}) @endif</label>
+                    <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::input('code')}}" @if(sysConfig('is_invite_register') == 2) required @endif/>
+                    <label class="floating-label" for="code">
+                        {{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
+                    </label>
                 </div>
                 @if(sysConfig('is_free_code'))
                     <p class="hint">
-                        <a href="/free" target="_blank">{{trans('auth.get_free_code')}}</a>
+                        <a href="{{route('freeInvitationCode')}}" target="_blank">{{trans('auth.get_free_code')}}</a>
                     </p>
                 @endif
             @endif
@@ -83,8 +76,7 @@
                 <div class="form-group form-material floating input-group" data-plugin="formMaterial">
                     <input type="text" class="form-control" name="captcha" required/>
                     <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
-                    <img src="{{captcha_src()}}" class="float-right"
-                         onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
+                    <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
                 </div>
                 @break
                 @case(2)<!-- Geetest -->
@@ -95,13 +87,13 @@
                 @case(3)<!-- Google reCaptcha -->
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     {!! NoCaptcha::display() !!}
-                    {!! NoCaptcha::renderJs(session::get('locale')) !!}
+                    {!! NoCaptcha::renderJs(Session::get('locale')) !!}
                 </div>
                 @break
                 @case(4)<!-- hCaptcha -->
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     {!! HCaptcha::display() !!}
-                    {!! HCaptcha::renderJs(session::get('locale')) !!}
+                    {!! HCaptcha::renderJs(Session::get('locale')) !!}
                 </div>
                 @break
                 @default
@@ -110,19 +102,21 @@
                 <div class="checkbox-custom checkbox-primary">
                     <input type="checkbox" name="term" id="term" {{Request::old('term') ? 'checked':''}} />
                     <label for="term">{{trans('auth.accept_term')}}
-                        <button class="btn btn-xs btn-primary" data-target="#tos" data-toggle="modal"
-                                type="button">{{trans('auth.tos')}}</button>
-                        &
-                        <button class="btn btn-xs btn-primary" data-target="#aup" data-toggle="modal"
-                                type="button">{{trans('auth.aup')}}</button>
+                        <button class="btn btn-xs btn-primary" data-target="#tos" data-toggle="modal" type="button">
+                            {{trans('auth.tos')}}
+                        </button>&
+                        <button class="btn btn-xs btn-primary" data-target="#aup" data-toggle="modal" type="button">
+                            {{trans('auth.aup')}}
+                        </button>
                     </label>
                 </div>
             </div>
         @else
             <x-alert type="danger" :message="trans('auth.system_maintenance')"/>
         @endif
-        <a href="/login"
-           class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
+        <a href="{{route('login')}}" class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">
+            {{trans('auth.back')}}
+        </a>
         @if(sysConfig('is_register'))
             <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register')}}</button>
         @endif
@@ -134,19 +128,16 @@
         <div class="modal-dialog modal-simple modal-sidebar modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close"
-                            style="position:absolute;">
+                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close" style="position:absolute;">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">{{sysConfig('website_name')}}
-                        - {{trans('auth.tos')}} <small>2019年11月28日10:49</small></h4>
+                    <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.tos')}} <small>2019年11月28日10:49</small></h4>
                 </div>
                 <div class="modal-body">
                     @include('auth.docs.tos')
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25"
-                            data-dismiss="modal">{{trans('auth.close')}}</button>
+                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('auth.close')}}</button>
                 </div>
             </div>
         </div>
@@ -156,19 +147,16 @@
         <div class="modal-dialog modal-simple modal-sidebar modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close"
-                            style="position:absolute;">
+                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close" style="position:absolute;">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">{{sysConfig('website_name')}}
-                        - {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>
+                    <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>
                 </div>
                 <div class="modal-body">
                     @include('auth.docs.aup')
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25"
-                            data-dismiss="modal">{{trans('auth.close')}}</button>
+                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('auth.close')}}</button>
                 </div>
             </div>
         </div>
@@ -211,7 +199,7 @@
 
             $.ajax({
                 method: 'POST',
-                url: '/sendCode',
+                url: '{{route('sendVerificationCode')}}',
                 async: false,
                 data: {_token: '{{csrf_token()}}', email: email},
                 dataType: 'json',

@@ -60,7 +60,7 @@
             <i class="icon wb-more-horizontal" aria-hidden="true"></i>
         </button>
         <div class="navbar-brand navbar-brand-center">
-            <img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}"
+            <img src="{{sysConfig('website_logo') ?: '/assets/images/logo64.png'}}"
                  class="navbar-brand-logo" alt="logo"/>
             <span
                 class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
@@ -91,19 +91,19 @@
                         <span class="flag-icon icon wb-chevron-down-mini"></span>
                     </a>
                     <div class="dropdown-menu" role="menu">
-                        <a href="{{url('lang', ['locale' => 'zh-CN'])}}" class="dropdown-item" role="menuitem">
+                        <a href="{{route('lang', ['locale' => 'zh-CN'])}}" class="dropdown-item" role="menuitem">
                             <span class="flag-icon flag-icon-cn"></span>
                             简体中文</a>
-                        <a href="{{url('lang', ['locale' => 'zh-tw'])}}" class="dropdown-item" role="menuitem">
+                        <a href="{{route('lang', ['locale' => 'zh-tw'])}}" class="dropdown-item" role="menuitem">
                             <span class="flag-icon flag-icon-tw"></span>
                             繁體中文</a>
-                        <a href="{{url('lang', ['locale' => 'en'])}}" class="dropdown-item" role="menuitem">
+                        <a href="{{route('lang', ['locale' => 'en'])}}" class="dropdown-item" role="menuitem">
                             <span class="flag-icon flag-icon-gb"></span>
                             English</a>
-                        <a href="{{url('lang', ['locale' => 'ja'])}}" class="dropdown-item" role="menuitem">
+                        <a href="{{route('lang', ['locale' => 'ja'])}}" class="dropdown-item" role="menuitem">
                             <span class="flag-icon flag-icon-jp"></span>
                             日本語</a>
-                        <a href="{{url('lang', ['locale' => 'ko'])}}" class="dropdown-item" role="menuitem">
+                        <a href="{{route('lang', ['locale' => 'ko'])}}" class="dropdown-item" role="menuitem">
                             <span class="flag-icon flag-icon-kr"></span>
                             한국어</a>
                     </div>
@@ -112,8 +112,7 @@
                     <a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"
                        data-toggle="dropdown" role="button">
                         <span class="avatar avatar-online">
-                            <x-avatar :user="Auth::getUser()"/>
-                            <i></i>
+                            <x-avatar :user="Auth::getUser()"/><i></i>
                         </span>
                     </a>
                     <div class="dropdown-menu" role="menu">
@@ -123,12 +122,12 @@
                                 {{trans('home.console')}}
                             </a>
                         @endif
-                        <a href="/profile" class="dropdown-item" role="menuitem">
+                        <a href="{{route('profile')}}" class="dropdown-item" role="menuitem">
                             <i class="icon wb-user" aria-hidden="true"></i>
                             {{trans('home.profile')}}
                         </a>
                         <div class="dropdown-divider" role="presentation"></div>
-                        <a href="/logout" class="dropdown-item" role="menuitem">
+                        <a href="{{route('logout')}}" class="dropdown-item" role="menuitem">
                             <i class="icon wb-power" aria-hidden="true"></i>
                             {{trans('home.logout')}}
                         </a>
@@ -141,54 +140,54 @@
 <div class="site-menubar site-menubar-light">
     <div class="site-menubar-body">
         <ul class="site-menu" data-plugin="menu">
-            <li class="site-menu-item {{in_array(Request::path(), ['/', 'profile', 'article']) ? 'active open' : ''}}">
-                <a href="/">
+            <li class="site-menu-item {{request()->routeIs('home', 'profile' ,'article') ? 'active open' : ''}}">
+                <a href="{{route('home')}}">
                     <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.home')}}</span>
                 </a>
             </li>
-            <li class="site-menu-item {{in_array(Request::path(), ['services']) || in_array(Request::segment(1), ['buy', 'payment']) ? 'active open' : ''}}">
-                <a href="/services">
+            <li class="site-menu-item {{request()->routeIs('shop', 'buy', 'orderDetail') ? 'active open' : ''}}">
+                <a href="{{route('shop')}}">
                     <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.services')}}</span>
                 </a>
             </li>
-            <li class="site-menu-item {{in_array(Request::path(), ['nodeList']) || in_array(Request::segment(1), ['nodeList']) ? 'active open' : ''}}">
-                <a href="/nodeList">
+            <li class="site-menu-item {{request()->routeIs('node') ? 'active open' : ''}}">
+                <a href="{{route('node')}}">
                     <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.nodeList')}}</span>
                 </a>
             </li>
-            <li class="site-menu-item {{in_array(Request::path(), ['help', 'article']) ? 'active open' : ''}}">
-                <a href="/help">
+            <li class="site-menu-item {{request()->routeIs('help') ? 'active open' : ''}}">
+                <a href="{{route('help')}}">
                     <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.help')}}</span>
                 </a>
             </li>
-            <li class="site-menu-item {{in_array(Request::path(), ['tickets', 'replyTicket']) ? 'active open' : ''}}">
-                <a href="/tickets">
+            <li class="site-menu-item {{request()->routeIs('ticket', 'replyTicket') ? 'active open' : ''}}">
+                <a href="{{route('ticket')}}">
                     <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.ticket_title')}}</span>
                 </a>
             </li>
-            <li class="site-menu-item {{in_array(Request::path(), ['invoices']) ? 'active open' : ''}}">
-                <a href="/invoices">
+            <li class="site-menu-item {{request()->routeIs('invoice', 'invoiceInfo') ? 'active open' : ''}}">
+                <a href="{{route('invoice')}}">
                     <i class="site-menu-icon wb-bookmark" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.invoices')}}</span>
                 </a>
             </li>
-            @if(\App\Models\Order::uid()->whereStatus(2)->exists() || \App\Models\ReferralLog::uid()->exists())
+            @if(\App\Models\ReferralLog::uid()->exists() || \App\Models\Order::uid()->whereStatus(2)->exists())
                 @if(sysConfig('is_invite_register'))
-                    <li class="site-menu-item {{in_array(Request::path(), ['invite']) ? 'active open' : ''}}">
-                        <a href="/invite">
+                    <li class="site-menu-item {{request()->routeIs('invite') ? 'active open' : ''}}">
+                        <a href="{{route('invite')}}">
                             <i class="site-menu-icon wb-extension" aria-hidden="true"></i>
                             <span class="site-menu-title">{{trans('home.invite_code')}}</span>
                         </a>
                     </li>
                 @endif
                 @if((sysConfig('referral_status')))
-                    <li class="site-menu-item {{in_array(Request::path(), ['referral']) ? 'active open' : ''}}">
-                        <a href="/referral">
+                    <li class="site-menu-item {{request()->routeIs('commission') ? 'active open' : ''}}">
+                        <a href="{{route('commission')}}">
                             <i class="site-menu-icon wb-star-outline" aria-hidden="true"></i>
                             <span class="site-menu-title">{{trans('home.referrals')}}</span>
                         </a>
@@ -208,14 +207,12 @@
     @yield('content')
 </div>
 <footer class="site-footer">
-    <div class="site-footer-legal"> Copyright &copy; 2017 - 2020
-        <a href="{{sysConfig('website_url')}}" target="_blank">{{sysConfig('website_name')}}</a> |
-                                    基于<a href="https://github.com/ZBrettonYe/ProxyPane">{{config('version.name')}}</a>
-                                    版本: {{config('version.number')}} 开发
+    <div class="site-footer-legal">
+        Copyright ©️2017 - 2020 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}}</a>
+        🚀 版本: {{config('version.number')}}
     </div>
     <div class="site-footer-right">
-        由 <i class="red-600 wb-heart"></i>
-        <a href="https://github.com/ZBrettonYe">兔姬菌</a> 开发
+        由 <a href="{{sysConfig('website_url')}}" target="_blank">{{sysConfig('website_name')}}</a> 🈺运营
     </div>
 </footer>
 @if(Session::get("admin"))
@@ -284,7 +281,7 @@
         $('#return_to_admin').click(function() {
             $.ajax({
                 method: 'POST',
-                url: '/switchToAdmin',
+                url: '{{route('switch')}}',
                 data: {'_token': '{{csrf_token()}}'},
                 dataType: 'json',
                 success: function(ret) {

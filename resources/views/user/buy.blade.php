@@ -20,7 +20,7 @@
                         <tr>
                             <td class="text-middle">{{$goods->name}} </td>
                             <td>{{trans('home.service_days')}}
-                                <strong>{{$goods->type==1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
+                                <strong>{{$goods->type === 1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
                                 <br>
                                 <strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
                             </td>
@@ -30,12 +30,11 @@
                         </tbody>
                     </table>
                 </div>
-                @if($goods->type <= 2)
-                    <div class="row">
+                <div class="row">
+                    @if($goods->type <= 2)
                         <div class="col-lg-3 pl-30">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn"
-                                       placeholder="{{trans('home.coupon')}}"/>
+                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}"/>
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-info" onclick="redeemCoupon()">
                                         <i class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
@@ -51,20 +50,20 @@
                                 <span class="grand-total">￥{{$goods->price}}</span>
                             </p>
                         </div>
-                        @endif
-                        <div class="col-md-12 mb-30">
-                            <div class="float-right">
-                                <div class="btn-group btn-group-lg">
-                                    @include('user.components.purchase')
-                                    @if($goods->type <= 2)
-                                        <button class="btn btn-flat" onclick="pay('credit','0')">
-                                            <img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('home.service_pay_button')}}"/>
-                                        </button>
-                                    @endif
-                                </div>
+                    @endif
+                    <div class="col-md-12 mb-30">
+                        <div class="float-right">
+                            <div class="btn-group btn-group-lg">
+                                @include('user.components.purchase')
+                                @if($goods->type <= 2)
+                                    <button class="btn btn-flat" onclick="pay('credit','0')">
+                                        <img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('home.service_pay_button')}}"/>
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
@@ -77,7 +76,7 @@
             const goods_price = '{{$goods->price}}';
             $.ajax({
                 method: 'POST',
-                url: '/redeemCoupon',
+                url: '{{route('redeemCoupon')}}',
                 async: false,
                 data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn, price: '{{$goods->price}}'},
                 dataType: 'json',
@@ -160,7 +159,7 @@
             const coupon_sn = $('#coupon_sn').val();
             $.ajax({
                 method: 'POST',
-                url: '/payment/purchase',
+                url: '{{route('purchase')}}',
                 async: false,
                 data: {
                     _token: '{{csrf_token()}}',
@@ -179,11 +178,10 @@
                             showConfirmButton: false,
                         });
                         if (method === 'credit') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.href = '/invoices');
+                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('invoice')}}');
                         }
                         if (ret.data) {
-                            window.location.href = '/payment/' + ret.data;
+                            window.location.href = '{{route('orderDetail', '')}}/' + ret.data;
                         }
                         else if (ret.url) {
                             window.location.href = ret.url;

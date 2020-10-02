@@ -1,11 +1,15 @@
 <?php
 
-Route::get('s/{code}', 'User\SubscribeController@getSubscribeByCode'); // 节点订阅地址
+Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))->group(function () {
+    Route::get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
+});
 
 // 支付回调相关
 Route::prefix('callback')->group(function () {
-    Route::get('checkout', 'Gateway\PayPal@getCheckout');
-    Route::get('notify', 'PaymentController@notify'); //支付回调
+    Route::get('checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout');
+    Route::domain(sysConfig('website_callback_url') ?: sysConfig('website_url'))->group(function () {
+        Route::get('notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
+    });
 });
 
 // 登录相关
@@ -28,38 +32,38 @@ Route::any('admin/login', 'AuthController@login')->name('admin.login')->middlewa
 // 用户相关
 Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function () {
     Route::get('/', 'UserController@index')->name('home'); // 用户首页
-    Route::get('article', 'UserController@article'); // 文章详情
-    Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe'); // 更换节点订阅地址
-    Route::any('nodeList', 'UserController@nodeList'); // 节点列表
-    Route::post('checkIn', 'UserController@checkIn'); // 签到
-    Route::get('services', 'UserController@services'); // 商品列表
-    Route::get('tickets', 'UserController@ticketList'); // 工单
-    Route::post('createTicket', 'UserController@createTicket'); // 快速添加工单
-    Route::any('replyTicket', 'UserController@replyTicket'); // 回复工单
-    Route::post('closeTicket', 'UserController@closeTicket'); // 关闭工单
-    Route::get('invoices', 'UserController@invoices'); // 订单列表
-    Route::post('closePlan', 'UserController@closePlan'); // 激活预支付套餐
-    Route::get('invoice/{sn}', 'UserController@invoiceDetail'); // 订单明细
-    Route::post('resetUserTraffic', 'UserController@resetUserTraffic'); // 重置用户流量
-    Route::get('buy/{id}', 'UserController@buy'); // 购买商品
-    Route::post('redeemCoupon', 'UserController@redeemCoupon'); // 使用优惠券
-    Route::get('invite', 'UserController@invite'); // 邀请码
-    Route::post('makeInvite', 'UserController@makeInvite'); // 生成邀请码
-    Route::any('profile', 'UserController@profile'); // 修改个人信息
-    Route::post("switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
-    Route::post("charge", "UserController@charge"); // 卡券余额充值
-    Route::get("help", "UserController@help"); // 帮助中心
+    Route::get('article', 'UserController@article')->name('article'); // 文章详情
+    Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe')->name('changeSub'); // 更换节点订阅地址
+    Route::any('nodeList', 'UserController@nodeList')->name('node'); // 节点列表
+    Route::post('checkIn', 'UserController@checkIn')->name('checkIn'); // 签到
+    Route::get('services', 'UserController@services')->name('shop'); // 商品列表
+    Route::get('tickets', 'UserController@ticketList')->name('ticket'); // 工单
+    Route::post('createTicket', 'UserController@createTicket')->name('openTicket'); // 快速添加工单
+    Route::any('replyTicket', 'UserController@replyTicket')->name('replyTicket'); // 回复工单
+    Route::post('closeTicket', 'UserController@closeTicket')->name('closeTicket'); // 关闭工单
+    Route::get('invoices', 'UserController@invoices')->name('invoice'); // 订单列表
+    Route::post('closePlan', 'UserController@closePlan')->name('cancelPlan'); // 激活预支付套餐
+    Route::get('invoice/{sn}', 'UserController@invoiceDetail')->name('invoiceInfo'); // 订单明细
+    Route::post('resetUserTraffic', 'UserController@resetUserTraffic')->name('resetTraffic'); // 重置用户流量
+    Route::get('buy/{id}', 'UserController@buy')->name('buy'); // 购买商品
+    Route::post('redeemCoupon', 'UserController@redeemCoupon')->name('redeemCoupon'); // 使用优惠券
+    Route::get('invite', 'UserController@invite')->name('invite'); // 邀请码
+    Route::post('makeInvite', 'UserController@makeInvite')->name('createInvite'); // 生成邀请码
+    Route::any('profile', 'UserController@profile')->name('profile'); // 修改个人信息
+    Route::post("switchToAdmin", "UserController@switchToAdmin")->name('switch'); // 转换成管理员的身份
+    Route::post("charge", "UserController@charge")->name('recharge'); // 卡券余额充值
+    Route::get("help", "UserController@help")->name('help'); // 帮助中心
 
     Route::namespace('User')->group(function () {
-        Route::get('referral', 'AffiliateController@referral'); // 推广返利
-        Route::post('extractMoney', 'AffiliateController@extractMoney'); // 申请提现
+        Route::get('referral', 'AffiliateController@referral')->name('commission'); // 推广返利
+        Route::post('extractMoney', 'AffiliateController@extractMoney')->name('applyCommission'); // 申请提现
     });
 
     Route::prefix('payment')->group(function () {
-        Route::post('purchase', 'PaymentController@purchase'); // 创建支付
-        Route::post('close', 'PaymentController@close'); // 关闭支付单
-        Route::get('getStatus', 'PaymentController@getStatus'); // 获取支付单状态
-        Route::get('{trade_no}', 'PaymentController@detail'); // 支付单详情
+        Route::post('purchase', 'PaymentController@purchase')->name('purchase'); // 创建支付
+        Route::post('close', 'PaymentController@close')->name('closeOrder'); // 关闭支付单
+        Route::get('getStatus', 'PaymentController@getStatus')->name('orderStatus'); // 获取支付单状态
+        Route::get('{trade_no}', 'PaymentController@detail')->name('orderDetail'); // 支付单详情
     });
 });
 

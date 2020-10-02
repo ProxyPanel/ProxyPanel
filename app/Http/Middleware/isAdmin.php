@@ -20,7 +20,7 @@ class isAdmin
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::getUser()->is_admin) {
-            return Redirect::to('/');
+            return Redirect::route('home');
         }
 
         return $next($request);
