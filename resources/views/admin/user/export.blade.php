@@ -26,7 +26,7 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>
-                                <a href="/node/edit?id={{$node->id}}" target="_blank"> {{$node->name}} </a>
+                                <a href="{{route('admin.node.edit', $node->id)}}" target="_blank"> {{$node->name}} </a>
                             </td>
                             <td>
                                 @if($node->compatible) <span class="label label-info">兼</span> @endif
@@ -75,38 +75,42 @@
 
     <script type="text/javascript">
         function getInfo(id, type) {
-            $.post("{{route('admin.user.exportProxy', $user->id)}}", {_token: '{{csrf_token()}}', type: type}, function(ret) {
-                if (ret.status === 'success') {
-                    switch (type) {
-                        case 'code':
-                            swal.fire({
-                                html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
-                                    '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
-                                showConfirmButton: false,
-                            });
-                            break;
-                        case 'qrcode':
-                            swal.fire({
-                                title: '{{trans('home.scan_qrcode')}}',
-                                html: '<div id="qrcode"></div>',
-                                onBeforeOpen: () => {
-                                    $('#qrcode').qrcode({text: ret.data});
-                                },
-                                showConfirmButton: false,
-                            });
-                            break;
-                        case 'text':
-                            swal.fire({
-                                title: '{{trans('home.setting_info')}}',
-                                html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
-                                showConfirmButton: false,
-                            });
-                            break;
-                        default:
-                            swal.fire({title: ret.title, text: ret.data});
+            $.post("{{route('admin.user.exportProxy', $user->id)}}", {_token: '{{csrf_token()}}', id: id, type: type},
+                function(ret) {
+                    if (ret.status === 'success') {
+                        switch (type) {
+                            case 'code':
+                                swal.fire({
+                                    html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
+                                        '</textarea>' +
+                                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' +
+                                        ret.title + '</a>',
+                                    showConfirmButton: false,
+                                });
+                                break;
+                            case 'qrcode':
+                                swal.fire({
+                                    title: '{{trans('home.scan_qrcode')}}',
+                                    html: '<div id="qrcode"></div>',
+                                    onBeforeOpen: () => {
+                                        $('#qrcode').qrcode({text: ret.data});
+                                    },
+                                    showConfirmButton: false,
+                                });
+                                break;
+                            case 'text':
+                                swal.fire({
+                                    title: '{{trans('home.setting_info')}}',
+                                    html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
+                                        '</textarea>',
+                                    showConfirmButton: false,
+                                });
+                                break;
+                            default:
+                                swal.fire({title: ret.title, text: ret.data});
+                        }
                     }
-                }
-            });
+                });
         }
     </script>
 @endsection

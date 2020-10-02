@@ -141,7 +141,7 @@
                             <div class="card-block">
                                 @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
                                     <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
-                                    <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->style('round', 0.9)->size(175)->errorCorrection('H')->merge(url('assets/images/wechat.png'), .3, true)->generate(sysConfig('push_bear_qrcode')))!!}" alt="支付二维码">
+                                    <div id="qrcode"></div>
                                 @else
                                     <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
                                 @endif
@@ -220,7 +220,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 @section('script')
     <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.js" type="text/javascript"></script>
@@ -228,6 +227,21 @@
     <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/aspieprogress.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
+    @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
+        <script src="/assets/custom/qart.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                new QArt({
+                    value: '{{sysConfig('push_bear_qrcode')}}',
+                    imagePath: '{{asset('/assets/images/wechat.png')}}',
+                    filter: 'color',
+                    version: 10,
+                    size: 175,
+                    fillType: 'scale_to_fit',
+                }).make(document.getElementById('qrcode'));
+            });
+        </script>
+    @endif
     <script type="text/javascript">
         // 签到
         function checkIn() {
@@ -344,7 +358,7 @@
             },
         });
 
-        @if($banedTime != 0)
+        @if($banedTime)
         // 每秒更新计时器
         const countDownDate = new Date("{{$banedTime}}").getTime();
         const x = setInterval(function() {

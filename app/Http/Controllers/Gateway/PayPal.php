@@ -132,7 +132,7 @@ class PayPal extends AbstractPayment
 
         if ($response === 'VERIFIED' && $request['invoice']) {
             $payment = Payment::whereTradeNo($request['invoice'])->first();
-            if ($payment && $payment->status == 0) {
+            if ($payment && $payment->status === 0) {
                 $ret = $payment->order->update(['status' => 2]);
                 if ($ret) {
                     exit('success');

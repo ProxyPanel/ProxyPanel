@@ -363,9 +363,9 @@ class UserController extends Controller
         return view('admin.user.export', $view);
     }
 
-    public function exportProxyConfig(Request $request, $id): JsonResponse
+    public function exportProxyConfig(Request $request, $uid): JsonResponse
     {
-        $node = Node::find($id);
+        $node = Node::find($request->input('id'));
         if ($node->type === 1) {
             if ($node->compatible) {
                 $proxyType = 'SS';
@@ -376,7 +376,7 @@ class UserController extends Controller
             $proxyType = 'V2Ray';
         }
 
-        $data = $this->getUserNodeInfo($id, $node->id, $request->input('type') !== 'text' ? 0 : 1);
+        $data = $this->getUserNodeInfo($uid, $node->id, $request->input('type') !== 'text' ? 0 : 1);
 
         return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
     }

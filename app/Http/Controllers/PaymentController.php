@@ -14,8 +14,8 @@ use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Models\PaymentCallback;
 use Auth;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -164,32 +164,38 @@ class PaymentController extends Controller
         $orderSn = date('ymdHis').random_int(100000, 999999);
 
         // 生成订单
-        $order = new Order();
-        $order->order_sn = $orderSn;
-        $order->user_id = Auth::id();
-        $order->goods_id = $credit ? 0 : $goods_id;
-        $order->coupon_id = $coupon->id ?? 0;
-        $order->origin_amount = $credit ?: $goods->price;
-        $order->amount = $amount;
-        $order->is_expire = 0;
-        $order->pay_type = $pay_type;
-        $order->pay_way = self::$method;
-        $order->status = 0;
-        $order->save();
+        try {
+            $order = new Order();
+            $order->order_sn = $orderSn;
+            $order->user_id = Auth::id();
+            $order->goods_id = $credit ? 0 : $goods_id;
+            $order->coupon_id = $coupon->id ?? 0;
+            $order->origin_amount = $credit ?: $goods->price;
+            $order->amount = $amount;
+            $order->is_expire = 0;
+            $order->pay_type = $pay_type;
+            $order->pay_way = self::$method;
+            $order->status = 0;
+            $order->save();
 
-        // 使用优惠券，减少可使用次数
-        if (!empty($coupon)) {
-            if ($coupon->usable_times > 0) {
-                Coupon::whereId($coupon->id)->decrement('usable_times', 1);
+            // 使用优惠券，减少可使用次数
+            if (!empty($coupon)) {
+                if ($coupon->usable_times > 0) {
+                    Coupon::whereId($coupon->id)->decrement('usable_times', 1);
+                }
+
+                Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $order->id);
             }
 
-            Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $order->id);
+            $request->merge(['id' => $order->id, 'type' => $pay_type, 'amount' => $amount]);
+
+            // 生成支付单
+            return self::getClient()->purchase($request);
+        } catch (Exception $e) {
+            Log::error('订单生成错误：'.$e->getMessage());
         }
 
-        $request->merge(['id' => $order->id, 'type' => $pay_type, 'amount' => $amount]);
-
-        // 生成支付单
-        return self::getClient()->purchase($request);
+        return Response::json(['status' => 'fail', 'message' => '订单创建失败']);
     }
 
     public function close(Request $request): JsonResponse

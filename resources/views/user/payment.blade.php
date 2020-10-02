@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-auto ml-auto mr-auto">
                         @if($payment->qr_code && $payment->url)
-                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->margin(2)->eyeColor(1, 0, 204, 153, 0, 153, 119)->size(250)->errorCorrection('H')->merge(url($pay_type_icon), .3, true)->generate($payment->url))!!}" alt="支付二维码">
+                            <div id="qrcode"></div>
                         @else
                             <img class="h-250 w-250" src="{{$payment->qr_code}}" alt="支付二维码">
                         @endif
@@ -38,6 +38,21 @@
     </div>
 @endsection
 @section('script')
+    @if($payment->qr_code && $payment->url)
+        <script src="/assets/custom/qart.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                new QArt({
+                    value: '{{$payment->url}}',
+                    imagePath: '{{asset($pay_type_icon)}}',
+                    filter: 'color',
+                    version: 10,
+                    size: 300,
+                }).make(document.getElementById('qrcode'));
+            });
+        </script>
+    @endif
+
     <script type="text/javascript">
         // 检查支付单状态
         const r = window.setInterval(function() {
