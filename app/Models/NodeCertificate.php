@@ -10,4 +10,5 @@ use Illuminate\Database\Eloquent\Model;
 class NodeCertificate extends Model
 {
     protected $table = 'node_certificate';
+    protected $guarded = ['id'];
 }
