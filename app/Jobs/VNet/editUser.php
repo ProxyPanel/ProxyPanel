@@ -3,7 +3,7 @@
 namespace App\Jobs\VNet;
 
 use App\Models\User;
-use GuzzleHttp\Client;
+use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -41,12 +41,8 @@ class editUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $client = new Client([
-            'base_uri' => $host,
-            'timeout'  => 15,
-            'headers'  => ['secret' => $secret],
-        ]);
+        $client = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
-        $client->post('api/user/edit', ['json' => $this->data]);
+        $client->post('api/user/edit', $this->data);
     }
 }

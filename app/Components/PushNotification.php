@@ -3,7 +3,7 @@
 
 namespace App\Components;
 
-use GuzzleHttp\Client;
+use Http;
 use Log;
 
 class PushNotification
@@ -31,10 +31,11 @@ class PushNotification
     private static function ServerChan(string $title, string $content)
     {
         // TODO：一天仅可发送不超过500条
-        $request = (new Client(['timeout' => 15]))->get('https://sc.ftqq.com/'.sysConfig('server_chan_key').'.send?text='.$title.'&desp='.urlencode($content));
-        $message = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get('https://sc.ftqq.com/'.sysConfig('server_chan_key').'.send?text='.$title.'&desp='.urlencode($content));
+
         // 发送成功
-        if ($request->getStatusCode() === 200) {
+        if ($response->ok()) {
+            $message = $response->json();
             if (!$message['errno']) {
                 Helpers::addNotificationLog($title, $content, 2);
 
@@ -46,7 +47,7 @@ class PushNotification
             return false;
         }
         // 发送错误
-        Log::error('ServerChan消息推送异常：'.var_export($request, true));
+        Log::error('ServerChan消息推送异常：'.var_export($response, true));
 
         return false;
     }
@@ -61,10 +62,10 @@ class PushNotification
      */
     private static function Bark(string $title, string $content)
     {
-        $request = (new Client(['timeout' => 15]))->get('https://api.day.app/'.sysConfig('bark_key').'/'.$title.'/'.$content);
-        $message = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get('https://api.day.app/'.sysConfig('bark_key').'/'.$title.'/'.$content);
 
-        if ($request->getStatusCode() === 200) {
+        if ($response->ok()) {
+            $message = $response->json();
             // 发送成功
             if ($message['code'] === 200) {
                 Helpers::addNotificationLog($title, $content, 3);
@@ -77,7 +78,7 @@ class PushNotification
             return false;
         }
         // 发送错误
-        Log::error('Bark消息推送异常：'.var_export($request, true));
+        Log::error('Bark消息推送异常：'.var_export($response, true));
 
         return false;
     }

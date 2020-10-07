@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
 use Auth;
-use GuzzleHttp\Client;
+use Http;
 use Illuminate\Http\JsonResponse;
 use Log;
 use Response;
@@ -53,25 +53,23 @@ class BitpayX extends AbstractPayment
 
     private function sendRequest($data, $type = 'createOrder')
     {
-        $client = new Client([
-            'base_uri' => 'https://api.mugglepay.com/v1/',
-            'timeout'  => 15,
-            'headers'  => [
+        $client = Http::baseUrl('https://api.mugglepay.com/v1/')
+            ->timeout(15)
+            ->withHeaders([
                 'token'        => sysConfig('bitpay_secret'),
                 'content-type' => 'application/json',
-            ],
-        ]);
+            ]);
 
         if ($type === 'query') {
-            $request = $client->get('orders/merchant_order_id/status?id='.$data['merchant_order_id']);
+            $response = $client->get('orders/merchant_order_id/status?id='.$data['merchant_order_id']);
         } else {// Create Order
-            $request = $client->post('orders', ['body' => json_encode($data)]);
+            $response = $client->post('orders', ['body' => json_encode($data)]);
         }
-        if ($request->getStatusCode() !== 200) {
-            Log::error('BitPayX请求支付错误：'.var_export($request, true));
+        if ($response->failed()) {
+            Log::error('BitPayX请求支付错误：'.var_export($response, true));
         }
 
-        return json_decode($request->getBody(), true);
+        return $response->json();
     }
 
     //Todo: Postman虚拟测试通过，需要真实数据参考验证

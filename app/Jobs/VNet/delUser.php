@@ -2,7 +2,7 @@
 
 namespace App\Jobs\VNet;
 
-use GuzzleHttp\Client;
+use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,14 +34,10 @@ class delUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $client = new Client([
-            'base_uri' => $host,
-            'timeout'  => 15,
-            'headers'  => ['secret' => $secret],
-        ]);
+        $client = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
         if (is_array($this->userIds)) {
-            $client->post('api/v2/user/del/list', ['json' => $this->userIds]);
+            $client->post('api/v2/user/del/list', $this->userIds);
         } else {
             $client->post('api/user/del/'.$this->userIds);
         }

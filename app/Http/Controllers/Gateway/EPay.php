@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
 use Auth;
-use GuzzleHttp\Client;
+use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
@@ -63,15 +63,15 @@ class EPay extends AbstractPayment
 
     public function queryInfo(): JsonResponse
     {
-        $request = (new Client())->get(sysConfig('epay_url').'api.php', [
-            'query' => [
-                'act' => 'query',
-                'pid' => sysConfig('epay_mch_id'),
-                'key' => sysConfig('epay_key'),
-            ],
+        $response = Http::get(sysConfig('epay_url').'api.php', [
+            'act' => 'query',
+            'pid' => sysConfig('epay_mch_id'),
+            'key' => sysConfig('epay_key'),
         ]);
-        if ($request->getStatusCode() === 200) {
-            return Response::json(['status' => 'success', 'data' => json_decode($request->getBody(), true)]);
+
+
+        if ($response->ok()) {
+            return Response::json(['status' => 'success', 'data' => $response->json()]);
         }
 
         return Response::json(['status' => 'fail', 'message' => '获取失败！请检查配置信息']);

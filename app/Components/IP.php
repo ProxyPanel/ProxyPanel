@@ -5,7 +5,7 @@ namespace App\Components;
 use Exception;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
-use GuzzleHttp\Client;
+use Http;
 use IP2Location\Database;
 use Ip2Region;
 use ipip\db\City;
@@ -35,14 +35,13 @@ class IP
     // 通过api.ip.sb查询IP地址的详细信息
     public static function IPSB($ip)
     {
-        $request = (new Client(['timeout' => 15]))->get('https://api.ip.sb/geoip/'.$ip);
-        $message = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get('https://api.ip.sb/geoip/'.$ip);
 
-        if ($request->getStatusCode() === 200) {
-            return $message;
+        if ($response->ok()) {
+            return $response->json();
         }
 
-        Log::error('解析IPv6异常：'.$ip.PHP_EOL.var_export($request, true));
+        Log::error('解析IPv6异常：'.$ip);
 
         return false;
     }
@@ -107,10 +106,10 @@ class IP
     public static function TaoBao(string $ip)
     {
         // 依据 http://ip.taobao.com/instructions 开发
-        $request = (new Client(['timeout' => 15]))->get('http://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
-        $message = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get('http://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
 
-        if ($request->getStatusCode() === 200) {
+        if ($response->ok()) {
+            $message = $response->json();
             if ($message['code'] === 0) {
                 return [
                     'country'  => $message['data']['country'] === "XX" ? '' : $message['data']['country'],
@@ -119,9 +118,9 @@ class IP
                 ];
             }
 
-            Log::error('【淘宝IP库】返回错误信息：'.$ip.PHP_EOL.var_export($message['msg'], true));
+            Log::error('【淘宝IP库】返回错误信息：'.$ip.PHP_EOL.$message['msg']);
         } else {
-            Log::error('【淘宝IP库】解析异常：'.$ip.PHP_EOL.var_export($request, true));
+            Log::error('【淘宝IP库】解析异常：'.$ip);
         }
 
         return false;
@@ -136,10 +135,10 @@ class IP
             return false;
         }
         // 依据 http://lbsyun.baidu.com/index.php?title=webapi/ip-api 开发
-        $request = (new Client(['timeout' => 15]))->get('https://api.map.baidu.com/location/ip?ak='.env('BAIDU_APP_AK').'&'.$ip.'&coor=bd09ll');
-        $message = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get('https://api.map.baidu.com/location/ip?ak='.env('BAIDU_APP_AK').'&'.$ip.'&coor=bd09ll');
 
-        if ($request->getStatusCode() === 200) {
+        if ($response->ok()) {
+            $message = $response->json();
             if ($message['status'] === 0) {
                 return [
                     'country'  => $message['content']['address_detail']['country'],
@@ -150,7 +149,7 @@ class IP
 
             Log::error('【百度IP库】返回错误信息：'.$ip.PHP_EOL.var_export($message['message'], true));
         } else {
-            Log::error('【百度IP库】解析异常：'.$ip.PHP_EOL.var_export($request, true));
+            Log::error('【百度IP库】解析异常：'.$ip);
         }
 
         return false;

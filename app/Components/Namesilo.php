@@ -2,7 +2,7 @@
 
 namespace App\Components;
 
-use GuzzleHttp\Client;
+use Http;
 use Log;
 use LSS\XML2Array;
 
@@ -28,24 +28,24 @@ class Namesilo
 
         $content = '请求操作：['.$operation.'] --- 请求数据：['.http_build_query($query).']';
 
-        $request = (new Client(['timeout' => 15]))->get(self::$host.$operation.'?'.http_build_query($query));
-        $result = XML2Array::createArray(json_decode($request->getBody(), true));
-
-        if ($request->getStatusCode() !== 200) {
-            Log::error('请求失败：'.var_export($request, true));
+        $response = Http::timeout(15)->get(self::$host.$operation.'?'.http_build_query($query));
+        if ($response->failed()) {
+            Log::error('[Namesilo]请求失败：'.var_export($response, true));
             Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, sysConfig('webmaster_email'),
-                0, var_export($request, true));
+                0, var_export($response, true));
 
             return false;
         }
 
+        $result = XML2Array::createArray($response->json());
+
         // 出错
-        if (empty($result['namesilo']) || $result['namesilo']['reply']['code'] != 300 || $result['namesilo']['reply']['detail'] !== 'success') {
-            Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, sysConfig('webmaster_email'),
-                0, $result['namesilo']['reply']['detail']);
+        if (empty($result['namesilo']) || $result['namesilo']['reply']['code'] !== 300 || $result['namesilo']['reply']['detail'] !== 'success') {
+            Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+                sysConfig('webmaster_email'), 0, $result['namesilo']['reply']['detail']);
         } else {
-            Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1, sysConfig('webmaster_email'),
-                1, $result['namesilo']['reply']['detail']);
+            Helpers::addNotificationLog('[Namesilo API] - ['.$operation.']', $content, 1,
+                sysConfig('webmaster_email'), 1, $result['namesilo']['reply']['detail']);
         }
 
         return $result['namesilo']['reply'];

@@ -2,7 +2,8 @@
 
 namespace App\Jobs\VNet;
 
-use GuzzleHttp\Client;
+use Arr;
+use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -56,16 +57,12 @@ class reloadNode implements ShouldQueue
 
     public function send($host, $secret, $data): bool
     {
-        $client = new Client([
-            'base_uri' => $host,
-            'timeout'  => 15,
-            'headers'  => ['secret' => $secret],
-        ]);
+        $client = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
-        $ret = $client->post('api/v2/node/reload', ['json' => $data]);
-        if ($ret->getStatusCode() == 200) {
-            $message = json_decode($ret->getBody(), true);
-            if (array_key_exists('success', $message) && array_key_exists('content', $message)) {
+        $response = $client->post('api/v2/node/reload', $data);
+        if ($response->ok()) {
+            $message = $response->json();
+            if (Arr::has($message, ['success', 'content'])) {
                 if ($message['success']) {
                     return true;
                 }

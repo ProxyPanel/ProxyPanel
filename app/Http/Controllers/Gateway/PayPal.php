@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Gateway;
 use App\Models\Payment;
 use Auth;
 use Exception;
-use GuzzleHttp\Client;
+use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -39,14 +39,8 @@ class PayPal extends AbstractPayment
             'validate_ssl'   => true,
         ];
         $this->provider->setApiCredentials($config);
-        $this->exChange = 7;
-        $client = new Client(['timeout' => 15]);
-        $exChangeRate = json_decode($client->get('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4')
-            ->getBody(), true);
-
-        if ($exChangeRate && $exChangeRate['success']) {
-            $this->exChange = $exChangeRate['result']['rate'];
-        }
+        $response = Http::timeout(15)->get('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4');
+        $this->exChange = $response->json()['result']['rate'] ?? 7;
     }
 
     public function purchase($request): JsonResponse
@@ -122,7 +116,7 @@ class PayPal extends AbstractPayment
     {
         $request->merge(['cmd' => '_notify-validate']);
         foreach ($request->input() as $key => $value) {
-            if ($value == null) {
+            if ($value === null) {
                 $request->request->set($key, '');
             }
         }

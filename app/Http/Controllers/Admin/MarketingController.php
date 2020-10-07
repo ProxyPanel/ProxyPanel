@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Marketing;
 use DB;
 use Exception;
-use GuzzleHttp\Client;
+use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -67,19 +67,17 @@ class MarketingController extends Controller
         try {
             DB::beginTransaction();
 
-            $response = (new Client())->get('https://pushbear.ftqq.com/sub', [
-                'query' => [
-                    'sendkey' => sysConfig('push_bear_send_key'),
-                    'text'    => $title,
-                    'desp'    => $content,
-                ],
+            $response = Http::timeout(15)->get('https://pushbear.ftqq.com/sub', [
+                'sendkey' => sysConfig('push_bear_send_key'),
+                'text'    => $title,
+                'desp'    => $content,
             ]);
 
-            $result = json_decode($response->getBody(), true);
-            if ($result->code) { // 失败
-                $this->addMarketing(2, $title, $content, -1, $result->message);
+            $message = $response->json();
+            if (!$message || !$message['code'] === 0 || $response->failed()) { // 失败
+                $this->addMarketing(2, $title, $content, -1, $message['message']);
 
-                throw new RuntimeException($result->message);
+                throw new RuntimeException($message['message']);
             }
 
             $this->addMarketing(2, $title, $content, 1);

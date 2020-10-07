@@ -2,7 +2,7 @@
 
 namespace App\Components;
 
-use GuzzleHttp\Client;
+use Http;
 use Log;
 
 class NetworkDetection
@@ -21,37 +21,37 @@ class NetworkDetection
         $url = 'https://api.50network.com/china-firewall/check/ip/'.($type ? 'icmp/' : ($port ? 'tcp_port/' : 'tcp_ack/')).$ip.($port ? '/'.$port : '');
 
         $checkName = $type ? 'ICMP' : 'TCP';
-        $request = (new Client(['timeout' => 15]))->get($url);
-        $result = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get($url);
 
-        if ($request->getStatusCode() === 200) {
-            if (!$result) {
+        if ($response->ok()) {
+            $message = $response->json();
+            if (!$message) {
                 Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：".$url);
 
                 return false;
             }
 
-            if (!$result['success']) {
-                if ($result['error'] === "execute timeout (3s)") {
+            if (!$message['success']) {
+                if ($message['error'] === "execute timeout (3s)") {
                     sleep(10);
 
                     return self::networkCheck($ip, $type, $port);
                 }
 
-                Log::warning("【".$checkName."阻断检测】检测".$ip.$port."时，返回".var_export($result, true));
+                Log::warning("【".$checkName."阻断检测】检测".$ip.$port."时，返回".var_export($message, true));
 
                 return false;
             }
 
-            if ($result['firewall-enable'] && $result['firewall-disable']) {
+            if ($message['firewall-enable'] && $message['firewall-disable']) {
                 return "通讯正常"; // 正常
             }
 
-            if ($result['firewall-enable'] && !$result['firewall-disable']) {
+            if ($message['firewall-enable'] && !$message['firewall-disable']) {
                 return "海外阻断"; // 国外访问异常
             }
 
-            if (!$result['firewall-enable'] && $result['firewall-disable']) {
+            if (!$message['firewall-enable'] && $message['firewall-disable']) {
                 return "国内阻断"; // 被墙
             }
 
@@ -71,11 +71,11 @@ class NetworkDetection
     public static function ping(string $ip)
     {
         $url = 'https://api.oioweb.cn/api/hostping.php?host='.$ip; // https://api.iiwl.cc/api/ping.php?host=
-        $request = (new Client(['timeout' => 15]))->get($url);
-        $message = json_decode($request->getBody(), true);
+        $response = Http::timeout(15)->get($url);
 
         // 发送成功
-        if ($request->getStatusCode() === 200) {
+        if ($response->ok()) {
+            $message = $response->json();
             if ($message && $message['code']) {
                 return $message['data'];
             }
