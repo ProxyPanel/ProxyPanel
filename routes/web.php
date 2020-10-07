@@ -15,31 +15,31 @@ Route::prefix('callback')->group(function () {
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {
     Route::get('lang/{locale}', 'AuthController@switchLang')->name('lang'); // 语言切换
-    Route::any('login', 'AuthController@login')->middleware('isSecurity')->name('login'); // 登录
+    Route::match(['get', 'post'], 'login', 'AuthController@login')->middleware('isSecurity')->name('login'); // 登录
     Route::get('logout', 'AuthController@logout')->name('logout'); // 退出
-    Route::any('register', 'AuthController@register')->name('register'); // 注册
-    Route::any('reset', 'AuthController@resetPassword')->name('resetPasswd'); // 重设密码
-    Route::any('reset/{token}', 'AuthController@reset')->name('resettingPasswd'); // 重设密码
-    Route::any('activeUser', 'AuthController@activeUser')->name('active'); // 激活账号
+    Route::match(['get', 'post'], 'register', 'AuthController@register')->name('register'); // 注册
+    Route::match(['get', 'post'], 'reset', 'AuthController@resetPassword')->name('resetPasswd'); // 重设密码
+    Route::match(['get', 'post'], 'reset/{token}', 'AuthController@reset')->name('resettingPasswd'); // 重设密码
+    Route::match(['get', 'post'], 'activeUser', 'AuthController@activeUser')->name('active'); // 激活账号
     Route::get('active/{token}', 'AuthController@active')->name('activeAccount'); // 激活账号
     Route::post('send', 'AuthController@sendCode')->name('sendVerificationCode'); // 发送注册验证码
     Route::get('free', 'AuthController@free')->name('freeInvitationCode'); // 免费邀请码
     Route::get('create/string', '\Illuminate\Support\Str@random')->name('createStr'); // 生成随机密码
     Route::get('create/uuid', '\Illuminate\Support\Str@uuid')->name('createUUID'); // 生成UUID
 });
-Route::any('admin/login', 'AuthController@login')->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理登录
+Route::match(['get', 'post'], 'admin/login', 'AuthController@login')->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理登录
 
 // 用户相关
 Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function () {
     Route::get('/', 'UserController@index')->name('home'); // 用户首页
     Route::get('article', 'UserController@article')->name('article'); // 文章详情
     Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe')->name('changeSub'); // 更换节点订阅地址
-    Route::any('nodeList', 'UserController@nodeList')->name('node'); // 节点列表
+    Route::match(['get', 'post'], 'nodeList', 'UserController@nodeList')->name('node'); // 节点列表
     Route::post('checkIn', 'UserController@checkIn')->name('checkIn'); // 签到
     Route::get('services', 'UserController@services')->name('shop'); // 商品列表
     Route::get('tickets', 'UserController@ticketList')->name('ticket'); // 工单
     Route::post('createTicket', 'UserController@createTicket')->name('openTicket'); // 快速添加工单
-    Route::any('replyTicket', 'UserController@replyTicket')->name('replyTicket'); // 回复工单
+    Route::match(['get', 'post'], 'replyTicket', 'UserController@replyTicket')->name('replyTicket'); // 回复工单
     Route::post('closeTicket', 'UserController@closeTicket')->name('closeTicket'); // 关闭工单
     Route::get('invoices', 'UserController@invoices')->name('invoice'); // 订单列表
     Route::post('closePlan', 'UserController@closePlan')->name('cancelPlan'); // 激活预支付套餐
@@ -49,7 +49,7 @@ Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function (
     Route::post('redeemCoupon', 'UserController@redeemCoupon')->name('redeemCoupon'); // 使用优惠券
     Route::get('invite', 'UserController@invite')->name('invite'); // 邀请码
     Route::post('makeInvite', 'UserController@makeInvite')->name('createInvite'); // 生成邀请码
-    Route::any('profile', 'UserController@profile')->name('profile'); // 修改个人信息
+    Route::match(['get', 'post'], 'profile', 'UserController@profile')->name('profile'); // 修改个人信息
     Route::post("switchToAdmin", "UserController@switchToAdmin")->name('switch'); // 转换成管理员的身份
     Route::post("charge", "UserController@charge")->name('recharge'); // 卡券余额充值
     Route::get("help", "UserController@help")->name('help'); // 帮助中心
@@ -70,12 +70,13 @@ Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function (
 // 管理相关
 Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', 'AdminController@index')->name('index'); // 后台首页
-    Route::any('profile', 'AdminController@profile')->name('profile'); // 修改个人信息
+    Route::match(['get', 'post'], 'profile', 'AdminController@profile')->name('profile'); // 修改个人信息
     Route::get('config', 'AdminController@config')->name('config'); // 系统设置
     Route::get('invite', 'AdminController@inviteList')->name('invite'); // 邀请码列表
     Route::post('invite', 'AdminController@makeInvite')->name('invite.create'); // 生成邀请码
     Route::get('Invite/export', 'AdminController@exportInvite')->name('invite.export'); // 导出邀请码
     Route::get('getPort', 'AdminController@getPort')->name('getPort'); // 生成端口
+    Route::get('epayInfo', 'Gateway\EPay@queryInfo')->name('test.epay');// 易支付信息
 
     Route::namespace('Admin')->group(function () {
         Route::resource('user', 'UserController')->except('show');
@@ -160,10 +161,10 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
 
         // 工具相关
         Route::prefix('tools')->name('tools.')->group(function () {
-            Route::any("decompile", "ToolsController@decompile")->name('decompile'); // SS(R)链接反解析
+            Route::match(['get', 'post'], "decompile", "ToolsController@decompile")->name('decompile'); // SS(R)链接反解析
             Route::get('download', 'ToolsController@download')->name('download'); // 下载转换过的JSON配置
-            Route::any('convert', 'ToolsController@convert')->name('convert'); // 格式转换
-            Route::any('import', 'ToolsController@import')->name('import'); // 数据导入
+            Route::match(['get', 'post'], 'convert', 'ToolsController@convert')->name('convert'); // 格式转换
+            Route::match(['get', 'post'], 'import', 'ToolsController@import')->name('import'); // 数据导入
             Route::get('analysis', 'ToolsController@analysis')->name('analysis'); // 日志分析
         });
 
@@ -179,7 +180,6 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
         Route::post('setExtend', 'SystemController@setExtend')->name('system.extend'); // 设置客服、统计代码
         Route::post('setConfig', 'SystemController@setConfig')->name('system.update'); // 设置某个配置项
         Route::post('sendTestNotification', 'SystemController@sendTestNotification')->name('test.notify'); //推送通知测试
-        Route::get('epayInfo', 'Gateway\EPay@queryInfo')->name('test.epay');// 易支付信息
     });
 
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('log.viewer'); // 系统运行日志

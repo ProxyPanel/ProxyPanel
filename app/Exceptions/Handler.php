@@ -7,6 +7,7 @@ use ErrorException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Log;
@@ -70,65 +71,69 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        // 调试模式下直接返回错误信息
-        if (config('app.debug')) {
-            return parent::render($request, $exception);
-        }
+        // 调试模式下直接返回错误信息，非调试模式下渲染在返回
+        if (!config('app.debug')) {
+            switch ($exception) {
+                case $exception instanceof NotFoundHttpException: // 捕获访问异常
+                    Log::info("异常请求：".$request->fullUrl()."，IP：".IP::getClientIp());
 
-        // 捕获访问异常
-        if ($exception instanceof NotFoundHttpException) {
-            Log::info("异常请求：".$request->fullUrl()."，IP：".IP::getClientIp());
+                    if ($request->ajax()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')]);
+                    }
 
-            if ($request->ajax()) {
-                return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')]);
+                    return Response::view('auth.error', ['message' => trans('error.MissingPage')], 404);
+                case $exception instanceof AuthenticationException:  // 捕获身份校验异常
+                    if ($request->ajax()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('error.Unauthorized')]);
+                    }
+
+                    return Response::view('auth.error', ['message' => trans('error.Unauthorized')], 401);
+                case $exception instanceof TokenMismatchException: // 捕获CSRF异常
+                    if ($request->ajax()) {
+                        return Response::json([
+                            'status'  => 'fail',
+                            'message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>',
+                        ]);
+                    }
+
+                    return Response::view('auth.error',
+                        ['message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>'], 419);
+                case $exception instanceof ReflectionException:
+                    if ($request->ajax()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
+                    }
+
+                    return Response::view('auth.error', ['message' => trans('error.SystemError')], 500);
+                case $exception instanceof ErrorException: // 捕获系统错误异常
+                    if ($request->ajax()) {
+                        return Response::json([
+                            'status'  => 'fail',
+                            'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>',
+                        ]);
+                    }
+
+                    return Response::view('auth.error',
+                        ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
+                        500);
+                case $exception instanceof ConnectionException:
+                    if ($request->ajax()) {
+                        return Response::json([
+                            'status'  => 'fail',
+                            'message' => $exception->getMessage(),
+                        ]);
+                    }
+
+                    return Response::view('auth.error', ['message' => $exception->getMessage()], 408);
+                default:
+                    if ($request->ajax()) {
+                        return Response::json([
+                            'status'  => 'fail',
+                            'message' => $exception->getMessage(),
+                        ]);
+                    }
+
+                    return Response::view('auth.error', ['message' => $exception->getMessage()]);
             }
-
-            return Response::view('auth.error', ['message' => trans('error.MissingPage')], 404);
-        }
-
-        // 捕获身份校验异常
-        if ($exception instanceof AuthenticationException) {
-            if ($request->ajax()) {
-                return Response::json(['status' => 'fail', 'message' => trans('error.Unauthorized')]);
-            }
-
-            return Response::view('auth.error', ['message' => trans('error.Unauthorized')], 401);
-        }
-
-        // 捕获CSRF异常
-        if ($exception instanceof TokenMismatchException) {
-            if ($request->ajax()) {
-                return Response::json([
-                    'status'  => 'fail',
-                    'message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>',
-                ]);
-            }
-
-            return Response::view('auth.error',
-                ['message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>'], 419);
-        }
-
-        // 捕获反射异常
-        if ($exception instanceof ReflectionException) {
-            if ($request->ajax()) {
-                return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
-            }
-
-            return Response::view('auth.error', ['message' => trans('error.SystemError')], 500);
-        }
-
-        // 捕获系统错误异常
-        if ($exception instanceof ErrorException) {
-            if ($request->ajax()) {
-                return Response::json([
-                    'status'  => 'fail',
-                    'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>',
-                ]);
-            }
-
-            return Response::view('auth.error',
-                ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
-                500);
         }
 
         return parent::render($request, $exception);

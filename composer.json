@@ -10,6 +10,7 @@
   "require": {
     "php": "^7.2.5",
     "ext-json": "*",
+    "ext-mbstring": "*",
     "ext-openssl": "*",
     "fideloper/proxy": "^4.2",
     "fruitcake/laravel-cors": "^2.0",

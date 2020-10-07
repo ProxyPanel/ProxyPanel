@@ -13,6 +13,7 @@ use App\Models\RuleGroupNode;
 use App\Models\RuleLog;
 use App\Models\User;
 use App\Models\UserDataFlowLog;
+use Arr;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
@@ -70,7 +71,7 @@ class BaseController
         $inputArray = $request->all();
         $onlineCount = 0;
         foreach ($inputArray as $input) {
-            if (!array_key_exists('ip', $input) || !array_key_exists('uid', $input)) {
+            if (!Arr::has($input, ['ip', 'uid'])) {
                 return $this->returnData('上报节点在线情况失败，请检查字段');
             }
 
@@ -109,7 +110,7 @@ class BaseController
     public function setUserTraffic(Request $request, $id): JsonResponse
     {
         foreach ($request->all() as $input) {
-            if (!array_key_exists('uid', $input)) {
+            if (Arr::exists($input, 'uid')) {
                 return $this->returnData('上报用户流量日志失败，请检查字段');
             }
 

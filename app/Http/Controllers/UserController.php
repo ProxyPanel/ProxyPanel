@@ -48,6 +48,9 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::getUser();
+        if (!$user) {
+            return redirect()->route('login');
+        }
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->u + $user->d;
         $unusedTransfer = $totalTransfer - $usedTransfer > 0 ? $totalTransfer - $usedTransfer : 0;

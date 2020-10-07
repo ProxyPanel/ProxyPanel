@@ -50,7 +50,7 @@ class AdminController extends Controller
             [date('Y-m-d'), date('Y-m-d', strtotime("+".sysConfig('expire_days')." days"))])->count(); // 临近过期用户数
         $view['largeTrafficUserCount'] = User::whereRaw('(u + d) >= 107374182400')->where('status', '<>', -1)->count(); // 流量超过100G的用户
 
-        $view['flowAbnormalUserCount'] = count($this->trafficAbnormal());// 1小时内流量异常用户
+        $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal());// 1小时内流量异常用户
         $view['nodeCount'] = Node::count();
         $view['unnormalNodeCount'] = Node::whereStatus(0)->count();
         $view['flowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime("-30 days")))->sum('total'));
@@ -66,25 +66,6 @@ class AdminController extends Controller
         $view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count();
 
         return view('admin.index', $view);
-    }
-
-    // 1小时内流量异常用户
-    private function trafficAbnormal(): array
-    {
-        $userTotalTrafficList = UserHourlyDataFlow::whereNodeId(0)
-            ->where('total', '>', MB * 50)
-            ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
-            ->groupBy('user_id')
-            ->selectRaw("user_id, sum(total) as totalTraffic")
-            ->pluck('totalTraffic', 'user_id')
-            ->toArray(); // 只统计50M以上的记录，加快速度
-        foreach ($userTotalTrafficList as $user) {
-            if ($user->totalTraffic > sysConfig('traffic_ban_value') * GB) {
-                $result[] = $user->user_id;
-            }
-        }
-
-        return $result ?? [];
     }
 
     // 修改个人资料
