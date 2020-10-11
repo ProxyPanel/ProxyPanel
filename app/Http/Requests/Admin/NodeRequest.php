@@ -19,7 +19,7 @@ class NodeRequest extends FormRequest
             'speed_limit'    => 'required|numeric|min:0',
             'client_limit'   => 'required|numeric|min:0',
             'port'           => 'nullable|numeric|between:0,65535',
-            'ip'             => 'ipv4',
+            'ip'             => 'ipv4|required_if:is_ddns,0|nullable',
             'ipv6'           => 'nullable|ipv6',
             'relay_server'   => 'required_if:is_relay,1',
             'relay_port'     => 'required_if:is_relay,1|numeric|between:0,65535',

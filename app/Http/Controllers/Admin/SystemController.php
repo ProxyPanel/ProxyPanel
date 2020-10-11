@@ -148,7 +148,7 @@ class SystemController extends Controller
                 'max_rand_traffic',
                 'push_bear_send_key',
                 'push_bear_qrcode',
-                'is_forbid_china',
+                'forbid_mode',
                 'website_security_code',
             ];
 

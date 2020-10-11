@@ -502,13 +502,11 @@
                 },
                 error: function(ret) {
                     let str = '';
-                    $.each(ret.responseJSON.errors, function(index, value) {str += '<li>' + value + '</li>';});
-                    swal.fire({
-                        title: '提示',
-                        html: str,
-                        type: 'error',
-                        confirmButtonText: '{{trans('home.ticket_confirm')}}',
-                    });
+                    const errors = data.responseJSON;
+                    if ($.isEmptyObject(errors) === false) {
+                        $.each(errors.errors, function(index, value) {str += '<li>' + value + '</li>';});
+                        swal.fire({title: '提示', html: str, type: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+                    }
                 },
             });
 

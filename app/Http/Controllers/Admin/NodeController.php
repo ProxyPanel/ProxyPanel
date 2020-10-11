@@ -71,7 +71,6 @@ class NodeController extends Controller
     // 添加节点
     public function store(NodeRequest $request): JsonResponse
     {
-        // TODO：判断是否已存在绑定了相同域名的节点，提示是否要强制替换，或者不提示之前强制将其他节点的绑定域名置为空，然后发起域名绑定请求，或者请求进入队列
         try {
             $node = Node::create($request->except('_token', 'labels'));
 
@@ -115,7 +114,6 @@ class NodeController extends Controller
                 (new NodeService())->makeLabels($node->id, $request->input('labels'));
             }
 
-            // TODO:更新节点绑定的域名DNS（将节点IP更新到域名DNS 的A记录）
             if ($node->update($request->except('_token', 'labels'))) {
                 return Response::json(['status' => 'success', 'message' => '编辑成功']);
             }

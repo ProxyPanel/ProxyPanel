@@ -3,6 +3,7 @@
 
 namespace App\Components;
 
+use Cache;
 use Http;
 use Log;
 
@@ -30,8 +31,21 @@ class PushNotification
      */
     private static function ServerChan(string $title, string $content)
     {
-        // TODO：一天仅可发送不超过500条
-        $response = Http::timeout(15)->get('https://sc.ftqq.com/'.sysConfig('server_chan_key').'.send?text='.$title.'&desp='.urlencode($content));
+        $cacheKey = 'serverChanCount'.date('d');
+        if (Cache::has($cacheKey)) {
+            Cache::increment($cacheKey);
+        } else {
+            Cache::put($cacheKey, 1, Day); // 24小时
+        }
+
+        // 一天仅可发送不超过500条
+        if (Cache::get($cacheKey) < 500) {
+            $response = Http::timeout(15)->get('https://sc.ftqq.com/'.sysConfig('server_chan_key').'.send?text='.$title.'&desp='.urlencode($content));
+        } else {
+            Log::error('ServerChan消息推送异常：今日500条限额已耗尽！');
+
+            return false;
+        }
 
         // 发送成功
         if ($response->ok()) {
@@ -42,7 +56,7 @@ class PushNotification
                 return $message;
             }
             // 发送失败
-            Helpers::addNotificationLog($title, $content, 2, 'admin', -1, $message ? $message['errmsg'] : '未知');
+            Helpers::addNotificationLog($title, $content, 2, 'admin', $message ? $message['errmsg'] : '未知');
 
             return false;
         }
@@ -73,7 +87,7 @@ class PushNotification
                 return $message;
             }
             // 发送失败
-            Helpers::addNotificationLog($title, $content, 3, 'admin', -1, $message);
+            Helpers::addNotificationLog($title, $content, 3, 'admin', $message);
 
             return false;
         }

@@ -44,7 +44,7 @@
                                     <div class="form-group row">
                                         <label for="server" class="col-md-3 col-form-label"> 域名 </label>
                                         <input type="text" class="form-control col-md-4" name="server" id="server" placeholder="服务器域名地址，填则优先取域名地址">
-                                        <span class="text-help offset-md-3">如果开启Namesilo且域名是Namesilo上购买的，则会强制更新域名的DNS记录为本节点IP，如果其他节点绑定了该域名则会清空其域名信息</span>
+                                        <span class="text-help offset-md-3">系统设置中开启【DDNS模式】，域名将会自动与下方IP内容进行绑定操作！无需再前往域名注册商页面修改IP信息了哟</span>
                                     </div>
                                     <div class="form-group row">
                                         <label for="ip" class="col-md-3 col-form-label"> IPv4地址 </label>
@@ -548,21 +548,20 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('admin.node.index')}}');
+                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            then(() => window.location.href = '{{route('admin.node.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') }}');
                     }
                     else {
                         swal.fire({title: '[错误 | Error]', text: ret.message, type: 'error'});
                     }
                 },
-                error: function(ret) {
+                error: function(data) {
                     let str = '';
-                    $.each(ret.responseJSON.errors, function(index, value) {str += '<li>' + value + '</li>';});
-                    swal.fire({
-                        title: '提示',
-                        html: str,
-                        type: 'error',
-                        confirmButtonText: '{{trans('home.ticket_confirm')}}',
-                    });
+                    const errors = data.responseJSON;
+                    if ($.isEmptyObject(errors) === false) {
+                        $.each(errors.errors, function(index, value) {str += '<li>' + value + '</li>';});
+                        swal.fire({title: '提示', html: str, type: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+                    }
                 },
             });
 
@@ -587,8 +586,8 @@
                 case 'is_relay':
                     if (check) {
                         $('.relay-setting').show();
-                        $('#relay_port').attr('required', 'required');
-                        $('#relay_server').attr('required', 'required');
+                        $('#relay_port').attr('required', true);
+                        $('#relay_server').attr('required', true);
                     }
                     else {
                         $('.relay-setting').hide();
@@ -599,11 +598,13 @@
                 // 设置是否使用DDNS
                 case 'is_ddns':
                     if (check) {
-                        $('#ip').val('1.1.1.1').attr('readonly', 'readonly');
-                        $('#server').attr('required', 'required');
+                        $('#ip').val('').attr('readonly', true);
+                        $('#ipv6').val('').attr('readonly', true);
+                        $('#server').attr('required', true);
                     }
                     else {
-                        $('#ip').val('').removeAttr('readonly');
+                        $('#ip').removeAttr('readonly');
+                        $('#ipv6').removeAttr('readonly');
                         $('#server').removeAttr('required');
                     }
                     break;
