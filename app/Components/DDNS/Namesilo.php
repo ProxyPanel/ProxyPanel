@@ -7,6 +7,7 @@ use Log;
 
 class Namesilo
 {
+    private static $apiHost = 'https://www.namesilo.com/api/';
     private static $subDomain;
 
     public function __construct($subDomain)
@@ -30,15 +31,18 @@ class Namesilo
         return false;
     }
 
-    private function analysisDomain()
+    protected function analysisDomain()
     {
-        // TODO: 尚未进行，多域名环境下，获取信息测试
         $domainList = $this->domainList();
         if ($domainList) {
-            foreach ($domainList as $domain) {
-                if (strpos(self::$subDomain, $domain) !== false) {
-                    return [$domain, rtrim(substr(self::$subDomain, 0, -(strlen($domain))), '.')];
+            if (is_array($domainList)) {
+                foreach ($domainList as $domain) {
+                    if (strpos(self::$subDomain, $domain) !== false) {
+                        return [$domain, rtrim(substr(self::$subDomain, 0, -(strlen($domain))), '.')];
+                    }
                 }
+            } elseif (strpos(self::$subDomain, $domainList) !== false) {
+                return [$domainList, rtrim(substr(self::$subDomain, 0, -(strlen($domainList))), '.')];
             }
         }
 
@@ -49,7 +53,7 @@ class Namesilo
     {
         $data = $this->send('listDomains');
         if ($data) {
-            return $data['domains'];
+            return $data['domains']['domain'];
         }
 
         return false;
@@ -64,7 +68,7 @@ class Namesilo
         ];
         $query = array_merge($params, $data);
 
-        $result = file_get_contents('https://www.namesilo.com/api/'.$operation.'?'.http_build_query($query));
+        $result = file_get_contents(self::$apiHost.$operation.'?'.http_build_query($query));
         $result = json_decode(json_encode(simplexml_load_string(trim($result))), true);
 
         if ($result && $result['reply']['code'] === '300' && $result['reply']['detail'] === 'success') {
@@ -118,7 +122,7 @@ class Namesilo
         return false;
     }
 
-    public function destory($type)
+    public function destroy($type)
     {
         $records = $this->getRecordId($type);
         $domainInfo = $this->analysisDomain();

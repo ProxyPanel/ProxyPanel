@@ -46,7 +46,7 @@ class NodeObserver
             $changes = $node->getChanges();
             if (Arr::hasAny($changes, ['ip', 'ipv6', 'server'])) {
                 if (Arr::exists($changes, 'server')) {
-                    DDNS::destory($node->getOriginal('server'));
+                    DDNS::destroy($node->getOriginal('server'));
                     if ($node->ip) {
                         DDNS::store($node->server, $node->ip);
                     }
@@ -60,7 +60,7 @@ class NodeObserver
                         } elseif ($node->ip) {
                             DDNS::store($node->server, $node->ip);
                         } else {
-                            DDNS::destory($node->server, 'A');
+                            DDNS::destroy($node->server, 'A');
                         }
                     }
                     if (Arr::exists($changes, 'ipv6')) {
@@ -69,7 +69,7 @@ class NodeObserver
                         } elseif ($node->ipv6) {
                             DDNS::store($node->server, $node->ipv6, 'AAAA');
                         } else {
-                            DDNS::destory($node->server, 'AAAA');
+                            DDNS::destroy($node->server, 'AAAA');
                         }
                     }
                 }
@@ -113,7 +113,7 @@ class NodeObserver
         }
 
         if ($node->is_ddns == 0 && $node->server && sysConfig('ddns_mode')) {
-            DDNS::destory($node->server);
+            DDNS::destroy($node->server);
         }
     }
 }

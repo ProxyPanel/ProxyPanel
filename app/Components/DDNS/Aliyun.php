@@ -8,6 +8,7 @@ use Log;
 
 class Aliyun
 {
+    private static $apiHost = 'https://alidns.aliyuncs.com/';
     private static $subDomain;
 
     public function __construct($subDomain)
@@ -26,7 +27,7 @@ class Aliyun
         return false;
     }
 
-    private function analysisDomain()
+    protected function analysisDomain()
     {
         $domainList = $this->domainList();
         if ($domainList) {
@@ -67,7 +68,7 @@ class Aliyun
         $parameters = array_merge(['Action' => $action], $data, $public);
         $parameters['Signature'] = $this->computeSignature($parameters);
 
-        $response = Http::timeout(15)->post('https://alidns.aliyuncs.com/?'.http_build_query($parameters));
+        $response = Http::timeout(15)->post(self::$apiHost.http_build_query($parameters));
         $message = $response->json();
 
         if ($response->failed()) {

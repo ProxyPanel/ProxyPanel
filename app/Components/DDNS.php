@@ -20,12 +20,12 @@ class DDNS
      * @param  string|null  $type
      * @return false|int
      */
-    public static function destory($domain, $type = null)
+    public static function destroy($domain, $type = null)
     {
-        return self::getClient($domain)->destroy($type);
+        return self::dnsProvider($domain)->destroy($type);
     }
 
-    public static function getClient($domain)
+    private static function dnsProvider($domain)
     {
         switch (sysConfig('ddns_mode')) {
             case 'aliyun':
@@ -49,7 +49,7 @@ class DDNS
      */
     public static function update($domain, $ip, $type = 'A')
     {
-        return self::getClient($domain)->update($ip, $type);
+        return self::dnsProvider($domain)->update($ip, $type);
     }
 
     /**
@@ -62,7 +62,7 @@ class DDNS
      */
     public static function store($domain, $ip, $type = 'A')
     {
-        return self::getClient($domain)->store($ip, $type);
+        return self::dnsProvider($domain)->store($ip, $type);
     }
 
 }
