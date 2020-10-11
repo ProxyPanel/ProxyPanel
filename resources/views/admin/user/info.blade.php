@@ -500,7 +500,7 @@
                         swal.fire({title: ret.message, timer: 1000, showConfirmButton: false});
                     }
                 },
-                error: function(ret) {
+                error: function(data) {
                     let str = '';
                     const errors = data.responseJSON;
                     if ($.isEmptyObject(errors) === false) {

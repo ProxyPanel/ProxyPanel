@@ -36,7 +36,7 @@ class ArticleController extends Controller
     {
         $data = $request->except('_method', '_token');
         // LOGO
-        if ($request->input('type') != 4 && $request->hasFile('logo')) {
+        if ($request->input('type') !== "4" && $request->hasFile('logo')) {
             $data['logo'] = 'upload/'.$request->file('logo')->store('images');
             if (!$data['logo']) {
                 Session::flash('errorMsg', 'LOGO不合法');
@@ -45,14 +45,14 @@ class ArticleController extends Controller
             }
         }
 
-        $id = Article::insertGetId($data);
-        if ($id) {
+        $article = Article::create($data);
+        if ($article->id) {
             Session::flash('successMsg', '添加成功');
         } else {
             Session::flash('errorMsg', '添加失败');
         }
 
-        return Redirect::to(route('admin.article.edit', $id));
+        return Redirect::to(route('admin.article.edit', $article->id));
     }
 
     // 文章页面

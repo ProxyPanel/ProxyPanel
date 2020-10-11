@@ -27,7 +27,7 @@ class UserUpdateRequest extends FormRequest
             'is_admin'        => 'boolean|exclude_unless:id,1|gte:1',
             'reset_time'      => 'nullable|date_format:Y-m-d',
             'invite_num'      => 'numeric',
-            'status'          => 'required|boolean',
+            'status'          => 'required|integer|between:-1,1',
         ];
     }
 }

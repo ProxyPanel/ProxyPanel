@@ -337,7 +337,7 @@ class AuthController extends Controller
                 $logId = Helpers::addNotificationLog('注册激活', '请求地址：'.$activeUserUrl, 1, $email);
                 Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
 
-                Session::flash('regSuccessMsg', trans('auth.register_active_tip'));
+                Session::flash('successMsg', trans('auth.register_active_tip'));
             } else {
                 // 则直接给推荐人加流量
                 if ($inviter_id) {
@@ -351,7 +351,7 @@ class AuthController extends Controller
                     User::find($uid)->update(['status' => 1]);
                 }
 
-                Session::flash('regSuccessMsg', trans('auth.register_success'));
+                Session::flash('successMsg', trans('auth.register_success'));
             }
 
             return Redirect::route('login')->withInput();

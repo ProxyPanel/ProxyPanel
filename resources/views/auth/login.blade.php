@@ -6,8 +6,8 @@
         @if($errors->any())
             <x-alert type="danger" :message="$errors->all()"/>
         @endif
-        @if (Session::get('regSuccessMsg'))
-            <x-alert type="success" :message="Session::get('regSuccessMsg')"/>
+        @if (Session::get('successMsg'))
+            <x-alert type="success" :message="Session::get('successMsg')"/>
         @endif
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input type="email" class="form-control" name="email" value="{{Request::old('email')}}" required/>

@@ -40,11 +40,11 @@ class BaseController
         $obj->log_time = time();
         $obj->save();
 
-        if ($obj->id) {
-            return $this->returnData('上报节点心跳信息成功', 'success', 200);
+        if (!$obj->id) {
+            return $this->returnData('生成节点心跳信息失败');
         }
 
-        return $this->returnData('上报节点心跳信息失败，请检查字段');
+        return $this->returnData('上报节点心跳信息成功', 'success', 200);
     }
 
     // 返回数据
@@ -72,11 +72,7 @@ class BaseController
         $onlineCount = 0;
         foreach ($inputArray as $input) {
             if (!Arr::has($input, ['ip', 'uid'])) {
-                return $this->returnData('上报节点在线情况失败，请检查字段');
-            }
-
-            if (!isset($input['ip'], $input['uid'])) {
-                return $this->returnData('上报节点在线情况失败，请检查字段');
+                return $this->returnData('上报节点在线用户IP信息失败，请检查字段');
             }
 
             $obj = new NodeOnlineUserIp();
@@ -88,7 +84,7 @@ class BaseController
             $obj->save();
 
             if (!$obj->id) {
-                return $this->returnData('上报节点在线情况失败，请检查字段');
+                return $this->returnData('生成节点在线用户IP信息失败');
             }
             $onlineCount++;
         }
@@ -103,14 +99,14 @@ class BaseController
             return $this->returnData('上报节点在线情况成功', 'success', 200);
         }
 
-        return $this->returnData('上报节点在线情况失败，请检查字段');
+        return $this->returnData('生成节点在线情况失败');
     }
 
     // 上报用户流量日志
     public function setUserTraffic(Request $request, $id): JsonResponse
     {
         foreach ($request->all() as $input) {
-            if (Arr::exists($input, 'uid')) {
+            if (!Arr::exists($input, 'uid')) {
                 return $this->returnData('上报用户流量日志失败，请检查字段');
             }
 
@@ -127,7 +123,7 @@ class BaseController
             $log->save();
 
             if (!$log->id) {
-                return $this->returnData('上报用户流量日志失败，请检查字段');
+                return $this->returnData('生成用户流量日志失败');
             }
             $user = User::find($log->user_id);
             if ($user) {
@@ -181,10 +177,10 @@ class BaseController
             $obj->save();
 
             if ($obj->id) {
-                return $this->returnData('上报用户触发审计规则记录成功', 'success', 200);
+                return $this->returnData('上报用户触发审计规则日志成功', 'success', 200);
             }
         }
 
-        return $this->returnData('上报用户触发审计规则记录失败');
+        return $this->returnData('上报用户触发审计规则日志失败');
     }
 }
