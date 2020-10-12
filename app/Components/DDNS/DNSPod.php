@@ -33,7 +33,7 @@ class DNSPod
         return false;
     }
 
-    public function analysisDomain()
+    private function analysisDomain()
     {
         $domainList = $this->domainList();
         if ($domainList) {
@@ -82,26 +82,25 @@ class DNSPod
         return $message;
     }
 
-    public function destroy($type)
+    public function update($ip, $type)
     {
-        $records = $this->getRecordId($type);
+        $recordId = $this->getRecordId($type);
         $domainInfo = $this->analysisDomain();
-        if ($records && $domainInfo) {
-            $count = 0;
-            foreach ($records as $record) {
-                $result = $this->send('Record.Remove', ['domain_id' => $domainInfo[2], 'record_id' => $record]);
-                if ($result) {
-                    $count++;
-                }
-            }
-
-            return $count;
+        if ($recordId && $domainInfo) {
+            return $this->send('Record.Modify', [
+                'domain_id'      => $domainInfo[2],
+                'record_id'      => $recordId[0],
+                'sub_domain'     => $domainInfo[1],
+                'record_type'    => $type,
+                'record_line_id' => 0,
+                'value'          => $ip,
+            ]);
         }
 
         return false;
     }
 
-    public function getRecordId($type = null)
+    private function getRecordId($type = null)
     {
         $domainInfo = $this->analysisDomain();
         if ($domainInfo) {
@@ -118,19 +117,20 @@ class DNSPod
         return false;
     }
 
-    public function update($ip, $type)
+    public function destroy($type)
     {
-        $recordId = $this->getRecordId($type);
+        $records = $this->getRecordId($type);
         $domainInfo = $this->analysisDomain();
-        if ($recordId && $domainInfo) {
-            return $this->send('Record.Modify', [
-                'domain_id'      => $domainInfo[2],
-                'record_id'      => $recordId[0],
-                'sub_domain'     => $domainInfo[1],
-                'record_type'    => $type,
-                'record_line_id' => 0,
-                'value'          => $ip,
-            ]);
+        if ($records && $domainInfo) {
+            $count = 0;
+            foreach ($records as $record) {
+                $result = $this->send('Record.Remove', ['domain_id' => $domainInfo[2], 'record_id' => $record]);
+                if ($result) {
+                    $count++;
+                }
+            }
+
+            return $count;
         }
 
         return false;

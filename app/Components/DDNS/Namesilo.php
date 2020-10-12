@@ -15,7 +15,7 @@ class Namesilo
         self::$subDomain = $subDomain;
     }
 
-    public function store($ip, $type = 'A')
+    public function store($ip, $type)
     {
         $domainInfo = $this->analysisDomain();
         if ($domainInfo) {
@@ -31,7 +31,7 @@ class Namesilo
         return false;
     }
 
-    protected function analysisDomain()
+    private function analysisDomain()
     {
         $domainList = $this->domainList();
         if ($domainList) {
@@ -59,7 +59,7 @@ class Namesilo
         return false;
     }
 
-    private function send($operation, $data = [])
+    private function send($action, $data = [])
     {
         $params = [
             'version' => 1,
@@ -68,14 +68,14 @@ class Namesilo
         ];
         $query = array_merge($params, $data);
 
-        $result = file_get_contents(self::$apiHost.$operation.'?'.http_build_query($query));
+        $result = file_get_contents(self::$apiHost.$action.'?'.http_build_query($query));
         $result = json_decode(json_encode(simplexml_load_string(trim($result))), true);
 
         if ($result && $result['reply']['code'] === '300' && $result['reply']['detail'] === 'success') {
             return $result['reply'];
         }
 
-        Log::error('[Namesilo API] - ['.$operation.'] 请求失败：'.var_export($result, true));
+        Log::error('[Namesilo API] - ['.$action.'] 请求失败：'.var_export($result, true));
 
         return false;
     }

@@ -27,7 +27,7 @@ class Aliyun
         return false;
     }
 
-    protected function analysisDomain()
+    private function analysisDomain()
     {
         $domainList = $this->domainList();
         if ($domainList) {
@@ -68,7 +68,7 @@ class Aliyun
         $parameters = array_merge(['Action' => $action], $data, $public);
         $parameters['Signature'] = $this->computeSignature($parameters);
 
-        $response = Http::timeout(15)->post(self::$apiHost.http_build_query($parameters));
+        $response = Http::asForm()->timeout(15)->post(self::$apiHost, $parameters);
         $message = $response->json();
 
         if ($response->failed()) {
@@ -118,9 +118,10 @@ class Aliyun
         if ($type) {
             $parameters['Type'] = $type;
         }
-        $records = $this->send('DescribeSubDomainRecords', $parameters)['DomainRecords']['Record'];
+        $records = $this->send('DescribeSubDomainRecords', $parameters);
 
-        if ($records) {
+        if ($records && Arr::has($records, 'DomainRecords.Record')) {
+            $records = $records['DomainRecords']['Record'];
             $data = null;
             foreach ($records as $record) {
                 $data[] = $record['RecordId'];

@@ -563,6 +563,7 @@
                                                 <option value="namesilo">Namesilo</option>
                                                 <option value="aliyun">阿里云(国际&国内)</option>
                                                 <option value="dnspod">DNSPod</option>
+                                                <option value="cloudflare">CloudFlare</option>
                                             </select>
                                             <span class="text-help offset-md-3"> 添加/编辑/删除节点的【域名、ipv4、ipv6】时，自动更新对应内容至DNS服务商 </span>
                                         </div>
