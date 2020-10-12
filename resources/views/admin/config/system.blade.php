@@ -562,13 +562,14 @@
                                                 <option value="">关闭</option>
                                                 <option value="namesilo">Namesilo</option>
                                                 <option value="aliyun">阿里云(国际&国内)</option>
+                                                <option value="dnspod">DNSPod</option>
                                             </select>
                                             <span class="text-help offset-md-3"> 添加/编辑/删除节点的【域名、ipv4、ipv6】时，自动更新对应内容至DNS服务商 </span>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="ddns_key">服务商Key</label>
+                                            <label class="col-md-3 col-form-label" for="ddns_key">DNS服务商Key</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="ddns_key" value="{{$ddns_key}}"/>
@@ -584,7 +585,7 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="ddns_secret">服务商Secret</label>
+                                            <label class="col-md-3 col-form-label" for="ddns_secret">DNS服务商Secret</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="ddns_secret" value="{{$ddns_secret}}"/>

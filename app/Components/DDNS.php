@@ -3,6 +3,7 @@
 namespace App\Components;
 
 use App\Components\DDNS\Aliyun;
+use App\Components\DDNS\DNSPod;
 use App\Components\DDNS\Namesilo;
 use Log;
 
@@ -32,6 +33,8 @@ class DDNS
                 return (new Aliyun($domain));
             case 'namesilo':
                 return new Namesilo($domain);
+            case 'dnspod':
+                return new DNSPod($domain);
             default:
                 Log::error("未知渠道：".sysConfig('ddns_mode'));
 

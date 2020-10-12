@@ -149,5 +149,4 @@ class Aliyun
 
         return false;
     }
-
 }
