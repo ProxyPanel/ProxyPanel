@@ -138,12 +138,19 @@ class AutoJob extends Command
     // 封禁账号
     private function blockUsers(): void
     {
+        // 禁用流量超限用户
+        foreach (User::activeUser()->whereRaw("u + d >= transfer_enable")->get() as $user) {
+            $user->update(['enable' => 0]);
+
+            // 写入日志
+            $this->addUserBanLog($user->id, 0, '【封禁代理】-流量已用完');
+        }
+
         // 封禁1小时内流量异常账号
-        $userList = User::activeUser()->whereBanTime(null);
         if (sysConfig('is_traffic_ban')) {
             $trafficBanValue = sysConfig('traffic_ban_value');
             $trafficBanTime = sysConfig('traffic_ban_time');
-            foreach ($userList->get() as $user) {
+            foreach (User::activeUser()->whereBanTime(null)->get() as $user) {
                 // 对管理员豁免
                 if ($user->is_admin) {
                     continue;
@@ -161,14 +168,6 @@ class AutoJob extends Command
                     $this->addUserBanLog($user->id, $trafficBanTime, '【临时封禁代理】-1小时内流量异常');
                 }
             }
-        }
-
-        // 禁用流量超限用户
-        foreach ($userList->whereRaw("u + d >= transfer_enable")->get() as $user) {
-            $user->update(['enable' => 0]);
-
-            // 写入日志
-            $this->addUserBanLog($user->id, 0, '【封禁代理】-流量已用完');
         }
     }
 

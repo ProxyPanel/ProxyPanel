@@ -141,13 +141,16 @@
                     </li>
                 </ul>
             </li>
+            @php
+                $openTicket = \App\Models\Ticket::whereStatus(0)->count()
+            @endphp
             <li class="site-menu-item has-sub {{request()->routeIs('admin.ticket.*', 'admin.article.*', 'admin.marketing.*')? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
                     <span class="site-menu-title">客服系统</span>
-                    @if(\App\Models\Ticket::whereStatus(0)->count() > 0 )
+                    @if($openTicket > 0)
                         <div class="site-menu-badge">
-                            <span class="badge badge-pill badge-success">{{\App\Models\Ticket::whereStatus(0)->count()}}</span>
+                            <span class="badge badge-pill badge-success">{{$openTicket}}</span>
                         </div>
                     @endif
                 </a>
@@ -155,9 +158,9 @@
                     <li class="site-menu-item {{request()->routeIs('admin.ticket.*') ? 'active open' : ''}}">
                         <a href="{{route('admin.ticket.index')}}">
                             <span class="site-menu-title">服务工单</span>
-                            @if(\App\Models\Ticket::whereStatus(0)->count() > 0 )
+                            @if($openTicket > 0)
                                 <div class="site-menu-label">
-                                    <span class="badge badge-danger badge-round mr-25">{{\App\Models\Ticket::whereStatus(0)->count()}}</span>
+                                    <span class="badge badge-danger badge-round mr-25">{{$openTicket}}</span>
                                 </div>
                             @endif
                         </a>
@@ -253,13 +256,16 @@
                     </li>
                 </ul>
             </li>
+            @php
+                $openApply = \App\Models\ReferralApply::whereStatus(0)->count()
+            @endphp
             <li class="site-menu-item has-sub {{request()->routeIs('admin.invite', 'admin.aff.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
                     <i class="site-menu-icon wb-thumb-up" aria-hidden="true"></i>
                     <span class="site-menu-title">推广系统</span>
-                    @if(\App\Models\ReferralApply::whereStatus(0)->count() > 0 )
+                    @if($openApply > 0)
                         <div class="site-menu-badge">
-                            <span class="badge badge-pill badge-success">{{\App\Models\ReferralApply::whereStatus(0)->count()}}</span>
+                            <span class="badge badge-pill badge-success">{{$openApply}}</span>
                         </div>
                     @endif
                 </a>
@@ -272,9 +278,9 @@
                     <li class="site-menu-item {{request()->routeIs('admin.aff.index', 'admin.aff.detail') ? 'active open' : ''}}">
                         <a href="{{route('admin.aff.index')}}">
                             <span class="site-menu-title">提现管理</span>
-                            @if(\App\Models\ReferralApply::whereStatus(0)->count() > 0 )
+                            @if($openApply > 0)
                                 <div class="site-menu-label">
-                                    <span class="badge badge-danger badge-round mr-25">{{\App\Models\ReferralApply::whereStatus(0)->count()}}</span>
+                                    <span class="badge badge-danger badge-round mr-25">{{$openApply}}</span>
                                 </div>
                             @endif
                         </a>

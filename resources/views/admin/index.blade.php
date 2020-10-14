@@ -14,6 +14,11 @@
                         <span class="ml-15 font-weight-400">总用户</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$totalUserCount}}</span>
+                            @if ($todayRegister)
+                                <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todayRegister}}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </a>
@@ -157,6 +162,11 @@
                         <span class="ml-15 font-weight-400">30日内消耗流量</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$flowCount}}</span>
+                            @if($todayFlowCount !== '0B')
+                                <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todayFlowCount}}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </a>
@@ -170,6 +180,11 @@
                         <span class="ml-15 font-weight-400">总订单数</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$totalOrder}}</span>
+                            @if($todayOrder)
+                                <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todayOrder}}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </a>
@@ -183,6 +198,11 @@
                         <span class="ml-15 font-weight-400">在线支付订单数</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$totalOnlinePayOrder}}</span>
+                            @if($todayOnlinePayOrder)
+                                <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todayOnlinePayOrder}}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </a>
@@ -196,20 +216,11 @@
                         <span class="ml-15 font-weight-400">支付成功订单数</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$totalSuccessOrder}}</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-6 info-panel">
-                <a href="{{route('admin.order', ['status'=>2, 'range_time'=>date('Y-m-d') . ',' . date('Y-m-d 23:59:59')])}}"
-                   class="card card-shadow">
-                    <div class="card-block bg-white">
-                        <button type="button" class="btn btn-floating btn-sm btn-success">
-                            <i class="icon md-ticket-star"></i>
-                        </button>
-                        <span class="ml-15 font-weight-400">今天成功订单数</span>
-                        <div class="content-text text-center mb-0">
-                            <span class="font-size-40 font-weight-100">{{$todaySuccessOrder}}</span>
+                            @if($todaySuccessOrder)
+                                <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todaySuccessOrder}}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </a>
@@ -236,6 +247,11 @@
                         <span class="ml-15 font-weight-400">待提现佣金</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$totalWaitRefAmount}}</span>
+                            @if($todayWaitRefAmount)
+                                <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todayWaitRefAmount}}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </a>

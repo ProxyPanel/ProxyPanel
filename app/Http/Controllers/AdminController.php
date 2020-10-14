@@ -42,6 +42,7 @@ class AdminController extends Controller
 
         $view['expireDays'] = sysConfig('expire_days');
         $view['totalUserCount'] = User::count(); // 总用户数
+        $view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count();// 今日注册用户
         $view['enableUserCount'] = User::whereEnable(1)->count(); // 有效用户数
         $view['activeUserCount'] = User::where('t', '>=', $past)->count(); // 活跃用户数
         $view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past,])->count(); // 不活跃用户数
@@ -49,21 +50,22 @@ class AdminController extends Controller
         $view['expireWarningUserCount'] = User::whereBetween('expired_at',
             [date('Y-m-d'), date('Y-m-d', strtotime("+".sysConfig('expire_days')." days"))])->count(); // 临近过期用户数
         $view['largeTrafficUserCount'] = User::whereRaw('(u + d) >= 107374182400')->where('status', '<>', -1)->count(); // 流量超过100G的用户
-
         $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal());// 1小时内流量异常用户
         $view['nodeCount'] = Node::count();
         $view['unnormalNodeCount'] = Node::whereStatus(0)->count();
         $view['flowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime("-30 days")))->sum('total'));
+        $view['todayFlowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total'));
         $view['totalFlowCount'] = flowAutoShow(NodeDailyDataFlow::sum('total'));
         $view['totalCredit'] = User::where('credit', '<>', 0)->sum('credit') / 100;
         $view['totalWaitRefAmount'] = ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100;
+        $view['todayWaitRefAmount'] = ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100;
         $view['totalRefAmount'] = ReferralApply::whereStatus(2)->sum('amount') / 100;
         $view['totalOrder'] = Order::count();
+        $view['todayOrder'] = Order::whereDate('created_at', date('Y-m-d'))->count();
         $view['totalOnlinePayOrder'] = Order::where('pay_type', '<>', 0)->count();
+        $view['todayOnlinePayOrder'] = Order::where('pay_type', '<>', 0)->whereDate('created_at', date('Y-m-d'))->count();
         $view['totalSuccessOrder'] = Order::whereStatus(2)->count();
         $view['todaySuccessOrder'] = Order::whereStatus(2)->whereDate('created_at', date('Y-m-d'))->count();
-        // 今日
-        $view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count();
 
         return view('admin.index', $view);
     }
