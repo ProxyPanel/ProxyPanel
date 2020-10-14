@@ -71,40 +71,15 @@
                     </p>
                 @endif
             @endif
-            @switch(sysConfig('is_captcha'))
-                @case(1)<!-- Default Captcha -->
-                <div class="form-group form-material floating input-group" data-plugin="formMaterial">
-                    <input type="text" class="form-control" name="captcha" required/>
-                    <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
-                    <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
-                </div>
-                @break
-                @case(2)<!-- Geetest -->
-                <div class="form-group form-material floating" data-plugin="formMaterial">
-                    {!! Geetest::render() !!}
-                </div>
-                @break
-                @case(3)<!-- Google reCaptcha -->
-                <div class="form-group form-material floating" data-plugin="formMaterial">
-                    {!! NoCaptcha::display() !!}
-                    {!! NoCaptcha::renderJs(Session::get('locale')) !!}
-                </div>
-                @break
-                @case(4)<!-- hCaptcha -->
-                <div class="form-group form-material floating" data-plugin="formMaterial">
-                    {!! HCaptcha::display() !!}
-                    {!! HCaptcha::renderJs(Session::get('locale')) !!}
-                </div>
-                @break
-                @default
-            @endswitch
+            @yield('captcha', view('auth.captcha'))
             <div class="form-group mt-20 mb-20">
                 <div class="checkbox-custom checkbox-primary">
                     <input type="checkbox" name="term" id="term" {{Request::old('term') ? 'checked':''}} />
                     <label for="term">{{trans('auth.accept_term')}}
                         <button class="btn btn-xs btn-primary" data-target="#tos" data-toggle="modal" type="button">
                             {{trans('auth.tos')}}
-                        </button>&
+                        </button>
+                        &
                         <button class="btn btn-xs btn-primary" data-target="#aup" data-toggle="modal" type="button">
                             {{trans('auth.aup')}}
                         </button>

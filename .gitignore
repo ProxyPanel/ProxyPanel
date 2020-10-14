@@ -8,9 +8,11 @@
 /storage/app/public
 /storage/*.key
 /vendor
+composer.phar
 /.idea
 /.vagrant
 /.vscode
+/phpunit.xml
 Homestead.json
 Homestead.yaml
 npm-debug.log

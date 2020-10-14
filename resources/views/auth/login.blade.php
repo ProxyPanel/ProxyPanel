@@ -17,33 +17,7 @@
             <input type="password" class="form-control" name="password" value="{{Request::old('password')}}" autocomplete required/>
             <label class="floating-label" for="password">{{trans('auth.password')}}</label>
         </div>
-        @switch(sysConfig('is_captcha'))
-            @case(1)<!-- Default Captcha -->
-            <div class="form-group form-material floating input-group" data-plugin="formMaterial">
-                <input type="text" class="form-control" name="captcha"/>
-                <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
-                <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
-            </div>
-            @break
-            @case(2)<!-- Geetest -->
-            <div class="form-group form-material floating vertical-align-middle" data-plugin="formMaterial">
-                {!! Geetest::render() !!}
-            </div>
-            @break
-            @case(3)<!-- Google reCaptcha -->
-            <div class="form-group form-material floating vertical-align-middle" data-plugin="formMaterial">
-                {!! NoCaptcha::display() !!}
-                {!! NoCaptcha::renderJs(Session::get('locale')) !!}
-            </div>
-            @break
-            @case(4)<!-- hCaptcha -->
-            <div class="form-group form-material floating vertical-align-middle" data-plugin="formMaterial">
-                {!! HCaptcha::display() !!}
-                {!! HCaptcha::renderJs(Session::get('locale')) !!}
-            </div>
-            @break
-            @default
-        @endswitch
+        @yield('captcha', view('auth.captcha'))
         <div class="form-group clearfix">
             <div class="checkbox-custom checkbox-inline checkbox-primary checkbox-lg float-left">
                 <input type="checkbox" id="inputCheckbox" name="remember">

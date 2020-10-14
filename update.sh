@@ -3,7 +3,6 @@ git fetch --all
 git reset --hard origin/master
 git pull
 php artisan optimize:clear
-php composer.phar install
-php artisan key:generate
+composer install --prefer-dist
 php artisan optimize
 chown -R www:www ./

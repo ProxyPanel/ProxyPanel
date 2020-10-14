@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e5eb2248177e1be57e3f9586f9447d2",
+    "content-hash": "ee9797167cada5b52c4069a15fd4abaa",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -382,23 +382,23 @@
         },
         {
             "name": "dragonmantank/cron-expression",
-            "version": "v2.3.0",
+            "version": "v2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dragonmantank/cron-expression.git",
-                "reference": "72b6fbf76adb3cf5bc0db68559b33d41219aba27"
+                "reference": "65b2d8ee1f10915efb3b55597da3404f096acba2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/72b6fbf76adb3cf5bc0db68559b33d41219aba27",
-                "reference": "72b6fbf76adb3cf5bc0db68559b33d41219aba27",
+                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/65b2d8ee1f10915efb3b55597da3404f096acba2",
+                "reference": "65b2d8ee1f10915efb3b55597da3404f096acba2",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0"
+                "php": "^7.0|^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.4|^7.0"
+                "phpunit/phpunit": "^6.4|^7.0|^8.0|^9.0"
             },
             "type": "library",
             "extra": {
@@ -432,7 +432,13 @@
                 "cron",
                 "schedule"
             ],
-            "time": "2019-03-31T00:38:28+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/dragonmantank",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-10-13T00:52:37+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -1113,16 +1119,16 @@
         },
         {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.2.99",
+            "version": "v1.2.100",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "0ffea34489b258a2709bfe93a9553e1efa5d1904"
+                "reference": "82e1d983e29d9fea6e8e5505110d0278a5285f36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/0ffea34489b258a2709bfe93a9553e1efa5d1904",
-                "reference": "0ffea34489b258a2709bfe93a9553e1efa5d1904",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/82e1d983e29d9fea6e8e5505110d0278a5285f36",
+                "reference": "82e1d983e29d9fea6e8e5505110d0278a5285f36",
                 "shasum": ""
             },
             "require": {
@@ -1158,7 +1164,7 @@
                 "crawlerdetect",
                 "php crawler detect"
             ],
-            "time": "2020-08-25T21:35:55+00:00"
+            "time": "2020-10-11T18:08:38+00:00"
         },
         {
             "name": "jenssegers/agent",
@@ -2414,16 +2420,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.41.2",
+            "version": "2.41.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "35959c93ada06469107a05df6b15b65074a960cf"
+                "reference": "e148788eeae9b9b7b87996520358b86faad37b52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/35959c93ada06469107a05df6b15b65074a960cf",
-                "reference": "35959c93ada06469107a05df6b15b65074a960cf",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/e148788eeae9b9b7b87996520358b86faad37b52",
+                "reference": "e148788eeae9b9b7b87996520358b86faad37b52",
                 "shasum": ""
             },
             "require": {
@@ -2499,7 +2505,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-10T23:35:06+00:00"
+            "time": "2020-10-12T20:36:09+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -2555,29 +2561,29 @@
         },
         {
             "name": "opis/closure",
-            "version": "3.5.7",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "4531e53afe2fc660403e76fb7644e95998bff7bf"
+                "reference": "c547f8262a5fa9ff507bd06cc394067b83a75085"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/4531e53afe2fc660403e76fb7644e95998bff7bf",
-                "reference": "4531e53afe2fc660403e76fb7644e95998bff7bf",
+                "url": "https://api.github.com/repos/opis/closure/zipball/c547f8262a5fa9ff507bd06cc394067b83a75085",
+                "reference": "c547f8262a5fa9ff507bd06cc394067b83a75085",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.4 || ^7.0"
+                "php": "^5.4 || ^7.0 || ^8.0"
             },
             "require-dev": {
                 "jeremeamia/superclosure": "^2.0",
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.5.x-dev"
+                    "dev-master": "3.6.x-dev"
                 }
             },
             "autoload": {
@@ -2612,7 +2618,7 @@
                 "serialization",
                 "serialize"
             ],
-            "time": "2020-09-06T17:02:15+00:00"
+            "time": "2020-10-11T21:42:15+00:00"
         },
         {
             "name": "overtrue/laravel-lang",
@@ -3398,10 +3404,6 @@
                 "queue",
                 "set"
             ],
-            "support": {
-                "issues": "https://github.com/ramsey/collection/issues",
-                "source": "https://github.com/ramsey/collection/tree/1.1.1"
-            },
             "funding": [
                 {
                     "url": "https://github.com/ramsey",
@@ -3554,10 +3556,6 @@
                 "logging",
                 "lumen"
             ],
-            "support": {
-                "issues": "https://github.com/rap2hpoutre/laravel-log-viewer/issues",
-                "source": "https://github.com/rap2hpoutre/laravel-log-viewer/tree/master"
-            },
             "time": "2020-09-08T12:21:27+00:00"
         },
         {
@@ -3899,7 +3897,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-18T14:27:32+00:00"
+            "time": "2020-10-07T15:23:00+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -4016,9 +4014,6 @@
             ],
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/master"
-            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -4253,9 +4248,6 @@
                 "interoperability",
                 "standards"
             ],
-            "support": {
-                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v2.2.0"
-            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5672,9 +5664,6 @@
                 "interoperability",
                 "standards"
             ],
-            "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/master"
-            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -6257,10 +6246,6 @@
                 }
             ],
             "description": "本项目是基于 PAYJS 的 API 开发的 Composer Package，可直接用于生产环境 https://payjs.cn",
-            "support": {
-                "issues": "https://github.com/xhat/payjs/issues",
-                "source": "https://github.com/xhat/payjs/tree/1.5.0"
-            },
             "funding": [
                 {
                     "url": "https://payjs.cn/sponsor/dajjxz",
@@ -6271,26 +6256,28 @@
         },
         {
             "name": "zbrettonye/geetest",
-            "version": "v1.1.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ZBrettonYe/geetest.git",
-                "reference": "98339e279526b6c693d8a66edbe3ebf05e800a91"
+                "reference": "ee08e5bee9be831c23df241d3ab75678a8ce5fed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ZBrettonYe/geetest/zipball/98339e279526b6c693d8a66edbe3ebf05e800a91",
-                "reference": "98339e279526b6c693d8a66edbe3ebf05e800a91",
+                "url": "https://api.github.com/repos/ZBrettonYe/geetest/zipball/ee08e5bee9be831c23df241d3ab75678a8ce5fed",
+                "reference": "ee08e5bee9be831c23df241d3ab75678a8ce5fed",
                 "shasum": ""
             },
             "require": {
-                "illuminate/routing": "^5.5 || ^6 || ^7",
-                "illuminate/support": "^5.5 || ^6 || ^7",
-                "php": "^7.3"
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.3|^7.0",
+                "illuminate/routing": "^6|^7|^8",
+                "illuminate/support": "^6|^7|^8",
+                "php": "^7.2"
             },
             "require-dev": {
-                "mockery/mockery": "^1.4",
-                "phpunit/phpunit": "^9.0"
+                "mockery/mockery": "^1.3.1",
+                "phpunit/phpunit": "^7.5.15|^8.4|^9.0"
             },
             "type": "library",
             "extra": {
@@ -6318,31 +6305,31 @@
                     "email": "monkeyblacktech97@gmail.com"
                 }
             ],
-            "description": "Geetest Package for Laravel",
+            "description": "Geetest Package for Laravel6-8",
             "keywords": [
                 "geetest",
                 "laravel"
             ],
-            "time": "2020-09-03T04:24:48+00:00"
+            "time": "2020-10-13T20:15:36+00:00"
         },
         {
             "name": "zbrettonye/hcaptcha",
-            "version": "v1.0",
+            "version": "V1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ZBrettonYe/hcaptcha.git",
-                "reference": "eef47bd522c927a8abe5d3ec0fd8ad47723799fa"
+                "reference": "d84cb1bcf754ada345da8baadf7129dbca67d1ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ZBrettonYe/hcaptcha/zipball/eef47bd522c927a8abe5d3ec0fd8ad47723799fa",
-                "reference": "eef47bd522c927a8abe5d3ec0fd8ad47723799fa",
+                "url": "https://api.github.com/repos/ZBrettonYe/hcaptcha/zipball/d84cb1bcf754ada345da8baadf7129dbca67d1ee",
+                "reference": "d84cb1bcf754ada345da8baadf7129dbca67d1ee",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.2|^7.0",
-                "illuminate/support": "^5.5 || ^6 || ^7",
-                "php": ">=5.5.5"
+                "illuminate/support": "^6|^7|^8",
+                "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.8"
@@ -6373,32 +6360,33 @@
                     "email": "monkeyblacktech97@gmail.com"
                 }
             ],
-            "description": "hCaptcha For Laravel5~7",
+            "description": "hCaptcha For Laravel6~8",
             "keywords": [
                 "captcha",
                 "hcaptcha",
                 "laravel"
             ],
-            "time": "2020-09-03T05:00:52+00:00"
+            "time": "2020-10-13T21:22:51+00:00"
         },
         {
             "name": "zbrettonye/no-captcha",
-            "version": "v1.0.4",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ZBrettonYe/no-captcha.git",
-                "reference": "b3753565cacf0fb80fb6472ddfbbd3fc576d0ef3"
+                "reference": "4cb229bf5fa9f5726eb5a821e9710c5fc8edad28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ZBrettonYe/no-captcha/zipball/b3753565cacf0fb80fb6472ddfbbd3fc576d0ef3",
-                "reference": "b3753565cacf0fb80fb6472ddfbbd3fc576d0ef3",
+                "url": "https://api.github.com/repos/ZBrettonYe/no-captcha/zipball/4cb229bf5fa9f5726eb5a821e9710c5fc8edad28",
+                "reference": "4cb229bf5fa9f5726eb5a821e9710c5fc8edad28",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "guzzlehttp/guzzle": "^6.2|^7.0",
-                "illuminate/support": "^5.0|^6.0|^7.0",
-                "php": ">=5.5.5"
+                "illuminate/support": "^6|^7|^8",
+                "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.8"
@@ -6429,17 +6417,14 @@
                     "email": "monkeyblacktech97@gmail.com"
                 }
             ],
-            "description": "No CAPTCHA reCAPTCHA For Laravel.",
+            "description": "No CAPTCHA reCAPTCHA For Laravel6~8",
             "keywords": [
                 "captcha",
                 "laravel",
-                "laravel4",
-                "laravel5",
-                "laravel6",
                 "no-captcha",
                 "recaptcha"
             ],
-            "time": "2020-09-03T04:37:04+00:00"
+            "time": "2020-10-13T21:35:30+00:00"
         },
         {
             "name": "zoujingli/ip2region",
@@ -7085,16 +7070,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "1.10.13",
+            "version": "1.10.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "47c841ba3b2d3fc0b4b13282cf029ea18b66d78b"
+                "reference": "547c9ee73fe26c77af09a0ea16419176b1cdbd12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/47c841ba3b2d3fc0b4b13282cf029ea18b66d78b",
-                "reference": "47c841ba3b2d3fc0b4b13282cf029ea18b66d78b",
+                "url": "https://api.github.com/repos/composer/composer/zipball/547c9ee73fe26c77af09a0ea16419176b1cdbd12",
+                "reference": "547c9ee73fe26c77af09a0ea16419176b1cdbd12",
                 "shasum": ""
             },
             "require": {
@@ -7161,11 +7146,6 @@
                 "dependency",
                 "package"
             ],
-            "support": {
-                "irc": "irc://irc.freenode.org/composer",
-                "issues": "https://github.com/composer/composer/issues",
-                "source": "https://github.com/composer/composer/tree/1.10.13"
-            },
             "funding": [
                 {
                     "url": "https://packagist.com",
@@ -7180,7 +7160,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-09T09:46:34+00:00"
+            "time": "2020-10-13T13:59:09+00:00"
         },
         {
             "name": "composer/semver",
@@ -8934,10 +8914,6 @@
                 "x.509",
                 "x509"
             ],
-            "support": {
-                "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/2.0"
-            },
             "funding": [
                 {
                     "url": "https://github.com/terrafrost",
