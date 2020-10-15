@@ -150,7 +150,7 @@
             let email = $('#emailHead').val().trim();
             const emailTail = $('#emailTail').val();
             if (email === '') {
-                swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
+                swal.fire({title: '{{trans('auth.email_null')}}', icon: 'warning', timer: 1500});
                 return false;
             }
             email += '@' + emailTail;
@@ -168,7 +168,7 @@
             @endif
 
             if (email === '') {
-                swal.fire({title: '{{trans('auth.email_null')}}', type: 'warning', timer: 1500});
+                swal.fire({title: '{{trans('auth.email_null')}}', icon: 'warning', timer: 1500});
                 return false;
             }
 
@@ -180,18 +180,18 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success'});
+                        swal.fire({title: ret.message, icon: 'success'});
                         $('#sendCode').attr('disabled', true);
                         flag = true;
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error', timer: 1000, showConfirmButton: false});
+                        swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
                         $('#sendCode').attr('disabled', false);
                         flag = false;
                     }
                 },
                 error: function() {
-                    swal.fire({title: '发送失败', type: 'error'});
+                    swal.fire({title: '发送失败', icon: 'error'});
                     flag = false;
                 },
             });
@@ -222,14 +222,14 @@
             @case(3)
             // 先检查Google reCAPTCHA有没有进行验证
             if ($('#g-recaptcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                swal.fire({title: '{{trans('auth.required_captcha')}}', icon: 'error'});
                 return false;
             }
             @break
             @case(4)
             // 先检查Google reCAPTCHA有没有进行验证
             if ($('#h-captcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                swal.fire({title: '{{trans('auth.required_captcha')}}', icon: 'error'});
                 return false;
             }
             @break

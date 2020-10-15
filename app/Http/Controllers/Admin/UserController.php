@@ -110,7 +110,7 @@ class UserController extends Controller
             $user->used_flow = flowAutoShow($user->u + $user->d);
             if ($user->expired_at < date('Y-m-d')) {
                 $user->expireWarning = -1; // 已过期
-            } elseif ($user->expired_at == date('Y-m-d')) {
+            } elseif ($user->expired_at === date('Y-m-d')) {
                 $user->expireWarning = 0; // 今天过期
             } elseif ($user->expired_at > date('Y-m-d') && $user->expired_at <= date('Y-m-d', strtotime("+30 days"))) {
                 $user->expireWarning = 1; // 最近一个月过期

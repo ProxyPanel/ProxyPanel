@@ -184,7 +184,7 @@ class SystemController extends Controller
 
                     return Response::json(['status' => 'fail', 'message' => $result ? $result['errmsg'] : '未知',]);
                 case 'bark':
-                    if ($result['code'] == 200) {
+                    if ($result['code'] === 200) {
                         return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息',]);
                     }
 

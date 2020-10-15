@@ -144,23 +144,23 @@
             const content = $('#content').val();
 
             if (id.trim() === '' && email.trim() === '') {
-                swal.fire({title: '请填入目标用户信息!', type: 'warning'});
+                swal.fire({title: '请填入目标用户信息!', icon: 'warning'});
                 return false;
             }
 
             if (title.trim() === '') {
-                swal.fire({title: '您未填写工单标题!', type: 'warning'});
+                swal.fire({title: '您未填写工单标题!', icon: 'warning'});
                 return false;
             }
 
             if (content.trim() === '') {
-                swal.fire({title: '您未填写工单内容!', type: 'warning'});
+                swal.fire({title: '您未填写工单内容!', icon: 'warning'});
                 return false;
             }
 
             swal.fire({
                 title: '确定提交工单？',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -174,11 +174,11 @@
                         content: content,
                     }, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
                 }

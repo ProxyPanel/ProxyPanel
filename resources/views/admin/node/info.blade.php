@@ -548,11 +548,11 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                             then(() => window.location.href = '{{route('admin.node.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') }}');
                     }
                     else {
-                        swal.fire({title: '[错误 | Error]', text: ret.message, type: 'error'});
+                        swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
                     }
                 },
                 error: function(data) {
@@ -560,7 +560,7 @@
                     const errors = data.responseJSON;
                     if ($.isEmptyObject(errors) === false) {
                         $.each(errors.errors, function(index, value) {str += '<li>' + value + '</li>';});
-                        swal.fire({title: '提示', html: str, type: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+                        swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
                     }
                 },
             });
@@ -718,7 +718,7 @@
                 title: '[节点 user-config.json 配置示例]',
                 html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
                     content + '</div>',
-                type: 'info',
+                icon: 'info',
             });
         }
 
@@ -732,7 +732,7 @@
                 title: '[节点 user-config.json 配置示例]',
                 html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
                     content + '</div>',
-                type: 'info',
+                icon: 'info',
             });
         }
     </script>

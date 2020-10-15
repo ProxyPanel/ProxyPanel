@@ -111,7 +111,7 @@
                         $('.grand-total').text('￥' + total_price.toFixed(2));
                         swal.fire({
                             title: ret.message,
-                            type: 'success',
+                            icon: 'success',
                             timer: 1300,
                             showConfirmButton: false,
                         });
@@ -125,7 +125,7 @@
                         swal.fire({
                             title: ret.title,
                             text: ret.message,
-                            type: 'error',
+                            icon: 'error',
                         });
                     }
                 },
@@ -139,7 +139,7 @@
                 swal.fire({
                     title: '套餐存在冲突',
                     html: '<p>当前购买套餐将自动设置为 <code>预支付套餐</code><p><ol class="text-left"><li> 预支付套餐会在生效中的套餐失效后自动开通！</li><li> 您可以在支付后手动激活套餐！</li></ol>',
-                    type: 'info',
+                    icon: 'info',
                     showCancelButton: true,
                     cancelButtonText: '返 回',
                     confirmButtonText: '继 续',
@@ -173,12 +173,12 @@
                     if (ret.status === 'success') {
                         swal.fire({
                             title: ret.message,
-                            type: 'success',
+                            icon: 'success',
                             timer: 1300,
                             showConfirmButton: false,
                         });
                         if (method === 'credit') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('invoice')}}');
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('invoice')}}');
                         }
                         if (ret.data) {
                             window.location.href = '{{route('orderDetail', '')}}/' + ret.data;
@@ -188,12 +188,12 @@
                         }
                     }
                     else if (ret.status === 'info') {
-                        swal.fire({title: ret.title, text: ret.message, type: 'question'});
+                        swal.fire({title: ret.title, text: ret.message, icon: 'question'});
                     }
                     else {
                         swal.fire({
                             title: ret.message,
-                            type: 'error',
+                            icon: 'error',
                         });
                     }
                 },

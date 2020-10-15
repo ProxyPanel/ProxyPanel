@@ -104,7 +104,7 @@
             swal.fire({
                 title: '是否提前激活预支付套餐？',
                 html: '套餐激活后：<br>先前套餐将直接失效！<br>过期日期将由本日重新开始计算！',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -118,11 +118,11 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                     then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'});
+                                swal.fire({title: ret.message, icon: 'error'});
                             }
                         },
                     });
@@ -133,7 +133,7 @@
         function closeOrder(id) {
             swal.fire({
                 title: '关闭订单？',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -147,11 +147,11 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                     then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'});
+                                swal.fire({title: ret.message, icon: 'error'});
                             }
                         },
                     });

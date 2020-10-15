@@ -26,7 +26,7 @@ class isSecurity
         $websiteSecurityCode = sysConfig('website_security_code');
 
         if ($websiteSecurityCode && !Cache::has($cacheKey)) {
-            if ($code != $websiteSecurityCode) {
+            if ($code !== $websiteSecurityCode) {
                 Log::info("拒绝非安全入口访问(".$ip.")");
 
                 return Response::view(

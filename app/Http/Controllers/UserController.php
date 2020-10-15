@@ -351,7 +351,7 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'message' => '回复内容不能为空']);
             }
 
-            if ($ticket->status == 2) {
+            if ($ticket->status === 2) {
                 return Response::json(['status' => 'fail', 'message' => '错误：该工单已关闭']);
             }
 
@@ -435,10 +435,13 @@ class UserController extends Controller
         $obj->status = 0;
         $obj->dateline = date('Y-m-d H:i:s', strtotime("+".sysConfig('user_invite_days')." days"));
         $obj->save();
+        if ($obj) {
+            $user->update(['invite_num' => $user->invite_num - 1]);
 
-        $user->decrement('invite_num', 1);
+            return Response::json(['status' => 'success', 'message' => '生成成功']);
+        }
 
-        return Response::json(['status' => 'success', 'message' => '生成成功']);
+        return Response::json(['status' => 'fail', 'message' => '生成邀请码失败']);
     }
 
     // 使用优惠券
@@ -456,11 +459,11 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'title' => '优惠券不存在', 'message' => '请确认优惠券是否输入正确！']);
         }
 
-        if ($coupon->status == 1) {
+        if ($coupon->status === 1) {
             return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已被使用！']);
         }
 
-        if ($coupon->status == 2) {
+        if ($coupon->status === 2) {
             return Response::json(['status' => 'fail', 'title' => '抱歉', 'message' => '优惠券已失效！']);
         }
 

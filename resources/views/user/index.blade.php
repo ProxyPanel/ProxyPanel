@@ -252,7 +252,7 @@
                 else {
                     swal.fire({
                         title: ret.message,
-                        type: 'error',
+                        icon: 'error',
                     });
                 }
             });

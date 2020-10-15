@@ -139,7 +139,7 @@
             swal.fire({
                 title: '卡券导出',
                 text: '确定导出所有卡券吗？',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -154,7 +154,7 @@
         function delCoupon(id, name) {
             swal.fire({
                 title: '确定删除卡券 【' + name + '】 吗？',
-                type: 'question',
+                icon: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -168,10 +168,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });

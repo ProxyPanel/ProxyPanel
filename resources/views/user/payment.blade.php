@@ -64,12 +64,12 @@
                 success: function(ret) {
                     window.clearInterval();
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false}).then(() => {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false}).then(() => {
                             window.location.href = '{{route('invoice')}}';
                         });
                     }
                     else if (ret.status === 'error') {
-                        swal.fire({title: ret.message, type: 'error', timer: 1500, showConfirmButton: false}).then(() => {
+                        swal.fire({title: ret.message, icon: 'error', timer: 1500, showConfirmButton: false}).then(() => {
                             window.location.href = '{{route('invoice')}}';
                         });
                     }

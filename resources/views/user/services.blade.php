@@ -213,7 +213,7 @@
             swal.fire({
                 title: '重置流量',
                 text: '本次重置流量将扣除余额 {{$renewTraffic}} 元？',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -221,14 +221,14 @@
                 if (result.value) {
                     $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
                         }
                         else {
                             swal.fire({
                                 title: ret.message,
                                 text: ret.data,
-                                type: 'error',
+                                icon: 'error',
                             }).then(() => window.location.reload());
                         }
                     });
@@ -243,7 +243,7 @@
             const amount = parseInt($('#amount').val());
             if (paymentType === 1) {
                 if (amount <= 0) {
-                    swal.fire({title: '错误', text: '充值余额不合规', type: 'warning', timer: 1000, showConfirmButton: false});
+                    swal.fire({title: '错误', text: '充值余额不合规', icon: 'warning', timer: 1000, showConfirmButton: false});
                     return false;
                 }
 

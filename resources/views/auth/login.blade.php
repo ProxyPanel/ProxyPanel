@@ -45,14 +45,14 @@
             @case(3)
             // 先检查Google reCAPTCHA有没有进行验证
             if ($('#g-recaptcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                swal.fire({title: '{{trans('auth.required_captcha')}}', icon: 'error'});
                 return false;
             }
             @break
             @case(4)
             // 先检查Google reCAPTCHA有没有进行验证
             if ($('#h-captcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.required_captcha')}}', type: 'error'});
+                swal.fire({title: '{{trans('auth.required_captcha')}}', icon: 'error'});
                 return false;
             }
             @break

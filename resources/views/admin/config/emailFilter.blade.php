@@ -102,7 +102,7 @@
         function addEmailSuffix() {
             const words = $('#words').val();
             if (words.trim() === '') {
-                swal.fire({title: '邮箱后缀不能为空', type: 'warning', timer: 1000, showConfirmButton: false});
+                swal.fire({title: '邮箱后缀不能为空', icon: 'warning', timer: 1000, showConfirmButton: false});
                 $('#words').focus();
                 return false;
             }
@@ -113,10 +113,10 @@
                 words: words,
             }, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
         }
@@ -126,7 +126,7 @@
             swal.fire({
                 title: '警告',
                 text: '确定删除邮箱后缀 【' + name + '】 ？',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '取消',
                 confirmButtonText: '确定',
@@ -139,10 +139,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });

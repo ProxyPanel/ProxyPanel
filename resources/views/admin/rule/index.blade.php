@@ -145,10 +145,10 @@
             }, function(ret) {
                 $('#add').modal('hide');
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
         }
@@ -166,10 +166,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
             });
@@ -180,7 +180,7 @@
             swal.fire({
                 title: '警告',
                 text: '确定删除规则 【' + name + '】 ？',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -193,10 +193,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });

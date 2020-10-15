@@ -78,7 +78,7 @@
 
                             <div class="form-group row">
                                 <label class="col-md-2 col-sm-3 col-form-label" for="invite_num">可用邀请码</label>
-                                <div class="col-xl-6 col-sm-8">
+                                <div class="col-xl-4 col-sm-8">
                                     <input type="number" class="form-control" name="invite_num" id="invite_num" value="0" required/>
                                 </div>
                             </div>
@@ -230,7 +230,7 @@
                                 <div class="col-xl-5 col-sm-8">
                                     <select class="form-control" name="method" id="method" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                         @foreach (Helpers::methodList() as $method)
-                                            <option value="{{$method->name}}">{{$method->name}}</option>
+                                            <option value="{{$method->name}}" @if($method->is_default) selected @endif>{{$method->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -269,8 +269,7 @@
                                 <div class="col-xl-5 col-sm-8">
                                     <select class="form-control" name="protocol" id="protocol" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                         @foreach (Helpers::protocolList() as $protocol)
-                                            <option value="{{$protocol->name}}"
-                                                    @if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
+                                            <option value="{{$protocol->name}}" @if($protocol->is_default) selected @endif>{{$protocol->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -280,8 +279,7 @@
                                 <div class="col-xl-5 col-sm-8">
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="obfs" id="obfs">
                                         @foreach (Helpers::obfsList() as $obfs)
-                                            <option value="{{$obfs->name}}"
-                                                    @if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
+                                            <option value="{{$obfs->name}}" @if($obfs->is_default) selected @endif>{{$obfs->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -289,7 +287,7 @@
                             <hr>
                             <div class="form-group row">
                                 <label class="col-md-2 col-sm-3 col-form-label" for="speed_limit">用户限速</label>
-                                <div class="col-xl-6 col-sm-8">
+                                <div class="col-xl-5 col-sm-8">
                                     <div class="input-group">
                                         <input type="number" class="form-control" name="speed_limit" id="speed_limit" value="200"/>
                                         <span class="input-group-text"> Mbps</span>
@@ -386,11 +384,11 @@
                 method: 'POST',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                             then(() => window.location.href = '/');
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
             });
@@ -422,12 +420,12 @@
                     else {
                         $('#handle_user_credit').modal('hide');
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                                 window.location.reload();
                             });
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     }
                 },
@@ -485,7 +483,7 @@
                         swal.fire({
                             title: '提示',
                             text: '更新成功，是否返回？',
-                            type: 'question',
+                            icon: 'question',
                             showCancelButton: true,
                             cancelButtonText: '{{trans('home.ticket_close')}}',
                             confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -497,7 +495,7 @@
                         );
                     }
                     else {
-                        swal.fire({title: ret.message, timer: 1000, showConfirmButton: false});
+                        swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
                     }
                 },
                 error: function(data) {
@@ -505,7 +503,7 @@
                     const errors = data.responseJSON;
                     if ($.isEmptyObject(errors) === false) {
                         $.each(errors.errors, function(index, value) {str += '<li>' + value + '</li>';});
-                        swal.fire({title: '提示', html: str, type: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+                        swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
                     }
                 },
             });

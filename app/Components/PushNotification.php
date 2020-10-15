@@ -9,7 +9,7 @@ use Log;
 
 class PushNotification
 {
-    public static function send($title, $content)
+    public static function send(string $title, string $content)
     {
         switch (sysConfig('is_notification')) {
             case 'serverChan':

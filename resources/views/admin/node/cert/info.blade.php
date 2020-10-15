@@ -48,10 +48,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('admin.node.cert.index')}}');
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('admin.node.cert.index')}}');
                     }
                     else {
-                        swal.fire({title: '[错误 | Error]', text: ret.message, type: 'error'});
+                        swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
                     }
                 },
             });

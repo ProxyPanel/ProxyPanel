@@ -100,7 +100,7 @@
             swal.fire({
                 title: '警告',
                 text: '确定清空所有记录吗？',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -108,11 +108,11 @@
                 if (result.value) {
                     $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'});
+                            swal.fire({title: ret.message, icon: 'error'});
                         }
                     });
                 }

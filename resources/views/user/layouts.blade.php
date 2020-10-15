@@ -287,7 +287,7 @@
                 success: function(ret) {
                     swal.fire({
                         title: ret.message,
-                        type: 'success',
+                        icon: 'success',
                         timer: 1000,
                         showConfirmButton: false,
                     }).then(() => window.location.href = '{{route('admin.index')}}');
@@ -295,7 +295,7 @@
                 error: function(ret) {
                     swal.fire({
                         title: ret.message,
-                        type: 'error',
+                        icon: 'error',
                         timer: 1500,
                         showConfirmButton: false,
                     });

@@ -203,7 +203,7 @@
                                 });
                                 break;
                             default:
-                                swal.fire({title: ret.title, text: ret.data});
+                                swal.fire({title: ret.title, text: ret.data, icon: 'error'});
                         }
                     }
                 },

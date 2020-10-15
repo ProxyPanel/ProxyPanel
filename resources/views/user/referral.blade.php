@@ -174,13 +174,7 @@
         function extractMoney() {
             $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({
-                        title: ret.message,
-                        type: '1000',
-                        timer: 1300,
-                        showConfirmButton: false,
-                    });
-                    swal.fire(ret.message, {icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
                     });
                 }
@@ -194,7 +188,7 @@
         clipboard.on('success', function() {
             swal.fire({
                 title: '复制成功',
-                type: 'success',
+                icon: 'success',
                 timer: 1300,
                 showConfirmButton: false,
             });
@@ -202,7 +196,7 @@
         clipboard.on('error', function() {
             swal.fire({
                 title: '复制失败，请手动复制',
-                type: 'error',
+                icon: 'error',
                 timer: 1500,
                 showConfirmButton: false,
             });

@@ -1571,10 +1571,10 @@
         function systemUpdate(systemItem, value) {
             $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
+                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
         }
@@ -1588,10 +1588,10 @@
         function updateFromInput(systemItem, lowerBound, upperBound) {
             let value = parseInt($('#' + systemItem).val());
             if (lowerBound !== false && value < lowerBound) {
-                swal.fire({title: '不能小于' + lowerBound, type: 'warning', timer: 1500, showConfirmButton: false});
+                swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
             }
             else if (upperBound !== false && value > upperBound) {
-                swal.fire({title: '不能大于' + upperBound, type: 'warning', timer: 1500, showConfirmButton: false});
+                swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
             }
             else {
                 systemUpdate(systemItem, value);
@@ -1624,10 +1624,10 @@
         function sendTestNotification() {
             $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1500, showConfirmButton: false});
+                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'});
+                    swal.fire({title: ret.message, icon: 'error'});
                 }
             });
         }
@@ -1647,11 +1647,11 @@
                         html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
                             '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
                             '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
-                        type: 'info',
+                        icon: 'info',
                     });
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'});
+                    swal.fire({title: ret.message, icon: 'error'});
                 }
             });
         }

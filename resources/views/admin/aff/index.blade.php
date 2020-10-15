@@ -127,10 +127,10 @@
         function setStatus(id, status) {
             $.post('{{route('admin.aff.setStatus')}}', {_token: '{{csrf_token()}}', id: id, status: status}, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
         }

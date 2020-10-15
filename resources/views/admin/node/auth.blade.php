@@ -214,7 +214,7 @@
             swal.fire({
                 title: '提示',
                 text: '确定生成所有节点的授权吗?',
-                type: 'info',
+                icon: 'info',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -222,11 +222,11 @@
                 if (result.value) {
                     $.post('{{route('admin.node.auth.store')}}', {_token: '{{csrf_token()}}'}, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
                 }
@@ -238,7 +238,7 @@
             swal.fire({
                 title: '提示',
                 text: '确定删除该授权吗?',
-                type: 'info',
+                icon: 'info',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -251,10 +251,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });
@@ -267,7 +267,7 @@
             swal.fire({
                 title: '提示',
                 text: '确定继续操作吗?',
-                type: 'info',
+                icon: 'info',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -280,10 +280,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });

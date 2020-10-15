@@ -112,12 +112,12 @@
         function setSubscribeStatus(url) {
             $.post(url, {_token: '{{csrf_token()}}'}, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
                     });
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error', timer: 1000, showConfirmButton: false}).then(() => {
+                    swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
                     });
                 }

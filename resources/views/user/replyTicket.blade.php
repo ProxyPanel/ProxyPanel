@@ -53,7 +53,7 @@
             swal.fire({
                 title: '{{trans('home.ticket_close_title')}}',
                 text: '{{trans('home.ticket_close_content')}}',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -68,12 +68,12 @@
                         success: function(ret) {
                             swal.fire({
                                 title: ret.message,
-                                type: 'success',
+                                icon: 'success',
                                 timer: 1300,
                             }).then(() => window.location.href = '{{route('ticket')}}');
                         },
                         error: function() {
-                            swal.fire('未知错误！请通知客服！');
+                            swal.fire({title: '未知错误！请通知客服', icon: 'error'});
                         },
                     });
                 }
@@ -85,12 +85,12 @@
             const content = document.getElementById('editor').value;
 
             if (content.trim() === '') {
-                swal.fire({title: '您未填写工单内容!', type: 'warning', timer: 1500});
+                swal.fire({title: '您未填写工单内容!', icon: 'warning', timer: 1500});
                 return false;
             }
             swal.fire({
                 title: '确定回复工单？',
-                type: 'question',
+                icon: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -105,13 +105,13 @@
                         if (ret.status === 'success') {
                             swal.fire({
                                 title: ret.message,
-                                type: 'success',
+                                icon: 'success',
                                 timer: 1000,
                                 showConfirmButton: false,
                             }).then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
                 }

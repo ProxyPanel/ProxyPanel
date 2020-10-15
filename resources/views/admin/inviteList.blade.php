@@ -97,10 +97,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
             });
@@ -113,7 +113,7 @@
             swal.fire({
                 title: '提示',
                 text: '确定导出所有邀请码吗',
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -128,7 +128,7 @@
         clipboard.on('success', function() {
             swal.fire({
                 title: '复制成功',
-                type: 'success',
+                icon: 'success',
                 timer: 1300,
                 showConfirmButton: false,
             });
@@ -136,7 +136,7 @@
         clipboard.on('error', function() {
             swal.fire({
                 title: '复制失败，请手动复制',
-                type: 'error',
+                icon: 'error',
                 timer: 1500,
                 showConfirmButton: false,
             });

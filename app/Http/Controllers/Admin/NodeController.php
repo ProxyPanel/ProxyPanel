@@ -195,7 +195,7 @@ class NodeController extends Controller
 
         $view['nodeName'] = $node->name;
         $view['nodeServer'] = $node->server;
-        $view = array_merge($view, $this->DataFlowChart($node->id, 1));
+        $view = array_merge($view, $this->DataFlowChart($node->id, true));
 
         return view('admin.node.monitor', $view);
     }

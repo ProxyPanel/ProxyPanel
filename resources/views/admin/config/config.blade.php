@@ -404,7 +404,7 @@
                     $('#level_msg').show().html('请求错误，请重试');
                 },
                 complete: function() {
-                    swal.fire({title: '添加成功', type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 },
             });
         }
@@ -422,10 +422,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
             });
@@ -435,7 +435,7 @@
         function delLevel(id, name) {
             swal.fire({
                 title: '确定删除等级 【' + name + '】 ？',
-                type: 'question',
+                icon: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -449,10 +449,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });
@@ -498,7 +498,7 @@
                 complete: function() {
                     swal.fire({
                         title: '添加成功',
-                        type: 'success',
+                        icon: 'success',
                         timer: 1000,
                         showConfirmButton: false,
                     }).then(() => window.location.reload());
@@ -515,10 +515,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'});
+                        swal.fire({title: ret.message, icon: 'error'});
                     }
                 },
             });
@@ -528,7 +528,7 @@
         function delCountry(code, name) {
             swal.fire({
                 title: '确定删除 【' + name + '】 信息？',
-                type: 'question',
+                icon: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -542,10 +542,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });
@@ -584,7 +584,7 @@
                     $('#msg').show().html('请求错误，请重试');
                 },
                 complete: function() {
-                    swal.fire({title: '添加成功', type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 },
             });
         }
@@ -598,10 +598,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
             });
@@ -611,7 +611,7 @@
         function delConfig(id, name) {
             swal.fire({
                 title: '确定删除配置 【' + name + '】 ？',
-                type: 'question',
+                icon: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
@@ -625,10 +625,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });
@@ -672,7 +672,7 @@
                 complete: function() {
                     swal.fire({
                         title: '添加成功',
-                        type: 'success',
+                        icon: 'success',
                         timer: 1000,
                         showConfirmButton: false,
                     }).then(() => window.location.reload());
@@ -693,10 +693,10 @@
                 dataType: 'json',
                 success: function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                     }
                     else {
-                        swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
             });
@@ -707,7 +707,7 @@
             swal.fire({
                 title: '警告',
                 text: '确定删除标签 【' + name + '】 ?',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -719,10 +719,10 @@
                     dataType: 'json',
                     success: function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     },
                 });

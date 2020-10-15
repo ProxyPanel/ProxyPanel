@@ -31,12 +31,12 @@
             const content = $('#content').val();
 
             if (content.trim() === '') {
-                swal.fire({title: '请填入要反解析的链接信息', type: 'warning', timer: 1000, showConfirmButton: false});
+                swal.fire({title: '请填入要反解析的链接信息', icon: 'warning', timer: 1000, showConfirmButton: false});
                 return;
             }
             swal.fire({
                 title: '确定继续反解析吗？',
-                type: 'question',
+                icon: 'question',
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',

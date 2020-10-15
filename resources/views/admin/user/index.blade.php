@@ -207,7 +207,7 @@
                 input: 'range',
                 inputAttributes: {min: 1, max: 10},
                 inputValue: 1,
-                type: 'question',
+                icon: 'question',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -215,11 +215,11 @@
                 if (result.value) {
                     $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
                 }
@@ -246,7 +246,7 @@
             swal.fire({
                 title: '警告',
                 text: '确定删除用户 【' + email + '】 ？',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -259,10 +259,10 @@
                         dataType: 'json',
                         success: function(ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                             }
                             else {
-                                swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
                     });
@@ -275,7 +275,7 @@
             swal.fire({
                 title: '警告',
                 text: '确定重置 【' + email + '】 流量吗？',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('home.ticket_close')}}',
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
@@ -283,11 +283,11 @@
                 if (result.value) {
                     $.post('{{route('admin.user.reset')}}', {_token: '{{csrf_token()}}', id: id}, function(ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
                                 then(() => window.location.reload());
                         }
                         else {
-                            swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
                 }
@@ -298,10 +298,10 @@
         function switchToUser(id) {
             $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, type: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 }
                 else {
-                    swal.fire({title: ret.message, type: 'error'}).then(() => window.location.reload());
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
         }
@@ -310,7 +310,7 @@
         clipboard.on('success', function() {
             swal.fire({
                 title: '复制成功',
-                type: 'success',
+                icon: 'success',
                 timer: 1000,
                 showConfirmButton: false,
             });
@@ -318,7 +318,7 @@
         clipboard.on('error', function() {
             swal.fire({
                 title: '复制失败，请手动复制',
-                type: 'error',
+                icon: 'error',
                 timer: 1500,
                 showConfirmButton: false,
             });

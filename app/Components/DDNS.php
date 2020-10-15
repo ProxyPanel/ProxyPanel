@@ -22,7 +22,7 @@ class DDNS
      * @param  string|null  $type
      * @return false|int
      */
-    public static function destroy($domain, $type = null)
+    public static function destroy(string $domain, $type = null)
     {
         return self::dnsProvider($domain)->destroy($type);
     }
@@ -51,9 +51,9 @@ class DDNS
      * @param  string  $domain  域名
      * @param  string  $ip  ip地址
      * @param  string  $type  记录类型,默认为 A
-     * @return void
+     * @return array|false|mixed
      */
-    public static function update($domain, $ip, $type = 'A')
+    public static function update(string $domain, string $ip, string $type = 'A')
     {
         return self::dnsProvider($domain)->update($ip, $type);
     }
@@ -64,9 +64,9 @@ class DDNS
      * @param  string  $domain  域名
      * @param  string  $ip  ip地址
      * @param  string  $type  记录类型,默认为 A
-     * @return void
+     * @return array|false|mixed
      */
-    public static function store($domain, $ip, $type = 'A')
+    public static function store(string $domain, string $ip, string $type = 'A')
     {
         return self::dnsProvider($domain)->store($ip, $type);
     }

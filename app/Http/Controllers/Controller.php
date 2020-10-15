@@ -217,7 +217,7 @@ class Controller extends BaseController
     }
 
     // 流量使用图表
-    public function dataFlowChart($id, $is_node = 0): array
+    public function dataFlowChart($id, $is_node = false): array
     {
         if ($is_node) {
             $currentFlow = UserDataFlowLog::whereNodeId($id);
