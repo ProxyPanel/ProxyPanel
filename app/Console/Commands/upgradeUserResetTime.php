@@ -18,29 +18,29 @@ class upgradeUserResetTime extends Command
         foreach (User::all() as $user) {
             $reset_time = null;
             if ($user->traffic_reset_day) {
-                $today = date('d');// 今天 日期
+                $today = date('d'); // 今天 日期
                 $last_day = date('t'); //本月最后一天
-                $next_last_day = date('t', strtotime("+1 month"));//下个月最后一天
-                $resetDay = $user->traffic_reset_day;// 用户原本的重置日期
+                $next_last_day = date('t', strtotime('+1 month')); //下个月最后一天
+                $resetDay = $user->traffic_reset_day; // 用户原本的重置日期
                 // 案例：31 29，重置日 大于 本月最后一天
                 if ($resetDay > $last_day) {
                     //往后推一个月
                     $resetDay -= $last_day;
-                    $reset_time = date('Y-m-'.$resetDay, strtotime("+1 month"));
-                    //案例：20<30<31
+                    $reset_time = date('Y-m-'.$resetDay, strtotime('+1 month'));
+                //案例：20<30<31
                 } elseif ($resetDay < $last_day && $resetDay > $today) {
                     $reset_time = date('Y-m-'.$resetDay);
-                    // 本日为重置日
+                // 本日为重置日
                 } elseif ($resetDay === $today) {
-                    $reset_time = date('Y-m-d', strtotime("+1 month"));
-                    //本月已经重置过了
+                    $reset_time = date('Y-m-d', strtotime('+1 month'));
+                //本月已经重置过了
                 } elseif ($resetDay < $today) {
                     //类似第一种情况，向后推一月
                     if ($resetDay > $next_last_day) {
                         $resetDay -= $next_last_day;
-                        $reset_time = date('Y-m-'.$resetDay, strtotime("+1 month"));
+                        $reset_time = date('Y-m-'.$resetDay, strtotime('+1 month'));
                     } else {
-                        $reset_time = date('Y-m-'.$resetDay, strtotime("+1 month"));
+                        $reset_time = date('Y-m-'.$resetDay, strtotime('+1 month'));
                     }
                 }
                 // 用户账号有效期大于重置日期

@@ -16,7 +16,6 @@ use Str;
 
 class Helpers
 {
-
     // 不生成的端口
     private static $denyPorts = [
         1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179,
@@ -52,13 +51,13 @@ class Helpers
     }
 
     /**
-     * 添加用户
+     * 添加用户.
      *
-     * @param  string  $email  用户邮箱
-     * @param  string  $password  用户密码
-     * @param  string  $transfer_enable  可用流量
-     * @param  int  $data  可使用天数
-     * @param  int|null  $inviter_id  邀请人
+     * @param string   $email           用户邮箱
+     * @param string   $password        用户密码
+     * @param string   $transfer_enable 可用流量
+     * @param int      $data            可使用天数
+     * @param int|null $inviter_id      邀请人
      *
      * @return int
      */
@@ -77,7 +76,7 @@ class Helpers
         $user->protocol = self::getDefaultProtocol();
         $user->obfs = self::getDefaultObfs();
         $user->transfer_enable = $transfer_enable;
-        $user->expired_at = date('Y-m-d', strtotime("+".$data." days"));
+        $user->expired_at = date('Y-m-d', strtotime('+'.$data.' days'));
         $user->reg_ip = IP::getClientIp();
         $user->inviter_id = $inviter_id;
         $user->reset_time = null;
@@ -97,7 +96,7 @@ class Helpers
             $exists_port = array_merge(User::where('port', '>=', $port)->pluck('port')->toArray(), self::$denyPorts);
 
             while (in_array($port, $exists_port, true)) {
-                ++$port;
+                $port++;
             }
         }
 
@@ -164,13 +163,13 @@ class Helpers
     }
 
     /**
-     * 添加通知推送日志
+     * 添加通知推送日志.
      *
-     * @param  string  $title  标题
-     * @param  string  $content  内容
-     * @param  int  $type  发送类型
-     * @param  string  $address  收信方
-     * @param  string  $error  投递失败时记录的异常信息
+     * @param string $title   标题
+     * @param string $content 内容
+     * @param int    $type    发送类型
+     * @param string $address 收信方
+     * @param string $error   投递失败时记录的异常信息
      *
      * @return int
      */
@@ -189,12 +188,12 @@ class Helpers
     }
 
     /**
-     * 添加优惠券操作日志
+     * 添加优惠券操作日志.
      *
-     * @param  string  $description  备注
-     * @param  int  $couponId  优惠券ID
-     * @param  int  $goodsId  商品ID
-     * @param  int  $orderId  订单ID
+     * @param string $description 备注
+     * @param int    $couponId    优惠券ID
+     * @param int    $goodsId     商品ID
+     * @param int    $orderId     订单ID
      *
      * @return bool
      */
@@ -210,14 +209,14 @@ class Helpers
     }
 
     /**
-     * 记录余额操作日志
+     * 记录余额操作日志.
      *
-     * @param  int  $userId  用户ID
-     * @param  int  $orderId  订单ID
-     * @param  int  $before  记录前余额
-     * @param  int  $after  记录后余额
-     * @param  int  $amount  发生金额
-     * @param  string  $description  描述
+     * @param int    $userId      用户ID
+     * @param int    $orderId     订单ID
+     * @param int    $before      记录前余额
+     * @param int    $after       记录后余额
+     * @param int    $amount      发生金额
+     * @param string $description 描述
      *
      * @return bool
      */
@@ -236,13 +235,13 @@ class Helpers
     }
 
     /**
-     * 记录流量变动日志
+     * 记录流量变动日志.
      *
-     * @param  int  $userId  用户ID
-     * @param  int  $orderId  订单ID
-     * @param  int  $before  记录前的值
-     * @param  int  $after  记录后的值
-     * @param  string  $description  描述
+     * @param int    $userId      用户ID
+     * @param int    $orderId     订单ID
+     * @param int    $before      记录前的值
+     * @param int    $after       记录后的值
+     * @param string $description 描述
      *
      * @return bool
      */
@@ -263,11 +262,11 @@ class Helpers
         $req = request();
         // Only for "GET" method
         if (!$req->isMethod('GET')) {
-            return "";
+            return '';
         }
 
         $etag = sha1(json_encode($data));
-        if ($etag == $req->header("IF-NONE-MATCH")) {
+        if ($etag == $req->header('IF-NONE-MATCH')) {
             abort(304);
         }
 

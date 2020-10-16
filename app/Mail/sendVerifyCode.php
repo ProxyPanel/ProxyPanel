@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
 
 class sendVerifyCode extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $id; // 邮件记录ID
     protected $code; // 要发送的验证码

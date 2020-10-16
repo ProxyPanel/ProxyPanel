@@ -13,8 +13,8 @@ class WebApi
     /**
      * Handle an incoming request.
      *
-     * @param           $request
-     * @param  Closure  $next
+     * @param         $request
+     * @param Closure $next
      *
      * @return mixed
      */

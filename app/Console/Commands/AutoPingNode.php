@@ -35,13 +35,13 @@ class AutoPingNode extends Command
         if ($result) {
             $obj = new NodePing();
             $obj->node_id = $nodeId;
-            $obj->ct = (int) $result['telecom']['time'];//电信
-            $obj->cu = (int) $result['Unicom']['time'];// 联通
-            $obj->cm = (int) $result['move']['time'];// 移动
-            $obj->hk = (int) $result['HongKong']['time'];// 香港
+            $obj->ct = (int) $result['telecom']['time']; //电信
+            $obj->cu = (int) $result['Unicom']['time']; // 联通
+            $obj->cm = (int) $result['move']['time']; // 移动
+            $obj->hk = (int) $result['HongKong']['time']; // 香港
             $obj->save();
         } else {
-            Log::error("【".$ip."】Ping测速获取失败");
+            Log::error('【'.$ip.'】Ping测速获取失败');
         }
     }
 }

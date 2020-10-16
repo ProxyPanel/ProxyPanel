@@ -9,17 +9,16 @@ use App\Components\DDNS\Namesilo;
 use Log;
 
 /**
- * Class DDNS 域名解析
- *
- * @package App\Components
+ * Class DDNS 域名解析.
  */
 class DDNS
 {
     /**
-     * 删除解析记录
+     * 删除解析记录.
      *
-     * @param  string  $domain  域名
-     * @param  string|null  $type
+     * @param string      $domain 域名
+     * @param string|null $type
+     *
      * @return false|int
      */
     public static function destroy(string $domain, $type = null)
@@ -39,18 +38,19 @@ class DDNS
             case 'cloudflare':
                 return new CloudFlare($domain);
             default:
-                Log::error("未知渠道：".sysConfig('ddns_mode'));
+                Log::error('未知渠道：'.sysConfig('ddns_mode'));
 
                 return false;
         }
     }
 
     /**
-     * 修改解析记录
+     * 修改解析记录.
      *
-     * @param  string  $domain  域名
-     * @param  string  $ip  ip地址
-     * @param  string  $type  记录类型,默认为 A
+     * @param string $domain 域名
+     * @param string $ip     ip地址
+     * @param string $type   记录类型,默认为 A
+     *
      * @return array|false|mixed
      */
     public static function update(string $domain, string $ip, string $type = 'A')
@@ -59,16 +59,16 @@ class DDNS
     }
 
     /**
-     * 添加解析记录
+     * 添加解析记录.
      *
-     * @param  string  $domain  域名
-     * @param  string  $ip  ip地址
-     * @param  string  $type  记录类型,默认为 A
+     * @param string $domain 域名
+     * @param string $ip     ip地址
+     * @param string $type   记录类型,默认为 A
+     *
      * @return array|false|mixed
      */
     public static function store(string $domain, string $ip, string $type = 'A')
     {
         return self::dnsProvider($domain)->store($ip, $type);
     }
-
 }

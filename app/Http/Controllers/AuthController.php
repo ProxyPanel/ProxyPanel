@@ -30,11 +30,9 @@ use Str;
 use Validator;
 
 /**
- * 认证控制器
+ * 认证控制器.
  *
  * Class AuthController
- *
- * @package App\Http\Controllers
  */
 class AuthController extends Controller
 {
@@ -160,17 +158,17 @@ class AuthController extends Controller
     }
 
     /**
-     * 添加用户登录日志
+     * 添加用户登录日志.
      *
-     * @param  int  $userId  用户ID
-     * @param  string  $ip  IP地址
+     * @param int    $userId 用户ID
+     * @param string $ip     IP地址
      */
     private function addUserLoginLog(int $userId, string $ip): void
     {
         $ipLocation = IP::getIPInfo($ip);
 
         if (empty($ipLocation) || empty($ipLocation['country'])) {
-            Log::warning("获取IP信息异常：".$ip);
+            Log::warning('获取IP信息异常：'.$ip);
         }
 
         $log = new UserLoginLog();
@@ -184,7 +182,6 @@ class AuthController extends Controller
         $log->area = $ipLocation['area'] ?? '';
         $log->save();
     }
-
 
     // 退出
     public function logout(): RedirectResponse
@@ -376,7 +373,7 @@ class AuthController extends Controller
                         return Redirect::back()->withErrors(trans('auth.email_banned'));
                     }
 
-                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_banned'),]);
+                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_banned')]);
                 }
                 break;
             //白名单
@@ -386,7 +383,7 @@ class AuthController extends Controller
                         return Redirect::back()->withErrors(trans('auth.email_invalid'));
                     }
 
-                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid'),]);
+                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
                 }
                 break;
             default:
@@ -394,23 +391,23 @@ class AuthController extends Controller
                     return Redirect::back()->withErrors(trans('auth.email_invalid'));
                 }
 
-                return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid'),]);
+                return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
         }
 
         return false;
     }
 
     /**
-     * 获取AFF
+     * 获取AFF.
      *
-     * @param  string|null  $code  邀请码
-     * @param  int|null  $aff  URL中的aff参数
+     * @param string|null $code 邀请码
+     * @param int|null    $aff  URL中的aff参数
      *
      * @return array
      */
     private function getAff($code = null, $aff = null): array
     {
-        $data = ['inviter_id' => null, 'code_id' => 0];// 邀请人ID 与 邀请码ID
+        $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
 
         // 有邀请码先用邀请码，用谁的邀请码就给谁返利
         if ($code) {
@@ -712,7 +709,7 @@ class AuthController extends Controller
         $email = $request->input('email');
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first(),]);
+            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
         }
         $ip = IP::getClientIP();
 
@@ -767,7 +764,7 @@ class AuthController extends Controller
     // 切换语言
     public function switchLang($locale): RedirectResponse
     {
-        Session::put("locale", $locale);
+        Session::put('locale', $locale);
 
         return Redirect::back();
     }

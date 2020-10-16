@@ -18,7 +18,6 @@ use Throwable;
 
 class Handler extends ExceptionHandler
 {
-
     /**
      * A list of the exception types that are not reported.
      *
@@ -39,11 +38,11 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  Throwable  $exception
-     *
-     * @return void
+     * @param Throwable $exception
      *
      * @throws Exception|Throwable
+     *
+     * @return void
      */
     public function report(Throwable $exception)
     {
@@ -62,12 +61,12 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  Request  $request
-     * @param  Throwable  $exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request   $request
+     * @param Throwable $exception
      *
      * @throws Throwable
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Throwable $exception)
     {
@@ -75,7 +74,7 @@ class Handler extends ExceptionHandler
         if (!config('app.debug')) {
             switch ($exception) {
                 case $exception instanceof NotFoundHttpException: // 捕获访问异常
-                    Log::info("异常请求：".$request->fullUrl()."，IP：".IP::getClientIp());
+                    Log::info('异常请求：'.$request->fullUrl().'，IP：'.IP::getClientIp());
 
                     if ($request->ajax()) {
                         return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')]);
@@ -96,8 +95,11 @@ class Handler extends ExceptionHandler
                         ]);
                     }
 
-                    return Response::view('auth.error',
-                        ['message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>'], 419);
+                    return Response::view(
+                        'auth.error',
+                        ['message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>'],
+                        419
+                    );
                 case $exception instanceof ReflectionException:
                     if ($request->ajax()) {
                         return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
@@ -112,9 +114,11 @@ class Handler extends ExceptionHandler
                         ]);
                     }
 
-                    return Response::view('auth.error',
+                    return Response::view(
+                        'auth.error',
                         ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
-                        500);
+                        500
+                    );
                 case $exception instanceof ConnectionException:
                     if ($request->ajax()) {
                         return Response::json([

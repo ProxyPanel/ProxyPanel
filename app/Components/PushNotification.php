@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Components;
 
 use Cache;
@@ -22,10 +21,10 @@ class PushNotification
     }
 
     /**
-     * ServerChan推送消息
+     * ServerChan推送消息.
      *
-     * @param  string  $title  消息标题
-     * @param  string  $content  消息内容
+     * @param string $title   消息标题
+     * @param string $content 消息内容
      *
      * @return mixed
      */
@@ -67,10 +66,10 @@ class PushNotification
     }
 
     /**
-     * Bark推送消息
+     * Bark推送消息.
      *
-     * @param  string  $title  消息标题
-     * @param  string  $content  消息内容
+     * @param string $title   消息标题
+     * @param string $content 消息内容
      *
      * @return mixed
      */

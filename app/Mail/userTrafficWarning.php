@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
 
 class userTrafficWarning extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $id; // 邮件记录ID
     protected $usedPercent; // 已使用百分比

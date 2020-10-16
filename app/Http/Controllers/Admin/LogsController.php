@@ -162,7 +162,7 @@ class LogsController extends Controller
         $port = $request->input('port');
         $nodeId = $request->input('nodeId');
 
-        $query = NodeOnlineUserIp::with(['node:id,name', 'user:id,email'])->where('created_at', '>=', strtotime("-2 minutes"));
+        $query = NodeOnlineUserIp::with(['node:id,name', 'user:id,email'])->where('created_at', '>=', strtotime('-2 minutes'));
 
         if (isset($ip)) {
             $query->whereIp($ip);
@@ -277,7 +277,7 @@ class LogsController extends Controller
 
         $userList = $query->paginate(15)->appends($request->except('page'));
 
-        $nodeOnlineIPs = NodeOnlineUserIp::with('node:id,name')->where('created_at', '>=', strtotime("-10 minutes"))->latest()->distinct();
+        $nodeOnlineIPs = NodeOnlineUserIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct();
         // Todo 优化查询
         foreach ($userList as $user) {
             // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP

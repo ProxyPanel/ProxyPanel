@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
@@ -60,7 +59,7 @@ class PayPal extends AbstractPayment
 
             return Response::json(['status' => 'success', 'url' => $response['paypal_link'], 'message' => '创建订单成功!']);
         } catch (Exception $e) {
-            Log::error("【PayPal】错误: ".$e->getMessage());
+            Log::error('【PayPal】错误: '.$e->getMessage());
             exit;
         }
     }
@@ -133,6 +132,6 @@ class PayPal extends AbstractPayment
                 }
             }
         }
-        exit("fail");
+        exit('fail');
     }
 }

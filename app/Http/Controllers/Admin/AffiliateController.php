@@ -10,15 +10,12 @@ use Illuminate\Http\Request;
 use Response;
 
 /**
- * 推广控制器
+ * 推广控制器.
  *
  * Class AffiliateController
- *
- * @package App\Http\Controllers\Controller
  */
 class AffiliateController extends Controller
 {
-
     // 提现申请列表
     public function index(Request $request)
     {

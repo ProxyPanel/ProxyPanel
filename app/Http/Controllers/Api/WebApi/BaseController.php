@@ -20,7 +20,6 @@ use Response;
 
 class BaseController
 {
-
     // 上报节点心跳信息
     public function setNodeStatus(Request $request, $id): JsonResponse
     {

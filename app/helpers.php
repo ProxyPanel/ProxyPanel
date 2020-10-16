@@ -36,26 +36,26 @@ if (!function_exists('flowAutoShow')) {
     {
         $value = abs($value);
         if ($value >= PB) {
-            return round($value / PB, 2)."PB";
+            return round($value / PB, 2).'PB';
         }
 
         if ($value >= TB) {
-            return round($value / TB, 2)."TB";
+            return round($value / TB, 2).'TB';
         }
 
         if ($value >= GB) {
-            return round($value / GB, 2)."GB";
+            return round($value / GB, 2).'GB';
         }
 
         if ($value >= MB) {
-            return round($value / MB, 2)."MB";
+            return round($value / MB, 2).'MB';
         }
 
         if ($value >= KB) {
-            return round($value / KB, 2)."KB";
+            return round($value / KB, 2).'KB';
         }
 
-        return round($value, 2)."B";
+        return round($value, 2).'B';
     }
 }
 

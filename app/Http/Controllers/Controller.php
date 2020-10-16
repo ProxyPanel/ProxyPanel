@@ -54,7 +54,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 计算文件行数
+     * 计算文件行数.
      *
      * @param $file
      *
@@ -101,8 +101,10 @@ class Controller extends BaseController
             }
 
             $fileName = Str::random(18).".{$type}";
-            if (file_put_contents(public_path($path.$fileName),
-                base64_decode(str_replace($result[1], '', $base64_image_content)))) {
+            if (file_put_contents(
+                public_path($path.$fileName),
+                base64_decode(str_replace($result[1], '', $base64_image_content))
+            )) {
                 chmod(public_path($path.$fileName), 0744);
 
                 return $path.$fileName;
@@ -113,11 +115,11 @@ class Controller extends BaseController
     }
 
     /**
-     * 节点信息
+     * 节点信息.
      *
-     * @param  int  $uid  用户ID
-     * @param  int  $nodeId  节点ID
-     * @param  int  $infoType  信息类型：0为链接，1为文字
+     * @param int $uid      用户ID
+     * @param int $nodeId   节点ID
+     * @param int $infoType 信息类型：0为链接，1为文字
      *
      * @return string
      */
@@ -126,7 +128,7 @@ class Controller extends BaseController
         $user = User::find($uid);
         $node = Node::find($nodeId);
         $scheme = null;
-        $group = sysConfig('website_name');// 分组名称
+        $group = sysConfig('website_name'); // 分组名称
         $host = $node->is_relay ? $node->relay_server : ($node->server ?: $node->ip);
         $data = null;
         switch ($node->type) {
@@ -134,17 +136,27 @@ class Controller extends BaseController
                 // 生成v2ray scheme
                 if ($infoType !== 1) {
                     // 生成v2ray scheme
-                    $data = $this->v2raySubUrl($node->name, $host, $node->v2_port, $user->vmess_id, $node->v2_alter_id,
-                        $node->v2_net, $node->v2_type, $node->v2_host, $node->v2_path, $node->v2_tls ? "tls" : "");
+                    $data = $this->v2raySubUrl(
+                        $node->name,
+                        $host,
+                        $node->v2_port,
+                        $user->vmess_id,
+                        $node->v2_alter_id,
+                        $node->v2_net,
+                        $node->v2_type,
+                        $node->v2_host,
+                        $node->v2_path,
+                        $node->v2_tls ? 'tls' : ''
+                    );
                 } else {
-                    $data = "服务器：".$host.PHP_EOL."IPv6：".($node->ipv6 ?: "").PHP_EOL."端口：".$node->v2_port.PHP_EOL."加密方式：".$node->v2_method.PHP_EOL."用户ID：".$user->vmess_id.PHP_EOL."额外ID：".$node->v2_alter_id.PHP_EOL."传输协议：".$node->v2_net.PHP_EOL."伪装类型：".$node->v2_type.PHP_EOL."伪装域名：".($node->v2_host ?: "").PHP_EOL."路径：".($node->v2_path ?: "").PHP_EOL."TLS：".($node->v2_tls ? "tls" : "").PHP_EOL;
+                    $data = '服务器：'.$host.PHP_EOL.'IPv6：'.($node->ipv6 ?: '').PHP_EOL.'端口：'.$node->v2_port.PHP_EOL.'加密方式：'.$node->v2_method.PHP_EOL.'用户ID：'.$user->vmess_id.PHP_EOL.'额外ID：'.$node->v2_alter_id.PHP_EOL.'传输协议：'.$node->v2_net.PHP_EOL.'伪装类型：'.$node->v2_type.PHP_EOL.'伪装域名：'.($node->v2_host ?: '').PHP_EOL.'路径：'.($node->v2_path ?: '').PHP_EOL.'TLS：'.($node->v2_tls ? 'tls' : '').PHP_EOL;
                 }
                 break;
             case 3:
                 if ($infoType !== 1) {
                     $data = $this->trojanSubUrl($user->passwd, $host, $node->port, $node->name);
                 } else {
-                    $data = "备注：".$node->name.PHP_EOL."服务器：".$host.PHP_EOL."密码：".$user->passwd.PHP_EOL."端口：".$node->port.PHP_EOL;
+                    $data = '备注：'.$node->name.PHP_EOL.'服务器：'.$host.PHP_EOL.'密码：'.$user->passwd.PHP_EOL.'端口：'.$node->port.PHP_EOL;
                 }
                 break;
             case 1:
@@ -170,12 +182,28 @@ class Controller extends BaseController
 
                 if ($infoType !== 1) {
                     // 生成ss/ssr scheme
-                    $data = $node->compatible ? $this->ssSubUrl($host, $port, $method, $passwd,
-                        $group) : $this->ssrSubUrl($host, $port, $protocol, $method, $obfs, $passwd, $node->obfs_param,
-                        $protocol_param, $node->name, $group, $node->is_udp);
+                    $data = $node->compatible ? $this->ssSubUrl(
+                        $host,
+                        $port,
+                        $method,
+                        $passwd,
+                        $group
+                    ) : $this->ssrSubUrl(
+                            $host,
+                            $port,
+                            $protocol,
+                            $method,
+                            $obfs,
+                            $passwd,
+                            $node->obfs_param,
+                            $protocol_param,
+                            $node->name,
+                            $group,
+                            $node->is_udp
+                        );
                 } else {
                     // 生成文本配置信息
-                    $data = "服务器：".$host.PHP_EOL."IPv6：".$node->ipv6.PHP_EOL."服务器端口：".$port.PHP_EOL."密码：".$passwd.PHP_EOL."加密：".$method.PHP_EOL.($node->compatible ? '' : "协议：".$protocol.PHP_EOL."协议参数：".$protocol_param.PHP_EOL."混淆：".$obfs.PHP_EOL."混淆参数：".$node->obfs_param.PHP_EOL);
+                    $data = '服务器：'.$host.PHP_EOL.'IPv6：'.$node->ipv6.PHP_EOL.'服务器端口：'.$port.PHP_EOL.'密码：'.$passwd.PHP_EOL.'加密：'.$method.PHP_EOL.($node->compatible ? '' : '协议：'.$protocol.PHP_EOL.'协议参数：'.$protocol_param.PHP_EOL.'混淆：'.$obfs.PHP_EOL.'混淆参数：'.$node->obfs_param.PHP_EOL);
                 }
                 break;
             default:
@@ -187,18 +215,18 @@ class Controller extends BaseController
     public function v2raySubUrl($name, $host, $port, $uuid, $alter_id, $net, $type, $domain, $path, $tls): string
     {
         return 'vmess://'.base64url_encode(json_encode([
-                "v"    => "2",
-                "ps"   => $name,
-                "add"  => $host,
-                "port" => $port,
-                "id"   => $uuid,
-                "aid"  => $alter_id,
-                "net"  => $net,
-                "type" => $type,
-                "host" => $domain,
-                "path" => $path,
-                "tls"  => $tls ? "tls" : "",
-            ], JSON_PRETTY_PRINT));
+            'v'    => '2',
+            'ps'   => $name,
+            'add'  => $host,
+            'port' => $port,
+            'id'   => $uuid,
+            'aid'  => $alter_id,
+            'net'  => $net,
+            'type' => $type,
+            'host' => $domain,
+            'path' => $path,
+            'tls'  => $tls ? 'tls' : '',
+        ], JSON_PRETTY_PRINT));
     }
 
     public function trojanSubUrl($password, $domain, $port, $remark): string
@@ -249,8 +277,8 @@ class Controller extends BaseController
         return [
             'trafficDaily'  => json_encode($dailyData),
             'trafficHourly' => json_encode($hourlyData),
-            'monthDays'     => json_encode(range(1, date("j"), 1)),// 本月天数
-            'dayHours'      => json_encode(range(0, date("G") + 1, 1))// 本日小时
+            'monthDays'     => json_encode(range(1, date('j'), 1)), // 本月天数
+            'dayHours'      => json_encode(range(0, date('G') + 1, 1)), // 本日小时
         ];
     }
 }

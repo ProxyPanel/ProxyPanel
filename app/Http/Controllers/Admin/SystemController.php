@@ -90,7 +90,7 @@ class SystemController extends Controller
         }
 
         // 如果开启用户邮件重置密码，则先设置网站名称和网址
-        if ($value !== '0' && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning',], true)) {
+        if ($value !== '0' && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'], true)) {
             $config = Config::find('website_name');
             if (!$config->value) {
                 return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
@@ -103,11 +103,11 @@ class SystemController extends Controller
         }
 
         // 支付设置判断
-        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay',], true)) {
+        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true)) {
             switch ($value) {
                 case 'f2fpay':
                     if (!sysConfig('f2fpay_app_id') || !sysConfig('f2fpay_private_key') || !sysConfig('f2fpay_public_key')) {
-                        return Response::json(['status' => 'fail', 'message' => '请先设置【支付宝F2F】必要参数',]);
+                        return Response::json(['status' => 'fail', 'message' => '请先设置【支付宝F2F】必要参数']);
                     }
                     break;
                 case 'codepay':
@@ -132,7 +132,7 @@ class SystemController extends Controller
                     break;
                 case 'paypal':
                     if (!sysConfig('paypal_username') || !sysConfig('paypal_password') || !sysConfig('paypal_secret')) {
-                        return Response::json(['status' => 'fail', 'message' => '请先设置【PayPal】必要参数',]);
+                        return Response::json(['status' => 'fail', 'message' => '请先设置【PayPal】必要参数']);
                     }
                     break;
                 default:
@@ -179,13 +179,13 @@ class SystemController extends Controller
             switch (sysConfig('is_notification')) {
                 case 'serverChan':
                     if (!$result['errno']) {
-                        return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息',]);
+                        return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
                     }
 
-                    return Response::json(['status' => 'fail', 'message' => $result ? $result['errmsg'] : '未知',]);
+                    return Response::json(['status' => 'fail', 'message' => $result ? $result['errmsg'] : '未知']);
                 case 'bark':
                     if ($result['code'] === 200) {
-                        return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息',]);
+                        return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
                     }
 
                     return Response::json(['status' => 'fail', 'message' => $result['message']]);

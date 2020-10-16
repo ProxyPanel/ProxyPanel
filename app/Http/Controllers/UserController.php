@@ -37,11 +37,9 @@ use Str;
 use Validator;
 
 /**
- * 用户控制器
+ * 用户控制器.
  *
  * Class UserController
- *
- * @package App\Http\Controllers
  */
 class UserController extends Controller
 {
@@ -304,7 +302,7 @@ class UserController extends Controller
         $user = Auth::getUser();
         $title = $request->input('title');
         $content = clean($request->input('content'));
-        $content = str_replace(["atob", "eval"], "", $content);
+        $content = str_replace(['atob', 'eval'], '', $content);
 
         if (empty($title) || empty($content)) {
             return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
@@ -318,8 +316,8 @@ class UserController extends Controller
         $obj->save();
 
         if ($obj->id) {
-            $emailTitle = "新工单提醒";
-            $content = "标题：【".$title."】<br>用户：".$user->email."<br>内容：".$content;
+            $emailTitle = '新工单提醒';
+            $content = '标题：【'.$title.'】<br>用户：'.$user->email.'<br>内容：'.$content;
 
             // 发邮件通知管理员
             if (sysConfig('webmaster_email')) {
@@ -344,7 +342,7 @@ class UserController extends Controller
 
         if ($request->isMethod('POST')) {
             $content = clean($request->input('content'));
-            $content = str_replace(["atob", "eval"], "", $content);
+            $content = str_replace(['atob', 'eval'], '', $content);
             $content = substr($content, 0, 300);
 
             if (empty($content)) {
@@ -366,8 +364,8 @@ class UserController extends Controller
                 $ticket->status = 0;
                 $ticket->save();
 
-                $title = "工单回复提醒";
-                $content = "标题：【".$ticket->title."】<br>用户回复：".$content;
+                $title = '工单回复提醒';
+                $content = '标题：【'.$ticket->title.'】<br>用户回复：'.$content;
 
                 // 发邮件通知管理员
                 if (sysConfig('webmaster_email')) {
@@ -408,8 +406,11 @@ class UserController extends Controller
     public function invite()
     {
         if (Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()) {
-            return Response::view('auth.error',
-                ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'], 402);
+            return Response::view(
+                'auth.error',
+                ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'],
+                402
+            );
         }
 
         $view['num'] = Auth::getUser()->invite_num; // 还可以生成的邀请码数量
@@ -433,7 +434,7 @@ class UserController extends Controller
         $obj->invitee_id = 0;
         $obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
         $obj->status = 0;
-        $obj->dateline = date('Y-m-d H:i:s', strtotime("+".sysConfig('user_invite_days')." days"));
+        $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('user_invite_days').' days'));
         $obj->save();
         if ($obj) {
             $user->update(['invite_num' => $user->invite_num - 1]);
@@ -563,7 +564,7 @@ class UserController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
-            Log::error("更换订阅地址异常：".$e->getMessage());
+            Log::error('更换订阅地址异常：'.$e->getMessage());
 
             return Response::json(['status' => 'fail', 'message' => '更换失败'.$e->getMessage()]);
         }
@@ -580,7 +581,7 @@ class UserController extends Controller
         $user = Auth::loginUsingId(Session::get('admin'));
         Session::forget('admin');
         if ($user) {
-            return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
+            return Response::json(['status' => 'success', 'message' => '身份切换成功']);
         }
 
         return Response::json(['status' => 'fail', 'message' => '身份切换失败']);
@@ -605,8 +606,14 @@ class UserController extends Controller
             DB::beginTransaction();
             // 写入日志
             $user = Auth::getUser();
-            Helpers::addUserCreditLog($user->id, 0, $user->credit, $user->credit + $coupon->value, $coupon->value,
-                '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
+            Helpers::addUserCreditLog(
+                $user->id,
+                0,
+                $user->credit,
+                $user->credit + $coupon->value,
+                $coupon->value,
+                '用户手动充值 - [充值券：'.$request->input('coupon_sn').']'
+            );
 
             // 余额充值
             (new UserService($user))->updateCredit($coupon->value);

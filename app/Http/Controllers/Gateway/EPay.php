@@ -69,7 +69,6 @@ class EPay extends AbstractPayment
             'key' => sysConfig('epay_key'),
         ]);
 
-
         if ($response->ok()) {
             return Response::json(['status' => 'success', 'data' => $response->json()]);
         }

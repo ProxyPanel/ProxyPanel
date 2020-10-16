@@ -14,11 +14,9 @@ use Response;
 use RuntimeException;
 
 /**
- * 促销控制器
+ * 促销控制器.
  *
  * Class MarketingController
- *
- * @package App\Http\Controllers\Controller
  */
 class MarketingController extends Controller
 {

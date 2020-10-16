@@ -10,14 +10,12 @@ class AddDdnsToConfigTable extends Migration
      *
      * @return void
      */
-
     private static $dropConfigs = [
         'is_user_rand_port', 'is_namesilo', 'namesilo_key', 'is_forbid_china', 'is_forbid_oversea',
         'alipay_private_key', 'alipay_public_key', 'alipay_transport', 'alipay_currency',
     ];
 
     private static $newConfigs = ['forbid_mode', 'ddns_mode', 'ddns_key', 'ddns_secret'];
-
 
     public function up()
     {

@@ -25,7 +25,7 @@ class ToolsController extends Controller
             }
 
             // 反解析处理
-            $content = str_replace("\n", ",", $content);
+            $content = str_replace("\n", ',', $content);
             $content = explode(',', $content);
             $txt = '';
             foreach ($content as $item) {
@@ -80,11 +80,11 @@ class ToolsController extends Controller
                     'enable'          => 1,
                     'method'          => $method,
                     'obfs'            => $obfs,
-                    'obfs_param'      => empty($obfs_param) ? "" : $obfs_param,
+                    'obfs_param'      => empty($obfs_param) ? '' : $obfs_param,
                     'passwd'          => $passwd,
                     'port'            => $port,
                     'protocol'        => $protocol,
-                    'protocol_param'  => empty($protocol_param) ? "" : $protocol_param,
+                    'protocol_param'  => empty($protocol_param) ? '' : $protocol_param,
                     'transfer_enable' => $transfer_enable,
                     'user'            => date('Ymd').'_IMPORT_'.$port,
                 ];
@@ -222,8 +222,11 @@ class ToolsController extends Controller
                 if (!empty($tcp_matches)) {
                     $url[] = str_replace('TCP request ', '[TCP] ', $tcp_matches[0]);
                 } else {
-                    preg_match('/UDP data to (25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/',
-                        $log, $udp_matches);
+                    preg_match(
+                        '/UDP data to (25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/',
+                        $log,
+                        $udp_matches
+                    );
                     if (!empty($udp_matches)) {
                         $url[] = str_replace('UDP data to ', '[UDP] ', $udp_matches[0]);
                     }

@@ -11,8 +11,8 @@ class isAdminLogin
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed
      */

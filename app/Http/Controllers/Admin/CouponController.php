@@ -16,11 +16,9 @@ use Response;
 use Str;
 
 /**
- * 优惠券控制器
+ * 优惠券控制器.
  *
  * Class CouponController
- *
- * @package App\Http\Controllers\Controller
  */
 class CouponController extends Controller
 {
@@ -68,6 +66,7 @@ class CouponController extends Controller
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
         }
+
         try {
             $num = (int) $request->input('num');
 
@@ -133,8 +132,11 @@ class CouponController extends Controller
             $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（元）', '使用限制（元）'], null);
             foreach ($voucherList as $k => $vo) {
                 $dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
-                $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->rule], null,
-                    'A'.($k + 2));
+                $sheet->fromArray(
+                    [$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->rule],
+                    null,
+                    'A'.($k + 2)
+                );
             }
 
             // 折扣券
@@ -145,8 +147,11 @@ class CouponController extends Controller
             $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '折扣（折）', '使用限制（元）'], null);
             foreach ($discountCouponList as $k => $vo) {
                 $dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
-                $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->rule], null,
-                    'A'.($k + 2));
+                $sheet->fromArray(
+                    [$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->rule],
+                    null,
+                    'A'.($k + 2)
+                );
             }
 
             // 充值券
