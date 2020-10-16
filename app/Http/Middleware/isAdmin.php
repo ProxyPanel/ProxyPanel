@@ -10,10 +10,10 @@ use Redirect;
 class isAdmin
 {
     /**
-     * 校验是否为管理员身份
+     * 校验是否为管理员身份.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed
      */

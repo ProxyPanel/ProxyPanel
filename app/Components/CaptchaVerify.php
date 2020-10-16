@@ -4,8 +4,6 @@ namespace App\Components;
 
 /**
  * Class CaptchaVerify 验证码
- *
- * @package App\Components
  */
 class CaptchaVerify
 {
@@ -13,9 +11,9 @@ class CaptchaVerify
     public static function hCaptchaGetConfig(): array
     {
         return [
-            "sitekey" => sysConfig('hcaptcha_sitekey'),
-            "secret"  => sysConfig('hcaptcha_secret'),
-            "options" => [],
+            'sitekey' => sysConfig('hcaptcha_sitekey'),
+            'secret'  => sysConfig('hcaptcha_secret'),
+            'options' => [],
         ];
     }
 
@@ -23,8 +21,8 @@ class CaptchaVerify
     public static function geetestCaptchaGetConfig(): array
     {
         return [
-            "geetest_id"  => sysConfig('geetest_id'),
-            "geetest_key" => sysConfig('geetest_key'),
+            'geetest_id'  => sysConfig('geetest_id'),
+            'geetest_key' => sysConfig('geetest_key'),
         ];
     }
 
@@ -32,9 +30,9 @@ class CaptchaVerify
     public static function googleCaptchaGetConfig(): array
     {
         return [
-            "sitekey" => sysConfig('google_captcha_sitekey'),
-            "secret"  => sysConfig('google_captcha_secret'),
-            "options" => [],
+            'sitekey' => sysConfig('google_captcha_sitekey'),
+            'secret'  => sysConfig('google_captcha_secret'),
+            'options' => [],
         ];
     }
 }

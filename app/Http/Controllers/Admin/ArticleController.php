@@ -16,7 +16,6 @@ use Session;
 
 class ArticleController extends Controller
 {
-
     // 文章列表
     public function index(Request $request)
     {
@@ -36,7 +35,7 @@ class ArticleController extends Controller
     {
         $data = $request->except('_method', '_token');
         // LOGO
-        if ($request->input('type') !== "4" && $request->hasFile('logo')) {
+        if ($request->input('type') !== '4' && $request->hasFile('logo')) {
             $data['logo'] = 'upload/'.$request->file('logo')->store('images');
             if (!$data['logo']) {
                 Session::flash('errorMsg', 'LOGO不合法');

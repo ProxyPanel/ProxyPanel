@@ -17,11 +17,9 @@ use Response;
 use Session;
 
 /**
- * 商店控制器
+ * 商店控制器.
  *
  * Class ShopController
- *
- * @package App\Http\Controllers\Controller
  */
 class ShopController extends Controller
 {

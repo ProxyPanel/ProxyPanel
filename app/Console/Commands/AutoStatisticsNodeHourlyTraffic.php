@@ -29,7 +29,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command
 
     private function statisticsByNode($node_id): void
     {
-        $query = UserDataFlowLog::whereNodeId($node_id)->whereBetween('log_time', [strtotime("-1 hour"), time()]);
+        $query = UserDataFlowLog::whereNodeId($node_id)->whereBetween('log_time', [strtotime('-1 hour'), time()]);
 
         $u = $query->sum('u');
         $d = $query->sum('d');

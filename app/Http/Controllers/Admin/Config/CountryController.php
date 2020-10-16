@@ -13,7 +13,6 @@ use Response;
 
 class CountryController extends Controller
 {
-
     // 添加国家/地区
     public function store(Request $request): JsonResponse
     {
@@ -52,7 +51,6 @@ class CountryController extends Controller
         if (empty($name)) {
             return Response::json(['status' => 'fail', 'message' => '国家/地区名称不能为空']);
         }
-
 
         $country = Country::find($code);
         if (!$country) {

@@ -16,15 +16,12 @@ use Mail;
 use Response;
 
 /**
- * 工单控制器
+ * 工单控制器.
  *
  * Class TicketController
- *
- * @package App\Http\Controllers\Controller
  */
 class TicketController extends Controller
 {
-
     // 工单列表
     public function index(Request $request)
     {
@@ -92,7 +89,7 @@ class TicketController extends Controller
     // 回复工单
     public function update(Request $request, $id)
     {
-        $content = substr(str_replace(["atob", "eval"], "", clean($request->input('content'))), 0, 300);
+        $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
         $obj = new TicketReply();
         $obj->ticket_id = $id;
@@ -105,8 +102,8 @@ class TicketController extends Controller
             $ticket = Ticket::with('user')->find($id);
             Ticket::whereId($id)->update(['status' => 1]);
 
-            $title = "工单回复提醒";
-            $content = "标题：".$ticket->title."<br>管理员回复：".$content;
+            $title = '工单回复提醒';
+            $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
 
             // 发通知邮件
             if (!Auth::getUser()->is_admin) {
@@ -140,8 +137,8 @@ class TicketController extends Controller
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 
-        $title = "工单关闭提醒";
-        $content = "工单【".$ticket->title."】已关闭";
+        $title = '工单关闭提醒';
+        $content = '工单【'.$ticket->title.'】已关闭';
 
         // 发邮件通知用户
         $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);

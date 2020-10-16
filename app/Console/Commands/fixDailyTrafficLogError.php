@@ -18,7 +18,7 @@ class fixDailyTrafficLogError extends Command
     public function handle(): void
     {
         // set value
-        $this->end = date('Y-m-d 23:59:59', strtotime("-1 days"));
+        $this->end = date('Y-m-d 23:59:59', strtotime('-1 days'));
         $nodeArray = UserDataFlowLog::distinct()->pluck('node_id')->toArray();
 
         Log::info('----------------------------【修复原版本的每日流量计算错误】开始----------------------------');
@@ -32,8 +32,10 @@ class fixDailyTrafficLogError extends Command
         Log::info('----------------------------【添加节点流量日志】开始----------------------------');
         foreach ($nodeArray as $nodeId) {
             $query = UserDataFlowLog::whereNodeId($nodeId)
-                ->whereBetween('log_time',
-                    [strtotime(date('Y-m-d', strtotime("-1 days"))), strtotime($this->end)]);
+                ->whereBetween(
+                    'log_time',
+                    [strtotime(date('Y-m-d', strtotime('-1 days'))), strtotime($this->end)]
+                );
 
             $u = $query->sum('u');
             $d = $query->sum('d');
@@ -75,8 +77,10 @@ class fixDailyTrafficLogError extends Command
     private function statisticsByUser($user_id, $node_id = 0): void
     {
         $query = UserDataFlowLog::whereUserId($user_id)
-            ->whereBetween('log_time',
-                [strtotime(date('Y-m-d', strtotime("-1 days"))), strtotime($this->end)]);
+            ->whereBetween(
+                'log_time',
+                [strtotime(date('Y-m-d', strtotime('-1 days'))), strtotime($this->end)]
+            );
 
         if ($node_id) {
             $query->whereNodeId($node_id);

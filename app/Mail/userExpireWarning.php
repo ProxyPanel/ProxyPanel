@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
 
 class userExpireWarning extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $id; // 邮件记录ID
     protected $lastCanUseDays; // 剩余可用天数

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 推送通知日志
+ * 推送通知日志.
  */
 class NotificationLog extends Model
 {

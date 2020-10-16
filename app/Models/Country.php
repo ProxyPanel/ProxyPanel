@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 国家/地区
+ * 国家/地区.
  */
 class Country extends Model
 {

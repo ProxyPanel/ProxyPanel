@@ -15,7 +15,11 @@ class V2RayController extends BaseController
         $node = Node::find($id);
         $nodeDv = NodeCertificate::whereDomain($node->v2_host)->first();
 
-        return $this->returnData('获取节点信息成功', 'success', 200, [
+        return $this->returnData(
+            '获取节点信息成功',
+            'success',
+            200,
+            [
                 'id'              => $node->id,
                 'is_udp'          => $node->is_udp ? true : false,
                 'speed_limit'     => $node->speed_limit,

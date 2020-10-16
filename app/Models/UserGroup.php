@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 用户分组控制
+ * 用户分组控制.
  */
 class UserGroup extends Model
 {

@@ -36,7 +36,7 @@ class AutoStatisticsUserHourlyTraffic extends Command
 
     private function statisticsByNode($user_id, $node_id = 0): void
     {
-        $query = UserDataFlowLog::whereUserId($user_id)->whereBetween('log_time', [strtotime("-1 hour"), time()]);
+        $query = UserDataFlowLog::whereUserId($user_id)->whereBetween('log_time', [strtotime('-1 hour'), time()]);
 
         if ($node_id) {
             $query->whereNodeId($node_id);

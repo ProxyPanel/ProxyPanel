@@ -7,13 +7,16 @@ use Illuminate\Http\JsonResponse;
 
 class VNetController extends BaseController
 {
-
     // 获取节点信息
     public function getNodeInfo($id): JsonResponse
     {
         $node = Node::find($id);
 
-        return $this->returnData('获取节点信息成功', 'success', 200, [
+        return $this->returnData(
+            '获取节点信息成功',
+            'success',
+            200,
+            [
                 'id'           => $node->id,
                 'method'       => $node->method,
                 'protocol'     => $node->protocol,

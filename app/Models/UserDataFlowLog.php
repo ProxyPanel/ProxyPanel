@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 用户流量记录
+ * 用户流量记录.
  */
 class UserDataFlowLog extends Model
 {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 用户登录日志
+ * 用户登录日志.
  */
 class UserLoginLog extends Model
 {

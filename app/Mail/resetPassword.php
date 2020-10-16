@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
 
 class resetPassword extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $id; // 邮件记录ID
     protected $resetPasswordUrl; // 重置密码URL

@@ -82,11 +82,12 @@ class DailyJob extends Command
     }
 
     /**
-     * 添加用户封禁日志
+     * 添加用户封禁日志.
      *
-     * @param  int  $userId  用户ID
-     * @param  int  $time  封禁时长，单位分钟
-     * @param  string  $description  封禁理由
+     * @param int    $userId      用户ID
+     * @param int    $time        封禁时长，单位分钟
+     * @param string $description 封禁理由
+     *
      * @return bool
      */
     private function addUserBanLog(int $userId, int $time, string $description): bool
@@ -102,7 +103,7 @@ class DailyJob extends Command
     // 关闭超过72小时未处理的工单
     private function closeTickets(): void
     {
-        $ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime("-3 days")))->whereStatus(1)->get();
+        $ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get();
         foreach ($ticketList as $ticket) {
             $ret = Ticket::whereId($ticket->id)->update(['status' => 2]);
             if ($ret) {
@@ -140,8 +141,13 @@ class DailyJob extends Command
             $ret = $user->update((new OrderService($order))->resetTimeAndData($user->expired_at));
             if ($ret) {
                 // 可用流量变动日志
-                Helpers::addUserTrafficModifyLog($order->user_id, $order->id, $oldData, $user->transfer_enable,
-                    '【流量重置】重置可用流量');
+                Helpers::addUserTrafficModifyLog(
+                    $order->user_id,
+                    $order->id,
+                    $oldData,
+                    $user->transfer_enable,
+                    '【流量重置】重置可用流量'
+                );
                 Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.flowAutoShow($user->transfer_enable).'. 重置日期为 '.($user->reset_time ?: '【无】'));
             } else {
                 Log::error('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置失败');

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 审计规则
+ * 审计规则.
  */
 class Rule extends Model
 {

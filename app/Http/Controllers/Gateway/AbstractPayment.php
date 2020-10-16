@@ -27,9 +27,9 @@ abstract class AbstractPayment
     }
 
     /**
-     * @param  string  $trade_no  本地订单号
-     * @param  string  $out_trade_no  外部订单号
-     * @param  int  $amount  交易金额
+     * @param string $trade_no     本地订单号
+     * @param string $out_trade_no 外部订单号
+     * @param int    $amount       交易金额
      *
      * @return int
      */
@@ -50,11 +50,11 @@ abstract class AbstractPayment
     }
 
     /**
-     *  Alipay式数据MD5签名
+     *  Alipay式数据MD5签名.
      *
-     * @param  array  $data  需要加密的数组
-     * @param  string  $key  尾部的密钥
-     * @param  bool  $filter  是否清理空值
+     * @param array  $data   需要加密的数组
+     * @param string $key    尾部的密钥
+     * @param bool   $filter 是否清理空值
      *
      * @return string md5加密后的数据
      */

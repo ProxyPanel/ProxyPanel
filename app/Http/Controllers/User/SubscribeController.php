@@ -123,10 +123,10 @@ class SubscribeController extends Controller
         switch ($this->subType) {
             case 2:
                 $result = 'vmess://'.base64url_encode(json_encode([
-                        "v"   => "2", "ps" => $text, "add" => "0.0.0.0", "port" => 0, "id" => 0,
-                        "aid" => 0, "net" => "tcp", "type" => "none", "host" => "", "path" => "/",
-                        'tls' => "tls",
-                    ], JSON_PRETTY_PRINT));
+                    'v'   => '2', 'ps' => $text, 'add' => '0.0.0.0', 'port' => 0, 'id' => 0,
+                    'aid' => 0, 'net' => 'tcp', 'type' => 'none', 'host' => '', 'path' => '/',
+                    'tls' => 'tls',
+                ], JSON_PRETTY_PRINT));
                 break;
             case 3:
                 $result = 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text);

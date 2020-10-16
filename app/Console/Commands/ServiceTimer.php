@@ -39,8 +39,13 @@ class ServiceTimer extends Command
                 'reset_time'      => null,
                 'level'           => 0,
             ]);
-            Helpers::addUserTrafficModifyLog($user->id, $order->id, $user->transfer_enable, 0,
-                '[定时任务]用户所购商品到期，扣减商品对应的流量');
+            Helpers::addUserTrafficModifyLog(
+                $user->id,
+                $order->id,
+                $user->transfer_enable,
+                0,
+                '[定时任务]用户所购商品到期，扣减商品对应的流量'
+            );
 
             // 过期本订单
             $order->update(['is_expire' => 1]);

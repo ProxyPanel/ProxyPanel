@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 账号余额操作日志
+ * 账号余额操作日志.
  */
 class UserCreditLog extends Model
 {

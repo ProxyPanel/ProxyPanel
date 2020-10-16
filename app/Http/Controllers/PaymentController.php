@@ -22,11 +22,9 @@ use Log;
 use Response;
 
 /**
- * 支付控制器
+ * 支付控制器.
  *
  * Class PaymentController
- *
- * @package App\Http\Controllers
  */
 class PaymentController extends Controller
 {
@@ -36,7 +34,7 @@ class PaymentController extends Controller
     {
         self::$method = $request->input('method');
 
-        Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), true));
+        Log::info(self::$method.'回调接口[POST]：'.self::$method.var_export($request->all(), true));
         self::getClient()->notify($request);
 
         return 0;
@@ -60,7 +58,7 @@ class PaymentController extends Controller
             case 'epay':
                 return new EPay();
             default:
-                Log::error("未知支付：".self::$method);
+                Log::error('未知支付：'.self::$method);
 
                 return false;
         }
@@ -101,7 +99,7 @@ class PaymentController extends Controller
                 return Response::json(['status' => 'fail', 'message' => '充值余额不合规']);
             }
             $amount = $credit;
-            // 购买服务
+        // 购买服务
         } elseif ($goods_id && self::$method) {
             if (!$goods || !$goods->status) {
                 return Response::json(['status' => 'fail', 'message' => '订单创建失败：商品已下架']);

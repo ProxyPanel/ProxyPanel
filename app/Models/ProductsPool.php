@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 产品名称池
+ * 产品名称池.
  */
 class ProductsPool extends Model
 {

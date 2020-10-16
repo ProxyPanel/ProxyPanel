@@ -11,7 +11,7 @@ class QQInfo
         //向接口发起请求获取json数据
         $url = 'https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?get_nick=1&uins='.$qq;
         $response = Http::timeout(15)->retry(2)->get($url);
-        $message = mb_convert_encoding($response->body(), "UTF-8", "GBK");
+        $message = mb_convert_encoding($response->body(), 'UTF-8', 'GBK');
 
         // 接口是否异常
         if ($response->ok() && str_contains($message, $qq)) {

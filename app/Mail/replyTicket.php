@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
 
 class replyTicket extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $id; // 邮件记录ID
     protected $title; // 工单标题
