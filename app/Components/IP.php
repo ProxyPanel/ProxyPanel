@@ -23,7 +23,7 @@ class IP
             $ipInfo = self::IPSB($ip);
         } else {
             $ipInfo = self::ip2Region($ip);
-            if (!$ipInfo) {
+            if (! $ipInfo) {
                 Log::info('无法识别，尝试使用【IPIP库】库解析：'.$ip);
                 $ipInfo = self::ip2Location($ip);
             }
@@ -57,7 +57,7 @@ class IP
         }
 
         if ($ipInfo) {
-            $location = explode("|", $ipInfo['region']);
+            $location = explode('|', $ipInfo['region']);
 
             return [
                 'country'  => $location[0] ?: '',
@@ -75,7 +75,7 @@ class IP
         $filePath = database_path('IP2LOCATION-LITE-DB3.IPV6.BIN');
         try {
             $location = (new Database($filePath, Database::FILE_IO))
-                ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME,]);
+                ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME]);
 
             return [
                 'country'  => $location['countryName'],
@@ -112,9 +112,9 @@ class IP
             $message = $response->json();
             if ($message['code'] === 0) {
                 return [
-                    'country'  => $message['data']['country'] === "XX" ? '' : $message['data']['country'],
-                    'province' => $message['data']['region'] === "XX" ? '' : $message['data']['region'],
-                    'city'     => $message['data']['city'] === "XX" ? '' : $message['data']['city'],
+                    'country'  => $message['data']['country'] === 'XX' ? '' : $message['data']['country'],
+                    'province' => $message['data']['region'] === 'XX' ? '' : $message['data']['region'],
+                    'city'     => $message['data']['city'] === 'XX' ? '' : $message['data']['city'],
                 ];
             }
 
@@ -129,7 +129,7 @@ class IP
     // 通过api.map.baidu.com查询IP地址的详细信息
     public static function Baidu(string $ip)
     {
-        if (!env('BAIDU_APP_AK')) {
+        if (! env('BAIDU_APP_AK')) {
             Log::error('【百度IP库】AK信息缺失');
 
             return false;

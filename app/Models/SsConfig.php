@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 配置信息
+ * 配置信息.
  */
 class SsConfig extends Model
 {

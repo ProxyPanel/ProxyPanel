@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 节点标签
+ * 节点标签.
  */
 class NodeLabel extends Model
 {

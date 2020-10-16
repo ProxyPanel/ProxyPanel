@@ -10,11 +10,9 @@ use Illuminate\Http\Request;
 use Response;
 
 /**
- * 订阅控制器
+ * 订阅控制器.
  *
  * Class SubscribeController
- *
- * @package App\Http\Controllers\Controller
  */
 class SubscribeController extends Controller
 {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 触发审计规则日志
+ * 触发审计规则日志.
  */
 class RuleLog extends Model
 {

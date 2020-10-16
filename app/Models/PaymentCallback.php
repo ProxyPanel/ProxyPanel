@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 支付回调日志
+ * 支付回调日志.
  */
 class PaymentCallback extends Model
 {

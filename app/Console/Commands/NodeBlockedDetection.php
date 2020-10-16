@@ -21,7 +21,7 @@ class NodeBlockedDetection extends Command
     {
         $jobStartTime = microtime(true);
         if (sysConfig('nodes_detection')) {
-            if (!Cache::has('LastCheckTime')) {
+            if (! Cache::has('LastCheckTime')) {
                 $this->checkNodes();
             } elseif (Cache::get('LastCheckTime') <= time()) {
                 $this->checkNodes();
@@ -54,22 +54,22 @@ class NodeBlockedDetection extends Command
                 if (strcmp($ip, $node->server) !== 0) {
                     $node->ip = $ip;
                 } else {
-                    Log::warning("【节点阻断检测】检测".$node->server."时，IP获取失败".$ip." | ".$node->server);
+                    Log::warning('【节点阻断检测】检测'.$node->server.'时，IP获取失败'.$ip.' | '.$node->server);
                     $this->notifyMaster("{$node->name}动态IP获取失败", "节点 {$node->name} ： IP获取失败 ");
                 }
             }
             if ($node->detection_type !== 1) {
                 $icmpCheck = NetworkDetection::networkCheck($node->ip, true);
-                if ($icmpCheck !== false && $icmpCheck !== "通讯正常") {
-                    $message .= "| ".$node->name." | ICMP | ".$icmpCheck." |\r\n";
+                if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
+                    $message .= '| '.$node->name.' | ICMP | '.$icmpCheck." |\r\n";
                     $sendText = true;
                     $info = true;
                 }
             }
             if ($node->detection_type !== 2) {
                 $tcpCheck = NetworkDetection::networkCheck($node->ip, false, $node->single ? $node->port : null);
-                if ($tcpCheck !== false && $tcpCheck !== "通讯正常") {
-                    $message .= "| ".$node->name." | TCP | ".$tcpCheck." |\r\n";
+                if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
+                    $message .= '| '.$node->name.' | TCP | '.$tcpCheck." |\r\n";
                     $sendText = true;
                     $info = true;
                 }
@@ -99,7 +99,7 @@ class NodeBlockedDetection extends Command
 
         //只有在出现阻断线路时，才会发出警报
         if ($sendText) {
-            $this->notifyMaster("节点阻断警告", "阻断日志: \r\n\r\n".$message.$additionalMessage);
+            $this->notifyMaster('节点阻断警告', "阻断日志: \r\n\r\n".$message.$additionalMessage);
             Log::info("阻断日志: \r\n".$message.$additionalMessage);
         }
 
@@ -108,16 +108,15 @@ class NodeBlockedDetection extends Command
     }
 
     /**
-     * 通知管理员
+     * 通知管理员.
      *
      * @param  string  $title  消息标题
      * @param  string  $content  消息内容
-     *
      */
     private function notifyMaster(string $title, string $content): void
     {
         $result = PushNotification::send($title, $content);
-        if (!$result && sysConfig('webmaster_email')) {
+        if (! $result && sysConfig('webmaster_email')) {
             $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
             Mail::to(sysConfig('webmaster_email'))->send(new nodeCrashWarning($logId));
         }

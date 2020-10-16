@@ -16,26 +16,26 @@ class V2RayController extends BaseController
         $nodeDv = NodeCertificate::whereDomain($node->v2_host)->first();
 
         return $this->returnData('获取节点信息成功', 'success', 200, [
-                'id'              => $node->id,
-                'is_udp'          => $node->is_udp ? true : false,
-                'speed_limit'     => $node->speed_limit,
-                'client_limit'    => $node->client_limit,
-                'push_port'       => $node->push_port,
-                'redirect_url'    => sysConfig('redirect_url'),
-                'secret'          => $node->auth->secret,
-                'key'             => $nodeDv->key ?? '',
-                'pem'             => $nodeDv->pem ?? '',
-                'v2_license'      => sysConfig('v2ray_license'),
-                'v2_alter_id'     => $node->v2_alter_id,
-                'v2_port'         => $node->v2_port,
-                'v2_method'       => $node->v2_method,
-                'v2_net'          => $node->v2_net,
-                'v2_type'         => $node->v2_type,
-                'v2_host'         => $node->v2_host,
-                'v2_path'         => $node->v2_path,
-                'v2_tls'          => $node->v2_tls ? true : false,
-                'v2_tls_provider' => $node->tls_provider ?: sysConfig('v2ray_tls_provider'),
-            ]
+            'id'              => $node->id,
+            'is_udp'          => $node->is_udp ? true : false,
+            'speed_limit'     => $node->speed_limit,
+            'client_limit'    => $node->client_limit,
+            'push_port'       => $node->push_port,
+            'redirect_url'    => sysConfig('redirect_url'),
+            'secret'          => $node->auth->secret,
+            'key'             => $nodeDv->key ?? '',
+            'pem'             => $nodeDv->pem ?? '',
+            'v2_license'      => sysConfig('v2ray_license'),
+            'v2_alter_id'     => $node->v2_alter_id,
+            'v2_port'         => $node->v2_port,
+            'v2_method'       => $node->v2_method,
+            'v2_net'          => $node->v2_net,
+            'v2_type'         => $node->v2_type,
+            'v2_host'         => $node->v2_host,
+            'v2_path'         => $node->v2_path,
+            'v2_tls'          => $node->v2_tls ? true : false,
+            'v2_tls_provider' => $node->tls_provider ?: sysConfig('v2ray_tls_provider'),
+        ]
         );
     }
 

@@ -27,7 +27,7 @@ class PresetData extends Migration
             'port'     => 10000,
             'passwd'   => Str::random(),
             'vmess_id' => Str::uuid(),
-            'is_admin' => 1
+            'is_admin' => 1,
         ]);
 
         // 生成最初的等级
@@ -190,7 +190,7 @@ class PresetData extends Migration
             'redirect_url',
             'epay_url',
             'epay_mch_id',
-            'epay_key'
+            'epay_key',
         ];
 
         foreach ($configList as $config) {
@@ -241,7 +241,6 @@ class PresetData extends Migration
             Config::find($key)->update(['value' => $value]);
         }
 
-
         // 节点用标签
         $labelList = [
             'Netflix',
@@ -275,7 +274,7 @@ class PresetData extends Migration
             'TIDAL',
             'TikTok',
             'Pornhub',
-            'Twitch'
+            'Twitch',
         ];
 
         foreach ($labelList as $label) {
@@ -410,7 +409,7 @@ class PresetData extends Migration
             'linshiyou.com',
             'linshiyou.pl',
             'woyao.pl',
-            'yaowo.pl'
+            'yaowo.pl',
         ];
 
         foreach ($blackEmailSuffixList as $emailSuffix) {
@@ -426,7 +425,7 @@ class PresetData extends Migration
             'sohu.com',
             'gmail.com',
             'outlook.com',
-            'icloud.com'
+            'icloud.com',
         ];
 
         foreach ($whiteEmailSuffixList as $emailSuffix) {
@@ -491,7 +490,7 @@ class PresetData extends Migration
             'pk' => '巴基斯坦',
             'pt' => '葡萄牙',
             'hu' => '匈牙利',
-            'ar' => '阿根廷'
+            'ar' => '阿根廷',
         ];
 
         foreach ($countryList as $code => $name) {
@@ -517,7 +516,7 @@ class PresetData extends Migration
             '涉政治类'    => '(.*.||)(shenzhoufilm|secretchina|renminbao|aboluowang|mhradio|guangming|zhengwunet|soundofhope|yuanming|zhuichaguoji|fgmtv|xinsheng|shenyunperformingarts|epochweekly|tuidang|shenyun|falundata|bannedbook|pincong|rfi|mingjingnews|boxun|rfa|scmp|ogate|voachinese).(org|com|net|rocks|fr)',
             '流媒体'     => '(.*.||)(youtube|googlevideo|hulu|netflix|nflxvideo|akamai|nflximg|hbo|mtv|bbc|tvb).(org|club|com|net|tv)',
             '测速类'     => '(.*.||)(fast|speedtest).(org|com|net|cn)',
-            '外汇交易类'   => '(.*.||)(metatrader4|metatrader5|mql5).(org|com|net)'
+            '外汇交易类'   => '(.*.||)(metatrader4|metatrader5|mql5).(org|com|net)',
         ];
 
         foreach ($ruleList as $name => $pattern) {

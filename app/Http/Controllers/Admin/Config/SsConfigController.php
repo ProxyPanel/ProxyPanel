@@ -48,7 +48,7 @@ class SsConfigController extends Controller
         }
 
         $config = SsConfig::find($id);
-        if (!$config) {
+        if (! $config) {
             return Response::json(['status' => 'fail', 'message' => '配置不存在']);
         }
 

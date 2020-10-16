@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 工单回复
+ * 工单回复.
  */
 class TicketReply extends Model
 {

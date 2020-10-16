@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 节点授权密钥
+ * 节点授权密钥.
  */
 class NodeAuth extends Model
 {

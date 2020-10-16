@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 邮箱后缀过滤
+ * 邮箱后缀过滤.
  */
 class EmailFilter extends Model
 {

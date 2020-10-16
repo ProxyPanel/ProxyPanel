@@ -16,11 +16,9 @@ use Response;
 use Str;
 
 /**
- * 优惠券控制器
+ * 优惠券控制器.
  *
  * Class CouponController
- *
- * @package App\Http\Controllers\Controller
  */
 class CouponController extends Controller
 {
@@ -64,7 +62,7 @@ class CouponController extends Controller
         if ($request->hasFile('logo')) {
             $logo = 'upload/'.$request->file('logo')->store('images');
 
-            if (!$logo) {
+            if (! $logo) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
         }

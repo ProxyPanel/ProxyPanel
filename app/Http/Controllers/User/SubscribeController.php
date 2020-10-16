@@ -25,7 +25,7 @@ class SubscribeController extends Controller
 
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
-        if (!$subscribe) {
+        if (! $subscribe) {
             exit($this->infoGenerator('使用的订阅链接错误！请重新从官网获取！'));
         }
 
@@ -35,7 +35,7 @@ class SubscribeController extends Controller
 
         // 检查用户是否有效
         $user = $subscribe->user;
-        if (!$user) {
+        if (! $user) {
             exit($this->infoGenerator('错误订阅链接，账号不存在！请前往官网重新获取订阅链接'));
         }
 
@@ -123,10 +123,10 @@ class SubscribeController extends Controller
         switch ($this->subType) {
             case 2:
                 $result = 'vmess://'.base64url_encode(json_encode([
-                        "v"   => "2", "ps" => $text, "add" => "0.0.0.0", "port" => 0, "id" => 0,
-                        "aid" => 0, "net" => "tcp", "type" => "none", "host" => "", "path" => "/",
-                        'tls' => "tls",
-                    ], JSON_PRETTY_PRINT));
+                    'v'   => '2', 'ps' => $text, 'add' => '0.0.0.0', 'port' => 0, 'id' => 0,
+                    'aid' => 0, 'net' => 'tcp', 'type' => 'none', 'host' => '', 'path' => '/',
+                    'tls' => 'tls',
+                ], JSON_PRETTY_PRINT));
                 break;
             case 3:
                 $result = 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text);
