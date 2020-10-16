@@ -20,7 +20,6 @@ use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
-
     /**
      * Register any application services.
      *

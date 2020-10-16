@@ -46,13 +46,13 @@ class F2Fpay extends AbstractPayment
         try {
             $result = (new Client(Client::ALIPAY, self::$aliConfig))->pay(Client::ALI_CHANNEL_QR, $data);
         } catch (InvalidArgumentException $e) {
-            Log::error("【支付宝当面付】输入信息错误: ".$e->getMessage());
+            Log::error('【支付宝当面付】输入信息错误: '.$e->getMessage());
             exit;
         } catch (ClassNotFoundException $e) {
-            Log::error("【支付宝当面付】未知类型: ".$e->getMessage());
+            Log::error('【支付宝当面付】未知类型: '.$e->getMessage());
             exit;
         } catch (Exception $e) {
-            Log::error("【支付宝当面付】错误: ".$e->getMessage());
+            Log::error('【支付宝当面付】错误: '.$e->getMessage());
             exit;
         }
 
@@ -70,19 +70,19 @@ class F2Fpay extends AbstractPayment
 
         try {
             $result = (new Client(Client::ALIPAY, self::$aliConfig))->tradeQuery($data);
-            Log::info("【支付宝当面付】回调验证查询：".var_export($result, true));
+            Log::info('【支付宝当面付】回调验证查询：'.var_export($result, true));
         } catch (InvalidArgumentException $e) {
-            Log::error("【支付宝当面付】回调信息错误: ".$e->getMessage());
+            Log::error('【支付宝当面付】回调信息错误: '.$e->getMessage());
             exit;
         } catch (ClassNotFoundException $e) {
-            Log::error("【支付宝当面付】未知类型: ".$e->getMessage());
+            Log::error('【支付宝当面付】未知类型: '.$e->getMessage());
             exit;
         } catch (Exception $e) {
-            Log::error("【支付宝当面付】错误: ".$e->getMessage());
+            Log::error('【支付宝当面付】错误: '.$e->getMessage());
             exit;
         }
 
-        if ($result['code'] == 10000 && $result['msg'] === "Success") {
+        if ($result['code'] == 10000 && $result['msg'] === 'Success') {
             if ($_POST['trade_status'] === 'TRADE_FINISHED' || $_POST['trade_status'] === 'TRADE_SUCCESS') {
                 $payment = Payment::whereTradeNo($request->input('out_trade_no'))->first();
                 if ($payment) {

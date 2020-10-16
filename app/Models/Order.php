@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 订单
+ * 订单.
  */
 class Order extends Model
 {
@@ -43,7 +43,7 @@ class Order extends Model
 
     public function scopeRecentUnPay($query)
     {
-        return $query->whereStatus(0)->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-15 minutes")));
+        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-15 minutes')));
     }
 
     public function scopeUserPrepay($query, $uid = null)
@@ -58,12 +58,16 @@ class Order extends Model
 
     public function scopeActivePlan($query)
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($list) { $list->whereType(2); });
+        return $query->active()->with('goods')->whereHas('goods', static function ($list) {
+            $list->whereType(2);
+        });
     }
 
     public function scopeActivePackage($query)
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($list) { $list->whereType(1); });
+        return $query->active()->with('goods')->whereHas('goods', static function ($list) {
+            $list->whereType(1);
+        });
     }
 
     public function scopeUserActivePlan($query, $uid = null)
@@ -98,7 +102,6 @@ class Order extends Model
 
         return $status_label;
     }
-
 
     public function getOriginAmountAttribute($value)
     {

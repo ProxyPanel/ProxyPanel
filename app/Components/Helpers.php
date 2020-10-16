@@ -16,7 +16,6 @@ use Str;
 
 class Helpers
 {
-
     // 不生成的端口
     private static $denyPorts = [
         1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179,
@@ -52,7 +51,7 @@ class Helpers
     }
 
     /**
-     * 添加用户
+     * 添加用户.
      *
      * @param  string  $email  用户邮箱
      * @param  string  $password  用户密码
@@ -77,7 +76,7 @@ class Helpers
         $user->protocol = self::getDefaultProtocol();
         $user->obfs = self::getDefaultObfs();
         $user->transfer_enable = $transfer_enable;
-        $user->expired_at = date('Y-m-d', strtotime("+".$data." days"));
+        $user->expired_at = date('Y-m-d', strtotime('+'.$data.' days'));
         $user->reg_ip = IP::getClientIp();
         $user->inviter_id = $inviter_id;
         $user->reset_time = null;
@@ -97,7 +96,7 @@ class Helpers
             $exists_port = array_merge(User::where('port', '>=', $port)->pluck('port')->toArray(), self::$denyPorts);
 
             while (in_array($port, $exists_port, true)) {
-                ++$port;
+                $port++;
             }
         }
 
@@ -148,7 +147,7 @@ class Helpers
     public static function cacheSysConfig($name)
     {
         if ($name === 'is_onlinePay') {
-            $value = !empty(array_filter(Cache::tags('sysConfig')->many(['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])));
+            $value = ! empty(array_filter(Cache::tags('sysConfig')->many(['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])));
             Cache::tags('sysConfig')->put('is_onlinePay', $value);
         } else {
             $value = Config::find($name)->value;
@@ -164,7 +163,7 @@ class Helpers
     }
 
     /**
-     * 添加通知推送日志
+     * 添加通知推送日志.
      *
      * @param  string  $title  标题
      * @param  string  $content  内容
@@ -189,7 +188,7 @@ class Helpers
     }
 
     /**
-     * 添加优惠券操作日志
+     * 添加优惠券操作日志.
      *
      * @param  string  $description  备注
      * @param  int  $couponId  优惠券ID
@@ -210,7 +209,7 @@ class Helpers
     }
 
     /**
-     * 记录余额操作日志
+     * 记录余额操作日志.
      *
      * @param  int  $userId  用户ID
      * @param  int  $orderId  订单ID
@@ -236,7 +235,7 @@ class Helpers
     }
 
     /**
-     * 记录流量变动日志
+     * 记录流量变动日志.
      *
      * @param  int  $userId  用户ID
      * @param  int  $orderId  订单ID
@@ -262,12 +261,12 @@ class Helpers
     {
         $req = request();
         // Only for "GET" method
-        if (!$req->isMethod('GET')) {
-            return "";
+        if (! $req->isMethod('GET')) {
+            return '';
         }
 
         $etag = sha1(json_encode($data));
-        if ($etag == $req->header("IF-NONE-MATCH")) {
+        if ($etag == $req->header('IF-NONE-MATCH')) {
             abort(304);
         }
 

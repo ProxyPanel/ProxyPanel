@@ -50,7 +50,7 @@ abstract class AbstractPayment
     }
 
     /**
-     *  Alipay式数据MD5签名
+     *  Alipay式数据MD5签名.
      *
      * @param  array  $data  需要加密的数组
      * @param  string  $key  尾部的密钥

@@ -26,7 +26,7 @@ class NodeObserver
         $auth->node_id = $node->id;
         $auth->key = Str::random();
         $auth->secret = Str::random(8);
-        if (!$auth->save()) {
+        if (! $auth->save()) {
             Log::error('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
         }
 

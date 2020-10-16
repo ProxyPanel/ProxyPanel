@@ -17,11 +17,9 @@ use Response;
 use Session;
 
 /**
- * 商店控制器
+ * 商店控制器.
  *
  * Class ShopController
- *
- * @package App\Http\Controllers\Controller
  */
 class ShopController extends Controller
 {
@@ -61,7 +59,7 @@ class ShopController extends Controller
         if ($request->hasFile('logo')) {
             $logo = 'upload/'.$request->file('logo')->store('images');
 
-            if (!$logo) {
+            if (! $logo) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
         }
@@ -104,7 +102,7 @@ class ShopController extends Controller
         if ($request->hasFile('logo')) {
             $logo = 'upload/'.$request->file('logo')->store('images');
 
-            if (!$logo) {
+            if (! $logo) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
             $data['logo'] = $logo;

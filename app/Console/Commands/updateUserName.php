@@ -46,7 +46,7 @@ function process($id)
     // 用户是否设置了QQ号
     if ($user->qq) {
         $name = QQInfo::getName3($user->qq);
-        // 检测用户注册是否为QQ邮箱
+    // 检测用户注册是否为QQ邮箱
     } elseif (stripos($user->email, '@qq') !== false) {
         // 分离QQ邮箱后缀
         $email = explode('@', $user->email, 2);

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
@@ -51,7 +50,7 @@ class PayPal extends AbstractPayment
 
         try {
             $response = $this->provider->setExpressCheckout($data);
-            if (!$response['paypal_link']) {
+            if (! $response['paypal_link']) {
                 Log::error('Paypal处理错误：'.var_export($response, true));
 
                 return Response::json(['status' => 'fail', 'message' => '创建订单失败，请使用其他方式或通知管理员！']);
@@ -60,7 +59,7 @@ class PayPal extends AbstractPayment
 
             return Response::json(['status' => 'success', 'url' => $response['paypal_link'], 'message' => '创建订单成功!']);
         } catch (Exception $e) {
-            Log::error("【PayPal】错误: ".$e->getMessage());
+            Log::error('【PayPal】错误: '.$e->getMessage());
             exit;
         }
     }
@@ -101,7 +100,7 @@ class PayPal extends AbstractPayment
             $payment_status = $this->provider->doExpressCheckoutPayment($data, $token, $PayerID);
             $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
-            if (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) {
+            if (! strcasecmp($status, 'Completed') || ! strcasecmp($status, 'Processed')) {
                 Log::info("Order $payment->order_id has been paid successfully!");
                 $payment->order->update(['status' => 1]);
             } else {
@@ -133,6 +132,6 @@ class PayPal extends AbstractPayment
                 }
             }
         }
-        exit("fail");
+        exit('fail');
     }
 }

@@ -11,7 +11,7 @@ use Response;
 class isSecurity
 {
     /**
-     * 是否需要安全码才访问(仅用于登录页)
+     * 是否需要安全码才访问(仅用于登录页).
      *
      * @param           $request
      * @param  Closure  $next
@@ -25,9 +25,9 @@ class isSecurity
         $cacheKey = 'SecurityLogin_'.ip2long($ip);
         $websiteSecurityCode = sysConfig('website_security_code');
 
-        if ($websiteSecurityCode && !Cache::has($cacheKey)) {
+        if ($websiteSecurityCode && ! Cache::has($cacheKey)) {
             if ($code !== $websiteSecurityCode) {
-                Log::info("拒绝非安全入口访问(".$ip.")");
+                Log::info('拒绝非安全入口访问('.$ip.')');
 
                 return Response::view(
                     'auth.error',

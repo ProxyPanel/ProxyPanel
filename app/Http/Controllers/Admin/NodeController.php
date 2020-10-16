@@ -39,7 +39,7 @@ class NodeController extends Controller
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'));
         foreach ($nodeList as $node) {
             // 在线人数
-            $online_log = $node->onlineLogs()->where('log_time', '>=', strtotime("-5 minutes"))->latest('log_time')->first();
+            $online_log = $node->onlineLogs()->where('log_time', '>=', strtotime('-5 minutes'))->latest('log_time')->first();
             $node->online_users = $online_log->online_user ?? 0;
 
             // 已产生流量
@@ -154,13 +154,13 @@ class NodeController extends Controller
             if (strcmp($ip, $node->server) !== 0) {
                 $node->ip = $ip;
             } else {
-                return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败',]);
+                return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
             }
         }
         $data[0] = NetworkDetection::networkCheck($node->ip, true); //ICMP
         $data[1] = NetworkDetection::networkCheck($node->ip, false, $node->single ? $node->port : null); //TCP
 
-        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data,]);
+        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data]);
     }
 
     // 刷新节点地理位置
@@ -187,7 +187,7 @@ class NodeController extends Controller
     public function nodeMonitor($id)
     {
         $node = Node::find($id);
-        if (!$node) {
+        if (! $node) {
             Session::flash('errorMsg', '节点不存在，请重试');
 
             return Redirect::back();
@@ -211,10 +211,10 @@ class NodeController extends Controller
             return Response::json([
                 'status'  => 'success',
                 'message' => [
-                    $result['telecom']['time'] ?: '无',//电信
-                    $result['Unicom']['time'] ?: '无',// 联通
-                    $result['move']['time'] ?: '无',// 移动
-                    $result['HongKong']['time'] ?: '无'// 香港
+                    $result['telecom']['time'] ?: '无', //电信
+                    $result['Unicom']['time'] ?: '无', // 联通
+                    $result['move']['time'] ?: '无', // 移动
+                    $result['HongKong']['time'] ?: '无', // 香港
                 ],
             ]);
         }

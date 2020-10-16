@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'title'             => 'アカウントを有効にする',
@@ -89,8 +89,8 @@ return [
     'register_fail'              => 'Registration failed, please try later',
     'register_success'           => 'Registered successfully',
     'register_active_tip'        => 'Activation email sent! Please check the mailbox (the email may be in the Trash)',
-    "repeat_request"             => 'Please refresh the page and try again',
-    "reset_password_close"       => '"Find my Password"function is disabled.If you need help, Please email :email',
+    'repeat_request'             => 'Please refresh the page and try again',
+    'reset_password_close'       => '"Find my Password"function is disabled.If you need help, Please email :email',
     'reset_password_limit'       => 'Password can only be reset :time times within 24 hours!',
     'reset_password_success_tip' => 'Reset successfully! Please check the mailbox (the email may be in the Trash)',
     'reset_password_same_fail'   => 'The new password is the same as the old one. Please renter',

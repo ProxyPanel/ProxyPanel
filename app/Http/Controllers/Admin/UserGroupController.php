@@ -34,7 +34,7 @@ class UserGroupController extends Controller
     // 添加用户分组
     public function store(Request $request): RedirectResponse
     {
-        $validator = Validator::make($request->all(), ['name' => 'required', 'nodes' => 'required',]);
+        $validator = Validator::make($request->all(), ['name' => 'required', 'nodes' => 'required']);
 
         if ($validator->fails()) {
             return Redirect::back()->withInput()->withErrors($validator->errors());

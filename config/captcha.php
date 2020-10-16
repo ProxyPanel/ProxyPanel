@@ -4,7 +4,7 @@ return [
     'characters' => [
         '2', '3', '4', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'm', 'n', 'p', 'q', 'r', 't',
         'u', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'X', 'Y',
-        'Z'
+        'Z',
     ],
     'default'    => [
         'length'  => 4,
@@ -49,5 +49,5 @@ return [
         'blur'      => 2,
         'invert'    => true,
         'contrast'  => -5,
-    ]
+    ],
 ];

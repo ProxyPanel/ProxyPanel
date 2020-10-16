@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 节点在线用户IP信息
+ * 节点在线用户IP信息.
  */
 class NodeOnlineUserIp extends Model
 {

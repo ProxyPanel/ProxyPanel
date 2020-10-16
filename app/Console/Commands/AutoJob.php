@@ -97,18 +97,18 @@ class AutoJob extends Command
         if (sysConfig('is_subscribe_ban')) {
             $subscribe_ban_times = sysConfig('subscribe_ban_times');
             foreach (User::activeUser()->with('subscribe')->get() as $user) {
-                if (!$user->subscribe || $user->subscribe->status === 0) { // 无订阅链接 或 已封
+                if (! $user->subscribe || $user->subscribe->status === 0) { // 无订阅链接 或 已封
                     continue;
                 }
                 // 24小时内不同IP的请求次数
                 $request_times = $user->subscribeLogs()
-                    ->where('request_time', '>=', date("Y-m-d H:i:s", strtotime("-1 days")))
+                    ->where('request_time', '>=', date('Y-m-d H:i:s', strtotime('-1 days')))
                     ->distinct()
                     ->count('request_ip');
                 if ($request_times >= $subscribe_ban_times) {
                     $user->subscribe->update([
                         'status'   => 0,
-                        'ban_time' => strtotime("+".sysConfig('traffic_ban_time')." minutes"),
+                        'ban_time' => strtotime('+'.sysConfig('traffic_ban_time').' minutes'),
                         'ban_desc' => '存在异常，自动封禁',
                     ]);
 
@@ -120,7 +120,7 @@ class AutoJob extends Command
     }
 
     /**
-     * 添加用户封禁日志
+     * 添加用户封禁日志.
      *
      * @param  int  $userId  用户ID
      * @param  int  $time  封禁时长，单位分钟
@@ -139,7 +139,7 @@ class AutoJob extends Command
     private function blockUsers(): void
     {
         // 禁用流量超限用户
-        foreach (User::activeUser()->whereRaw("u + d >= transfer_enable")->get() as $user) {
+        foreach (User::activeUser()->whereRaw('u + d >= transfer_enable')->get() as $user) {
             $user->update(['enable' => 0]);
 
             // 写入日志
@@ -161,7 +161,7 @@ class AutoJob extends Command
                 if ($totalTraffic >= $trafficBanValue * GB) {
                     $user->update([
                         'enable'   => 0,
-                        'ban_time' => strtotime("+".$trafficBanTime." minutes"),
+                        'ban_time' => strtotime('+'.$trafficBanTime.' minutes'),
                     ]);
 
                     // 写入日志
@@ -190,7 +190,7 @@ class AutoJob extends Command
             ->where('status', '>=', 0)
             ->whereBanTime(null)
             ->where('expired_at', '>=', date('Y-m-d'))
-            ->whereRaw("u + d < transfer_enable")
+            ->whereRaw('u + d < transfer_enable')
             ->get();
         foreach ($userList as $user) {
             $user->update(['enable' => 1]);
@@ -203,7 +203,7 @@ class AutoJob extends Command
     // 端口回收与分配
     private function dispatchPort(): void
     {
-        ## 自动分配端口
+        //# 自动分配端口
         foreach (User::activeUser()->wherePort(0)->get() as $user) {
             $user->update(['port' => Helpers::getPort()]);
         }
@@ -211,7 +211,7 @@ class AutoJob extends Command
         // 被封禁 / 过期一个月 的账号自动释放端口
         User::where('port', '<>', 0)
             ->whereStatus(-1)
-            ->orWhere('expired_at', '<=', date("Y-m-d", strtotime("-1 months")))
+            ->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-1 months')))
             ->update(['port' => 0]);
     }
 
@@ -223,7 +223,7 @@ class AutoJob extends Command
             $onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
             foreach (Node::whereIsRelay(0)->whereStatus(1)->get() as $node) {
                 // 10分钟内无节点负载信息则认为是后端炸了
-                $nodeTTL = !in_array($node->id, $onlineNode, true);
+                $nodeTTL = ! in_array($node->id, $onlineNode, true);
                 if ($nodeTTL && $offlineCheckTimes) {
                     // 已通知次数
                     $cacheKey = 'offline_check_times'.$node->id;

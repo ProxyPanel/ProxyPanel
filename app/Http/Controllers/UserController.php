@@ -37,18 +37,16 @@ use Str;
 use Validator;
 
 /**
- * 用户控制器
+ * 用户控制器.
  *
  * Class UserController
- *
- * @package App\Http\Controllers
  */
 class UserController extends Controller
 {
     public function index()
     {
         $user = Auth::getUser();
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
         $totalTransfer = $user->transfer_enable;
@@ -78,7 +76,7 @@ class UserController extends Controller
     {
         $user = Auth::getUser();
         // 系统开启登录加积分功能才可以签到
-        if (!sysConfig('is_checkin')) {
+        if (! sysConfig('is_checkin')) {
             return Response::json(['status' => 'fail', 'message' => '系统未开启签到功能']);
         }
 
@@ -89,7 +87,7 @@ class UserController extends Controller
 
         $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MB;
 
-        if (!(new UserService())->incrementData($traffic)) {
+        if (! (new UserService())->incrementData($traffic)) {
             return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
         }
 
@@ -136,7 +134,7 @@ class UserController extends Controller
             $node->hk = round($data->pluck('hk')->filter()->avg(), 2);
 
             // 节点在线状态
-            $node->offline = !in_array($node->id, $onlineNode, true);
+            $node->offline = ! in_array($node->id, $onlineNode, true);
         }
         $view['nodeList'] = $nodeList ?? [];
 
@@ -165,7 +163,7 @@ class UserController extends Controller
 
             // 修改密码
             if ($old_password && $new_password) {
-                if (!Hash::check($old_password, $user->password)) {
+                if (! Hash::check($old_password, $user->password)) {
                     return Redirect::back()->withErrors('旧密码错误，请重新输入');
                 }
 
@@ -178,7 +176,7 @@ class UserController extends Controller
                     return Redirect::back()->withErrors('演示环境禁止修改管理员密码');
                 }
 
-                if (!$user->update(['password' => $new_password])) {
+                if (! $user->update(['password' => $new_password])) {
                     return Redirect::back()->withErrors('修改失败');
                 }
 
@@ -187,7 +185,7 @@ class UserController extends Controller
             }
 
             if ($passwd) {
-                if (!$user->update(['passwd' => $passwd])) {
+                if (! $user->update(['passwd' => $passwd])) {
                     return Redirect::back()->withErrors('修改失败');
                 }
 
@@ -199,7 +197,7 @@ class UserController extends Controller
                 return Redirect::back()->withErrors('修改失败,昵称不能为空值');
             }
 
-            if (!$user->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq])) {
+            if (! $user->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq])) {
                 return Redirect::back()->withErrors('修改失败');
             }
 
@@ -304,7 +302,7 @@ class UserController extends Controller
         $user = Auth::getUser();
         $title = $request->input('title');
         $content = clean($request->input('content'));
-        $content = str_replace(["atob", "eval"], "", $content);
+        $content = str_replace(['atob', 'eval'], '', $content);
 
         if (empty($title) || empty($content)) {
             return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
@@ -318,8 +316,8 @@ class UserController extends Controller
         $obj->save();
 
         if ($obj->id) {
-            $emailTitle = "新工单提醒";
-            $content = "标题：【".$title."】<br>用户：".$user->email."<br>内容：".$content;
+            $emailTitle = '新工单提醒';
+            $content = '标题：【'.$title.'】<br>用户：'.$user->email.'<br>内容：'.$content;
 
             // 发邮件通知管理员
             if (sysConfig('webmaster_email')) {
@@ -344,7 +342,7 @@ class UserController extends Controller
 
         if ($request->isMethod('POST')) {
             $content = clean($request->input('content'));
-            $content = str_replace(["atob", "eval"], "", $content);
+            $content = str_replace(['atob', 'eval'], '', $content);
             $content = substr($content, 0, 300);
 
             if (empty($content)) {
@@ -366,8 +364,8 @@ class UserController extends Controller
                 $ticket->status = 0;
                 $ticket->save();
 
-                $title = "工单回复提醒";
-                $content = "标题：【".$ticket->title."】<br>用户回复：".$content;
+                $title = '工单回复提醒';
+                $content = '标题：【'.$ticket->title.'】<br>用户回复：'.$content;
 
                 // 发邮件通知管理员
                 if (sysConfig('webmaster_email')) {
@@ -433,7 +431,7 @@ class UserController extends Controller
         $obj->invitee_id = 0;
         $obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
         $obj->status = 0;
-        $obj->dateline = date('Y-m-d H:i:s', strtotime("+".sysConfig('user_invite_days')." days"));
+        $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('user_invite_days').' days'));
         $obj->save();
         if ($obj) {
             $user->update(['invite_num' => $user->invite_num - 1]);
@@ -455,7 +453,7 @@ class UserController extends Controller
         }
 
         $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->first();
-        if (!$coupon) {
+        if (! $coupon) {
             return Response::json(['status' => 'fail', 'title' => '优惠券不存在', 'message' => '请确认优惠券是否输入正确！']);
         }
 
@@ -563,7 +561,7 @@ class UserController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
-            Log::error("更换订阅地址异常：".$e->getMessage());
+            Log::error('更换订阅地址异常：'.$e->getMessage());
 
             return Response::json(['status' => 'fail', 'message' => '更换失败'.$e->getMessage()]);
         }
@@ -572,7 +570,7 @@ class UserController extends Controller
     // 转换成管理员的身份
     public function switchToAdmin(): JsonResponse
     {
-        if (!Session::has('admin')) {
+        if (! Session::has('admin')) {
             return Response::json(['status' => 'fail', 'message' => '非法请求']);
         }
 
@@ -580,7 +578,7 @@ class UserController extends Controller
         $user = Auth::loginUsingId(Session::get('admin'));
         Session::forget('admin');
         if ($user) {
-            return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
+            return Response::json(['status' => 'success', 'message' => '身份切换成功']);
         }
 
         return Response::json(['status' => 'fail', 'message' => '身份切换失败']);
@@ -591,7 +589,9 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'coupon_sn' => [
-                'required', Rule::exists('coupon', 'sn')->where(static function ($query) { $query->whereType(3)->whereStatus(0); }),
+                'required', Rule::exists('coupon', 'sn')->where(static function ($query) {
+                    $query->whereType(3)->whereStatus(0);
+                }),
             ],
         ], ['coupon_sn.required' => '券码不能为空', 'coupon_sn.exists' => '该券不可用']);
 

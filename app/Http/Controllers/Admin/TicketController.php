@@ -16,15 +16,12 @@ use Mail;
 use Response;
 
 /**
- * 工单控制器
+ * 工单控制器.
  *
  * Class TicketController
- *
- * @package App\Http\Controllers\Controller
  */
 class TicketController extends Controller
 {
-
     // 工单列表
     public function index(Request $request)
     {
@@ -53,7 +50,7 @@ class TicketController extends Controller
 
         $user = User::find($id) ?: User::whereEmail($email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return Response::json(['status' => 'fail', 'message' => '用户不存在']);
         }
 
@@ -92,7 +89,7 @@ class TicketController extends Controller
     // 回复工单
     public function update(Request $request, $id)
     {
-        $content = substr(str_replace(["atob", "eval"], "", clean($request->input('content'))), 0, 300);
+        $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
         $obj = new TicketReply();
         $obj->ticket_id = $id;
@@ -105,11 +102,11 @@ class TicketController extends Controller
             $ticket = Ticket::with('user')->find($id);
             Ticket::whereId($id)->update(['status' => 1]);
 
-            $title = "工单回复提醒";
-            $content = "标题：".$ticket->title."<br>管理员回复：".$content;
+            $title = '工单回复提醒';
+            $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
 
             // 发通知邮件
-            if (!Auth::getUser()->is_admin) {
+            if (! Auth::getUser()->is_admin) {
                 if (sysConfig('webmaster_email')) {
                     $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
                     Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
@@ -131,17 +128,17 @@ class TicketController extends Controller
     public function destroy($id)
     {
         $ticket = Ticket::with('user')->whereId($id)->first();
-        if (!$ticket) {
+        if (! $ticket) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 
         $ret = Ticket::whereId($id)->update(['status' => 2]);
-        if (!$ret) {
+        if (! $ret) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 
-        $title = "工单关闭提醒";
-        $content = "工单【".$ticket->title."】已关闭";
+        $title = '工单关闭提醒';
+        $content = '工单【'.$ticket->title.'】已关闭';
 
         // 发邮件通知用户
         $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);

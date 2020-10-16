@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 审计规则分组
+ * 审计规则分组.
  */
 class RuleGroup extends Model
 {

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 等级
+ * 等级.
  */
 class Level extends Model
 {

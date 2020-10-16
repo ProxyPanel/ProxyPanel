@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 返利日志
+ * 返利日志.
  */
 class ReferralLog extends Model
 {

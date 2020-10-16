@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * 优惠券
+ * 优惠券.
  */
 class Coupon extends Model
 {
