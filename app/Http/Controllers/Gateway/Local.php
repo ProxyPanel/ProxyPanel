@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Gateway;
 
 use App\Components\Helpers;
@@ -28,5 +27,7 @@ class Local extends AbstractPayment
         return Response::json(['status' => 'success', 'message' => '购买完成!']);
     }
 
-    public function notify($request): void { }
+    public function notify($request): void
+    {
+    }
 }

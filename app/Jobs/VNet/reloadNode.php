@@ -47,7 +47,7 @@ class reloadNode implements ShouldQueue
                 //			'redirect_url'   => (string) sysConfig('redirect_url')
             ]);
 
-            if (!$ret) {
+            if (! $ret) {
                 $allSuccess = false;
             }
         }

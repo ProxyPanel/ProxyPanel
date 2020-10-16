@@ -87,17 +87,17 @@ class UserController extends Controller
 
         // 临近过期提醒
         if ($expireWarning) {
-            $query->whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime("+".sysConfig('expire_days')." days"))]);
+            $query->whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))]);
         }
 
         // 当前在线
         if ($online) {
-            $query->where('t', '>=', strtotime("-10 minutes"));
+            $query->where('t', '>=', strtotime('-10 minutes'));
         }
 
         // 不活跃用户
         if ($request->input('unActive')) {
-            $query->whereBetween('t', [1, strtotime("-".sysConfig('expire_days')." days"),])->whereEnable(1);
+            $query->whereBetween('t', [1, strtotime('-'.sysConfig('expire_days').' days')])->whereEnable(1);
         }
 
         // 1小时内流量异常用户
@@ -112,7 +112,7 @@ class UserController extends Controller
                 $user->expireWarning = -1; // 已过期
             } elseif ($user->expired_at === date('Y-m-d')) {
                 $user->expireWarning = 0; // 今天过期
-            } elseif ($user->expired_at > date('Y-m-d') && $user->expired_at <= date('Y-m-d', strtotime("+30 days"))) {
+            } elseif ($user->expired_at > date('Y-m-d') && $user->expired_at <= date('Y-m-d', strtotime('+30 days'))) {
                 $user->expireWarning = 1; // 最近一个月过期
             } else {
                 $user->expireWarning = 2; // 大于一个月过期
@@ -151,8 +151,8 @@ class UserController extends Controller
             $data['port'] = $data['port'] ?? Helpers::getPort();
             $data['passwd'] = $data['passwd'] ?? Str::random();
             $data['vmess_id'] = $request->input('uuid') ?? Str::uuid();
-            $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime("+365 days"));
-            $data['remark'] = str_replace(["atob", "eval"], "", $data['remark']);
+            $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
+            $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
             $data['reg_ip'] = IP::getClientIp();
             $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
             $user = User::create($data);
@@ -168,7 +168,6 @@ class UserController extends Controller
 
             return Response::json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
-
 
         return Response::json(['status' => 'fail', 'message' => '添加失败']);
     }
@@ -196,8 +195,8 @@ class UserController extends Controller
             $data['vmess_id'] = $request->input('uuid') ?? Str::uuid();
             $data['transfer_enable'] *= GB;
             $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
-            $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime("+365 days"));
-            $data['remark'] = str_replace(["atob", "eval"], "", $data['remark']);
+            $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
+            $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
 
             // 只有admin才有权限操作管理员属性
             if (Auth::getUser()->is_admin === 1) {
@@ -206,7 +205,7 @@ class UserController extends Controller
 
             // 非演示环境才可以修改管理员密码
             $password = $request->input('password');
-            if (!empty($password) && !(env('APP_DEMO') && $id === 1)) {
+            if (! empty($password) && ! (env('APP_DEMO') && $id === 1)) {
                 $data['password'] = $password;
             }
 
@@ -281,15 +280,15 @@ class UserController extends Controller
         $id = $request->input('user_id');
 
         $user = User::find($id);
-        if (!$user) {
-            return Response::json(['status' => 'fail', 'message' => "用户不存在"]);
+        if (! $user) {
+            return Response::json(['status' => 'fail', 'message' => '用户不存在']);
         }
 
         // 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
         Session::put('admin', Auth::id());
         Auth::login($user);
 
-        return Response::json(['status' => 'success', 'message' => "身份切换成功"]);
+        return Response::json(['status' => 'success', 'message' => '身份切换成功']);
     }
 
     // 重置用户流量

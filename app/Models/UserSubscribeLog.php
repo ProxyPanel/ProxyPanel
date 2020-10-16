@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 /**
- * 用户订阅地址请求日志
+ * 用户订阅地址请求日志.
  */
 class UserSubscribeLog extends Model
 {

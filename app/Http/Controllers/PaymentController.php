@@ -22,11 +22,9 @@ use Log;
 use Response;
 
 /**
- * 支付控制器
+ * 支付控制器.
  *
  * Class PaymentController
- *
- * @package App\Http\Controllers
  */
 class PaymentController extends Controller
 {
@@ -36,7 +34,7 @@ class PaymentController extends Controller
     {
         self::$method = $request->input('method');
 
-        Log::info(self::$method."回调接口[POST]：".self::$method.var_export($request->all(), true));
+        Log::info(self::$method.'回调接口[POST]：'.self::$method.var_export($request->all(), true));
         self::getClient()->notify($request);
 
         return 0;
@@ -60,7 +58,7 @@ class PaymentController extends Controller
             case 'epay':
                 return new EPay();
             default:
-                Log::error("未知支付：".self::$method);
+                Log::error('未知支付：'.self::$method);
 
                 return false;
         }
@@ -97,13 +95,13 @@ class PaymentController extends Controller
         $goods = Goods::find($goods_id);
         // 充值余额
         if ($credit) {
-            if (!is_numeric($credit) || $credit <= 0) {
+            if (! is_numeric($credit) || $credit <= 0) {
                 return Response::json(['status' => 'fail', 'message' => '充值余额不合规']);
             }
             $amount = $credit;
-            // 购买服务
+        // 购买服务
         } elseif ($goods_id && self::$method) {
-            if (!$goods || !$goods->status) {
+            if (! $goods || ! $goods->status) {
                 return Response::json(['status' => 'fail', 'message' => '订单创建失败：商品已下架']);
             }
             $amount = $goods->price;
@@ -119,7 +117,7 @@ class PaymentController extends Controller
             //非余额付款下，检查在线支付是否开启
             if (self::$method !== 'credit') {
                 // 判断是否开启在线支付
-                if (!sysConfig('is_onlinePay')) {
+                if (! sysConfig('is_onlinePay')) {
                     return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
                 }
 
@@ -142,7 +140,7 @@ class PaymentController extends Controller
             // 使用优惠券 TODO 代码整合至 CouponService
             if ($coupon_sn) {
                 $coupon = Coupon::whereStatus(0)->whereIn('type', [1, 2])->whereSn($coupon_sn)->first();
-                if (!$coupon) {
+                if (! $coupon) {
                     return Response::json(['status' => 'fail', 'message' => '订单创建失败：优惠券不存在']);
                 }
 
@@ -179,7 +177,7 @@ class PaymentController extends Controller
             $order->save();
 
             // 使用优惠券，减少可使用次数
-            if (!empty($coupon)) {
+            if (! empty($coupon)) {
                 if ($coupon->usable_times > 0) {
                     Coupon::whereId($coupon->id)->decrement('usable_times', 1);
                 }
@@ -202,7 +200,7 @@ class PaymentController extends Controller
     {
         $order = Order::find($request->input('id'));
         if ($order) {
-            if (!$order->update(['status' => -1])) {
+            if (! $order->update(['status' => -1])) {
                 return Response::json(['status' => 'fail', 'message' => '关闭订单失败']);
             }
         } else {

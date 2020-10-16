@@ -50,7 +50,7 @@ class OrderService
                 } else {
                     $this->activatePlan();
                 }
-                $this->setCommissionExpense(self::$user);// 返利
+                $this->setCommissionExpense(self::$user); // 返利
                 break;
             default:
                 Log::error('【处理订单】出现错误-未知套餐类型');
@@ -89,16 +89,16 @@ class OrderService
     // 设置预支付套餐
     private function setPrepaidPlan(): bool
     {
-        self::$order->status = 3;// 3为预支付
+        self::$order->status = 3; // 3为预支付
         // 预支付订单, 刷新账号有效时间用于流量重置判断
         return self::$order->save()
-            && self::$user->update(['expired_at' => date('Y-m-d', strtotime(self::$user->expired_at." +".self::$goods->days." days"))]);
+            && self::$user->update(['expired_at' => date('Y-m-d', strtotime(self::$user->expired_at.' +'.self::$goods->days.' days'))]);
     }
 
     // 激活套餐
     private function activatePlan(): bool
     {
-        Order::whereId(self::$order->id)->update(['expired_at' => date('Y-m-d H:i:s', strtotime("+".self::$goods->days." days"))]);
+        Order::whereId(self::$order->id)->update(['expired_at' => date('Y-m-d H:i:s', strtotime('+'.self::$goods->days.' days'))]);
         $oldData = self::$user->transfer_enable;
         $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
@@ -125,17 +125,17 @@ class OrderService
     {
         $data = ['u' => 0, 'd' => 0];
         // 账号有效期
-        if (!$expired_at) {
-            $expired_at = date('Y-m-d', strtotime("+".self::$goods->days." days"));
+        if (! $expired_at) {
+            $expired_at = date('Y-m-d', strtotime('+'.self::$goods->days.' days'));
             foreach (Order::userPrepay(self::$order->user_id)->get() as $paidOrder) {//拿出可能存在的其余套餐, 推算最新的到期时间
                 //取出对应套餐信息
-                $expired_at = date('Y-m-d', strtotime("$expired_at +".$paidOrder->goods->days." days"));
+                $expired_at = date('Y-m-d', strtotime("$expired_at +".$paidOrder->goods->days.' days'));
             }
             $data['expired_at'] = $expired_at;
         }
 
         //账号流量重置日期
-        $nextResetTime = date('Y-m-d', strtotime("+".self::$goods->period." days"));
+        $nextResetTime = date('Y-m-d', strtotime('+'.self::$goods->period.' days'));
         if ($nextResetTime >= $expired_at) {
             $nextResetTime = null;
         }
@@ -171,7 +171,7 @@ class OrderService
     }
 
     /**
-     * 添加返利日志
+     * 添加返利日志.
      *
      * @param  int  $inviteeId  用户ID
      * @param  int  $inviterId  返利对象ID
@@ -198,7 +198,7 @@ class OrderService
     public function activatePrepaidPlan(): bool
     {
         self::$order->update([
-            'expired_at' => date("Y-m-d H:i:s", strtotime("+".self::$goods->days." days")),
+            'expired_at' => date('Y-m-d H:i:s', strtotime('+'.self::$goods->days.' days')),
             'status'     => 2,
         ]);
 

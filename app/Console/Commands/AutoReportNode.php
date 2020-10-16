@@ -23,7 +23,7 @@ class AutoReportNode extends Command
                 $msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
                 foreach ($nodeList as $node) {
                     $log = NodeDailyDataFlow::whereNodeId($node->id)
-                        ->whereDate('created_at', date("Y-m-d", strtotime('-1 days')))
+                        ->whereDate('created_at', date('Y-m-d', strtotime('-1 days')))
                         ->first();
 
                     if ($log) {

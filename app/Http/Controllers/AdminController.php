@@ -28,32 +28,30 @@ use Response;
 use Str;
 
 /**
- * 管理员控制器
+ * 管理员控制器.
  *
  * Class AdminController
- *
- * @package App\Http\Controllers
  */
 class AdminController extends Controller
 {
     public function index()
     {
-        $past = strtotime("-".sysConfig('expire_days')." days");
+        $past = strtotime('-'.sysConfig('expire_days').' days');
 
         $view['expireDays'] = sysConfig('expire_days');
         $view['totalUserCount'] = User::count(); // 总用户数
-        $view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count();// 今日注册用户
+        $view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count(); // 今日注册用户
         $view['enableUserCount'] = User::whereEnable(1)->count(); // 有效用户数
         $view['activeUserCount'] = User::where('t', '>=', $past)->count(); // 活跃用户数
-        $view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past,])->count(); // 不活跃用户数
-        $view['onlineUserCount'] = User::where('t', '>=', strtotime("-10 minutes"))->count(); // 10分钟内在线用户数
+        $view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past])->count(); // 不活跃用户数
+        $view['onlineUserCount'] = User::where('t', '>=', strtotime('-10 minutes'))->count(); // 10分钟内在线用户数
         $view['expireWarningUserCount'] = User::whereBetween('expired_at',
-            [date('Y-m-d'), date('Y-m-d', strtotime("+".sysConfig('expire_days')." days"))])->count(); // 临近过期用户数
+            [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))])->count(); // 临近过期用户数
         $view['largeTrafficUserCount'] = User::whereRaw('(u + d) >= 107374182400')->where('status', '<>', -1)->count(); // 流量超过100G的用户
-        $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal());// 1小时内流量异常用户
+        $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal()); // 1小时内流量异常用户
         $view['nodeCount'] = Node::count();
         $view['unnormalNodeCount'] = Node::whereStatus(0)->count();
-        $view['flowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime("-30 days")))->sum('total'));
+        $view['flowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime('-30 days')))->sum('total'));
         $view['todayFlowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total'));
         $view['totalFlowCount'] = flowAutoShow(NodeDailyDataFlow::sum('total'));
         $view['totalCredit'] = User::where('credit', '<>', 0)->sum('credit') / 100;
@@ -76,7 +74,7 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
             $new_password = $request->input('new_password');
 
-            if (!Hash::check($request->input('old_password'), Auth::getUser()->password)) {
+            if (! Hash::check($request->input('old_password'), Auth::getUser()->password)) {
                 return Redirect::back()->withErrors('旧密码错误，请重新输入');
             }
 
@@ -85,7 +83,7 @@ class AdminController extends Controller
             }
 
             $ret = Auth::getUser()->update(['password' => $new_password]);
-            if (!$ret) {
+            if (! $ret) {
                 return Redirect::back()->withErrors('修改失败');
             }
 
@@ -116,7 +114,7 @@ class AdminController extends Controller
             $obj->invitee_id = 0;
             $obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
             $obj->status = 0;
-            $obj->dateline = date('Y-m-d H:i:s', strtotime("+".sysConfig('admin_invite_days')." days"));
+            $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('admin_invite_days').' days'));
             $obj->save();
         }
 
@@ -169,5 +167,8 @@ class AdminController extends Controller
         return view('admin.config.config', $view);
     }
 
-    public function getPort(): int { return Helpers::getPort(); }
+    public function getPort(): int
+    {
+        return Helpers::getPort();
+    }
 }

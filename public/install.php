@@ -1,6 +1,6 @@
 <?php
 /**
- *ProxyPanel安装程序
+ *ProxyPanel安装程序.
  *
  * 安装完成后建议删除此文件
  *
@@ -11,16 +11,16 @@
 // ini_set('display_errors', '1');
 define('DS', DIRECTORY_SEPARATOR); // 定义目录分隔符
 define('ROOT_PATH', __DIR__.DS.'..'.DS); // 定义根目录
-define('DB_PATH', ROOT_PATH.'sql'.DS.'db.sql');// 数据库
+define('DB_PATH', ROOT_PATH.'sql'.DS.'db.sql'); // 数据库
 
 // 判断文件或目录是否有写的权限
 function is_really_writable($file)
 {
-    if (DIRECTORY_SEPARATOR == '/' and @ ini_get("safe_mode") == false) {
+    if (DIRECTORY_SEPARATOR == '/' and @ini_get('safe_mode') == false) {
         return is_writable($file);
     }
 
-    if (!is_file($file) or ($fp = @fopen($file, "r+")) === false) {
+    if (! is_file($file) or ($fp = @fopen($file, 'r+')) === false) {
         return false;
     }
 
@@ -29,7 +29,7 @@ function is_really_writable($file)
     return true;
 }
 
-$name = "ProxyPanel";
+$name = 'ProxyPanel';
 
 // 检测依赖组件目录是否存在
 $checkDirs = [
@@ -48,16 +48,16 @@ $exampleConfigFile = ROOT_PATH.'.env.example';
 // 锁定的文件
 $lockFile = ROOT_PATH.'.env';
 if (is_file($lockFile)) {
-    $errInfo = "如果需要重新安装，请备份数据库后手动移除 .env 文件";
+    $errInfo = '如果需要重新安装，请备份数据库后手动移除 .env 文件';
 } elseif (version_compare(PHP_VERSION, '7.3.0', '<')) {
-    $errInfo = "当前PHP版本(".PHP_VERSION.")过低，请使用PHP7.3.0及以上版本";
+    $errInfo = '当前PHP版本('.PHP_VERSION.')过低，请使用PHP7.3.0及以上版本';
 } elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $errInfo = "当前系统环境为Windows，无法进行安装";
-} elseif (!is_file($exampleConfigFile)) {
-    $errInfo = "缺失标准配置文件 .env.example";
-} elseif (!extension_loaded("PDO")) {
-    $errInfo = "当前PHP环境未启用PDO组件，无法进行安装";
-} elseif (!is_really_writable(ROOT_PATH)) {
+    $errInfo = '当前系统环境为Windows，无法进行安装';
+} elseif (! is_file($exampleConfigFile)) {
+    $errInfo = '缺失标准配置文件 .env.example';
+} elseif (! extension_loaded('PDO')) {
+    $errInfo = '当前PHP环境未启用PDO组件，无法进行安装';
+} elseif (! is_really_writable(ROOT_PATH)) {
     $open_basedir = ini_get('open_basedir');
     if ($open_basedir) {
         $dirArr = explode(PATH_SEPARATOR, $open_basedir);
@@ -66,14 +66,14 @@ if (is_file($lockFile)) {
         }
     }
 
-    if (!$errInfo) {
+    if (! $errInfo) {
         $errInfo = '权限不足，无法写入配置文件.env';
     }
 } else {
     $dirArr = [];
     foreach ($checkDirs as $k => $v) {
-        if (!is_dir(ROOT_PATH.$v)) {
-            $errInfo = '请先在'.$name."根目录下执行<b>php composer.phar install</b> 安装依赖";
+        if (! is_dir(ROOT_PATH.$v)) {
+            $errInfo = '请先在'.$name.'根目录下执行<b>php composer.phar install</b> 安装依赖';
             break;
         }
     }
@@ -102,25 +102,25 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         // 检测能否读取数据库文件
         $sql = @file_get_contents(DB_PATH);
-        if (!$sql) {
-            throw new Exception("无法读取所需的".DB_PATH."，请检查是否有读权限");
+        if (! $sql) {
+            throw new Exception('无法读取所需的'.DB_PATH.'，请检查是否有读权限');
         }
 
         $config = @file_get_contents($exampleConfigFile);
-        if (!$config) {
-            throw new Exception("无法读取配置.env.example文件，请检查是否有读权限");
+        if (! $config) {
+            throw new Exception('无法读取配置.env.example文件，请检查是否有读权限');
         }
 
         $pdo = new PDO("mysql:host={$DB_HOST};port={$DB_PORT}", $DB_USERNAME, $DB_PASSWORD, [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         ]);
 
         // 检测是否支持innodb存储引擎
         $pdoStatement = $pdo->query("SHOW VARIABLES LIKE 'innodb_version'");
         $result = $pdoStatement->fetch();
-        if (!$result) {
-            throw new Exception("当前数据库不支持innodb存储引擎，请开启后再重新尝试安装");
+        if (! $result) {
+            throw new Exception('当前数据库不支持innodb存储引擎，请开启后再重新尝试安装');
         }
 
         $pdo->query("CREATE DATABASE IF NOT EXISTS `{$DB_DATABASE}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
@@ -137,11 +137,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $config = preg_replace_callback("/(APP_KEY|DB_HOST|DB_DATABASE|DB_USERNAME|DB_PASSWORD|DB_PORT)=(.*)(\s+)/",
             $callback, $config);
         $result = @file_put_contents($ConfigFile, $config);
-        if (!$result) {
-            throw new Exception("无法写入数据库信息到.env文件，请检查是否有写权限");
+        if (! $result) {
+            throw new Exception('无法写入数据库信息到.env文件，请检查是否有写权限');
         }
 
-        echo "success";
+        echo 'success';
     } catch (PDOException $e) {
         $err = $e->getMessage();
     } catch (Exception $e) {
@@ -290,13 +290,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     <div>
         <form method="post">
             <?php
-            if ($errInfo): ?>
+            if ($errInfo) { ?>
                 <div class="error">
                     <?php
                     echo $errInfo; ?>
                 </div>
             <?php
-            endif; ?>
+            } ?>
             <div id="error" style="display:none"></div>
             <div id="success" style="display:none"></div>
 

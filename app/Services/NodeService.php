@@ -33,7 +33,7 @@ class NodeService
         // 先删除所有该节点的标签
         NodeLabel::whereNodeId($nodeId)->delete();
 
-        if (!empty($labels) && is_array($labels)) {
+        if (! empty($labels) && is_array($labels)) {
             foreach ($labels as $label) {
                 $nodeLabel = new NodeLabel();
                 $nodeLabel->node_id = $nodeId;

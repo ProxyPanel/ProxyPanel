@@ -12,7 +12,7 @@ class NodeRequest extends FormRequest
             'type'           => 'required|between:1,3',
             'name'           => 'required',
             'country_code'   => 'required',
-            'server'         => 'required_if:is_ddns,1|nullable|ends_with:'.implode(",", config('domains')),
+            'server'         => 'required_if:is_ddns,1|nullable|ends_with:'.implode(',', config('domains')),
             'push_port'      => 'numeric|between:0,65535',
             'traffic_rate'   => 'required|numeric|min:0',
             'level'          => 'required|numeric|between:0,255',

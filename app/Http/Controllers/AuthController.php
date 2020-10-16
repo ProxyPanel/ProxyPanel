@@ -30,11 +30,9 @@ use Str;
 use Validator;
 
 /**
- * 认证控制器
+ * 认证控制器.
  *
  * Class AuthController
- *
- * @package App\Http\Controllers
  */
 class AuthController extends Controller
 {
@@ -65,17 +63,17 @@ class AuthController extends Controller
             }
 
             // 验证账号并创建会话
-            if (!Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
+            if (! Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
             }
             $user = Auth::getUser();
 
-            if (!$user) {
+            if (! $user) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
             }
 
             // 校验普通用户账号状态
-            if (!$user->is_admin) {
+            if (! $user->is_admin) {
                 if ($user->status < 0) {
                     Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
@@ -119,7 +117,7 @@ class AuthController extends Controller
     {
         switch (sysConfig('is_captcha')) {
             case 1: // 默认图形验证码
-                if (!Captcha::check($request->input('captcha'))) {
+                if (! Captcha::check($request->input('captcha'))) {
                     return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
                 }
                 break;
@@ -160,7 +158,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 添加用户登录日志
+     * 添加用户登录日志.
      *
      * @param  int  $userId  用户ID
      * @param  string  $ip  IP地址
@@ -170,7 +168,7 @@ class AuthController extends Controller
         $ipLocation = IP::getIPInfo($ip);
 
         if (empty($ipLocation) || empty($ipLocation['country'])) {
-            Log::warning("获取IP信息异常：".$ip);
+            Log::warning('获取IP信息异常：'.$ip);
         }
 
         $log = new UserLoginLog();
@@ -184,7 +182,6 @@ class AuthController extends Controller
         $log->area = $ipLocation['area'] ?? '';
         $log->save();
     }
-
 
     // 退出
     public function logout(): RedirectResponse
@@ -238,7 +235,7 @@ class AuthController extends Controller
             Session::forget('register_token');
 
             // 是否开启注册
-            if (!sysConfig('is_register')) {
+            if (! sysConfig('is_register')) {
                 return Redirect::back()->withErrors(trans('auth.register_close'));
             }
 
@@ -264,12 +261,12 @@ class AuthController extends Controller
 
             // 注册前发送激活码
             if (sysConfig('is_activate_account') == 1) {
-                if (!$verify_code) {
+                if (! $verify_code) {
                     return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha_null'));
                 }
 
                 $verifyCode = VerifyCode::whereAddress($email)->whereCode($verify_code)->whereStatus(0)->first();
-                if (!$verifyCode) {
+                if (! $verifyCode) {
                     return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha_overtime'));
                 }
 
@@ -307,7 +304,7 @@ class AuthController extends Controller
             $uid = Helpers::addUser($email, $password, $transfer_enable, sysConfig('default_days'), $inviter_id);
 
             // 注册失败，抛出异常
-            if (!$uid) {
+            if (! $uid) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
             }
             // 更新昵称
@@ -376,17 +373,17 @@ class AuthController extends Controller
                         return Redirect::back()->withErrors(trans('auth.email_banned'));
                     }
 
-                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_banned'),]);
+                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_banned')]);
                 }
                 break;
             //白名单
             case 2:
-                if (!in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+                if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
                     if ($returnType) {
                         return Redirect::back()->withErrors(trans('auth.email_invalid'));
                     }
 
-                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid'),]);
+                    return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
                 }
                 break;
             default:
@@ -394,14 +391,14 @@ class AuthController extends Controller
                     return Redirect::back()->withErrors(trans('auth.email_invalid'));
                 }
 
-                return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid'),]);
+                return Response::json(['status' => 'fail', 'message' => trans('auth.email_invalid')]);
         }
 
         return false;
     }
 
     /**
-     * 获取AFF
+     * 获取AFF.
      *
      * @param  string|null  $code  邀请码
      * @param  int|null  $aff  URL中的aff参数
@@ -410,7 +407,7 @@ class AuthController extends Controller
      */
     private function getAff($code = null, $aff = null): array
     {
-        $data = ['inviter_id' => null, 'code_id' => 0];// 邀请人ID 与 邀请码ID
+        $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
 
         // 有邀请码先用邀请码，用谁的邀请码就给谁返利
         if ($code) {
@@ -422,7 +419,7 @@ class AuthController extends Controller
         }
 
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
-        if (!$data['inviter_id']) {
+        if (! $data['inviter_id']) {
             // 检查一下cookie里有没有aff
             $cookieAff = \Request::hasCookie('register_aff') ? \Request::cookie('register_aff') : 0;
             if ($cookieAff) {
@@ -468,13 +465,13 @@ class AuthController extends Controller
             $email = $request->input('email');
 
             // 是否开启重设密码
-            if (!sysConfig('is_reset_password')) {
+            if (! sysConfig('is_reset_password')) {
                 return Redirect::back()->withErrors(trans('auth.reset_password_close', ['email' => sysConfig('webmaster_email')]));
             }
 
             // 查找账号
             $user = User::whereEmail($email)->first();
-            if (!$user) {
+            if (! $user) {
                 return Redirect::back()->withErrors(trans('auth.email_notExist'));
             }
 
@@ -507,7 +504,7 @@ class AuthController extends Controller
     // 重设密码
     public function reset(Request $request, $token)
     {
-        if (!$token) {
+        if (! $token) {
             return Redirect::route('login');
         }
 
@@ -531,7 +528,7 @@ class AuthController extends Controller
             // 校验账号
             $verify = Verify::type(1)->whereToken($token)->first();
             $user = $verify->user;
-            if (!$verify) {
+            if (! $verify) {
                 return Redirect::route('login');
             }
 
@@ -548,7 +545,7 @@ class AuthController extends Controller
             }
 
             // 更新密码
-            if (!$user->update(['password' => $password])) {
+            if (! $user->update(['password' => $password])) {
                 return Redirect::back()->withErrors(trans('auth.reset_password_fail'));
             }
 
@@ -560,7 +557,7 @@ class AuthController extends Controller
         }
 
         $verify = Verify::type(1)->whereToken($token)->first();
-        if (!$verify) {
+        if (! $verify) {
             return Redirect::route('login');
         }
 
@@ -638,13 +635,13 @@ class AuthController extends Controller
     // 激活账号
     public function active($token)
     {
-        if (!$token) {
+        if (! $token) {
             return Redirect::route('login');
         }
 
         $verify = Verify::type(1)->with('user')->whereToken($token)->first();
         $user = $verify->user;
-        if (!$verify) {
+        if (! $verify) {
             return Redirect::route('login');
         }
 
@@ -677,7 +674,7 @@ class AuthController extends Controller
         }
 
         // 更新账号状态
-        if (!$user->update(['status' => 1])) {
+        if (! $user->update(['status' => 1])) {
             Session::flash('errorMsg', trans('auth.active_fail'));
 
             return Redirect::back();
@@ -712,7 +709,7 @@ class AuthController extends Controller
         $email = $request->input('email');
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first(),]);
+            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
         }
         $ip = IP::getClientIP();
 
@@ -767,7 +764,7 @@ class AuthController extends Controller
     // 切换语言
     public function switchLang($locale): RedirectResponse
     {
-        Session::put("locale", $locale);
+        Session::put('locale', $locale);
 
         return Redirect::back();
     }

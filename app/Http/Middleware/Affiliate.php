@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class Affiliate
 {
     /**
-     * 返利识别
+     * 返利识别.
      *
      * @param  Request  $request
      * @param  Closure  $next
