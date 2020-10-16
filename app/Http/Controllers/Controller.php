@@ -45,7 +45,7 @@ class Controller extends BaseController
             }
 
             $pos *= $base;
-            while (!feof($fp)) {
+            while (! feof($fp)) {
                 array_unshift($lines, fgets($fp));
             }
         }
@@ -64,7 +64,7 @@ class Controller extends BaseController
     {
         $fp = fopen($file, 'rb');
         $i = 0;
-        while (!feof($fp)) {
+        while (! feof($fp)) {
             //每次读取2M
             if ($data = fread($fp, 1024 * 1024 * 2)) {
                 //计算读取到的行数
@@ -94,9 +94,9 @@ class Controller extends BaseController
             $directory = date('Ymd');
             $path = '/assets/images/qrcode/'.$directory.'/';
             // 检查是否有该文件夹，如果没有就创建，并给予最高权限
-            if (!file_exists(public_path($path))
-                && !mkdir($concurrentDirectory = public_path($path), 0755, true)
-                && !is_dir($concurrentDirectory)) {
+            if (! file_exists(public_path($path))
+                && ! mkdir($concurrentDirectory = public_path($path), 0755, true)
+                && ! is_dir($concurrentDirectory)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
 

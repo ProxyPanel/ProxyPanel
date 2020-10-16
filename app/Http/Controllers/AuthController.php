@@ -63,17 +63,17 @@ class AuthController extends Controller
             }
 
             // 验证账号并创建会话
-            if (!Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
+            if (! Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
             }
             $user = Auth::getUser();
 
-            if (!$user) {
+            if (! $user) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
             }
 
             // 校验普通用户账号状态
-            if (!$user->is_admin) {
+            if (! $user->is_admin) {
                 if ($user->status < 0) {
                     Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
@@ -117,7 +117,7 @@ class AuthController extends Controller
     {
         switch (sysConfig('is_captcha')) {
             case 1: // 默认图形验证码
-                if (!Captcha::check($request->input('captcha'))) {
+                if (! Captcha::check($request->input('captcha'))) {
                     return Redirect::back()->withInput()->withErrors(trans('auth.captcha_error'));
                 }
                 break;
@@ -235,7 +235,7 @@ class AuthController extends Controller
             Session::forget('register_token');
 
             // 是否开启注册
-            if (!sysConfig('is_register')) {
+            if (! sysConfig('is_register')) {
                 return Redirect::back()->withErrors(trans('auth.register_close'));
             }
 
@@ -261,12 +261,12 @@ class AuthController extends Controller
 
             // 注册前发送激活码
             if (sysConfig('is_activate_account') == 1) {
-                if (!$verify_code) {
+                if (! $verify_code) {
                     return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha_null'));
                 }
 
                 $verifyCode = VerifyCode::whereAddress($email)->whereCode($verify_code)->whereStatus(0)->first();
-                if (!$verifyCode) {
+                if (! $verifyCode) {
                     return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha_overtime'));
                 }
 
@@ -304,7 +304,7 @@ class AuthController extends Controller
             $uid = Helpers::addUser($email, $password, $transfer_enable, sysConfig('default_days'), $inviter_id);
 
             // 注册失败，抛出异常
-            if (!$uid) {
+            if (! $uid) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
             }
             // 更新昵称
@@ -378,7 +378,7 @@ class AuthController extends Controller
                 break;
             //白名单
             case 2:
-                if (!in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+                if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
                     if ($returnType) {
                         return Redirect::back()->withErrors(trans('auth.email_invalid'));
                     }
@@ -419,7 +419,7 @@ class AuthController extends Controller
         }
 
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
-        if (!$data['inviter_id']) {
+        if (! $data['inviter_id']) {
             // 检查一下cookie里有没有aff
             $cookieAff = \Request::hasCookie('register_aff') ? \Request::cookie('register_aff') : 0;
             if ($cookieAff) {
@@ -465,13 +465,13 @@ class AuthController extends Controller
             $email = $request->input('email');
 
             // 是否开启重设密码
-            if (!sysConfig('is_reset_password')) {
+            if (! sysConfig('is_reset_password')) {
                 return Redirect::back()->withErrors(trans('auth.reset_password_close', ['email' => sysConfig('webmaster_email')]));
             }
 
             // 查找账号
             $user = User::whereEmail($email)->first();
-            if (!$user) {
+            if (! $user) {
                 return Redirect::back()->withErrors(trans('auth.email_notExist'));
             }
 
@@ -504,7 +504,7 @@ class AuthController extends Controller
     // 重设密码
     public function reset(Request $request, $token)
     {
-        if (!$token) {
+        if (! $token) {
             return Redirect::route('login');
         }
 
@@ -528,7 +528,7 @@ class AuthController extends Controller
             // 校验账号
             $verify = Verify::type(1)->whereToken($token)->first();
             $user = $verify->user;
-            if (!$verify) {
+            if (! $verify) {
                 return Redirect::route('login');
             }
 
@@ -545,7 +545,7 @@ class AuthController extends Controller
             }
 
             // 更新密码
-            if (!$user->update(['password' => $password])) {
+            if (! $user->update(['password' => $password])) {
                 return Redirect::back()->withErrors(trans('auth.reset_password_fail'));
             }
 
@@ -557,7 +557,7 @@ class AuthController extends Controller
         }
 
         $verify = Verify::type(1)->whereToken($token)->first();
-        if (!$verify) {
+        if (! $verify) {
             return Redirect::route('login');
         }
 
@@ -635,13 +635,13 @@ class AuthController extends Controller
     // 激活账号
     public function active($token)
     {
-        if (!$token) {
+        if (! $token) {
             return Redirect::route('login');
         }
 
         $verify = Verify::type(1)->with('user')->whereToken($token)->first();
         $user = $verify->user;
-        if (!$verify) {
+        if (! $verify) {
             return Redirect::route('login');
         }
 
@@ -674,7 +674,7 @@ class AuthController extends Controller
         }
 
         // 更新账号状态
-        if (!$user->update(['status' => 1])) {
+        if (! $user->update(['status' => 1])) {
             Session::flash('errorMsg', trans('auth.active_fail'));
 
             return Redirect::back();

@@ -59,7 +59,7 @@ class ShopController extends Controller
         if ($request->hasFile('logo')) {
             $logo = 'upload/'.$request->file('logo')->store('images');
 
-            if (!$logo) {
+            if (! $logo) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
         }
@@ -102,7 +102,7 @@ class ShopController extends Controller
         if ($request->hasFile('logo')) {
             $logo = 'upload/'.$request->file('logo')->store('images');
 
-            if (!$logo) {
+            if (! $logo) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
             $data['logo'] = $logo;

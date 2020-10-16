@@ -53,7 +53,7 @@ class CountryController extends Controller
         }
 
         $country = Country::find($code);
-        if (!$country) {
+        if (! $country) {
             return Response::json(['status' => 'fail', 'message' => '国家/地区不存在']);
         }
 
@@ -80,7 +80,7 @@ class CountryController extends Controller
     public function destroy($code): ?JsonResponse
     {
         $country = Country::find($code);
-        if (!$country) {
+        if (! $country) {
             return Response::json(['status' => 'fail', 'message' => '国家/地区不存在']);
         }
 

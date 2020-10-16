@@ -140,7 +140,7 @@ class OrderService
     {
         $data = ['u' => 0, 'd' => 0];
         // 账号有效期
-        if (!$expired_at) {
+        if (! $expired_at) {
             $expired_at = date('Y-m-d', strtotime('+'.self::$goods->days.' days'));
             foreach (Order::userPrepay(self::$order->user_id)->get() as $paidOrder) {//拿出可能存在的其余套餐, 推算最新的到期时间
                 //取出对应套餐信息

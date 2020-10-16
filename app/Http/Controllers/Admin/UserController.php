@@ -205,7 +205,7 @@ class UserController extends Controller
 
             // 非演示环境才可以修改管理员密码
             $password = $request->input('password');
-            if (!empty($password) && !(env('APP_DEMO') && $id === 1)) {
+            if (! empty($password) && ! (env('APP_DEMO') && $id === 1)) {
                 $data['password'] = $password;
             }
 
@@ -280,7 +280,7 @@ class UserController extends Controller
         $id = $request->input('user_id');
 
         $user = User::find($id);
-        if (!$user) {
+        if (! $user) {
             return Response::json(['status' => 'fail', 'message' => '用户不存在']);
         }
 

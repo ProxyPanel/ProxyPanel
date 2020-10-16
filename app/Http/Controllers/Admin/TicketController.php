@@ -50,7 +50,7 @@ class TicketController extends Controller
 
         $user = User::find($id) ?: User::whereEmail($email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return Response::json(['status' => 'fail', 'message' => '用户不存在']);
         }
 
@@ -106,7 +106,7 @@ class TicketController extends Controller
             $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
 
             // 发通知邮件
-            if (!Auth::getUser()->is_admin) {
+            if (! Auth::getUser()->is_admin) {
                 if (sysConfig('webmaster_email')) {
                     $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
                     Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
@@ -128,12 +128,12 @@ class TicketController extends Controller
     public function destroy($id)
     {
         $ticket = Ticket::with('user')->whereId($id)->first();
-        if (!$ticket) {
+        if (! $ticket) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 
         $ret = Ticket::whereId($id)->update(['status' => 2]);
-        if (!$ret) {
+        if (! $ret) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 

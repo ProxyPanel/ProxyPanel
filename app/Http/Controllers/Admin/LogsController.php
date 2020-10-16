@@ -35,7 +35,9 @@ class LogsController extends Controller
         $query = Order::with(['user:id,email', 'goods:id,name', 'coupon:id,name,sn']);
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
         if (isset($order_sn)) {
             $query->where('order_sn', 'like', '%'.$order_sn.'%');
@@ -94,7 +96,9 @@ class LogsController extends Controller
         $query = UserDataFlowLog::with(['user', 'node']);
 
         if (isset($port)) {
-            $query->whereHas('user', static function ($q) use ($port) { $q->wherePort($port); });
+            $query->whereHas('user', static function ($q) use ($port) {
+                $q->wherePort($port);
+            });
         }
 
         if (isset($user_id)) {
@@ -102,7 +106,9 @@ class LogsController extends Controller
         }
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
 
         if (isset($nodeId)) {
@@ -169,19 +175,27 @@ class LogsController extends Controller
         }
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
 
         if (isset($port)) {
-            $query->whereHas('user', static function ($q) use ($port) { $q->wherePort($port); });
+            $query->whereHas('user', static function ($q) use ($port) {
+                $q->wherePort($port);
+            });
         }
 
         if (isset($nodeId)) {
-            $query->whereHas('node', static function ($q) use ($nodeId) { $q->whereId($nodeId); });
+            $query->whereHas('node', static function ($q) use ($nodeId) {
+                $q->whereId($nodeId);
+            });
         }
 
         if (isset($id)) {
-            $query->whereHas('user', static function ($q) use ($id) { $q->whereId($id); });
+            $query->whereHas('user', static function ($q) use ($id) {
+                $q->whereId($id);
+            });
         }
 
         $onlineIPLogs = $query->groupBy('user_id', 'node_id')->latest()->paginate(20)->appends($request->except('page'));
@@ -209,7 +223,9 @@ class LogsController extends Controller
         $query = UserCreditLog::with('user:id,email')->latest();
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
 
         $view['list'] = $query->paginate(15)->appends($request->except('page'));
@@ -225,7 +241,9 @@ class LogsController extends Controller
         $query = UserBanedLog::with('user:id,email,t')->latest();
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
 
         $view['list'] = $query->paginate(15)->appends($request->except('page'));
@@ -241,7 +259,9 @@ class LogsController extends Controller
         $query = UserDataModifyLog::with(['user:id,email', 'order.goods:id,name']);
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
 
         $view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));

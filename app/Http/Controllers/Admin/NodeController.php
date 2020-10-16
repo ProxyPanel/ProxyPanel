@@ -187,7 +187,7 @@ class NodeController extends Controller
     public function nodeMonitor($id)
     {
         $node = Node::find($id);
-        if (!$node) {
+        if (! $node) {
             Session::flash('errorMsg', '节点不存在，请重试');
 
             return Redirect::back();

@@ -7,7 +7,7 @@
  */
 
 // 判断是否安装ProxyPanel
-if (!is_file(__DIR__.'/../.env')) {
+if (! is_file(__DIR__.'/../.env')) {
     header('location:./install.php');
     exit;
 }

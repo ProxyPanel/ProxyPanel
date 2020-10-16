@@ -97,7 +97,7 @@ class AutoJob extends Command
         if (sysConfig('is_subscribe_ban')) {
             $subscribe_ban_times = sysConfig('subscribe_ban_times');
             foreach (User::activeUser()->with('subscribe')->get() as $user) {
-                if (!$user->subscribe || $user->subscribe->status === 0) { // 无订阅链接 或 已封
+                if (! $user->subscribe || $user->subscribe->status === 0) { // 无订阅链接 或 已封
                     continue;
                 }
                 // 24小时内不同IP的请求次数
@@ -223,7 +223,7 @@ class AutoJob extends Command
             $onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
             foreach (Node::whereIsRelay(0)->whereStatus(1)->get() as $node) {
                 // 10分钟内无节点负载信息则认为是后端炸了
-                $nodeTTL = !in_array($node->id, $onlineNode, true);
+                $nodeTTL = ! in_array($node->id, $onlineNode, true);
                 if ($nodeTTL && $offlineCheckTimes) {
                     // 已通知次数
                     $cacheKey = 'offline_check_times'.$node->id;

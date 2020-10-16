@@ -58,12 +58,16 @@ class Order extends Model
 
     public function scopeActivePlan($query)
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($list) { $list->whereType(2); });
+        return $query->active()->with('goods')->whereHas('goods', static function ($list) {
+            $list->whereType(2);
+        });
     }
 
     public function scopeActivePackage($query)
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($list) { $list->whereType(1); });
+        return $query->active()->with('goods')->whereHas('goods', static function ($list) {
+            $list->whereType(1);
+        });
     }
 
     public function scopeUserActivePlan($query, $uid = null)

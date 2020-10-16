@@ -46,7 +46,7 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::getUser();
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
         $totalTransfer = $user->transfer_enable;
@@ -76,7 +76,7 @@ class UserController extends Controller
     {
         $user = Auth::getUser();
         // 系统开启登录加积分功能才可以签到
-        if (!sysConfig('is_checkin')) {
+        if (! sysConfig('is_checkin')) {
             return Response::json(['status' => 'fail', 'message' => '系统未开启签到功能']);
         }
 
@@ -87,7 +87,7 @@ class UserController extends Controller
 
         $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MB;
 
-        if (!(new UserService())->incrementData($traffic)) {
+        if (! (new UserService())->incrementData($traffic)) {
             return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
         }
 
@@ -134,7 +134,7 @@ class UserController extends Controller
             $node->hk = round($data->pluck('hk')->filter()->avg(), 2);
 
             // 节点在线状态
-            $node->offline = !in_array($node->id, $onlineNode, true);
+            $node->offline = ! in_array($node->id, $onlineNode, true);
         }
         $view['nodeList'] = $nodeList ?? [];
 
@@ -163,7 +163,7 @@ class UserController extends Controller
 
             // 修改密码
             if ($old_password && $new_password) {
-                if (!Hash::check($old_password, $user->password)) {
+                if (! Hash::check($old_password, $user->password)) {
                     return Redirect::back()->withErrors('旧密码错误，请重新输入');
                 }
 
@@ -176,7 +176,7 @@ class UserController extends Controller
                     return Redirect::back()->withErrors('演示环境禁止修改管理员密码');
                 }
 
-                if (!$user->update(['password' => $new_password])) {
+                if (! $user->update(['password' => $new_password])) {
                     return Redirect::back()->withErrors('修改失败');
                 }
 
@@ -185,7 +185,7 @@ class UserController extends Controller
             }
 
             if ($passwd) {
-                if (!$user->update(['passwd' => $passwd])) {
+                if (! $user->update(['passwd' => $passwd])) {
                     return Redirect::back()->withErrors('修改失败');
                 }
 
@@ -197,7 +197,7 @@ class UserController extends Controller
                 return Redirect::back()->withErrors('修改失败,昵称不能为空值');
             }
 
-            if (!$user->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq])) {
+            if (! $user->update(['username' => $username, 'wechat' => $wechat, 'qq' => $qq])) {
                 return Redirect::back()->withErrors('修改失败');
             }
 
@@ -456,7 +456,7 @@ class UserController extends Controller
         }
 
         $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->first();
-        if (!$coupon) {
+        if (! $coupon) {
             return Response::json(['status' => 'fail', 'title' => '优惠券不存在', 'message' => '请确认优惠券是否输入正确！']);
         }
 
@@ -573,7 +573,7 @@ class UserController extends Controller
     // 转换成管理员的身份
     public function switchToAdmin(): JsonResponse
     {
-        if (!Session::has('admin')) {
+        if (! Session::has('admin')) {
             return Response::json(['status' => 'fail', 'message' => '非法请求']);
         }
 
@@ -592,7 +592,9 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'coupon_sn' => [
-                'required', Rule::exists('coupon', 'sn')->where(static function ($query) { $query->whereType(3)->whereStatus(0); }),
+                'required', Rule::exists('coupon', 'sn')->where(static function ($query) {
+                    $query->whereType(3)->whereStatus(0);
+                }),
             ],
         ], ['coupon_sn.required' => '券码不能为空', 'coupon_sn.exists' => '该券不可用']);
 

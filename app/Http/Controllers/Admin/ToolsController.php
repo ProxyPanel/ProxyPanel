@@ -115,7 +115,7 @@ class ToolsController extends Controller
             $filePath = public_path('downloads/decompile.json');
         }
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             exit('文件不存在，请检查目录权限');
         }
 
@@ -126,7 +126,7 @@ class ToolsController extends Controller
     public function import(Request $request)
     {
         if ($request->isMethod('POST')) {
-            if (!$request->hasFile('uploadFile')) {
+            if (! $request->hasFile('uploadFile')) {
                 Session::flash('errorMsg', '请选择要上传的文件');
 
                 return Redirect::back();
@@ -141,7 +141,7 @@ class ToolsController extends Controller
                 return Redirect::back();
             }
 
-            if (!$file->isValid()) {
+            if (! $file->isValid()) {
                 Session::flash('errorMsg', '产生未知错误，请重新上传');
 
                 return Redirect::back();
@@ -154,7 +154,7 @@ class ToolsController extends Controller
             // 读取文件内容
             $data = file_get_contents($save_path.'/'.$new_name);
             $data = json_decode($data, true);
-            if (!$data) {
+            if (! $data) {
                 Session::flash('errorMsg', '内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
 
                 return Redirect::back();
@@ -202,7 +202,7 @@ class ToolsController extends Controller
     public function analysis()
     {
         $file = storage_path('app/ssserver.log');
-        if (!file_exists($file)) {
+        if (! file_exists($file)) {
             Session::flash('analysisErrorMsg', $file.' 不存在，请先创建文件');
 
             return view('admin.tools.analysis');
@@ -219,7 +219,7 @@ class ToolsController extends Controller
                 }
 
                 preg_match('/TCP request (\w+\.){2}\w+/', $log, $tcp_matches);
-                if (!empty($tcp_matches)) {
+                if (! empty($tcp_matches)) {
                     $url[] = str_replace('TCP request ', '[TCP] ', $tcp_matches[0]);
                 } else {
                     preg_match(
@@ -227,7 +227,7 @@ class ToolsController extends Controller
                         $log,
                         $udp_matches
                     );
-                    if (!empty($udp_matches)) {
+                    if (! empty($udp_matches)) {
                         $url[] = str_replace('UDP data to ', '[UDP] ', $udp_matches[0]);
                     }
                 }

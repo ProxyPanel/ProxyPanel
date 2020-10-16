@@ -20,7 +20,7 @@ function is_really_writable($file)
         return is_writable($file);
     }
 
-    if (!is_file($file) or ($fp = @fopen($file, 'r+')) === false) {
+    if (! is_file($file) or ($fp = @fopen($file, 'r+')) === false) {
         return false;
     }
 
@@ -53,11 +53,11 @@ if (is_file($lockFile)) {
     $errInfo = '当前PHP版本('.PHP_VERSION.')过低，请使用PHP7.3.0及以上版本';
 } elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $errInfo = '当前系统环境为Windows，无法进行安装';
-} elseif (!is_file($exampleConfigFile)) {
+} elseif (! is_file($exampleConfigFile)) {
     $errInfo = '缺失标准配置文件 .env.example';
-} elseif (!extension_loaded('PDO')) {
+} elseif (! extension_loaded('PDO')) {
     $errInfo = '当前PHP环境未启用PDO组件，无法进行安装';
-} elseif (!is_really_writable(ROOT_PATH)) {
+} elseif (! is_really_writable(ROOT_PATH)) {
     $open_basedir = ini_get('open_basedir');
     if ($open_basedir) {
         $dirArr = explode(PATH_SEPARATOR, $open_basedir);
@@ -66,13 +66,13 @@ if (is_file($lockFile)) {
         }
     }
 
-    if (!$errInfo) {
+    if (! $errInfo) {
         $errInfo = '权限不足，无法写入配置文件.env';
     }
 } else {
     $dirArr = [];
     foreach ($checkDirs as $k => $v) {
-        if (!is_dir(ROOT_PATH.$v)) {
+        if (! is_dir(ROOT_PATH.$v)) {
             $errInfo = '请先在'.$name.'根目录下执行<b>php composer.phar install</b> 安装依赖';
             break;
         }
@@ -102,12 +102,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         // 检测能否读取数据库文件
         $sql = @file_get_contents(DB_PATH);
-        if (!$sql) {
+        if (! $sql) {
             throw new Exception('无法读取所需的'.DB_PATH.'，请检查是否有读权限');
         }
 
         $config = @file_get_contents($exampleConfigFile);
-        if (!$config) {
+        if (! $config) {
             throw new Exception('无法读取配置.env.example文件，请检查是否有读权限');
         }
 
@@ -119,7 +119,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         // 检测是否支持innodb存储引擎
         $pdoStatement = $pdo->query("SHOW VARIABLES LIKE 'innodb_version'");
         $result = $pdoStatement->fetch();
-        if (!$result) {
+        if (! $result) {
             throw new Exception('当前数据库不支持innodb存储引擎，请开启后再重新尝试安装');
         }
 
@@ -140,7 +140,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $config
         );
         $result = @file_put_contents($ConfigFile, $config);
-        if (!$result) {
+        if (! $result) {
             throw new Exception('无法写入数据库信息到.env文件，请检查是否有写权限');
         }
 

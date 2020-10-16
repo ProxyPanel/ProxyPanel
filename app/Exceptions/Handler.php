@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         // 调试模式下直接返回错误信息，非调试模式下渲染在返回
-        if (!config('app.debug')) {
+        if (! config('app.debug')) {
             switch ($exception) {
                 case $exception instanceof NotFoundHttpException: // 捕获访问异常
                     Log::info('异常请求：'.$request->fullUrl().'，IP：'.IP::getClientIp());

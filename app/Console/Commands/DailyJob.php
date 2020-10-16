@@ -121,7 +121,7 @@ class DailyJob extends Command
             ->get();
         foreach ($userList as $user) {
             // 跳过 没有重置日期的账号
-            if (!$user->reset_time) {
+            if (! $user->reset_time) {
                 continue;
             }
 
@@ -129,7 +129,7 @@ class DailyJob extends Command
             $order = Order::userActivePlan($user->id)->first();
 
             // 无订单用户跳过
-            if (!$order) {
+            if (! $order) {
                 continue;
             }
 

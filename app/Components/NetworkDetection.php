@@ -25,13 +25,13 @@ class NetworkDetection
 
         if ($response->ok()) {
             $message = $response->json();
-            if (!$message) {
+            if (! $message) {
                 Log::warning('【'.$checkName.'阻断检测】检测'.$ip.'时，接口返回异常访问链接：'.$url);
 
                 return false;
             }
 
-            if (!$message['success']) {
+            if (! $message['success']) {
                 if ($message['error'] === 'execute timeout (3s)') {
                     sleep(10);
 
@@ -47,11 +47,11 @@ class NetworkDetection
                 return '通讯正常'; // 正常
             }
 
-            if ($message['firewall-enable'] && !$message['firewall-disable']) {
+            if ($message['firewall-enable'] && ! $message['firewall-disable']) {
                 return '海外阻断'; // 国外访问异常
             }
 
-            if (!$message['firewall-enable'] && $message['firewall-disable']) {
+            if (! $message['firewall-enable'] && $message['firewall-disable']) {
                 return '国内阻断'; // 被墙
             }
 

@@ -23,7 +23,7 @@ class IP
             $ipInfo = self::IPSB($ip);
         } else {
             $ipInfo = self::ip2Region($ip);
-            if (!$ipInfo) {
+            if (! $ipInfo) {
                 Log::info('无法识别，尝试使用【IPIP库】库解析：'.$ip);
                 $ipInfo = self::ip2Location($ip);
             }
@@ -131,7 +131,7 @@ class IP
     // 通过api.map.baidu.com查询IP地址的详细信息
     public static function Baidu(string $ip)
     {
-        if (!env('BAIDU_APP_AK')) {
+        if (! env('BAIDU_APP_AK')) {
             Log::error('【百度IP库】AK信息缺失');
 
             return false;

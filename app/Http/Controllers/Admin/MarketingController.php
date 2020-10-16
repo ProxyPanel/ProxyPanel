@@ -58,7 +58,7 @@ class MarketingController extends Controller
         $title = $request->input('title');
         $content = $request->input('content');
 
-        if (!sysConfig('is_push_bear')) {
+        if (! sysConfig('is_push_bear')) {
             return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
         }
 
@@ -72,7 +72,7 @@ class MarketingController extends Controller
             ]);
 
             $message = $response->json();
-            if (!$message || !$message['code'] === 0 || $response->failed()) { // 失败
+            if (! $message || ! $message['code'] === 0 || $response->failed()) { // 失败
                 $this->addMarketing(2, $title, $content, -1, $message['message']);
 
                 throw new RuntimeException($message['message']);

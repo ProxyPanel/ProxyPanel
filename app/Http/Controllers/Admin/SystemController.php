@@ -29,7 +29,7 @@ class SystemController extends Controller
             // 首页LOGO
             if ($request->hasFile('website_home_logo')) {
                 $ret = 'upload/'.$request->file('website_home_logo')->store('images');
-                if (!$ret) {
+                if (! $ret) {
                     Session::flash('errorMsg', 'LOGO不合法');
 
                     return Redirect::back();
@@ -40,7 +40,7 @@ class SystemController extends Controller
             // 站内LOGO
             if ($request->hasFile('website_logo')) {
                 $ret = 'upload/'.$request->file('website_logo')->store('images');
-                if (!$ret) {
+                if (! $ret) {
                     Session::flash('errorMsg', 'LOGO不合法');
 
                     return Redirect::back();
@@ -80,24 +80,24 @@ class SystemController extends Controller
         $name = $request->input('name');
         $value = $request->input('value');
 
-        if (!$name) {
+        if (! $name) {
             return Response::json(['status' => 'fail', 'message' => '设置失败：请求参数异常']);
         }
 
         // 屏蔽异常配置
-        if (!in_array($name, Config::pluck('name')->toArray(), true)) {
+        if (! in_array($name, Config::pluck('name')->toArray(), true)) {
             return Response::json(['status' => 'fail', 'message' => '设置失败：配置不存在']);
         }
 
         // 如果开启用户邮件重置密码，则先设置网站名称和网址
         if ($value !== '0' && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'], true)) {
             $config = Config::find('website_name');
-            if (!$config->value) {
+            if (! $config->value) {
                 return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
             }
 
             $config = Config::find('website_url');
-            if (!$config->value) {
+            if (! $config->value) {
                 return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
             }
         }
@@ -106,32 +106,32 @@ class SystemController extends Controller
         if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true)) {
             switch ($value) {
                 case 'f2fpay':
-                    if (!sysConfig('f2fpay_app_id') || !sysConfig('f2fpay_private_key') || !sysConfig('f2fpay_public_key')) {
+                    if (! sysConfig('f2fpay_app_id') || ! sysConfig('f2fpay_private_key') || ! sysConfig('f2fpay_public_key')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【支付宝F2F】必要参数']);
                     }
                     break;
                 case 'codepay':
-                    if (!sysConfig('codepay_url') || !sysConfig('codepay_id') || !sysConfig('codepay_key')) {
+                    if (! sysConfig('codepay_url') || ! sysConfig('codepay_id') || ! sysConfig('codepay_key')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【码支付】必要参数']);
                     }
                     break;
                 case 'epay':
-                    if (!sysConfig('epay_url') || !sysConfig('epay_mch_id') || !sysConfig('epay_key')) {
+                    if (! sysConfig('epay_url') || ! sysConfig('epay_mch_id') || ! sysConfig('epay_key')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【易支付】必要参数']);
                     }
                     break;
                 case 'payjs':
-                    if (!sysConfig('payjs_mch_id') || !sysConfig('payjs_key')) {
+                    if (! sysConfig('payjs_mch_id') || ! sysConfig('payjs_key')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【PayJs】必要参数']);
                     }
                     break;
                 case 'bitpayx':
-                    if (!sysConfig('bitpay_secret')) {
+                    if (! sysConfig('bitpay_secret')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【麻瓜宝】必要参数']);
                     }
                     break;
                 case 'paypal':
-                    if (!sysConfig('paypal_username') || !sysConfig('paypal_password') || !sysConfig('paypal_secret')) {
+                    if (! sysConfig('paypal_username') || ! sysConfig('paypal_password') || ! sysConfig('paypal_secret')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【PayPal】必要参数']);
                     }
                     break;
@@ -178,7 +178,7 @@ class SystemController extends Controller
             }
             switch (sysConfig('is_notification')) {
                 case 'serverChan':
-                    if (!$result['errno']) {
+                    if (! $result['errno']) {
                         return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
                     }
 

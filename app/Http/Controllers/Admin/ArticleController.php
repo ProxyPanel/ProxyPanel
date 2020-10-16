@@ -37,7 +37,7 @@ class ArticleController extends Controller
         // LOGO
         if ($request->input('type') !== '4' && $request->hasFile('logo')) {
             $data['logo'] = 'upload/'.$request->file('logo')->store('images');
-            if (!$data['logo']) {
+            if (! $data['logo']) {
                 Session::flash('errorMsg', 'LOGO不合法');
 
                 return Redirect::back()->withInput();
@@ -78,7 +78,7 @@ class ArticleController extends Controller
         // LOGO
         if ($request->input('type') != 4 && $request->hasFile('logo')) {
             $data['logo'] = 'upload/'.$request->file('logo')->store('images');
-            if (!$data['logo']) {
+            if (! $data['logo']) {
                 Session::flash('errorMsg', 'LOGO不合法');
 
                 return Redirect::back()->withInput();

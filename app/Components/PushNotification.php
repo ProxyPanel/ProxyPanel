@@ -49,7 +49,7 @@ class PushNotification
         // 发送成功
         if ($response->ok()) {
             $message = $response->json();
-            if (!$message['errno']) {
+            if (! $message['errno']) {
                 Helpers::addNotificationLog($title, $content, 2);
 
                 return $message;

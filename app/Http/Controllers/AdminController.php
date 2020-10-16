@@ -76,7 +76,7 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
             $new_password = $request->input('new_password');
 
-            if (!Hash::check($request->input('old_password'), Auth::getUser()->password)) {
+            if (! Hash::check($request->input('old_password'), Auth::getUser()->password)) {
                 return Redirect::back()->withErrors('旧密码错误，请重新输入');
             }
 
@@ -85,7 +85,7 @@ class AdminController extends Controller
             }
 
             $ret = Auth::getUser()->update(['password' => $new_password]);
-            if (!$ret) {
+            if (! $ret) {
                 return Redirect::back()->withErrors('修改失败');
             }
 

@@ -99,7 +99,9 @@ class RuleController extends Controller
             $query->whereUserId($uid);
         }
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) { $q->where('email', 'like', '%'.$email.'%'); });
+            $query->whereHas('user', static function ($q) use ($email) {
+                $q->where('email', 'like', '%'.$email.'%');
+            });
         }
         if ($nodeId) {
             $query->whereNodeId($nodeId);

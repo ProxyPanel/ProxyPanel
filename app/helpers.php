@@ -15,7 +15,7 @@ define('Day', 86400);
 define('Mbps', 125000);
 
 // base64加密（处理URL）
-if (!function_exists('base64url_encode')) {
+if (! function_exists('base64url_encode')) {
     function base64url_encode($data)
     {
         return strtr(base64_encode($data), ['+' => '-', '/' => '_', '=' => '']);
@@ -23,7 +23,7 @@ if (!function_exists('base64url_encode')) {
 }
 
 // base64解密（处理URL）
-if (!function_exists('base64url_decode')) {
+if (! function_exists('base64url_decode')) {
     function base64url_decode($data)
     {
         return base64_decode(strtr($data, '-_', '+/'));
@@ -31,7 +31,7 @@ if (!function_exists('base64url_decode')) {
 }
 
 // 根据流量值自动转换单位输出
-if (!function_exists('flowAutoShow')) {
+if (! function_exists('flowAutoShow')) {
     function flowAutoShow($value)
     {
         $value = abs($value);
@@ -60,7 +60,7 @@ if (!function_exists('flowAutoShow')) {
 }
 
 // 秒转时间
-if (!function_exists('seconds2time')) {
+if (! function_exists('seconds2time')) {
     function seconds2time($seconds)
     {
         $day = floor($seconds / Day);
@@ -79,7 +79,7 @@ if (!function_exists('seconds2time')) {
 }
 
 // 过滤emoji表情
-if (!function_exists('filterEmoji')) {
+if (! function_exists('filterEmoji')) {
     function filterEmoji($str)
     {
         return preg_replace_callback('/./u', static function (array $match) {
@@ -89,7 +89,7 @@ if (!function_exists('filterEmoji')) {
 }
 
 // 获取系统设置
-if (!function_exists('sysConfig')) {
+if (! function_exists('sysConfig')) {
     function sysConfig($name)
     {
         $ret = Cache::tags('sysConfig')->get($name);

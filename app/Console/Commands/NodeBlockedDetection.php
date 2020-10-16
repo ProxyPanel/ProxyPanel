@@ -21,7 +21,7 @@ class NodeBlockedDetection extends Command
     {
         $jobStartTime = microtime(true);
         if (sysConfig('nodes_detection')) {
-            if (!Cache::has('LastCheckTime')) {
+            if (! Cache::has('LastCheckTime')) {
                 $this->checkNodes();
             } elseif (Cache::get('LastCheckTime') <= time()) {
                 $this->checkNodes();
@@ -116,7 +116,7 @@ class NodeBlockedDetection extends Command
     private function notifyMaster(string $title, string $content): void
     {
         $result = PushNotification::send($title, $content);
-        if (!$result && sysConfig('webmaster_email')) {
+        if (! $result && sysConfig('webmaster_email')) {
             $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
             Mail::to(sysConfig('webmaster_email'))->send(new nodeCrashWarning($logId));
         }
