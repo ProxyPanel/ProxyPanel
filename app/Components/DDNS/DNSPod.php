@@ -68,8 +68,8 @@ class DNSPod
         $response = Http::timeout(15)->asForm()->post(self::$apiHost.$action, $parameters);
         $message = $response->json();
 
-        if ($response->failed() || ($message && Arr::has($message, 'status.code') && $message['status']['code'] !== "1")) {
-            if ($message && Arr::has($message, 'status.code') && $message['status']['code'] !== "1") {
+        if ($response->failed() || ($message && Arr::has($message, 'status.code') && $message['status']['code'] !== '1')) {
+            if ($message && Arr::has($message, 'status.code') && $message['status']['code'] !== '1') {
                 $error = $message['status']['message'];
             } else {
                 $error = $response->body();

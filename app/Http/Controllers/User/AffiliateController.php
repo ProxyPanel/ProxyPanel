@@ -12,7 +12,6 @@ use Response;
 
 class AffiliateController extends Controller
 {
-
     // 推广返利
     public function referral()
     {
@@ -50,7 +49,7 @@ class AffiliateController extends Controller
         $commission = ReferralLog::uid()->whereStatus(0)->sum('commission');
         $commission /= 100;
         if ($commission < sysConfig('referral_money')) {
-            return Response::json(['status' => 'fail', 'message' => '申请失败：满'.sysConfig('referral_money').'元才可以提现，继续努力吧',]);
+            return Response::json(['status' => 'fail', 'message' => '申请失败：满'.sysConfig('referral_money').'元才可以提现，继续努力吧']);
         }
 
         $ref = new ReferralApply();

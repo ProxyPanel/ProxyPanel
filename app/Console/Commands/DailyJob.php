@@ -82,7 +82,7 @@ class DailyJob extends Command
     }
 
     /**
-     * 添加用户封禁日志
+     * 添加用户封禁日志.
      *
      * @param  int  $userId  用户ID
      * @param  int  $time  封禁时长，单位分钟
@@ -102,7 +102,7 @@ class DailyJob extends Command
     // 关闭超过72小时未处理的工单
     private function closeTickets(): void
     {
-        $ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime("-3 days")))->whereStatus(1)->get();
+        $ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get();
         foreach ($ticketList as $ticket) {
             $ret = Ticket::whereId($ticket->id)->update(['status' => 2]);
             if ($ret) {
@@ -120,7 +120,7 @@ class DailyJob extends Command
             ->get();
         foreach ($userList as $user) {
             // 跳过 没有重置日期的账号
-            if (!$user->reset_time) {
+            if (! $user->reset_time) {
                 continue;
             }
 
@@ -128,7 +128,7 @@ class DailyJob extends Command
             $order = Order::userActivePlan($user->id)->first();
 
             // 无订单用户跳过
-            if (!$order) {
+            if (! $order) {
                 continue;
             }
 

@@ -10,7 +10,7 @@ use Redirect;
 class isAdmin
 {
     /**
-     * 校验是否为管理员身份
+     * 校验是否为管理员身份.
      *
      * @param  Request  $request
      * @param  Closure  $next
@@ -19,7 +19,7 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::getUser()->is_admin) {
+        if (! Auth::getUser()->is_admin) {
             return Redirect::route('home');
         }
 

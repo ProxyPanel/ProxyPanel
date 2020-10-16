@@ -8,7 +8,7 @@ use Log;
 class NetworkDetection
 {
     /**
-     * 用api.50network.com进行节点阻断检测
+     * 用api.50network.com进行节点阻断检测.
      *
      * @param  string  $ip  被检测的IP
      * @param  bool  $type  TRUE 为ICMP,FALSE 为tcp
@@ -25,44 +25,44 @@ class NetworkDetection
 
         if ($response->ok()) {
             $message = $response->json();
-            if (!$message) {
-                Log::warning("【".$checkName."阻断检测】检测".$ip."时，接口返回异常访问链接：".$url);
+            if (! $message) {
+                Log::warning('【'.$checkName.'阻断检测】检测'.$ip.'时，接口返回异常访问链接：'.$url);
 
                 return false;
             }
 
-            if (!$message['success']) {
-                if ($message['error'] === "execute timeout (3s)") {
+            if (! $message['success']) {
+                if ($message['error'] === 'execute timeout (3s)') {
                     sleep(10);
 
                     return self::networkCheck($ip, $type, $port);
                 }
 
-                Log::warning("【".$checkName."阻断检测】检测".$ip.$port."时，返回".var_export($message, true));
+                Log::warning('【'.$checkName.'阻断检测】检测'.$ip.$port.'时，返回'.var_export($message, true));
 
                 return false;
             }
 
             if ($message['firewall-enable'] && $message['firewall-disable']) {
-                return "通讯正常"; // 正常
+                return '通讯正常'; // 正常
             }
 
-            if ($message['firewall-enable'] && !$message['firewall-disable']) {
-                return "海外阻断"; // 国外访问异常
+            if ($message['firewall-enable'] && ! $message['firewall-disable']) {
+                return '海外阻断'; // 国外访问异常
             }
 
-            if (!$message['firewall-enable'] && $message['firewall-disable']) {
-                return "国内阻断"; // 被墙
+            if (! $message['firewall-enable'] && $message['firewall-disable']) {
+                return '国内阻断'; // 被墙
             }
 
-            return "机器宕机"; // 服务器宕机
+            return '机器宕机'; // 服务器宕机
         }
 
         return false;
     }
 
     /**
-     * 用外部API进行Ping检测
+     * 用外部API进行Ping检测.
      *
      * @param  string  $ip  被检测的IP或者域名
      *
@@ -80,11 +80,11 @@ class NetworkDetection
                 return $message['data'];
             }
             // 发送失败
-            Log::warning("【PING】检测".$ip."时，返回".var_export($message, true));
+            Log::warning('【PING】检测'.$ip.'时，返回'.var_export($message, true));
 
             return false;
         }
-        Log::warning("【PING】检测".$ip."时，接口返回异常访问链接：".$url);
+        Log::warning('【PING】检测'.$ip.'时，接口返回异常访问链接：'.$url);
 
         // 发送错误
         return false;

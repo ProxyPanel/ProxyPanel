@@ -61,9 +61,9 @@ class Aliyun
             'Version'          => '2015-01-09',
             'AccessKeyId'      => sysConfig('ddns_key'),
             'SignatureMethod'  => 'HMAC-SHA1',
-            'Timestamp'        => gmdate("Y-m-d\TH:i:s\Z"),//公共参数Timestamp GMT时间
+            'Timestamp'        => gmdate("Y-m-d\TH:i:s\Z"), //公共参数Timestamp GMT时间
             'SignatureVersion' => '1.0',
-            'SignatureNonce'   => str_replace('.', '', microtime(true)),//唯一数，用于防止网络重放攻击
+            'SignatureNonce'   => str_replace('.', '', microtime(true)), //唯一数，用于防止网络重放攻击
         ];
         $parameters = array_merge(['Action' => $action], $data, $public);
         $parameters['Signature'] = $this->computeSignature($parameters);
@@ -107,7 +107,7 @@ class Aliyun
     }
 
     /**
-     * 域名信息
+     * 域名信息.
      *
      * @param  string|null  $type  记录类型,默认为 null
      * @return array|false

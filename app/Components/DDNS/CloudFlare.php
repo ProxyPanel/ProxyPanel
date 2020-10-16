@@ -66,7 +66,7 @@ class CloudFlare
             }
 
             $message = $response->json();
-            if ($message && !$response->failed()) {
+            if ($message && ! $response->failed()) {
                 return $message;
             }
 

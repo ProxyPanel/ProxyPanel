@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class isMaintenance
 {
     /**
-     * 校验是否开启维护模式
+     * 校验是否开启维护模式.
      *
      * @param  Request  $request
      * @param  Closure  $next

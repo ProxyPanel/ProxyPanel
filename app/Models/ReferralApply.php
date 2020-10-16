@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 返利申请
+ * 返利申请.
  */
 class ReferralApply extends Model
 {

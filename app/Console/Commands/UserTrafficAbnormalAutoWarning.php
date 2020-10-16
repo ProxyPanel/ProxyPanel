@@ -33,7 +33,7 @@ class UserTrafficAbnormalAutoWarning extends Command
             ->where('total', '>', MB * 50)
             ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
             ->groupBy('user_id')
-            ->selectRaw("user_id, sum(total) as totalTraffic")
+            ->selectRaw('user_id, sum(total) as totalTraffic')
             ->get(); // 只统计100M以上的记录，加快查询速度
         $trafficBanValue = sysConfig('traffic_ban_value');
 
@@ -42,11 +42,11 @@ class UserTrafficAbnormalAutoWarning extends Command
             if ($log->totalTraffic > $trafficBanValue * GB) {
                 $user = $log->user;
                 $traffic = UserHourlyDataFlow::userRecentUsed($user->id)
-                    ->selectRaw("user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic")
+                    ->selectRaw('user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic')
                     ->first();
 
-                PushNotification::send("流量异常用户提醒",
-                    "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU)."，下行流量：".flowAutoShow($traffic->totalD)."，共计：".flowAutoShow($traffic->totalTraffic)."**。");
+                PushNotification::send('流量异常用户提醒',
+                    "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU).'，下行流量：'.flowAutoShow($traffic->totalD).'，共计：'.flowAutoShow($traffic->totalTraffic).'**。');
             }
         }
     }

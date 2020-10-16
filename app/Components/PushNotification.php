@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Components;
 
 use Cache;
@@ -22,7 +21,7 @@ class PushNotification
     }
 
     /**
-     * ServerChan推送消息
+     * ServerChan推送消息.
      *
      * @param  string  $title  消息标题
      * @param  string  $content  消息内容
@@ -50,7 +49,7 @@ class PushNotification
         // 发送成功
         if ($response->ok()) {
             $message = $response->json();
-            if (!$message['errno']) {
+            if (! $message['errno']) {
                 Helpers::addNotificationLog($title, $content, 2);
 
                 return $message;
@@ -67,7 +66,7 @@ class PushNotification
     }
 
     /**
-     * Bark推送消息
+     * Bark推送消息.
      *
      * @param  string  $title  消息标题
      * @param  string  $content  消息内容

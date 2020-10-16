@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * 用户信息
+ * 用户信息.
  */
 class User extends Authenticatable
 {

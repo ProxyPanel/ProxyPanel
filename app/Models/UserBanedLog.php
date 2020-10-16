@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 用户封禁日志
+ * 用户封禁日志.
  */
 class UserBanedLog extends Model
 {

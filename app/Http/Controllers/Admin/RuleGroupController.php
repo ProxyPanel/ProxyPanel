@@ -127,8 +127,8 @@ class RuleGroupController extends Controller
             RuleGroupNode::whereRuleGroupId($id)->delete();
             if ($nodes) {
                 $ruleGroup->nodes = $nodes;
-                if (!$ruleGroup->save()) {
-                    return Redirect::back()->withErrors("更新错误！");
+                if (! $ruleGroup->save()) {
+                    return Redirect::back()->withErrors('更新错误！');
                 }
 
                 foreach ($nodes as $nodeId) {

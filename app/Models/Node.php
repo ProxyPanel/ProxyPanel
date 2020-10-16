@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 节点配置信息
+ * 节点配置信息.
  */
 class Node extends Model
 {

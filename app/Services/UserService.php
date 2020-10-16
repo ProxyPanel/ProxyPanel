@@ -17,7 +17,7 @@ class UserService
 
     public function isAvailable(): bool
     {
-        return !self::$user->ban_time && self::$user->transfer_enable && self::$user->expired_at > time();
+        return ! self::$user->ban_time && self::$user->transfer_enable && self::$user->expired_at > time();
     }
 
     // 添加用户余额

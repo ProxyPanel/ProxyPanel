@@ -20,7 +20,6 @@ use Response;
 
 class BaseController
 {
-
     // 上报节点心跳信息
     public function setNodeStatus(Request $request, $id): JsonResponse
     {
@@ -40,7 +39,7 @@ class BaseController
         $obj->log_time = time();
         $obj->save();
 
-        if (!$obj->id) {
+        if (! $obj->id) {
             return $this->returnData('生成节点心跳信息失败');
         }
 
@@ -71,7 +70,7 @@ class BaseController
         $inputArray = $request->all();
         $onlineCount = 0;
         foreach ($inputArray as $input) {
-            if (!Arr::has($input, ['ip', 'uid'])) {
+            if (! Arr::has($input, ['ip', 'uid'])) {
                 return $this->returnData('上报节点在线用户IP信息失败，请检查字段');
             }
 
@@ -83,7 +82,7 @@ class BaseController
             $obj->created_at = time();
             $obj->save();
 
-            if (!$obj->id) {
+            if (! $obj->id) {
                 return $this->returnData('生成节点在线用户IP信息失败');
             }
             $onlineCount++;
@@ -106,7 +105,7 @@ class BaseController
     public function setUserTraffic(Request $request, $id): JsonResponse
     {
         foreach ($request->all() as $input) {
-            if (!Arr::exists($input, 'uid')) {
+            if (! Arr::exists($input, 'uid')) {
                 return $this->returnData('上报用户流量日志失败，请检查字段');
             }
 
@@ -122,7 +121,7 @@ class BaseController
             $log->log_time = time();
             $log->save();
 
-            if (!$log->id) {
+            if (! $log->id) {
                 return $this->returnData('生成用户流量日志失败');
             }
             $user = User::find($log->user_id);

@@ -50,9 +50,9 @@ Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function (
     Route::get('invite', 'UserController@invite')->name('invite'); // 邀请码
     Route::post('makeInvite', 'UserController@makeInvite')->name('createInvite'); // 生成邀请码
     Route::match(['get', 'post'], 'profile', 'UserController@profile')->name('profile'); // 修改个人信息
-    Route::post("switchToAdmin", "UserController@switchToAdmin")->name('switch'); // 转换成管理员的身份
-    Route::post("charge", "UserController@charge")->name('recharge'); // 卡券余额充值
-    Route::get("help", "UserController@help")->name('help'); // 帮助中心
+    Route::post('switchToAdmin', 'UserController@switchToAdmin')->name('switch'); // 转换成管理员的身份
+    Route::post('charge', 'UserController@charge')->name('recharge'); // 卡券余额充值
+    Route::get('help', 'UserController@help')->name('help'); // 帮助中心
 
     Route::namespace('User')->group(function () {
         Route::get('referral', 'AffiliateController@referral')->name('commission'); // 推广返利
@@ -76,16 +76,16 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
     Route::post('invite', 'AdminController@makeInvite')->name('invite.create'); // 生成邀请码
     Route::get('Invite/export', 'AdminController@exportInvite')->name('invite.export'); // 导出邀请码
     Route::get('getPort', 'AdminController@getPort')->name('getPort'); // 生成端口
-    Route::get('epayInfo', 'Gateway\EPay@queryInfo')->name('test.epay');// 易支付信息
+    Route::get('epayInfo', 'Gateway\EPay@queryInfo')->name('test.epay'); // 易支付信息
 
     Route::namespace('Admin')->group(function () {
         Route::resource('user', 'UserController')->except('show');
         Route::name('user.')->group(function () {
             Route::post('batchAdd', 'UserController@batchAddUsers')->name('batch'); // 批量生成账号
-            Route::resource('group', 'UserGroupController')->except('show');// 用户分组管理
+            Route::resource('group', 'UserGroupController')->except('show'); // 用户分组管理
             Route::get('monitor/{id}', 'LogsController@userTrafficMonitor')->name('monitor'); // 用户流量监控
-            Route::get("online/{id}", "LogsController@onlineIPMonitor")->name('online'); // 在线IP监控
-            Route::post("switch", "UserController@switchToUser")->name('switch'); // 转换成某个用户的身份
+            Route::get('online/{id}', 'LogsController@onlineIPMonitor')->name('online'); // 在线IP监控
+            Route::post('switch', 'UserController@switchToUser')->name('switch'); // 转换成某个用户的身份
             Route::post('updateCredit', 'UserController@handleUserCredit')->name('updateCredit'); // 用户余额充值
             Route::post('reset', 'UserController@resetTraffic')->name('reset'); // 重置用户流量
             Route::get('export/{id}', 'UserController@export')->name('export'); // 导出(查看)配置信息
@@ -101,9 +101,9 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
         Route::resource('ticket', 'TicketController')->except('create', 'show');
         Route::resource('article', 'ArticleController');
         Route::prefix('marketing')->name('marketing.')->group(function () {
-            Route::get("email", "MarketingController@emailList")->name('email'); // 邮件消息列表
-            Route::get("push", "MarketingController@pushList")->name('push'); // 推送消息列表
-            Route::post("add", "MarketingController@addPushMarketing")->name('add'); // 推送消息
+            Route::get('email', 'MarketingController@emailList')->name('email'); // 邮件消息列表
+            Route::get('push', 'MarketingController@pushList')->name('push'); // 推送消息列表
+            Route::post('add', 'MarketingController@addPushMarketing')->name('add'); // 推送消息
         });
 
         Route::resource('node', 'NodeController')->except('show');
@@ -125,7 +125,7 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
             Route::resource('cert', 'CertController')->except('show'); // 节点域名tls相关
         });
 
-        Route::resource('rule', 'RuleController')->except('create', 'edit', 'show');// 节点审计规则管理
+        Route::resource('rule', 'RuleController')->except('create', 'edit', 'show'); // 节点审计规则管理
         Route::name('rule.')->prefix('rule')->group(function () {
             Route::resource('group', 'RuleGroupController')->except('show');
             Route::name('group.')->prefix('group')->group(function () {
@@ -136,7 +136,7 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
             Route::post('clear', 'RuleController@clearLog')->name('clear'); // 清除所有审计触发日志
         });
 
-        Route::resource('goods', 'ShopController')->except('show');// 商品管理
+        Route::resource('goods', 'ShopController')->except('show'); // 商品管理
         Route::resource('coupon', 'CouponController')->except('show', 'edit', 'update'); // 优惠券
         Route::get('coupon/export', 'CouponController@exportCoupon')->name('coupon.export'); // 导出优惠券
 
@@ -154,14 +154,14 @@ Route::middleware(['isForbidden', 'isAdminLogin', 'isAdmin'])->prefix('admin')->
             Route::get('userTraffic', 'LogsController@userTrafficLogList')->name('flow'); // 流量变动记录
             Route::get('userBan', 'LogsController@userBanLogList')->name('ban'); // 用户封禁记录
             Route::get('userOnline', 'LogsController@userOnlineIPList')->name('ip'); // 用户在线IP记录
-            Route::get("onlineIPMonitor", "LogsController@onlineIPMonitor")->name('online'); // 在线IP监控
+            Route::get('onlineIPMonitor', 'LogsController@onlineIPMonitor')->name('online'); // 在线IP监控
             Route::get('notification', 'LogsController@notificationLog')->name('notify'); // 邮件发送日志
         });
-        Route::get("payment/callbackList", "LogsController@callbackList")->name('payment.callback'); // 支付回调日志
+        Route::get('payment/callbackList', 'LogsController@callbackList')->name('payment.callback'); // 支付回调日志
 
         // 工具相关
         Route::prefix('tools')->name('tools.')->group(function () {
-            Route::match(['get', 'post'], "decompile", "ToolsController@decompile")->name('decompile'); // SS(R)链接反解析
+            Route::match(['get', 'post'], 'decompile', 'ToolsController@decompile')->name('decompile'); // SS(R)链接反解析
             Route::get('download', 'ToolsController@download')->name('download'); // 下载转换过的JSON配置
             Route::match(['get', 'post'], 'convert', 'ToolsController@convert')->name('convert'); // 格式转换
             Route::match(['get', 'post'], 'import', 'ToolsController@import')->name('import'); // 数据导入

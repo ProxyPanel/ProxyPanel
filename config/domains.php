@@ -49,5 +49,5 @@ return [
     'credit', 'courses', 'coupons', 'condos', 'consulting', 'coach', 'cloud', 'clinic', 'click', 'claims', 'city', 'church',
     'chat', 'charity', 'casino', 'cafe', 'buzz', 'business', 'boston', 'blog', 'bio', 'bingo', 'bid', 'beer', 'band', 'audio',
     'auction', 'attorney', 'art', 'army', 'apartments', 'airforce', 'accountants', 'accountant', 'monster', 'dev', 'sydney', 'baby',
-    'melbourne', 'bible', 'yachts', 'motorcycles', 'autos', 'boats', 'homes', 'best'
+    'melbourne', 'bible', 'yachts', 'motorcycles', 'autos', 'boats', 'homes', 'best',
 ];
