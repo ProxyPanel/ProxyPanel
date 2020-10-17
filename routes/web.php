@@ -1,16 +1,14 @@
 <?php
 
-Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))->group(function () {
-    Route::get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
-});
+if (env('APP_KEY')) {
+    Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))
+        ->get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
 
-// 支付回调相关
-Route::prefix('callback')->group(function () {
-    Route::get('checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout');
-    Route::domain(sysConfig('website_callback_url') ?: sysConfig('website_url'))->group(function () {
-        Route::get('notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
-    });
-});
+    Route::domain(sysConfig('website_callback_url') ?: sysConfig('website_url'))
+        ->get('callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
+}
+
+Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
 
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {

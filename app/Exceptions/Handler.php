@@ -107,12 +107,12 @@ class Handler extends ExceptionHandler
                     if ($request->ajax()) {
                         return Response::json([
                             'status'  => 'fail',
-                            'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>',
+                            'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>',
                         ]);
                     }
 
                     return Response::view('auth.error',
-                        ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
+                        ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
                         500);
                 case $exception instanceof ConnectionException:
                     if ($request->ajax()) {

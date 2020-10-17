@@ -1,16 +1,11 @@
 <?php
 
 /**
- * Laravel - A PHP Framework For Web Artisans.
+ * Laravel - A PHP Framework For Web Artisans
  *
+ * @package  Laravel
  * @author   Taylor Otwell <taylor@laravel.com>
  */
-
-// 判断是否安装ProxyPanel
-if (! is_file(__DIR__.'/../.env')) {
-    header('location:./install.php');
-    exit;
-}
 
 define('LARAVEL_START', microtime(true));
 

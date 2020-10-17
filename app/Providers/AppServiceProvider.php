@@ -16,6 +16,7 @@ use App\Observers\UserGroupObserver;
 use App\Observers\UserObserver;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use Schema;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -41,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
+
         // 检测是否强制跳转https
         if (env('REDIRECT_HTTPS', false)) {
             URL::forceScheme('https');
