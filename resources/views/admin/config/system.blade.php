@@ -245,7 +245,7 @@
                                             <label class="col-md-3 col-form-label" for="is_invite_register">邀请注册</label>
                                             <select class="col-md-3" id="is_invite_register" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                     onchange="updateFromOther('select','is_invite_register')">
-                                                <option value="0">关闭</option>
+                                                <option value="">关闭</option>
                                                 <option value="1">可选</option>
                                                 <option value="2">必须</option>
                                             </select>
@@ -256,7 +256,7 @@
                                             <label class="col-md-3 col-form-label" for="is_activate_account">激活账号</label>
                                             <select class="col-md-4" id="is_activate_account" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                     onchange="updateFromOther('select','is_activate_account')">
-                                                <option value="0">关闭</option>
+                                                <option value="">关闭</option>
                                                 <option value="1">注册前激活</option>
                                                 <option value="2">注册后激活</option>
                                             </select>
@@ -367,7 +367,7 @@
                                             <label class="col-md-3 col-form-label" for="is_email_filtering">邮箱过滤机制</label>
                                             <select class="col-md-3" id="is_email_filtering" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                     onchange="updateFromOther('select','is_email_filtering')">
-                                                <option value="0">关闭</option>
+                                                <option value="">关闭</option>
                                                 <option value="1">黑名单</option>
                                                 <option value="2">白名单</option>
                                             </select>
@@ -601,7 +601,7 @@
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_captcha">验证码</label>
                                             <select class="col-md-5" id="is_captcha" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','is_captcha')">
-                                                <option value="0">关闭</option>
+                                                <option value="">关闭</option>
                                                 <option value="1">普通验证码</option>
                                                 <option value="2">极验Geetest</option>
                                                 <option value="3">Google reCaptcha</option>
@@ -776,7 +776,7 @@
                                             <label class="col-md-3 col-form-label" for="referral_type">返利模式</label>
                                             <select class="col-md-5" id="referral_type" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                     onchange="updateFromOther('select','referral_type')">
-                                                <option value="0">关闭</option>
+                                                <option value="">关闭</option>
                                                 <option value="1">首购返利</option>
                                                 <option value="2">循环返利</option>
                                             </select>
