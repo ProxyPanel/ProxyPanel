@@ -93,7 +93,12 @@
                                 <label class="col-md-2 col-form-label" for="traffic">流量额度</label>
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="traffic" id="traffic" value="100"/>
-                                    <span class="input-group-text">MB</span>
+                                    <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="traffic_unit" id="traffic_unit">
+                                        <option value="" selected>MB</option>
+                                        <option value="1024">GB</option>
+                                        <option value="1048576">TB</option>
+                                        <option value="1073741824">PB</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -204,7 +209,6 @@
             $('#period').val('{{$goods->period}}');
             $('#days').val('{{$goods->days}}').attr('disabled', true);
             @endif
-            $('#traffic').val('{{$goods->traffic}}').attr('disabled', true);
             $('#invite_num').val('{{$goods->invite_num}}');
             $('#limit_num').val('{{$goods->limit_num}}');
             @if ($goods->is_hot)
@@ -217,6 +221,22 @@
             $('#color').asColorPicker('val', '{{$goods->color}}');
             $('#description').val('{{$goods->description}}');
             $('#info').val('{!! $goods->info !!}');
+            const trafficUnit = $('#traffic_unit');
+            const traffic = $('#traffic');
+            @if($goods->traffic >= 1073741824)
+            traffic.val('{{$goods->traffic/1073741824}}');
+            trafficUnit.selectpicker('val', '1073741824');
+            @elseif($goods->traffic >= 1048576)
+            traffic.val('{{$goods->traffic/1048576}}');
+            trafficUnit.selectpicker('val', '1048576');
+            @elseif($goods->traffic >= 1024)
+            traffic.val('{{$goods->traffic/1024}}');
+            trafficUnit.selectpicker('val', '1024');
+            @else
+            traffic.val('{{$goods->traffic}}');
+            @endif
+            traffic.attr('disabled', true);
+            trafficUnit.attr('disabled', true).selectpicker('refresh');
         });
         @elseif(old('type'))
         $(document).ready(function() {
@@ -232,6 +252,7 @@
             $('#days').val('{{old('days',0)}}');
             @endif
             $('#traffic').val('{{old('traffic')}}');
+            $('#traffic_unit').selectpicker('val', '{{old('traffic_unit')}}');
             $('#invite_num').val('{{old('invite_num')}}');
             $('#limit_num').val('{{old('limit_num')}}');
             @if (old('is_hot'))
