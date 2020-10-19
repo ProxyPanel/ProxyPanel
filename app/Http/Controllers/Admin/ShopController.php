@@ -65,7 +65,8 @@ class ShopController extends Controller
         }
 
         try {
-            $data = $request->except('_token', 'logo');
+            $data = $request->except('_token', 'logo', 'traffic', 'traffic_unit');
+            $data['traffic'] = $request->input('traffic') * $request->input('traffic_unit') ?? 1;
             $data['logo'] = $logo ?? null;
             $data['is_hot'] = $request->input('is_hot') ? 1 : 0;
             $data['status'] = $request->input('status') ? 1 : 0;
