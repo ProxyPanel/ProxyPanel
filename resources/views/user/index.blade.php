@@ -27,7 +27,7 @@
                                 <p class="ml-15 mt-15 text-left">更长使用<code>时间</code></p>
                                 <p class="text-center">更多<code>流量</code></p>
                                 <p class="mb-15 mr-15 text-right">更多优质<code>线路</code></p>
-                                <a href="/services" class="btn btn-block btn-danger">快 来 购 买 服 务 吧！</a>
+                                <a href="{{route('shop')}}" class="btn btn-block btn-danger">快 来 购 买 服 务 吧！</a>
                             @elseif(Auth::getUser()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.enabled')}}</span>

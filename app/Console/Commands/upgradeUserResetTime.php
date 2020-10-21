@@ -50,8 +50,7 @@ class upgradeUserResetTime extends Command
                 $user->update(['reset_time' => $reset_time]);
             }
 
-            Log::info('---用户[ID：'.$user->id.' - '.$user->username.' ('.$user->email.')]的新重置日期为'.($reset_time !== null ? '【'.$reset_time.'】' :
-                    '【无】').'---');
+            Log::info('---用户[ID：'.$user->id.' - '.$user->username.' ('.$user->email.')]的新重置日期为'.($reset_time !== null ? '【'.$reset_time.'】' : '【无】').'---');
         }
 
         Log::info('----------------------------【升级用户重置日期】结束----------------------------');

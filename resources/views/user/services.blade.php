@@ -103,7 +103,7 @@
                 <div class="modal-body">
                     <div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
                     <form action="#" method="post">
-                        @if(sysConfig('is_onlinePay'))
+                        @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                             <div class="mb-15 w-p50">
                                 <select class="form-control" name="charge_type" id="charge_type">
                                     @if(sysConfig('is_onlinePay'))
@@ -164,7 +164,8 @@
             </div>
         </div>
     </div>
-@endsection @section('script')
+@endsection
+@section('script')
     <script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
     <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
     <script type="text/javascript">
@@ -190,16 +191,14 @@
         }
 
         $(document).ready(function() {
-            itemControl(parseInt($('#charge_type').val()));
-            let which_selected;
+            let which_selected = 3;
             @if(sysConfig('is_onlinePay'))
                 which_selected = 1;
             @elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                 which_selected = 2;
-            @else
-                which_selected = 3;
             @endif
 
+            itemControl(which_selected);
             $('charge_type').val(which_selected);
         });
 
@@ -238,7 +237,7 @@
 
         // 充值
         function pay(method, pay_type) {
-            const paymentType = parseInt($('#charge_type').val());
+            const paymentType = parseInt($('#charge_type').val() ?? 3);
             const charge_coupon = $('#charge_coupon').val().trim();
             const amount = parseInt($('#amount').val());
             if (paymentType === 1) {
